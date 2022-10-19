@@ -135,6 +135,26 @@ very useful for development.
 
     <sup>Default: Same as the Esmerald.</sup>
 
+* **contact** - The contact of an admin. Used for OpenAPI.
+    
+    <sup>Default: `{"name": "admin", "email": "admin@myapp.com"}`.</sup>
+
+* **terms_of_service** - The terms of service of the application. Used for OpenAPI.
+
+    <sup>Default: `None`.</sup>
+
+* **license_info** - The license information. Used for OpenAPI.
+
+    <sup>Default: `None`.</sup>
+
+* **servers** - The servers in dictionary format. Used for OpenAPI.
+
+    <sup>Default: `None`.</sup>
+
+* **openapi_path** - The url for OpenAPI docs, defaults to `docs`.
+
+    <sup>Default: `docs`.</sup>
+
 * **secret** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
 update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/tortoise.md)
 support.
@@ -155,17 +175,34 @@ class.
 
     <sup>Default: `None`</sup>
 
-* **response_cookies** - List of [cookies](../datastructures.md) objects.
+* **response_cookies** - List of [cookie](../datastructures.md) objects.
 
     <sup>Default: `None`</sup>
 
-* **response_headers** - Mapping dictionary of [headers](../datastructures.md) objects.
+* **response_headers** - Mapping dictionary of header objects.
 
     <sup>Default: `None`</sup>
 
-* **scheduler_class** - A [scheduler]('../../../scheduler.md') class used for the application tasks.
+* **scheduler_class** - A [scheduler]('../scheduler/scheduler.md') class used for the application tasks.
 
     <sup>Default: `AsyncIOScheduler`</sup>
+
+* **scheduler_tasks** - A python dictionary with key and pair values as strings mapping the [scheduler tasks](../scheduler/scheduler.md).
+
+    <sup>Default: `{}`</sup>
+
+* **scheduler_configurations** - A python dictionary with key and pair values as strings mapping the
+extra configuations of [scheduler tasks](../scheduler/handler.md).
+
+    <sup>Default: `{}`</sup>
+
+* **enable_scheduler** - Flag indicating if the appliaction `scheduler` should be enabled or not. Defaults to `False`.
+
+    <sup>Default: `False`</sup>
+
+* **timezone** - The application default timezone. Defaults to `UTC`.
+
+    <sup>Default: `UTC`</sup>
 
 * **include_in_schema** - Boolean flag to indicate if should be schema included or not. This is for the whole
 application and not only for specific endpoints.

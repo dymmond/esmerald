@@ -7,7 +7,6 @@ from typing import (
     List,
     Optional,
     Sequence,
-    Set,
     Union,
 )
 
@@ -152,7 +151,6 @@ class Esmerald(Starlette):
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
         self._debug = debug
-        self._static_paths: Set[str] = set()
         self.title = title
         self.name = name
         self.description = description

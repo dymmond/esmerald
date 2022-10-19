@@ -35,6 +35,12 @@ very useful for development.
 * **app_name** - The application name. Used also for OpenAPI.
 * **description** - The description for the application. Used for OpenAPI.
 * **version** - The version for the application. Used for OpenAPI.
+* **contact** - The contact of an admin. Used for OpenAPI.
+* **terms_of_service** - The terms of service of the application. Used for OpenAPI.
+* **license_info** - The license information. Used for OpenAPI.
+* **servers** - The servers in dictionary format. Used for OpenAPI.
+* **openapi_path** - The url for OpenAPI docs, defaults to `docs`.
+* **name** - The name of the application. Used for OpenAPI.
 * **secret** - The secret key used for internal encryption (for example, user passwords).
 * **allowed_hosts** - A list of allowed hosts. Enables the built-in allowed hosts middleware.
 * **allow_origins** - A list of allowed origins. Enables the built-in CORS middleware. It can be only `allow_origins`
@@ -66,11 +72,15 @@ engine from the configuration object.
 built-in middleware.
 * **response_class** - Custom subclass of [Response](../responses.md) to be used as application application response
 class.
-* **response_cookies** - List of [cookies](../datastructures.md) objects.
-* **response_headers** - Mapping dictionary of [headers](../datastructures.md) objects.
-* **scheduler_class** - A [scheduler]('../../../scheduler.md') class used for the application tasks. Defaults to
+* **response_cookies** - List of [cookie](../datastructures.md) objects.
+* **response_headers** - Mapping dictionary of header objects.
+* **scheduler_class** - A [scheduler]('../scheduler/scheduler.md') class used for the application tasks. Defaults to
 `AsyncIOScheduler`.
-
+* **scheduler_tasks** - A python dictionary with key and pair values as strings mapping the [scheduler tasks](../scheduler/scheduler.md).
+* **scheduler_configurations** - A python dictionary with key and pair values as strings mapping the
+extra configuations of [scheduler tasks](../scheduler/handler.md).
+* **enable_scheduler** - Flag indicating if the appliaction `scheduler` should be enabled or not. Defaults to `False`.
+* **timezone** - The application default timezone. Defaults to `UTC`.
 * **on_shutdown** - A list of callables to run on application shutdown. Shutdown handler callables do not take any
 arguments, and may be be either standard functions, or async functions.
 
@@ -80,6 +90,8 @@ arguments, and may be be either standard functions, or async functions.
 Use one or the other, not both.
 * **tags** - List of tags to include in the OpenAPI schema.
 * **include_in_schema** - Boolean flag to indicate if should be schema inclded or not.
+* **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
+* **security** - Security definition of the application. Used for OpenAPI.
 
 ## Application settings
 
