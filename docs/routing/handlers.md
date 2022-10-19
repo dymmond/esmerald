@@ -74,7 +74,7 @@ Example:
 {!> ../docs_src/routing/handlers/route_example1.py !}
 ```
 
-**Parameters**
+**Parameters**:
 
 * **path** - The path for the handler. The path is then joined with the [Gateway](./routes.md#gateway) path.
 
@@ -138,7 +138,7 @@ needs usually to be constantly opened.
 * Handlers are used alongside [WebSocketGateway](./routes.md#websocketgateway).
 * There is only one `websocket` handler available.
 
-**Parameters**
+**Parameters**:
 
 * **path** - The path for the handler. The path is then joined with the
 [WebSocketGateway](./routes.md#websocketgateway) path.

@@ -16,7 +16,7 @@ of those same routes and therefore all the available parameters such as [permiss
 [dependencies](../dependencies.md) and almost every other parameter available in the handlers are also available
 in the APIView.
 
-**Parameters**
+**Parameters**:
 
 * **path** - The path for the APIView.
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming

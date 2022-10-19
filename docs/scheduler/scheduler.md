@@ -5,7 +5,7 @@ In that in mind and with the help of the great widely used
 <a href='https://apscheduler.readthedocs.io/en/3.x/' target='_blank'>APScheduler</a>, Esmerald comes with a built-in
 scheduler, saving you tons of headaches and simplifying the process of creating them.
 
-# Scheduler
+## Scheduler
 
 The `Scheduler` is the main object that manages the internal scheduler of `Esmerald` expecting:
 
@@ -23,7 +23,10 @@ The `Scheduler` is the main object that manages the internal scheduler of `Esmer
     <sup>Default: `UTC`</sup>
 
 Since `Esmerald` is an `ASGI` framework, it is already provided a default scheduler class that works alongside with
-the application, the `AsyncIOScheduler`
+the application, the `AsyncIOScheduler`.
+
+If a `scheduler_class` is not provided while the `enable_scheduler` is true, it will raise an error 500
+[ImproperlyConfigured](../exceptions.md#improperlyconfigured).
 
 ```python hl_lines="4"
 from esmerald import Esmerald

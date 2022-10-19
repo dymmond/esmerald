@@ -1,4 +1,3 @@
-import asyncio
 import warnings
 from datetime import datetime
 from datetime import timezone as dtimezone
@@ -30,7 +29,6 @@ class Scheduler:
         self.tasks = tasks or {}
         self.timezone = timezone
         self.scheduler_class = scheduler_class
-        self.queue = asyncio.Queue()
 
         if not self.scheduler_class and self.app.enable_scheduler:
             raise ImproperlyConfigured(

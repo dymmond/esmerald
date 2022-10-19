@@ -2,7 +2,6 @@ from typing import Union
 
 from esmerald.schedulers.apscheduler.triggers import (
     AndTrigger,
-    BaseCombiningTrigger,
     CronTrigger,
     DateTrigger,
     IntervalTrigger,
@@ -11,7 +10,6 @@ from esmerald.schedulers.apscheduler.triggers import (
 
 TriggerHandler = Union[
     AndTrigger,
-    BaseCombiningTrigger,
     CronTrigger,
     DateTrigger,
     IntervalTrigger,
