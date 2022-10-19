@@ -2,7 +2,7 @@ import functools
 import pathlib
 
 import pytest
-from esmerald.testclient import EsmeraldTestClient, create_client
+from esmerald.testclient import EsmeraldTestClient
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def test_client_factory(anyio_backend_name, anyio_backend_options):
     # anyio_backend_name defined by:
     # https://anyio.readthedocs.io/en/stable/testing.html#specifying-the-backends-to-run-on
     return functools.partial(
-        create_client,
+        EsmeraldTestClient,
         backend=anyio_backend_name,
         backend_options=anyio_backend_options,
     )

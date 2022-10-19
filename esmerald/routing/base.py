@@ -16,13 +16,6 @@ from typing import (
     cast,
 )
 
-from pydantic import BaseConfig, Extra
-from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import Mount as Mount  # noqa
-from starlette.types import Scope
-
 from esmerald.backgound import BackgroundTask, BackgroundTasks
 from esmerald.datastructures import ResponseContainer
 from esmerald.enums import MediaType
@@ -37,10 +30,14 @@ from esmerald.signature import SignatureModelFactory, get_signature_model
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
+from pydantic import BaseConfig, Extra
+from starlette.requests import HTTPConnection
+from starlette.responses import JSONResponse
+from starlette.responses import Response as StarletteResponse
+from starlette.routing import Mount as Mount  # noqa
+from starlette.types import Scope
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
-
     from esmerald.applications import Esmerald
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
@@ -52,6 +49,7 @@ if TYPE_CHECKING:
         ResponseHeaders,
         ResponseType,
     )
+    from pydantic.typing import AnyCallable
 
 
 PARAM_REGEX = re.compile("{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_][a-zA-Z0-9_]*)?}")
@@ -348,6 +346,7 @@ class BaseResponseHandler:
 
         if is_async_callable(fn):
             return await fn()
+
         return fn()
 
     def get_response_handler(self) -> Callable[[Any], Awaitable[StarletteResponse]]:

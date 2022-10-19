@@ -2,12 +2,13 @@ from functools import partial
 from typing import Any
 
 import pytest
-
 from esmerald.injector import Inject
 from esmerald.typing import Void
 
 
 class Test:
+    __test__ = False
+
     val = 31
 
     def __init__(self) -> None:

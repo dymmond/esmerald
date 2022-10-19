@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional, Type, Union
 from pydantic import BaseModel, create_model
 from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.exceptions import WebSocketException
 
 RequestErrorModel: Type[BaseModel] = create_model("Request")
 WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
@@ -117,10 +118,8 @@ class OpenAPIError(ValueError):
     ...
 
 
-class WebSocketException(EsmeraldAPIException):
-    def __init__(self, *args: Any, detail: str, code: int = 4500) -> None:
-        super().__init__(*args, detail=detail)
-        self.code = code
+class WebSocketException(WebSocketException):
+    ...
 
 
 ExceptionErrorMap = Union[

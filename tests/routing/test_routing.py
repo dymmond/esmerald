@@ -2,11 +2,6 @@ import typing
 import uuid
 
 import pytest
-from starlette.responses import JSONResponse, PlainTextResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import Host, NoMatchFound
-from starlette.websockets import WebSocket, WebSocketDisconnect
-
 from esmerald.applications import Esmerald
 from esmerald.enums import MediaType
 from esmerald.permissions import AllowAny, DenyAll
@@ -17,6 +12,10 @@ from esmerald.routing.handlers import get, post, put, websocket
 from esmerald.routing.router import Include, Router
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
+from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.responses import Response as StarletteResponse
+from starlette.routing import Host, NoMatchFound
+from starlette.websockets import WebSocket, WebSocketDisconnect
 
 
 @get(path="/", permissions=[DenyAll])
@@ -168,6 +167,7 @@ class AnotherMyAPIView(APIView):
 
 
 class TestMyAPIView(APIView):
+    __test__ = False
     path = "fluid/{name}"
 
     @get(path="/")
@@ -711,7 +711,9 @@ async def subdomain_app(scope, receive, send):
     await response(scope, receive, send)
 
 
-subdomain_router = [Host("{subdomain}.example.org", app=subdomain_app, name="subdomains")]
+subdomain_router = Router(
+    routes=[Host("{subdomain}.example.org", app=subdomain_app, name="subdomains")]
+)
 
 
 def test_subdomain_routing(test_client_factory):

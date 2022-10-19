@@ -21,18 +21,6 @@ from typing import (
     cast,
 )
 
-from starlette import status
-from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import BaseRoute as StarletteBaseRoute
-from starlette.routing import Mount, NoMatchFound
-from starlette.routing import Route as StarletteRoute
-from starlette.routing import Router as StarletteRouter
-from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
-from starlette.routing import compile_path
-from starlette.types import ASGIApp, Receive, Scope, Send
-
 from esmerald.conf import settings
 from esmerald.datastructures import File, Redirect, URLPath
 from esmerald.enums import HttpMethod, MediaType
@@ -57,10 +45,19 @@ from esmerald.utils.constants import DATA, REDIRECT_STATUS_CODES, REQUEST, SOCKE
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
+from starlette import status
+from starlette.requests import HTTPConnection
+from starlette.responses import JSONResponse
+from starlette.responses import Response as StarletteResponse
+from starlette.routing import BaseRoute as StarletteBaseRoute
+from starlette.routing import Host, Mount, NoMatchFound
+from starlette.routing import Route as StarletteRoute
+from starlette.routing import Router as StarletteRouter
+from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
+from starlette.routing import compile_path
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
-
     from esmerald.applications import Esmerald
     from esmerald.permissions.types import Permission
     from esmerald.types import (
@@ -80,6 +77,7 @@ if TYPE_CHECKING:
         ResponseType,
         RouteOwner,
     )
+    from pydantic.typing import AnyCallable
 
 PARAM_REGEX = re.compile("{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_][a-zA-Z0-9_]*)?}")
 
@@ -108,7 +106,7 @@ class Ownership:
         Args:
             route: The route for the signature model to be created.
         """
-        if isinstance(route, Include):
+        if isinstance(route, (Include, Host)):
             for _route in route.routes:
                 self.create_signature_models(_route)
 
@@ -227,6 +225,8 @@ class Router(StarletteRouter, Ownership):
                     WebSocketGateway,
                     StarletteBaseRoute,
                     Mount,
+                    Host,
+                    Router,
                 ),
             ):
                 raise ImproperlyConfigured(f"The route {route} must be of type Gateway or Include")
@@ -716,6 +716,8 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):
+        if not path:
+            path = "/"
         super().__init__(path=path, endpoint=endpoint)
         self._permissions: Union[List["Permission"], "VoidType"] = Void
         self._dependencies: Union[Dict[str, Inject], "VoidType"] = Void

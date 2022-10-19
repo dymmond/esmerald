@@ -27,6 +27,9 @@ build-docs: ## Runs the local docs
 test: ## Runs the tests
 	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest $(TESTONLY) --disable-pytest-warnings -s -vv
 
+.PHONY: coverage
+coverage: ## Run tests and coverage
+	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests
 
 .PHONY: requirements
 requirements: ## Install requirements for development

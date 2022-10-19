@@ -2,7 +2,7 @@ from typing import Any, Callable, List, Optional, TypeVar
 
 from starlette.background import BackgroundTask as StarletteBackgroundTask  # noqa
 from starlette.background import BackgroundTasks as StarletteBackgroundTasks  # noqa
-from starlette.responses import Response as StarletteResponse
+from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import ParamSpec
 
 P = ParamSpec("P")

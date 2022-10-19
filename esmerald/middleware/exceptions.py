@@ -1,6 +1,14 @@
+import inspect
 from inspect import getmro
 from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, cast
 
+from esmerald.enums import MediaType, ScopeType
+from esmerald.exception_handlers import http_exception_handler
+from esmerald.exceptions import HTTPException, WebSocketException
+from esmerald.requests import Request
+from esmerald.responses import Response
+from esmerald.types import ExceptionHandler, ExceptionHandlers
+from esmerald.websockets import WebSocket
 from pydantic import BaseModel
 from starlette import status
 from starlette._utils import is_async_callable
@@ -12,13 +20,6 @@ from starlette.middleware.exceptions import (
 )
 from starlette.responses import Response as StarletteResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
-
-from esmerald.enums import MediaType, ScopeType
-from esmerald.exception_handlers import http_exception_handler
-from esmerald.exceptions import HTTPException, WebSocketException
-from esmerald.requests import Request
-from esmerald.responses import Response
-from esmerald.types import ExceptionHandler, ExceptionHandlers
 
 
 class ExceptionMiddleware(StarletteExceptionMiddleware):
@@ -84,7 +85,14 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
                     response = await run_in_threadpool(handler, request, exc)
                 await response(scope, receive, sender)
             elif scope["type"] == "websocket":
-                await self.app(scope, receive, send)
+                websocket = WebSocket(scope, receive=receive, send=send)
+                if is_async_callable(handler):
+                    if inspect.isfunction(handler):
+                        await self.app(scope, receive, send)
+                    else:
+                        await handler(websocket, exc)
+                else:
+                    await run_in_threadpool(handler, websocket, exc)
 
 
 class ResponseContent(BaseModel):

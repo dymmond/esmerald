@@ -67,7 +67,7 @@ def clean_string(value: str) -> str:
     Returns:
         str
     """
-    return slugify.slugify(value)
+    return slugify.slugify(value, separator="_")
 
 
 def is_optional_union(annotation: Any) -> bool:
