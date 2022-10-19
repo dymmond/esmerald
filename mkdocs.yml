@@ -73,7 +73,8 @@ nav:
   - Responses: "responses.md"
   - Protocols: "protocols.md"
   - Scheduler:
-      - Esmerald Scheduler: "scheduler/scheduler.md"
+      - Scheduler: "scheduler/scheduler.md"
+      - Handler: "scheduler/handler.md"
   - WSGI Frameworks: "wsgi.md"
   - Test Client: "testclient.md"
   - Third Party Packages: "external.md"
