@@ -9,7 +9,7 @@ import anyio
 import pytest
 from starlette.datastructures import Address, State
 from starlette.status import HTTP_200_OK
-from starlette.testclient import TestClient
+from esmerald.testclient import EsmeraldTestClient
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import InternalServerError
@@ -27,7 +27,7 @@ def test_request_url(test_client_factory) -> None:
         response = Response(content=data, status_code=HTTP_200_OK, media_type=MediaType.JSON)
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/123?a=abc")
     assert response.json() == {"method": "GET", "url": "http://testserver/123?a=abc"}
 
@@ -46,7 +46,7 @@ def test_request_query_params(test_client_factory) -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/?a=123&b=456")
     assert response.json() == {"params": {"a": ["123"], "b": ["456"]}}
 
@@ -62,7 +62,7 @@ def test_request_headers(test_client_factory) -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/", headers={"host": "example.org"})
     assert response.json() == {
         "headers": {
@@ -100,7 +100,7 @@ def test_request_body(test_client_factory) -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
 
     response = client.get("/")
     assert response.json() == {"body": ""}
@@ -125,7 +125,7 @@ def test_request_stream(test_client_factory) -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
 
     response = client.get("/")
     assert response.json() == {"body": ""}
@@ -144,7 +144,7 @@ def test_request_form_urlencoded(test_client_factory) -> None:
         response = JSONResponse({"form": dict(form)})
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
 
     response = client.post("/", data={"abc": "123 @"})
     assert response.json() == {"form": {"abc": "123 @"}}
@@ -160,7 +160,7 @@ def test_request_body_then_stream(test_client_factory) -> None:
         response = JSONResponse({"body": body.decode(), "stream": chunks.decode()})
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
 
     response = client.post("/", data="abc")
     assert response.json() == {"body": "abc", "stream": "abc"}
@@ -175,7 +175,7 @@ def test_request_json() -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.post("/", json={"a": "123"})
     assert response.json() == {"json": {"a": "123"}}
 
@@ -193,7 +193,7 @@ def test_request_stream_then_body(test_client_factory):
         response = JSONResponse({"body": body.decode(), "stream": chunks.decode()})
         await response(scope, receive, send)
 
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.post("/", data="abc")
     assert response.json() == {"body": "<stream consumed>", "stream": "abc"}
 
@@ -205,7 +205,7 @@ def test_request_raw_path_one() -> None:
         response = JSONResponse({"json": data})
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.post("/", json={"a": "123"})
     assert response.json() == {"json": {"a": "123"}}
 
@@ -229,7 +229,7 @@ def test_request_raw_path(test_client_factory):
         response = PlainTextResponse(f"{path}, {raw_path}")
         await response(scope, receive, send)
 
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.get("/he%2Fllo")
     assert response.text == "/he/llo, b'/he%2Fllo'"
 
@@ -249,7 +249,7 @@ def test_request_without_setting_receive() -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.post("/", json={"a": "123"})
     assert response.json() == {"json": "Receive channel not available"}
 
@@ -312,7 +312,7 @@ def test_request_is_disconnected(test_client_factory):
         await response(scope, receive, send)
         disconnected_after_response = await request.is_disconnected()
 
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.get("/")
     assert response.json() == {"disconnected": False}
     assert disconnected_after_response
@@ -344,7 +344,7 @@ def test_request_state() -> None:
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/123?a=abc")
     assert response.json() == {"state.example": 123}
 
@@ -361,7 +361,7 @@ def test_request_cookies() -> None:
 
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/")
     assert response.text == "Hello, world!"
     response = client.get("/")
@@ -375,7 +375,7 @@ def test_chunked_encoding() -> None:
         response = JSONResponse({"body": body.decode()})
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
 
     def post_body():
         yield b"foo"
@@ -412,7 +412,7 @@ def test_cookie_lenient_parsing(test_client_factory):
         response = JSONResponse({"cookies": request.cookies})
         await response(scope, receive, send)
 
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.get("/", headers={"cookie": tough_cookie})
     result = response.json()
     assert len(result["cookies"]) == 4
@@ -446,7 +446,7 @@ def test_cookies_edge_cases(set_cookie, expected, test_client_factory):
         response = JSONResponse({"cookies": request.cookies})
         await response(scope, receive, send)
 
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.get("/", headers={"cookie": set_cookie})
     result = response.json()
     assert result["cookies"] == expected
@@ -486,7 +486,7 @@ def test_cookies_invalid(set_cookie, expected, test_client_factory):
         response = JSONResponse({"cookies": request.cookies})
         await response(scope, receive, send)
 
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.get("/", headers={"cookie": set_cookie})
     result = response.json()
     assert result["cookies"] == expected
@@ -503,7 +503,7 @@ def test_request_send_push_promise() -> None:
         response = JSONResponse({"json": "OK"})
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/")
     assert response.json() == {"json": "OK"}
 
@@ -521,7 +521,7 @@ def test_request_send_push_promise_without_push_extension() -> None:
         response = JSONResponse({"json": "OK"})
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/")
     assert response.json() == {"json": "OK"}
 
@@ -547,6 +547,6 @@ def test_request_send_push_promise_without_setting_send(test_client_factory) -> 
         )
         await response(scope, receive, send)
 
-    client = TestClient(app)  # type: ignore
+    client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/")
     assert response.json() == {"json": "Send channel not available"}

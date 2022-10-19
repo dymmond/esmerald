@@ -1,9 +1,20 @@
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncContextManager,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Union,
+    cast,
+)
 
+import httpx  # noqa
 from esmerald.applications import Esmerald
-from esmerald.conf import settings
+from esmerald.conf import settings  # noqa
 from esmerald.utils.crypto import get_random_secret_key
-from starlette.testclient import TestClient as TestClient  # noqa
+from starlette.testclient import TestClient  # noqa
 
 if TYPE_CHECKING:
     from esmerald.config import (
@@ -33,19 +44,23 @@ class EsmeraldTestClient(TestClient):
         self,
         app: Esmerald,
         base_url: str = "http://testserver",
-        raise_server_exception: bool = True,
+        raise_server_exceptions: bool = True,
         root_path: str = "",
         backend: "Literal['asyncio', 'trio']" = "asyncio",
         backend_options: Optional[Dict[str, Any]] = None,
+        cookies: Optional[httpx._client.CookieTypes] = None,
     ):
         super().__init__(
-            app, base_url, raise_server_exception, root_path, backend, backend_options
+            app,
+            base_url,
+            raise_server_exceptions,
+            root_path,
+            backend,
+            backend_options,
+            cookies,
         )
-        """A reimplementation of the base client of Starlette
-        """
 
     def __enter__(self, *args: Any, **kwargs: Dict[str, Any]) -> "EsmeraldTestClient":
-        """The TestClient returned if a EsmeraldTestClient and not a Starlette TestClient."""
         return super().__enter__(*args, **kwargs)
 
 
@@ -71,15 +86,16 @@ def create_client(
     cors_config: Optional["CORSConfig"] = settings.cors_config,
     session_config: Optional["SessionConfig"] = settings.session_config,
     scheduler_class: Optional["SchedulerType"] = settings.scheduler_class,
+    scheduler_tasks: Optional[Dict[str, str]] = settings.scheduler_tasks,
+    enable_scheduler: bool = settings.enable_scheduler,
     raise_server_exceptions: bool = True,
     root_path: str = "",
     static_files_config: Optional[Union["StaticFilesConfig", List["StaticFilesConfig"]]] = None,
     template_config: Optional["TemplateConfig"] = None,
+    lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = settings.lifespan,
+    cookies: Optional[httpx._client.CookieTypes] = None
 ) -> EsmeraldTestClient:
-    """
-    Creates a default EsmeraldTestClient to be used in the tests.
-    """
-    return TestClient(
+    return EsmeraldTestClient(
         app=Esmerald(
             debug=debug,
             routes=cast("Any", routes if isinstance(routes, list) else [routes]),
@@ -97,13 +113,17 @@ def create_client(
             on_startup=on_startup,
             cors_config=cors_config,
             scheduler_class=scheduler_class,
+            scheduler_tasks=scheduler_tasks,
+            enable_scheduler=enable_scheduler,
             static_files_config=static_files_config,
             template_config=template_config,
             session_config=session_config,
+            lifespan=lifespan,
         ),
         base_url=base_url,
         backend=backend,
         backend_options=backend_options,
         root_path=root_path,
         raise_server_exceptions=raise_server_exceptions,
+        cookies=cookies,
     )

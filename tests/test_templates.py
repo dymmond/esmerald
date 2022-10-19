@@ -2,7 +2,6 @@ import os
 import pathlib
 
 import pytest
-
 from esmerald.applications import Esmerald
 from esmerald.config import TemplateConfig
 from esmerald.datastructures import Template
@@ -10,7 +9,7 @@ from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.template import JinjaTemplateEngine, MakoTemplateEngine
-from esmerald.testclient import TestClient, create_client
+from esmerald.testclient import EsmeraldTestClient, create_client
 
 
 def test_handler_raise_for_no_template_engine_created() -> None:
@@ -57,7 +56,7 @@ def test_templates_starlette(template_dir, test_client_factory):
             engine=JinjaTemplateEngine,
         ),
     )
-    client = TestClient(app)
+    client = EsmeraldTestClient(app)
     response = client.get("/")
     assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>"
     assert response.template.name == "index.html"

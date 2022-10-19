@@ -75,6 +75,7 @@ nav:
   - Scheduler:
       - Esmerald Scheduler: "scheduler/scheduler.md"
   - WSGI Frameworks: "wsgi.md"
+  - Test Client: "testclient.md"
   - Third Party Packages: "external.md"
   - Contributing: "contributing.md"
   - Sponsorship: "sponsorship.md"
