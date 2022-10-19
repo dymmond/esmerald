@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+export PREFIX=""
+if [ "$VIRTUAL_ENV" != '' ]; then
+    export PREFIX="$VIRTUAL_ENV/bin/"
+elif [ -d 'venv' ] ; then
+    export PREFIX="venv/bin/"
+fi
+export SOURCE_FILES="esmerald tests docs_src"
+export EXCLUDE=__init__.py
+
+set -x
+
+# mypy esmerald
+${PREFIX}autoflake --remove-all-unused-imports  --remove-unused-variables --exclude $EXCLUDE --in-place --recursive $SOURCE_FILES
+${PREFIX}black $SOURCE_FILES --check --line-length 99
+${PREFIX}isort $SOURCE_FILES --check-only

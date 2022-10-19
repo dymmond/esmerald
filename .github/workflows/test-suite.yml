@@ -1,0 +1,37 @@
+---
+name: Test Suite
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  tests:
+    name: "Python ${{ matrix.python-version }}"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11-dev"]
+
+    steps:
+      - uses: "actions/checkout@v3"
+      - uses: "actions/setup-python@v4"
+        with:
+          python-version: "${{ matrix.python-version }}"
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-test-v02
+      - name: "Install dependencies"
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: "scripts/install"
+      # - name: "Run linting checks"
+      #   run: "scripts/lint"
+      # - name: "Build package"
+      #   run: "scripts/build"
+      - name: "Run tests"
+        run: "scripts/test"

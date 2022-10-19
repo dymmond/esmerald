@@ -1,0 +1,113 @@
+site_name: Esmerald
+site_description: Highly scalable, performant, easy to learn, easy to code and for every application.
+site_url: https://www.esmerald.dymmond.com
+
+theme:
+  name: "material"
+  custom_dir: docs/overrides
+  language: en
+  palette:
+    - scheme: "default"
+      primary: "green"
+      accent: "orange"
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: "material/toggle-switch-variant"
+        name: "Switch to dark mode"
+    - scheme: "slate"
+      media: "(prefers-color-scheme: dark)"
+      primary: "green"
+      accent: "orange"
+      toggle:
+        icon: "material/toggle-switch-variant-off"
+        name: "Switch to light mode"
+  favicon: statics/images/favicon.ico
+  features:
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+
+repo_name: dymmond/esmerald
+repo_url: https://github.com/dymmond/esmerald
+edit_uri: ""
+plugins:
+  - search
+  - markdownextradata:
+      data: data
+
+nav:
+  - Esmerald: "index.md"
+  - Languages:
+      - en: /
+      # - pt: /pt/
+  - Application:
+      - Esmerald: "application/applications.md"
+      - Levels: "application/levels.md"
+      - Settings: "application/settings.md"
+  - Configurations:
+      - CORSConfig: "configurations/cors.md"
+      - CSRFConfig: "configurations/csrf.md"
+      - OpenAPIConfig: "configurations/openapi.md"
+      - SessionConfig: "configurations/session.md"
+      - StaticFilesConfig: "configurations/staticfiles.md"
+      - TemplateConfig: "configurations/template.md"
+      - JWTConfig: "configurations/jwt.md"
+  - Routing:
+      - Router: "routing/router.md"
+      - Routes: "routing/routes.md"
+      - Handlers: "routing/handlers.md"
+      - APIView: "routing/apiview.md"
+  - Databases:
+      - Tortoise-ORM:
+          - Motivation: "databases/tortoise/tortoise.md"
+          - Models: "databases/tortoise/models.md"
+          - Middleware: "databases/tortoise/middleware.md"
+          - Event Handlers: "databases/tortoise/event_handlers.md"
+  - Permissions: "permissions.md"
+  - Middleware: "middleware/middleware.md"
+  - Exceptions: "exceptions.md"
+  - Exception Handlers: "exception_handlers.md"
+  - Dependencies: "dependencies.md"
+  - Datastructures: "datastructures.md"
+  - Password Hashers: "password_hashers.md"
+  - Responses: "responses.md"
+  - Protocols: "protocols.md"
+  - Scheduler:
+      - Esmerald Scheduler: "scheduler/scheduler.md"
+  - WSGI Frameworks: "wsgi.md"
+  - Third Party Packages: "external.md"
+  - Contributing: "contributing.md"
+  - Sponsorship: "sponsorship.md"
+  - Release Notes: "release-notes.md"
+markdown_extensions:
+  - toc:
+      permalink: true
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - mdx_include:
+      base_path: docs
+  - admonition
+  - codehilite
+  - extra
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+
+extra:
+  alternate:
+    - link: /
+      name: English
+      lang: en
+    # - link: /pt/
+    #   name: Portuguese (Portugal)
+    #   lang: en
+
+extra_css:
+  - statics/css/extra.css
+  - statics/css/custom.css

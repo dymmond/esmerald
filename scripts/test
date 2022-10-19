@@ -1,0 +1,18 @@
+#!/bin/sh
+
+export PREFIX=""
+if [ -d 'venv' ] ; then
+    export PREFIX="venv/bin/"
+fi
+
+set -ex
+
+if [ -z $GITHUB_ACTIONS ]; then
+    scripts/format
+fi
+
+export ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings'
+
+${PREFIX}pytest $@
+
+unset ESMERALD_SETTINGS_MODULE

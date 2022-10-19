@@ -1,0 +1,12 @@
+:root > * {
+  --md-primary-fg-color: #4cae4f;
+  --md-primary-fg-color--light: #4cae4f94;
+}
+
+/* a:hover {
+  color: var(--md-primary-fg-color) !important;
+} */
+
+.md-content {
+  --md-typeset-a-color: #4cae4f;
+}

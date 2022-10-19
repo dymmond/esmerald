@@ -1,0 +1,101 @@
+# JWTConfig
+
+JWT extends for JSON Web Token and it can be used with any middleware at your desire that implements the
+[BaseAuthMiddleware](../middleware/middleware.md#baseauthmiddleware).
+
+!!! Tip
+    More information about JWT
+    <a href="https://jwt.io/introduction" target='_blank'>here</a>.
+
+## JWTConfig and application
+
+To use the JWTConfig with a middleware.
+
+```python hl_lines="11 13"
+{!> ../docs_src/configurations/jwt/example1.py!}
+```
+
+!!! info
+    The example uses a supported [JWTAuthMiddleware](../databases/tortoise/middleware.md#jwtauthmiddleware)
+    from Esmerald with Tortoise ORM.
+
+## Parameters
+
+* **signing_key** - The secret used to encode and generate the JWT Token. Having a centralized `secret` like in the
+settings would be recommended as it would be the source of truth for any configuration needing a secret.
+
+* **api_key_header** - API Key header for the jwt.
+
+    <sup>Default: `X-API-KEY`</sup>
+
+* **algorithm** - Algorithm used for the jwt token encoding/decoding.
+
+    <sup>Default: `HS256`</sup>
+
+* **access_token_lifetime** - Lifetime of the token after generation..
+
+    <sup>Default: `timedelta(minutes=5)`</sup>
+
+* **refresh_token_lifetime** - Lifetime of the generated refresh token..
+
+    <sup>Default: `timedelta(days=1)`</sup>
+
+* **auth_header_types** - Header to be sent with the token value.
+
+    <sup>Default: `['Bearer']`</sup>
+
+* **jti_claim** - Used to prevent the JWT from being relayed and relay attacks.
+
+    <sup>Default: `jti`</sup>
+
+* **verifying_key** - Verification key.
+
+    <sup>Default: `""`</sup>
+
+* **leeway** - Used for when there is a clock skww times.
+
+    <sup>Default: `0`</sup>
+
+* **sliding_token_lifetime** - A datetime.timedelta object which specifies how long sliding tokens are valid to prove
+authentication. This timedelta value is added to the current UTC time during token generation to obtain the
+token's default `exp` claim value.
+
+    <sup>Default: `timedelta(minutes=5)`</sup>
+
+* **sliding_token_refresh_lifetime** - A datetime.timedelta object which specifies how long sliding tokens are valid
+to be refreshed. This timedelta value is added to the current UTC time during token generation to obtain the token's
+default `exp` claim value.
+
+    <sup>Default: `0`</sup>
+
+* **user_id_field** - The database field from the user model that will be included in generated tokens to identify
+users. It is recommended that the value of this setting specifies a field that does not normally change once its initial
+value is chosen. For example, specifying a `username` or `email` field would be a poor choice since an account's
+username or email might change depending on how account management in a given service is designed. This could allow a
+new account to be created with an old username while an existing token is still valid which uses that username as a
+user identifier.
+
+    <sup>Default: `id`</sup>
+
+* **user_id_claim** - The claim in generated tokens which will be used to store user identifiers. For example, a setting
+value of 'user_id' would mean generated tokens include a `user_id` claim that contains the user's identifier.
+
+    <sup>Default: `user_id`</sup>
+
+* **access_token_name** - Name of the key for the access token.
+
+    <sup>Default: `access_token`</sup>
+
+* **refresh_token_name** - Name of the key for the refresh token.
+
+    <sup>Default: `refresh_token`</sup>
+
+## JWTConfig and application settings
+
+The JWTConfig can be done directly via [application instantiation](#jwtconfig-and-application) but also via settings.
+
+```python
+{!> ../docs_src/configurations/jwt/settings.py!}
+```
+
+This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.

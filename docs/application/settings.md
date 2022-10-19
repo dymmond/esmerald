@@ -1,0 +1,325 @@
+# Settings
+
+Every application in a way or another needs settings for the uniqueness of the project itself. When the complexity of
+a project increases and there are settings spread across the codebase it is when the things start to get messy.
+One great framework, Django, has the settings in place but because of the legacy codebase and the complexity of almost
+20 years of development of the framework those became a bit bloated to maintain.
+
+Inspired by Django and by the experience of 99% of the developed applications using some sort of settings
+(by environment, by user...), Esmerald comes equiped to handle exactly with that natively and using
+[Pydantic](https://pydantic-docs.helpmanual.io/visual_studio_code/#basesettings-and-ignoring-pylancepyright-errors)
+base settings.
+
+## EsmeraldAPISettings and the application
+
+When starting a Esmerald instance if no parameters are provided, it will automatically load the defaults from the
+settings object, the `EsmeraldAPISettings`.
+
+=== "No parameters"
+ExampleObjectExampleObject
+    ```python hl_lines="4"
+    {!> ../docs_src/settings/app/no_parameters.py!}
+    ```
+
+=== "With Parameters"
+
+    ```python hl_lines="6"
+    {!> ../docs_src/settings/app/with_parameters.py!}
+    ```
+
+## Custom settings
+
+Using the defaults from `EsmeraldAPISettings` generally won't do too much for majority of the applications and for that
+reason custom settings are needed.
+
+**All the custom settings should be inherited from the `EsmeraldAPISettings`**.
+
+Let's assume we have three environment for one application: `production`, `testing`, `development` and a base settings
+file that contains common settings across the three environments.
+
+=== "Base"
+
+    ```python
+    {!> ../docs_src/settings/custom/base.py!}
+    ```
+
+=== "Development"
+
+    ```python
+    {!> ../docs_src/settings/custom/development.py!}
+    ```
+
+=== "Testing"
+
+    ```python
+    {!> ../docs_src/settings/custom/testing.py!}
+    ```
+
+=== "Production"
+
+    ```python
+    {!> ../docs_src/settings/custom/production.py!}
+    ```
+
+What just happened?
+
+1. Created an `AppSettings` inherited from the `EsmeraldAPISettings` with common cross environment properties.
+2. Created one settings file per environment and inherited from the base `AppSettings`.
+3. Imported specific database settings per environment and added the events `on_startup` and `on_shutdown` specific
+to each environment.
+
+!!! note
+    Esmerald supports [Tortoise-ORM](https://tortoise.github.io/) for async SQL databases and therefore has the
+    `init_database` and `stop_database` functionality out of the box ready to be used.
+
+## Esmerald Settings Module
+
+Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment variable to execute any custom settings,
+if nothing is provided, then it will execute the application defaults.
+
+=== "Without ESMERALD_SETTINGS_MODULE"
+
+    ```shell
+    uvicorn src:app --reload
+
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "With ESMERALD_SETTINGS_MODULE"
+
+    ```shell
+    ESMERALD_SETTINGS_MODULE=src.configs.production.ProductionSettings uvicorn src:app
+
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+It is very simple, `ESMERALD_SETTINGS_MODULE` looks for the custom settings class created for the application
+and loads it in lazy mode.
+
+## Parameters
+
+The parameters available inside `EsmeraldAPISettings` can be overridden by any custom settings.
+
+### The current parameters available inside the `EsmeraldAPISettings`
+
+* **debug**: Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
+very useful for development.
+
+    <sup>Default: `False`</sup>
+
+* **environment** - The application environment to be run.
+
+    <sup>Default: `production`</sup>
+
+* **app_name** - The application name. Used for OpenAPI.
+
+    <sup>Default: `Esmerald`</sup>
+
+* **title** - The title for the application. Used for OpenAPI.
+
+    <sup>Default: `My awesome Esmerald app.`</sup>
+
+* **description** - The description for the application. Used for OpenAPI.
+
+    <sup>Default: `Highly scalable, performant, easy to learn and for every application.`</sup>
+
+* **version** - The version for the application. Used for OpenAPI.
+
+    <sup>Default: Same as the Esmerald.</sup>
+
+* **secret** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
+update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/tortoise.md)
+support.
+
+    <sup>Default: `my secret`</sup>
+
+* **allowed_hosts** - A list of allowed hosts. Enables the built-in allowed hosts middleware.
+
+    <sup>Default: `['*']`</sup>
+
+* **allow_origins** - A list of allowed origins. Enables the built-in CORS middleware. `allow_origins`
+or a [CORSConfig](../configurations/cors.md) object but not both.
+
+    <sup>Default: `None`</sup>
+
+* **response_class** - Custom subclass of [Response](../responses.md) to be used as application application response
+class.
+
+    <sup>Default: `None`</sup>
+
+* **response_cookies** - List of [cookies](../datastructures.md) objects.
+
+    <sup>Default: `None`</sup>
+
+* **response_headers** - Mapping dictionary of [headers](../datastructures.md) objects.
+
+    <sup>Default: `None`</sup>
+
+* **scheduler_class** - A [scheduler]('../../../scheduler.md') class used for the application tasks.
+
+    <sup>Default: `AsyncIOScheduler`</sup>
+
+* **include_in_schema** - Boolean flag to indicate if should be schema included or not. This is for the whole
+application and not only for specific endpoints.
+
+    <sup>Default: `True`</sup>
+
+* **tags** - List of tags to include in the OpenAPI schema.
+
+    <sup>Default: `None`</sup>
+
+* **timezone** - The global timezone used for the application.
+
+    <sup>Default: `UTC`</sup>
+
+* **use_tz** - Boolean flag indicating if TZ should be used.
+
+    <sup>Default: `True`</sup>
+
+* **root_path** - The root path for the application.
+
+    <sup>Default: `""`</sup>
+
+* **enable_sync_handlers** - Boolean flag if set it will allow `sync` functions, except for websockets.
+
+    <sup>Default: `True`</sup>
+
+* **enable_openapi** - Boolean flag indicating if the OpenAPI docs should be generated.
+
+    <sup>Default: `True`</sup>
+
+* **reload** - Boolean flag indicating if reload should happen (by default) on development and testing enviroment.
+The default environment is `production`.
+  
+    <sup>Default: `False`</sup>
+
+* **password_hashers** - A list of [password hashers](../password_hashers.md) used for encryption of the passwords.
+
+    <sup>Default: `["esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
+                    "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher"]`
+    </sup>
+
+    !!! warning
+        The password hashers are linked to [Tortoise](../databases/tortoise/tortoise.md) support and are used
+        with the models provided by default with Esmerald.
+
+* **routes** - A list of routes to serve incoming HTTP and WebSocket requests.
+  
+    <sup>Default: `[]`</sup>
+
+    !!! tip
+        This property is related to the entrypoint routes of the whole application, meaning, for application level.
+        See [Include](../routing/routes.md#include-and-application) and how to use it to leverage the initial
+        entrypoint.
+
+    !!! Note
+        If we can compare with other frameworks, this is very similar to `URL_CONF` settings from Django.
+
+* **csrf_config** - If [CSRFConfig](../configurations/csrf.md) is set it will enable the CSRF built-in middleware.
+
+    <sup>Default: `None`</sup>
+
+* **template_config** - If [TemplateConfig](../configurations/template.md) is set it will enable the template
+engine from the configuration object.
+
+    <sup>Default: `None`</sup>
+
+* **static_files_config** - If [StaticFilesConfig](../configurations/staticfiles.md) is set, it will enable the
+application static files configuration.
+
+    <sup>Default: `None`</sup>
+
+* **cors_cofig** - If [CORSConfig](../configurations/cors.md) is set it will enable the CORS built-in middleware.
+
+    <sup>Default: `CORSConfig` if `allow_origins` is not set.</sup><br>
+    <sup>Default: `None` if `allow_origins` is not set.</sup>
+
+* **session_config** - If [SessionConfig](../configurations/session.md) is set it will enable the session
+built-in middleware.
+
+    <sup>Default: `None`</sup>
+
+* **openapi_config** - If [OpenAPIConfig](../configurations/openapi.md) is set it will override the default OpenAPI
+docs settings.
+
+    <sup>Default: `OpenAPIConfig`</sup>
+
+* **middleware** - A list of middleware to run for every request. A Esmerald application will always include the
+middlewares from the configurations passed (CSRF, CORS, JWT...) and the custom user middleware. The middlewares
+can be subclasses of the [MiddlewareProtocol](../protocols.md).
+or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
+internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+
+    <sup>Default `None`</sup>
+
+* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
+requests (HTTP and Websockets).
+
+    <sup>Default `None`</sup>
+
+* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
+injection.
+
+    <sup>Default `None`</sup>
+
+* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
+functions on an application top level. Exception handler callables should be of the form of
+`handler(request, exc) -> response` and may be be either standard functions, or async functions.
+
+    <sup>Default `None`</sup>
+
+* **on_startup** - A list of callables to run on application startup. Startup handler callables do not take any
+arguments, and may be be either standard functions, or async functions.
+
+    <sup>Default `None`</sup>
+
+* **on_shutdown** - A list of callables to run on application shutdown. Shutdown handler callables do not take any
+arguments, and may be be either standard functions, or async functions.
+
+    <sup>Default `None`</sup>
+
+* **lifepan** - The lifespan context function is a newer style that replaces on_startup / on_shutdown handlers.
+Use one or the other, not both.
+
+    <sup>Default `None`</sup>
+
+!!! Check
+    All the configurations are pydantic objects. Check [CORS](../configurations/cors.md),
+    [CSRF](../configurations/csrf.md), [Session](../configurations/session.md), [JWT](../configurations/session.md),
+    [StaticFiles](../configurations/staticfiles.md), [Template](../configurations/template.md) and
+    [OpenAPI](../configurations/openapi.md) and see how to use them.
+
+
+## Accessing settings
+
+To access the application settings there are many ways:
+
+=== "Within the application request"
+
+    ```python hl_lines="6"
+    {!> ../docs_src/settings/access/within_app.py!}
+    ```
+
+=== "From the global settings"
+
+    ```python hl_lines="1 6"
+    {!> ../docs_src/settings/access/global.py!}
+    ```
+
+=== "From the conf settings"
+
+    ```python hl_lines="2 7"
+    {!> ../docs_src/settings/access/conf.py!}
+    ```
+
+!!! info
+    Some of this information might have been mentioned in some other parts of the documentation but we assume
+    the people reading it might have missed it.
