@@ -134,6 +134,10 @@ Triggers when current time matches all specified time constraits. Very similar t
 * **timezone** (*datetime*.*tzinfo*|*str*) – Time zone to use for the date/time calculations (defaults to scheduler timezone)
 * **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most
 
+```python
+{!> ../docs_src/scheduler/tasks/triggers/cron.py !}
+```
+
 ### IntervalTrigger
 
 Triggers on specified intervals, starting on `start_date` if specified or `datetime.now()` + interval otherwise.
@@ -146,9 +150,13 @@ Triggers on specified intervals, starting on `start_date` if specified or `datet
 * **minutes** (*int*) - Number of minutes to wait.
 * **seconds** (*int*) - Number of seconds to wait.
 * **start_date** (*datetime*|*str*) - Starting point for the interval calculation.
-* **end_date** (*datetime*|*str*) – latest possible date/time to trigger on
-* **timezone** (*datetime*.*tzinfo*|*str*) – time zone to use for the date/time calculations
-* **jitter** (*int*|*None*) – delay the job execution by jitter seconds at most
+* **end_date** (*datetime*|*str*) – Latest possible date/time to trigger on
+* **timezone** (*datetime*.*tzinfo*|*str*) – Time zone to use for the date/time calculations
+* **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most
+
+```python
+{!> ../docs_src/scheduler/tasks/triggers/interval.py !}
+```
 
 ### DateTrigger
 
@@ -158,6 +166,10 @@ Triggers once on the given datetime. If `run_date` is left empty, current time i
 
 * **run_date** (*datetime*|*str*) – The date/time to run the job at.
 * **timezone** (*datetime*.*tzinfo*|*str*) – Time zone for run_date if it doesn’t have one already.
+
+```python
+{!> ../docs_src/scheduler/tasks/triggers/date.py !}
+```
 
 ### OrTrigger
 
@@ -169,6 +181,10 @@ The trigger is considered finished when all the given triggers have finished the
 * **triggers** (*list*) – Triggers to combine.
 * **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most.
 
+```python
+{!> ../docs_src/scheduler/tasks/triggers/or.py !}
+```
+
 ### AndTrigger
 
 Always returns the earliest next fire time that all the given triggers can agree on.
@@ -179,5 +195,57 @@ The trigger is considered to be finished when any of the given triggers has fini
 * **triggers** (*list*) – Triggers to combine.
 * **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most.
 
+```python
+{!> ../docs_src/scheduler/tasks/triggers/and.py !}
+```
 
-## Job stores
+!!! Note
+    These triggers are the same as the `APScheduler` and we didn't want to break existing functionality.
+    For more examples how to use even different approaches, check their great documentation.
+
+## Job stores, executors and other configurations
+
+Using the scheduler also means access to a lot of extra possible configurations that can be added such as `jobstores`,
+`executors` and any other extra configuration needed.
+
+Esmerald allows to pass those configurations via application instantiation or via [settings](../application/settings.md).
+
+### Via application instantiation
+
+```python hl_lines="3 22"
+{!> ../docs_src/scheduler/tasks/configurations/app.py !}
+```
+
+### Via application settings
+
+```python hl_lines="3 14"
+{!> ../docs_src/scheduler/tasks/configurations/settings.py !}
+```
+
+Start the application with the new settings.
+
+```shell
+ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [28720]
+INFO:     Started server process [28722]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+```
+
+### Configurations and the handler
+
+When creating a task and using the `scheduler` one of the parameters is the `jobstore`.
+
+From the [example](#via-application-instantiation) you have new job stores and executors and those can be passed:
+
+```python hl_lines="15-16 27-28"
+{!> ../docs_src/scheduler/tasks/configurations/example1.py !}
+```
+
+!!! Tip
+    Have a look at the documentation from
+    <a href="https://apscheduler.readthedocs.io/en/3.x/index.html" target="_blank">APScheduler</a> and learn more
+    about what can be done and how can be done. All the parameters available in the APScheduler `add_job` are also
+    available in the `@scheduler` handler in the same way.

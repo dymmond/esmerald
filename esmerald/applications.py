@@ -11,9 +11,6 @@ from typing import (
     Union,
 )
 
-from starlette.applications import Starlette
-from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-
 from esmerald.conf import settings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig, TemplateConfig
 from esmerald.config.openapi import OpenAPIConfig
@@ -57,6 +54,8 @@ from esmerald.types import (
     Scope,
     Send,
 )
+from starlette.applications import Starlette
+from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
 
 class Esmerald(Starlette):
@@ -127,6 +126,9 @@ class Esmerald(Starlette):
         response_headers: Optional["ResponseHeaders"] = settings.response_headers,
         scheduler_class: Optional["SchedulerType"] = settings.scheduler_class,
         scheduler_tasks: Optional[Dict[str, str]] = settings.scheduler_tasks,
+        scheduler_configurations: Optional[
+            Dict[str, Union[str, Dict[str, str]]]
+        ] = settings.scheduler_configurations,
         enable_scheduler: bool = settings.enable_scheduler,
         timezone: Optional[timezone] = settings.timezone,
         routes: Optional[List["APIGateHandler"]] = settings.routes,
@@ -176,6 +178,7 @@ class Esmerald(Starlette):
         self.response_headers = response_headers
         self.scheduler_class = scheduler_class
         self.scheduler_tasks = scheduler_tasks or {}
+        self.scheduler_configurations = scheduler_configurations or {}
         self.enable_scheduler = enable_scheduler
         self.timezone = timezone
         self.tags = tags
@@ -222,6 +225,7 @@ class Esmerald(Starlette):
                 scheduler_class=self.scheduler_class,
                 tasks=self.scheduler_tasks,
                 timezone=self.timezone,
+                configurations=self.scheduler_configurations,
             )
 
         if self.openapi_config:

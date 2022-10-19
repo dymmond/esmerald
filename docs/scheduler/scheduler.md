@@ -22,6 +22,8 @@ The `Scheduler` is the main object that manages the internal scheduler of `Esmer
 
     <sup>Default: `UTC`</sup>
 
+* `configurations` - A python dictionary containing some extra configurations for the scheduler.
+
 Since `Esmerald` is an `ASGI` framework, it is already provided a default scheduler class that works alongside with
 the application, the `AsyncIOScheduler`.
 

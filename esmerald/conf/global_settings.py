@@ -9,8 +9,6 @@ from typing import (
     Union,
 )
 
-from pydantic import BaseSettings
-
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
 from esmerald.config import (
@@ -35,6 +33,7 @@ from esmerald.types import (
     ResponseType,
     SchedulerType,
 )
+from pydantic import BaseSettings
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -275,7 +274,7 @@ class EsmeraldAPISettings(BaseSettings):
 
     @property
     def scheduler_tasks(self) -> Dict[str, str]:
-        """Returns a list of tasks for run with `scheduler_class`.
+        """Returns a dict of tasks for run with `scheduler_class`.
 
         Where the tasks are placed is not linked to the name of
         the file itself. They can be anywhere. What is imoprtant
@@ -296,6 +295,40 @@ class EsmeraldAPISettings(BaseSettings):
                         "check_balances": "finances.balance_tasks",
                     }
 
+        """
+
+        return {}
+
+    @property
+    def scheduler_configurations(self) -> Dict[str, Union[str, Dict[str, str]]]:
+        """Returns a dict of configurations for run with `scheduler_class`.
+
+        Example:
+
+            class MySettings(EsmeraldAPISettings):
+
+                @property
+                def scheduler_configurations(self) -> Dict[str, str]:
+                    configurations = {
+                        'apscheduler.jobstores.mongo': {
+                            'type': 'mongodb'
+                        },
+                        'apscheduler.jobstores.default': {
+                            'type': 'sqlalchemy',
+                            'url': 'sqlite:///jobs.sqlite'
+                        },
+                        'apscheduler.executors.default': {
+                            'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
+                            'max_workers': '20'
+                        },
+                        'apscheduler.executors.processpool': {
+                            'type': 'processpool',
+                            'max_workers': '5'
+                        },
+                        'apscheduler.job_defaults.coalesce': 'false',
+                        'apscheduler.job_defaults.max_instances': '3',
+                        'apscheduler.timezone': 'UTC',
+                    }
         """
 
         return {}

@@ -87,6 +87,9 @@ def create_client(
     session_config: Optional["SessionConfig"] = settings.session_config,
     scheduler_class: Optional["SchedulerType"] = settings.scheduler_class,
     scheduler_tasks: Optional[Dict[str, str]] = settings.scheduler_tasks,
+    scheduler_configurations: Optional[
+        Dict[str, Union[str, Dict[str, str]]]
+    ] = settings.scheduler_configurations,
     enable_scheduler: bool = settings.enable_scheduler,
     raise_server_exceptions: bool = True,
     root_path: str = "",
@@ -114,6 +117,7 @@ def create_client(
             cors_config=cors_config,
             scheduler_class=scheduler_class,
             scheduler_tasks=scheduler_tasks,
+            scheduler_configurations=scheduler_configurations,
             enable_scheduler=enable_scheduler,
             static_files_config=static_files_config,
             template_config=template_config,

@@ -4,7 +4,6 @@ from datetime import timezone as dtimezone
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from apscheduler.util import undefined
-
 from esmerald.conf import settings
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.schedulers.apscheduler.types import TriggerType
@@ -12,9 +11,8 @@ from esmerald.types import SchedulerType
 from esmerald.utils.module_loading import import_string
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
-
     from esmerald.applications import Esmerald
+    from pydantic.typing import AnyCallable
 
 
 class Scheduler:
@@ -24,6 +22,7 @@ class Scheduler:
         scheduler_class: Optional["SchedulerType"] = None,
         tasks: Optional[Dict[str, str]] = None,
         timezone: Optional[dtimezone] = None,
+        configurations: Optional[Dict[str, str]] = None,
     ) -> None:
         self.app = app
         self.tasks = tasks or {}
