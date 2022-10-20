@@ -42,7 +42,7 @@ also **first level** as independent instance.
 
 !!! Warning
     A `ChildEsmerald` is an independent instance that is plugged into a main `Esmerald` application but since
-    it is like another `Esmerald` object that also means the `ChildEsmerald` doesn't take precedent over the top-level
+    it is like another `Esmerald` object that also means the `ChildEsmerald` does not take precedent over the top-level
     application, instead, treats its own [Gateway](../routing/routes.md#gateway),
     [WebSocketGateway](../routing/routes.md#websocketgateway), [Include](../routing/routes.md#include),
     [handlers](../routing/handlers.md) or even another `Esmerald` or

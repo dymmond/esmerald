@@ -96,7 +96,7 @@ a [ChildEsmerald](#child-esmerald-application) or by creating another router. Le
 {!> ../docs_src/routing/router/customers.py!}
 ```
 
-Above you create the `/application/apps/routers/customers.py` with all the information you need. It doesn't need
+Above you create the `/application/apps/routers/customers.py` with all the information you need. It does not need
 to be in one file, you can have a entirely seperate package just to manage the customer, it's up to you.
 
 Now you need to add the new custom router into the main application.
@@ -117,7 +117,7 @@ visualisation purposes and for the sake of organisation.
     `sub application` and you prefer to use a different class instead of `Esmerald` to make it more organised.
 
 When organising routes, using the `Router` class itself can be a bit limiting because there are certain attributes
-that when used within an instance or a `Router` to be passed to [add_route](#add_route) they won't be picked up.
+that when used within an instance or a `Router` to be passed to [add_route](#add_route) they will not be picked up.
 
 Example:
 

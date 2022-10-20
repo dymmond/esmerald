@@ -8,7 +8,7 @@ from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
 from starlette.datastructures import UploadFile as StarletteUploadFile
 
 from esmerald.datastructures import UploadFile
-from esmerald.enums import RequestEncodingType
+from esmerald.enums import EncodingType
 
 if TYPE_CHECKING:
     from typing import Union
@@ -54,9 +54,7 @@ def parse_query_params(connection: "HTTPConnection") -> Dict[str, Any]:
     )
 
 
-def parse_form_data(
-    media_type: "RequestEncodingType", form_data: "FormData", field: "ModelField"
-) -> Any:
+def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "ModelField") -> Any:
     """Transforms the multidict into a regular dict, try to load json on all
     non-file values.
 
@@ -81,7 +79,7 @@ def parse_form_data(
                 values_dict[key] = [values_dict[key], value]
         else:
             values_dict[key] = value
-    if media_type == RequestEncodingType.MULTI_PART:
+    if media_type == EncodingType.MULTI_PART:
         if field.shape is SHAPE_LIST:
             return list(values_dict.values())
         if (

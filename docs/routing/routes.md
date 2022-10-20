@@ -3,7 +3,7 @@
 Esmerald has a simple but highly effective routing system capable of handling from simple routes to the most
 complex ones.
 
-Using  an enterprise application as example, the routing system surely won't be something simple with
+Using  an enterprise application as example, the routing system surely will not be something simple with
 20 or 40 direct routes, maybe it will have 200 or 300 routes where those are split by responsabilities,
 components and packages and imported also inside complex design systems.
 Esmerald handles with those cases without any kind of issues at all.
@@ -198,7 +198,7 @@ WHen complexity increses and the level of routes increases as well, `Include` al
     ```
 
 `Include` supports as many nested routes with different paths and Gateways, WebSocketGateways and Includes as you
-desire to have. Once the application starts, the routes are assembled and it won't impact the performance, thanks
+desire to have. Once the application starts, the routes are assembled and it will not impact the performance, thanks
 to Starlette.
 
 Nested routes also allows all the functionalities on each level, from middleware, permissions and exception handlers
@@ -282,7 +282,7 @@ Example:
 !!! warning
     The way the routes are assembled is very important and you always need to pay attention. **Esmerald** in a
     very high level does some sorting on the base routes of the application making sure that the routes where the **only
-    path is `/`**, are the last ones being evaluated but this might be updated in the future and it doesn't
+    path is `/`**, are the last ones being evaluated but this might be updated in the future and it does not
     stop you from following the [routes priority](#routes-priority) in any way from the beginning.
 
 ## Path parameters

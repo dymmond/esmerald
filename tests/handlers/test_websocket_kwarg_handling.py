@@ -14,7 +14,7 @@ def test_handle_websocket_params_parsing() -> None:
         cookies: dict,
         socket_id: int,
         qp: int,
-        hp: str = Header(header="some-header"),
+        hp: str = Header(value="some-header"),
     ) -> None:
         assert socket_id
         assert headers

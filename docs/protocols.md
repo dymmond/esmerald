@@ -21,7 +21,7 @@ reason behind it but there are two more protocols that we classify as [business 
 A lot of companies nowadays use frameworks or microframeworks to build APIs quickly and with just a few lines of code.
 
 The problem we have identified is that usually these frameworks don't have a business scope in mind and that
-doesn't mean it's not possible, because of course it is!
+does not mean it's not possible, because of course it is!
 
 When `Esmerald` means business oriented protocols is in fact referring to the separation between the data logic,
 where the database models and connections are and the **business objects** where as the name suggests, manages the
@@ -98,7 +98,7 @@ DAO/AsyncDAO are your friends.
 
 ## Notes
 
-Implementing the DAO/AsyncDAO protocol is as simple as subclassing it and implement the methods but this doesn't mean
+Implementing the DAO/AsyncDAO protocol is as simple as subclassing it and implement the methods but this does not mean
 that you are only allowed to use those methods. No! 
 
 In fact, that only means that when extending the DAO/AsyncDAO

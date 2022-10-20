@@ -136,4 +136,4 @@ There will be a release of the version `0.2.3`, this is what it should include.
 * The description should be copied from the changelog.
 
 Once the release is created, it should automatically upload the new version to PyPI. If something
-doesn't work with PyPI the release can be done by running `scripts/release`.
+does not work with PyPI the release can be done by running `scripts/release`.

@@ -35,7 +35,7 @@ have the fields declared. Esmerald has a similar approach and provides the follo
 
 ### The functions available
 
-Using simply this model it doesn't bring too much benefits as it si something you can do easily and fast but the
+Using simply this model it does not bring too much benefits as it si something you can do easily and fast but the
 functionality applied to this model is already something that can be something that requires some extra time to
 assemble.
 

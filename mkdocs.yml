@@ -76,6 +76,11 @@ nav:
   - Scheduler:
       - Scheduler: "scheduler/scheduler.md"
       - Handler: "scheduler/handler.md"
+  - Extra:
+      - Request Data: "extras/request-data.md"
+      - Body: "extras/body-fields.md"
+      - Headers: "extras/header-fields.md"
+      - Cookies: "extras/cookie-fields.md"
   - WSGI Frameworks: "wsgi.md"
   - Test Client: "testclient.md"
   - Third Party Packages: "external.md"

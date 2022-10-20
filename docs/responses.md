@@ -58,12 +58,12 @@ uses the `TemplateResponse`.
 
 ## Other responses
 
-There are other responses you can have that doesn't necessessarily have to be the ones provided here. Every case is
+There are other responses you can have that does not necessessarily have to be the ones provided here. Every case is
 unique and yuo might want to return directly a `string`, a `dict`, an `integer`, a `list` or whatever you want.
 
 ```python
 {!> ../docs_src/responses/others.py !}
 ```
 
-Esmerald supports good design, structure and practices but doesn't force you to follow specific rules of anything
+Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
 unless you want to.

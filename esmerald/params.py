@@ -1,9 +1,8 @@
 from typing import Any, Dict, Optional, Union
 
-from pydantic.fields import FieldInfo, Undefined
-
-from esmerald.enums import ParamType, RequestEncodingType
+from esmerald.enums import ParamType, EncodingType
 from esmerald.utils.constants import EXTRA_KEY_IS_DEPENDENCY, EXTRA_KEY_SKIP_VALIDATION
+from pydantic.fields import FieldInfo, Undefined
 
 
 class Param(FieldInfo):
@@ -80,7 +79,7 @@ class Header(Param):
         self,
         *,
         default: Any = Undefined,
-        header: Optional[str] = None,
+        value: Optional[str] = None,
         alias: Optional[str] = None,
         value_type: Any = Undefined,
         content_encoding: Optional[str] = None,
@@ -106,7 +105,7 @@ class Header(Param):
         self.in_ = self.in_
         super().__init__(
             default=default,
-            header=header,
+            header=value,
             alias=alias,
             title=title,
             description=description,
@@ -139,7 +138,7 @@ class Cookie(Param):
         default: Any = Undefined,
         *,
         value_type: Any = Undefined,
-        cookie: Optional[str] = None,
+        value: Optional[str] = None,
         alias: Optional[str] = None,
         content_encoding: Optional[str] = None,
         required: bool = True,
@@ -164,7 +163,7 @@ class Cookie(Param):
         self.in_ = self.in_
         super().__init__(
             default=default,
-            cookie=cookie,
+            cookie=value,
             alias=alias,
             title=title,
             description=description,
@@ -197,7 +196,7 @@ class Query(Param):
         default: Any = Undefined,
         *,
         value_type: Any = Undefined,
-        query: Optional[str] = None,
+        value: Optional[str] = None,
         alias: Optional[str] = None,
         content_encoding: Optional[str] = None,
         required: bool = True,
@@ -222,7 +221,7 @@ class Query(Param):
         self.in_ = self.in_
         super().__init__(
             default=default,
-            query=query,
+            query=value,
             alias=alias,
             title=title,
             description=description,
@@ -300,7 +299,7 @@ class Body(FieldInfo):
         self,
         *,
         default: Any = Undefined,
-        media_type: Union[str, RequestEncodingType] = RequestEncodingType.JSON,
+        media_type: Union[str, EncodingType] = EncodingType.JSON,
         content_encoding: Optional[str] = None,
         title: Optional[str] = None,
         alias: Optional[str] = None,

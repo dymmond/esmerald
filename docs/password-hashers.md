@@ -36,7 +36,7 @@ You can always override the property `password_hashers` in your
 
 ## Current supported hashing
 
-Currently `Esmerald` supports `PBKDF2` and `PBKDF2SHA1` password hashing but this doesn't mean that **only** supports
+Currently `Esmerald` supports `PBKDF2` and `PBKDF2SHA1` password hashing but this does not mean that **only** supports
 those. In fact, you can use your own completely from the scratch and use it within your application.
 
 !!! Tip

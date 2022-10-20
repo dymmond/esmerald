@@ -123,7 +123,7 @@ handler but this serves as an example how to do your own.
 ## Overriding the current Esmerald exception handlers
 
 Currently by default, every Esmerald application starts with `ImproperlyConfigured` and `ValidationErrorException`
-to make sure everything is covered accordingly but this doesn't necessarily mean that this can't be changed.
+to make sure everything is covered accordingly but this does not necessarily mean that this can't be changed.
 
 ```python hl_lines="18 46 65-66"
 {!> ../docs_src/exceptions/overriding.py !}

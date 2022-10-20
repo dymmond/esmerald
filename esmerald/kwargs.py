@@ -27,7 +27,7 @@ from pydantic.fields import (
 )
 from starlette.datastructures import URL
 
-from esmerald.enums import ParamType, RequestEncodingType
+from esmerald.enums import ParamType, EncodingType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.injector import Inject
 from esmerald.parsers import parse_form_data
@@ -114,7 +114,7 @@ class KwargsModel:
         *,
         expected_cookie_params: Set[ParameterDefinition],
         expected_dependencies: Set[Dependency],
-        expected_form_data: Optional[Tuple[RequestEncodingType, ModelField]],
+        expected_form_data: Optional[Tuple[EncodingType, ModelField]],
         expected_header_params: Set[ParameterDefinition],
         expected_path_params: Set[ParameterDefinition],
         expected_query_params: Set[ParameterDefinition],
@@ -245,8 +245,8 @@ class KwargsModel:
         if data_model_field:
             media_type = data_model_field.field_info.extra.get("media_type")
             if media_type in [
-                RequestEncodingType.MULTI_PART,
-                RequestEncodingType.URL_ENCODED,
+                EncodingType.MULTI_PART,
+                EncodingType.URL_ENCODED,
             ]:
                 expected_form_data = (media_type, data_model_field)
 
@@ -444,7 +444,7 @@ class KwargsModel:
     @classmethod
     def _validate_dependency_data(
         cls,
-        expected_form_data: Optional[Tuple[RequestEncodingType, ModelField]],
+        expected_form_data: Optional[Tuple[EncodingType, ModelField]],
         dependency_kwargs_model: "KwargsModel",
     ) -> None:
         """Validates that the 'data' kwarg is compatible across

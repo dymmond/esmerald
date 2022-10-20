@@ -53,7 +53,7 @@ Enforcing this protocol also aligns with writting
 <a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>pure asgi middlewares</a>.
 
 !!! Note
-    MiddlewareProtocol doesn't enforce `config` parameters but enforces the `app` parameter as this will make sure
+    MiddlewareProtocol does not enforce `config` parameters but enforces the `app` parameter as this will make sure
     it will also work with Starlette as well as used as standard.
 
 ### Quick sample
@@ -183,7 +183,7 @@ INFO:     Application startup complete.
 
 !!! attention
     If `ESMERALD_SETTINGS_MODULE` is not specified as the module to be loaded, **Esmerald** will load the default settings
-    but your middleware won't be initialized.
+    but your middleware will not be initialized.
 
 ### Important
 

@@ -5,7 +5,7 @@ demand and with that in mind **Esmerald** decided to give support to a very good
 the <a href='https://tortoise.github.io/' target='_blank'>Tortoise-ORM</a>.
 
 !!! Tip
-    Although Esmerald supports out of the box some integrations with Tortoise it doesn't necessarily mean the framework
+    Although Esmerald supports out of the box some integrations with Tortoise it does not necessarily mean the framework
     is only coupled with it. You are entirely free to use a completely different ORM or even ignore this section and
     implement your own Tortoise integration.
 

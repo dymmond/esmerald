@@ -49,8 +49,8 @@ application is created and the parameters are automatically provided.
 
 ### Enabling the scheduler
 
-In order to make sure it doesn't always start, Esmerald is expecting a flag `enable_scheduler` to be True. Without
-the `enable_scheduler = True`, the scheduler won't start. 
+In order to make sure it does not always start, Esmerald is expecting a flag `enable_scheduler` to be True. Without
+the `enable_scheduler = True`, the scheduler will not start. 
 
 The default behaviour is `enable_scheduler = False`.
 
