@@ -87,11 +87,19 @@ $ scripts/docs
 
 ## Building Esmerald
 
-To build a package locally and install in your virtual environment, run:
+To build a package locally, run:
 
 ```shell
-$ scripts/build-dev
+$ scripts/build
 ```
+
+Alternatively running:
+
+```
+$ scripts/install
+```
+
+It will install the requirements and create a local build in your virtual environment.
 
 ## Releasing
 
@@ -112,7 +120,7 @@ point above.
         * Keep it simple.
 
 * *Version bump*
-    * The version should be in `__version__.py`.
+    * The version should be in `__init__.py` of the main package.
 
 #### Releasing
 

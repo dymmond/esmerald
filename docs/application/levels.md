@@ -2,7 +2,7 @@
 
 An Esmerald application is composed by levels and those levels can be [Gateway](../routing/routes.md#gateway),
 [WebSocketGateway](../routing/routes.md#websocketgateway), [Include](../routing/routes.md#include),
-[handlers](../routing/handlers.md) or even another `Esmerald` or
+[handlers](../routing/handlers.md) or even **another Esmerald** or
 [ChildEsmerald](../routing/router.md#child-esmerald-application)
 
 There are some levels in the application, let's use an example.
@@ -51,7 +51,7 @@ also **first level** as independent instance.
 ## Exceptions
 
 `ChildEsmerald` as per **warning** above has it's own rules but there are always exceptions to any almost every rule.
-Although it's an independent instance with its own rules this is not applied to **every** parameter.
+Although it is an independent instance with its own rules this is not applied to **every** parameter.
 
 [Middlewares](../middleware/middleware.md) and [Permissions](../permissions.md) are actually global and the rules of
 precedence can be applied between an `Esmerald` instance and the corresponding `ChildEsmerald` apps.

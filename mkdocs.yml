@@ -22,6 +22,7 @@ theme:
         icon: "material/toggle-switch-variant-off"
         name: "Switch to light mode"
   favicon: statics/images/favicon.ico
+  logo: statics/images/logo-white.svg
   features:
     - search.suggest
     - search.highlight
@@ -62,14 +63,14 @@ nav:
           - Motivation: "databases/tortoise/tortoise.md"
           - Models: "databases/tortoise/models.md"
           - Middleware: "databases/tortoise/middleware.md"
-          - Event Handlers: "databases/tortoise/event_handlers.md"
+          - Event Handlers: "databases/tortoise/event-handlers.md"
   - Permissions: "permissions.md"
   - Middleware: "middleware/middleware.md"
   - Exceptions: "exceptions.md"
-  - Exception Handlers: "exception_handlers.md"
+  - Exception Handlers: "exception-handlers.md"
   - Dependencies: "dependencies.md"
   - Datastructures: "datastructures.md"
-  - Password Hashers: "password_hashers.md"
+  - Password Hashers: "password-hashers.md"
   - Responses: "responses.md"
   - Protocols: "protocols.md"
   - Scheduler:
@@ -78,6 +79,7 @@ nav:
   - WSGI Frameworks: "wsgi.md"
   - Test Client: "testclient.md"
   - Third Party Packages: "external.md"
+  - Esmerald People: "esmerald-people.md"
   - Contributing: "contributing.md"
   - Sponsorship: "sponsorship.md"
   - Release Notes: "release-notes.md"

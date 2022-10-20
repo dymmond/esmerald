@@ -110,13 +110,13 @@ This simple and your router is added to the main **Esmerald** application.
 ## Child Esmerald Application
 
 What is this? We call it `ChildEsmerald` but in fact is simply Esmerald but under a different name mostly for
-visualisation purposes and for the sake of organization.
+visualisation purposes and for the sake of organisation.
 
 !!! Check
     Using `ChildEsmerald` or `Esmerald` is exactly the same thing, it is only if you prefer to create a
-    `sub application` and you prefer to use a different class instead of `Esmerald` to make it more organized.
+    `sub application` and you prefer to use a different class instead of `Esmerald` to make it more organised.
 
-When organizing routes, using the `Router` class itself can be a bit limiting because there are certain attributes
+When organising routes, using the `Router` class itself can be a bit limiting because there are certain attributes
 that when used within an instance or a `Router` to be passed to [add_route](#add_route) they won't be picked up.
 
 Example:
@@ -161,7 +161,7 @@ include you can add specific unique [permissions](../permissions.md), [middlewar
 instance of the `Include`. The options are endeless.
 
 !!! Note
-    In terms of organization, `ChildEsmerald` has a clean approach to the isolation of responsabilities and allow
+    In terms of organisation, `ChildEsmerald` has a clean approach to the isolation of responsabilities and allow
     treating every individual module separately and simply adding it in to the main application
     in the form of [Include](./routes.md#include).
 

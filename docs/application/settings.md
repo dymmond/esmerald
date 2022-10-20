@@ -1,19 +1,22 @@
 # Settings
 
-Every application in a way or another needs settings for the uniqueness of the project itself. When the complexity of
-a project increases and there are settings spread across the codebase it is when the things start to get messy.
+Every application in a way or another needs settings for the uniqueness of the project itself.
+
+When the complexity of a project increases and there are settings spread across the codebase it is when the things
+start to get messy.
+
 One great framework, Django, has the settings in place but because of the legacy codebase and the complexity of almost
-20 years of development of the framework those became a bit bloated to maintain.
+20 years of development of the framework, those became a bit bloated and hard to maintain.
 
 Inspired by Django and by the experience of 99% of the developed applications using some sort of settings
 (by environment, by user...), Esmerald comes equiped to handle exactly with that natively and using
 [Pydantic](https://pydantic-docs.helpmanual.io/visual_studio_code/#basesettings-and-ignoring-pylancepyright-errors)
-base settings.
+to leverage those.
 
 ## EsmeraldAPISettings and the application
 
 When starting a Esmerald instance if no parameters are provided, it will automatically load the defaults from the
-settings object, the `EsmeraldAPISettings`.
+system settings object, the `EsmeraldAPISettings`.
 
 === "No parameters"
 ExampleObjectExampleObject
@@ -29,8 +32,9 @@ ExampleObjectExampleObject
 
 ## Custom settings
 
-Using the defaults from `EsmeraldAPISettings` generally won't do too much for majority of the applications and for that
-reason custom settings are needed.
+Using the defaults from `EsmeraldAPISettings` generally will not do too much for majority of the applications.
+
+For that reason custom settings are needed.
 
 **All the custom settings should be inherited from the `EsmeraldAPISettings`**.
 
@@ -66,16 +70,16 @@ What just happened?
 1. Created an `AppSettings` inherited from the `EsmeraldAPISettings` with common cross environment properties.
 2. Created one settings file per environment and inherited from the base `AppSettings`.
 3. Imported specific database settings per environment and added the events `on_startup` and `on_shutdown` specific
-to each environment.
+to each.
 
 !!! note
     Esmerald supports [Tortoise-ORM](https://tortoise.github.io/) for async SQL databases and therefore has the
-    `init_database` and `stop_database` functionality out of the box ready to be used.
+    `init_database` and `stop_database` functionality ready to be used.
 
 ## Esmerald Settings Module
 
 Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment variable to execute any custom settings,
-if nothing is provided, then it will execute the application defaults.
+if nothing is provided then it will execute the application defaults.
 
 === "Without ESMERALD_SETTINGS_MODULE"
 
@@ -334,10 +338,9 @@ Use one or the other, not both.
     [StaticFiles](../configurations/staticfiles.md), [Template](../configurations/template.md) and
     [OpenAPI](../configurations/openapi.md) and see how to use them.
 
-
 ## Accessing settings
 
-To access the application settings there are many ways:
+To access the application settings there are different ways:
 
 === "Within the application request"
 
@@ -359,14 +362,15 @@ To access the application settings there are many ways:
 
 !!! info
     Some of this information might have been mentioned in some other parts of the documentation but we assume
-    the people reading it might have missed it.
+    the people reading it might have missed.
 
 ## Order of importance
 
 Using the settings to start an application instead of providing the parameters directly in the moment of
-instantiation doesn't mean that one will work with the other.
+instantiation does not mean that one will work with the other.
 
-When you instantiate an application **or you pass parameters directly or you use settings**.
+When you instantiate an application **or you pass parameters directly or you use settings or a mix of both**.
+
 Passing parameters in the object will always override the values from the default settings.
 
 ```python
@@ -405,9 +409,9 @@ The application will:
 2. Will start without custom middlewares it the `BasicHTTPMiddleware` it was overridden by `[]`.
 
 Although it was set in the settings to start with `BasicHTTPMiddleware` and debug as `False`, once you pass different
-values in the moment of instantiating an `Esmerald` object, those will become the defaults.
+values in the moment of instantiating an `Esmerald` object, those will become the values to be used.
 
 **Declaring parameters in the instance will always precede the values from your settings**.
 
-The reason why you should be using settings instead it is because will make your codebase more organized and easier
+The reason why you should be using settings it is because will make your codebase more organised and easier
 to maintain.

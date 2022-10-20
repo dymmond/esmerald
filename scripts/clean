@@ -12,6 +12,12 @@ fi
 if [ -d 'esmerald.egg-info' ] ; then
     rm -r esmerald.egg-info
 fi
+if [ -d '.hypothesis' ] ; then
+    rm -r .hypothesis
+fi
+if [ -d '.mypy_cache' ] ; then
+    rm -r .mypy_cache
+fi
 if [ -d '.pytest_cache' ] ; then
     rm -r .pytest_cache
 fi

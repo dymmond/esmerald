@@ -99,7 +99,7 @@ Settings are another way of controlling the parameters passed to the
 [Esmerald object when instantiating](#instantiating-the-application). Check out the [settings](./settings.md) for
 more details and how to use it to power up your application.
 
-To access the application settings there are many ways:
+To access the application settings there are different ways:
 === "Within the application request"
 
     ```python hl_lines="6"
@@ -120,7 +120,7 @@ To access the application settings there are many ways:
 
 ### State and application instance
 
-You can store arbitraty extra state on the application instance using the [State]('../datastructures.md') instance.
+You can store arbitraty extra state on the application instance using the [State](../datastructures.md) instance.
 
 Example:
 
@@ -134,7 +134,7 @@ The application instance can be access via `request` when it's available.
 
 Example:
 
-```python hl_lines="9"
+```python hl_lines="6"
 {!> ../docs_src/application/others/access_app_instance.py!}
 ```
 

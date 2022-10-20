@@ -1,7 +1,7 @@
 # CSRFConfig
 
 CSRF extends for Cross-Site Request Forgery and it's one of the built-in middlewares of Esmerald.
-When a CSRFConfig object is passed to an application instance, it automatically starts the `CSRFMiddleware`.
+When a CSRFConfig object is passed to an application instance, it will automatically start the `CSRFMiddleware`.
 
 !!! Tip
     More information about CSRF

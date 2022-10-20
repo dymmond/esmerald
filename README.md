@@ -411,7 +411,26 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
 
+## Run the application with custom settings
+
+**Using uvicorn**:
+
+```shell
+ESMERALD_SETTINGS_MODULE=myapp.AppSettings uvicorn src:app --reload
+
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [28720]
+INFO:     Started server process [28722]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+```
+
 ## Notes
 
 This is just a very high-level demonstration of how to start quickly and what Esmerald can do.
 There are plenty more things you can do with Esmerald. Enjoy! 😊
+
+## Sponsors
+
+Currently there are no sponsors of Esmerald but you can financially help and support the auhor though
+[GitHub sponsors](https://github.com/sponsors/tarsil) and become a **Special one** or a **Legend**.

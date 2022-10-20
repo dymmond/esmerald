@@ -1,7 +1,7 @@
 # SessionConfig
 
 SessionConfig is simple set of configurations that when passed enables the built-in middleware of Esmerald.
-When a SessionConfig object is passed to an application instance, it automatically starts the `SessionMiddleware`.
+When a SessionConfig object is passed to an application instance, it will automatically start the `SessionMiddleware`.
 
 !!! Tip
     More information about HTTP Sessions

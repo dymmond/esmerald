@@ -1,7 +1,7 @@
 # CORSConfig
 
 CORS extends for Cross-Origin Resource Sharing and it's one of the built-in middlewares of Esmerald.
-When a CORSConfig object is passed to an application instance, it automatically starts the `CORSMiddleware`.
+When a CORSConfig object is passed to an application instance, it will automatically start the `CORSMiddleware`.
 
 !!! Tip
     More information about CORS
