@@ -1,5 +1,5 @@
-from esmerald import Gateway, Header, ORJSONResponse, Param, Response, post
-from esmerald.datastructures import ResponseHeader
+from esmerald import Cookie, Gateway, ORJSONResponse, Param, Response, post
+from esmerald.datastructures import Cookie as ResponseCookie
 from esmerald.enums import MediaType
 from esmerald.testclient import create_client
 from pydantic import BaseModel, EmailStr
@@ -13,24 +13,24 @@ class User(BaseModel):
 @post(path="/create")
 async def create_user(
     data: User,
-    token: str = Header(value="X-API-TOKEN"),
+    cookie: str = Cookie(value="csrftoken"),
 ) -> ORJSONResponse:
-    return ORJSONResponse({"token": token, "user": data})
+    return ORJSONResponse({"cookie": cookie, "user": data})
 
 
-def test_headers_field(test_client_factory):
+def test_cookies_field(test_client_factory):
     user = {"name": "Esmerald", "email": "test@esmerald.com"}
     with create_client(routes=[Gateway(handler=create_user)]) as client:
-        response = client.post("/create", json=user, headers={"X-API-TOKEN": "my-token"})
+        response = client.post("/create", json=user, cookies={"csrftoken": "my-cookie"})
 
         assert response.status_code == 201
-        assert response.json()["token"] == "my-token"
+        assert response.json()["cookie"] == "my-cookie"
 
 
-def test_headers_missing_field(test_client_factory):
+def test_cookie_missing_field(test_client_factory):
     user = {"name": "Esmerald", "email": "test@esmerald.com"}
     with create_client(routes=[Gateway(handler=create_user)]) as client:
-        response = client.post("/create", json=user, headers={"X-API-TOKE": "my-token"})
+        response = client.post("/create", json=user, cookies={"csrftoke": "my-token"})
 
         assert response.status_code == 400
 
@@ -41,45 +41,45 @@ class Item(BaseModel):
 
 @post(
     path="/item",
-    response_headers={"sku": ResponseHeader(value="123")},
+    response_cookies=[ResponseCookie(key="token", value="granted", max_age=3000, httponly=True)],
     media_type=MediaType.JSON,
 )
 async def create_item(
     data: Item,
-    token: str = Header(value="X-API-TOKEN"),
+    cookie: str = Cookie(value="csrftoken"),
 ) -> Response:
-    return Response("ok")
+    return Response(cookie)
 
 
-def test_response_headers(test_client_factory):
+def test_response_cookies(test_client_factory):
     data = {"sku": 123}
     with create_client(routes=[Gateway(handler=create_item)]) as client:
-        response = client.post("/item", json=data, headers={"X-API-TOKEN": "my-token"})
+        response = client.post("/item", json=data, cookies={"csrftoken": "request"})
 
         assert response.status_code == 201
-        assert response.headers["sku"] == "123"
+        assert response.cookies["token"] == "granted"
 
 
 @post(path="/create")
 async def create_user_with_param(
     data: User,
-    token: str = Param(header="X-API-TOKEN"),
+    cookie: str = Param(cookie="csrftoken"),
 ) -> ORJSONResponse:
-    return ORJSONResponse({"token": token, "user": data})
+    return ORJSONResponse({"cookie": cookie, "user": data})
 
 
-def test_headers_param_field(test_client_factory):
+def test_cookies_param_field(test_client_factory):
     user = {"name": "Esmerald", "email": "test@esmerald.com"}
     with create_client(routes=[Gateway(handler=create_user)]) as client:
-        response = client.post("/create", json=user, headers={"X-API-TOKEN": "my-token"})
+        response = client.post("/create", json=user, cookies={"csrftoken": "my-cookie"})
 
         assert response.status_code == 201
-        assert response.json()["token"] == "my-token"
+        assert response.json()["cookie"] == "my-cookie"
 
 
-def test_param_header_missing_field(test_client_factory):
+def test_param_cookie_missing_field(test_client_factory):
     user = {"name": "Esmerald", "email": "test@esmerald.com"}
     with create_client(routes=[Gateway(handler=create_user)]) as client:
-        response = client.post("/create", json=user, headers={"X-API-TOKE": "my-token"})
+        response = client.post("/create", json=user, cookies={"csrftoke": "my-cookie"})
 
         assert response.status_code == 400

@@ -76,7 +76,7 @@ nav:
   - Scheduler:
       - Scheduler: "scheduler/scheduler.md"
       - Handler: "scheduler/handler.md"
-  - Extra:
+  - Extra & Advanved:
       - Request Data: "extras/request-data.md"
       - Body: "extras/body-fields.md"
       - Headers: "extras/header-fields.md"

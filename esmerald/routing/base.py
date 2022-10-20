@@ -24,7 +24,7 @@ from esmerald.injector import Inject
 from esmerald.kwargs import KwargsModel
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
-from esmerald.responses import ORJSONResponse, Response
+from esmerald.responses import ORJSONResponse, Response, UJSONResponse
 from esmerald.routing.views import APIView
 from esmerald.signature import SignatureModelFactory, get_signature_model
 from esmerald.typing import Void
@@ -146,17 +146,6 @@ class BaseResponseHandler:
         status_code: Optional[int] = None,
         media_type: Optional[str] = MediaType.TEXT,
     ) -> "AsyncAnyCallable":
-        """Creates a handler function for Esmerald responses
-
-        Args:
-            cookies (ResponseCookies): The cookies to be passed to the response.
-            status_code (Optional[int], optional): The status code to be returned. Defaults to 200.
-            media_type (Optional[str], optional): The type of payload format. Defaults to "text/plain".
-
-        Returns:
-            AsyncAnyCallable: The application handler.
-        """
-
         async def response_content(data: Response, **kwargs: Dict[str, Any]) -> StarletteResponse:
             _cookies = self.get_cookies(data.cookies, cookies)
             _headers = {
@@ -235,7 +224,7 @@ class BaseResponseHandler:
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies, [])
             # Making sure ORJSONResponse and JSONResponse are properly handled
-            if isinstance(data, (JSONResponse, ORJSONResponse)):
+            if isinstance(data, (JSONResponse, ORJSONResponse, UJSONResponse)):
                 response = data
                 response.status_code = status_code
                 response.background = background
@@ -261,17 +250,6 @@ class BaseResponseHandler:
         route: Union["HTTPHandler", "WebSocketHandler"],
         parameter_model: "KwargsModel",
     ) -> "StarletteResponse":
-        """Handles creating a response instance and/or using cache.
-
-        Args:
-            scope: The Request's scope
-            request: The Request instance
-            route_handler: The HTTPRouteHandler instance
-            parameter_model: The HTTPHandler's KwargsModel
-
-        Returns:
-            An instance of StarletteResponse or a subclass of it
-        """
         response: Optional["StarletteResponse"] = None
         if not response:
             response = await self.call_handler_function(
@@ -290,12 +268,6 @@ class BaseResponseHandler:
         route: Union["HTTPHandler", "WebSocketHandler"],
         parameter_model: "KwargsModel",
     ) -> "StarletteResponse":
-        """Calls the before request handlers, retrieves any data required for
-        the route handler, and calls the route handler's to_response method.
-
-        This is wrapped in a try except block - and if an exception is raised,
-        it tries to pass it to an appropriate exception handler - if defined.
-        """
         response_data = None
 
         if not response_data:
@@ -321,6 +293,7 @@ class BaseResponseHandler:
         It supports more one object payload to be sent.
         """
         signature_model = get_signature_model(route)
+
         if parameter_model.has_kwargs:
             kwargs = parameter_model.to_kwargs(connection=request)
             request_data = kwargs.get("data")
@@ -371,7 +344,8 @@ class BaseResponseHandler:
                     headers=headers,
                 )
             elif is_class_and_subclass(
-                self.signature.return_annotation, (JSONResponse, ORJSONResponse)
+                self.signature.return_annotation,
+                (JSONResponse, ORJSONResponse, UJSONResponse),
             ):
                 handler = self.create_json_response_handler(status_code=self.status_code)
             elif is_class_and_subclass(self.signature.return_annotation, Response):
@@ -527,20 +501,13 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler):
         return {k: v.value for k, v in headers.items()}
 
     async def get_response_data(self, data: Any) -> Any:
-        """Gets the response's data by awaiting any async values.
-
-        Args:
-            data: An arbitrary value
-
-        Returns:
-            Value for the response body
-        """
         if isawaitable(data):
             data = await data
         return data
 
     async def allow_connection(self, connection: "HTTPConnection") -> None:
-        """Validates the connection.
+        """
+        Validates the connection.
 
         Handles with the permissions for each view (get, put, post, delete, patch...) after the request.
         Raises an appropriate exception if the request is not allowed.

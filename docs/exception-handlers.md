@@ -13,7 +13,7 @@ raised on each level.
 The exception handlers are read from top-down in a python dictionary format, which means if you have the same exception
 being raised on different levels but **different exception handlers** handling them, **the last one takes precedent**. 
 
-```python hl_lines="15 31 61-63 68-70"
+```python hl_lines="15 31 59-61 66-68"
 {!> ../docs_src/exception_handlers/precedent.py !}
 ```
 

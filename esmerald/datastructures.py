@@ -22,6 +22,7 @@ from typing import (
     cast,
 )
 
+from esmerald.backgound import BackgroundTask, BackgroundTasks
 from pydantic import BaseConfig, BaseModel, FilePath, validator
 from pydantic.generics import GenericModel  # noqa
 from starlette.datastructures import URL as URL  # noqa: F401
@@ -37,8 +38,6 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.responses import Response as StarletteResponse
 from starlette.responses import StreamingResponse
 from typing_extensions import Literal, ParamSpec
-
-from esmerald.backgound import BackgroundTask, BackgroundTasks
 
 P = ParamSpec("P")
 R = TypeVar("R", bound=StarletteResponse)
@@ -100,7 +99,6 @@ class Cookie(BaseModel):
     secure: Optional[bool] = None
     httponly: Optional[bool] = None
     samesite: Literal["lax", "strict", "none"] = "lax"
-    description: Optional[str] = None
 
     def to_header(self, **kwargs: Any) -> str:
         simple_cookie: SimpleCookie = SimpleCookie()

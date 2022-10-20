@@ -10,6 +10,8 @@ from typing import (
     cast,
 )
 
+from esmerald.enums import MediaType
+from esmerald.exceptions import ImproperlyConfigured
 from orjson import OPT_OMIT_MICROSECONDS  # noqa
 from orjson import OPT_SERIALIZE_NUMPY, dumps
 from pydantic import BaseModel
@@ -22,9 +24,6 @@ from starlette.responses import RedirectResponse as RedirectResponse  # noqa
 from starlette.responses import Response as StarletteResponse  # noqa
 from starlette.responses import StreamingResponse as StreamingResponse  # noqa
 from starlette.types import Receive, Scope, Send
-
-from esmerald.enums import MediaType
-from esmerald.exceptions import ImproperlyConfigured
 
 if TYPE_CHECKING:
     from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -65,7 +64,7 @@ class Response(StarletteResponse, Generic[T]):
         self.cookies = cookies or []
 
     @staticmethod
-    def serializer(value: Any) -> Dict[str, Any]:
+    def transform(value: Any) -> Dict[str, Any]:
         if isinstance(value, BaseModel):
             return value.dict()
         raise TypeError("unsupported type")  # pragma: no cover
@@ -85,7 +84,7 @@ class Response(StarletteResponse, Generic[T]):
             if self.media_type == MediaType.JSON:
                 return dumps(
                     content,
-                    default=self.serializer,
+                    default=self.transform,
                     option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
                 )
             return super().render(content)
@@ -93,18 +92,36 @@ class Response(StarletteResponse, Generic[T]):
             raise ImproperlyConfigured("Unable to serialize response content") from e
 
 
-class ORJSONResponse(JSONResponse):
-    media_type = "application/json"
+class BaseJSONResponse(JSONResponse):
+    """
+    Making sure it parses all the values from pydantic into dictionary.
+    """
 
+    @staticmethod
+    def transform(value: Any) -> Dict[str, Any]:
+        """
+        Makes sure that every value is checked and if it's a pydantic model then parses into
+        a dict().
+        """
+        if isinstance(value, BaseModel):
+            return value.dict()
+        raise TypeError("unsupported type")
+
+
+class ORJSONResponse(BaseJSONResponse):
     def render(self, content: Any) -> bytes:
         assert orjson is not None, "orjson must be installed to use ORJSONResponse"
-        return orjson.dumps(content)
+        return orjson.dumps(
+            content,
+            default=self.transform,
+            option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
+        )
 
 
-class UJSONResponse(JSONResponse):
+class UJSONResponse(BaseJSONResponse):
     def render(self, content: Any) -> bytes:
         assert ujson is not None, "ujson must be installed to use UJSONResponse"
-        return ujson.dumps(content, ensure_ascii=False).encode("utf-8")
+        return ujson.dumps(content, ensure_ascii=False, default=self.transform).encode("utf-8")
 
 
 class TemplateResponse(Response):

@@ -25,7 +25,9 @@ The available datastructures to be imported from `Esmerald` are as follow.
 * **Esmerald**:
     * `Secret`
     * `State`
-    * `Cookie`
+    * `Cookie` - Better import with `as ResponseCookies`. Check [cookies](./extras/cookie-fields.md)
+and see how to use them.
+    * `ResponseHeaders` - Check [headers](./extras/cookie-headers.md) and see how to use them.
     * `File`
     * `Redirect`
     * `Stream`
