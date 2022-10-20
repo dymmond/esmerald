@@ -2,12 +2,12 @@ from esmerald import Cookie, Gateway, ORJSONResponse, Param, Response, post
 from esmerald.datastructures import Cookie as ResponseCookie
 from esmerald.enums import MediaType
 from esmerald.testclient import create_client
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 class User(BaseModel):
     name: str
-    email: EmailStr
+    email: str
 
 
 @post(path="/create")

@@ -2,12 +2,12 @@ from esmerald import Gateway, Header, ORJSONResponse, Param, Response, post
 from esmerald.datastructures import ResponseHeader
 from esmerald.enums import MediaType
 from esmerald.testclient import create_client
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 class User(BaseModel):
     name: str
-    email: EmailStr
+    email: str
 
 
 @post(path="/create")
