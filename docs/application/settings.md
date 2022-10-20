@@ -360,3 +360,54 @@ To access the application settings there are many ways:
 !!! info
     Some of this information might have been mentioned in some other parts of the documentation but we assume
     the people reading it might have missed it.
+
+## Order of importance
+
+Using the settings to start an application instead of providing the parameters directly in the moment of
+instantiation doesn't mean that one will work with the other.
+
+When you instantiate an application **or you pass parameters directly or you use settings**.
+Passing parameters in the object will always override the values from the default settings.
+
+```python
+from esmerald import EsmeraldAPISettings
+from esmerald.conf.enums import EnvironmentType
+from esmerald.middleware.basic import BasicHTTPMiddleware
+from esmerald.types import Middleware
+
+
+class AppSettings(EsmeraldAPISettings):
+    debug: bool = False
+
+    @property
+    def middleware(self) -> List[Middleware]:
+        return [BasicHTTPMiddleware]
+
+```
+
+The application will:
+
+1. Start with `debug` as `False`.
+2. Will start with a middleware `BasicHTTPMiddleware`.
+
+Starting the application with the above settings will make sure that has an initial `BasicHTTPMiddleware` and `debug`
+set with values **but** what happens if you use the settings + parameters on instantiation?
+
+```python
+from esmerald import Esmerald
+
+app = Esmerald(debug=True, middleware=[])
+```
+
+The application will:
+
+1. Start with `debug` as `True`.
+2. Will start without custom middlewares it the `BasicHTTPMiddleware` it was overridden by `[]`.
+
+Although it was set in the settings to start with `BasicHTTPMiddleware` and debug as `False`, once you pass different
+values in the moment of instantiating an `Esmerald` object, those will become the defaults.
+
+**Declaring parameters in the instance will always precede the values from your settings**.
+
+The reason why you should be using settings instead it is because will make your codebase more organized and easier
+to maintain.

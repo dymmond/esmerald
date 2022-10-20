@@ -5,42 +5,40 @@
 </p>
 
 <p align="center">
-    <em>Esmerald - Highly scalable, performant, easy to learn, easy to code and for every application.</em>
+    <em>🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀</em>
 </p>
 
 ---
 
-**Documentation**: [https://esmerald.dymmond.com](https://esmerald.dymmond.com)
+**Documentation**: [https://esmerald.dymmond.com](https://esmerald.dymmond.com) 📚
 
 **Source Code**: [https://github.com/dymmond/esmerald](https://github.com/dymmond/esmerald)
 
 ---
 
-Esmerald is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
+Esmerald is a modern, powerful, flexible, high performant web framework designed to build not only APIs
 but also full scalable applications from the smallest to enterprise level.
 
-Esmerald is designed to build with python 3.6+ and based on standard python type hints and on the top of
+Esmerald is designed to build with python 3.7+ based on standard python type hints and on the top of
 the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic).
-
-Check out the [Esmerald documentation 📚](https://esmerald.dymmond.com)
 
 ## Motivation
 
-There are great frameworks out there like FastAPI, Starlite, Flama, Flask, Django but like everything in
-development, not all of them was solving 99% of the current day-to-day issues, usually around building only APIs,
-where the 1% was around structure and application design/business.
+There are great frameworks out there like FastAPI, Starlite, Flama, Flask, Django... All of them solving majority
+of the current day-to-day problems of 99% of the applications but leaving thw 1% that is usually around structure
+and design/business without to much to do.
 
 Esmerald got the inspiration from those great frameworks out there and was built with all the known amazing
 features but with business in mind as well. Starlite, for example, gave the inspiration and for the Signature models,
-something very useful that helped Esmerald integerating with pydantic better.
-FastAPI gave the inspiration for design, Django for the permissions, Flask for the simplicity, NestJS for the
+something very useful that helped Esmerald integerating with pydantic.
+FastAPI gave the inspiration for API designing, Django for the permissions, Flask for the simplicity, NestJS for the
 controllers and the list goes on.
 
-For a job to be done properly, usually it's never done alone and always has a starting point and inspiration.
+For a job to be done properly, usually it is never done alone a driver and inspiration to it.
 
 ## Requirements
 
-* Python 3.6+
+* Python 3.7+
 
 Esmerald wouldn't be possible without two colossals:
 
@@ -86,18 +84,22 @@ based systems.
 
 ## Relation to Starlette and other frameworks
 
-Esmerald uses Starlette under the hood. The reason behind this decison comes with the fast that performance wise there
-is no issues with routing. Once the application is up, all the routes are mounted and therefore the url paths are
-defined. Esmerald encourages standard practices and design and with that in mind, any application, big or small,
-custom or enterprise, fits within Esmerald system performance without scalability issues.
+Esmerald uses Starlette under the hood. The reason behind this decison comes with the fact that performance is there
+and no issues with routing.
+
+Once the application is up, all the routes are mounted and therefore the url paths are defined.
+Esmerald encourages standard practices and design in mind which means that any application, big or small,
+custom or enterprise, fits within Esmerald ecosystem without scalability issues.
 
 ## Settings
 
-Like every other framework, when starting an application a lot of [settings](./application/settings.md) can/need to be
-passed to the main object and this can be very dauting and hugly to maintain and see. Esmerald comes with the
+Like every other framework, when starting an application, a lot of [settings](./application/settings.md) can/need to be
+passed to the main object and this can be very dauting and hugly to maintain and see.
+
+Esmerald comes with the
 [settings](./application/settings.md) in mind. A set of defaults that can be overridden by your very own settings
-object but the Esmerald is not limited to it, you can still use the classic approach of passing everything into a
-Esmerald instance directly.
+module but not limited to it as you can still use the classic approach of passing everything into a
+Esmerald instance directly when instantiating.
 
 **Example of classic approach**:
 
@@ -146,10 +148,10 @@ This is the way Esmerald defaults the values. When starting an application, the 
 
 ### Custom Settings
 
-Separation of settings by enviromment is a must have these days and starting with default of Esmerald won't be
+Separation of settings by enviromment is a must have these days and starting with default of Esmerald will not be
 enough for any application.
 
-The [settings](./application/settings.md) are pydantic standard settings and therefore compatible with Esmerald.
+The settings are pydantic standard settings and therefore compatible with Esmerald.
 The system brings some defaults that can be used out-of-the-box but it's not mandatory to be used.
 The environment defaults to **production**.
 
@@ -178,9 +180,10 @@ ESMERALD_SETTINGS_MODULE='myapp.settings.Development' python -m src.app.py
 
 Starlette offers the Route classes for simple path assignments but this is also very limiting if something more
 complex in mind. Esmerald extends that functionality and adds some `flair` and levels up by having the
-[Gateway, WebSocketGateway](./routing/routes.md) and [Include](./routing/routes.md).
+[Gateway](./routing/routes.md#gateway), [WebSocketGateway](./routing/routes.md#websocketgateway)
+and [Include](./routing/routes.md#include).
 
-Those are special objects that allows all the magic of Esmerald to happen.
+Those are special objects that allow all the magic of Esmerald to happen.
 
 **For a classic, direct, one file single approach**:
 
@@ -221,7 +224,7 @@ Those are special objects that allows all the magic of Esmerald to happen.
 
 ## Design in mind
 
-Good design is always encouraged and Esmerald allows complex routing on any level.
+Good design is always encouraged and Esmerald allows complex routing on any [level](./application/levels.md).
 
 ### The handlers (views)
 
@@ -251,13 +254,15 @@ If a `path` is not provided, defaults to `/`.
 
 ### The Include
 
-This is a very special object that allows the import of any routes from anywhere in the application.
+This is a very special object that allows the `import` of any route from anywhere in the application.
+
 `Include` accepts the import via `namespace` or via `routes` list but not both.
 
-When using a `namespace`, the `Include` will look for the default `route_patterns` list in the imported
-namespace (object) unless a different `pattern` is specified.
+When using a `namespace`, the `Include` will look for the default `route_patterns` object list in the imported
+namespace unless a different `pattern` is specified.
 
-The patten only works if the imports are done via `namespace` and not via `routes` object.
+!!! note
+    The pattern only works if the imports are done via `namespace` and not via `routes`.
 
 === "Importing using namespace"
 
@@ -265,7 +270,7 @@ The patten only works if the imports are done via `namespace` and not via `route
     {!> ../docs_src/routing/routes/include/app/urls.py!}
     ```
 
-=== "Importing using routes list"
+=== "Importing using routes"
 
     ```python title='src/myapp/urls.py' hl_lines="5"
     {!> ../docs_src/routing/routes/include/routes_list.py!}
@@ -288,8 +293,7 @@ If a `path` is not provided, defaults to `/`.
 ## Include and Esmerald
 
 The `Include` can be very helpful mostly when the goal is to avoid a lot of imports and massive list
-of objects to be passed into one single object. This can be particulary useful to make a clean start
-Esmerald object as well.
+of objects to be passed into one single object. This can be particulary useful to make a Esmerald instance.
 
 **Example**:
 
@@ -320,4 +324,4 @@ INFO:     Application startup complete.
 ## Notes
 
 This is just a very high-level demonstration of how to start quickly and what Esmerald can do.
-More details within the docs, including a tutorial.
+There are plenty more things you can do with Esmerald. Enjoy! 😊
