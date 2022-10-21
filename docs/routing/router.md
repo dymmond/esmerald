@@ -106,7 +106,7 @@ class.
 ## Custom Router
 
 Let's assume there are specific **customer** submodules inside a `customers` dedicated file.
-There are two way of separating the routes within the application, using [Include](./routes#include),
+There are two way of separating the routes within the application, using [Include](./routes.md#include),
 a [ChildEsmerald](#child-esmerald-application) or by creating another router. Let's focus on the latter.
 
 ```python hl_lines="28-35" title="/application/apps/routers/customers.py"
