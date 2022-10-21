@@ -1,11 +1,11 @@
 # Router
 
-The Router is the the main object that links the whole Esmerald to the [Gateway](./routes.md#gateway),
+The Router is the main object that links the whole Esmerald to the [Gateway](./routes.md#gateway),
 [WebSocketGateway](./routes.md#websocketgateway) and [handlers](./handlers.md).
 
 ## Router class
 
-The router class is composed by many attributes that are by default populated withing the application but Esmerald
+The router class is composed by many attributes that are by default populated within the application but Esmerald
 also allows to add extra [custom routers](#custom-router) as well but another way is to add a
 [ChildEsmerald](#child-esmerald-application) app.
 
@@ -62,25 +62,42 @@ arguments, and may be be either standard functions, or async functions.
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 
-    <sup>Default: `/`</sup>
+    <sup>Default: `[]`</sup>
 
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
 or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 
-    <sup>Default: `/`</sup>
+    <sup>Default: `[]`</sup>
 
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
 
-    <sup>Default: `/`</sup>
+    <sup>Default: `{}`</sup>
 
 * **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 
-    <sup>Default: `/`</sup>
+    <sup>Default: `{}`</sup>
+
+* **response_class** - Custom subclass of [Response](../responses.md) to be used as application application response
+class.
+
+    <sup>Default: `None`</sup>
+
+* **response_cookies** - List of [cookie](../datastructures.md) objects.
+
+    <sup>Default: `None`</sup>
+
+* **response_headers** - Mapping dictionary of header objects.
+
+    <sup>Default: `None`</sup>
+
+* **tags** - List of tags to include in the OpenAPI schema.
+
+    <sup>Default: `[]`</sup>
 
 !!! Warning
     The `response_class`, `response_cookies`, `response_headers`, `tags` and `include_in_schema` are not used
@@ -157,7 +174,7 @@ You can add as many `ChildEsmerald` as you desire, there are no limits.
 
 The example above, it is showing that you could even add the same application within nested includes and for each
 include you can add specific unique [permissions](../permissions.md), [middlewares](../middleware/middleware.md),
-[exception handlers](../exception_handlers.md) and [dependencies](../dependencies.md) which are available on each
+[exception handlers](../exception-handlers.md) and [dependencies](../dependencies.md) which are available on each
 instance of the `Include`. The options are endeless.
 
 !!! Note

@@ -41,6 +41,7 @@ injection.
 * **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+* **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
 
 === "In a nutshell"
 
@@ -353,7 +354,7 @@ We will be using Gateway for it can be replaced by any of the above as it's comm
 #### Middleware
 
 As specified before, the [middleware](../middleware/middleware.md) of a Gateway are read from top down,
-from the owner to the very handler and the same is applied to [exception handlers](../exception_handlers.md),
+from the owner to the very handler and the same is applied to [exception handlers](../exception-handlers.md),
 [dependencies](../dependencies.md) and [permissions](../permissions.md).
 
 ```python hl_lines="23 29-30"

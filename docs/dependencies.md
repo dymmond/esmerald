@@ -4,7 +4,7 @@ Dependencies are a piece of great functionality now common in a lot of the frame
 of dependency injection to take place.
 
 Esmerald uses the `Inject` object to manage those depedencies in every
-[application level](./exception_handlers.md)
+[application level](./exception-handlers.md)
 
 ## Dependencies and the application levels
 
@@ -27,7 +27,7 @@ for example purposes.
 Using dependencies is quite simple, it needs:
 
 1. Uses `Inject` object.
-2. Uses the `Injects` object to, well, inject the the dependency into the handler.
+2. Uses the `Injects` object to, well, inject the dependency into the handler.
 
 ### Some complexity
 
@@ -46,4 +46,4 @@ and checks if the value is bigger or equal than 5 and that result `is_valid` is 
 
 {! ../docs_src/_shared/exceptions.md !}
 
-The same is applied also to [exception handlers](./exception_handlers.md).
+The same is applied also to [exception handlers](./exception-handlers.md).

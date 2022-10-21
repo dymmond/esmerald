@@ -1,7 +1,7 @@
 # Exceptions
 
 Esmerald comes with some built-in exceptions but also allows you to install
-[custom exception handlers](./exception_handlers.md) to deal with how you return responses when exceptions happen.
+[custom exception handlers](./exception-handlers.md) to deal with how you return responses when exceptions happen.
 
 ## HTTPException
 
@@ -45,7 +45,7 @@ Status code: 403
 
 ### ValidationErrorException
 
-`ValidationErrorException` is part of the Esmerald default exception_handlers by design and it's part of it's core when
+`ValidationErrorException` is part of the Esmerald default `exception_handlers` by design and it's part of it's core when
 a validation, for example, from pydantic models, occurs.
 
 ```python

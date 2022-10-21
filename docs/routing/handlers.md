@@ -110,6 +110,11 @@ class.
 * **response_cookies** - List of [cookies](../datastructures.md) objects.
 * **response_headers** - Mapping dictionary of [headers](../datastructures.md) objects.
 * **tags** - List of tags to include in the OpenAPI schema.
+* **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
+* **security** - Security definition of the application. Used for OpenAPI.
+* **operation_id** - Internal unique identifier of the handler. Used for OpenAPI.
+* **response_description** - Description of the response. Used for OpenAPI.
+* **responses** - The available responses of the handler. Used for OpenAPI.
 
 ## HTTP handler summary
 

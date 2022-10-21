@@ -242,7 +242,7 @@ The default environment is `production`.
   
     <sup>Default: `False`</sup>
 
-* **password_hashers** - A list of [password hashers](../password_hashers.md) used for encryption of the passwords.
+* **password_hashers** - A list of [password hashers](../password-hashers.md) used for encryption of the passwords.
 
     <sup>Default: `["esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
                     "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher"]`
