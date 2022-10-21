@@ -1,9 +1,8 @@
 from copy import copy
 from typing import TYPE_CHECKING, List, Optional, Union, cast
 
-from starlette.routing import compile_path
-
 from esmerald.utils.url import clean_path
+from starlette.routing import compile_path
 
 if TYPE_CHECKING:
     from esmerald.permissions.types import Permission

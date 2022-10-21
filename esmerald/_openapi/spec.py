@@ -7,9 +7,9 @@ from spectree.models import Tag
 from spectree.plugins import BasePlugin
 from spectree.utils import get_model_key, get_security, parse_name, parse_params
 
-from esmerald.openapi.constants import REF_PREFIX
-from esmerald.openapi.plugins.esmerald_plugin import EsmeraldPlugin
-from esmerald.openapi.utils import parse_request, parse_resp
+from esmerald._openapi.constants import REF_PREFIX
+from esmerald._openapi.plugins.esmerald_plugin import EsmeraldPlugin
+from esmerald._openapi.utils import parse_request, parse_resp
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald

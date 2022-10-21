@@ -1,11 +1,9 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type, Union
-
-from starlette import status
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 from esmerald.enums import HttpMethod, MediaType
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.openapi.types import SecurityRequirement
+from esmerald.exceptions import HTTPException, ImproperlyConfigured
+from esmerald.openapi.datastructures import ResponseSpec
 from esmerald.permissions.types import Permission
 from esmerald.routing.router import HTTPHandler, WebSocketHandler
 from esmerald.types import (
@@ -20,6 +18,11 @@ from esmerald.types import (
     ResponseType,
 )
 from esmerald.utils.constants import AVAILABLE_METHODS
+from starlette import status
+
+if TYPE_CHECKING:
+    from esmerald.exceptions import HTTPException
+    from openapi_schema_pydantic.v3.v3_1_0 import SecurityRequirement
 
 
 class get(HTTPHandler):
@@ -30,6 +33,8 @@ class get(HTTPHandler):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_200_OK,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -45,8 +50,9 @@ class get(HTTPHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -54,6 +60,8 @@ class get(HTTPHandler):
             summary=summary,
             description=description,
             status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
             include_in_schema=include_in_schema,
             background=background,
             dependencies=dependencies,
@@ -69,6 +77,7 @@ class get(HTTPHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -82,6 +91,8 @@ class post(HTTPHandler):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_201_CREATED,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -97,12 +108,15 @@ class post(HTTPHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
             path=path,
             status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
             summary=summary,
             description=description,
             methods=[HttpMethod.POST],
@@ -121,6 +135,7 @@ class post(HTTPHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -134,6 +149,8 @@ class put(HTTPHandler):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_200_OK,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -149,8 +166,9 @@ class put(HTTPHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -158,6 +176,8 @@ class put(HTTPHandler):
             summary=summary,
             description=description,
             status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
             include_in_schema=include_in_schema,
             background=background,
             dependencies=dependencies,
@@ -173,6 +193,7 @@ class put(HTTPHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -186,6 +207,8 @@ class patch(HTTPHandler):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_200_OK,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -201,8 +224,9 @@ class patch(HTTPHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -210,6 +234,8 @@ class patch(HTTPHandler):
             summary=summary,
             description=description,
             status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
             include_in_schema=include_in_schema,
             background=background,
             dependencies=dependencies,
@@ -225,6 +251,7 @@ class patch(HTTPHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -238,6 +265,8 @@ class delete(HTTPHandler):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_204_NO_CONTENT,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -253,8 +282,9 @@ class delete(HTTPHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -262,6 +292,8 @@ class delete(HTTPHandler):
             summary=summary,
             description=description,
             status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
             include_in_schema=include_in_schema,
             background=background,
             dependencies=dependencies,
@@ -277,6 +309,7 @@ class delete(HTTPHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -291,6 +324,8 @@ class route(HTTPHandler):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_200_OK,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -306,8 +341,9 @@ class route(HTTPHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         if not methods or not isinstance(methods, list):
             raise ImproperlyConfigured(
@@ -330,6 +366,8 @@ class route(HTTPHandler):
             summary=summary,
             description=description,
             status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
             include_in_schema=include_in_schema,
             background=background,
             dependencies=dependencies,
@@ -345,6 +383,7 @@ class route(HTTPHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )

@@ -32,7 +32,7 @@ from esmerald.exceptions import (
 )
 from esmerald.injector import Inject
 from esmerald.kwargs import KwargsModel
-from esmerald.openapi.types import SecurityRequirement
+from esmerald.openapi.datastructures import ResponseSpec
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
@@ -59,6 +59,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
+    from esmerald.exceptions import HTTPException
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
@@ -77,6 +78,7 @@ if TYPE_CHECKING:
         ResponseType,
         RouteOwner,
     )
+    from openapi_schema_pydantic.v3.v3_1_0 import SecurityRequirement
     from pydantic.typing import AnyCallable
 
 PARAM_REGEX = re.compile("{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_][a-zA-Z0-9_]*)?}")
@@ -273,6 +275,31 @@ class Router(StarletteRouter, Ownership):
     def activate(self):
         self.routes = self.reorder_routes()
 
+    def add_apiview(self, value: "APIView"):
+        routes = []
+        if not value.handler.owner:
+            value(owner=self)
+
+        route_handlers = value.handler.get_route_handlers()
+        for route_handler in route_handlers:
+            gateway = (
+                Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
+            )
+            gate = gateway(
+                path=value.path,
+                handler=route_handler,
+                name=route_handler.path,
+                middleware=value.middleware,
+                permissions=value.permissions,
+                exception_handlers=value.exception_handlers,
+            )
+            self.routes.append(gate)
+            routes.append(gate)
+
+        for route in routes or []:
+            self.create_signature_models(route)
+        self.activate()
+
     def add_route(
         self,
         path: str,
@@ -381,6 +408,8 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         "_response_handler",
         "methods",
         "status_code",
+        "content_encoding",
+        "content_media_type",
         "summary",
         "description",
         "include_in_schema",
@@ -396,6 +425,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
+        "raise_exceptions",
     )
 
     def __init__(
@@ -405,6 +435,8 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         *,
         methods: Optional[List["HTTPMethod"]] = None,
         status_code: Optional[int] = None,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
         summary: Optional[str] = None,
         description: Optional[str] = None,
         include_in_schema: bool = True,
@@ -421,9 +453,10 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         tags: Optional[List[Union[str, Enum]]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        responses: Optional[Dict[int, ResponseSpec]] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
         if not path:
             path = "/"
@@ -483,6 +516,9 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.kwargs: Optional["KwargsModel"] = None
         self.response_description = response_description
         self.responses = responses or {}
+        self.content_encoding = content_encoding
+        self.content_media_type = content_media_type
+        self.raise_exceptions = raise_exceptions
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None

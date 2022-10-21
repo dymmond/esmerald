@@ -33,6 +33,11 @@ from esmerald.types import (
     ResponseType,
     SchedulerType,
 )
+from openapi_schema_pydantic.v3.v3_1_0 import (
+    License,
+    SecurityRequirement,
+    Server,
+)
 from pydantic import BaseSettings
 
 if TYPE_CHECKING:
@@ -49,9 +54,11 @@ class EsmeraldAPISettings(BaseSettings):
         "name": "admin",
         "email": "admin@myapp.com",
     }
+    summary: str = "Esmerald application"
     terms_of_service: Optional[str] = None
-    license_info: Optional[Dict[str, Union[str, Any]]] = None
-    servers: Optional[List[Dict[str, Union[str, Any]]]] = None
+    license: Optional[License] = None
+    security: Optional[List[SecurityRequirement]] = None
+    servers: List[Server] = [Server(url="/")]
     openapi_path: Optional[str] = "docs"
     secret: str = "my secret"
     version: str = __version__
@@ -68,6 +75,7 @@ class EsmeraldAPISettings(BaseSettings):
     root_path: Optional[str] = ""
     enable_sync_handlers: bool = True
     enable_scheduler: bool = False
+    enable_openapi: bool = True
 
     @property
     def reload(self) -> bool:
@@ -245,15 +253,20 @@ class EsmeraldAPISettings(BaseSettings):
                 def openapi_config(self) -> CORSConfig:
                     ...
         """
+        from esmerald.openapi.apiview import OpenAPIView
+
         return OpenAPIConfig(
-            path=self.openapi_path,
+            openapi_apiview=OpenAPIView,
             title=self.title,
-            contact=self.contact,
             version=self.version,
+            contact=self.contact,
+            description=self.description,
             terms_of_service=self.terms_of_service,
-            license=self.license_info,
+            license=self.license,
             servers=self.servers,
-            app_name=self.app_name,
+            summary=self.summary,
+            security=self.security,
+            tags=self.tags,
         )
 
     @property

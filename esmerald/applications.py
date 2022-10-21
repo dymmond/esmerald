@@ -1,5 +1,6 @@
 from datetime import timezone
 from typing import (
+    TYPE_CHECKING,
     Any,
     AsyncContextManager,
     Callable,
@@ -29,8 +30,6 @@ from esmerald.middleware.exceptions import (
 )
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
-from esmerald.openapi.spec import OpenAPI
-from esmerald.openapi.types import SecurityRequirement
 from esmerald.permissions.types import Permission
 from esmerald.routing import gateways
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
@@ -53,8 +52,13 @@ from esmerald.types import (
     Scope,
     Send,
 )
+from openapi_schema_pydantic.v3.v3_1_0 import License, SecurityRequirement, Server
+from openapi_schema_pydantic.v3.v3_1_0.open_api import OpenAPI
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
+
+if TYPE_CHECKING:
+    from openapi_schema_pydantic.v3.v3_1_0 import SecurityRequirement
 
 
 class Esmerald(Starlette):
@@ -102,12 +106,14 @@ class Esmerald(Starlette):
         debug: bool = settings.debug,
         title: Optional[str] = settings.title,
         version: Optional[str] = settings.version,
+        summary: Optional[str] = settings.summary,
         name: Optional[str] = settings.app_name,
         description: Optional[str] = settings.description,
         contact: Optional[Dict[str, Union[str, Any]]] = settings.contact,
         terms_of_service: Optional[str] = settings.terms_of_service,
-        license_info: Optional[Dict[str, Union[str, Any]]] = settings.license_info,
-        servers: Optional[List[Dict[str, Union[str, Any]]]] = settings.servers,
+        license: Optional[License] = None,
+        security: Optional[List[SecurityRequirement]] = None,
+        servers: List[Server] = [Server(url="/")],
         openapi_path: Optional[str] = settings.openapi_path,
         secret: Optional[str] = settings.secret,
         allowed_hosts: Optional[List[str]] = settings.allowed_hosts,
@@ -140,7 +146,7 @@ class Esmerald(Starlette):
         tags: Optional[List[str]] = settings.tags,
         include_in_schema: bool = settings.include_in_schema,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        enable_openapi: bool = settings.enable_openapi,
     ) -> None:
 
         assert lifespan is None or (
@@ -155,9 +161,10 @@ class Esmerald(Starlette):
         self.name = name
         self.description = description
         self.version = version
+        self.summary = summary
         self.contact = contact
         self.terms_of_service = terms_of_service
-        self.license_info = license_info
+        self.license_info = license
         self.servers = servers
         self.openapi_path = openapi_path
         self.secret = secret
@@ -168,6 +175,7 @@ class Esmerald(Starlette):
         self.csrf_config = csrf_config
         self.cors_config = cors_config
         self.openapi_config = openapi_config
+        self.openapi_schema: Optional["OpenAPI"] = None
         self.template_config = template_config
         self.static_files_config = static_files_config
         self.session_config = session_config
@@ -189,6 +197,8 @@ class Esmerald(Starlette):
         self.owner: Optional[Union["OwnerType", "Esmerald", "ChildEsmerald"]] = None
         self.on_shutdown = on_shutdown
         self.on_startup = on_startup
+        self.security = security
+        self.enable_openapi = enable_openapi
 
         self.router: "Router" = Router(
             on_shutdown=on_shutdown,
@@ -226,9 +236,10 @@ class Esmerald(Starlette):
                 configurations=self.scheduler_configurations,
             )
 
-        if self.openapi_config:
-            api = OpenAPI("esmerald", **self.openapi_config.dict())
-            api.register(self)
+        if self.openapi_config and self.enable_openapi:
+            self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
+            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
+            self.router.add_apiview(value=gateway)
 
     def get_template_engine(
         self, template_config: "TemplateConfig"

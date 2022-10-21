@@ -388,13 +388,21 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler):
         return Signature.from_callable(cast("AnyCallable", self.fn))
 
     @property
-    def path_parameters(self) -> List[str]:
+    def path_parameters(self) -> Set[str]:
         """
         Gets the path parameters
         """
         parameters = set()
         for param_name, _ in self.param_convertors.items():
             parameters.add(param_name)
+        return parameters
+
+    @property
+    def normalised_path_params(self) -> List[Dict[str, str]]:
+        """
+        Gets the path parameters
+        """
+        parameters = [{"name": param} for param in self.path_parameters]
         return parameters
 
     @property

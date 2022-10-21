@@ -1,80 +1,134 @@
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
 
-from pydantic import AnyUrl
-from spectree.config import (
-    DEFAULT_PAGE_TEMPLATES,
-    Configuration,
+from esmerald.openapi.path_item import create_path_item
+from esmerald.routing.gateways import Gateway
+from esmerald.routing.router import Include
+from openapi_schema_pydantic.v3.v3_1_0 import (
+    Components,
     Contact,
+    ExternalDocumentation,
+    Info,
     License,
-    ModeEnum,
-    SecurityScheme,
+    OpenAPI,
+    PathItem,
+    Reference,
+    SecurityRequirement,
     Server,
+    Tag,
 )
+from pydantic import AnyUrl, BaseModel
+from pydantic_openapi_schema import construct_open_api_with_schema_class
+from typing_extensions import Literal
+
+if TYPE_CHECKING:
+    from esmerald.applications import Esmerald
+    from esmerald.openapi.apiview import OpenAPIView
 
 
-class OpenAPIConfig(Configuration):
-    """Configuration for OpenAPI.
-
-    To enable OpenAPI schema generation and serving, pass an instance of
-    this class to the [Esmerald][esmerald.applications.Esmerald] constructor
-    using the 'openapi_config' kwargs.
-    """
-
-    title: str = "Esmerald API"
-    #: service OpenAPI document description
-    description: Optional[str] = None
-    #: service version
-    version: str = "0.1.0"
-    #: terms of service url
-    terms_of_service: Optional[AnyUrl] = None
-    #: author contact information
+class OpenAPIConfig(BaseModel):
+    create_examples: bool = False
+    openapi_apiview: Type["OpenAPIView"]
+    title: str
+    version: str
     contact: Optional[Contact] = None
-    #: license information
+    description: Optional[str] = None
+    external_docs: Optional[ExternalDocumentation] = None
     license: Optional[License] = None
+    security: Optional[List[SecurityRequirement]] = None
+    components: Optional[Union[Components, List[Components]]] = None
+    servers: List[Server] = [Server(url="/")]
+    summary: Optional[str] = None
+    tags: Optional[List[Tag]] = None
+    terms_of_service: Optional[AnyUrl] = None
+    use_handler_docstrings: bool = False
+    webhooks: Optional[Dict[str, Union[PathItem, Reference]]] = None
+    root_schema_site: Literal["redoc", "swagger", "elements"] = "redoc"
+    enabled_endpoints: Set[str] = {
+        "redoc",
+        "swagger",
+        "elements",
+        "openapi.json",
+        "openapi.yaml",
+    }
 
-    # SpecTree configurations
-    #: OpenAPI doc route path prefix (i.e. /apidoc/)
-    path: str = "docs"
-    #: OpenAPI file route path suffix (i.e. /apidoc/openapi.json)
-    filename: str = "openapi.json"
-    #: OpenAPI version (doesn't affect anything)
-    openapi_version: str = "3.0.3"
-    #: the mode of the SpecTree validator :class:`ModeEnum`
-    mode: ModeEnum = ModeEnum.normal
-    #: A dictionary of documentation page templates. The key is the
-    #: name of the template, that is also used in the URL path, while the value is used
-    #: to render the documentation page content. (Each page template should contain a
-    #: `{spec_url}` placeholder, that'll be replaced by the actual OpenAPI spec URL in
-    #: the rendered documentation page
-    page_templates = DEFAULT_PAGE_TEMPLATES
-    #: opt-in type annotation feature, see the README examples
-    annotations = False
-    #: servers section of OAS :py:class:`spectree.models.Server`
-    servers: Optional[List[Server]] = []
-    #: OpenAPI `securitySchemes` :py:class:`spectree.models.SecurityScheme`
-    security_schemes: Optional[List[SecurityScheme]] = None
-    #: OpenAPI `security` JSON at the global level
-    security: Dict = {}
-    # Swagger OAuth2 configs
-    #: OAuth2 client id
-    client_id: str = ""
-    #: OAuth2 client secret
-    client_secret: str = ""
-    #: OAuth2 realm
-    realm: str = ""
-    #: OAuth2 app name
-    app_name: str = "esmerald_app"
-    #: OAuth2 scope separator
-    scope_separator: str = " "
-    #: OAuth2 scopes
-    scopes: List[str] = []
-    #: OAuth2 additional query string params
-    additional_query_string_params: Dict[str, str] = {}
-    #: OAuth2 use basic authentication with access code grant
-    use_basic_authentication_with_access_code_grant: bool = False
-    #: OAuth2 use PKCE with authorization code grant
-    use_pkce_with_authorization_code_grant: bool = False
+    def to_openapi_schema(self) -> "OpenAPI":
+        if isinstance(self.components, list):
+            merged_components = Components()
+            for components in self.components:
+                for key in components.__fields__.keys():
+                    value = getattr(components, key, None)
+                    if value:
+                        merged_value_dict = getattr(merged_components, key, {}) or {}
+                        merged_value_dict.update(value)
+                        setattr(merged_components, key, merged_value_dict)
+            self.components = merged_components
 
-    @property
-    def spec_url(self) -> str:
-        return f"/{self.path}/{self.filename}"
+        return OpenAPI(
+            externalDocs=self.external_docs,
+            security=self.security,
+            components=cast("Components", self.components),
+            servers=self.servers,
+            tags=self.tags,
+            webhooks=self.webhooks,
+            info=Info(
+                title=self.title,
+                version=self.version,
+                description=self.description,
+                contact=self.contact,
+                license=self.license,
+                summary=self.summary,
+                termsOfService=self.terms_of_service,
+            ),
+        )
+
+    def get_include_handlers(
+        self, router: "Include", route_list: Optional[List["Gateway"]] = None
+    ):
+        if not route_list:
+            route_list = []
+        for route in router.routes:
+            if isinstance(route, Include):
+                route_list = self.get_include_handlers(route, route_list)
+            elif isinstance(route, Gateway):
+                route_list.append(route)
+        return route_list
+
+    def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
+        from esmerald.applications import ChildEsmerald, Esmerald
+
+        schema = self.to_openapi_schema()
+        schema.paths = {}
+        for route in app.routes:
+            if (
+                isinstance(route, Gateway)
+                and any(
+                    handler.include_in_schema for handler, _ in route.handler.route_map.values()
+                )
+                and (route.handler.path_format or "/") not in schema.paths
+            ):
+                schema.paths[route.path_format or "/"] = create_path_item(
+                    route=route.handler,
+                    create_examples=self.create_examples,
+                    use_handler_docstrings=self.use_handler_docstrings,
+                )
+
+            if isinstance(route, Include):
+                routes = self.get_include_handlers(route)
+                for route in routes:
+                    if (
+                        isinstance(route, Gateway)
+                        and any(
+                            handler.include_in_schema
+                            for handler, _ in route.handler.route_map.values()
+                        )
+                        and (route.handler.path_format or "/") not in schema.paths
+                    ):
+                        schema.paths[route.path_format or "/"] = create_path_item(
+                            route=route.handler,
+                            create_examples=self.create_examples,
+                            use_handler_docstrings=self.use_handler_docstrings,
+                        )
+            if isinstance(route, (Esmerald, ChildEsmerald)):
+                ...
+
+        return construct_open_api_with_schema_class(schema)

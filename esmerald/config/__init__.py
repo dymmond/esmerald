@@ -11,9 +11,9 @@ __all__ = [
     "AsyncExitConfig",
     "CORSConfig",
     "CSRFConfig",
+    "JWTConfig",
     "OpenAPIConfig",
+    "SessionConfig",
     "StaticFilesConfig",
     "TemplateConfig",
-    "JWTConfig",
-    "SessionConfig",
 ]
