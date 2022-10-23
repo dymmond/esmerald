@@ -10,7 +10,7 @@ an *Esmeraldception*.
 
 ## WSGIMiddleware
 
-Using this middleware is very simple, let's use Flask as example since it's very fast to spin-up a Flask service
+Using this middleware is very simple, let's use Flask as example since it is very fast to spin-up a Flask service
 compared to other giants like Django.
 
 === "Simple Routing"

@@ -1,7 +1,7 @@
 # The Body
 
 Sometimes you might want to pass extra information into your handler and possibly customize the OpenAPI
-documentation for the request body schema or how to control it's validation.
+documentation for the request body schema or how to control its validation.
 
 The simplest way is by importing the `Body` object from Esmerald.
 

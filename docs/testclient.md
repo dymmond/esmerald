@@ -1,13 +1,13 @@
 # Test Client
 
 Esmerald comes with a test client for your application tests. It is not mandatory use it as every application and
-development team has it's own way of testing it but just in case, it is provided.
+development team has its own way of testing it but just in case, it is provided.
 
 ```python
 {!> ../docs_src/testclient/example1.py !}
 ```
 
-The test client is very similar to it's original as it extends it and adds extra unique and specifics for `Esmerald`
+The test client is very similar to its original as it extends it and adds extra unique and specifics for `Esmerald`
 and therefore the same examples and use cases will work.
 
 You can use any of the `httpx` standard API like authentication, session cookies and file uploads.

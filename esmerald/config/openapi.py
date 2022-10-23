@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type, Union, cast
 
 from esmerald.openapi.path_item import create_path_item
 from esmerald.routing.gateways import Gateway
@@ -21,7 +21,7 @@ from pydantic_openapi_schema import construct_open_api_with_schema_class
 from typing_extensions import Literal
 
 if TYPE_CHECKING:
-    from esmerald.applications import Esmerald
+    from esmerald.applications import ChildEsmerald, Esmerald
     from esmerald.openapi.apiview import OpenAPIView
 
 
@@ -93,6 +93,31 @@ class OpenAPIConfig(BaseModel):
                 route_list.append(route)
         return route_list
 
+    def create_schema_path_gateway(self, route: "Gateway", schema_path: Dict[Any, Any]):
+        ...
+
+    def create_schema_path_incldue(self, route: "Include", schema_path: Dict[Any, Any]):
+        ...
+
+    def create_schema_path_esmerald_or_child_router(
+        self, app: Union["Esmerald", "ChildEsmerald"], schema_path: Dict[Any, Any]
+    ):
+        ...
+
+    #     if (
+    #         isinstance(route, Gateway)
+    #         and any(
+    #             handler.include_in_schema
+    #             for handler, _ in route.handler.route_map.values()
+    #         )
+    #         and (route.handler.path_format or "/") not in schema.paths
+    #     ):
+    #         schema.paths[route.path_format or "/"] = create_path_item(
+    #             route=route.handler,
+    #             create_examples=self.create_examples,
+    #             use_handler_docstrings=self.use_handler_docstrings,
+    #         )
+
     def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
         from esmerald.applications import ChildEsmerald, Esmerald
 
@@ -102,7 +127,8 @@ class OpenAPIConfig(BaseModel):
             if (
                 isinstance(route, Gateway)
                 and any(
-                    handler.include_in_schema for handler, _ in route.handler.route_map.values()
+                    handler.include_in_schema
+                    for handler, _ in route.handler.route_map.values()
                 )
                 and (route.handler.path_format or "/") not in schema.paths
             ):
@@ -114,17 +140,19 @@ class OpenAPIConfig(BaseModel):
 
             if isinstance(route, Include):
                 routes = self.get_include_handlers(route)
-                for route in routes:
+                for _route in routes:
                     if (
-                        isinstance(route, Gateway)
+                        isinstance(_route, Gateway)
                         and any(
                             handler.include_in_schema
-                            for handler, _ in route.handler.route_map.values()
+                            for handler, _ in _route.handler.route_map.values()
                         )
-                        and (route.handler.path_format or "/") not in schema.paths
+                        and (_route.handler.path_format or "/") not in schema.paths
                     ):
-                        schema.paths[route.path_format or "/"] = create_path_item(
-                            route=route.handler,
+                        schema.paths[
+                            route.path_format or "/" + _route.path_format
+                        ] = create_path_item(
+                            route=_route.handler,
                             create_examples=self.create_examples,
                             use_handler_docstrings=self.use_handler_docstrings,
                         )

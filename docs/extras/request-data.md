@@ -41,7 +41,7 @@ The data expected to be sent to be validated is all required and expected with t
 }
 ```
 
-You can nest as many models as you wish to nest as long as it's send in the right format.
+You can nest as many models as you wish to nest as long as it is send in the right format.
 
 ## Mandatory fields
 

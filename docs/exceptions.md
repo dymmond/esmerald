@@ -13,8 +13,8 @@ from esmerald.exceptions import HTTPException
 
 ### ImproperlyConfigured
 
-The name might be familiar for some of the developers out there and it's intentional as it si also self explanatory.
-Inherits from the base [HTTPException](#httpexception) and it's raised when a misconfiguration occurs.
+The name might be familiar for some of the developers out there and it is intentional as it si also self explanatory.
+Inherits from the base [HTTPException](#httpexception) and it is raised when a misconfiguration occurs.
 
 ```python
 from esmerald.exceptions import ImproperlyConfigured
@@ -45,7 +45,7 @@ Status code: 403
 
 ### ValidationErrorException
 
-`ValidationErrorException` is part of the Esmerald default `exception_handlers` by design and it's part of it's core when
+`ValidationErrorException` is part of the Esmerald default `exception_handlers` by design and it is part of its core when
 a validation, for example, from pydantic models, occurs.
 
 ```python

@@ -114,7 +114,7 @@ a [ChildEsmerald](#child-esmerald-application) or by creating another router. Le
 ```
 
 Above you create the `/application/apps/routers/customers.py` with all the information you need. It does not need
-to be in one file, you can have a entirely seperate package just to manage the customer, it's up to you.
+to be in one file, you can have a entirely seperate package just to manage the customer, it is up to you.
 
 Now you need to add the new custom router into the main application.
 
@@ -154,7 +154,7 @@ Let's use the same example used in the [custom routers](#custom-router) with the
 {!> ../docs_src/routing/router/childesmerald/customers.py!}
 ```
 
-Since the `ChildEsmerald` is a representation of an [Esmerald](../application/applications.md) olass, we can pass
+Since the `ChildEsmerald` is a representation of an [Esmerald](../application/applications.md) class, we can pass
 the otherwise limited parameters in the [custom router](#custom-router) and all the parameters available to
 [Esmerald](../application/applications.md).
 

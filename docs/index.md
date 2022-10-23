@@ -152,7 +152,7 @@ Separation of settings by enviromment is a must have these days and starting wit
 enough for any application.
 
 The settings are pydantic standard settings and therefore compatible with Esmerald.
-The system brings some defaults that can be used out-of-the-box but it's not mandatory to be used.
+The system brings some defaults that can be used out-of-the-box but it is not mandatory to be used.
 The environment defaults to **production**.
 
 ```python
@@ -307,7 +307,7 @@ of objects to be passed into one single object. This can be particulary useful t
 
 ## Run the application
 
-As mentioned before, we recomment uvicorn for production but it's not mandatory.
+As mentioned before, we recomment uvicorn for production but it is not mandatory.
 
 **Using uvicorn**:
 

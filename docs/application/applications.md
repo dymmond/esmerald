@@ -1,7 +1,7 @@
 # Applications
 
 Esmerald runs Starlette under the hood and therefore includes an application class **Esmerald** that ties
-of it's functionality.
+of its functionality.
 ## The Esmerald class
 
 === "In a nutshell"
@@ -130,7 +130,7 @@ Example:
 
 ## Accessing the application instance
 
-The application instance can be access via `request` when it's available.
+The application instance can be access via `request` when it is available.
 
 Example:
 
@@ -140,7 +140,7 @@ Example:
 
 ## Accessing the state from the application instance
 
-The state can be access via `request` when it's available.
+The state can be access via `request` when it is available.
 
 Example:
 

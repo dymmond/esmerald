@@ -37,14 +37,14 @@ from esmerald.schedulers import AsyncIOScheduler
 app = Esmerald(scheduler_class=AsyncIOScheduler)
 ```
 
-You can have your own scheduler class as long as it's compatible with Esmerald, meaning, ASGI.
+You can have your own scheduler class as long as it is compatible with Esmerald, meaning, ASGI.
 
 !!! warning
     Anything else that does not work with `AsyncIO` is very likely also not to work with Esmerald.
 
 ## Scheduler and the application
 
-The `Scheduler` class is not accessible in any part of the application and it's instantiated when an `Esmerald`
+The `Scheduler` class is not accessible in any part of the application and it is instantiated when an `Esmerald`
 application is created and the parameters are automatically provided.
 
 ### Enabling the scheduler
@@ -98,7 +98,7 @@ Once the tasks are created, you need to pass that same information to your Esmer
 There are two tasks created, the `collect_market_data` and `send_newsletter` which are placed inside a
 `accounts/tasks`.
 
-Now it's time totell the application to activate the scheduler and run the tasks based on the settings provided
+Now it is time to tell the application to activate the scheduler and run the tasks based on the settings provided
 into the `scheduler` handler.
 
 ```python hl_lines="5-9"

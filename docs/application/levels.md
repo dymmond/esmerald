@@ -50,7 +50,7 @@ also **first level** as independent instance.
 
 ## Exceptions
 
-`ChildEsmerald` as per **warning** above has it's own rules but there are always exceptions to any almost every rule.
+`ChildEsmerald` as per **warning** above has its own rules but there are always exceptions to any almost every rule.
 Although it is an independent instance with its own rules this is not applied to **every** parameter.
 
 [Middlewares](../middleware/middleware.md) and [Permissions](../permissions.md) are actually global and the rules of

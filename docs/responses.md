@@ -47,7 +47,7 @@ Another super fast JSON serialization/deserialization response.
 
 ### Template
 
-As the name suggests, it's the response used to render HTML templates.
+As the name suggests, it is the response used to render HTML templates.
 
 Although this one is a bit different to import as it is a datastructure that internally
 uses the `TemplateResponse`.

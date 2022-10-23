@@ -9,11 +9,11 @@ components and packages and imported also inside complex design systems.
 Esmerald handles with those cases without any kind of issues at all.
 
 Starlette routing system alone wasn't enough to serve all the complexities and cases for all sort of
-different APIs and systems so Esmerald created it's own.
+different APIs and systems so Esmerald created its own.
 
 ## Gateway
 
-A Gateway is an extension of the Route really but adds their own logic and handling capabilities as well as it's own
+A Gateway is an extension of the Route really but adds their own logic and handling capabilities as well as its own
 validations without compromising the core.
 
 ### Gateway and application
@@ -262,7 +262,7 @@ The path is `/` for both `src.urls` and `accounts.v1.urls` and unique with their
 
 !!! Check
     Remember, the route paths are registered only once and there is no "override". First in, first registered.
-    This is feature came from Starlette and there is a reason why it's like this and we decided not to break it since
+    This is feature came from Starlette and there is a reason why it is like this and we decided not to break it since
     it was designed to be hierarchical, from the top to bottom.
 
 ## Routes priority
@@ -349,7 +349,7 @@ Gateway('/sells/{date:datetime}', handler=sell)
 The following examples are applied to [Gateway](#gateway), [WebSocketGateway](#websocketgateway)
 and [Include](#include).
 
-We will be using Gateway for it can be replaced by any of the above as it's common among them.
+We will be using Gateway for it can be replaced by any of the above as it is common among them.
 
 #### Middleware
 
@@ -404,7 +404,7 @@ More than one dependency can be added to each mapping.
 
 #### Permissions
 
-Permissions are a must in **every** application. It's very hard to control flows of APIs only with
+Permissions are a must in **every** application. It is very hard to control flows of APIs only with
 dependency injection as that can be very hard to maintain in the future whereas with a permission based
 system, that can be done in the cleanest way possible. More on [permissions](../permissions.md) and how
 to use them.

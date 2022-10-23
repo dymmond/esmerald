@@ -2,7 +2,7 @@
 
 Esmerald includes several middleware clases unique to the application but also allowing some other ways of designing
 them by using [protocols](../protocols.md). Inspired by other great frameworks, Esmerald has a similar approach
-for the middleware protocol. Let's be honest, it's not we can reinvent the wheel on something already working out 
+for the middleware protocol. Let's be honest, it is not that we can reinvent the wheel on something already working out
 of the box.
 
 There are two ways of dedsigning the middleware for Esmerald. [Starlette middleware](#starlette-middleware) and
@@ -99,7 +99,7 @@ done with middleware and how to write some of them, Starlette also goes through 
 
 ## BaseAuthMiddleware
 
-This is a very special middleware and it's the core for every authentication middleware that is used within
+This is a very special middleware and it is the core for every authentication middleware that is used within
 an **Esmerald** application.
 
 `BaseAuthMiddleware` is also a protocol that simply enforces the implementation of the `authenticate` method and

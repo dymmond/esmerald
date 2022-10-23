@@ -77,7 +77,7 @@ $ scripts/lint
 
 ### Documentation
 
-Improving the documentation is quite easy and it's placed inside the `esmerald/docs` folder.
+Improving the documentation is quite easy and it is placed inside the `esmerald/docs` folder.
 
 To start the docs, run:
 

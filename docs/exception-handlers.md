@@ -23,7 +23,7 @@ The application level contains an exception handler `validation_error_exception_
 every `ValidationErrorException` being raised in the application it will be handled by that function **except** the
 `Gateway` that has its own handler `validation_error_gateway`.
 
-The Gateway having it's own exception handler to manage the `ValidationErrorException` takes precedent when the
+The Gateway having its own exception handler to manage the `ValidationErrorException` takes precedent when the
 endpoint is called and the exception is raised.
 
 {! ../docs_src/_shared/exceptions.md !}
