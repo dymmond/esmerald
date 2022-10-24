@@ -26,11 +26,11 @@ class AsyncDAOProtocol(Protocol):  # pragma: no cover
     async def get_all(self, **kwargs: Any) -> List[Any]:
         ...
 
-    async def update(self, obj_id: Any) -> Any:
+    async def update(self, obj_id: Any, **kwargs: Any) -> Any:
         ...
 
     async def delete(self, obj_id: Any) -> Any:
         ...
 
-    async def create(self, **kwargs) -> Any:
+    async def create(self, **kwargs: Any) -> Any:
         ...

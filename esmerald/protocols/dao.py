@@ -26,11 +26,11 @@ class DaoProtocol(Protocol):  # pragma: no cover
     def get_all(self, **kwargs: Any) -> List[Any]:
         ...
 
-    def update(self, obj_id: Any) -> Any:
+    def update(self, obj_id: Any, **kwargs: Any) -> Any:
         ...
 
     def delete(self, obj_id: Any) -> Any:
         ...
 
-    def create(self, **kwargs) -> Any:
+    def create(self, **kwargs: Any) -> Any:
         ...

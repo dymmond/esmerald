@@ -91,3 +91,16 @@ You can always override the property `password_hashers` in your
 
 You can use any migration tool as you see fit. Tortoise also developed one tool to help you out with simple
 configurations, <a href='https://github.com/tortoise/aerich' target='_blank'>aerich</a>.
+
+## General example
+
+Totoise, as mentioned before and in their docs, is heavily inspired by Django and therefore for a lot of people this
+will be very familiar.
+
+Lets create a model using the supported models from Esmerald.
+
+```python
+{!> ../docs_src/databases/tortoise/general_example.py !}
+```
+
+For more detailed information/how to, please check the [tortoise documentation](https://tortoise.github.io/)

@@ -22,7 +22,7 @@ class UserDAO(DaoProtocol):
         # logic to get all the users
         ...
 
-    def update(self, obj_id: int) -> None:
+    def update(self, obj_id: int, user: UserModel) -> None:
         # logic to update the user
         ...
 
@@ -52,7 +52,7 @@ class AsyncUserDAO(AsyncDAOProtocol):
         # logic to get all the users
         ...
 
-    async def update(self, obj_id: int) -> None:
+    async def update(self, obj_id: int, user: UserModel) -> None:
         # logic to update the user
         ...
 
