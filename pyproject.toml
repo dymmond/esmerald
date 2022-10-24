@@ -5,6 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "esmerald"
 description = "Highly scalable, performant, easy to learn, easy to code and for every application."
+long_description = "Highly scalable, performant, easy to learn, easy to code and for every application."
 readme = "README.md"
 requires-python = ">=3.7"
 dynamic = ['version']
@@ -27,7 +28,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Framework :: AsyncIO",
-    "Framework :: Esmerald",
+    "Framework :: AnyIO",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
@@ -58,11 +59,15 @@ dependencies = [
     "tortoise-orm==0.19.2",
     "ujson>=5.5.0,<6",
 ]
+keywords = ["api", "rest", "http", "asgi", "pydantic", "starlette", "fastapi", "framework", "websocket", "openapi", "ml", "machine learning"]
 
 [project.urls]
 Homepage = "https://github.com/dymmond/esmerald"
 Documentation = "https://esmerald.dymmond.com/"
-keywords = ["api", "rest", "http", "asgi", "pydantic", "starlette", "fastapi", "framework", "websocket", "openapi", "ml", "machine learning"]
+Changelog = "https://esmerald.dymmond.com/release-notes/"
+Funding = "https://github.com/sponsors/tarsil"
+Source = "https://github.com/dymmond/esmerald"
+
 [project.optional-dependencies]
 test = [
     "pytest >=7.1.3,<8.0.0",
@@ -167,3 +172,8 @@ addopts = [
 ]
 xfail_strict = true
 junit_family = "xunit2"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/esmerald",
+]

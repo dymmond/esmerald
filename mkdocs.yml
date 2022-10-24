@@ -1,6 +1,6 @@
 site_name: Esmerald
 site_description: Highly scalable, performant, easy to learn, easy to code and for every application.
-site_url: https://www.esmerald.dymmond.com
+site_url: https://esmerald.dymmond.com
 
 theme:
   name: "material"
