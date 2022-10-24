@@ -9,13 +9,6 @@ if TYPE_CHECKING:
 
 
 class Inject:
-    """A class used for dependency injection.
-
-    Args:
-        dependency: callable to inject, can be a function, method or class.
-        use_cache: cache the dependency.
-    """
-
     __slots__ = ("dependency", "use_cache", "value", "signature_model")
 
     def __init__(
@@ -30,8 +23,6 @@ class Inject:
         self.value: Any = Void
 
     async def __call__(self, **kwargs: Dict[str, Any]) -> Any:
-        """Proxies call to 'self.proxy'."""
-
         if self.use_cache and self.value is not Void:
             return self.value
 

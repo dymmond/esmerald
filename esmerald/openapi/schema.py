@@ -158,6 +158,7 @@ def update_schema_field_info(schema: Schema, field_info: FieldInfo) -> Schema:
         value = getattr(field_info, pydantic_key)
         if value not in [None, ..., Undefined]:
             setattr(schema, schema_key, value)
+
     for extra_key, schema_key in EXTRA_TO_OPENAPI_PROPERTY_MAP.items():
         if extra_key in field_info.extra:
             value = field_info.extra[extra_key]
