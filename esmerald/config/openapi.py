@@ -2,9 +2,10 @@ from functools import partial
 from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
 
 from esmerald.openapi.path_item import create_path_item
-from esmerald.routing.gateways import Gateway
+from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.utils.url import clean_path
-from openapi_schema_pydantic.v3.v3_1_0 import (
+from openapi_schemas_pydantic import construct_open_api_with_schema_class
+from openapi_schemas_pydantic.v3_1_0 import (
     Components,
     Contact,
     ExternalDocumentation,
@@ -18,7 +19,6 @@ from openapi_schema_pydantic.v3.v3_1_0 import (
     Tag,
 )
 from pydantic import AnyUrl, BaseModel
-from openapi_schemas_pydantic import construct_open_api_with_schema_class
 from typing_extensions import Literal
 
 if TYPE_CHECKING:
@@ -91,6 +91,9 @@ class OpenAPIConfig(BaseModel):
                 return
 
             for route in app.routes:
+                if isinstance(route, WebSocketGateway):
+                    return
+
                 if isinstance(route, Gateway):
                     if isinstance(route, Gateway) and any(
                         handler.include_in_schema
@@ -104,7 +107,10 @@ class OpenAPIConfig(BaseModel):
                         )
                     continue
 
-                route_app = route.app
+                route_app = getattr(route, "app", None)
+                if not route_app:
+                    continue
+
                 if isinstance(route_app, partial):
                     try:
                         route_app = route_app.__wrapped__

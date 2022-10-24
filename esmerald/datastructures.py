@@ -2,7 +2,7 @@ import os
 from abc import ABC, abstractmethod
 from copy import copy
 from http.cookies import SimpleCookie
-from typing import (
+from typing import (  # noqa
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
@@ -22,8 +22,8 @@ from typing import (
     cast,
 )
 
-from esmerald.backgound import BackgroundTask, BackgroundTasks
-from pydantic import BaseConfig, BaseModel, FilePath, validator
+from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+from pydantic import BaseConfig, BaseModel, FilePath, validator  # noqa
 from pydantic.generics import GenericModel  # noqa
 from starlette.datastructures import URL as URL  # noqa: F401
 from starlette.datastructures import Address as Address  # noqa: F401
@@ -99,6 +99,7 @@ class Cookie(BaseModel):
     secure: Optional[bool] = None
     httponly: Optional[bool] = None
     samesite: Literal["lax", "strict", "none"] = "lax"
+    description: Optional[str] = None
 
     def to_header(self, **kwargs: Any) -> str:
         simple_cookie: SimpleCookie = SimpleCookie()

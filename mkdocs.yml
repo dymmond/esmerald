@@ -48,11 +48,13 @@ nav:
   - Configurations:
       - CORSConfig: "configurations/cors.md"
       - CSRFConfig: "configurations/csrf.md"
-      - OpenAPIConfig: "configurations/openapi.md"
       - SessionConfig: "configurations/session.md"
       - StaticFilesConfig: "configurations/staticfiles.md"
       - TemplateConfig: "configurations/template.md"
       - JWTConfig: "configurations/jwt.md"
+      - OpenAPI:
+          - OpenAPIConfig: "configurations/openapi/config.md"
+          - OpenAPIView: "configurations/openapi/apiview.md"
   - Routing:
       - Router: "routing/router.md"
       - Routes: "routing/routes.md"

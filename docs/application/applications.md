@@ -39,7 +39,6 @@ very useful for development.
 * **terms_of_service** - The terms of service of the application. Used for OpenAPI.
 * **license_info** - The license information. Used for OpenAPI.
 * **servers** - The servers in dictionary format. Used for OpenAPI.
-* **openapi_path** - The url for OpenAPI docs, defaults to `docs`.
 * **name** - The name of the application. Used for OpenAPI.
 * **secret** - The secret key used for internal encryption (for example, user passwords).
 * **allowed_hosts** - A list of allowed hosts. Enables the built-in allowed hosts middleware.
@@ -92,6 +91,7 @@ Use one or the other, not both.
 * **include_in_schema** - Boolean flag to indicate if should be schema inclded or not.
 * **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
 * **security** - Security definition of the application. Used for OpenAPI.
+* **enable_openapi** - Flag to enable/disable OpenAPI docs. It is enabled by default.
 
 ## Application settings
 

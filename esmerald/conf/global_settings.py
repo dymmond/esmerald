@@ -33,11 +33,7 @@ from esmerald.types import (
     ResponseType,
     SchedulerType,
 )
-from openapi_schema_pydantic.v3.v3_1_0 import (
-    License,
-    SecurityRequirement,
-    Server,
-)
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
 from pydantic import BaseSettings
 
 if TYPE_CHECKING:
@@ -49,7 +45,9 @@ class EsmeraldAPISettings(BaseSettings):
     environment: Optional[str] = EnvironmentType.PRODUCTION
     app_name: str = "Esmerald"
     title: str = "My awesome Esmerald application"
-    description: str = "Highly scalable, performant, easy to learn and for every application."
+    description: str = (
+        "Highly scalable, performant, easy to learn and for every application."
+    )
     contact: Optional[Dict[str, Union[str, Any]]] = {
         "name": "admin",
         "email": "admin@myapp.com",
@@ -59,7 +57,6 @@ class EsmeraldAPISettings(BaseSettings):
     license: Optional[License] = None
     security: Optional[List[SecurityRequirement]] = None
     servers: List[Server] = [Server(url="/")]
-    openapi_path: Optional[str] = "docs"
     secret: str = "my secret"
     version: str = __version__
     allowed_hosts: Optional[List[str]] = ["*"]
@@ -238,9 +235,8 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def openapi_config(self) -> OpenAPIConfig:
         """
-        Initial Default configuration for the CORS.
-        This can be overwritten in another setting or simply override `allow_origins` or then override
-        the `def openapi_config()` property to change the behavior of the whole cors_config.
+        Initial Default configuration for the OpenAPI.
+        This can be overwritten in another setting or simply override `openapi_config` or then override the `def openapi_config()` property to change the behavior.
 
         Default:
             OpenAPIConfig
@@ -250,7 +246,7 @@ class EsmeraldAPISettings(BaseSettings):
             class MySettings(EsmeraldAPISettings):
 
                 @property
-                def openapi_config(self) -> CORSConfig:
+                def openapi_config(self) -> OpenAPIConfig:
                     ...
         """
         from esmerald.openapi.apiview import OpenAPIView

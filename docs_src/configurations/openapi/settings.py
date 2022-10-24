@@ -1,15 +1,24 @@
-from esmerald import CORSConfig, EsmeraldAPISettings
+from esmerald import EsmeraldAPISettings, OpenAPIConfig
 
 
-class CustomSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldAPISettings):
     @property
-    def cors_config(self) -> CORSConfig:
+    def openapi_config(self) -> OpenAPIConfig:
         """
-        Initial Default configuration for the CORS.
-        This can be overwritten in another setting or simply override
-        `allow_origins` or then override the `def cors_config()`
-        property to change the behavior of the whole cors_config.
+        Override the default openapi_config from Esmerald.
         """
-        if not self.allow_origins:
-            return None
-        return CORSConfig(allow_origins=self.allow_origins, allow_methods=["*"])
+        from myapp.openapi.views import MyOpenAPIView
+
+        return OpenAPIConfig(
+            openapi_apiview=MyOpenAPIView,
+            title=self.title,
+            version=self.version,
+            contact=self.contact,
+            description=self.description,
+            terms_of_service=self.terms_of_service,
+            license=self.license,
+            servers=self.servers,
+            summary=self.summary,
+            security=self.security,
+            tags=self.tags,
+        )

@@ -22,7 +22,7 @@ from starlette import status
 
 if TYPE_CHECKING:
     from esmerald.exceptions import HTTPException
-    from openapi_schema_pydantic.v3.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
 
 
 class get(HTTPHandler):
@@ -395,7 +395,9 @@ class websocket(WebSocketHandler):
         path: Union[Optional[str], Optional[List[str]]] = None,
         *,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional[
+            Dict[Union[int, Type[Exception]], "ExceptionHandler"]
+        ] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):

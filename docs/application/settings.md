@@ -155,10 +155,6 @@ very useful for development.
 
     <sup>Default: `None`.</sup>
 
-* **openapi_path** - The url for OpenAPI docs, defaults to `docs`.
-
-    <sup>Default: `docs`.</sup>
-
 * **secret** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
 update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/tortoise.md)
 support.
@@ -331,6 +327,10 @@ arguments, and may be be either standard functions, or async functions.
 Use one or the other, not both.
 
     <sup>Default `None`</sup>
+
+* **enable_openapi** - If the OpenAPI should be enabled or not.
+
+    <sup>Default `True`</sup>
 
 !!! Check
     All the configurations are pydantic objects. Check [CORS](../configurations/cors.md),
