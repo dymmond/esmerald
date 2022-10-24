@@ -100,7 +100,7 @@ class OpenAPIConfig(BaseModel):
                         for handler, _ in route.handler.route_map.values()
                     ):
                         path = clean_path(prefix + route.path)
-                        schema.paths[prefix + route.path_format] = create_path_item(
+                        schema.paths[path] = create_path_item(
                             route=route.handler,
                             create_examples=self.create_examples,
                             use_handler_docstrings=self.use_handler_docstrings,

@@ -1,6 +1,3 @@
-from typing import Any, NoReturn
-
-import pytest
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import delete
 from esmerald.testclient import create_client

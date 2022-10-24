@@ -395,9 +395,7 @@ class websocket(WebSocketHandler):
         path: Union[Optional[str], Optional[List[str]]] = None,
         *,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[
-            Dict[Union[int, Type[Exception]], "ExceptionHandler"]
-        ] = None,
+        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):

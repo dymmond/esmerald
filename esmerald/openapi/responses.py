@@ -27,8 +27,8 @@ if TYPE_CHECKING:
 
     from esmerald.datastructures import Cookie
     from esmerald.routing.router import HTTPHandler
+    from esmerald.types import AnyCallable
     from openapi_schemas_pydantic.v3_1_0.responses import Responses
-    from starlite.types import AnyCallable
 
 
 def create_cookie_schema(cookie: "Cookie") -> Schema:

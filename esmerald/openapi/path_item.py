@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
 
+from esmerald.enums import HttpMethod
 from esmerald.openapi.parameters import create_parameter_for_handler
 from esmerald.openapi.request_body import create_request_body
 from esmerald.openapi.responses import create_responses
@@ -42,7 +43,10 @@ def create_path_item(
 ) -> PathItem:
     path_item = PathItem()
 
-    for http_method, handler_tuple in route.route_map.items():
+    # remove the HEAD from the docs
+    route_map = {k: v for k, v in route.route_map.items() if k != HttpMethod.HEAD}
+
+    for http_method, handler_tuple in route_map.items():
         handler, _ = handler_tuple
 
         if handler.include_in_schema:

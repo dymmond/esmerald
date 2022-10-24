@@ -5,8 +5,8 @@ from esmerald.exceptions import ImproperlyConfigured
 from openapi_schemas_pydantic.utils.constants import PYDANTIC_FIELD_SHAPE_MAP
 
 if TYPE_CHECKING:
+    from openapi_schemas_pydantic.utils.enums import OpenAPIType
     from pydantic.fields import ModelField
-    from starlite.openapi.enums import OpenAPIType
 
 CAPITAL_LETTERS_PATTERN = re.compile(r"(?=[A-Z])")
 
