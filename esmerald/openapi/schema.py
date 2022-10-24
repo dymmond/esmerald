@@ -4,19 +4,17 @@ from enum import Enum, EnumMeta
 from typing import Any, List, Optional, Type, Union
 
 from esmerald.datastructures import UploadFile
-from esmerald.openapi.constants import (
+from esmerald.openapi.enums import OpenAPIType
+from esmerald.openapi.utils import get_openapi_type_for_complex_type
+from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
+from openapi_schemas_pydantic.utils.constants import (
     EXTRA_TO_OPENAPI_PROPERTY_MAP,
     PYDANTIC_TO_OPENAPI_PROPERTY_MAP,
     TYPE_MAP,
 )
-from esmerald.openapi.enums import OpenAPIType
-from esmerald.openapi.utils import (
-    OpenAPI310PydanticSchema,
-    get_openapi_type_for_complex_type,
-)
-from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
-from openapi_schema_pydantic.v3.v3_1_0.example import Example
-from openapi_schema_pydantic.v3.v3_1_0.schema import Schema
+from openapi_schemas_pydantic.utils.utils import OpenAPI310PydanticSchema
+from openapi_schemas_pydantic.v3_1_0.example import Example
+from openapi_schemas_pydantic.v3_1_0.schema import Schema
 from pydantic import (
     BaseModel,
     ConstrainedBytes,

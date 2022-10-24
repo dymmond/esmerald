@@ -1,20 +1,14 @@
 import re
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING
 
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.openapi.constants import PYDANTIC_FIELD_SHAPE_MAP
-from openapi_schema_pydantic.v3.v3_1_0.schema import Schema
-from pydantic import BaseModel
+from openapi_schemas_pydantic.utils.constants import PYDANTIC_FIELD_SHAPE_MAP
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from starlite.openapi.enums import OpenAPIType
 
 CAPITAL_LETTERS_PATTERN = re.compile(r"(?=[A-Z])")
-
-
-class OpenAPI310PydanticSchema(Schema):
-    schema_class: Type[BaseModel]
 
 
 def pascal_case_to_text(string: str) -> str:

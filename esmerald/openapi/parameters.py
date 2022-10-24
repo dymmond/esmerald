@@ -5,13 +5,13 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.schema import create_schema
 from esmerald.utils.constants import EXTRA_KEY_REQUIRED, RESERVED_KWARGS
 from esmerald.utils.dependency import is_dependency_field
-from openapi_schema_pydantic.v3.v3_1_0.parameter import Parameter
+from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
 from pydantic.fields import Undefined
 
 if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import Dependencies
-    from openapi_schema_pydantic.v3.v3_1_0.schema import Schema
+    from openapi_schemas_pydantic.v3_1_0.schema import Schema
     from pydantic import BaseModel
     from pydantic.fields import ModelField
 

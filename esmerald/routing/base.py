@@ -35,7 +35,6 @@ from esmerald.signature import SignatureModelFactory, get_signature_model
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
-from pydantic import BaseConfig, Extra
 from starlette.convertors import CONVERTOR_TYPES
 from starlette.requests import HTTPConnection
 from starlette.responses import JSONResponse
@@ -78,10 +77,6 @@ CONV2TYPE = {conv: typ for typ, conv in CONVERTOR_TYPES.items()}
 T = TypeVar("T", bound="BaseHandlerMixin")
 
 
-class ParamConf(BaseConfig):
-    extra = Extra.allow
-
-
 class PathParameterSchema(TypedDict):
     name: str
     full: str
@@ -89,9 +84,7 @@ class PathParameterSchema(TypedDict):
 
 
 class OpenAPIDefinitionMixin:
-    def parse_path(
-        self, path: str
-    ) -> Tuple[str, str, List[Union[str, PathParameterSchema]]]:
+    def parse_path(self, path: str) -> Tuple[str, str, List[Union[str, PathParameterSchema]]]:
         """
         Using the Starlette CONVERTORS and the application registered convertors,
         transforms the path into a PathParameterSchema used for the OpenAPI definition.
@@ -192,9 +185,7 @@ class BaseResponseHandler:
         status_code: Optional[int] = None,
         media_type: Optional[str] = MediaType.TEXT,
     ) -> "AsyncAnyCallable":
-        async def response_content(
-            data: Response, **kwargs: Dict[str, Any]
-        ) -> StarletteResponse:
+        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> StarletteResponse:
             _cookies = self.get_cookies(data.cookies, cookies)
             _headers = {
                 **self.get_headers(headers),
@@ -222,9 +213,7 @@ class BaseResponseHandler:
     ) -> "AsyncAnyCallable":
         """Creates a handler function for Esmerald JSON responses"""
 
-        async def response_content(
-            data: Response, **kwargs: Dict[str, Any]
-        ) -> StarletteResponse:
+        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> StarletteResponse:
             if status_code:
                 data.status_code = status_code
             return data
@@ -269,9 +258,7 @@ class BaseResponseHandler:
         response_class: "ResponseType",
         status_code: int,
     ) -> "AsyncAnyCallable":
-        async def response_content(
-            data: Any, **kwargs: Dict[str, Any]
-        ) -> StarletteResponse:
+        async def response_content(data: Any, **kwargs: Dict[str, Any]) -> StarletteResponse:
 
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies, [])
@@ -381,18 +368,14 @@ class BaseResponseHandler:
         """
         if self._response_handler is Void:
             media_type = (
-                self.media_type.value
-                if isinstance(self.media_type, Enum)
-                else self.media_type
+                self.media_type.value if isinstance(self.media_type, Enum) else self.media_type
             )
 
             response_class = self.get_response_class()
             headers = self.get_response_headers()
             cookies = self.get_response_cookies()
 
-            if is_class_and_subclass(
-                self.signature.return_annotation, ResponseContainer
-            ):
+            if is_class_and_subclass(self.signature.return_annotation, ResponseContainer):
                 handler = self.create_response_container_handler(
                     cookies=cookies,
                     media_type=self.media_type,
@@ -403,9 +386,7 @@ class BaseResponseHandler:
                 self.signature.return_annotation,
                 (JSONResponse, ORJSONResponse, UJSONResponse),
             ):
-                handler = self.create_json_response_handler(
-                    status_code=self.status_code
-                )
+                handler = self.create_json_response_handler(status_code=self.status_code)
             elif is_class_and_subclass(self.signature.return_annotation, Response):
                 handler = self.create_response_handler(
                     cookies=cookies,
@@ -413,9 +394,7 @@ class BaseResponseHandler:
                     media_type=self.media_type,
                     headers=headers,
                 )
-            elif is_class_and_subclass(
-                self.signature.return_annotation, StarletteResponse
-            ):
+            elif is_class_and_subclass(self.signature.return_annotation, StarletteResponse):
                 handler = self.create_starlette_response_handler(
                     cookies=cookies,
                     media_type=self.media_type,
@@ -463,9 +442,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         Gets the path parameters in a PathParameterSchema format.
         """
         path_components = self.parse_path(self.path)
-        parameters = [
-            component for component in path_components if isinstance(component, dict)
-        ]
+        parameters = [component for component in path_components if isinstance(component, dict)]
         return parameters
 
     @property
@@ -484,9 +461,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
     def dependency_names(self) -> Set[str]:
         """A unique set of all dependency names provided in the handlers ownership
         layers."""
-        layered_dependencies = (
-            layer.dependencies or {} for layer in self.ownership_layers
-        )
+        layered_dependencies = (layer.dependencies or {} for layer in self.ownership_layers)
         return {name for layer in layered_dependencies for name in layer.keys()}
 
     def resolve_permissions(self) -> List["Permission"]:
@@ -524,9 +499,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return cast("Dict[str, Inject]", self._dependencies)
 
     @staticmethod
-    def has_dependency_unique(
-        dependencies: Dict[str, Inject], key: str, injector: Inject
-    ) -> None:
+    def has_dependency_unique(dependencies: Dict[str, Inject], key: str, injector: Inject) -> None:
         """
         Validates that a given inject has not been already defined under a
         different key in any of the layers.
@@ -560,9 +533,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                 filtered_cookies.append(cookie)
         normalized_cookies: List[Dict[str, Any]] = []
         for cookie in filtered_cookies:
-            normalized_cookies.append(
-                cookie.dict(exclude_none=True, exclude={"description"})
-            )
+            normalized_cookies.append(cookie.dict(exclude_none=True, exclude={"description"}))
         return normalized_cookies
 
     def get_headers(self, headers: "ResponseHeaders") -> Dict[str, Any]:

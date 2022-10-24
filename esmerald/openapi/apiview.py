@@ -1,4 +1,4 @@
-from typing import Callable, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Dict
 
 from esmerald.enums import MediaType, OpenAPIMediaType
 from esmerald.exceptions import ImproperlyConfigured
@@ -10,7 +10,9 @@ from orjson import OPT_INDENT_2, dumps
 from starlette.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 if TYPE_CHECKING:
-    from openapi_schema_pydantic.v3.v3_1_0.open_api import OpenAPI
+    from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
+
+    # from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
     from typing_extensions import Literal
 
 MSG_OPENAPI_NOT_INITIALIZED = "Esmerald has not been created with an OpenAPIConfig"
@@ -45,10 +47,7 @@ class OpenAPIView(APIView):
         f"https://unpkg.com/@stoplight/elements@{stoplight_elements_version}/web-components.min.js"
     )
 
-    # internal
     _dumped_schema: str = ""
-    # until swagger-ui supports v3.1.* of OpenAPI officially, we need to modify the schema for it and keep it
-    # separate from the redoc version of the schema, which is unmodified.
     _dumped_modified_schema: str = ""
 
     @staticmethod

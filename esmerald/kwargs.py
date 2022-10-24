@@ -13,6 +13,13 @@ from typing import (
     cast,
 )
 
+from esmerald.enums import EncodingType, ParamType
+from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
+from esmerald.injector import Inject
+from esmerald.parsers import parse_form_data
+from esmerald.requests import Request
+from esmerald.signature import SignatureModel, get_signature_model
+from esmerald.utils.constants import EXTRA_KEY_REQUIRED, RESERVED_KWARGS
 from pydantic.fields import (
     SHAPE_DEQUE,
     SHAPE_FROZENSET,
@@ -25,30 +32,12 @@ from pydantic.fields import (
     ModelField,
     Undefined,
 )
+from pydantic_factories.utils import is_optional
 from starlette.datastructures import URL
-
-from esmerald.enums import ParamType, EncodingType
-from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.injector import Inject
-from esmerald.parsers import parse_form_data
-from esmerald.requests import Request
-from esmerald.signature import SignatureModel, get_signature_model
-from esmerald.utils.constants import EXTRA_KEY_REQUIRED, RESERVED_KWARGS
 
 if TYPE_CHECKING:
     from esmerald.types import ReservedKwargs
     from esmerald.websockets import WebSocket
-
-# Shapes corresponding to sequences
-SEQ_SHAPES = {
-    SHAPE_LIST,
-    SHAPE_SET,
-    SHAPE_SEQUENCE,
-    SHAPE_TUPLE,
-    SHAPE_TUPLE_ELLIPSIS,
-    SHAPE_DEQUE,
-    SHAPE_FROZENSET,
-}
 
 
 class ParameterDefinition(NamedTuple):
@@ -107,6 +96,7 @@ class KwargsModel:
         "expected_query_params",
         "expected_reserved_kwargs",
         "sequence_query_parameter_names",
+        "is_data_optional",
     )
 
     def __init__(
@@ -120,6 +110,7 @@ class KwargsModel:
         expected_query_params: Set[ParameterDefinition],
         expected_reserved_kwargs: Set["ReservedKwargs"],
         sequence_query_parameter_names: Set[str],
+        is_data_optional: bool,
     ) -> None:
         """This class is used to model the required kwargs for a given
         RouteHandler and its dependencies.
@@ -153,6 +144,64 @@ class KwargsModel:
             or expected_query_params
             or expected_reserved_kwargs
         )
+        self.is_data_optional = is_data_optional
+
+    @classmethod
+    def _get_param_definitions(
+        cls,
+        path_parameters: Set[str],
+        dependencies: Dict[str, Inject],
+        signature_model_fields: Dict[str, ModelField],
+    ) -> Tuple[Set[ParameterDefinition], set]:
+        sequence_shapes = {
+            SHAPE_LIST,
+            SHAPE_SET,
+            SHAPE_SEQUENCE,
+            SHAPE_TUPLE,
+            SHAPE_TUPLE_ELLIPSIS,
+            SHAPE_DEQUE,
+            SHAPE_FROZENSET,
+        }
+
+        expected_dependencies = {
+            cls._create_dependency_graph(key=key, dependencies=dependencies)
+            for key in dependencies
+            if key in signature_model_fields
+        }
+        ignored_keys = {
+            *RESERVED_KWARGS,
+            *(dependency.key for dependency in expected_dependencies),
+        }
+
+        param_definitions = {
+            *(
+                cls._create_parameter_definition(
+                    allow_none=model_field.allow_none,
+                    field_name=field_name,
+                    field_info=model_field.field_info,
+                    path_parameters=path_parameters,
+                    is_sequence=model_field.shape in sequence_shapes,
+                )
+                for field_name, model_field in signature_model_fields.items()
+                if field_name not in ignored_keys
+            ),
+        }
+
+        for field_name, model_field in filter(
+            lambda items: items[0] not in ignored_keys,
+            signature_model_fields.items(),
+        ):
+            signature_field_info = model_field.field_info
+            param_definitions.add(
+                cls._create_parameter_definition(
+                    allow_none=model_field.allow_none,
+                    field_name=field_name,
+                    field_info=signature_field_info,
+                    path_parameters=path_parameters,
+                    is_sequence=model_field.shape in sequence_shapes,
+                )
+            )
+        return param_definitions, expected_dependencies
 
     @classmethod
     def create_for_signature_model(
@@ -184,45 +233,12 @@ class KwargsModel:
             for field_name in signature_model.__fields__
             if field_name in RESERVED_KWARGS
         }
-        expected_dependencies = {
-            cls._create_dependency_graph(key=key, dependencies=dependencies)
-            for key in dependencies
-            if key in signature_model.__fields__
-        }
 
-        ignored_keys = {
-            *RESERVED_KWARGS,
-            *(dependency.key for dependency in expected_dependencies),
-        }
-
-        param_definitions = {
-            *(
-                cls._create_parameter_definition(
-                    allow_none=model_field.allow_none,
-                    field_name=field_name,
-                    field_info=model_field.field_info,
-                    path_parameters=path_parameters,
-                    is_sequence=model_field.shape in SEQ_SHAPES,
-                )
-                for field_name, model_field in signature_model.__fields__.items()
-                if field_name not in ignored_keys
-            ),
-        }
-
-        for field_name, model_field in filter(
-            lambda items: items[0] not in ignored_keys,
-            signature_model.__fields__.items(),
-        ):
-            signature_field_info = model_field.field_info
-            param_definitions.add(
-                cls._create_parameter_definition(
-                    allow_none=model_field.allow_none,
-                    field_name=field_name,
-                    field_info=signature_field_info,
-                    path_parameters=path_parameters,
-                    is_sequence=model_field.shape in SEQ_SHAPES,
-                )
-            )
+        param_definitions, expected_dependencies = cls._get_param_definitions(
+            path_parameters,
+            dependencies,
+            signature_model_fields=signature_model.__fields__,
+        )
 
         expected_path_parameters = {p for p in param_definitions if p.param_type == ParamType.PATH}
         expected_header_parameters = {
@@ -289,6 +305,9 @@ class KwargsModel:
             expected_header_params=expected_header_parameters,
             expected_reserved_kwargs=cast("Set[ReservedKwargs]", expected_reserved_kwargs),
             sequence_query_parameter_names=sequence_query_parameter_names,
+            is_data_optional=is_optional(signature_model.__fields__["data"])
+            if "data" in expected_reserved_kwargs
+            else False,
         )
 
     def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> Dict[str, Any]:
@@ -422,14 +441,11 @@ class KwargsModel:
             field_alias = field_name
             param_type = ParamType.PATH
         elif extra.get(ParamType.HEADER):
-            field_alias = field_info.alias or extra[ParamType.HEADER]
+            field_alias = extra[ParamType.HEADER]
             param_type = ParamType.HEADER
         elif extra.get(ParamType.COOKIE):
-            field_alias = field_info.alias or extra[ParamType.COOKIE]
+            field_alias = extra[ParamType.COOKIE]
             param_type = ParamType.COOKIE
-        elif extra.get(ParamType.PATH):
-            field_alias = field_info.alias or extra[ParamType.PATH]
-            param_type = ParamType.PATH
 
         return ParameterDefinition(
             param_type=param_type,
@@ -507,9 +523,6 @@ class KwargsModel:
             )
 
     def _sequence_or_scalar_param(self, key: str, value: List[str]) -> Union[str, List[str]]:
-        """Returns the first element of 'value' if we expect it to be a scalar
-        value (appears in self.sequence_query_parameter_names) and it contains
-        only a single element."""
         return (
             value[0]
             if key not in self.sequence_query_parameter_names and len(value) == 1
@@ -518,10 +531,13 @@ class KwargsModel:
 
     async def _get_request_data(self, request: "Request") -> Any:
         """
-        Retrieves the data - either json data or form data - from the request
+        Gets the requested data.
         """
         if self.expected_form_data:
             media_type, model_field = self.expected_form_data
             form_data = await request.form()
-            return parse_form_data(media_type=media_type, form_data=form_data, field=model_field)
+            parsed_form = parse_form_data(
+                media_type=media_type, form_data=form_data, field=model_field
+            )
+            return parsed_form if parsed_form or not self.is_data_optional else None
         return await request.json()

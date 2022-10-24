@@ -14,12 +14,12 @@ from esmerald.openapi.schema import create_schema
 from esmerald.openapi.utils import pascal_case_to_text
 from esmerald.responses import Response as EsmeraldResponse
 from esmerald.utils.model import create_parsed_model_field
-from openapi_schema_pydantic.v3.v3_1_0 import Response
-from openapi_schema_pydantic.v3.v3_1_0.header import Header
-from openapi_schema_pydantic.v3.v3_1_0.media_type import (
+from openapi_schemas_pydantic.v3_1_0 import Response
+from openapi_schemas_pydantic.v3_1_0.header import Header
+from openapi_schemas_pydantic.v3_1_0.media_type import (
     MediaType as OpenAPISchemaMediaType,
 )
-from openapi_schema_pydantic.v3.v3_1_0.schema import Schema
+from openapi_schemas_pydantic.v3_1_0.schema import Schema
 from starlette.routing import get_name
 from typing_extensions import get_args, get_origin
 
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
     from esmerald.datastructures import Cookie
     from esmerald.routing.router import HTTPHandler
-    from pydantic_openapi_schema.v3_1_0.responses import Responses
+    from openapi_schemas_pydantic.v3_1_0.responses import Responses
     from starlite.types import AnyCallable
 
 
@@ -65,15 +65,11 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
         elif get_origin(signature.return_annotation) is EsmeraldResponse:
             return_annotation = get_args(signature.return_annotation)[0] or Any
         as_parsed_model_field = create_parsed_model_field(return_annotation)
-        schema = create_schema(
-            field=as_parsed_model_field, create_examples=create_examples
-        )
+        schema = create_schema(field=as_parsed_model_field, create_examples=create_examples)
         schema.contentEncoding = handler.content_encoding
         schema.contentMediaType = handler.content_media_type
         response = Response(
-            content={
-                handler.media_type: OpenAPISchemaMediaType(media_type_schema=schema)
-            },
+            content={handler.media_type: OpenAPISchemaMediaType(media_type_schema=schema)},
             description=description,
         )
     elif signature.return_annotation is Redirect:
@@ -93,8 +89,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
                 handler.media_type: OpenAPISchemaMediaType(
                     media_type_schema=Schema(
                         type=OpenAPIType.STRING,
-                        contentEncoding=handler.content_encoding
-                        or "application/octet-stream",
+                        contentEncoding=handler.content_encoding or "application/octet-stream",
                         contentMediaType=handler.content_media_type,
                     )
                 )
@@ -128,16 +123,12 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
         for attribute_name, attribute_value in value.dict(exclude_none=True).items():
             if attribute_name == "value":
                 model_field = create_parsed_model_field(type(attribute_value))
-                header.param_schema = create_schema(
-                    field=model_field, create_examples=False
-                )
+                header.param_schema = create_schema(field=model_field, create_examples=False)
         response.headers[key] = header
     cookies = handler.get_response_cookies()
     if cookies:
         response.headers["Set-Cookie"] = Header(
-            param_schema=Schema(
-                allOF=[create_cookie_schema(cookie=cookie) for cookie in cookies]
-            )
+            param_schema=Schema(allOF=[create_cookie_schema(cookie=cookie) for cookie in cookies])
         )
     return response
 
@@ -202,9 +193,7 @@ def create_additional_responses(
         yield str(status_code), Response(
             description=additional_response.description,
             content={
-                additional_response.media_type: OpenAPISchemaMediaType(
-                    media_type_schema=schema
-                )
+                additional_response.media_type: OpenAPISchemaMediaType(media_type_schema=schema)
             },
         )
 

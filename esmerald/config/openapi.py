@@ -18,7 +18,7 @@ from openapi_schema_pydantic.v3.v3_1_0 import (
     Tag,
 )
 from pydantic import AnyUrl, BaseModel
-from pydantic_openapi_schema import construct_open_api_with_schema_class
+from openapi_schemas_pydantic import construct_open_api_with_schema_class
 from typing_extensions import Literal
 
 if TYPE_CHECKING:

@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
 from esmerald.openapi.parameters import create_parameter_for_handler
 from esmerald.openapi.request_body import create_request_body
 from esmerald.openapi.responses import create_responses
-from openapi_schema_pydantic.v3.v3_1_0.operation import Operation
-from openapi_schema_pydantic.v3.v3_1_0.path_item import PathItem
+from openapi_schemas_pydantic.v3_1_0.operation import Operation
+from openapi_schemas_pydantic.v3_1_0.path_item import PathItem
 from starlette.routing import get_name
 
 if TYPE_CHECKING:
     from esmerald.routing.handlers import HTTPHandler
     from esmerald.types import AnyCallable
-    from openapi_schema_pydantic.v3.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from pydantic import BaseModel
 
 
@@ -59,9 +59,7 @@ def create_path_item(
             raises_validation_error = bool(
                 "data" in handler_fields or path_item.parameters or parameters
             )
-            handler_name = (
-                get_name(cast("AnyCallable", handler.fn)).replace("_", " ").title()
-            )
+            handler_name = get_name(cast("AnyCallable", handler.fn)).replace("_", " ").title()
             request_body = None
 
             if "data" in handler_fields:
@@ -74,9 +72,7 @@ def create_path_item(
                 operationId=handler.operation_id or handler_name,
                 tags=tags,
                 summary=handler.summary,
-                description=get_description_for_handler(
-                    handler, use_handler_docstrings
-                ),
+                description=get_description_for_handler(handler, use_handler_docstrings),
                 deprecated=handler.deprecated,
                 responses=create_responses(
                     handler=handler,
