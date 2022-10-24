@@ -59,8 +59,11 @@ def create_path_item(
             raises_validation_error = bool(
                 "data" in handler_fields or path_item.parameters or parameters
             )
-            handler_name = get_name(cast("AnyCallable", handler.fn)).replace("_", " ").title()
+            handler_name = (
+                get_name(cast("AnyCallable", handler.fn)).replace("_", " ").title()
+            )
             request_body = None
+
             if "data" in handler_fields:
                 request_body = create_request_body(
                     field=handler_fields["data"], create_examples=create_examples
@@ -71,7 +74,9 @@ def create_path_item(
                 operationId=handler.operation_id or handler_name,
                 tags=tags,
                 summary=handler.summary,
-                description=get_description_for_handler(handler, use_handler_docstrings),
+                description=get_description_for_handler(
+                    handler, use_handler_docstrings
+                ),
                 deprecated=handler.deprecated,
                 responses=create_responses(
                     handler=handler,

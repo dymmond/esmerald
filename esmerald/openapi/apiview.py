@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable, Dict
+from typing import Callable, Dict, TYPE_CHECKING
 
 from esmerald.enums import MediaType, OpenAPIMediaType
 from esmerald.exceptions import ImproperlyConfigured
@@ -210,25 +210,14 @@ class OpenAPIView(APIView):
         )
 
     def render_swagger_ui(self, request: Request) -> str:
-        """This method renders an HTML page for Swagger-UI.
-
-        Notes:
-            - override this method to customize the template.
-
-        Args:
-            request:
-                A [Request][starlite.connection.Request] instance.
-
-        Returns:
-            A rendered html string.
-        """
         schema = self.get_schema_from_request(request)
         # Note: Fix for Swagger rejection OpenAPI >=3.1
         if self._dumped_modified_schema == "":
             schema_copy = schema.copy()
             schema_copy.openapi = "3.0.3"
             self._dumped_modified_schema = dumps(
-                schema_copy.json(by_alias=True, exclude_none=True), option=OPT_INDENT_2
+                schema_copy.json(by_alias=True, exclude_none=True),
+                option=OPT_INDENT_2,
             ).decode("utf-8")
         head = f"""
           <head>
@@ -269,18 +258,6 @@ class OpenAPIView(APIView):
         """
 
     def render_stoplight_elements(self, request: Request) -> str:
-        """This method renders an HTML page for StopLight Elements.
-
-        Notes:
-            - override this method to customize the template.
-
-        Args:
-            request:
-                A [Request][starlite.connection.Request] instance.
-
-        Returns:
-            A rendered html string.
-        """
         schema = self.get_schema_from_request(request)
         head = f"""
           <head>
@@ -311,22 +288,11 @@ class OpenAPIView(APIView):
         """
 
     def render_redoc(self, request: Request) -> str:  # pragma: no cover
-        """This method renders an HTML page for Redoc.
-
-        Notes:
-            - override this method to customize the template.
-
-        Args:
-            request:
-                A [Request][starlite.connection.Request] instance.
-
-        Returns:
-            A rendered html string.
-        """
         schema = self.get_schema_from_request(request)
         if self._dumped_schema == "":
             self._dumped_schema = dumps(
-                schema.json(by_alias=True, exclude_none=True), option=OPT_INDENT_2
+                schema.json(by_alias=True, exclude_none=True),
+                option=OPT_INDENT_2,
             ).decode("utf-8")
         head = f"""
           <head>

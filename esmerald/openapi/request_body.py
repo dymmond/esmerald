@@ -9,7 +9,9 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 
-def create_request_body(field: "ModelField", create_examples: bool) -> Optional[RequestBody]:
+def create_request_body(
+    field: "ModelField", create_examples: bool
+) -> Optional[RequestBody]:
     """
     Gets the request body of the handler.
     """

@@ -11,9 +11,7 @@ class Profile(models.Model):
     A profile is usually associated with a user in a 1:1 relationship.
     """
 
-    user = fields.OneToOneField(
-        "User", related_name="user", on_delete=fields.CASCADE, null=False
-    )
+    user = fields.OneToOneField("User", related_name="user", on_delete=fields.CASCADE, null=False)
     profile_type = fields.Charfield()
     role = fields.CharField()
 

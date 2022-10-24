@@ -46,12 +46,12 @@ def clean_values_from_example(value: Any):
     if isinstance(value, BaseModel):
         value = value.dict()
 
-    if isinstance((value, (list, set))):
+    if isinstance(value, (list, set)):
         value = [clean_values_from_example(v) for v in value]
 
     if isinstance(value, dict):
         for k, v in value.items():
-            value[k] - clean_values_from_example(v)
+            value[k] = clean_values_from_example(v)
 
     return value
 
@@ -63,7 +63,9 @@ class ExampleFactory(ModelFactory[BaseModel]):
 
 
 def create_numerical_constrained_field_schema(
-    field_type: Union[Type[ConstrainedFloat], Type[ConstrainedInt], Type[ConstrainedDecimal]]
+    field_type: Union[
+        Type[ConstrainedFloat], Type[ConstrainedInt], Type[ConstrainedDecimal]
+    ]
 ) -> Schema:
 
     schema = Schema(
@@ -110,7 +112,10 @@ def create_collection_constrained_field_schema(
     if issubclass(field_type, ConstrainedSet):
         schema.uniqueItems = True
     if sub_fields:
-        items = [create_schema(field=sub_field, create_examples=False) for sub_field in sub_fields]
+        items = [
+            create_schema(field=sub_field, create_examples=False)
+            for sub_field in sub_fields
+        ]
         if len(items) > 1:
             schema.items = Schema(oneOf=items)  # type: ignore[arg-type]
         else:
@@ -137,7 +142,9 @@ def create_constrained_field_schema(
         return create_numerical_constrained_field_schema(field_type=field_type)
     if issubclass(field_type, (ConstrainedStr, ConstrainedBytes)):
         return create_string_constrained_field_schema(field_type=field_type)
-    return create_collection_constrained_field_schema(field_type=field_type, sub_fields=sub_fields)
+    return create_collection_constrained_field_schema(
+        field_type=field_type, sub_fields=sub_fields
+    )
 
 
 def update_schema_field_info(schema: Schema, field_info: FieldInfo) -> Schema:
@@ -166,11 +173,15 @@ def get_schema_for_field_type(field: ModelField) -> Schema:
     if is_pydantic_model(field_type):
         return OpenAPI310PydanticSchema(schema_class=field_type)
     if is_dataclass(field_type):
-        return OpenAPI310PydanticSchema(schema_class=convert_dataclass_to_model(field_type))
+        return OpenAPI310PydanticSchema(
+            schema_class=convert_dataclass_to_model(field_type)
+        )
     if isinstance(field_type, EnumMeta):
         enum_values: List[Union[str, int]] = [v.value for v in field_type]  # type: ignore
         openapi_type = (
-            OpenAPIType.STRING if isinstance(enum_values[0], str) else OpenAPIType.INTEGER
+            OpenAPIType.STRING
+            if isinstance(enum_values[0], str)
+            else OpenAPIType.INTEGER
         )
         return Schema(type=openapi_type, enum=enum_values)
     if field_type is UploadFile:
@@ -189,7 +200,9 @@ def create_examples_for_field(field: ModelField) -> List[Example]:
         return []
 
 
-def create_schema(field: ModelField, create_examples: bool, ignore_optional: bool = False):
+def create_schema(
+    field: ModelField, create_examples: bool, ignore_optional: bool = False
+):
     if is_optional(field) and not ignore_optional:
         non_optional_schema = create_schema(
             field=field, create_examples=False, ignore_optional=True

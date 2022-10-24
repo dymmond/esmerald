@@ -1,8 +1,9 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type, Union, cast
+from functools import partial
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
 
 from esmerald.openapi.path_item import create_path_item
 from esmerald.routing.gateways import Gateway
-from esmerald.routing.router import Include
+from esmerald.utils.url import clean_path
 from openapi_schema_pydantic.v3.v3_1_0 import (
     Components,
     Contact,
@@ -21,7 +22,7 @@ from pydantic_openapi_schema import construct_open_api_with_schema_class
 from typing_extensions import Literal
 
 if TYPE_CHECKING:
-    from esmerald.applications import ChildEsmerald, Esmerald
+    from esmerald.applications import Esmerald
     from esmerald.openapi.apiview import OpenAPIView
 
 
@@ -81,82 +82,37 @@ class OpenAPIConfig(BaseModel):
             ),
         )
 
-    def get_include_handlers(
-        self, router: "Include", route_list: Optional[List["Gateway"]] = None
-    ):
-        if not route_list:
-            route_list = []
-        for route in router.routes:
-            if isinstance(route, Include):
-                route_list = self.get_include_handlers(route, route_list)
-            elif isinstance(route, Gateway):
-                route_list.append(route)
-        return route_list
-
-    def create_schema_path_gateway(self, route: "Gateway", schema_path: Dict[Any, Any]):
-        ...
-
-    def create_schema_path_incldue(self, route: "Include", schema_path: Dict[Any, Any]):
-        ...
-
-    def create_schema_path_esmerald_or_child_router(
-        self, app: Union["Esmerald", "ChildEsmerald"], schema_path: Dict[Any, Any]
-    ):
-        ...
-
-    #     if (
-    #         isinstance(route, Gateway)
-    #         and any(
-    #             handler.include_in_schema
-    #             for handler, _ in route.handler.route_map.values()
-    #         )
-    #         and (route.handler.path_format or "/") not in schema.paths
-    #     ):
-    #         schema.paths[route.path_format or "/"] = create_path_item(
-    #             route=route.handler,
-    #             create_examples=self.create_examples,
-    #             use_handler_docstrings=self.use_handler_docstrings,
-    #         )
-
     def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
-        from esmerald.applications import ChildEsmerald, Esmerald
-
         schema = self.to_openapi_schema()
         schema.paths = {}
-        for route in app.routes:
-            if (
-                isinstance(route, Gateway)
-                and any(
-                    handler.include_in_schema
-                    for handler, _ in route.handler.route_map.values()
-                )
-                and (route.handler.path_format or "/") not in schema.paths
-            ):
-                schema.paths[route.path_format or "/"] = create_path_item(
-                    route=route.handler,
-                    create_examples=self.create_examples,
-                    use_handler_docstrings=self.use_handler_docstrings,
-                )
 
-            if isinstance(route, Include):
-                routes = self.get_include_handlers(route)
-                for _route in routes:
-                    if (
-                        isinstance(_route, Gateway)
-                        and any(
-                            handler.include_in_schema
-                            for handler, _ in _route.handler.route_map.values()
-                        )
-                        and (_route.handler.path_format or "/") not in schema.paths
+        def parse_route(app, prefix=""):
+            if not app.routes:
+                return
+
+            for route in app.routes:
+                if isinstance(route, Gateway):
+                    if isinstance(route, Gateway) and any(
+                        handler.include_in_schema
+                        for handler, _ in route.handler.route_map.values()
                     ):
-                        schema.paths[
-                            route.path_format or "/" + _route.path_format
-                        ] = create_path_item(
-                            route=_route.handler,
+                        path = clean_path(prefix + route.path)
+                        schema.paths[prefix + route.path_format] = create_path_item(
+                            route=route.handler,
                             create_examples=self.create_examples,
                             use_handler_docstrings=self.use_handler_docstrings,
                         )
-            if isinstance(route, (Esmerald, ChildEsmerald)):
-                ...
+                    continue
 
+                route_app = route.app
+                if isinstance(route_app, partial):
+                    try:
+                        route_app = route_app.__wrapped__
+                    except AttributeError:
+                        pass
+
+                path = clean_path(prefix + route.path)
+                parse_route(route, prefix=f"{path}")
+
+        parse_route(app)
         return construct_open_api_with_schema_class(schema)

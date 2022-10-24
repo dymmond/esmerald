@@ -1,7 +1,9 @@
-import re
+from datetime import date, datetime, time, timedelta
+from decimal import Decimal
 from enum import Enum
 from functools import partial
 from inspect import Signature, isawaitable
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -11,10 +13,13 @@ from typing import (
     List,
     Optional,
     Set,
+    Tuple,
+    Type,
     TypeVar,
     Union,
     cast,
 )
+from uuid import UUID
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
 from esmerald.datastructures import ResponseContainer
@@ -31,11 +36,14 @@ from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 from pydantic import BaseConfig, Extra
+from starlette.convertors import CONVERTOR_TYPES
 from starlette.requests import HTTPConnection
 from starlette.responses import JSONResponse
 from starlette.responses import Response as StarletteResponse
 from starlette.routing import Mount as Mount  # noqa
+from starlette.routing import compile_path
 from starlette.types import Scope
+from typing_extensions import TypedDict
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -51,8 +59,20 @@ if TYPE_CHECKING:
     )
     from pydantic.typing import AnyCallable
 
+param_type_map = {
+    "str": str,
+    "int": int,
+    "float": float,
+    "uuid": UUID,
+    "decimal": Decimal,
+    "date": date,
+    "datetime": datetime,
+    "time": time,
+    "timedelta": timedelta,
+    "path": Path,
+}
 
-PARAM_REGEX = re.compile("{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_][a-zA-Z0-9_]*)?}")
+CONV2TYPE = {conv: typ for typ, conv in CONVERTOR_TYPES.items()}
 
 
 T = TypeVar("T", bound="BaseHandlerMixin")
@@ -60,6 +80,30 @@ T = TypeVar("T", bound="BaseHandlerMixin")
 
 class ParamConf(BaseConfig):
     extra = Extra.allow
+
+
+class PathParameterSchema(TypedDict):
+    name: str
+    full: str
+    type: Type
+
+
+class OpenAPIDefinitionMixin:
+    def parse_path(self, path: str) -> Tuple[str, str, List[Union[str, PathParameterSchema]]]:
+        """
+        Using the Starlette CONVERTORS and the application registered convertors,
+        transforms the path into a PathParameterSchema used for the OpenAPI definition.
+        """
+        _, path, variables = compile_path(path)
+
+        parsed_components: List[Union[str, PathParameterSchema]] = []
+
+        for name, convertor in variables.items():
+            _type = CONV2TYPE[convertor]
+            parsed_components.append(
+                PathParameterSchema(name=name, type=param_type_map[_type], full=name)
+            )
+        return parsed_components
 
 
 class BaseSignature:
@@ -377,7 +421,7 @@ class BaseResponseHandler:
         )
 
 
-class BaseHandlerMixin(BaseSignature, BaseResponseHandler):
+class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixin):
     """
     Base of HTTPHandler and WebSocketHandler.
     """
@@ -400,9 +444,10 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler):
     @property
     def normalised_path_params(self) -> List[Dict[str, str]]:
         """
-        Gets the path parameters
+        Gets the path parameters in a PathParameterSchema format.
         """
-        parameters = [{"name": param} for param in self.path_parameters]
+        path_components = self.parse_path(self.path)
+        parameters = [component for component in path_components if isinstance(component, dict)]
         return parameters
 
     @property

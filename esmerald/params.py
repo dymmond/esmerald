@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
-from esmerald.enums import ParamType, EncodingType
+from esmerald.enums import EncodingType, ParamType
 from esmerald.utils.constants import EXTRA_KEY_IS_DEPENDENCY, EXTRA_KEY_SKIP_VALIDATION
 from pydantic.fields import FieldInfo, Undefined
 
@@ -51,6 +51,10 @@ class Param(FieldInfo):
         extra.update(required=required)
         extra.update(content_encoding=content_encoding)
         extra.update(value_type=value_type)
+        extra.update(example=self.example)
+        extra.update(examples=self.examples)
+        extra.update(deprecated=self.deprecated)
+        extra.update(include_in_schema=self.include_in_schema)
 
         super().__init__(
             default=default,
