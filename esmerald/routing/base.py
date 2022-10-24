@@ -51,7 +51,7 @@ if TYPE_CHECKING:
     from esmerald.types import (
         AsyncAnyCallable,
         ExceptionHandlers,
-        OwnerType,
+        ParentType,
         ResponseCookies,
         ResponseHeaders,
         ResponseType,
@@ -347,10 +347,10 @@ class BaseResponseHandler:
             )
         else:
             parsed_kwargs = {}
-        if isinstance(route.owner, APIView):
+        if isinstance(route.parent, APIView):
             fn = partial(
                 cast("AnyCallable", route.fn),
-                route.owner,
+                route.parent,
                 **parsed_kwargs,
             )
         else:
@@ -446,7 +446,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return parameters
 
     @property
-    def ownership_layers(self) -> List[Union[T, "OwnerType"]]:
+    def parent_layers(self) -> List[Union[T, "ParentType"]]:
         """
         Returns the handler from the app down to the route handler.
         """
@@ -454,14 +454,14 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         current: Any = self
         while current:
             layers.append(current)
-            current = current.owner
+            current = current.parent
         return list(reversed(layers))
 
     @property
     def dependency_names(self) -> Set[str]:
-        """A unique set of all dependency names provided in the handlers ownership
+        """A unique set of all dependency names provided in the handlers parent
         layers."""
-        layered_dependencies = (layer.dependencies or {} for layer in self.ownership_layers)
+        layered_dependencies = (layer.dependencies or {} for layer in self.parent_layers)
         return {name for layer in layered_dependencies for name in layer.keys()}
 
     def resolve_permissions(self) -> List["Permission"]:
@@ -470,7 +470,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         """
         if self._permissions is Void:
             self._permissions = []
-            for layer in self.ownership_layers:
+            for layer in self.parent_layers:
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
                 "List[Permission]",
@@ -480,7 +480,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
 
     def get_dependencies(self) -> Dict[str, Inject]:
         """
-        Returns all dependencies of the handler function's starting from the ownership layers.
+        Returns all dependencies of the handler function's starting from the parent layers.
         """
         if not self.signature_model:
             raise RuntimeError(
@@ -488,7 +488,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             )
         if self._dependencies is Void:
             self._dependencies = {}
-            for layer in self.ownership_layers:
+            for layer in self.parent_layers:
                 for key, value in (layer.dependencies or {}).items():
                     self.has_dependency_unique(
                         dependencies=self._dependencies,
@@ -518,7 +518,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         This method is memoized so the computation occurs only once.
         """
         resolved_exception_handlers = {}
-        for layer in self.ownership_layers:
+        for layer in self.parent_layers:
             resolved_exception_handlers.update(layer.exception_handlers or {})
         return resolved_exception_handlers
 

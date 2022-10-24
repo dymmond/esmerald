@@ -105,7 +105,7 @@ LifeSpanHandler = Union[
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
-OwnerType = Union[APIView, Router]
+ParentType = Union[APIView, Router]
 APIGateHandler = Union[
     Type[APIView],
     BaseRouterHandler,
@@ -115,7 +115,7 @@ APIGateHandler = Union[
     WebSocketGateway,
 ]
 
-RouteOwner = Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway"]
+RouteParent = Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway"]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
 SecurityRequirement = Dict[str, List[str]]

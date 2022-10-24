@@ -28,7 +28,7 @@ class APIView:
         "exception_handlers",
         "permissions",
         "middleware",
-        "owner",
+        "parent",
         "path",
         "response_class",
         "response_cookies",
@@ -45,21 +45,21 @@ class APIView:
     exception_handlers: Optional["ExceptionHandlers"]
     permissions: Optional[List["Permission"]]
     middleware: Optional[List["Middleware"]]
-    owner: "Router"
+    parent: "Router"
     response_class: Optional["ResponseType"]
     response_cookies: Optional["ResponseCookies"]
     response_headers: Optional["ResponseHeaders"]
     tags: Optional[List[str]]
     deprecated: Optional[bool]
 
-    def __init__(self, owner: "Router") -> None:
+    def __init__(self, parent: "Router") -> None:
         for key in self.__slots__:
             if not hasattr(self, key):
                 setattr(self, key, None)
 
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
-        self.owner = owner
+        self.parent = parent
 
     def get_filtered_handler(self) -> List[str]:
         """
@@ -81,7 +81,7 @@ class APIView:
         return route_handlers
 
     def get_route_handlers(self) -> List[Union["HTTPHandler", "WebSocketHandler"]]:
-        """A getter for the apiview's route handlers that sets their owner.
+        """A getter for the apiview's route handlers that sets their parent.
 
         Returns:
             A list containing a copy of the route handlers defined inside the APIView.
@@ -94,7 +94,7 @@ class APIView:
                 Union["HTTPHandler", "WebSocketHandler"], getattr(self, handler)
             )
             route_handler = copy(source_route_handler)
-            route_handler.owner = self
+            route_handler.parent = self
 
             if self.middleware:
                 self.get_route_middleware(route_handler)

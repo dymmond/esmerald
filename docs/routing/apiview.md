@@ -10,7 +10,7 @@ the life of those who like OOP.
 {!> ../docs_src/routing/handlers/apiviews/apiview.py !}
 ```
 
-The APIView uses the Esmerald [handlers](./handlers.md) to create the "view" itself but also acts as the `owner`
+The APIView uses the Esmerald [handlers](./handlers.md) to create the "view" itself but also acts as the `parent`
 of those same routes and therefore all the available parameters such as [permissions](../permissions.md),
 [middlewares](../middleware/middleware.md), [exception handlers](../exception-handlers.md),
 [dependencies](../dependencies.md) and almost every other parameter available in the handlers are also available

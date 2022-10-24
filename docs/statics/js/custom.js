@@ -185,7 +185,7 @@ async function main() {
                 return;
             }
             const li = document.createElement("li");
-            li.innerHTML = `<a href="${v.html_url}" target="_blank">★ ${v.stargazers_count} - ${v.full_name}</a> by <a href="${v.owner.html_url}" target="_blank">@${v.owner.login}</a>`;
+            li.innerHTML = `<a href="${v.html_url}" target="_blank">★ ${v.stargazers_count} - ${v.full_name}</a> by <a href="${v.parent.html_url}" target="_blank">@${v.parent.login}</a>`;
             ul.append(li);
         });
     }

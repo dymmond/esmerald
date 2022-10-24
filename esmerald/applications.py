@@ -42,12 +42,12 @@ from esmerald.types import (
     ExceptionHandlers,
     LifeSpanHandler,
     Middleware,
-    OwnerType,
+    ParentType,
     Receive,
     ResponseCookies,
     ResponseHeaders,
     ResponseType,
-    RouteOwner,
+    RouteParent,
     SchedulerType,
     Scope,
     Send,
@@ -191,7 +191,7 @@ class Esmerald(Starlette):
         self.state = State()
         self.async_exit_config = settings.async_exit_config
         self.root_path = root_path
-        self.owner: Optional[Union["OwnerType", "Esmerald", "ChildEsmerald"]] = None
+        self.parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None
         self.on_shutdown = on_shutdown
         self.on_startup = on_startup
         self.security = security
@@ -221,7 +221,7 @@ class Esmerald(Starlette):
                 else [self.static_files_config]
             ):
                 static_route = Include(path=config.path, app=config.to_app())
-                self.router.validate_root_route_owner(static_route)
+                self.router.validate_root_route_parent(static_route)
                 self.router.routes.append(static_route)
 
         if self.enable_scheduler:
@@ -312,7 +312,7 @@ class Esmerald(Starlette):
                         middleware=route.middleware,
                         permissions=route.permissions,
                         routes=route.routes,
-                        owner=self.router,
+                        parent=self.router,
                     )
                 )
                 continue
@@ -337,7 +337,7 @@ class Esmerald(Starlette):
                     middleware=route.middleware,
                     permissions=route.permissions,
                     handler=route.handler,
-                    owner=self.router,
+                    parent=self.router,
                 )
             )
 
@@ -363,7 +363,7 @@ class Esmerald(Starlette):
         )
 
     def build_routes_middleware(
-        self, route: "RouteOwner", middlewares: Optional[List["Middleware"]] = None
+        self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
     ):
         """
         Builds the middleware stack from the top to the bottom of the routes.
@@ -390,7 +390,7 @@ class Esmerald(Starlette):
 
     def build_routes_exception_handlers(
         self,
-        route: "RouteOwner",
+        route: "RouteParent",
         exception_handlers: Optional["ExceptionHandlers"] = None,
     ):
         """

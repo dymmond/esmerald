@@ -60,7 +60,7 @@ injection.
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 * **csrf_config** - If [CSRFConfig](../configurations/csrf.md) is set it will enable the CSRF built-in middleware.
-* **openapi_config** - If [OpenAPIConfig](../configurations/openapi.md) is set it will override the default OpenAPI
+* **openapi_config** - If [OpenAPIConfig](../configurations/openapi/config.md) is set it will override the default OpenAPI
 docs settings.
 * **cors_cofig** - If [CORSConfig](../configurations/cors.md) is set it will enable the CORS built-in middleware.
 * **static_files_config** - If [StaticFilesConfig](../configurations/staticfiles.md) is set, it will enable the

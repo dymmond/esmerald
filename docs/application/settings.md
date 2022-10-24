@@ -284,7 +284,7 @@ built-in middleware.
 
     <sup>Default: `None`</sup>
 
-* **openapi_config** - If [OpenAPIConfig](../configurations/openapi.md) is set it will override the default OpenAPI
+* **openapi_config** - If [OpenAPIConfig](../configurations/openapi/config.md) is set it will override the default OpenAPI
 docs settings.
 
     <sup>Default: `OpenAPIConfig`</sup>
@@ -336,7 +336,7 @@ Use one or the other, not both.
     All the configurations are pydantic objects. Check [CORS](../configurations/cors.md),
     [CSRF](../configurations/csrf.md), [Session](../configurations/session.md), [JWT](../configurations/session.md),
     [StaticFiles](../configurations/staticfiles.md), [Template](../configurations/template.md) and
-    [OpenAPI](../configurations/openapi.md) and see how to use them.
+    [OpenAPI](../configurations/openapi/config.md) and see how to use them.
 
 ## Accessing settings
 

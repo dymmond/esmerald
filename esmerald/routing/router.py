@@ -72,11 +72,11 @@ if TYPE_CHECKING:
         HTTPMethod,
         LifeSpanHandler,
         Middleware,
-        OwnerType,
+        ParentType,
         ResponseCookies,
         ResponseHeaders,
         ResponseType,
-        RouteOwner,
+        RouteParent,
     )
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from pydantic.typing import AnyCallable
@@ -100,8 +100,8 @@ multipart_incorrect_install_error = (
 T = TypeVar("T", bound="BaseHandlerMixin")
 
 
-class Ownership:
-    def create_signature_models(self, route: "RouteOwner"):
+class Parent:
+    def create_signature_models(self, route: "RouteParent"):
         """
         Creates the signature models for the given routes.
 
@@ -113,8 +113,8 @@ class Ownership:
                 self.create_signature_models(_route)
 
         if isinstance(route, Gateway):
-            if not route.handler.owner:
-                route.handler.owner = route
+            if not route.handler.parent:
+                route.handler.parent = route
 
             if not is_class_and_subclass(route.handler, APIView) and not isinstance(
                 route.handler, APIView
@@ -124,30 +124,30 @@ class Ownership:
         if isinstance(route, WebSocketGateway):
             route.handler.create_signature_model(is_websocket=True)
 
-    def validate_root_route_owner(
+    def validate_root_route_parent(
         self,
         value: Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway"],
         override: bool = False,
     ):
         """
-        Handles everything owner from the root. When in the root, the owner must be setup.
+        Handles everything parent from the root. When in the root, the parent must be setup.
         Appends the route path if exists.
         """
         # Getting the value of the router for the path
         value.path = clean_path(self.path + getattr(value, "path", "/"))
         if isinstance(value, (Include, Gateway, WebSocketGateway)):
-            if not value.owner and not override:
-                value.owner = self
+            if not value.parent and not override:
+                value.parent = self
 
         if isinstance(value, (Gateway, WebSocketGateway)):
             if not is_class_and_subclass(value.handler, APIView) and not isinstance(
                 value.handler, APIView
             ):
-                if not value.handler.owner:
-                    value.handler.owner = value
+                if not value.handler.parent:
+                    value.handler.parent = value
             else:
-                if not value.handler.owner:
-                    value(owner=self)
+                if not value.handler.parent:
+                    value(parent=self)
 
                 route_handlers = value.handler.get_route_handlers()
                 for route_handler in route_handlers:
@@ -168,7 +168,7 @@ class Ownership:
                 self.routes.pop(self.routes.index(value))
 
 
-class Router(StarletteRouter, Ownership):
+class Router(StarletteRouter, Parent):
     __slots__ = (
         "redirect_slashes",
         "default",
@@ -180,7 +180,7 @@ class Router(StarletteRouter, Ownership):
         "response_class",
         "response_cookies",
         "response_headers",
-        "owner",
+        "parent",
         "tags",
         "deprecated",
         "security",
@@ -190,7 +190,7 @@ class Router(StarletteRouter, Ownership):
         self,
         path: Optional[str] = None,
         app: Optional["Esmerald"] = None,
-        owner: Optional["Router"] = None,
+        parent: Optional["Router"] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         redirect_slashes: bool = True,
@@ -242,7 +242,7 @@ class Router(StarletteRouter, Ownership):
             lifespan=lifespan,
         )
         self.path = path
-        self.owner: Optional["Router"] = owner or self.app
+        self.parent: Optional["Router"] = parent or self.app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
         self.permissions = permissions or []
@@ -258,7 +258,7 @@ class Router(StarletteRouter, Ownership):
 
         self.routing = copy(self.routes)
         for route in self.routing or []:
-            self.validate_root_route_owner(route)
+            self.validate_root_route_parent(route)
 
         for route in self.routes or []:
             self.create_signature_models(route)
@@ -277,8 +277,8 @@ class Router(StarletteRouter, Ownership):
 
     def add_apiview(self, value: "APIView"):
         routes = []
-        if not value.handler.owner:
-            value(owner=self)
+        if not value.handler.parent:
+            value(parent=self)
 
         route_handlers = value.handler.get_route_handlers()
         for route_handler in route_handlers:
@@ -332,7 +332,7 @@ class Router(StarletteRouter, Ownership):
             middleware=middleware,
             deprecated=deprecated,
         )
-        self.validate_root_route_owner(gateway)
+        self.validate_root_route_parent(gateway)
         self.create_signature_models(gateway)
         self.routes.append(gateway)
 
@@ -360,7 +360,7 @@ class Router(StarletteRouter, Ownership):
             permissions=permissions,
             middleware=middleware,
         )
-        self.validate_root_route_owner(websocket_gateway)
+        self.validate_root_route_parent(websocket_gateway)
         self.create_signature_models(websocket_gateway)
         self.routes.append(websocket_gateway)
 
@@ -420,7 +420,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         "response_model",
         "response_class",
         "response_cookies",
-        "owner",
+        "parent",
         "tags",
         "deprecated",
         "security",
@@ -470,7 +470,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
 
-        self.owner: "OwnerType" = None
+        self.parent: "ParentType" = None
         self.path = path
         self.endpoint = endpoint
         self.summary = summary
@@ -582,7 +582,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
 
     def get_response_class(self) -> Type["Response"]:
         """
-        Returns the closest custom Response class in the owner graph or the
+        Returns the closest custom Response class in the parent graph or the
         default Response class.
 
         This method is memoized so the computation occurs only once.
@@ -591,7 +591,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             The default [Response][esmerald.response.Response] class for the route handler.
         """
         response_class = Response
-        for layer in self.ownership_layers:
+        for layer in self.parent_layers:
             if layer.response_class is not None:
                 response_class = layer.response_class
         return response_class
@@ -603,7 +603,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             A dictionary mapping keys to [ResponseHeader][esmerald.datastructures.ResponseHeader] instances.
         """
         resolved_response_headers = {}
-        for layer in self.ownership_layers:
+        for layer in self.parent_layers:
             resolved_response_headers.update(layer.response_headers or {})
         return resolved_response_headers
 
@@ -616,7 +616,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         """
 
         cookies: "ResponseCookies" = []
-        for layer in self.ownership_layers:
+        for layer in self.parent_layers:
             cookies.extend(layer.response_cookies or [])
         filtered_cookies: "ResponseCookies" = []
         for cookie in reversed(cookies):
@@ -739,7 +739,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         "exception_handlers",
         "permissions",
         "middleware",
-        "owner",
+        "parent",
     )
 
     def __init__(
@@ -761,7 +761,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
 
-        self.owner: "OwnerType" = None
+        self.parent: "ParentType" = None
         self.dependencies = dependencies
         self.exception_handlers = exception_handlers
         self.permissions = permissions
@@ -813,8 +813,8 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         kwargs = await self.get_kwargs(websocket=websocket)
 
         fn = cast("AsyncAnyCallable", self.fn)
-        if isinstance(self.owner, APIView):
-            await fn(self.owner, **kwargs)
+        if isinstance(self.parent, APIView):
+            await fn(self.parent, **kwargs)
         else:
             await fn(**kwargs)
 
@@ -848,7 +848,7 @@ class Include(Mount):
     Include manages routes as a list or as a namespace but not both or a
     ImproperlyConfigured is raised.
 
-    If the app is an Esmerald or ChildEsmerald, then the owner is set to be the include
+    If the app is an Esmerald or ChildEsmerald, then the parent is set to be the include
     itself.
     """
 
@@ -874,7 +874,7 @@ class Include(Mount):
         routes: Optional[List[StarletteBaseRoute]] = None,
         namespace: Optional[str] = None,
         pattern: Optional[str] = None,
-        owner: Optional["Router"] = None,
+        parent: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         permissions: Optional[List["Permission"]] = None,
@@ -915,7 +915,7 @@ class Include(Mount):
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
-        self.owner = owner
+        self.parent = parent
         self.security = security or []
 
         if routes:
@@ -980,22 +980,22 @@ class Include(Mount):
         for route in routes:
             if not isinstance(route, (Include, Gateway, WebSocketGateway, Mount)):
                 raise ImproperlyConfigured("The route must be of type Gateway or Include")
-            route.owner = self
+            route.parent = self
             if isinstance(route, Include):
                 routing.append(route)
             else:
 
                 # Making sure the Handlers are Gateway and
                 if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                    route.handler.owner = route
+                    route.handler.parent = route
                     routing.append(route)
                     continue
 
                 if is_class_and_subclass(route.handler, APIView) or isinstance(
                     route.handler, APIView
                 ):
-                    if not route.handler.owner:
-                        route.handler = route.handler(owner=self)
+                    if not route.handler.parent:
+                        route.handler = route.handler(parent=self)
                     route_handlers = route.handler.get_route_handlers()
 
                     for route_handler in route_handlers:

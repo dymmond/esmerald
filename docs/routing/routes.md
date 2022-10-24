@@ -28,7 +28,7 @@ with the handler's path like `/home/homepage`.
 * **handler**: An instance of [handler](./handlers.md).
 * **name**: The name for the Gateway. The name can be reversed by [`url_path_for()`](./router.md).
 * **include_in_schema**: Boolean flag telling if it should be added to the OpenAPI docs.
-* **owner**: Who `owns` the Gateway. If not specified, the application automatically it assign it. The owner is usually
+* **parent**: Who `owns` the Gateway. If not specified, the application automatically it assign it. The parent is usually
 a [router](./router.md) or an [Include](#include).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
@@ -65,8 +65,8 @@ In simple terms, a WebSocketGateway is not a direct route but instead is a "wrap
 * The path provided is concatenated with the handler's path like `/home/homepage`.
 * **handler**: An instance of [handler](./handlers.md).
 * **name**: The name for the WebSocketGateway. The name can be reversed by [`url_path_for()`](./router.md).
-* **owner**: Who `owns` the WebSocketGateway. If not specified, the application automatically it assign it.
-The owner is usually a [router](./router.md) or an [Include](#include).
+* **parent**: Who `owns` the WebSocketGateway. If not specified, the application automatically it assign it.
+The parent is usually a [router](./router.md) or an [Include](#include).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a WebSocketGateway will be 
@@ -120,7 +120,7 @@ Example can be a `StaticFiles` app.
 A list of [Gateway](../routing/routes.md#gateway), [WebSocketGateway](../routing/routes.md#websocketgateway)
 or [Include](../routing/routes.md#include).
 * **name**: The name for the Gateway. The name can be reversed by [`url_path_for()`](./router.md).
-* **owner**: Who `owns` the Include. If not specified, the application automatically it assign it. The owner is usually
+* **parent**: Who `owns` the Include. If not specified, the application automatically it assign it. The parent is usually
 a [router](./router.md) or another [Include](#include).
 * **namespace**: The fully qualified module namespace where the file with routes is located.
 Example: `example.myapp.routes`.
@@ -354,7 +354,7 @@ We will be using Gateway for it can be replaced by any of the above as it is com
 #### Middleware
 
 As specified before, the [middleware](../middleware/middleware.md) of a Gateway are read from top down,
-from the owner to the very handler and the same is applied to [exception handlers](../exception-handlers.md),
+from the parent to the very handler and the same is applied to [exception handlers](../exception-handlers.md),
 [dependencies](../dependencies.md) and [permissions](../permissions.md).
 
 ```python hl_lines="23 29-30"
@@ -362,7 +362,7 @@ from the owner to the very handler and the same is applied to [exception handler
 ```
 
 The above example illustrates the various levels where a middleware can be implemented and because it follows an
-ownership order, the order is:
+parent order, the order is:
 
 1. Default application built-in middleware.
 2. `BaseRequestLoggingMiddleware`.
@@ -378,7 +378,7 @@ More than one middleware can be added to each list.
 ```
 
 The above example illustrates the various levels where the exception handlers can be implemented and follows an
-ownership order where the order is:
+parent order where the order is:
 
 1. Default application built-in exception handlers.
 2. `EsmeraldException : http_esmerald_handler`.
@@ -394,7 +394,7 @@ More than one exception handler can be added to each mapping.
 ```
 
 The above example illustrates the various levels where the dependencies can be implemented and follows an
-ownership order where the order is:
+parent order where the order is:
 
 1. `first : first_dependency`.
 2. `second : second_dependency`.
@@ -414,7 +414,7 @@ to use them.
 ```
 
 The above example illustrates the various levels where the permissions can be implemented and follows an
-ownership order where the order is:
+parent order where the order is:
 
 1. `AllowAny`- From the application level.
 2. `DenyAll`- From the Gateway.

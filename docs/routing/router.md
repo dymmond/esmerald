@@ -44,7 +44,7 @@ or [Include](../routing/routes.md#include).
 
     <sup>Default: `None`</sup>
 
-* **owner**: Who `owns` the router. If not specified, the application automatically it assign it. The owner is usually
+* **parent**: Who `owns` the router. If not specified, the application automatically it assign it. The parent is usually
 a [router](./router.md) or an ASGIApp. E.g.: `WSGIMiddleware`, `Esmerald`, `StaticFiles`...
 
     <sup>Default: `/`</sup>

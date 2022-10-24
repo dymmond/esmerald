@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
-    from esmerald.types import Dependencies, ExceptionHandlers, Middleware, OwnerType
+    from esmerald.types import Dependencies, ExceptionHandlers, Middleware, ParentType
 
 
 class Gateway(StarletteRoute):
@@ -22,7 +22,7 @@ class Gateway(StarletteRoute):
         "handler",
         "name",
         "include_in_schema",
-        "owner",
+        "parent",
         "dependencies",
         "middleware",
         "exception_handlers",
@@ -37,7 +37,7 @@ class Gateway(StarletteRoute):
         handler: "HTTPHandler",
         name: Optional[str] = None,
         include_in_schema: bool = True,
-        owner: Optional["OwnerType"] = None,
+        parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
         middleware: Optional["Middleware"] = None,
         permissions: Optional["Permission"] = None,
@@ -47,7 +47,7 @@ class Gateway(StarletteRoute):
         if not path:
             path = "/"
         if is_class_and_subclass(handler, APIView):
-            handler = handler(owner=self)
+            handler = handler(parent=self)
         self.path = clean_path(path + handler.path)
         self.methods = getattr(handler, "methods", None)
 
@@ -79,7 +79,7 @@ class Gateway(StarletteRoute):
         self.response_cookies = None
         self.response_headers = None
         self.deprecated = deprecated
-        self.owner = owner
+        self.parent = parent
         (
             handler.path_regex,
             handler.path_format,
@@ -117,7 +117,7 @@ class WebSocketGateway(StarletteWebSocketRoute):
         "middleware",
         "exception_handlers",
         "permissions",
-        "owner",
+        "parent",
     )
 
     def __init__(
@@ -126,7 +126,7 @@ class WebSocketGateway(StarletteWebSocketRoute):
         *,
         handler: "WebSocketHandler",
         name: Optional[str] = None,
-        owner: Optional["OwnerType"] = None,
+        parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
         middleware: Optional[List["Middleware"]] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
@@ -135,7 +135,7 @@ class WebSocketGateway(StarletteWebSocketRoute):
         if not path:
             path = "/"
         if is_class_and_subclass(handler, APIView):
-            handler = handler(owner=self)
+            handler = handler(parent=self)
         self.path = clean_path(path + handler.path)
 
         if not name:
@@ -160,7 +160,7 @@ class WebSocketGateway(StarletteWebSocketRoute):
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
-        self.owner = owner
+        self.parent = parent
         (
             handler.path_regex,
             handler.path_format,
