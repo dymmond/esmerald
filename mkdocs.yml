@@ -90,6 +90,7 @@ nav:
       - Using docker: "deployment/docker.md"
   - Third Party Packages: "external.md"
   - Esmerald People: "esmerald-people.md"
+  - Examples & Scaffolds: "examples.md"
   - Contributing: "contributing.md"
   - Sponsorship: "sponsorship.md"
   - Release Notes: "release-notes.md"

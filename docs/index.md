@@ -39,7 +39,7 @@ the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic
 ## Motivation
 
 There are great frameworks out there like FastAPI, Starlite, Flama, Flask, Django... All of them solving majority
-of the current day-to-day problems of 99% of the applications but leaving thw 1% that is usually around structure
+of the current day-to-day problems of 99% of the applications but leaving the 1% that is usually around structure
 and design/business without to much to do.
 
 Esmerald got the inspiration from those great frameworks out there and was built with all the known amazing
