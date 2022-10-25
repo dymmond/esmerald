@@ -54,12 +54,12 @@ Once the project is generated you should have a folder structure similar to this
 
 ```shell
 .
-├── Dockerfile
+├── Dockerfile # similar Dockerfile.conf from the docker examples
 ├── Makefile
 ├── README.md
 ├── deployment
 │   ├── nginx.conf # similar nginx.conf from the docker examples
-│   └── supervisor.conf # similar nginx.conf from the docker examples
+│   └── supervisor.conf # similar supervisor.conf from the docker examples
 ├── requirements.txt
 └── src # or the name given by you when generating the project
     ├── __init__.py
