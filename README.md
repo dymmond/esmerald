@@ -8,6 +8,20 @@
     <em>🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀</em>
 </p>
 
+<p align="center">
+<a href="https://github.com/dymmond/esmerald/workflows/Test%20Suite/badge.svg?event=push&branch=main" target="_blank">
+    <img src="https://github.com/dymmond/esmerald/workflows/Test%20Suite/badge.svg?event=push&branch=main" alt="Test Suite">
+</a>
+
+<a href="https://pypi.org/project/esmerald" target="_blank">
+    <img src="https://img.shields.io/pypi/v/esmerald?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+
+<a href="https://pypi.org/project/esmerald" target="_blank">
+    <img src="https://img.shields.io/pypi/pyversions/esmerald.svg?color=%2334D058" alt="Supported Python versions">
+</a>
+</p>
+
 ---
 
 **Documentation**: [https://esmerald.dymmond.com](https://esmerald.dymmond.com) 📚
