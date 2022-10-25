@@ -335,6 +335,19 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
 
+## OpenAPI documentation
+
+Esmerald also comes with OpenAPI docs integrated. For those used to that, this is roughly the same and to make it
+happen, there were inspirations that helped Esmerald getting there fast.
+
+To access the OpenAPI, simply start your local development and access:
+
+* **Swagger** - `/docs/swagger`.
+* **Redoc** - `/docs/redoc`.
+
+There are more details about [how to configure the OpenAPIConfig](./configurations/openapi/config.md) and
+[create your own OpenAPIView](./configurations/openapi/apiview.md) within this documentation.
+
 ## Notes
 
 This is just a very high-level demonstration of how to start quickly and what Esmerald can do.

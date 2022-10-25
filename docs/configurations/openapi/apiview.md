@@ -23,7 +23,7 @@ unless you are confortable with everything** and only override the `path` parame
 Esmerald OpenAPI documentation by default will use `/docs` prefix to access the OpenAPI application documentation.
 
 * **Swagger** - `/docs/swagger`.
-* **Redoc** - '/docs/redoc`.
+* **Redoc** - `/docs/redoc`.
 
 ### Overriding the default path
 
@@ -36,7 +36,7 @@ Let's have another look at the example given above.
 Since the path prefix became `/another=url` you can now access the documentation via:
 
 * **Swagger** - `/another-url/swagger`.
-* **Redoc** - '/another-url/redoc`.
+* **Redoc** - `/another-url/redoc`.
 
 !!! Tip
     The OpenAPI documentation works really well natively and we advise, once again, to be careful when overriding
