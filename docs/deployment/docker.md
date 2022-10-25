@@ -96,7 +96,7 @@ on every level.
 
 ### Supervisor
 
-Supervisor is a simple, yet powerful, process manager that allows to moniutor and control a number of processes
+Supervisor is a simple, yet powerful, process manager that allows to monitor and control a number of processes
 on a UNIX-like operating systems.
 
 [Their documentation](http://supervisord.org/) will help you to understand better how to use it.
