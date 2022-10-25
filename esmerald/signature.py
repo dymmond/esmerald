@@ -13,10 +13,6 @@ from typing import (
     cast,
 )
 
-from pydantic import BaseConfig, BaseModel, ValidationError, create_model
-from pydantic.fields import FieldInfo, Undefined
-from pydantic_factories import ModelFactory
-
 from esmerald.enums import ScopeType
 from esmerald.exceptions import (
     ImproperlyConfigured,
@@ -30,6 +26,9 @@ from esmerald.utils.dependency import (
 )
 from esmerald.utils.helpers import is_optional_union
 from esmerald.websockets import WebSocket
+from pydantic import BaseConfig, BaseModel, ValidationError, create_model
+from pydantic.fields import FieldInfo, Undefined
+from pydantic_factories import ModelFactory
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -53,14 +52,6 @@ class SignatureModel(BaseModel):
     def parse_values_from_connection_kwargs(
         cls, connection: Union[Request, WebSocket], **kwargs: Any
     ) -> Dict[str, Any]:
-        """Given a dictionary of values extracted from the connection, create
-        an instance of the given SignatureModel subclass and return the parsed
-        values.
-
-        This is not equivalent to calling the '.dict'  method of the
-        pydantic model, because it doesn't convert nested values into
-        dictionary, just extracts the data from the signature model
-        """
         try:
             signature = cls(**kwargs)
             return {key: signature.resolve_field_value(key) for key in cls.__fields__}
@@ -68,8 +59,6 @@ class SignatureModel(BaseModel):
             raise cls.construct_exception(connection, exc) from exc
 
     def resolve_field_value(self, key: str) -> Any:
-        """Given a field key, return value using plugin mapping, if
-        available."""
         value = self.__getattribute__(key)  # pylint: disable=unnecessary-dunder-call
         return value
 
@@ -77,20 +66,6 @@ class SignatureModel(BaseModel):
     def construct_exception(
         cls, connection: Union[Request, WebSocket], exc: ValidationError
     ) -> Union[InternalServerError, ValidationError]:
-        """Distinguish between validation errors that arise from parameters and
-        dependencies.
-
-        If both parameter and dependency values are invalid, we raise the client error first.
-
-        Parameters
-        ----------
-        connection : Request | WebSocket
-        exc : ValidationError
-
-        Returns
-        -------
-        ValidationError | InternalServerError
-        """
         server_errors: List["ErrorDict"] = []
         client_errors: List["ErrorDict"] = []
 
@@ -118,25 +93,19 @@ class SignatureModel(BaseModel):
         return error["loc"][-1] in cls.dependency_names
 
     @staticmethod
-    def get_connection_method_and_url(connection: Union[Request, WebSocket]) -> Tuple[str, "URL"]:
+    def get_connection_method_and_url(
+        connection: Union[Request, WebSocket]
+    ) -> Tuple[str, "URL"]:
         """Extract method and URL from Request or WebSocket."""
-        method = ScopeType.WEBSOCKET if isinstance(connection, WebSocket) else connection.method
+        method = (
+            ScopeType.WEBSOCKET
+            if isinstance(connection, WebSocket)
+            else connection.method
+        )
         return method, connection.url
 
 
 class SignatureParameter:
-    """Represents the parameters of a callable for purpose of signature model
-    generation.
-
-    Parameters
-    ----------
-    fn_name : str
-        Name of function.
-    parameter_name : str
-        Name of parameter.
-    parameter : inspect.Parameter
-    """
-
     __slots__ = (
         "annotation",
         "default",
@@ -162,39 +131,10 @@ class SignatureParameter:
 
     @property
     def default_defined(self) -> bool:
-        """`True` if `self.default` is not one of the undefined sentinel types.
-
-        Returns
-        -------
-        bool
-        """
         return self.default not in UNDEFINED_SENTINELS
 
 
 class SignatureModelFactory:
-    """Utility class for constructing the signature model and grouping
-    associated state.
-
-    Instance available at `SignatureModel.factory`.
-
-    Parameters
-    ----------
-    fn : AnyCallable
-    dependency_names : Set[str]
-
-    The following attributes are populated after the `model()` method has been called to generate
-    the `SignatureModel` subclass.
-
-    Attributes
-    ----------
-    field_definitions : dict[str, Tuple[Any, Any]
-        Maps parameter name to the `(<type>, <default>)` tuple passed to `pydantic.create_model()`.
-    defaults : dict[str, Any]
-        Maps parameter name to default value, if one defined.
-    dependency_names : set[str]
-        The names of all known dependency parameters.
-    """
-
     __slots__ = (
         "defaults",
         "dependency_names",
@@ -219,19 +159,6 @@ class SignatureModelFactory:
         self.dependency_names = dependency_names
 
     def check_for_unprovided_dependency(self, parameter: SignatureParameter) -> None:
-        """Where a dependency has been explicitly marked using the `Dependency`
-        function, it is a configuration error if that dependency has been
-        defined without a default value, and it hasn't been provided to the
-        handler.
-
-        Parameters
-        ----------
-        parameter : SignatureParameter
-
-        Raises
-        ------
-        `ImproperlyConfigured`
-        """
         if parameter.optional:
             return
         if not is_dependency_field(parameter.default):
@@ -246,24 +173,10 @@ class SignatureModelFactory:
             )
 
     def collect_dependency_names(self, parameter: SignatureParameter) -> None:
-        """Add parameter name of dependencies declared using `Dependency()`
-        function to the set of all dependency names.
-
-        Parameters
-        ----------
-        parameter : SignatureParameter
-        """
         if is_dependency_field(parameter.default):
             self.dependency_names.add(parameter.name)
 
     def set_field_default(self, parameter: SignatureParameter) -> None:
-        """If `parameter` has defined default, map it to the parameter name in
-        `self.defaults`.
-
-        Parameters
-        ----------
-        parameter : SignatureParameter
-        """
         if parameter.default_defined:
             self.defaults[parameter.name] = parameter.default
 
@@ -271,17 +184,6 @@ class SignatureModelFactory:
     def create_field_definition_from_parameter(
         parameter: SignatureParameter,
     ) -> Tuple[Any, Any]:
-        """Construct an `(<annotation>, <default>)` tuple, appropriate for
-        `pydantic.create_model()`.
-
-        Parameters
-        ----------
-        parameter : SignatureParameter
-
-        Returns
-        -------
-        tuple[Any, Any]
-        """
         if parameter.default_defined:
             field_definition = (parameter.annotation, parameter.default)
         elif not parameter.optional:
@@ -292,41 +194,18 @@ class SignatureModelFactory:
 
     @property
     def signature_parameters(self) -> Generator[SignatureParameter, None, None]:
-        """Iterable of `SignatureModel` instances, that represent the
-        parameters of the function signature that should be included in the
-        `SignatureModel` type.
-
-        Returns
-        -------
-        Generator[SignatureParameter, None, None]
-        """
         for name, parameter in self.signature.parameters.items():
             if name in SKIP_NAMES:
                 continue
             yield SignatureParameter(self.fn_name, name, parameter)
 
     def should_skip_parameter_validation(self, parameter: SignatureParameter) -> bool:
-        """Identify dependencies for which provided values should not be
-        validated.
-
-        Args:
-            parameter (SignatureParameter): A parameter to be added to the signature model.
-
-        Returns:
-            A boolean indicating whether injected values for this parameter should not be validated.
-        """
-        return parameter.name in SKIP_VALIDATION_NAMES or should_skip_dependency_validation(
-            parameter.default
+        return (
+            parameter.name in SKIP_VALIDATION_NAMES
+            or should_skip_dependency_validation(parameter.default)
         )
 
     def create_signature_model(self) -> Type[SignatureModel]:
-        """Constructs a `SignatureModel` type that represents the signature of
-        `self.fn`
-
-        Returns
-        -------
-        type[SignatureModel]
-        """
         try:
             for parameter in self.signature_parameters:
                 self.check_for_unprovided_dependency(parameter)
@@ -357,8 +236,6 @@ class SignatureModelFactory:
 
 
 def get_signature_model(value: Any) -> Type[SignatureModel]:
-    """Helper function to retrieve and validate the signature model from a
-    provider or handler."""
     try:
         return cast("Type[SignatureModel]", getattr(value, "signature_model"))
     except AttributeError as e:  # pragma: no cover

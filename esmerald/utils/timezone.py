@@ -231,7 +231,6 @@ def _is_pytz_zone(tz) -> Any:
     return isinstance(tz, _PYTZ_BASE_CLASSES)
 
 
-# RemovedInDjango50Warning.
 _DIR = dir()
 
 

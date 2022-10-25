@@ -3,12 +3,11 @@ from functools import reduce
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, cast
 from urllib.parse import parse_qsl
 
+from esmerald.datastructures import UploadFile
+from esmerald.enums import EncodingType
 from orjson import JSONDecodeError, loads
 from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
 from starlette.datastructures import UploadFile as StarletteUploadFile
-
-from esmerald.datastructures import UploadFile
-from esmerald.enums import EncodingType
 
 if TYPE_CHECKING:
     from typing import Union
@@ -21,10 +20,9 @@ _true_values = {"True", "true"}
 _false_values = {"False", "false"}
 
 
-def _query_param_reducer(acc: Dict[str, List[str]], cur: Tuple[str, str]) -> Dict[str, List[str]]:
-    """
-    Reducer function - acc is a dictionary, cur is a tuple of key + value.
-    """
+def _query_param_reducer(
+    acc: Dict[str, List[str]], cur: Tuple[str, str]
+) -> Dict[str, List[str]]:
     key, value = cur
 
     if value in _true_values:
@@ -40,26 +38,23 @@ def _query_param_reducer(acc: Dict[str, List[str]], cur: Tuple[str, str]) -> Dic
 
 
 def parse_query_params(connection: "HTTPConnection") -> Dict[str, Any]:
-    """Parses and normalize a given connection's query parameters into a
-    regular dictionary."""
     query_string = cast("Union[str, bytes]", connection.scope.get("query_string", ""))
 
     return reduce(
         _query_param_reducer,
         parse_qsl(
-            query_string if isinstance(query_string, str) else query_string.decode("latin-1"),
+            query_string
+            if isinstance(query_string, str)
+            else query_string.decode("latin-1"),
             keep_blank_values=True,
         ),
         {},
     )
 
 
-def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "ModelField") -> Any:
-    """Transforms the multidict into a regular dict, try to load json on all
-    non-file values.
-
-    Supports lists.
-    """
+def parse_form_data(
+    media_type: "EncodingType", form_data: "FormData", field: "ModelField"
+) -> Any:
     values_dict: Dict[str, Any] = {}
     for key, value in form_data.multi_items():
         if not isinstance(value, (UploadFile, StarletteUploadFile)):

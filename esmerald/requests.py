@@ -17,8 +17,6 @@ User = TypeVar("User")
 
 
 class Request(StarletteRequest):
-    """Esmerald Request class"""
-
     def __init__(
         self,
         scope: "Scope",
@@ -32,22 +30,10 @@ class Request(StarletteRequest):
 
     @property
     def app(self) -> "Esmerald":
-        """
-        Returns:
-            The [Esmerald][esmerald.applications.Esmerald] application instance
-        """
         return cast("Esmerald", self.scope["app"])
 
     @property
     def user(self) -> User:
-        """Allows access to user data.
-
-        Raises:
-            [ImproperlyConfigured][esmerald.exceptions.ImproperlyConfigured]: If 'user' is not set in scope via an 'AuthMiddleware', raises an exception
-
-        Returns:
-            A type correlating to the generic variable User.
-        """
         if "user" not in self.scope:
             raise ImproperlyConfigured(
                 "'user' is not defined in scope, install an AuthMiddleware to set it"
@@ -56,26 +42,15 @@ class Request(StarletteRequest):
 
     @property
     def query_params(self) -> Dict[str, Any]:  # type: ignore[override]
-        """
-        Returns:
-            A normalized dict of query parameters. Multiple values for the same key are returned as a list.
-        """
         if self._parsed_query is Void:
             self._parsed_query = self.scope["_parsed_query"] = parse_query_params(self)
         return cast("Dict[str, Any]", self._parsed_query)
 
     @property
     def method(self) -> "HTTPMethod":
-        """
-        Returns:
-            The request [HTTPMethod][esmerald.types.HTTPMethod]
-        """
         return cast("HTTPMethod", self.scope["method"])
 
     async def json(self):
-        """
-        Returns the json request from the body of the request.
-        """
         if self._json is Void:
             if "_body" in self.scope:
                 body = self.scope["_body"]
