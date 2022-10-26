@@ -33,7 +33,7 @@
 Esmerald is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
 but also full scalable applications from the smallest to enterprise level.
 
-Esmerald is designed to build with python 3.6+ and based on standard python type hints and on the top of
+Esmerald is designed to build with python 3.7+ and based on standard python type hints and on the top of
 the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic).
 
 Check out the [Esmerald documentation 📚](https://esmerald.dymmond.com)
@@ -50,7 +50,7 @@ something very useful that helped Esmerald integerating with pydantic.
 FastAPI gave the inspiration for API designing, Django for the permissions, Flask for the simplicity, NestJS for the
 controllers and the list goes on.
 
-For a job to be done properly, usually it is never done alone a driver and inspiration to it.
+For a job to be done properly, usually it is never done alone and there is always a driver and inspiration to it.
 
 ## Requirements
 

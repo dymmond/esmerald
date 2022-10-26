@@ -48,7 +48,7 @@ something very useful that helped Esmerald integerating with pydantic.
 FastAPI gave the inspiration for API designing, Django for the permissions, Flask for the simplicity, NestJS for the
 controllers and the list goes on.
 
-For a job to be done properly, usually it is never done alone a driver and inspiration to it.
+For a job to be done properly, usually it is never done alone and there is always a driver and inspiration to it.
 
 ## Requirements
 
