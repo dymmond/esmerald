@@ -266,7 +266,7 @@ class Esmerald(Starlette):
         include_in_schema: bool = True,
     ) -> None:
         router = router or self.router
-        return router.add_route(
+        route = router.add_route(
             path=path,
             handler=handler,
             dependencies=dependencies,
@@ -276,6 +276,9 @@ class Esmerald(Starlette):
             name=name,
             include_in_schema=include_in_schema,
         )
+
+        self.activate_openapi()
+        return route
 
     def add_websocket_route(
         self,
