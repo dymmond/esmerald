@@ -20,9 +20,7 @@ _true_values = {"True", "true"}
 _false_values = {"False", "false"}
 
 
-def _query_param_reducer(
-    acc: Dict[str, List[str]], cur: Tuple[str, str]
-) -> Dict[str, List[str]]:
+def _query_param_reducer(acc: Dict[str, List[str]], cur: Tuple[str, str]) -> Dict[str, List[str]]:
     key, value = cur
 
     if value in _true_values:
@@ -43,18 +41,14 @@ def parse_query_params(connection: "HTTPConnection") -> Dict[str, Any]:
     return reduce(
         _query_param_reducer,
         parse_qsl(
-            query_string
-            if isinstance(query_string, str)
-            else query_string.decode("latin-1"),
+            query_string if isinstance(query_string, str) else query_string.decode("latin-1"),
             keep_blank_values=True,
         ),
         {},
     )
 
 
-def parse_form_data(
-    media_type: "EncodingType", form_data: "FormData", field: "ModelField"
-) -> Any:
+def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "ModelField") -> Any:
     values_dict: Dict[str, Any] = {}
     for key, value in form_data.multi_items():
         if not isinstance(value, (UploadFile, StarletteUploadFile)):

@@ -23,9 +23,7 @@ class AsyncCallable(Generic[P, T]):
         return await self.fn(*args, **kwargs)
 
 
-def as_async_callable_list(
-    value: Union[Callable, List[Callable]]
-) -> List[AsyncCallable]:
+def as_async_callable_list(value: Union[Callable, List[Callable]]) -> List[AsyncCallable]:
     if not isinstance(value, list):
         return [AsyncCallable(value)]
     return [AsyncCallable(v) for v in value]

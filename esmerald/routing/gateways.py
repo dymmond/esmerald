@@ -43,12 +43,17 @@ class Gateway(StarletteRoute):
         permissions: Optional["Permission"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         deprecated: Optional[bool] = None,
+        is_from_router: bool = False,
     ) -> None:
         if not path:
             path = "/"
         if is_class_and_subclass(handler, APIView):
             handler = handler(parent=self)
-        self.path = clean_path(path + handler.path)
+
+        if not is_from_router:
+            self.path = clean_path(path + handler.path)
+        else:
+            self.path = clean_path(path)
         self.methods = getattr(handler, "methods", None)
 
         if not name:

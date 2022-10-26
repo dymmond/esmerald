@@ -23,9 +23,7 @@ def is_async_callable(value: Callable[P, T]) -> TypeGuard[Callable[P, Awaitable[
     while isinstance(value, functools.partial):
         value = value.func  # type: ignore[unreachable]
 
-    return asyncio.iscoroutinefunction(value) or asyncio.iscoroutinefunction(
-        value.__call__
-    )  # ty
+    return asyncio.iscoroutinefunction(value) or asyncio.iscoroutinefunction(value.__call__)  # ty
 
 
 def is_class_and_subclass(value: typing.Any, type_: typing.Any) -> bool:

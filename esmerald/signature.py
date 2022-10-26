@@ -93,15 +93,9 @@ class SignatureModel(BaseModel):
         return error["loc"][-1] in cls.dependency_names
 
     @staticmethod
-    def get_connection_method_and_url(
-        connection: Union[Request, WebSocket]
-    ) -> Tuple[str, "URL"]:
+    def get_connection_method_and_url(connection: Union[Request, WebSocket]) -> Tuple[str, "URL"]:
         """Extract method and URL from Request or WebSocket."""
-        method = (
-            ScopeType.WEBSOCKET
-            if isinstance(connection, WebSocket)
-            else connection.method
-        )
+        method = ScopeType.WEBSOCKET if isinstance(connection, WebSocket) else connection.method
         return method, connection.url
 
 
@@ -200,9 +194,8 @@ class SignatureModelFactory:
             yield SignatureParameter(self.fn_name, name, parameter)
 
     def should_skip_parameter_validation(self, parameter: SignatureParameter) -> bool:
-        return (
-            parameter.name in SKIP_VALIDATION_NAMES
-            or should_skip_dependency_validation(parameter.default)
+        return parameter.name in SKIP_VALIDATION_NAMES or should_skip_dependency_validation(
+            parameter.default
         )
 
     def create_signature_model(self) -> Type[SignatureModel]:

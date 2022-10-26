@@ -10,9 +10,7 @@ R = TypeVar("R", bound=StarletteResponse)
 
 
 class BackgroundTask(StarletteBackgroundTask):
-    def __init__(
-        self, func: Callable[P, Any], *args: P.args, **kwargs: P.kwargs
-    ) -> None:
+    def __init__(self, func: Callable[P, Any], *args: P.args, **kwargs: P.kwargs) -> None:
         super().__init__(func, *args, **kwargs)
 
 

@@ -53,9 +53,7 @@ class ParameterDefinition(NamedTuple):
 class Dependency:
     __slots__ = ("key", "inject", "dependencies")
 
-    def __init__(
-        self, key: str, inject: Inject, dependencies: List["Dependency"]
-    ) -> None:
+    def __init__(self, key: str, inject: Inject, dependencies: List["Dependency"]) -> None:
         self.key = key
         self.inject = inject
         self.dependencies = dependencies
@@ -202,9 +200,7 @@ class KwargsModel:
             signature_model_fields=signature_model.__fields__,
         )
 
-        expected_path_parameters = {
-            p for p in param_definitions if p.param_type == ParamType.PATH
-        }
+        expected_path_parameters = {p for p in param_definitions if p.param_type == ParamType.PATH}
         expected_header_parameters = {
             p for p in param_definitions if p.param_type == ParamType.HEADER
         }
@@ -258,9 +254,7 @@ class KwargsModel:
                     expected_form_data=expected_form_data,
                     dependency_kwargs_model=dependency_kwargs_model,
                 )
-            expected_reserved_kwargs.update(
-                dependency_kwargs_model.expected_reserved_kwargs
-            )
+            expected_reserved_kwargs.update(dependency_kwargs_model.expected_reserved_kwargs)
 
         return KwargsModel(
             expected_form_data=expected_form_data,
@@ -269,9 +263,7 @@ class KwargsModel:
             expected_query_params=expected_query_parameters,
             expected_cookie_params=expected_cookie_parameters,
             expected_header_params=expected_header_parameters,
-            expected_reserved_kwargs=cast(
-                "Set[ReservedKwargs]", expected_reserved_kwargs
-            ),
+            expected_reserved_kwargs=cast("Set[ReservedKwargs]", expected_reserved_kwargs),
             sequence_query_parameter_names=sequence_query_parameter_names,
             is_data_optional=is_optional(signature_model.__fields__["data"])
             if "data" in expected_reserved_kwargs
@@ -280,8 +272,7 @@ class KwargsModel:
 
     def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> Dict[str, Any]:
         connection_query_params = {
-            k: self._sequence_or_scalar_param(k, v)
-            for k, v in connection.query_params.items()
+            k: self._sequence_or_scalar_param(k, v) for k, v in connection.query_params.items()
         }
 
         query_params = self._collect_params(
@@ -323,9 +314,7 @@ class KwargsModel:
         if "socket" in self.expected_reserved_kwargs:
             reserved_kwargs["socket"] = connection
         if "data" in self.expected_reserved_kwargs:
-            reserved_kwargs["data"] = self._get_request_data(
-                request=cast("Request", connection)
-            )
+            reserved_kwargs["data"] = self._get_request_data(request=cast("Request", connection))
         return {
             **reserved_kwargs,
             **path_params,
@@ -340,17 +329,13 @@ class KwargsModel:
     ) -> Dict[str, Any]:
         """Collects request params, checking for missing required values."""
         missing_params = [
-            p.field_alias
-            for p in expected
-            if p.is_required and p.field_alias not in params
+            p.field_alias for p in expected if p.is_required and p.field_alias not in params
         ]
         if missing_params:
             raise ValidationErrorException(
                 f"Missing required parameter(s) {', '.join(missing_params)} for url {url}"
             )
-        return {
-            p.field_name: params.get(p.field_alias, p.default_value) for p in expected
-        }
+        return {p.field_name: params.get(p.field_alias, p.default_value) for p in expected}
 
     async def resolve_dependency(
         self,
@@ -369,9 +354,7 @@ class KwargsModel:
         return await dependency.inject(**dependency_kwargs)
 
     @classmethod
-    def _create_dependency_graph(
-        cls, key: str, dependencies: Dict[str, Inject]
-    ) -> Dependency:
+    def _create_dependency_graph(cls, key: str, dependencies: Dict[str, Inject]) -> Dependency:
         inject = dependencies[key]
         sub_dependency_keys = [
             k for k in get_signature_model(inject).__fields__ if k in dependencies
@@ -395,9 +378,7 @@ class KwargsModel:
     ) -> ParameterDefinition:
         extra = field_info.extra
         is_required = extra.get(EXTRA_KEY_REQUIRED, True)
-        default_value = (
-            field_info.default if field_info.default is not Undefined else None
-        )
+        default_value = field_info.default if field_info.default is not Undefined else None
 
         field_alias = extra.get(ParamType.QUERY) or field_name
         param_type = getattr(field_info, "in_", ParamType.QUERY)
@@ -483,9 +464,7 @@ class KwargsModel:
                 f"The following kwargs have been used: {', '.join(used_reserved_kwargs)}"
             )
 
-    def _sequence_or_scalar_param(
-        self, key: str, value: List[str]
-    ) -> Union[str, List[str]]:
+    def _sequence_or_scalar_param(self, key: str, value: List[str]) -> Union[str, List[str]]:
         return (
             value[0]
             if key not in self.sequence_query_parameter_names and len(value) == 1

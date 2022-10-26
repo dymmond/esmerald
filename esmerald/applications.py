@@ -233,6 +233,9 @@ class Esmerald(Starlette):
                 configurations=self.scheduler_configurations,
             )
 
+        self.activate_openapi()
+
+    def activate_openapi(self) -> None:
         if self.openapi_config and self.enable_openapi:
             self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
             gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
@@ -324,9 +327,9 @@ class Esmerald(Starlette):
             )
 
             if self.on_startup:
-                self.on_startup.append(router.on_startup)
+                self.on_startup.extend(router.on_startup)
             if self.on_shutdown:
-                self.on_shutdown.append(router.on_shutdown)
+                self.on_shutdown.extend(router.on_shutdown)
 
             self.router.routes.append(
                 gateway(
@@ -338,8 +341,11 @@ class Esmerald(Starlette):
                     permissions=route.permissions,
                     handler=route.handler,
                     parent=self.router,
+                    is_from_router=True,
                 )
             )
+
+        self.activate_openapi()
 
     def get_default_exception_handlers(self) -> None:
         """
