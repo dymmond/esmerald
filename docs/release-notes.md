@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.1.2
+
+October 25, 2022.
+
+### Changed
+
+- `add_routes` - Fixed the way the add_route was managing the paths and import to OpenAPI docs.
+
 ## 0.1.1
 
 October 25, 2022.
