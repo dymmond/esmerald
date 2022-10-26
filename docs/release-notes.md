@@ -2,7 +2,7 @@
 
 ## 0.1.2
 
-October 25, 2022.
+October 26, 2022.
 
 ### Changed
 
