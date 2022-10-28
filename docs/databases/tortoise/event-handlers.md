@@ -18,6 +18,8 @@ to make it clear and in one place.
 ### Tortoise settings
 
 ```python title='src/configs/database/settings.py'
+import os
+
 from esmerald.conf import settings
 
 
