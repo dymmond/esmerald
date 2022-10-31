@@ -446,5 +446,5 @@ There are plenty more things you can do with Esmerald. Enjoy! 😊
 
 ## Sponsors
 
-Currently there are no sponsors of Esmerald but you can financially help and support the auhor though
+Currently there are no sponsors of Esmerald but you can financially help and support the author though
 [GitHub sponsors](https://github.com/sponsors/tarsil) and become a **Special one** or a **Legend**.
