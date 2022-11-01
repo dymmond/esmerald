@@ -47,8 +47,10 @@ To use the [scaffold](https://github.com/dymmond/esmerald-scaffold) you will nee
 And to install, run:
 
 ```shell
-$ cookiecutter https://github.com/dymmond/esmerald-scaffold <NAME_OF_YOUR_PROJECT>
+$ cookiecutter https://github.com/dymmond/esmerald-scaffold
 ```
+
+And simply follow the instructions.
 
 Once the project is generated you should have a folder structure similar to this:
 
