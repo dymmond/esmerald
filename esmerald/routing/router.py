@@ -1,5 +1,4 @@
 import inspect
-import re
 from copy import copy
 from enum import Enum, IntEnum
 from inspect import Signature
@@ -16,7 +15,6 @@ from typing import (
     Set,
     Tuple,
     Type,
-    TypeVar,
     Union,
     cast,
 )
@@ -80,24 +78,6 @@ if TYPE_CHECKING:
     )
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from pydantic.typing import AnyCallable
-
-PARAM_REGEX = re.compile("{([a-zA-Z_][a-zA-Z0-9_]*)(:[a-zA-Z_][a-zA-Z0-9_]*)?}")
-
-multipart_not_installed_error = (
-    'Form data requires "python-multipart" to be installed. \n'
-    'You can install "python-multipart" with: \n\n'
-    "pip install python-multipart\n"
-)
-multipart_incorrect_install_error = (
-    'Form data requires "python-multipart" to be installed. '
-    'It seems you installed "multipart" instead. \n'
-    'You can remove "multipart" with: \n\n'
-    "pip uninstall multipart\n\n"
-    'And then install "python-multipart" with: \n\n'
-    "pip install python-multipart\n"
-)
-
-T = TypeVar("T", bound="BaseHandlerMixin")
 
 
 class Parent:
@@ -319,7 +299,7 @@ class Router(StarletteRouter, Parent):
         if not isinstance(handler, HTTPHandler):
             raise ImproperlyConfigured(
                 f"handler must be a instance of HTTPHandler and not {handler.__class__.__name__}. "
-                "Example: get(), put(), post(), delete(), patch()."
+                "Example: get(), put(), post(), delete(), patch(), route()."
             )
         gateway = Gateway(
             path=self.path + path,
@@ -462,7 +442,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             path = "/"
         super().__init__(path=path, endpoint=endpoint, include_in_schema=include_in_schema)
         """
-        Handles the "view" or "apiview" of the platform. A handler can be any get, put, patch, post or delete.
+        Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
         """
         self._permissions: Union[List["Permission"], "VoidType"] = Void
         self._dependencies: Union[Dict[str, Inject], "VoidType"] = Void
@@ -553,13 +533,9 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
     async def allowed_methods(
         self, scope: "Scope", receive: "Receive", send: "Send", methods: List[str]
     ) -> None:
-        """Esmerald version of a not allowed handler when a resource is
-        called and not allowed properly.
-
-        Esmerald overrides the original Starlette not_found to return always
-        JSONReponse.
-
-        For plain ASGI apps, just returns the response.
+        """
+        Validates if the scope method is available within the handler and raises
+        a MethodNotAllowed if otherwise.
         """
         for method in methods:
             if method not in self.http_methods:
@@ -584,39 +560,29 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         """
         Returns the closest custom Response class in the parent graph or the
         default Response class.
-
-        This method is memoized so the computation occurs only once.
-
-        Returns:
-            The default [Response][esmerald.response.Response] class for the route handler.
         """
         response_class = Response
-        for layer in self.parent_layers:
+        for layer in self.parent_levels:
             if layer.response_class is not None:
                 response_class = layer.response_class
         return response_class
 
     def get_response_headers(self) -> "ResponseHeaders":
-        """Returns all header parameters in the scope of the handler function.
-
-        Returns:
-            A dictionary mapping keys to [ResponseHeader][esmerald.datastructures.ResponseHeader] instances.
+        """
+        Returns all header parameters in the scope of the handler function.
         """
         resolved_response_headers = {}
-        for layer in self.parent_layers:
+        for layer in self.parent_levels:
             resolved_response_headers.update(layer.response_headers or {})
         return resolved_response_headers
 
     def get_response_cookies(self) -> "ResponseCookies":
         """Returns a list of Cookie instances. Filters the list to ensure each
         cookie key is unique.
-
-        Returns:
-            A list of [Cookie][esmerald.datastructures.Cookie] instances.
         """
 
         cookies: "ResponseCookies" = []
-        for layer in self.parent_layers:
+        for layer in self.parent_levels:
             cookies.extend(layer.response_cookies or [])
         filtered_cookies: "ResponseCookies" = []
         for cookie in reversed(cookies):
@@ -625,8 +591,8 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         return filtered_cookies
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        """ASGI app that authorizes the connection and then awaits the handler
-        function.
+        """
+        ASGIapp that authorizes the connection and then awaits the handler function.
         """
         methods = [scope["method"]]
         await self.allowed_methods(scope, receive, send, methods)
@@ -647,7 +613,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         await response(scope, receive, send)
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
-        """Replaces a function with itself."""
         self.fn = fn
         self.endpoint = fn
         self.validate_handler()
@@ -685,7 +650,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             fn = cast("AnyCallable", self.fn)
             if not is_async_callable(fn):
                 raise ImproperlyConfigured(
-                    "Functions decorated with 'http, websocket, get, patch, put, post and delete' must be async functions"
+                    "Functions decorated with 'route, websocket, get, patch, put, post and delete' must be async functions"
                 )
 
     def validate_handler(self):
@@ -770,15 +735,16 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.websocket_parameter_model: Optional["KwargsModel"] = None
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
-        """Replaces a function with itself."""
         self.fn = fn
         self.endpoint = fn
         self.validate_websocket_handler_function()
         return self
 
     def validate_websocket_handler_function(self) -> None:
-        """Validates the route handler function once it's set by inspecting its
-        return annotations."""
+        """
+        Validates the route handler function once it is set by inspecting its
+        return annotations.
+        """
         if not self.fn:
             raise ImproperlyConfigured(
                 "Cannot call check_handler_function without first setting self.fn"
@@ -801,7 +767,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
             raise ImproperlyConfigured("Websocket handlers must set a 'socket' argument.")
         if not is_async_callable(fn):
             raise ImproperlyConfigured(
-                "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions"
+                "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions."
             )
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
@@ -827,7 +793,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         Returns:
             Dictionary of parsed kwargs
         """
-        assert self.websocket_parameter_model, "handler parameter model not defined"
+        assert self.websocket_parameter_model, "handler parameter model not defined."
 
         signature_model = get_signature_model(self)
         kwargs = self.websocket_parameter_model.to_kwargs(connection=websocket)

@@ -109,6 +109,7 @@ class BaseSignature:
     def create_signature_model(self, is_websocket: bool = False) -> None:
         """
         Creates a signature model for the given route.
+
         Websockets do not support methods.
         """
         if not self.signature_model:
@@ -155,7 +156,7 @@ class BaseResponseHandler:
         media_type: str,
         status_code: int,
     ) -> "AsyncAnyCallable":
-        """Creates a handler fpr ResponseContainer Types"""
+        """Creates a handler for ResponseContainer Types"""
 
         async def response_content(
             data: ResponseContainer, app: "Esmerald", **kwargs: Dict[str, Any]
@@ -425,7 +426,9 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
     @property
     def path_parameters(self) -> Set[str]:
         """
-        Gets the path parameters
+        Gets the path parameters in a set format.
+
+        Example: {'name', 'id'}
         """
         parameters = set()
         for param_name, _ in self.param_convertors.items():
@@ -435,30 +438,45 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
     @property
     def normalised_path_params(self) -> List[Dict[str, str]]:
         """
-        Gets the path parameters in a PathParameterSchema format.
+        Gets the path parameters in a PathParameterSchema format and it is
+        only used for OpenAPI documentation purposes only.
         """
         path_components = self.parse_path(self.path)
         parameters = [component for component in path_components if isinstance(component, dict)]
         return parameters
 
     @property
-    def parent_layers(self) -> List[Union[T, "ParentType"]]:
+    def parent_levels(self) -> List[Union[T, "ParentType"]]:
         """
         Returns the handler from the app down to the route handler.
+
+        Who is the parent of a given layer/level.
+
+        Example:
+
+            app = Esmerald(routes=[
+                Include(path='/api/v1', routes=[
+                    Gateway(path='/home', handler=home)
+                ])
+            ])
+
+            1. Parent of Gateway is the Include.
+            2. Parent of the Include is the Esmerald router.
+            3. Parent of the Esmerald router is the Esmerald app itself.
         """
-        layers = []
+        levels = []
         current: Any = self
         while current:
-            layers.append(current)
+            levels.append(current)
             current = current.parent
-        return list(reversed(layers))
+        return list(reversed(levels))
 
     @property
     def dependency_names(self) -> Set[str]:
         """A unique set of all dependency names provided in the handlers parent
-        layers."""
-        layered_dependencies = (layer.dependencies or {} for layer in self.parent_layers)
-        return {name for layer in layered_dependencies for name in layer.keys()}
+        levels."""
+        level_dependencies = (level.dependencies or {} for level in self.parent_levels)
+        return {name for level in level_dependencies for name in level.keys()}
 
     def resolve_permissions(self) -> List["Permission"]:
         """
@@ -466,7 +484,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         """
         if self._permissions is Void:
             self._permissions = []
-            for layer in self.parent_layers:
+            for layer in self.parent_levels:
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
                 "List[Permission]",
@@ -476,7 +494,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
 
     def get_dependencies(self) -> Dict[str, Inject]:
         """
-        Returns all dependencies of the handler function's starting from the parent layers.
+        Returns all dependencies of the handler function's starting from the parent levels.
         """
         if not self.signature_model:
             raise RuntimeError(
@@ -484,8 +502,8 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             )
         if self._dependencies is Void:
             self._dependencies = {}
-            for layer in self.parent_layers:
-                for key, value in (layer.dependencies or {}).items():
+            for level in self.parent_levels:
+                for key, value in (level.dependencies or {}).items():
                     self.has_dependency_unique(
                         dependencies=self._dependencies,
                         key=key,
@@ -498,7 +516,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
     def has_dependency_unique(dependencies: Dict[str, Inject], key: str, injector: Inject) -> None:
         """
         Validates that a given inject has not been already defined under a
-        different key in any of the layers.
+        different key in any of the levels.
         """
         for dependency_key, value in dependencies.items():
             if injector == value:
@@ -508,21 +526,21 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                 )
 
     def get_exception_handlers(self) -> "ExceptionHandlers":
-        """Resolves the exception_handlers by starting from the route handler
+        """
+        Resolves the exception_handlers by starting from the route handler
         and moving up.
-
-        This method is memoized so the computation occurs only once.
         """
         resolved_exception_handlers = {}
-        for layer in self.parent_layers:
-            resolved_exception_handlers.update(layer.exception_handlers or {})
+        for level in self.parent_levels:
+            resolved_exception_handlers.update(level.exception_handlers or {})
         return resolved_exception_handlers
 
     def get_cookies(
         self, local_cookies: "ResponseCookies", other_cookies: "ResponseCookies"
     ) -> List[Dict[str, Any]]:
-        """Given two lists of cookies, ensures the uniqueness of cookies by key and
-        returns a normalized dict ready to be set on the response."""
+        """
+        Returns a unique list of cookies.
+        """
         filtered_cookies = [*local_cookies]
         for cookie in other_cookies:
             if not any(cookie.key == c.key for c in filtered_cookies):
@@ -533,12 +551,15 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return normalized_cookies
 
     def get_headers(self, headers: "ResponseHeaders") -> Dict[str, Any]:
-        """Given a dictionary of ResponseHeader, filters them and returns a
-        dictionary of values.
+        """
+        Returns a dict of response headers.
         """
         return {k: v.value for k, v in headers.items()}
 
     async def get_response_data(self, data: Any) -> Any:
+        """
+        Retrives the response data for sync and async.
+        """
         if isawaitable(data):
             data = await data
         return data
@@ -547,8 +568,9 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         """
         Validates the connection.
 
-        Handles with the permissions for each view (get, put, post, delete, patch...) after the request.
-        Raises an appropriate exception if the request is not allowed.
+        Handles with the permissions for each view (get, put, post, delete, patch, route...) after the request.
+
+        Raises a PermissionDenied exception if not allowed..
         """
         for permission in self.resolve_permissions():
             permission = await permission()

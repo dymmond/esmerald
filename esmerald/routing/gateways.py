@@ -72,8 +72,7 @@ class Gateway(StarletteRoute):
         """
         A "bridge" to a handler and router mapping functionality.
         Since the default Starlette Route endpoint does not understand the Esmerald handlers,
-        the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both
-        class based views and decorated function views.
+        the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self.handler = handler
         self.dependencies = dependencies or {}
@@ -157,8 +156,7 @@ class WebSocketGateway(StarletteWebSocketRoute):
         """
         A "bridge" to a handler and router mapping functionality.
         Since the default Starlette Route endpoint does not understand the Esmerald handlers,
-        the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both
-        class based views and decorated function views.
+        the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self.handler = handler
         self.dependencies = dependencies or {}

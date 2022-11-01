@@ -30,7 +30,7 @@ def extract_layered_values(
     tags: List[str] = []
     security: List["SecurityRequirement"] = []
 
-    for layer in handler.parent_layers:
+    for layer in handler.parent_levels:
         if hasattr(layer, "tags"):
             tags.extend(layer.tags or [])
         if hasattr(layer, "security"):

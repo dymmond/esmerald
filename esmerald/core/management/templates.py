@@ -7,7 +7,7 @@ from importlib import import_module
 from typing import Any, Dict, Optional
 
 import esmerald
-from esmerald.core.management import archive
+from esmerald.core import archive
 from esmerald.core.management.base import BaseDirective, CommandError
 from jinja2 import Environment, FileSystemLoader
 
@@ -27,12 +27,8 @@ class TemplateCommand(BaseDirective):
 
     def add_arguments(self, parser: Any):
         parser.add_argument("name", help="Name of the application or project.")
-        parser.add_argument(
-            "directory", nargs="?", help="Optional destination directory"
-        )
-        parser.add_argument(
-            "--template", help="The path or URL to load the template from."
-        )
+        parser.add_argument("directory", nargs="?", help="Optional destination directory")
+        parser.add_argument("--template", help="The path or URL to load the template from.")
         parser.add_argument(
             "--name",
             "-n",
@@ -83,8 +79,7 @@ class TemplateCommand(BaseDirective):
                 self.validatate_name(os.path.basename(top_dir), "directory")
             if not os.path.exists(top_dir):
                 raise CommandError(
-                    f"Destination directory {top_dir} does not "
-                    "exist, please create it first."
+                    f"Destination directory {top_dir} does not " "exist, please create it first."
                 )
 
         # Find formatters, which are external executables, before input
@@ -114,9 +109,7 @@ class TemplateCommand(BaseDirective):
                     # Ignore some files as they cause various breakages.
                     continue
                 old_path = os.path.join(root, filename)
-                new_path = os.path.join(
-                    top_dir, relative_dir, filename.replace(base_name, name)
-                )
+                new_path = os.path.join(top_dir, relative_dir, filename.replace(base_name, name))
                 for old_suffix, new_suffix in self.rewrite_template_suffixes:
                     if new_path.endswith(old_suffix):
                         new_path = new_path[: -len(old_suffix)] + new_suffix
@@ -183,9 +176,7 @@ class TemplateCommand(BaseDirective):
             if os.path.exists(absolute_path):
                 return self.extract(absolute_path)
 
-        raise CommandError(
-            "couldn't handle %s template %s." % (self.app_or_project, template)
-        )
+        raise CommandError("couldn't handle %s template %s." % (self.app_or_project, template))
 
     def validate_name(self, name, name_or_dir="name"):
         if name is None:
@@ -236,9 +227,7 @@ class TemplateCommand(BaseDirective):
             archive.extract(filename, tempdir)
             return tempdir
         except (archive.ArchiveException, OSError) as e:
-            raise CommandError(
-                "couldn't extract file %s to %s: %s" % (filename, tempdir, e)
-            )
+            raise CommandError("couldn't extract file %s to %s: %s" % (filename, tempdir, e))
 
     def apply_umask(self, old_path, new_path):
         current_umask = os.umask(0)
