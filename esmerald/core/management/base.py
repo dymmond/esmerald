@@ -1,5 +1,5 @@
 """
-Base classes for writing management commands (named commands which can
+Base classes for writing management directives (named directives which can
 be executed through `esmerald-admin`).
 """
 import argparse
@@ -73,9 +73,9 @@ class CommandParser(ArgumentParser):
 
 def handle_default_options(options: Any):
     """
-    Include any default options that all commands should accept here
+    Include any default options that all directives should accept here
     so that ManagementUtility can handle them before searching for
-    user commands.
+    user directives.
     """
     if options.pythonpath:
         sys.path.insert(0, options.pythonpath)
@@ -84,7 +84,7 @@ def handle_default_options(options: Any):
 class EsmeraldHelpFormatter(HelpFormatter):
     """
     Customized formatter so that command-specific arguments appear in the
-    --help output before arguments common to all commands.
+    --help output before arguments common to all directives.
     """
 
     show_last = {
@@ -98,7 +98,9 @@ class EsmeraldHelpFormatter(HelpFormatter):
     }
 
     def _reordered_actions(self, actions: Any):
-        return sorted(actions, key=lambda a: set(a.option_strings) & self.show_last != set())
+        return sorted(
+            actions, key=lambda a: set(a.option_strings) & self.show_last != set()
+        )
 
     def add_usage(self, usage: str, actions: Any, *args: Any, **kwargs: Dict[str, Any]):
         super().add_usage(usage, self._reordered_actions(actions), *args, **kwargs)
@@ -151,9 +153,9 @@ class OutputWrapper(TextIOBase):
         self._out.write(style_func(msg))
 
 
-class BaseCommand:
+class BaseDirective:
     """
-    The base class from which all management commands ultimately
+    The base class from which all management directives ultimately
     derive.
 
     Use this class if you want access to all of the mechanisms which
@@ -185,7 +187,7 @@ class BaseCommand:
        message to ``stderr``.
 
     Thus, the ``handle()`` method is typically the starting point for
-    subclasses; many built-in commands and command types either place
+    subclasses; many built-in directives and command types either place
     all of their logic in ``handle()``, or perform some additional
     parsing work in ``handle()`` and then delegate from it to more
     specialized methods as needed.
@@ -246,7 +248,7 @@ class BaseCommand:
     def get_version(self):
         """
         Return the Esmerald version, which should be correct for all built-in
-        Esmerald commands. User-supplied commands can override this method to
+        Esmerald directives. User-supplied directives can override this method to
         return their own version.
         """
         return esmerald.__version__
@@ -323,13 +325,13 @@ class BaseCommand:
 
     def add_arguments(self, parser: Any):
         """
-        Entry point for subclassed commands to add custom arguments.
+        Entry point for subclassed directives to add custom arguments.
         """
 
     def add_base_argument(self, parser: Any, *args: Any, **kwargs: Dict[str, Any]):
         """
         Call the parser's add_argument() method, suppressing the help text
-        according to BaseCommand.suppressed_base_arguments.
+        according to BaseDirective.suppressed_base_arguments.
         """
         for arg in args:
             if arg in self.suppressed_base_arguments:
@@ -381,7 +383,9 @@ class BaseCommand:
         force-skipped).
         """
         if options["force_color"] and options["no_color"]:
-            raise CommandError("The --no-color and --force-color options can't be used together.")
+            raise CommandError(
+                "The --no-color and --force-color options can't be used together."
+            )
         if options["force_color"]:
             self.style = color_style(force_color=True)
         elif options["no_color"]:
@@ -402,4 +406,6 @@ class BaseCommand:
         The actual logic of the command. Subclasses must implement
         this method.
         """
-        raise NotImplementedError("subclasses of BaseCommand must provide a handle() method")
+        raise NotImplementedError(
+            "subclasses of BaseDirective must provide a handle() method"
+        )

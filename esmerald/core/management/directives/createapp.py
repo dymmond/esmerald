@@ -1,7 +1,7 @@
 from esmerald.core.management.templates import TemplateCommand
 
 
-class Command(TemplateCommand):
+class Directive(TemplateCommand):
     help = (
         "Creates an Esmerald app directory structure for the given app name in "
         "the current directory or optionally in the given directory."

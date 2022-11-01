@@ -7,7 +7,7 @@ from ..utils import get_random_secret_key
 SECRET_KEY_INSECURE_PREFIX = "esmerald-insecure-"
 
 
-class Command(TemplateCommand):
+class Directive(TemplateCommand):
     help = (
         "Creates an Esmerald project directory structure for the given project "
         "name in the current directory or optionally in the given directory."
