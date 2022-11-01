@@ -13,17 +13,9 @@ import esmerald
 from esmerald.core.management.color import color_style, no_style
 
 
-class CommandError(Exception):
+class DirectiveError(Exception):
     """
-    Exception class indicating a problem while executing a management
-    command.
-
-    If this exception is raised during the execution of a management
-    command, it will be caught and turned into a nicely-printed error
-    message to the appropriate output stream (i.e., stderr); as a
-    result, raising this exception (with a sensible description of the
-    error) is the preferred way to indicate that something has gone
-    wrong in the execution of a command.
+    Exception class indicating a problem while executing a directive.
     """
 
     def __init__(self, *args: Any, returncode: int = 1, **kwargs: Dict[str, Any]):
@@ -31,7 +23,7 @@ class CommandError(Exception):
         super().__init__(*args, **kwargs)
 
 
-class SystemCheckError(CommandError):
+class SystemCheckError(DirectiveError):
     """
     The system check framework detected unrecoverable errors.
     """
@@ -39,11 +31,9 @@ class SystemCheckError(CommandError):
     ...
 
 
-class CommandParser(ArgumentParser):
+class DirectiveParser(ArgumentParser):
     """
-    Customized ArgumentParser class to improve some error messages and prevent
-    SystemExit in several occasions, as SystemExit is unacceptable when a
-    command is called programmatically.
+    Customized ArgumentParser class to improve some error messages and prevent SystemExit.
     """
 
     def __init__(
@@ -68,7 +58,7 @@ class CommandParser(ArgumentParser):
         if self.called_from_command_line:
             super().error(message)
         else:
-            raise CommandError("Error: %s" % message)
+            raise DirectiveError("Error: %s" % message)
 
 
 def handle_default_options(options: Any):
@@ -98,7 +88,9 @@ class EsmeraldHelpFormatter(HelpFormatter):
     }
 
     def _reordered_actions(self, actions: Any):
-        return sorted(actions, key=lambda a: set(a.option_strings) & self.show_last != set())
+        return sorted(
+            actions, key=lambda a: set(a.option_strings) & self.show_last != set()
+        )
 
     def add_usage(self, usage: str, actions: Any, *args: Any, **kwargs: Dict[str, Any]):
         super().add_usage(usage, self._reordered_actions(actions), *args, **kwargs)
@@ -108,10 +100,6 @@ class EsmeraldHelpFormatter(HelpFormatter):
 
 
 class OutputWrapper(TextIOBase):
-    """
-    Wrapper around stdout/stderr
-    """
-
     @property
     def style_func(self):
         return self._style_func
@@ -165,8 +153,7 @@ class BaseDirective:
     the command-parsing and -execution behavior, the normal flow works
     as follows:
 
-    1. ``esmerald-admin`` or ``manage.py`` loads the command class
-       and calls its ``run_from_argv()`` method.
+    1. ``esmerald-admin`` loads the command class and calls its ``run_from_argv()`` method.
 
     2. The ``run_from_argv()`` method calls ``create_parser()`` to get
        an ``ArgumentParser`` for the arguments, parses them, performs
@@ -181,7 +168,7 @@ class BaseDirective:
        SQL statements, will be wrapped in ``BEGIN`` and ``COMMIT``.
 
     4. If ``handle()`` or ``execute()`` raised any exception (e.g.
-       ``CommandError``), ``run_from_argv()`` will  instead print an error
+       ``DirectiveError``), ``run_from_argv()`` will  instead print an error
        message to ``stderr``.
 
     Thus, the ``handle()`` method is typically the starting point for
@@ -236,7 +223,7 @@ class BaseDirective:
         self.stdout = OutputWrapper(stdout or sys.stdout)
         self.stderr = OutputWrapper(stderr or sys.stderr)
         if no_color and force_color:
-            raise CommandError("'no_color' and 'force_color' can't be used together.")
+            raise DirectiveError("'no_color' and 'force_color' can't be used together.")
         if no_color:
             self.style = no_style()
         else:
@@ -251,14 +238,16 @@ class BaseDirective:
         """
         return esmerald.__version__
 
-    def create_parser(self, prog_name: Any, subcommand: Any, **kwargs: Dict[str, Any]):
+    def create_parser(
+        self, prog_name: Any, subdirective: Any, **kwargs: Dict[str, Any]
+    ):
         """
         Create and return the ``ArgumentParser`` which will be used to
         parse the arguments to this command.
         """
         kwargs.setdefault("formatter_class", EsmeraldHelpFormatter)
-        parser = CommandParser(
-            prog="%s %s" % (os.path.basename(prog_name), subcommand),
+        parser = DirectiveParser(
+            prog="%s %s" % (os.path.basename(prog_name), subdirective),
             description=self.help or None,
             missing_args_message=getattr(self, "missing_args_message", None),
             called_from_command_line=getattr(self, "_called_from_command_line", None),
@@ -304,7 +293,7 @@ class BaseDirective:
             parser,
             "--traceback",
             action="store_true",
-            help="Raise on CommandError exceptions.",
+            help="Raise on DirectiveError exceptions.",
         )
         self.add_base_argument(
             parser,
@@ -337,21 +326,21 @@ class BaseDirective:
                 break
         parser.add_argument(*args, **kwargs)
 
-    def print_help(self, prog_name, subcommand):
+    def print_help(self, prog_name, subdirective):
         """
         Print the help message for this command, derived from
         ``self.usage()``.
         """
-        parser = self.create_parser(prog_name, subcommand)
+        parser = self.create_parser(prog_name, subdirective)
         parser.print_help()
 
-    def run_from_argv(self, argv):
+    def run_from_argv(self, argv: Any):
         """
         Set up any environment changes requested (e.g., Python path
         and Esmerald settings), then run this command. If the
-        command raises a ``CommandError``, intercept it and print it sensibly
+        command raises a ``DirectiveError``, intercept it and print it sensibly
         to stderr. If the ``--traceback`` option is present or the raised
-        ``Exception`` is not ``CommandError``, raise it.
+        ``Exception`` is not ``DirectiveError``, raise it.
         """
         self._called_from_command_line = True
         parser = self.create_parser(argv[0], argv[1])
@@ -363,7 +352,7 @@ class BaseDirective:
         handle_default_options(options)
         try:
             self.execute(*args, **cmd_options)
-        except CommandError as e:
+        except DirectiveError as e:
             if options.traceback:
                 raise
 
@@ -374,14 +363,16 @@ class BaseDirective:
                 self.stderr.write("%s: %s" % (e.__class__.__name__, e))
             sys.exit(e.returncode)
 
-    def execute(self, *args, **options):
+    def execute(self, *args: Any, **options: Dict[str, Any]):
         """
         Try to execute this command, performing system checks if needed (as
         controlled by the ``requires_system_checks`` attribute, except if
         force-skipped).
         """
         if options["force_color"] and options["no_color"]:
-            raise CommandError("The --no-color and --force-color options can't be used together.")
+            raise DirectiveError(
+                "The --no-color and --force-color options can't be used together."
+            )
         if options["force_color"]:
             self.style = color_style(force_color=True)
         elif options["no_color"]:
@@ -402,4 +393,6 @@ class BaseDirective:
         The actual logic of the command. Subclasses must implement
         this method.
         """
-        raise NotImplementedError("subclasses of BaseDirective must provide a handle() method")
+        raise NotImplementedError(
+            "subclasses of BaseDirective must provide a handle() method"
+        )

@@ -1,8 +1,7 @@
 from typing import Any, Dict
 
 from esmerald.core.management.templates import TemplateCommand
-
-from ..utils import get_random_secret_key
+from esmerald.utils.crypto import get_random_secret_key
 
 SECRET_KEY_INSECURE_PREFIX = "esmerald-insecure-"
 

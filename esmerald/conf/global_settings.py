@@ -45,7 +45,9 @@ class EsmeraldAPISettings(BaseSettings):
     environment: Optional[str] = EnvironmentType.PRODUCTION
     app_name: str = "Esmerald"
     title: str = "My awesome Esmerald application"
-    description: str = "Highly scalable, performant, easy to learn and for every application."
+    description: str = (
+        "Highly scalable, performant, easy to learn and for every application."
+    )
     contact: Optional[Dict[str, Union[str, Any]]] = {
         "name": "admin",
         "email": "admin@myapp.com",
@@ -55,7 +57,7 @@ class EsmeraldAPISettings(BaseSettings):
     license: Optional[License] = None
     security: Optional[List[SecurityRequirement]] = None
     servers: List[Server] = [Server(url="/")]
-    secret: str = "my secret"
+    secret_key: str = "my secret"
     version: str = __version__
     allowed_hosts: Optional[List[str]] = ["*"]
     allow_origins: Optional[List[str]] = None
@@ -120,9 +122,9 @@ class EsmeraldAPISettings(BaseSettings):
 
                 @property
                 def csrf_config(self) -> CSRFConfig:
-                    if not self.secret:
+                    if not self.secret_key:
                         raise ImproperlyConfigured("`secret` setting not configured.")
-                    return CSRFConfig(secret=self.secret)
+                    return CSRFConfig(secret=self.secret_key)
         """
         return None
 

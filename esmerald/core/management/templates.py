@@ -1,20 +1,28 @@
+"""
+Template based from Django as it handles really well with Directives
+and it is fully supported by their systems.
+
+Esmerald readapted the same concept to allow a simple integration for the
+`esmerald-admin` allowing the creation of a project and app via command line.
+"""
 import argparse
 import os
 import shutil
 import stat
 import tempfile
 from importlib import import_module
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import esmerald
 from esmerald.core import archive
-from esmerald.core.management.base import BaseDirective, CommandError
+from esmerald.core.management.base import BaseDirective, DirectiveError
 from jinja2 import Environment, FileSystemLoader
+from pydantic import FilePath
 
 
 class TemplateCommand(BaseDirective):
     """
-    Copy wither an Esmerald application layout template or an Esmerald project
+    Copy either an Esmerald application layout template or an Esmerald project
     layout.
     """
 
@@ -23,12 +31,17 @@ class TemplateCommand(BaseDirective):
     rewrite_template_suffixes = (
         # Allow shipping invalid .py files without byte-compilation.
         (".py-tpl", ".py"),
+        (".e-tpl", ""),
     )
 
     def add_arguments(self, parser: Any):
         parser.add_argument("name", help="Name of the application or project.")
-        parser.add_argument("directory", nargs="?", help="Optional destination directory")
-        parser.add_argument("--template", help="The path or URL to load the template from.")
+        parser.add_argument(
+            "directory", nargs="?", help="Optional destination directory"
+        )
+        parser.add_argument(
+            "--template", help="The path or URL to load the template from."
+        )
         parser.add_argument(
             "--name",
             "-n",
@@ -70,25 +83,27 @@ class TemplateCommand(BaseDirective):
             try:
                 os.makedirs(top_dir)
             except FileExistsError:
-                raise CommandError(f"{top_dir} already exists.")
+                raise DirectiveError(f"{top_dir} already exists.")
             except OSError as e:
-                raise CommandError(e)
+                raise DirectiveError(e)
         else:
             top_dir = os.path.abspath(os.path.expanduser(target))
             if app_or_project == "app":
                 self.validatate_name(os.path.basename(top_dir), "directory")
             if not os.path.exists(top_dir):
-                raise CommandError(
-                    f"Destination directory {top_dir} does not " "exist, please create it first."
+                raise DirectiveError(
+                    f"Destination directory {top_dir} does not "
+                    "exist, please create it first."
                 )
-
-        # Find formatters, which are external executables, before input
-        # from the templates can sneak into the path.
 
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"
 
-        context = {base_name: name}
+        context = {
+            base_name: name,
+            "esmerald_version": self.get_version(),
+            "project_secret": options.get("secret_key"),
+        }
 
         template_dir = self.handle_template(options["template"], base_subdir)
         prefix_length = len(template_dir) + 1
@@ -109,14 +124,16 @@ class TemplateCommand(BaseDirective):
                     # Ignore some files as they cause various breakages.
                     continue
                 old_path = os.path.join(root, filename)
-                new_path = os.path.join(top_dir, relative_dir, filename.replace(base_name, name))
+                new_path = os.path.join(
+                    top_dir, relative_dir, filename.replace(base_name, name)
+                )
                 for old_suffix, new_suffix in self.rewrite_template_suffixes:
                     if new_path.endswith(old_suffix):
                         new_path = new_path[: -len(old_suffix)] + new_suffix
                         break  # Only rewrite once
 
                 if os.path.exists(new_path):
-                    raise CommandError(
+                    raise DirectiveError(
                         "%s already exists. Overlaying %s %s into an existing "
                         "directory won't replace conflicting files."
                         % (
@@ -143,7 +160,13 @@ class TemplateCommand(BaseDirective):
                         self.style.NOTICE,
                     )
 
-    def manage_template_variables(self, template, destination, template_dir, context):
+    def manage_template_variables(
+        self,
+        template: Union[str, FilePath],
+        destination: Union[str, FilePath],
+        template_dir: Union[str, FilePath],
+        context: Dict[str, Any],
+    ):
         """
         Goes through every file generated and replaces the project_name with the given
         project name from the command line.
@@ -156,10 +179,12 @@ class TemplateCommand(BaseDirective):
         with open(destination, "w") as f:
             f.write(rendered_template)
 
-    def handle_template(self, template, subdir):
+    def handle_template(
+        self, template: Union[str, FilePath], subdir: Union[str, FilePath]
+    ):
         """
         Determine where the app or project templates are.
-        Use esmerald.__path__[0] as the default because the Django install
+        Use esmerald.__path__[0] as the default because the Esmerald install
         directory isn't known.
         """
         if template is None:
@@ -176,11 +201,13 @@ class TemplateCommand(BaseDirective):
             if os.path.exists(absolute_path):
                 return self.extract(absolute_path)
 
-        raise CommandError("couldn't handle %s template %s." % (self.app_or_project, template))
+        raise DirectiveError(
+            "couldn't handle %s template %s." % (self.app_or_project, template)
+        )
 
     def validate_name(self, name, name_or_dir="name"):
         if name is None:
-            raise CommandError(
+            raise DirectiveError(
                 "you must provide {an} {app} name".format(
                     an=self.a_or_an,
                     app=self.app_or_project,
@@ -188,7 +215,7 @@ class TemplateCommand(BaseDirective):
             )
         # Check it's a valid directory name.
         if not name.isidentifier():
-            raise CommandError(
+            raise DirectiveError(
                 "'{name}' is not a valid {app} {type}. Please make sure the "
                 "{type} is a valid identifier.".format(
                     name=name,
@@ -202,7 +229,7 @@ class TemplateCommand(BaseDirective):
         except ImportError:
             pass
         else:
-            raise CommandError(
+            raise DirectiveError(
                 "'{name}' conflicts with the name of an existing Python "
                 "module and cannot be used as {an} {app} {type}. Please try "
                 "another {type}.".format(
@@ -213,7 +240,7 @@ class TemplateCommand(BaseDirective):
                 )
             )
 
-    def extract(self, filename):
+    def extract(self, filename: str):
         """
         Extract the given file to a temporary directory and return
         the path of the directory with the extracted content.
@@ -227,15 +254,19 @@ class TemplateCommand(BaseDirective):
             archive.extract(filename, tempdir)
             return tempdir
         except (archive.ArchiveException, OSError) as e:
-            raise CommandError("couldn't extract file %s to %s: %s" % (filename, tempdir, e))
+            raise DirectiveError(
+                "couldn't extract file %s to %s: %s" % (filename, tempdir, e)
+            )
 
-    def apply_umask(self, old_path, new_path):
+    def apply_umask(
+        self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]
+    ):
         current_umask = os.umask(0)
         os.umask(current_umask)
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)
         os.chmod(new_path, current_mode & ~current_umask)
 
-    def make_file_writable(self, filename):
+    def make_file_writable(self, filename: str):
         """
         Make sure that the file is writeable.
         Useful if our source is read-only.

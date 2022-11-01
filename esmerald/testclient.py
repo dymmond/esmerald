@@ -69,7 +69,7 @@ def create_client(
     *,
     debug: bool = settings.debug,
     name: Optional[str] = settings.app_name,
-    secret: Optional[str] = get_random_secret_key(),
+    secret_key: Optional[str] = get_random_secret_key(),
     allowed_hosts: Optional[List[str]] = settings.allowed_hosts,
     allow_origins: Optional[List[str]] = settings.allow_origins,
     base_url: str = "http://testserver",
@@ -93,9 +93,13 @@ def create_client(
     enable_scheduler: bool = settings.enable_scheduler,
     raise_server_exceptions: bool = True,
     root_path: str = "",
-    static_files_config: Optional[Union["StaticFilesConfig", List["StaticFilesConfig"]]] = None,
+    static_files_config: Optional[
+        Union["StaticFilesConfig", List["StaticFilesConfig"]]
+    ] = None,
     template_config: Optional["TemplateConfig"] = None,
-    lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = settings.lifespan,
+    lifespan: Optional[
+        Callable[["Esmerald"], "AsyncContextManager"]
+    ] = settings.lifespan,
     cookies: Optional[httpx._client.CookieTypes] = None
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
@@ -103,7 +107,7 @@ def create_client(
             debug=debug,
             routes=cast("Any", routes if isinstance(routes, list) else [routes]),
             name=name,
-            secret=secret,
+            secret_key=secret_key,
             allowed_hosts=allowed_hosts,
             allow_origins=allow_origins,
             permissions=permissions,

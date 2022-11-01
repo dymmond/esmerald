@@ -1,6 +1,4 @@
-"""
-termcolors.py
-"""
+from typing import Any, Dict, Optional
 
 color_names = ("black", "red", "green", "yellow", "blue", "magenta", "cyan", "white")
 foreground = {color_names[x]: "3%s" % x for x in range(8)}
@@ -16,7 +14,9 @@ opt_dict = {
 }
 
 
-def colorize(text="", opts=(), **kwargs):
+def colorize(
+    text: Optional[str] = "", opts: Optional[Any] = None, **kwargs: Dict[str, Any]
+):
     """
     Return your text, enclosed in ANSI graphics codes.
 
@@ -45,6 +45,9 @@ def colorize(text="", opts=(), **kwargs):
         print(colorize('and so should this'))
         print('this should not be red')
     """
+    if not opts:
+        opts = ()
+
     code_list = []
     if text == "" and len(opts) == 1 and opts[0] == "reset":
         return "\x1b[%sm" % RESET
@@ -61,7 +64,7 @@ def colorize(text="", opts=(), **kwargs):
     return "%s%s" % (("\x1b[%sm" % ";".join(code_list)), text or "")
 
 
-def make_style(opts=(), **kwargs):
+def make_style(opts: Optional[Any] = None, **kwargs: Dict[str, Any]):
     """
     Return a function with default parameters for colorize()
 
@@ -71,6 +74,8 @@ def make_style(opts=(), **kwargs):
         KEYWORD = make_style(fg='yellow')
         COMMENT = make_style(fg='blue', opts=('bold',))
     """
+    if not opts:
+        opts = ()
     return lambda text: colorize(text, opts, **kwargs)
 
 
@@ -140,8 +145,8 @@ PALETTES = {
 DEFAULT_PALETTE = DARK_PALETTE
 
 
-def parse_color_setting(config_string):
-    """Parse a DJANGO_COLORS environment variable to produce the system palette
+def parse_color_setting(config_string: str):
+    """Parse a ESMERALD_COLORS environment variable to produce the system palette
 
     The general form of a palette definition is:
 
@@ -149,7 +154,7 @@ def parse_color_setting(config_string):
 
     where:
         palette is a named palette; one of 'light', 'dark', or 'nocolor'.
-        role is a named style used by Django
+        role is a named style used by Esmerald
         fg is a foreground color.
         bg is a background color.
         option is a display options.

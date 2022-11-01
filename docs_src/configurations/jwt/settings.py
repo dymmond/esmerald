@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING, List
 
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import EsmeraldAPISettings, JWTConfig
 from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 from esmerald.utils.module_loading import import_string
+from starlette.middleware import Middleware as StarletteMiddleware
 
 if TYPE_CHECKING:
     from esmerald.types import Middleware
@@ -16,7 +15,9 @@ class CustomSettings(EsmeraldAPISettings):
         """
         A JWT object configuration to be passed to the application middleware
         """
-        return JWTConfig(signing_key=self.secret, auth_header_types=["Bearer", "Token"])
+        return JWTConfig(
+            signing_key=self.secret_key, auth_header_types=["Bearer", "Token"]
+        )
 
     @property
     def middleware(self) -> List["Middleware"]:

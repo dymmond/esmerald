@@ -34,7 +34,13 @@ from .params import Body, Cookie, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
-from .responses import ORJSONResponse, Response, TemplateResponse, UJSONResponse
+from .responses import (
+    JSONResponse,
+    ORJSONResponse,
+    Response,
+    TemplateResponse,
+    UJSONResponse,
+)
 from .routing.gateways import Gateway, WebSocketGateway
 from .routing.handlers import delete, get, patch, post, put, route, websocket
 from .routing.router import Include, Router
@@ -66,6 +72,7 @@ __all__ = [
     "Inject",
     "Injects",
     "ImproperlyConfigured",
+    "JSONResponse",
     "JinjaTemplateEngine",
     "JWTConfig",
     "MakoTemplateEngine",

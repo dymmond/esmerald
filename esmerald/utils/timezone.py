@@ -14,10 +14,9 @@ except ImportError:
 from datetime import date, datetime, timedelta, timezone
 
 from asgiref.local import Local
-
 from esmerald.conf import settings
 
-__all__ = [  # noqa for utc RemovedInDjango50Warning.
+__all__ = [
     "utc",
     "get_fixed_timezone",
     "get_default_timezone",
@@ -33,7 +32,6 @@ __all__ = [  # noqa for utc RemovedInDjango50Warning.
     "make_naive",
 ]
 
-# RemovedInDjango50Warning: sentinel for deprecation of is_dst parameters.
 NOT_PASSED = object()
 
 

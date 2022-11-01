@@ -10,9 +10,9 @@ class CustomSettings(EsmeraldAPISettings):
         `session_config` or then override the `def session_config()`
         property to change the behavior of the whole session_config.
         """
-        if not self.secret:
+        if not self.secret_key:
             raise ImproperlyConfigured("`secret` setting not configured.")
         return SessionConfig(
-            secret_key=self.secret,
+            secret_key=self.secret_key,
             session_cookie="session",
         )

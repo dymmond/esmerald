@@ -75,6 +75,16 @@ pip install uvicorn
 
 ```
 
+### Start a project
+
+If you wish to start an Esmerald project with a default suggested structure.
+
+```
+esmerald-admin createproject <YOUR-PROJECT-NAME>
+```
+
+This will generate a scaffold for your project with some pre-defined files in a simple fashion.
+
 ## Key Features
 
 * **Fluid and Fast**: Thanks to Starlette and Pydantic.

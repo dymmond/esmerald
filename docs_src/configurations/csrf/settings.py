@@ -10,6 +10,6 @@ class CustomSettings(EsmeraldAPISettings):
         or then override the `def csrf_config()` property to change the behavior
         of the whole csrf_config.
         """
-        if not self.secret:
+        if not self.secret_key:
             raise ImproperlyConfigured("`secret` setting not configured.")
-        return CSRFConfig(secret=self.secret)
+        return CSRFConfig(secret=self.secret_key)

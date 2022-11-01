@@ -113,7 +113,7 @@ class Esmerald(Starlette):
         license: Optional[License] = None,
         security: Optional[List[SecurityRequirement]] = None,
         servers: List[Server] = [Server(url="/")],
-        secret: Optional[str] = settings.secret,
+        secret_key: Optional[str] = settings.secret_key,
         allowed_hosts: Optional[List[str]] = settings.allowed_hosts,
         allow_origins: Optional[List[str]] = settings.allow_origins,
         permissions: Optional[List["Permission"]] = settings.permissions,
@@ -121,7 +121,9 @@ class Esmerald(Starlette):
         csrf_config: Optional["CSRFConfig"] = settings.csrf_config,
         openapi_config: Optional["OpenAPIConfig"] = settings.openapi_config,
         cors_config: Optional["CORSConfig"] = settings.cors_config,
-        static_files_config: Optional["StaticFilesConfig"] = settings.static_files_config,
+        static_files_config: Optional[
+            "StaticFilesConfig"
+        ] = settings.static_files_config,
         template_config: Optional["TemplateConfig"] = settings.template_config,
         session_config: Optional["SessionConfig"] = settings.session_config,
         response_class: Optional["ResponseType"] = settings.response_class,
@@ -140,7 +142,9 @@ class Esmerald(Starlette):
         exception_handlers: Optional["ExceptionHandlers"] = settings.exception_handlers,
         on_shutdown: Optional[List["LifeSpanHandler"]] = settings.on_shutdown,
         on_startup: Optional[List["LifeSpanHandler"]] = settings.on_startup,
-        lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = settings.lifespan,
+        lifespan: Optional[
+            Callable[["Esmerald"], "AsyncContextManager"]
+        ] = settings.lifespan,
         tags: Optional[List[str]] = settings.tags,
         include_in_schema: bool = settings.include_in_schema,
         deprecated: Optional[bool] = None,
@@ -152,7 +156,9 @@ class Esmerald(Starlette):
         ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         if allow_origins and cors_config:
-            raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
+            raise ImproperlyConfigured(
+                "It can be only allow_origins or cors_config but not both."
+            )
 
         self._debug = debug
         self.title = title
@@ -164,7 +170,7 @@ class Esmerald(Starlette):
         self.terms_of_service = terms_of_service
         self.license_info = license
         self.servers = servers
-        self.secret = secret
+        self.secret_key = secret_key
         self.allowed_hosts = allowed_hosts
         self.allow_origins = allow_origins
         self.dependencies = dependencies or {}
@@ -207,7 +213,9 @@ class Esmerald(Starlette):
             security=security,
         )
 
-        self.exception_handlers = {} if exception_handlers is None else dict(exception_handlers)
+        self.exception_handlers = (
+            {} if exception_handlers is None else dict(exception_handlers)
+        )
         self.get_default_exception_handlers()
 
         self.user_middleware = self.build_user_middleware_stack()
@@ -441,12 +449,18 @@ class Esmerald(Starlette):
 
         if self.allowed_hosts:
             user_middleware.append(
-                StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
+                StarletteMiddleware(
+                    TrustedHostMiddleware, allowed_hosts=self.allowed_hosts
+                )
             )
         if self.cors_config:
-            user_middleware.append(StarletteMiddleware(CORSMiddleware, **self.cors_config.dict()))
+            user_middleware.append(
+                StarletteMiddleware(CORSMiddleware, **self.cors_config.dict())
+            )
         if self.csrf_config:
-            user_middleware.append(StarletteMiddleware(CSRFMiddleware, config=self.csrf_config))
+            user_middleware.append(
+                StarletteMiddleware(CSRFMiddleware, config=self.csrf_config)
+            )
 
         if self.session_config:
             user_middleware.append(
@@ -509,7 +523,9 @@ class Esmerald(Starlette):
                     handlers=exception_handlers,
                     debug=debug,
                 ),
-                StarletteMiddleware(AsyncExitStackMiddleware, config=self.async_exit_config),
+                StarletteMiddleware(
+                    AsyncExitStackMiddleware, config=self.async_exit_config
+                ),
             ]
         )
 
@@ -537,7 +553,9 @@ class Esmerald(Starlette):
         await super().__call__(scope, receive, send)
 
     def mount(self, path: str, app: ASGIApp, name: Optional[str] = None) -> None:
-        raise ImproperlyConfigured("`mount` is not supported by Esmerald. Use Include() instead.")
+        raise ImproperlyConfigured(
+            "`mount` is not supported by Esmerald. Use Include() instead."
+        )
 
     def host(self, host: str, app: ASGIApp, name: Optional[str] = None) -> None:
         raise ImproperlyConfigured(
@@ -554,7 +572,9 @@ class Esmerald(Starlette):
         raise ImproperlyConfigured("`route` is not valid. Use Gateway instead.")
 
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
-        raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
+        raise ImproperlyConfigured(
+            "`websocket_route` is not valid. Use WebSocketGateway instead."
+        )
 
 
 class ChildEsmerald(Esmerald):

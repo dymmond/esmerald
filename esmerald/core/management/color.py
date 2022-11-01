@@ -1,6 +1,7 @@
 import functools
 import os
 import sys
+from typing import Optional, Union
 
 from esmerald.core.management import termcolors
 
@@ -60,11 +61,9 @@ class Style:
     pass
 
 
-def make_style(config_string=""):
+def make_style(config_string: Optional[str] = ""):
     """
     Create a Style object from the given config_string.
-
-    If config_string is empty django.utils.termcolors.DEFAULT_PALETTE is used.
     """
 
     style = Style()
@@ -100,7 +99,7 @@ def no_style():
     return make_style("nocolor")
 
 
-def color_style(force_color=False):
+def color_style(force_color: bool = False):
     """
     Return a Style object from the Esmerald color scheme.
     """

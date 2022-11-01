@@ -15,8 +15,8 @@ from importlib import import_module
 import esmerald
 from esmerald.core.management.base import (
     BaseDirective,
-    CommandError,
-    CommandParser,
+    DirectiveError,
+    DirectiveParser,
     handle_default_options,
 )
 from esmerald.core.management.color import color_style
@@ -51,9 +51,7 @@ def get_directives():
     """
     Return a dictionary mapping command names to their callback applications.
 
-    Look for a management.directives package in django.core, and in each
-    installed application -- if a directives package exists, register all
-    directives in that package.
+    Look for a management.directives package in esmerald.core. If a directives package exists, register all directives in that package.
 
     Core directives are always included. If a settings module has been
     specified, also include user-defined directives.
@@ -90,11 +88,9 @@ def call_command(command_name, *args, **options):
     testing.
 
     Some examples:
-        call_command('migrate')
-        call_command('shell', plain=True)
-        call_command('sqlmigrate', 'myapp')
+        call_command('createproject')
 
-        from django.core.management.directives import flush
+        from esmerald.core.management.directives import flush
         cmd = flush.Directive()
         call_command(cmd, verbosity=0, interactive=False)
         # Do something with cmd ...
@@ -108,7 +104,7 @@ def call_command(command_name, *args, **options):
         try:
             app_name = get_directives()[command_name]
         except KeyError:
-            raise CommandError("Unknown command: %r" % command_name)
+            raise DirectiveError("Unknown command: %r" % command_name)
 
         if isinstance(app_name, BaseDirective):
             # If the command is already loaded, use it directly.
@@ -151,7 +147,9 @@ def call_command(command_name, *args, **options):
     # Any required arguments which are passed in via **options must be passed
     # to parse_args().
     for opt in parser_actions:
-        if opt.dest in options and (opt.required or opt in mutually_exclusive_required_options):
+        if opt.dest in options and (
+            opt.required or opt in mutually_exclusive_required_options
+        ):
             parse_args.append(min(opt.option_strings))
             if isinstance(opt, (_AppendConstAction, _CountAction, _StoreConstAction)):
                 continue
@@ -200,7 +198,8 @@ class ManagementUtility:
         else:
             usage = [
                 "",
-                "Type '%s help <subcommand>' for help on a specific subcommand." % self.prog_name,
+                "Type '%s help <subdirective>' for help on a specific subdirective."
+                % self.prog_name,
                 "",
                 "Available subdirectives:",
             ]
@@ -230,19 +229,19 @@ class ManagementUtility:
 
         return "\n".join(usage)
 
-    def fetch_command(self, subcommand):
+    def fetch_command(self, subdirective):
         """
-        Try to fetch the given subcommand, printing a message with the
+        Try to fetch the given subdirective, printing a message with the
         appropriate command called from the command line (usually
-        "django-admin" or "manage.py") if it can't be found.
+        "esmerald-admin") if it can't be found.
         """
         # Get directives outside of try block to prevent swallowing exceptions
         directives = get_directives()
         try:
-            app_name = directives[subcommand]
+            app_name = directives[subdirective]
         except KeyError:
-            possible_matches = get_close_matches(subcommand, directives)
-            sys.stderr.write("Unknown command: %r" % subcommand)
+            possible_matches = get_close_matches(subdirective, directives)
+            sys.stderr.write("Unknown command: %r" % subdirective)
             if possible_matches:
                 sys.stderr.write(". Did you mean %s?" % possible_matches[0])
             sys.stderr.write("\nType '%s help' for usage.\n" % self.prog_name)
@@ -251,7 +250,7 @@ class ManagementUtility:
             # If the command is already loaded, use it directly.
             klass = app_name
         else:
-            klass = load_command_class(app_name, subcommand)
+            klass = load_command_class(app_name, subdirective)
         return klass
 
     def autocomplete(self):
@@ -290,11 +289,11 @@ class ManagementUtility:
         subdirectives = [*get_directives(), "help"]
         options = [("--help", False)]
 
-        # subcommand
+        # subdirective
         if cword == 1:
             print(" ".join(sorted(filter(lambda x: x.startswith(curr), subdirectives))))
-        # subcommand options
-        # special case: the 'help' subcommand has no options
+        # subdirective options
+        # special case: the 'help' subdirective has no options
         elif cwords[0] in subdirectives and cwords[0] != "help":
             subcommand_cls = self.fetch_command(cwords[0])
             # special case: add the names of installed apps to options
@@ -322,20 +321,20 @@ class ManagementUtility:
 
     def execute(self):
         """
-        Given the command-line arguments, figure out which subcommand is being
+        Given the command-line arguments, figure out which subdirective is being
         run, create a parser appropriate to that command, and run it.
         """
         try:
-            subcommand = self.argv[1]
+            subdirective = self.argv[1]
         except IndexError:
-            subcommand = "help"  # Display help if no arguments were given.
+            subdirective = "help"  # Display help if no arguments were given.
 
         # Preprocess options to extract --settings and --pythonpath.
         # These options could affect the directives that are available, so they
         # must be processed early.
-        parser = CommandParser(
+        parser = DirectiveParser(
             prog=self.prog_name,
-            usage="%(prog)s subcommand [options] [args]",
+            usage="%(prog)s subdirective [options] [args]",
             add_help=False,
             allow_abbrev=False,
         )
@@ -344,26 +343,26 @@ class ManagementUtility:
         try:
             options, args = parser.parse_known_args(self.argv[2:])
             handle_default_options(options)
-        except CommandError:
+        except DirectiveError:
             pass  # Ignore any option errors at this point.
 
         self.autocomplete()
 
-        if subcommand == "help":
+        if subdirective == "help":
             if "--directives" in args:
                 sys.stdout.write(self.main_help_text(directives_only=True) + "\n")
             elif not options.args:
                 sys.stdout.write(self.main_help_text() + "\n")
             else:
-                self.fetch_command(options.args[0]).print_help(self.prog_name, options.args[0])
-        # Special-cases: We want 'django-admin --version' and
-        # 'django-admin --help' to work, for backwards compatibility.
-        elif subcommand == "version" or self.argv[1:] == ["--version"]:
+                self.fetch_command(options.args[0]).print_help(
+                    self.prog_name, options.args[0]
+                )
+        elif subdirective == "version" or self.argv[1:] == ["--version"]:
             sys.stdout.write(esmerald.__version__ + "\n")
         elif self.argv[1:] in (["--help"], ["-h"]):
             sys.stdout.write(self.main_help_text() + "\n")
         else:
-            self.fetch_command(subcommand).run_from_argv(self.argv)
+            self.fetch_command(subdirective).run_from_argv(self.argv)
 
 
 def execute_from_command_line(argv=None):
