@@ -156,6 +156,9 @@ all = [
 [tool.hatch.version]
 path = "esmerald/__init__.py"
 
+[project.scripts]
+esmerald-admin = "esmerald.core.management:execute_from_command_line"
+
 [tool.isort]
 profile = "black"
 known_third_party = ["esmerald", "pydantic", "starlette"]

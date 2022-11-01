@@ -95,36 +95,6 @@ def force_bytes(s, encoding="utf-8", strings_only=False, errors="strict"):
     return str(s).encode(encoding, errors)
 
 
-def iri_to_uri(iri):
-    """
-    Convert an Internationalized Resource Identifier (IRI) portion to a URI
-    portion that is suitable for inclusion in a URL.
-
-    This is the algorithm from section 3.1 of RFC 3987, slightly simplified
-    since the input is assumed to be a string rather than an arbitrary byte
-    stream.
-
-    Take an IRI (string or UTF-8 bytes, e.g. '/I ♥ Django/' or
-    b'/I \xe2\x99\xa5 Django/') and return a string containing the encoded
-    result with ASCII chars only (e.g. '/I%20%E2%99%A5%20Django/').
-    """
-    # The list of safe characters here is constructed from the "reserved" and
-    # "unreserved" characters specified in sections 2.2 and 2.3 of RFC 3986:
-    #     reserved    = gen-delims / sub-delims
-    #     gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
-    #     sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
-    #                   / "*" / "+" / "," / ";" / "="
-    #     unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-    # Of the unreserved characters, urllib.parse.quote() already considers all
-    # but the ~ safe.
-    # The % character is also added to the list of safe characters here, as the
-    # end of section 3.1 of RFC 3987 specifically mentions that % must not be
-    # converted.
-    if iri is None:
-        return iri
-    return quote(iri, safe="/#%[]=:;$&()+,!?*@'~")
-
-
 # List of byte values that uri_to_iri() decodes from percent encoding.
 # First, the unreserved characters from RFC 3986:
 _ascii_ranges = [[45, 46, 95, 126], range(65, 91), range(97, 123)]
@@ -137,7 +107,9 @@ _hextobyte = {
 # And then everything above 128, because bytes ≥ 128 are part of multibyte
 # Unicode characters.
 _hexdig = "0123456789ABCDEFabcdef"
-_hextobyte.update({(a + b).encode(): bytes.fromhex(a + b) for a in _hexdig[8:] for b in _hexdig})
+_hextobyte.update(
+    {(a + b).encode(): bytes.fromhex(a + b) for a in _hexdig[8:] for b in _hexdig}
+)
 
 
 def uri_to_iri(uri):

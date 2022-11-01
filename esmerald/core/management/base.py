@@ -55,6 +55,7 @@ class CommandParser(ArgumentParser):
     ):
         self.missing_args_message = missing_args_message
         self.called_from_command_line = called_from_command_line
+        super().__init__(**kwargs)
 
     def parse_args(self, args: Any = None, namespace: str = None):
         if self.missing_args_message and not (
@@ -76,8 +77,6 @@ def handle_default_options(options: Any):
     so that ManagementUtility can handle them before searching for
     user commands.
     """
-    if options.settings:
-        os.environ["ESMERALD_SETTINGS_MODULE"] = options.settings
     if options.pythonpath:
         sys.path.insert(0, options.pythonpath)
 

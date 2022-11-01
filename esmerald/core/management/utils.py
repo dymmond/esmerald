@@ -4,7 +4,6 @@ import shutil
 import subprocess
 from pathlib import Path
 from subprocess import run
-
 from esmerald.contrib.encoding import DEFAULT_LOCALE_ENCODING
 from esmerald.core.management.base import CommandError, CommandParser
 from esmerald.utils.crypto import get_random_string
