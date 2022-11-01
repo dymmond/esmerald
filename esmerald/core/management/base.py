@@ -98,9 +98,7 @@ class EsmeraldHelpFormatter(HelpFormatter):
     }
 
     def _reordered_actions(self, actions: Any):
-        return sorted(
-            actions, key=lambda a: set(a.option_strings) & self.show_last != set()
-        )
+        return sorted(actions, key=lambda a: set(a.option_strings) & self.show_last != set())
 
     def add_usage(self, usage: str, actions: Any, *args: Any, **kwargs: Dict[str, Any]):
         super().add_usage(usage, self._reordered_actions(actions), *args, **kwargs)
@@ -327,7 +325,6 @@ class BaseCommand:
         """
         Entry point for subclassed commands to add custom arguments.
         """
-        pass
 
     def add_base_argument(self, parser: Any, *args: Any, **kwargs: Dict[str, Any]):
         """
@@ -384,9 +381,7 @@ class BaseCommand:
         force-skipped).
         """
         if options["force_color"] and options["no_color"]:
-            raise CommandError(
-                "The --no-color and --force-color options can't be used together."
-            )
+            raise CommandError("The --no-color and --force-color options can't be used together.")
         if options["force_color"]:
             self.style = color_style(force_color=True)
         elif options["no_color"]:
@@ -407,6 +402,4 @@ class BaseCommand:
         The actual logic of the command. Subclasses must implement
         this method.
         """
-        raise NotImplementedError(
-            "subclasses of BaseCommand must provide a handle() method"
-        )
+        raise NotImplementedError("subclasses of BaseCommand must provide a handle() method")

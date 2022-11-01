@@ -6,7 +6,6 @@ from copy import copy
 
 class ContextPopException(Exception):
     "pop() has been called more times than push()"
-    pass
 
 
 class ContextDict(dict):
@@ -274,9 +273,7 @@ def make_context(context, request=None, **kwargs):
     Create a suitable Context from a plain dict and optionally an HttpRequest.
     """
     if context is not None and not isinstance(context, dict):
-        raise TypeError(
-            "context must be a dict rather than %s." % context.__class__.__name__
-        )
+        raise TypeError("context must be a dict rather than %s." % context.__class__.__name__)
     if request is None:
         context = Context(context, **kwargs)
     else:

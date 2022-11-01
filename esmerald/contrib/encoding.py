@@ -5,8 +5,6 @@ import typing
 from decimal import Decimal
 from urllib.parse import quote
 
-import ipdb
-
 
 class ExtraUnicodeDecodeError(UnicodeDecodeError):
     def __init__(self, obj: typing.Any, *args):
@@ -118,9 +116,7 @@ _hextobyte = {
 # And then everything above 128, because bytes ≥ 128 are part of multibyte
 # Unicode characters.
 _hexdig = "0123456789ABCDEFabcdef"
-_hextobyte.update(
-    {(a + b).encode(): bytes.fromhex(a + b) for a in _hexdig[8:] for b in _hexdig}
-)
+_hextobyte.update({(a + b).encode(): bytes.fromhex(a + b) for a in _hexdig[8:] for b in _hexdig})
 
 
 def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
@@ -193,9 +189,7 @@ def repercent_broken_unicode(path: str) -> str:
         except UnicodeDecodeError as e:
             # CVE-2019-14235: A recursion shouldn't be used since the exception
             # handling uses massive amounts of memory
-            repercent = quote(
-                path[e.start : e.end], safe=b"/#%[]=:;$&()+,!?*@'~"
-            )  # noqa: E203
+            repercent = quote(path[e.start : e.end], safe=b"/#%[]=:;$&()+,!?*@'~")  # noqa: E203
             path = path[: e.start] + repercent.encode() + path[e.end :]  # noqa: E203
         else:
             return path

@@ -70,18 +70,14 @@ class Archive:
             try:
                 filename = file.name
             except AttributeError:
-                raise UnrecognizedArchiveFormat(
-                    "File object not a recognized archive format."
-                )
+                raise UnrecognizedArchiveFormat("File object not a recognized archive format.")
         base, tail_ext = os.path.splitext(filename.lower())
         cls = extension_map.get(tail_ext)
         if not cls:
             base, ext = os.path.splitext(base)
             cls = extension_map.get(ext)
         if not cls:
-            raise UnrecognizedArchiveFormat(
-                "Path not a recognized archive format: %s" % filename
-            )
+            raise UnrecognizedArchiveFormat("Path not a recognized archive format: %s" % filename)
         return cls
 
     def __enter__(self):
@@ -151,14 +147,10 @@ class BaseArchive:
         return filename
 
     def extract(self):
-        raise NotImplementedError(
-            "subclasses of BaseArchive must provide an extract() method"
-        )
+        raise NotImplementedError("subclasses of BaseArchive must provide an extract() method")
 
     def list(self):
-        raise NotImplementedError(
-            "subclasses of BaseArchive must provide a list() method"
-        )
+        raise NotImplementedError("subclasses of BaseArchive must provide a list() method")
 
 
 class TarArchive(BaseArchive):

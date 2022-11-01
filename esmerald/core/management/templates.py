@@ -7,7 +7,6 @@ from importlib import import_module
 from typing import Any, Dict, Optional
 
 import esmerald
-import ipdb
 from esmerald.core.management import archive
 from esmerald.core.management.base import BaseCommand, CommandError
 from jinja2 import Environment, FileSystemLoader
@@ -28,12 +27,8 @@ class TemplateCommand(BaseCommand):
 
     def add_arguments(self, parser: Any):
         parser.add_argument("name", help="Name of the application or project.")
-        parser.add_argument(
-            "directory", nargs="?", help="Optional destination directory"
-        )
-        parser.add_argument(
-            "--template", help="The path or URL to load the template from."
-        )
+        parser.add_argument("directory", nargs="?", help="Optional destination directory")
+        parser.add_argument("--template", help="The path or URL to load the template from.")
         parser.add_argument(
             "--name",
             "-n",
@@ -84,8 +79,7 @@ class TemplateCommand(BaseCommand):
                 self.validatate_name(os.path.basename(top_dir), "directory")
             if not os.path.exists(top_dir):
                 raise CommandError(
-                    f"Destination directory {top_dir} does not "
-                    "exist, please create it first."
+                    f"Destination directory {top_dir} does not " "exist, please create it first."
                 )
 
         # Find formatters, which are external executables, before input
@@ -94,7 +88,7 @@ class TemplateCommand(BaseCommand):
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"
 
-        context = {base_name: name, base_subdir: name}
+        context = {base_name: name}
 
         template_dir = self.handle_template(options["template"], base_subdir)
         prefix_length = len(template_dir) + 1
@@ -115,9 +109,7 @@ class TemplateCommand(BaseCommand):
                     # Ignore some files as they cause various breakages.
                     continue
                 old_path = os.path.join(root, filename)
-                new_path = os.path.join(
-                    top_dir, relative_dir, filename.replace(base_name, name)
-                )
+                new_path = os.path.join(top_dir, relative_dir, filename.replace(base_name, name))
                 for old_suffix, new_suffix in self.rewrite_template_suffixes:
                     if new_path.endswith(old_suffix):
                         new_path = new_path[: -len(old_suffix)] + new_suffix
@@ -142,7 +134,7 @@ class TemplateCommand(BaseCommand):
                 try:
                     self.manage_template_variables(new_path, new_path, "/", context)
                     self.apply_umask(old_path, new_path)
-                    self.make_writeable(new_path)
+                    self.make_file_writable(new_path)
                 except OSError:
                     self.stderr.write(
                         "Notice: Couldn't set permission bits on %s. You're "
@@ -152,6 +144,10 @@ class TemplateCommand(BaseCommand):
                     )
 
     def manage_template_variables(self, template, destination, template_dir, context):
+        """
+        Goes through every file generated and replaces the project_name with the given
+        project name from the command line.
+        """
         environment = Environment(loader=FileSystemLoader(template_dir))
         template = environment.get_template(template)
         rendered_template = template.render(context)
@@ -180,9 +176,7 @@ class TemplateCommand(BaseCommand):
             if os.path.exists(absolute_path):
                 return self.extract(absolute_path)
 
-        raise CommandError(
-            "couldn't handle %s template %s." % (self.app_or_project, template)
-        )
+        raise CommandError("couldn't handle %s template %s." % (self.app_or_project, template))
 
     def validate_name(self, name, name_or_dir="name"):
         if name is None:
@@ -233,9 +227,7 @@ class TemplateCommand(BaseCommand):
             archive.extract(filename, tempdir)
             return tempdir
         except (archive.ArchiveException, OSError) as e:
-            raise CommandError(
-                "couldn't extract file %s to %s: %s" % (filename, tempdir, e)
-            )
+            raise CommandError("couldn't extract file %s to %s: %s" % (filename, tempdir, e))
 
     def apply_umask(self, old_path, new_path):
         current_umask = os.umask(0)
@@ -243,7 +235,7 @@ class TemplateCommand(BaseCommand):
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)
         os.chmod(new_path, current_mode & ~current_umask)
 
-    def make_writeable(self, filename):
+    def make_file_writable(self, filename):
         """
         Make sure that the file is writeable.
         Useful if our source is read-only.
