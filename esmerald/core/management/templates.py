@@ -1,20 +1,16 @@
 import argparse
-import mimetypes
 import os
-import posixpath
 import shutil
 import stat
 import tempfile
 from importlib import import_module
-from typing import Any, Dict, List, Optional
-from urllib.request import build_opener
+from typing import Any, Dict, Optional
 
 import esmerald
 import ipdb
-from django.template import Context, Engine
-from esmerald.conf import settings
+from esmerald.core.management import archive
 from esmerald.core.management.base import BaseCommand, CommandError
-from esmerald.core.management.context import Context
+from jinja2 import Environment, FileSystemLoader
 
 
 class TemplateCommand(BaseCommand):
@@ -73,7 +69,6 @@ class TemplateCommand(BaseCommand):
         self.verbosity = options["verbosity"]
 
         self.validate_name(name)
-        ipdb.sset_trace()
 
         if target is None:
             top_dir = os.path.join(os.getcwd(), name)
@@ -93,10 +88,82 @@ class TemplateCommand(BaseCommand):
                     "exist, please create it first."
                 )
 
+        # Find formatters, which are external executables, before input
+        # from the templates can sneak into the path.
+
+        base_name = f"{app_or_project}_name"
+        base_subdir = f"{app_or_project}_template"
+
+        context = {base_name: name, base_subdir: name}
+
+        template_dir = self.handle_template(options["template"], base_subdir)
+        prefix_length = len(template_dir) + 1
+
+        for root, dirs, files in os.walk(template_dir):
+            path_rest = root[prefix_length:]
+            relative_dir = path_rest.replace(base_name, name)
+            if relative_dir:
+                target_dir = os.path.join(top_dir, relative_dir)
+                os.makedirs(target_dir, exist_ok=True)
+
+            for dirname in dirs[:]:
+                if dirname.startswith(".") or dirname == "__pycache__":
+                    dirs.remove(dirname)
+
+            for filename in files:
+                if filename.endswith((".pyo", ".pyc", ".py.class")):
+                    # Ignore some files as they cause various breakages.
+                    continue
+                old_path = os.path.join(root, filename)
+                new_path = os.path.join(
+                    top_dir, relative_dir, filename.replace(base_name, name)
+                )
+                for old_suffix, new_suffix in self.rewrite_template_suffixes:
+                    if new_path.endswith(old_suffix):
+                        new_path = new_path[: -len(old_suffix)] + new_suffix
+                        break  # Only rewrite once
+
+                if os.path.exists(new_path):
+                    raise CommandError(
+                        "%s already exists. Overlaying %s %s into an existing "
+                        "directory won't replace conflicting files."
+                        % (
+                            new_path,
+                            self.a_or_an,
+                            app_or_project,
+                        )
+                    )
+                # Only render the Python files, as we don't want to
+                # accidentally render Esmerald templates files
+                shutil.copyfile(old_path, new_path)
+
+                if self.verbosity >= 2:
+                    self.stdout.write("Creating %s" % new_path)
+                try:
+                    self.manage_template_variables(new_path, new_path, "/", context)
+                    self.apply_umask(old_path, new_path)
+                    self.make_writeable(new_path)
+                except OSError:
+                    self.stderr.write(
+                        "Notice: Couldn't set permission bits on %s. You're "
+                        "probably using an uncommon filesystem setup. No "
+                        "problem." % new_path,
+                        self.style.NOTICE,
+                    )
+
+    def manage_template_variables(self, template, destination, template_dir, context):
+        environment = Environment(loader=FileSystemLoader(template_dir))
+        template = environment.get_template(template)
+        rendered_template = template.render(context)
+        if os.path.isfile(destination):
+            os.unlink(destination)
+        with open(destination, "w") as f:
+            f.write(rendered_template)
+
     def handle_template(self, template, subdir):
         """
         Determine where the app or project templates are.
-        Use django.__path__[0] as the default because the Django install
+        Use esmerald.__path__[0] as the default because the Django install
         directory isn't known.
         """
         if template is None:
@@ -108,11 +175,8 @@ class TemplateCommand(BaseCommand):
             expanded_template = os.path.normpath(expanded_template)
             if os.path.isdir(expanded_template):
                 return expanded_template
-            if self.is_url(template):
-                # downloads the file and returns the path
-                absolute_path = self.download(template)
-            else:
-                absolute_path = os.path.abspath(expanded_template)
+
+            absolute_path = os.path.abspath(expanded_template)
             if os.path.exists(absolute_path):
                 return self.extract(absolute_path)
 
@@ -154,3 +218,37 @@ class TemplateCommand(BaseCommand):
                     type=name_or_dir,
                 )
             )
+
+    def extract(self, filename):
+        """
+        Extract the given file to a temporary directory and return
+        the path of the directory with the extracted content.
+        """
+        prefix = "esmerald_%s_template_" % self.app_or_project
+        tempdir = tempfile.mkdtemp(prefix=prefix, suffix="_extract")
+        self.paths_to_remove.append(tempdir)
+        if self.verbosity >= 2:
+            self.stdout.write("Extracting %s" % filename)
+        try:
+            archive.extract(filename, tempdir)
+            return tempdir
+        except (archive.ArchiveException, OSError) as e:
+            raise CommandError(
+                "couldn't extract file %s to %s: %s" % (filename, tempdir, e)
+            )
+
+    def apply_umask(self, old_path, new_path):
+        current_umask = os.umask(0)
+        os.umask(current_umask)
+        current_mode = stat.S_IMODE(os.stat(old_path).st_mode)
+        os.chmod(new_path, current_mode & ~current_umask)
+
+    def make_writeable(self, filename):
+        """
+        Make sure that the file is writeable.
+        Useful if our source is read-only.
+        """
+        if not os.access(filename, os.W_OK):
+            st = os.stat(filename)
+            new_permissions = stat.S_IMODE(st.st_mode) | stat.S_IWUSR
+            os.chmod(filename, new_permissions)

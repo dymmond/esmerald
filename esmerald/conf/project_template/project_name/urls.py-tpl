@@ -11,7 +11,7 @@ Examples:
         2. Add a URL to route_patterns:  Gateway('/', handler=Home, name='home')
     Including another configuration:
         1. Import the Include object: from esmerald import Include
-        2. Add a URL to route_patterns:  path('/api/v1/', Include(namespace='blog.urls'))
+        2. Add a URL to route_patterns:  Gateway('/api/v1/', Include(namespace='myapp.urls'))
 """
 from esmerald import Include, Gateway
 
