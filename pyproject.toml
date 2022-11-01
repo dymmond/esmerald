@@ -72,11 +72,11 @@ Source = "https://github.com/dymmond/esmerald"
 [project.optional-dependencies]
 test = [
     "pytest >=7.1.3,<8.0.0",
-    "pytest-cov >=2.12.0,<4.0.0",
+    "pytest-cov >=2.12.0,<5.0.0",
     "pytest-asyncio >=0.19.0,<0.20.0",
-    "mypy ==0.971",
+    "mypy ==0.982",
     "flake8 >=5.0.4,<6.0.0",
-    "black == 22.8.0",
+    "black == 22.10.0",
     "isort >=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<23",
     "a2wsgi>=1.6.0,<2",
@@ -105,14 +105,14 @@ test = [
     "ujson>=5.5.0,<6",
 
     # types
-    "types-ujson ==5.4.0",
+    "types-ujson ==5.5.0",
     "types-orjson ==3.6.2",
 ]
 
 dev = [
     "autoflake >=1.4.0,<2.0.0",
     "flake8 >=3.8.3,<6.0.0",
-    "uvicorn[standard] >=0.12.0,<0.19.0",
+    "uvicorn[standard] >=0.12.0,<0.20.0",
     "pre-commit >=2.17.0,<3.0.0",
     "loguru>=0.6.0,<0.7.0",
     "watchfiles>=0.16.1,<0.20.0"
