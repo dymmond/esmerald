@@ -1,5 +1,17 @@
 # Release Notes
 
+## 0.2.0
+
+November 1, 2022.
+
+### Add
+
+- `esmerald-admin` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
+
+### Fix
+
+- Namespace conflicts when importing the `Include` and the `include` internal function.
+
 ## 0.1.3
 
 October 26, 2022.

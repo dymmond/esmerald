@@ -14,9 +14,7 @@ opt_dict = {
 }
 
 
-def colorize(
-    text: Optional[str] = "", opts: Optional[Any] = None, **kwargs: Dict[str, Any]
-):
+def colorize(text: Optional[str] = "", opts: Optional[Any] = None, **kwargs: Dict[str, Any]):
     """
     Return your text, enclosed in ANSI graphics codes.
 

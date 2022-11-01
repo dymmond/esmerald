@@ -1,7 +1,7 @@
 import functools
 import os
 import sys
-from typing import Optional, Union
+from typing import Optional
 
 from esmerald.core.management import termcolors
 

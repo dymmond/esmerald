@@ -73,17 +73,23 @@ pip install uvicorn
 
 ```
 
-### Start a project
+### Start a project using directives
 
 If you wish to start an Esmerald project with a default suggested structure.
 
-```
+```shell
 esmerald-admin createproject <YOUR-PROJECT-NAME>
 ```
 
 This will generate a scaffold for your project with some pre-defined files in a simple fashion.
 
-You can find [more information](./management/directives.md) about this directive and what it does.
+You can find [more information](./management/directives.md) about this directive and how to use it with a detailed
+example.
+
+!!! Warning
+    Running this [directive](./management/directives.md) will generate only the scaffold of the project
+    but some additional information is still needed to start the project. This only provides a structure of
+    files that can be used to start an Esmerald application but **it is not mandatory**.
 
 ## Key Features
 

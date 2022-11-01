@@ -18,7 +18,7 @@ def test_default_settings():
         assert client.app.settings.lifespan == settings.lifespan
         assert client.app.settings.on_startup == settings.on_startup
         assert client.app.settings.version == settings.version
-        assert client.app.settings.secret == settings.secret
+        assert client.app.settings.secret_key == settings.secret_key
         assert client.app.settings.response_class == settings.response_class
         assert client.app.settings.response_cookies == settings.response_cookies
         assert client.app.settings.tags == settings.tags

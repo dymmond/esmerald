@@ -93,13 +93,9 @@ def create_client(
     enable_scheduler: bool = settings.enable_scheduler,
     raise_server_exceptions: bool = True,
     root_path: str = "",
-    static_files_config: Optional[
-        Union["StaticFilesConfig", List["StaticFilesConfig"]]
-    ] = None,
+    static_files_config: Optional[Union["StaticFilesConfig", List["StaticFilesConfig"]]] = None,
     template_config: Optional["TemplateConfig"] = None,
-    lifespan: Optional[
-        Callable[["Esmerald"], "AsyncContextManager"]
-    ] = settings.lifespan,
+    lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = settings.lifespan,
     cookies: Optional[httpx._client.CookieTypes] = None
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(

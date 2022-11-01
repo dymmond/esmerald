@@ -15,9 +15,7 @@ class CustomSettings(EsmeraldAPISettings):
         """
         A JWT object configuration to be passed to the application middleware
         """
-        return JWTConfig(
-            signing_key=self.secret_key, auth_header_types=["Bearer", "Token"]
-        )
+        return JWTConfig(signing_key=self.secret_key, auth_header_types=["Bearer", "Token"])
 
     @property
     def middleware(self) -> List["Middleware"]:

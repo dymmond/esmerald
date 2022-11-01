@@ -45,9 +45,7 @@ class EsmeraldAPISettings(BaseSettings):
     environment: Optional[str] = EnvironmentType.PRODUCTION
     app_name: str = "Esmerald"
     title: str = "My awesome Esmerald application"
-    description: str = (
-        "Highly scalable, performant, easy to learn and for every application."
-    )
+    description: str = "Highly scalable, performant, easy to learn and for every application."
     contact: Optional[Dict[str, Union[str, Any]]] = {
         "name": "admin",
         "email": "admin@myapp.com",

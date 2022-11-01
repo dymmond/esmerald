@@ -88,9 +88,7 @@ class EsmeraldHelpFormatter(HelpFormatter):
     }
 
     def _reordered_actions(self, actions: Any):
-        return sorted(
-            actions, key=lambda a: set(a.option_strings) & self.show_last != set()
-        )
+        return sorted(actions, key=lambda a: set(a.option_strings) & self.show_last != set())
 
     def add_usage(self, usage: str, actions: Any, *args: Any, **kwargs: Dict[str, Any]):
         super().add_usage(usage, self._reordered_actions(actions), *args, **kwargs)
@@ -238,9 +236,7 @@ class BaseDirective:
         """
         return esmerald.__version__
 
-    def create_parser(
-        self, prog_name: Any, subdirective: Any, **kwargs: Dict[str, Any]
-    ):
+    def create_parser(self, prog_name: Any, subdirective: Any, **kwargs: Dict[str, Any]):
         """
         Create and return the ``ArgumentParser`` which will be used to
         parse the arguments to this command.
@@ -393,6 +389,4 @@ class BaseDirective:
         The actual logic of the command. Subclasses must implement
         this method.
         """
-        raise NotImplementedError(
-            "subclasses of BaseDirective must provide a handle() method"
-        )
+        raise NotImplementedError("subclasses of BaseDirective must provide a handle() method")
