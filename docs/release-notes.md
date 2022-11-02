@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.2
+
+November 2, 2022.
+
+### Added
+
+- `httpx` and `itsdangerous` dependencies.
+
 ## 0.2.1
 
 November 1, 2022.
@@ -17,7 +25,7 @@ November 1, 2022.
 
 November 1, 2022.
 
-### Add
+### Added
 
 - `esmerald-admin` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
 
