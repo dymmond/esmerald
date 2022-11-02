@@ -85,7 +85,7 @@ esmerald-admin createproject <YOUR-PROJECT-NAME>
 
 This will generate a scaffold for your project with some pre-defined files in a simple fashion.
 
-You can find [more information](https://esmerald.dymmond.com/management/directives.md) about this directive and how to
+You can find [more information](https://esmerald.dymmond.com/management/directives) about this directive and how to
 use it.
 
 ## Key Features
