@@ -211,7 +211,9 @@ class Router(StarletteRouter, Parent):
                     Router,
                 ),
             ):
-                raise ImproperlyConfigured(f"The route {route} must be of type Gateway or Include")
+                raise ImproperlyConfigured(
+                    f"The route {route} must be of type Gateway or Include"
+                )
         routes = routes or []
         super().__init__(
             on_startup=on_startup,
@@ -263,7 +265,9 @@ class Router(StarletteRouter, Parent):
         route_handlers = value.handler.get_route_handlers()
         for route_handler in route_handlers:
             gateway = (
-                Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
+                Gateway
+                if not isinstance(route_handler, WebSocketHandler)
+                else WebSocketGateway
             )
             gate = gateway(
                 path=value.path,
@@ -361,7 +365,9 @@ class Router(StarletteRouter, Parent):
         if "app" in scope:
             raise NotFound(status_code=status.HTTP_404_NOT_FOUND)
         else:
-            response = JSONResponse({"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND)
+            response = JSONResponse(
+                {"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND
+            )
         await response(scope, receive, send)
 
     def url_path_for(self, name: str, **path_params: Any) -> URLPath:
@@ -440,7 +446,9 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
     ) -> None:
         if not path:
             path = "/"
-        super().__init__(path=path, endpoint=endpoint, include_in_schema=include_in_schema)
+        super().__init__(
+            path=path, endpoint=endpoint, include_in_schema=include_in_schema
+        )
         """
         Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
         """
@@ -664,7 +672,8 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             )
         if (
             self.status_code < status.HTTP_200_OK
-            or self.status_code in {status.HTTP_204_NO_CONTENT, status.HTTP_304_NOT_MODIFIED}
+            or self.status_code
+            in {status.HTTP_204_NO_CONTENT, status.HTTP_304_NOT_MODIFIED}
         ) and return_annotation not in [NoReturn, None]:
             raise ImproperlyConfigured(
                 "A status code 204, 304 or in the range below 200 does not support a response body."
@@ -684,9 +693,13 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         ]:
             self.media_type = MediaType.TEXT
         if SOCKET in self.signature.parameters:
-            raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
+            raise ImproperlyConfigured(
+                "The 'socket' argument is not supported with http handlers"
+            )
         if DATA in self.signature.parameters and "GET" in self.methods:
-            raise ImproperlyConfigured("'data' argument is unsupported for 'GET' request handlers")
+            raise ImproperlyConfigured(
+                "'data' argument is unsupported for 'GET' request handlers"
+            )
 
     async def to_response(self, app: "Esmerald", data: Any) -> StarletteResponse:
         response_handler = self.get_response_handler()
@@ -713,7 +726,9 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         *,
         endpoint: Callable[..., "CoroutineHandler"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional[
+            Dict[Union[int, Type[Exception]], "ExceptionHandler"]
+        ] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):
@@ -764,7 +779,9 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
                 )
 
         if SOCKET not in signature.parameters:
-            raise ImproperlyConfigured("Websocket handlers must set a 'socket' argument.")
+            raise ImproperlyConfigured(
+                "Websocket handlers must set a 'socket' argument."
+            )
         if not is_async_callable(fn):
             raise ImproperlyConfigured(
                 "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions."
@@ -798,10 +815,14 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         signature_model = get_signature_model(self)
         kwargs = self.websocket_parameter_model.to_kwargs(connection=websocket)
         for dependency in self.websocket_parameter_model.expected_dependencies:
-            kwargs[dependency.key] = await self.websocket_parameter_model.resolve_dependency(
+            kwargs[
+                dependency.key
+            ] = await self.websocket_parameter_model.resolve_dependency(
                 dependency=dependency, connection=websocket, **kwargs
             )
-        return signature_model.parse_values_from_connection_kwargs(connection=websocket, **kwargs)
+        return signature_model.parse_values_from_connection_kwargs(
+            connection=websocket, **kwargs
+        )
 
 
 class Include(Mount):
@@ -842,7 +863,9 @@ class Include(Mount):
         pattern: Optional[str] = None,
         parent: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional[
+            Dict[Union[int, Type[Exception]], "ExceptionHandler"]
+        ] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
@@ -857,10 +880,14 @@ class Include(Mount):
             raise ImproperlyConfigured("It can only be namespace or routes, not both.")
 
         if namespace and not isinstance(namespace, str):
-            raise ImproperlyConfigured("Namespace must be a string. Example: 'myapp.routes'.")
+            raise ImproperlyConfigured(
+                "Namespace must be a string. Example: 'myapp.routes'."
+            )
 
         if pattern and not isinstance(pattern, str):
-            raise ImproperlyConfigured("Pattern must be a string. Example: 'route_patterns'.")
+            raise ImproperlyConfigured(
+                "Pattern must be a string. Example: 'route_patterns'."
+            )
 
         if pattern and routes:
             raise ImproperlyConfigured("Pattern must be used only with namespace.")
@@ -945,13 +972,13 @@ class Include(Mount):
 
         for route in routes:
             if not isinstance(route, (Include, Gateway, WebSocketGateway, Mount)):
-                raise ImproperlyConfigured("The route must be of type Gateway or Include")
+                raise ImproperlyConfigured(
+                    "The route must be of type Gateway or Include"
+                )
             route.parent = self
             if isinstance(route, Include):
                 routing.append(route)
             else:
-
-                # Making sure the Handlers are Gateway and
                 if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
                     route.handler.parent = route
                     routing.append(route)

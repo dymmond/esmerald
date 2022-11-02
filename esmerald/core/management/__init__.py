@@ -35,7 +35,7 @@ def find_directives(management_dir):
     return command_list
 
 
-def load_command_class(app_name, name):
+def load_directive_class(app_name, name):
     """
     Given a command name and an application name, return the Directive
     class instance. Allow all errors raised by the import process
@@ -58,7 +58,7 @@ def get_directives():
 
     The dictionary is in the format {command_name: app_name}. Key-value
     pairs from this dictionary can then be used in calls to
-    load_command_class(app_name, command_name)
+    load_directive_class(app_name, command_name)
 
     If a specific version of a command must be loaded (e.g., with the
     startapp command), the instantiated module can be placed in the
@@ -69,10 +69,6 @@ def get_directives():
     """
     command_list = find_directives(__path__[0])
     directives = {name: "esmerald.core" for name in command_list}
-
-    # for app_config in reversed(list(apps.get_app_configs())):
-    #     path = os.path.join(app_config.path, "management")
-    #     directives.update({name: app_config.name for name in find_directives(path)})
 
     return directives
 
@@ -110,7 +106,7 @@ def call_command(command_name, *args, **options):
             # If the command is already loaded, use it directly.
             command = app_name
         else:
-            command = load_command_class(app_name, command_name)
+            command = load_directive_class(app_name, command_name)
 
     # Simulate argument parsing to get the option defaults (see #10080 for details).
     parser = command.create_parser("", command_name)
@@ -147,7 +143,9 @@ def call_command(command_name, *args, **options):
     # Any required arguments which are passed in via **options must be passed
     # to parse_args().
     for opt in parser_actions:
-        if opt.dest in options and (opt.required or opt in mutually_exclusive_required_options):
+        if opt.dest in options and (
+            opt.required or opt in mutually_exclusive_required_options
+        ):
             parse_args.append(min(opt.option_strings))
             if isinstance(opt, (_AppendConstAction, _CountAction, _StoreConstAction)):
                 continue
@@ -248,7 +246,7 @@ class ManagementUtility:
             # If the command is already loaded, use it directly.
             klass = app_name
         else:
-            klass = load_command_class(app_name, subdirective)
+            klass = load_directive_class(app_name, subdirective)
         return klass
 
     def autocomplete(self):
@@ -352,7 +350,9 @@ class ManagementUtility:
             elif not options.args:
                 sys.stdout.write(self.main_help_text() + "\n")
             else:
-                self.fetch_command(options.args[0]).print_help(self.prog_name, options.args[0])
+                self.fetch_command(options.args[0]).print_help(
+                    self.prog_name, options.args[0]
+                )
         elif subdirective == "version" or self.argv[1:] == ["--version"]:
             sys.stdout.write(esmerald.__version__ + "\n")
         elif self.argv[1:] in (["--help"], ["-h"]):
