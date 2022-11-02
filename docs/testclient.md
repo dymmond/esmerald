@@ -7,6 +7,12 @@ development team has its own way of testing it but just in case, it is provided.
 {!> ../docs_src/testclient/example1.py !}
 ```
 
+Esmerald also uses `httpx` with its client, so if you want to use any of the given testing tools provided, run:
+
+```shell
+pip install httpx
+```
+
 The test client is very similar to its original as it extends it and adds extra unique and specifics for `Esmerald`
 and therefore the same examples and use cases will work.
 
