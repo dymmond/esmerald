@@ -1,26 +1,20 @@
 """
-Template based from Django as it handles really well with Directives
-and it is fully supported by their systems.
-
 Esmerald readapted the same concept to allow a simple integration for the
 `esmerald-admin` allowing the creation of a project and app via command line.
 """
-import argparse
 import os
 import shutil
 import stat
-import tempfile
 from importlib import import_module
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
 
 import esmerald
-from esmerald.core import archive
 from esmerald.core.management.base import BaseDirective, DirectiveError
 from jinja2 import Environment, FileSystemLoader
 from pydantic import FilePath
 
 
-class TemplateCommand(BaseDirective):
+class TemplateDirective(BaseDirective):
     """
     Copy either an Esmerald application layout template or an Esmerald project
     layout.
@@ -29,42 +23,17 @@ class TemplateCommand(BaseDirective):
     url_schemes = ["http", "https", "ftp"]
 
     rewrite_template_suffixes = (
-        # Allow shipping invalid .py files without byte-compilation.
         (".py-tpl", ".py"),
         (".e-tpl", ""),
     )
 
     def add_arguments(self, parser: Any):
         parser.add_argument("name", help="Name of the application or project.")
-        parser.add_argument("directory", nargs="?", help="Optional destination directory")
-        parser.add_argument("--template", help="The path or URL to load the template from.")
-        parser.add_argument(
-            "--name",
-            "-n",
-            dest="files",
-            action="append",
-            default=[],
-            help="The file name(s) to render. Separate multiple file names "
-            "with commas, or use -n multiple times.",
-        )
-        parser.add_argument(
-            "--exclude",
-            "-x",
-            action="append",
-            default=argparse.SUPPRESS,
-            nargs="?",
-            const="",
-            help=(
-                "The directory name(s) to exclude, in addition to .git and "
-                "__pycache__. Can be used multiple times."
-            ),
-        )
 
     def handle(
         self,
         app_or_project: str,
         name: str,
-        target: Optional[Any] = None,
         **options: Dict[str, Any],
     ):
         self.app_or_project = app_or_project
@@ -74,22 +43,13 @@ class TemplateCommand(BaseDirective):
 
         self.validate_name(name)
 
-        if target is None:
-            top_dir = os.path.join(os.getcwd(), name)
-            try:
-                os.makedirs(top_dir)
-            except FileExistsError:
-                raise DirectiveError(f"{top_dir} already exists.")
-            except OSError as e:
-                raise DirectiveError(e)
-        else:
-            top_dir = os.path.abspath(os.path.expanduser(target))
-            if app_or_project == "app":
-                self.validatate_name(os.path.basename(top_dir), "directory")
-            if not os.path.exists(top_dir):
-                raise DirectiveError(
-                    f"Destination directory {top_dir} does not " "exist, please create it first."
-                )
+        top_dir = os.path.join(os.getcwd(), name)
+        try:
+            os.makedirs(top_dir)
+        except FileExistsError:
+            raise DirectiveError(f"{top_dir} already exists.")
+        except OSError as e:
+            raise DirectiveError(e)
 
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"
@@ -100,7 +60,7 @@ class TemplateCommand(BaseDirective):
             "project_secret": options.get("secret_key"),
         }
 
-        template_dir = self.handle_template(options["template"], base_subdir)
+        template_dir = os.path.join(esmerald.__path__[0], "conf", base_subdir)
         prefix_length = len(template_dir) + 1
 
         for root, dirs, files in os.walk(template_dir):
@@ -116,13 +76,18 @@ class TemplateCommand(BaseDirective):
 
             for filename in files:
                 if filename.endswith((".pyo", ".pyc", ".py.class")):
-                    # Ignore some files as they cause various breakages.
                     continue
+
                 old_path = os.path.join(root, filename)
-                new_path = os.path.join(top_dir, relative_dir, filename.replace(base_name, name))
+                new_path = os.path.join(
+                    top_dir, relative_dir, filename.replace(base_name, name)
+                )
+                project_dir = os.path.join(top_dir, relative_dir)
+                template_name = filename
                 for old_suffix, new_suffix in self.rewrite_template_suffixes:
                     if new_path.endswith(old_suffix):
                         new_path = new_path[: -len(old_suffix)] + new_suffix
+                        template_name = template_name[: -len(old_suffix)] + new_suffix
                         break  # Only rewrite once
 
                 if os.path.exists(new_path):
@@ -135,14 +100,13 @@ class TemplateCommand(BaseDirective):
                             app_or_project,
                         )
                     )
-                # Only render the Python files, as we don't want to
-                # accidentally render Esmerald templates files
                 shutil.copyfile(old_path, new_path)
-
                 if self.verbosity >= 2:
                     self.stdout.write("Creating %s" % new_path)
                 try:
-                    self.manage_template_variables(new_path, new_path, "/", context)
+                    self.manage_template_variables(
+                        template_name, new_path, project_dir, context
+                    )
                     self.apply_umask(old_path, new_path)
                     self.make_file_writable(new_path)
                 except OSError:
@@ -161,8 +125,8 @@ class TemplateCommand(BaseDirective):
         context: Dict[str, Any],
     ):
         """
-        Goes through every file generated and replaces the project_name with the given
-        project name from the command line.
+        Goes through every file generated and replaces the variables with the given
+        context variables.
         """
         environment = Environment(loader=FileSystemLoader(template_dir))
         template = environment.get_template(template)
@@ -171,28 +135,6 @@ class TemplateCommand(BaseDirective):
             os.unlink(destination)
         with open(destination, "w") as f:
             f.write(rendered_template)
-
-    def handle_template(self, template: Union[str, FilePath], subdir: Union[str, FilePath]):
-        """
-        Determine where the app or project templates are.
-        Use esmerald.__path__[0] as the default because the Esmerald install
-        directory isn't known.
-        """
-        if template is None:
-            return os.path.join(esmerald.__path__[0], "conf", subdir)
-        else:
-            if template.startswith("file://"):
-                template = template[7:]
-            expanded_template = os.path.expanduser(template)
-            expanded_template = os.path.normpath(expanded_template)
-            if os.path.isdir(expanded_template):
-                return expanded_template
-
-            absolute_path = os.path.abspath(expanded_template)
-            if os.path.exists(absolute_path):
-                return self.extract(absolute_path)
-
-        raise DirectiveError("couldn't handle %s template %s." % (self.app_or_project, template))
 
     def validate_name(self, name, name_or_dir="name"):
         if name is None:
@@ -229,23 +171,9 @@ class TemplateCommand(BaseDirective):
                 )
             )
 
-    def extract(self, filename: str):
-        """
-        Extract the given file to a temporary directory and return
-        the path of the directory with the extracted content.
-        """
-        prefix = "esmerald_%s_template_" % self.app_or_project
-        tempdir = tempfile.mkdtemp(prefix=prefix, suffix="_extract")
-        self.paths_to_remove.append(tempdir)
-        if self.verbosity >= 2:
-            self.stdout.write("Extracting %s" % filename)
-        try:
-            archive.extract(filename, tempdir)
-            return tempdir
-        except (archive.ArchiveException, OSError) as e:
-            raise DirectiveError("couldn't extract file %s to %s: %s" % (filename, tempdir, e))
-
-    def apply_umask(self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]):
+    def apply_umask(
+        self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]
+    ):
         current_umask = os.umask(0)
         os.umask(current_umask)
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)

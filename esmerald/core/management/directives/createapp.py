@@ -1,7 +1,7 @@
-from esmerald.core.management.templates import TemplateCommand
+from esmerald.core.management.templates import TemplateDirective
 
 
-class Directive(TemplateCommand):
+class Directive(TemplateDirective):
     help = (
         "Creates an Esmerald app directory structure for the given app name in "
         "the current directory or optionally in the given directory."
@@ -10,5 +10,4 @@ class Directive(TemplateCommand):
 
     def handle(self, **options):
         app_name = options.pop("name")
-        target = options.pop("directory")
-        super().handle("app", app_name, target, **options)
+        super().handle("app", app_name, **options)
