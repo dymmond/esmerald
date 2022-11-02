@@ -1,5 +1,18 @@
 # Release Notes
 
+## 0.2.1
+
+November 1, 2022.
+
+### Changed
+
+- Removed `archive`.
+- Removed unnecessary comments.
+
+### Fixed
+
+- Generation of projects and apps using `esmerald-admin` by removing the clutter.
+
 ## 0.2.0
 
 November 1, 2022.
@@ -8,7 +21,7 @@ November 1, 2022.
 
 - `esmerald-admin` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
 
-### Fix
+### Fixed
 
 - Namespace conflicts when importing the `Include` and the `include` internal function.
 
