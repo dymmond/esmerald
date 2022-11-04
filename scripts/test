@@ -1,7 +1,9 @@
 #!/bin/sh
 
 export PREFIX=""
-if [ -d 'venv' ] ; then
+if [ "$VIRTUAL_ENV" != '' ]; then
+    export PREFIX="$VIRTUAL_ENV/bin/"
+elif [ -d 'venv' ] ; then
     export PREFIX="venv/bin/"
 fi
 

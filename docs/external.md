@@ -5,7 +5,7 @@ with third parties and their packages and frameworks.
 
 ## GraphQL
 
-Natively Esmerald does not integrate GraphQL natively, at least not for now. Instead there already available awseome
+Natively Esmerald does not integrate GraphQL, at least not for now. Instead there already available awseome
 working solutions built by great minds.
 
 ### <a href="https://ariadnegraphql.org/docs/asgi" target="_blank">Ariadne</a>

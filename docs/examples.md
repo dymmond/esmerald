@@ -126,6 +126,6 @@ The `Makefile` contains two very important commands. The `make run` and the `mak
 As you can probably notice, the `make run` runs with the `DevelopmentSettings` module and the `make test` with
 `TestingSettings` module.
 
-**Both development and testing settings are passev via ESMERALD_SETTINGS_MODULE**.
+**Both development and testing settings are passed via ESMERALD_SETTINGS_MODULE**.
 
 We hope this scaffold can help you clearing out some ideas or even giving you new ones for your applications.
