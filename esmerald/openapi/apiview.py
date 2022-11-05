@@ -216,6 +216,7 @@ class OpenAPIView(APIView):
                 schema_copy.json(by_alias=True, exclude_none=True),
                 option=OPT_INDENT_2,
             ).decode("utf-8")
+
         head = f"""
           <head>
             <title>{schema.info.title}</title>

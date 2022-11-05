@@ -19,6 +19,7 @@ from openapi_schemas_pydantic.v3_1_0 import (
     Server,
     Tag,
 )
+from openapi_schemas_pydantic.v3_1_0.path_item import PathItem
 from pydantic import AnyUrl, BaseModel
 from typing_extensions import Literal
 
@@ -129,7 +130,7 @@ class OpenAPIConfig(BaseModel):
                             schema.paths[path] = {}
                         if not verb in schema.paths[path]:
                             schema.paths[path][verb] = {}
-                        schema.paths[path][verb] = path_item
+                        schema.paths[path][verb] = getattr(path_item, verb, None)
                     continue
 
                 route_app = getattr(route, "app", None)

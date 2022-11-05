@@ -114,7 +114,7 @@ class.
 * **security** - Security definition of the application. Used for OpenAPI.
 * **operation_id** - Internal unique identifier of the handler. Used for OpenAPI.
 * **response_description** - Description of the response. Used for OpenAPI.
-* **responses** - The available responses of the handler. Used for OpenAPI.
+* **responses** - The available responses of the handler. Used for OpenAPI. [More details](../responses.md#openapi-responses).
 
 ## HTTP handler summary
 

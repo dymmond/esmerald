@@ -56,6 +56,30 @@ uses the `TemplateResponse`.
 {!> ../docs_src/responses/template.py !}
 ```
 
+## OpenAPI Responses
+
+This is a special attribute that is used for OpenAPI spec purposes and can be created and added to a specific handler.
+
+```python
+from typing import Union
+
+from esmerald import post
+from esmerald.openapi.datastructures import ResponseSpec
+from pydantic import BaseModel
+
+
+class ItemOut(BaseModel):
+    sku: str
+    description: str
+
+
+@post(path='/create', summary="Creates an item", responses={200: ResponseSpec(model=TaskIn, description=...)})
+async def create() -> Union[None, ItemOut]:
+    ...
+```
+
+This will add an extra response description and details to your OpenAPI spec handler definition.
+
 ## Other responses
 
 There are other responses you can have that does not necessessarily have to be the ones provided here. Every case is

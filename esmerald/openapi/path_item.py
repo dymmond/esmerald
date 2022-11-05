@@ -24,7 +24,7 @@ def get_description_for_handler(
     return description
 
 
-def extract_layered_values(
+def extract_level_values(
     handler: "HTTPHandler",
 ) -> Tuple[Optional[List[str]], Optional[List[Dict[str, List[str]]]]]:
     tags: List[str] = []
@@ -71,7 +71,7 @@ def create_path_item(
                     field=handler_fields["data"], create_examples=create_examples
                 )
 
-            tags, security = extract_layered_values(handler=handler)
+            tags, security = extract_level_values(handler=handler)
             operation = Operation(
                 operationId=handler.operation_id or handler_name,
                 tags=tags,
