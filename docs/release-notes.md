@@ -6,7 +6,7 @@ November 5, 2022
 
 ### Fixed
 
-- OpenAPI documenation rendering for the same path with differnt http methods.
+- OpenAPI documentation rendering for the same path with different http methods.
 
 ## 0.2.2
 
