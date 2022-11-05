@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.3
+
+November 5, 2022
+
+### Fixed
+
+- OpenAPI documenation rendering for the same path with differnt http methods.
+
 ## 0.2.2
 
 November 2, 2022.

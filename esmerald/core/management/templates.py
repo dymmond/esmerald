@@ -79,9 +79,7 @@ class TemplateDirective(BaseDirective):
                     continue
 
                 old_path = os.path.join(root, filename)
-                new_path = os.path.join(
-                    top_dir, relative_dir, filename.replace(base_name, name)
-                )
+                new_path = os.path.join(top_dir, relative_dir, filename.replace(base_name, name))
                 project_dir = os.path.join(top_dir, relative_dir)
                 template_name = filename
                 for old_suffix, new_suffix in self.rewrite_template_suffixes:
@@ -104,9 +102,7 @@ class TemplateDirective(BaseDirective):
                 if self.verbosity >= 2:
                     self.stdout.write("Creating %s" % new_path)
                 try:
-                    self.manage_template_variables(
-                        template_name, new_path, project_dir, context
-                    )
+                    self.manage_template_variables(template_name, new_path, project_dir, context)
                     self.apply_umask(old_path, new_path)
                     self.make_file_writable(new_path)
                 except OSError:
@@ -171,9 +167,7 @@ class TemplateDirective(BaseDirective):
                 )
             )
 
-    def apply_umask(
-        self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]
-    ):
+    def apply_umask(self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]):
         current_umask = os.umask(0)
         os.umask(current_umask)
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)

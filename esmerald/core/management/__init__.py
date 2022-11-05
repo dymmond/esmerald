@@ -143,9 +143,7 @@ def call_command(command_name, *args, **options):
     # Any required arguments which are passed in via **options must be passed
     # to parse_args().
     for opt in parser_actions:
-        if opt.dest in options and (
-            opt.required or opt in mutually_exclusive_required_options
-        ):
+        if opt.dest in options and (opt.required or opt in mutually_exclusive_required_options):
             parse_args.append(min(opt.option_strings))
             if isinstance(opt, (_AppendConstAction, _CountAction, _StoreConstAction)):
                 continue
@@ -350,9 +348,7 @@ class ManagementUtility:
             elif not options.args:
                 sys.stdout.write(self.main_help_text() + "\n")
             else:
-                self.fetch_command(options.args[0]).print_help(
-                    self.prog_name, options.args[0]
-                )
+                self.fetch_command(options.args[0]).print_help(self.prog_name, options.args[0])
         elif subdirective == "version" or self.argv[1:] == ["--version"]:
             sys.stdout.write(esmerald.__version__ + "\n")
         elif self.argv[1:] in (["--help"], ["-h"]):
