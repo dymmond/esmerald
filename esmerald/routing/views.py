@@ -105,6 +105,7 @@ class APIView:
                 for tag in reversed(self.tags):
                     route_handler.tags.insert(0, tag)
             route_handlers.append(route_handler)
+
         return route_handlers
 
     def get_route_middleware(

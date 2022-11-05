@@ -82,6 +82,20 @@ class OpenAPIConfig(BaseModel):
             ),
         )
 
+    def get_http_verb(self, path_item):
+        if getattr(path_item, "get", None):
+            return HttpMethod.GET.value.lower()
+        elif getattr(path_item, "post", None):
+            return HttpMethod.POST.value.lower()
+        elif getattr(path_item, "put", None):
+            return HttpMethod.PUT.value.lower()
+        elif getattr(path_item, "patch", None):
+            return HttpMethod.PATCH.value.lower()
+        elif getattr(path_item, "delete", None):
+            return HttpMethod.DELETE.value.lower()
+        elif getattr(path_item, "header", None):
+            return HttpMethod.HEAD.value.lower()
+
     def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
         schema = self.to_openapi_schema()
         schema.paths = {}
@@ -95,16 +109,26 @@ class OpenAPIConfig(BaseModel):
                     return
 
                 if isinstance(route, Gateway):
-                    if isinstance(route, Gateway) and any(
-                        handler.include_in_schema
-                        for handler, _ in route.handler.route_map.values()
+                    if (
+                        isinstance(route, Gateway)
+                        and any(
+                            handler.include_in_schema
+                            for handler, _ in route.handler.route_map.values()
+                        )
+                        and (route.path_format or "/") not in schema.paths
                     ):
                         path = clean_path(prefix + route.path)
-                        schema.paths[path] = create_path_item(
+                        path_item = create_path_item(
                             route=route.handler,
                             create_examples=self.create_examples,
                             use_handler_docstrings=self.use_handler_docstrings,
                         )
+                        verb = self.get_http_verb(path_item)
+                        if not path in schema.paths:
+                            schema.paths[path] = {}
+                        if not verb in schema.paths[path]:
+                            schema.paths[path][verb] = {}
+                        schema.paths[path][verb] = path_item
                     continue
 
                 route_app = getattr(route, "app", None)
