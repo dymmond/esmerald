@@ -1,6 +1,7 @@
 from functools import partial
 from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
 
+from esmerald.enums import HttpMethod
 from esmerald.openapi.path_item import create_path_item
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.utils.url import clean_path
