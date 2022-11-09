@@ -1,7 +1,7 @@
 """
 Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings

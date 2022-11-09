@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.4
+
+November 9, 2022
+
+### Changed
+
+- Removed `settings.py` from permissions as it is no longer used.
+
 ## 0.2.3
 
 November 5, 2022
