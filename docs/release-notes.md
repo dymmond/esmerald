@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.5
+
+November 9, 2022
+
+### Changed
+
+- Removed `auth.py` from security package as is no longer used. This was supposed to go in the release 0.2.4.
+
 ## 0.2.4
 
 November 9, 2022
