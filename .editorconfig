@@ -1,7 +1,4 @@
-; This file is for unifying the coding style for different editors and IDEs.
 ; More information at http://editorconfig.org
-
-; Top-level editorconfig file for this project.
 root = true
 
 [*]

@@ -9,6 +9,7 @@
 .venv/
 .vscode/
 __pycache__/
+virtualenv/
 build/
 dist/
 node_modules/
@@ -24,3 +25,4 @@ target/
 .coverage
 .python-version
 coverage.*
+example.sqlite
