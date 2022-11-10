@@ -58,7 +58,6 @@ dependencies = [
     "openapi-schemas-pydantic>=1.0.0",
     "orjson >=3.7.11,<4.0.0",
     "starlette>=0.21.0",
-    "tortoise-orm==0.19.2",
     "ujson>=5.5.0,<6",
 ]
 keywords = ["api", "rest", "http", "asgi", "pydantic", "starlette", "fastapi", "framework", "websocket", "openapi", "ml", "machine learning"]
@@ -101,7 +100,6 @@ test = [
     "starlette >=0.21.0",
     "sqlalchemy >=1.4.29,<1.5.0",
     "requests >=2.27.0,<3.0.0",
-    "tortoise-orm>=0.19.2,<0.20.0",
     "ujson>=5.5.0,<6",
 
     # types
@@ -148,7 +146,6 @@ all = [
     "python-multipart >=0.0.5,<0.0.6",
     "requests >=2.24.0,<3.0.0",
     "starlette>=0.21.0",
-    "tortoise-orm==0.19.2",
     "ujson>=5.5.0,<6",
 ]
 
