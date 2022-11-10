@@ -85,3 +85,10 @@ Accessing any `Esmerald` endpoint:
     "name": "esmerald"
 }
 ```
+
+## WSGI and Esmerald OpenAPI
+
+Only apps that are inherited from [Esmerald](./application/applications.md)
+or [ChildEsmerald](./routing/router.md#child-esmerald-application), the URLs won't be showing
+in the OpenAPI documentation. This is for compatibility purposes only and **does not affect** the internal
+routing. WSGI integrations and all the urls associated and created still work as you can test them.
