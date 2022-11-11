@@ -26,6 +26,20 @@ Tortoise was heavily inspired by the way Django ORM was designed.
 When starting a project the initial configurations can take majority of the time and this can come with costs for the
 business, hence the support for Tortoise to make sure that same time can be saved.
 
+## How to use
+
+To use Tortoise ORM with Esmerald you should install some requirements.
+
+```shell
+$ pip install tortoise-orm
+```
+
+Since Tortoise is an async database you will need also the database drivers, for instance for Postgres.
+
+```shell
+$ pip install asyncpg
+```
+
 ## Documentation and more details
 
 Since we support Tortoise, the best place to understand how to use all the powerful features given by it you can simply

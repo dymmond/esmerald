@@ -139,7 +139,7 @@ RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
 # (6)
 COPY ./app /src/app
 
-COPY deployment/nginx.conf /etc/nginx/conf.d/
+COPY deployment/nginx.conf /etc/nginx/
 COPY deployment/nginx.conf /etc/nginx/sites-enabled/default
 COPY deployment/supervisord.conf /etc/
 

@@ -14,7 +14,10 @@ class DaoProtocol(Protocol):  # pragma: no cover
     Esmerald definition of a DAO will contain the base patterns for an object
     """
 
-    model: Any
+    @property
+    def model(self) -> Any:
+        ...
+
     """
     The model object. Usually this object is what allows the connection and
     data access to a database.

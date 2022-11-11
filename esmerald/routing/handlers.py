@@ -50,7 +50,7 @@ class get(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful Response",
+        response_description: Optional[str] = "Successful response",
         responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
@@ -106,7 +106,7 @@ class post(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful Response",
+        response_description: Optional[str] = "Successful response",
         responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
@@ -162,7 +162,7 @@ class put(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful Response",
+        response_description: Optional[str] = "Successful response",
         responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
@@ -218,7 +218,7 @@ class patch(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful Response",
+        response_description: Optional[str] = "Successful response",
         responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
@@ -274,7 +274,7 @@ class delete(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful Response",
+        response_description: Optional[str] = "Successful response",
         responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         super().__init__(
@@ -331,7 +331,7 @@ class route(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful Response",
+        response_description: Optional[str] = "Successful response",
         responses: Optional[Dict[int, ResponseSpec]] = None,
     ) -> None:
         if not methods or not isinstance(methods, list):
@@ -383,7 +383,9 @@ class websocket(WebSocketHandler):
         path: Union[Optional[str], Optional[List[str]]] = None,
         *,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional[
+            Dict[Union[int, Type[Exception]], "ExceptionHandler"]
+        ] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):

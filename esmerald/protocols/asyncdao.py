@@ -15,6 +15,7 @@ class AsyncDAOProtocol(Protocol):  # pragma: no cover
     """
 
     model: Any
+
     """
     The model object. Usually this object is what allows the connection and
     data access to a database.
