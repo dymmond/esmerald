@@ -31,3 +31,41 @@ one way of doing it but we thought that would be very useful to have at least on
 to unblock some potential ideas.
 
 We opted for using a standard, [docker](./docker.md).
+
+## Deploying using Pydantic
+
+Pydantic is fantastic handling with majority of the heavy lifting when it comes to read environment variables and
+assigning but there are some tricks to have in mind.
+
+### Loading List, dicts and complex types
+
+When loading those into your environment variables **it is imperative** that you understand that Pydantic reads them
+as a JSON like object.
+
+**Example**:
+
+```shell
+export ALLOWED_HOSTS="https://www.example.com","https://www.foobar.com"
+```
+
+There are many ways of doing this but in the documentation of Pydantic (even a fix), they recommend to use the
+`parse_env` and handle the parsing there.
+
+```python
+from esmerald import EsmeraldAPISettings
+from pydantic import Field
+
+
+class AppSettings(EsmeraldAPISettings):
+    allowed_hosts = Field(..., env='ALLOWED_HOSTS')
+
+    class Config:
+        @classmethod
+        def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
+            if field_name in ("allowed_hosts"):
+                return [value for value in raw_val.split(",")]
+            return cls.json_loads(raw_val)
+    
+```
+
+This should solve your problems of parsing 😁.

@@ -7,7 +7,7 @@ November 11, 2022
 ### Changed
 
 - Removed [Tortoise ORM](./databases/tortoise/tortoise.md#how-to-use) dependency from the main package.
-- Removed `asyncpg` from the main package as dependency. 
+- Removed `asyncpg` from the main package as dependency.
 
 ## 0.2.5
 
