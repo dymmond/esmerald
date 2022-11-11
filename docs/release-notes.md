@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.7
+
+November 11, 2022
+
+### Added
+
+- Officially supporting python 3.11.
+
 ## 0.2.6
 
 November 11, 2022
