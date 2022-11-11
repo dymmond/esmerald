@@ -57,7 +57,7 @@ from pydantic import Field
 
 
 class AppSettings(EsmeraldAPISettings):
-    allowed_hosts = Field(..., env='ALLOWED_HOSTS')
+    allowed_hosts: List[str] = Field(..., env='ALLOWED_HOSTS')
 
     class Config:
         @classmethod
@@ -69,3 +69,5 @@ class AppSettings(EsmeraldAPISettings):
 ```
 
 This should solve your problems of parsing 😁.
+
+You can see [more details](https://github.com/pydantic/pydantic/pull/4406/files) about the way it was merged.
