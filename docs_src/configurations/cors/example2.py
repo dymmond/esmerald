@@ -1,7 +1,7 @@
 from esmerald import CORSConfig, Esmerald
 
 cors_config = CORSConfig(
-    allow_origins=["www.example.com", "foobar.org"],
+    allow_origins=["https://www.example.com", "https://foobar.org"],
     allow_methods=["GET", "POST"],
     allow_credentials=True,
 )
