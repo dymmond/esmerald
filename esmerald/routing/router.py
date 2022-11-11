@@ -397,9 +397,9 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         "exception_handlers",
         "permissions",
         "middleware",
-        "response_model",
         "response_class",
         "response_cookies",
+        "response_headers",
         "parent",
         "tags",
         "deprecated",
@@ -426,7 +426,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
-        response_model: Optional[Type[Any]] = None,
         response_class: Optional["ResponseType"] = None,
         response_cookies: Optional["ResponseCookies"] = None,
         response_headers: Optional["ResponseHeaders"] = None,
@@ -490,7 +489,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.response_class = response_class
         self.response_cookies = response_cookies
         self.response_headers = response_headers
-        self.response_model = response_model
         self.background = background
         self.signature_model: Optional[Type["SignatureModel"]] = None
         self.kwargs: Optional["KwargsModel"] = None
