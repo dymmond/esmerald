@@ -18,6 +18,10 @@ unless you are confortable with everything** and only override the `path` parame
 
     <sup>Default: `/docs`</sup>
 
+* **favicon** - The favicon used for the docs.
+
+    <sup>Default: `https://esmerald.dymmond.com/statics/images/favicon.ico`</sup>
+
 ## The documentation URLs
 
 Esmerald OpenAPI documentation by default will use `/docs` prefix to access the OpenAPI application documentation.
