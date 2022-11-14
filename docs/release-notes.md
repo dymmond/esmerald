@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.8
+
+November 14, 2022
+
+### Fixed
+
+- `@router` allowing validation for Options for CORS middleware.
+
 ## 0.2.7
 
 November 11, 2022
