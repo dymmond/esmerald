@@ -45,7 +45,7 @@ as a JSON like object.
 **Example**:
 
 ```shell
-export ALLOWED_HOSTS="https://www.example.com","https://www.foobar.com"
+export ALLOWED_HOSTS="https://www.example.com,https://www.foobar.com"
 ```
 
 There are many ways of doing this but in the documentation of Pydantic (even a fix), they recommend to use the
