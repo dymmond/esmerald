@@ -341,11 +341,13 @@ class route(HTTPHandler):
             )
 
         for method in methods:
-            if method not in AVAILABLE_METHODS:
+            if method.upper() not in AVAILABLE_METHODS:
                 raise ImproperlyConfigured(
                     f"Invalid method {method}. "
                     "An example would be: @route(methods=['GET', 'PUT'])."
                 )
+
+        methods = [method.upper() for method in methods]
         if not status_code:
             status_code = status.HTTP_200_OK
 
@@ -383,9 +385,7 @@ class websocket(WebSocketHandler):
         path: Union[Optional[str], Optional[List[str]]] = None,
         *,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[
-            Dict[Union[int, Type[Exception]], "ExceptionHandler"]
-        ] = None,
+        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):

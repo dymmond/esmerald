@@ -26,4 +26,5 @@ AVAILABLE_METHODS = [
     HttpMethod.PUT,
     HttpMethod.POST,
     HttpMethod.DELETE,
+    HttpMethod.OPTIONS,
 ]

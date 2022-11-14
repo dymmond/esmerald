@@ -28,12 +28,22 @@ class OpenAPIView(APIView):
     stoplight_elements_version: str = "7.6.5"
     favicon_url: str = "https://esmerald.dymmond.com/statics/images/favicon.ico"
     redoc_google_fonts: bool = True
-    redoc_js_url: str = f"https://cdn.jsdelivr.net/npm/redoc@{redoc_version}/bundles/redoc.standalone.js"
-    swagger_css_url: str = f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{swagger_ui_version}/swagger-ui.css"
-    swagger_ui_bundle_js_url: str = f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{swagger_ui_version}/swagger-ui-bundle.js"
+    redoc_js_url: str = (
+        f"https://cdn.jsdelivr.net/npm/redoc@{redoc_version}/bundles/redoc.standalone.js"
+    )
+    swagger_css_url: str = (
+        f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{swagger_ui_version}/swagger-ui.css"
+    )
+    swagger_ui_bundle_js_url: str = (
+        f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{swagger_ui_version}/swagger-ui-bundle.js"
+    )
     swagger_ui_standalone_preset_js_url: str = f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{swagger_ui_version}/swagger-ui-standalone-preset.js"
-    stoplight_elements_css_url: str = f"https://unpkg.com/@stoplight/elements@{stoplight_elements_version}/styles.min.css"
-    stoplight_elements_js_url: str = f"https://unpkg.com/@stoplight/elements@{stoplight_elements_version}/web-components.min.js"
+    stoplight_elements_css_url: str = (
+        f"https://unpkg.com/@stoplight/elements@{stoplight_elements_version}/styles.min.css"
+    )
+    stoplight_elements_js_url: str = (
+        f"https://unpkg.com/@stoplight/elements@{stoplight_elements_version}/web-components.min.js"
+    )
 
     _dumped_schema: str = ""
     _dumped_modified_schema: str = ""
@@ -53,10 +63,7 @@ class OpenAPIView(APIView):
 
         config = request.app.openapi_config
 
-        if (
-            request_path == root_path
-            and config.root_schema_site in config.enabled_endpoints
-        ):
+        if request_path == root_path and config.root_schema_site in config.enabled_endpoints:
             return True
 
         if request_path & config.enabled_endpoints:
