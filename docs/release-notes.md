@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.9
+
+November 15, 2022
+
+### Fixed
+
+- `redirect_slashes` property added to the main Esmerald object and settings options.
+
 ## 0.2.8
 
 November 14, 2022

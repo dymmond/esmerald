@@ -92,6 +92,7 @@ Use one or the other, not both.
 * **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
 * **security** - Security definition of the application. Used for OpenAPI.
 * **enable_openapi** - Flag to enable/disable OpenAPI docs. It is enabled by default.
+* **redirect_slashes** - Flag to enable/disable redirect slashes for the handlers. It is enabled by default.
 
 ## Application settings
 

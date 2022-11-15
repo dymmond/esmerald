@@ -332,6 +332,10 @@ Use one or the other, not both.
 
     <sup>Default `True`</sup>
 
+* **redirect_slashes** - Enable/disable redirect slashes for the handlers.
+
+    <sup>Default `True`</sup>
+
 !!! Check
     All the configurations are pydantic objects. Check [CORS](../configurations/cors.md),
     [CSRF](../configurations/csrf.md), [Session](../configurations/session.md), [JWT](../configurations/session.md),
