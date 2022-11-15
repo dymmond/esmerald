@@ -96,7 +96,8 @@ def create_client(
     static_files_config: Optional[Union["StaticFilesConfig", List["StaticFilesConfig"]]] = None,
     template_config: Optional["TemplateConfig"] = None,
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = settings.lifespan,
-    cookies: Optional[httpx._client.CookieTypes] = None
+    cookies: Optional[httpx._client.CookieTypes] = None,
+    redirect_slashes: bool = settings.redirect_slashes,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
         app=Esmerald(
@@ -123,6 +124,7 @@ def create_client(
             template_config=template_config,
             session_config=session_config,
             lifespan=lifespan,
+            redirect_slashes=redirect_slashes,
         ),
         base_url=base_url,
         backend=backend,

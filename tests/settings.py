@@ -9,3 +9,4 @@ class TestSettings(EsmeraldAPISettings):
     enable_sync_handlers: bool = True
     enable_openapi: bool = False
     environment: Optional[str] = "testing"
+    redirect_slashes: bool = True

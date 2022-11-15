@@ -71,6 +71,7 @@ class EsmeraldAPISettings(BaseSettings):
     enable_sync_handlers: bool = True
     enable_scheduler: bool = False
     enable_openapi: bool = True
+    redirect_slashes: bool = True
 
     @property
     def reload(self) -> bool:

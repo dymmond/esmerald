@@ -37,3 +37,4 @@ def test_default_settings():
         assert client.app.settings.permissions == settings.permissions
         assert client.app.settings.dependencies == settings.dependencies
         assert client.app.settings.exception_handlers == settings.exception_handlers
+        assert client.app.settings.redirect_slashes == settings.redirect_slashes

@@ -36,9 +36,7 @@ def test_trusted_host_middleware(test_client_factory):
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
-                TrustedHostMiddleware, allowed_hosts=["testserver", "*.testserver"]
-            )
+            Middleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.testserver"])
         ],
     )
 
@@ -68,9 +66,7 @@ def test_www_redirect(test_client_factory):
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[
-            Middleware(TrustedHostMiddleware, allowed_hosts=["www.example.com"])
-        ],
+        middleware=[Middleware(TrustedHostMiddleware, allowed_hosts=["www.example.com"])],
     )
 
     client = test_client_factory(app, base_url="https://example.com")

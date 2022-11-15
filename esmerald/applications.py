@@ -97,6 +97,7 @@ class Esmerald(Starlette):
         "deprecated",
         "security",
         "include_in_schema",
+        "redirect_slashes",
     )
 
     def __init__(
@@ -145,6 +146,7 @@ class Esmerald(Starlette):
         include_in_schema: bool = settings.include_in_schema,
         deprecated: Optional[bool] = None,
         enable_openapi: bool = settings.enable_openapi,
+        redirect_slashes: bool = settings.redirect_slashes,
     ) -> None:
 
         assert lifespan is None or (
@@ -196,6 +198,7 @@ class Esmerald(Starlette):
         self.on_startup = on_startup
         self.security = security
         self.enable_openapi = enable_openapi
+        self.redirect_slashes = redirect_slashes
 
         self.router: "Router" = Router(
             on_shutdown=on_shutdown,
@@ -205,6 +208,7 @@ class Esmerald(Starlette):
             lifespan=lifespan,
             deprecated=deprecated,
             security=security,
+            redirect_slashes=self.redirect_slashes,
         )
 
         self.exception_handlers = {} if exception_handlers is None else dict(exception_handlers)
