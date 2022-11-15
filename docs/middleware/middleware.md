@@ -193,6 +193,20 @@ If you need to specify parameters in your middleware then you will need to wrap 
 If no parameters are needed, then you can simply pass the middleware class directly and Esmerald will take care of
 the rest.
 
+## Available middlewares
+
+There are some available middlewares that are also available from Starlette.
+
+* `CORSMiddleware` - Handles with the CORS and there is a [build-in](../configurations/cors.md) how to enable.
+* `TrustedHostMiddleware` - Handles with the CORS if a given `allowed_hosts` is populated, the
+[build-in](../configurations/cors.md) explains how to use it.
+* `GZipMiddleware` - Same middleware as the one from Starlette.
+* `HTTPSRedirectMiddleware` - Middleware that handles HTTPS redirects for your application. Very useful to be used
+for production or production like environments.
+* `SessionMiddleware` - Same middleware as the one from Starlette.
+* `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Esmerald. A [great example](../wsgi.md)
+how to use it is available.
+
 ## Important points
 
 1. Esmerald supports [Starlette middleware](#starlette-middleware), [MiddlewareProtocol](#esmerald-protocols).
