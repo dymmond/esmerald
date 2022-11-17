@@ -129,3 +129,39 @@ As you can probably notice, the `make run` runs with the `DevelopmentSettings` m
 **Both development and testing settings are passed via ESMERALD_SETTINGS_MODULE**.
 
 We hope this scaffold can help you clearing out some ideas or even giving you new ones for your applications.
+
+## Nginx, Gunicorn, Tortoise and Docker
+
+We all know how hard it can be to think about deployments and configurations to go live and for that reason there is
+also a cookiecutter available based on the [esmerald scaffold](#esmerald-scaffold) with a lot of extra files
+prepared for the deployment (if needed) and adds an extra flavour in case you want to also use Tortoise ORM.
+
+This can be done for any ORM, really. The goal of the cookiecutter is to give a complex, production ready and similar
+approach to the normal go-lives.
+
+### How to use
+
+To use the [scaffold](https://github.com/dymmond/esmerald-tortoise-nginx-gunicorn-supervisor) you will need to have installed:
+
+* Python 3.7+
+* [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/)
+
+And to install, run:
+
+```shell
+$ cookiecutter https://github.com/dymmond/esmerald-tortoise-nginx-gunicorn-supervisor
+```
+
+And simply follow the instructions.
+
+### What does it bring inside
+
+As mentioned before, this is very similar to the [esmerald scaffold](#esmerald-scaffold) so you can expect
+a similar folder structure as that one but also adds some extras.
+
+* `deployment` - Folder containing nginx, supervisor and gunicorn configurations.
+* `docker` - Folder containing a Dockerfile ready to be used and deployed.
+
+The URLs, tests and Makefile file also follows the same structure as the [esmerald scaffold](#how-to-use).
+
+For a more comprehensive explanation, simply install the cookiecutter and give it a try.
