@@ -207,6 +207,62 @@ for production or production like environments.
 * `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Esmerald. A [great example](../wsgi.md)
 how to use it is available.
 
+### CORSMiddleware
+
+The default parameters used by the CORSMiddleware implementation are restrictive by default and Esmerald allows some
+ways of using this middleware depending of the taste.
+
+```python
+{!> ../docs_src/middleware/available/cors.py !}
+```
+
+### SessionMiddleware
+
+Adds signed cookie-based HTTP sessions. Session information is readable but not modifiable.
+
+```python
+{!> ../docs_src/middleware/available/sessions.py !}
+```
+
+### HTTPSRedirectMiddleware
+
+Like Starlette, enforces that all incoming requests must either be https or wss. Any http os ws will be redirected to
+the secure schemes instead.
+
+```python
+{!> ../docs_src/middleware/available/https.py !}
+```
+
+### TrustedHostMiddleware
+
+Enforces all requests to have a correct set `Host` header in order to protect against heost header attacks.
+
+```python
+{!> ../docs_src/middleware/available/trusted_hosts.py !}
+```
+
+### GZipMiddleware
+
+Like Starlette, it handles GZip responses for any request that includes "gzip" in the Accept-Encoding header.
+
+```python
+{!> ../docs_src/middleware/available/gzip.py !}
+```
+
+### WSGIMiddleware
+
+A middleware class in charge of converting a WSGI application into an ASGI one. There are some more examples
+in the [WSGI Frameworks](../wsgi.md) section.
+
+```python
+{!> ../docs_src/middleware/available/wsgi.py !}
+```
+
+### Other middlewares
+
+You can build your own middlewares as explained above but also reuse middlewares directly for Starlette if you wish.
+The middlewares are 100% compatible.
+
 ## Important points
 
 1. Esmerald supports [Starlette middleware](#starlette-middleware), [MiddlewareProtocol](#esmerald-protocols).
