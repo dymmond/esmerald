@@ -1,7 +1,6 @@
 from esmerald import Esmerald, Include
 from esmerald.middleware import WSGIMiddleware
 from flask import Flask, make_response
-from starlette.middleware import Middleware as StarletteMiddleware
 
 flask = Flask(__name__)
 

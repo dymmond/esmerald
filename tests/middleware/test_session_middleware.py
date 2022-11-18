@@ -110,7 +110,5 @@ def test_session_expires():
         assert expired_session_match is not None
 
         expired_session_value = expired_session_match[1]
-        response = client.get(
-            "/view_session", cookies={"session": expired_session_value}
-        )
+        response = client.get("/view_session", cookies={"session": expired_session_value})
         assert response.json() == {"session": {}}

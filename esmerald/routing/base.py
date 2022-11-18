@@ -206,11 +206,26 @@ class BaseResponseHandler:
         return response_content
 
     def create_json_response_handler(
-        self, status_code: Optional[int] = None
+        self,
+        status_code: Optional[int] = None,
+        cookies: Optional["ResponseCookies"] = None,
+        headers: Optional["ResponseHeaders"] = None,
     ) -> "AsyncAnyCallable":
         """Creates a handler function for Esmerald JSON responses"""
 
         async def response_content(data: Response, **kwargs: Dict[str, Any]) -> StarletteResponse:
+            _cookies = self.get_cookies(cookies, [])
+            _headers = {
+                **self.get_headers(headers),
+                **data.headers,
+                **self.allow_header,
+            }
+            for cookie in _cookies:
+                data.set_cookie(**cookie)
+
+            for header, value in _headers.items():
+                data.headers[header] = value
+
             if status_code:
                 data.status_code = status_code
             return data
@@ -383,7 +398,9 @@ class BaseResponseHandler:
                 self.signature.return_annotation,
                 (JSONResponse, ORJSONResponse, UJSONResponse),
             ):
-                handler = self.create_json_response_handler(status_code=self.status_code)
+                handler = self.create_json_response_handler(
+                    status_code=self.status_code, cookies=cookies, headers=headers
+                )
             elif is_class_and_subclass(self.signature.return_annotation, Response):
                 handler = self.create_response_handler(
                     cookies=cookies,

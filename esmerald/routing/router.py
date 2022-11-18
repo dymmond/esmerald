@@ -464,15 +464,15 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.operation_id = operation_id
 
         if not methods:
-            methods = [HttpMethod.GET]
+            methods = [HttpMethod.GET.value]
 
         for method in methods or []:
             if not isinstance(method, str):
                 raise ImproperlyConfigured(f"`{method}` in `methods` must be a string.")
 
-        self.methods: Set[str] = {HttpMethod[method] for method in methods}
+        self.methods: Set[str] = {HttpMethod[method].value for method in methods}
         if HttpMethod.GET in methods:
-            self.methods.add(HttpMethod.HEAD)
+            self.methods.add(HttpMethod.HEAD.value)
 
         if isinstance(status_code, IntEnum):
             status_code = int(status_code)
