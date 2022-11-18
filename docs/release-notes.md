@@ -10,7 +10,7 @@ November 18, 2022
 
 ### Fixed
 
-- `max_age` from [SessionConfig](../docs/configurations/session.md) allowing negative numbers being passed
+- `max_age` from [SessionConfig](./configurations/session.md) allowing negative numbers being passed
 and can be used for testing purposes or to clear a session.
 
 ## 0.2.9

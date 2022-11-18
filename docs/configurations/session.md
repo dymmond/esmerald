@@ -57,3 +57,9 @@ The SessionConfig can be done directly via [application instantiation](#sessionc
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+
+## Esmerald Sessions
+
+If you don't want to use the built-in session configuration and if you fancy a more custom way of handling the sessions
+with Esmerald, there is an official package
+[Esmerald Sessions](https://esmerald-sessions.dymmond.com/) that can help you with that including the middleware.
