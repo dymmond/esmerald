@@ -59,7 +59,6 @@ from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
-    from pydantic.typing import DictAny
 
 
 class Esmerald(Starlette):
@@ -540,12 +539,6 @@ class Esmerald(Starlette):
             scope["root_path"] = self.root_path
         scope["state"] = {}
         await super().__call__(scope, receive, send)
-
-    def add_middleware(
-        self, middleware_class: type, **options: "DictAny"
-    ) -> None:  # pragma: no cover
-        self.user_middleware.insert(0, StarletteMiddleware(middleware_class, **options))
-        self.middleware_stack = self.build_middleware_stack()
 
     def mount(self, path: str, app: ASGIApp, name: Optional[str] = None) -> None:
         raise ImproperlyConfigured("`mount` is not supported by Esmerald. Use Include() instead.")

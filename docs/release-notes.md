@@ -1,5 +1,18 @@
 # Release Notes
 
+## 0.2.10
+
+November 18, 2022
+
+## Changed
+
+- Supporting Starlette version 0.22.0.
+
+### Fixed
+
+- `max_age` from [SessionConfig](../docs/configurations/session.md) allowing negative numbers being passed
+and can be used for testing purposes or to clear a session.
+
 ## 0.2.9
 
 November 15, 2022

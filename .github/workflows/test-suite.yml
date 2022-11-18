@@ -29,9 +29,5 @@ jobs:
       - name: "Install dependencies"
         if: steps.cache.outputs.cache-hit != 'true'
         run: "scripts/install"
-      # - name: "Run linting checks"
-      #   run: "scripts/lint"
-      # - name: "Build package"
-      #   run: "scripts/build"
       - name: "Run tests"
         run: "scripts/test"
