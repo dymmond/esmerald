@@ -91,8 +91,8 @@ def test_session(test_client_factory):
         assert response.json() == {"session": {}}
 
 
-def xtest_session_expires():
-    session_config = SessionConfig(secret_key=get_random_secret_key(), max_age=1)
+def test_session_expires():
+    session_config = SessionConfig(secret_key=get_random_secret_key(), max_age=-1)
 
     with create_client(
         routes=[
@@ -101,7 +101,6 @@ def xtest_session_expires():
         ],
         session_config=session_config,
     ) as client:
-
         response = client.post("/update_session", json={"some": "data"})
         assert response.json() == {"session": {"some": "data"}}
 
@@ -111,5 +110,7 @@ def xtest_session_expires():
         assert expired_session_match is not None
 
         expired_session_value = expired_session_match[1]
-        response = client.get("/view_session", cookies={"session": expired_session_value})
+        response = client.get(
+            "/view_session", cookies={"session": expired_session_value}
+        )
         assert response.json() == {"session": {}}
