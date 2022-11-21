@@ -41,4 +41,4 @@ routes = [
     WebSocketGateway(handler=websocket_endpoint),
 ]
 
-app = Esmerald(routes=routes, on_startup=startup)
+app = Esmerald(routes=routes, on_startup=[startup])

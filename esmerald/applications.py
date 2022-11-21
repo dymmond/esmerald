@@ -107,7 +107,7 @@ class Esmerald(Starlette):
         title: Optional[str] = settings.title,
         version: Optional[str] = settings.version,
         summary: Optional[str] = settings.summary,
-        name: Optional[str] = settings.app_name,
+        app_name: Optional[str] = settings.app_name,
         description: Optional[str] = settings.description,
         contact: Optional[Dict[str, Union[str, Any]]] = settings.contact,
         terms_of_service: Optional[str] = settings.terms_of_service,
@@ -158,7 +158,7 @@ class Esmerald(Starlette):
 
         self._debug = debug
         self.title = title
-        self.name = name
+        self.name = app_name
         self.description = description
         self.version = version
         self.summary = summary

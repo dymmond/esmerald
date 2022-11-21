@@ -68,7 +68,7 @@ def create_client(
     routes: Union["APIGateHandler", List["APIGateHandler"]],
     *,
     debug: bool = settings.debug,
-    name: Optional[str] = settings.app_name,
+    app_name: Optional[str] = settings.app_name,
     secret_key: Optional[str] = get_random_secret_key(),
     allowed_hosts: Optional[List[str]] = settings.allowed_hosts,
     allow_origins: Optional[List[str]] = settings.allow_origins,
@@ -103,7 +103,7 @@ def create_client(
         app=Esmerald(
             debug=debug,
             routes=cast("Any", routes if isinstance(routes, list) else [routes]),
-            name=name,
+            app_name=app_name,
             secret_key=secret_key,
             allowed_hosts=allowed_hosts,
             allow_origins=allow_origins,

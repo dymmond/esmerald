@@ -45,4 +45,4 @@ routes = [
     )
 ]
 
-app = Esmerald(routes=routes, on_startup=startup)
+app = Esmerald(routes=routes, on_startup=[startup])
