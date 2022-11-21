@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.2.11
+
+November 21, 2022
+
+## Fixed
+
+- When instantiating an `Esmerald` object, `app_name` should be passed instead of `name`.
+
 ## 0.2.10
 
 November 18, 2022
