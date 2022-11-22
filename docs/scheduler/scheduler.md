@@ -54,7 +54,7 @@ the `enable_scheduler = True`, the scheduler will not start.
 
 The default behaviour is `enable_scheduler = False`.
 
-```python hl_lines="3"
+```python hl_lines="10"
 {!> ../docs_src/scheduler/scheduler.py !}
 ```
 

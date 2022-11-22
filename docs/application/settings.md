@@ -419,3 +419,9 @@ values in the moment of instantiating an `Esmerald` object, those will become th
 
 The reason why you should be using settings it is because will make your codebase more organised and easier
 to maintain.
+
+!!! Check
+    When you pass the parameters via instantiation of an Esmerald object and not via parameters, when accessing the
+    values via `request.app.settings`, the values **won't be in the settings** as those were passed via application
+    instantiation and not via settings object. The way to access those values is, for example, `request.app.app_name`
+    directly.
