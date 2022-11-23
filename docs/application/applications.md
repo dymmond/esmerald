@@ -22,6 +22,11 @@ of its functionality.
     {!> ../docs_src/application/app/with_include.py!}
     ```
 
+!!! Note
+    Because the swagger and redoc can only do so much, for example with the
+    `username = request.path_params["username"]` **you won't be able to test it via docs**.
+    **The best way of doing it is by calling the API directly via any prefered client or browser.**
+
 ### Instantiating the application
 
 Creating an appliation instance can be done in different ways and with a great plus of using the
