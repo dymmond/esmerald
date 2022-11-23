@@ -37,10 +37,10 @@ def startup():
 routes = [
     Include(
         routes=[
-            Gateway(handler=homepage),
-            Gateway(handler=me),
-            Gateway(handler=user),
-            WebSocketGateway(handler=websocket_endpoint),
+            Gateway("/home", handler=homepage),
+            Gateway("/me", handler=me),
+            Gateway("/user/{username}", handler=user),
+            WebSocketGateway("/ws", handler=websocket_endpoint),
         ]
     )
 ]

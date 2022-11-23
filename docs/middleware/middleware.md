@@ -1,11 +1,11 @@
 # Middleware
 
-Esmerald includes several middleware clases unique to the application but also allowing some other ways of designing
+Esmerald includes several middleware classes unique to the application but also allowing some other ways of designing
 them by using [protocols](../protocols.md). Inspired by other great frameworks, Esmerald has a similar approach
 for the middleware protocol. Let's be honest, it is not that we can reinvent the wheel on something already working out
 of the box.
 
-There are two ways of dedsigning the middleware for Esmerald. [Starlette middleware](#starlette-middleware) and
+There are two ways of designing the middleware for Esmerald. [Starlette middleware](#starlette-middleware) and
 [Esmerald protocols](#esmerald-protocols) as both work quite well together.
 
 ## Starlette middleware

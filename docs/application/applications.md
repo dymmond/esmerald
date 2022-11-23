@@ -22,10 +22,30 @@ of its functionality.
     {!> ../docs_src/application/app/with_include.py!}
     ```
 
+### Quick note
+
+Because the swagger and redoc can only do so much, for example with the
+`username = request.path_params["username"]` **you won't be able to test it via docs**.
+**The best way of doing it is by calling the API directly via any prefered client or browser.**
+
+In other words, the path param can be captured using the Request.path_params, but cannot be tested from the Swagger UI.
+
+#### Testing using curl or insomnia
+
+Via cURL:
+
+```shell
+$ curl -X GET http://localhost:8000/user/esmerald
+```
+
+Via Insomnia:
+
+<p align="center">
+  <a href="https://res.cloudinary.com/dymmond/image/upload/v1669211317/esmerald/others/insomnia_phitug.png" target="_blank"><img src="https://res.cloudinary.com/dymmond/image/upload/v1669211317/esmerald/others/insomnia_phitug.png" alt='Insomnia'></a>
+</p>
+
 !!! Note
-    Because the swagger and redoc can only do so much, for example with the
-    `username = request.path_params["username"]` **you won't be able to test it via docs**.
-    **The best way of doing it is by calling the API directly via any prefered client or browser.**
+    You can use something else besides insomnia. This was for example purposes.
 
 ### Instantiating the application
 
