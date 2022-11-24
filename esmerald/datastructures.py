@@ -80,7 +80,7 @@ class State(StarletteStateClass):
         try:
             return self._state[key]
         except KeyError as e:
-            raise AttributeError(f"State has no attribute '{key}'") from e
+            raise AttributeError(f"State has no key '{key}'") from e
 
     def __getitem__(self, key: str) -> Any:
         return self._state[key]

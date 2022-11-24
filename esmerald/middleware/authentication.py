@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseConfig, BaseModel
-from starlette.requests import HTTPConnection
-
 from esmerald.enums import ScopeType
 from esmerald.protocols.middleware import MiddlewareProtocol
+from pydantic import BaseConfig, BaseModel
+from starlette.requests import HTTPConnection
 
 if TYPE_CHECKING:
     from starlette.types import ASGIApp, Receive, Scope, Send
@@ -26,13 +25,13 @@ class BaseAuthMiddleware(ABC, MiddlewareProtocol):
         self.app = app
 
     async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        auth_result = await self.authenticate_request(HTTPConnection(scope))
+        auth_result = await self.authenticate(HTTPConnection(scope))
         scope["user"] = auth_result.user
         await self.app(scope, receive, send)
 
     @abstractmethod
     async def authenticate(self, request: HTTPConnection) -> AuthResult:  # pragma: no cover
         """
-        The abstract method that needs to be implemented by ay subsquent sub classes.
+        The abstract method that needs to be implemented for any authentication middleware.
         """
         raise NotImplementedError("authenticate must be implemented.")

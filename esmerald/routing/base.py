@@ -149,7 +149,7 @@ class BaseResponseHandler:
     In charge of handling the responses of the handlers.
     """
 
-    def create_response_container_handler(
+    def response_container_handler(
         self,
         cookies: "ResponseCookies",
         headers: Dict[str, Any],
@@ -175,7 +175,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def create_response_handler(
+    def response_handler(
         self,
         cookies: "ResponseCookies",
         headers: Optional["ResponseHeaders"] = None,
@@ -205,7 +205,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def create_json_response_handler(
+    def json_response_handler(
         self,
         status_code: Optional[int] = None,
         cookies: Optional["ResponseCookies"] = None,
@@ -232,7 +232,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def create_starlette_response_handler(
+    def starlette_response_handler(
         self,
         cookies: "ResponseCookies",
         headers: Optional["ResponseHeaders"] = None,
@@ -261,7 +261,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def create_handler(
+    def handler(
         self,
         background: Optional[Union["BackgroundTask", "BackgroundTasks"]],
         cookies: "ResponseCookies",
@@ -388,7 +388,7 @@ class BaseResponseHandler:
             cookies = self.get_response_cookies()
 
             if is_class_and_subclass(self.signature.return_annotation, ResponseContainer):
-                handler = self.create_response_container_handler(
+                handler = self.response_container_handler(
                     cookies=cookies,
                     media_type=self.media_type,
                     status_code=self.status_code,
@@ -398,24 +398,24 @@ class BaseResponseHandler:
                 self.signature.return_annotation,
                 (JSONResponse, ORJSONResponse, UJSONResponse),
             ):
-                handler = self.create_json_response_handler(
+                handler = self.json_response_handler(
                     status_code=self.status_code, cookies=cookies, headers=headers
                 )
             elif is_class_and_subclass(self.signature.return_annotation, Response):
-                handler = self.create_response_handler(
+                handler = self.response_handler(
                     cookies=cookies,
                     status_code=self.status_code,
                     media_type=self.media_type,
                     headers=headers,
                 )
             elif is_class_and_subclass(self.signature.return_annotation, StarletteResponse):
-                handler = self.create_starlette_response_handler(
+                handler = self.starlette_response_handler(
                     cookies=cookies,
                     media_type=self.media_type,
                     headers=headers,
                 )
             else:
-                handler = self.create_handler(
+                handler = self.handler(
                     background=self.background,
                     cookies=cookies,
                     headers=headers,
@@ -495,7 +495,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         level_dependencies = (level.dependencies or {} for level in self.parent_levels)
         return {name for level in level_dependencies for name in level.keys()}
 
-    def resolve_permissions(self) -> List["Permission"]:
+    def get_permissions(self) -> List["Permission"]:
         """
         Returns all the permissions in the handler scope from the ownsership layers.
         """
@@ -521,7 +521,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             self._dependencies = {}
             for level in self.parent_levels:
                 for key, value in (level.dependencies or {}).items():
-                    self.has_dependency_unique(
+                    self.is_unique_dependency(
                         dependencies=self._dependencies,
                         key=key,
                         injector=value,
@@ -530,7 +530,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return cast("Dict[str, Inject]", self._dependencies)
 
     @staticmethod
-    def has_dependency_unique(dependencies: Dict[str, Inject], key: str, injector: Inject) -> None:
+    def is_unique_dependency(dependencies: Dict[str, Inject], key: str, injector: Inject) -> None:
         """
         Validates that a given inject has not been already defined under a
         different key in any of the levels.
@@ -589,7 +589,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
 
         Raises a PermissionDenied exception if not allowed..
         """
-        for permission in self.resolve_permissions():
+        for permission in self.get_permissions():
             permission = await permission()
             permission.has_permission(connection, self)
             continue_or_raise_permission_exception(connection, self, permission)

@@ -26,15 +26,15 @@ def is_async_callable(value: Callable[P, T]) -> TypeGuard[Callable[P, Awaitable[
     return asyncio.iscoroutinefunction(value) or asyncio.iscoroutinefunction(value.__call__)  # ty
 
 
-def is_class_and_subclass(value: typing.Any, type_: typing.Any) -> bool:
-    origin = get_origin(value)
-    if not origin and not isclass(value):
+def is_class_and_subclass(value: typing.Any, _type: typing.Any) -> bool:
+    original = get_origin(value)
+    if not original and not isclass(value):
         return False
 
     try:
-        if origin:
-            return origin and issubclass(origin, type_)
-        return issubclass(value, type_)
+        if original:
+            return original and issubclass(original, _type)
+        return issubclass(value, _type)
     except TypeError:
         return False
 

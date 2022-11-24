@@ -48,7 +48,7 @@ def test_request_query_params(test_client_factory) -> None:
 
     client = EsmeraldTestClient(app)  # type: ignore
     response = client.get("/?a=123&b=456")
-    assert response.json() == {"params": {"a": ["123"], "b": ["456"]}}
+    assert response.json() == {"params": {"a": "123", "b": "456"}}
 
 
 def test_request_headers(test_client_factory) -> None:

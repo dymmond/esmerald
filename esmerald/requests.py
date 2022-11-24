@@ -1,7 +1,6 @@
-from typing import TYPE_CHECKING, Any, Dict, TypeVar, cast
+from typing import Any, TYPE_CHECKING, TypeVar, cast
 
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.parsers import parse_query_params
 from esmerald.typing import Void
 from orjson import loads
 from starlette.requests import ClientDisconnect as ClientDisconnect  # noqa
@@ -25,8 +24,6 @@ class Request(StarletteRequest):
     ):
         super().__init__(scope, receive, send)
         self._json: Any = Void
-        self.is_connected: bool = True
-        self._parsed_query: Any = scope.get("_parsed_query", Void)
 
     @property
     def app(self) -> "Esmerald":
@@ -39,12 +36,6 @@ class Request(StarletteRequest):
                 "'user' is not defined in scope, install an AuthMiddleware to set it"
             )
         return cast("User", self.scope["user"])
-
-    @property
-    def query_params(self) -> Dict[str, Any]:  # type: ignore[override]
-        if self._parsed_query is Void:
-            self._parsed_query = self.scope["_parsed_query"] = parse_query_params(self)
-        return cast("Dict[str, Any]", self._parsed_query)
 
     @property
     def method(self) -> "HTTPMethod":

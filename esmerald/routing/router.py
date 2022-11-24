@@ -598,7 +598,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         request = Request(scope=scope, receive=receive, send=send)
         route_handler, parameter_model = self.route_map[scope["method"]]
 
-        if self.resolve_permissions():
+        if self.get_permissions():
             connection = HTTPConnection(scope=scope, receive=receive)
             await self.allow_connection(connection)
 
@@ -771,7 +771,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
         websocket = WebSocket[Any, Any](scope=scope, receive=receive, send=send)
-        if self.resolve_permissions():
+        if self.get_permissions():
             await self.allow_connection(connection=websocket)
 
         kwargs = await self.get_kwargs(websocket=websocket)
