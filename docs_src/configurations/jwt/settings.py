@@ -26,6 +26,6 @@ class CustomSettings(EsmeraldAPISettings):
             StarletteMiddleware(
                 JWTAuthMiddleware,
                 config=self.jwt_config,
-                user=import_string("myapp.models.User"),
+                user_model=import_string("myapp.models.User"),
             )
         ]
