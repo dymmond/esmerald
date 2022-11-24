@@ -5,7 +5,7 @@ from esmerald import Esmerald, JWTConfig, settings
 from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 
 jwt_config = JWTConfig(
-    signing_key=settings.secret,
+    signing_key=settings.secret_key,
 )
 
 auth_middleware = StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user=User)
