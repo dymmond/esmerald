@@ -12,11 +12,11 @@ from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
-from esmerald.utils.constants import EXTRA_KEY_IS_DEPENDENCY
+from esmerald.utils.constants import IS_DEPENDENCY
 
 
 def test_is_dependency_inserted_into_field_extra() -> None:
-    assert Injects().extra[EXTRA_KEY_IS_DEPENDENCY] is True
+    assert Injects().extra[IS_DEPENDENCY] is True
 
 
 @pytest.mark.parametrize(

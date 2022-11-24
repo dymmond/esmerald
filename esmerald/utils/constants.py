@@ -2,10 +2,9 @@ from esmerald.enums import HttpMethod
 from starlette import status
 
 RESERVED_KWARGS = {"state", "headers", "cookies", "request", "socket", "data", "query"}
-EXTRA_KEY_REQUIRED = "required"
-EXTRA_KEY_VALUE_TYPE = "value_type"
-EXTRA_KEY_IS_DEPENDENCY = "is_dependency"
-EXTRA_KEY_SKIP_VALIDATION = "skip_validation"
+REQUIRED = "required"
+IS_DEPENDENCY = "is_dependency"
+SKIP_VALIDATION = "skip_validation"
 
 REDIRECT_STATUS_CODES = {
     status.HTTP_301_MOVED_PERMANENTLY,

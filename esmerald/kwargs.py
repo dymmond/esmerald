@@ -42,7 +42,7 @@ from esmerald.injector import Inject
 from esmerald.parsers import parse_form_data
 from esmerald.requests import Request
 from esmerald.signature import SignatureModel, get_signature_model
-from esmerald.utils.constants import EXTRA_KEY_REQUIRED, RESERVED_KWARGS
+from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
 from pydantic.fields import (
     SHAPE_DEQUE,
     SHAPE_FROZENSET,
@@ -400,7 +400,7 @@ class KwargsModel:
         is_sequence: bool,
     ) -> ParameterDefinition:
         extra = field_info.extra
-        is_required = extra.get(EXTRA_KEY_REQUIRED, True)
+        is_required = extra.get(REQUIRED, True)
         default_value = field_info.default if field_info.default is not Undefined else None
 
         field_alias = extra.get(ParamType.QUERY) or field_name

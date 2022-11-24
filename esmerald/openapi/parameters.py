@@ -3,10 +3,11 @@ from typing import TYPE_CHECKING, Any, Dict, List, cast
 from esmerald.enums import ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.schema import create_schema
-from esmerald.utils.constants import EXTRA_KEY_REQUIRED, RESERVED_KWARGS
+from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
 from esmerald.utils.dependency import is_dependency_field
 from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
 from pydantic.fields import Undefined
+
 
 if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler
@@ -68,11 +69,11 @@ def create_parameter(
     elif extra.get(ParamType.HEADER):
         parameter_name = extra[ParamType.HEADER]
         param_in = ParamType.HEADER
-        is_required = model_field.field_info.extra[EXTRA_KEY_REQUIRED]
+        is_required = model_field.field_info.extra[REQUIRED]
     elif extra.get(ParamType.COOKIE):
         parameter_name = extra[ParamType.COOKIE]
         param_in = ParamType.COOKIE
-        is_required = model_field.field_info.extra[EXTRA_KEY_REQUIRED]
+        is_required = model_field.field_info.extra[REQUIRED]
     else:
         param_in = ParamType.QUERY
         parameter_name = extra.get(ParamType.QUERY) or parameter_name

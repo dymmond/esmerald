@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from esmerald.enums import EncodingType, ParamType
-from esmerald.utils.constants import EXTRA_KEY_IS_DEPENDENCY, EXTRA_KEY_SKIP_VALIDATION
+from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
 from pydantic.fields import FieldInfo, Undefined
 
 
@@ -367,7 +367,7 @@ class Injects(FieldInfo):
         skip_validation: bool = False,
     ) -> None:
         extra: Dict[str, Any] = {
-            EXTRA_KEY_IS_DEPENDENCY: True,
-            EXTRA_KEY_SKIP_VALIDATION: skip_validation,
+            IS_DEPENDENCY: True,
+            SKIP_VALIDATION: skip_validation,
         }
         super().__init__(default, **extra)
