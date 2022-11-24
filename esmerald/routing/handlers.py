@@ -1,9 +1,9 @@
 from enum import Enum
-from typing import Dict, List, Optional, TYPE_CHECKING, Type, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union
 
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import HTTPException, ImproperlyConfigured
-from esmerald.openapi.datastructures import ResponseSpec
+from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.permissions.types import Permission
 from esmerald.routing.router import HTTPHandler, WebSocketHandler
 from esmerald.types import (
@@ -51,7 +51,7 @@ class get(HTTPHandler):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -107,7 +107,7 @@ class post(HTTPHandler):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -163,7 +163,7 @@ class put(HTTPHandler):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -219,7 +219,7 @@ class patch(HTTPHandler):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -275,7 +275,7 @@ class delete(HTTPHandler):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -332,7 +332,7 @@ class route(HTTPHandler):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = "Successful response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         if not methods or not isinstance(methods, list):
             raise ImproperlyConfigured(

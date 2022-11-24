@@ -1,20 +1,18 @@
 import hashlib
 import hmac
 import secrets
-from typing import Optional, TYPE_CHECKING
-
-from starlette.datastructures import MutableHeaders
+from typing import TYPE_CHECKING, Optional
 
 from esmerald.datastructures import Cookie
 from esmerald.enums import ScopeType
 from esmerald.exceptions import PermissionDenied
 from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.requests import Request
+from starlette.datastructures import MutableHeaders
 
 if TYPE_CHECKING:
-    from starlette.types import ASGIApp, Message, Receive, Scope, Send
-
     from esmerald.config import CSRFConfig
+    from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 CSRF_SECRET_BYTES = 32
 CSRF_SECRET_LENGTH = CSRF_SECRET_BYTES * 2
@@ -45,11 +43,11 @@ class CSRFMiddleware(MiddlewareProtocol):
 
         request = Request(scope=scope)
         csrf_cookie = request.cookies.get(self.config.cookie_name)
-        existing_csrf_token = request.headers.get(self.config.header_name)
+        current_token = request.headers.get(self.config.header_name)
 
         if request.method in self.config.safe_methods:
             await self.app(scope, receive, self.get_send_wrapper(send, csrf_cookie))
-        elif self._csrf_tokens_match(existing_csrf_token, csrf_cookie):
+        elif self._csrf_tokens_match(current_token, csrf_cookie):
             await self.app(scope, receive, send)
         else:
             raise PermissionDenied(detail="CSRF token verification failed.")

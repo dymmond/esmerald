@@ -30,7 +30,7 @@ from esmerald.exceptions import (
 )
 from esmerald.injector import Inject
 from esmerald.kwargs import KwargsModel
-from esmerald.openapi.datastructures import ResponseSpec
+from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
@@ -432,7 +432,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         tags: Optional[List[Union[str, Enum]]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[int, ResponseSpec]] = None,
+        responses: Optional[Dict[int, ResponseSpecification]] = None,
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
