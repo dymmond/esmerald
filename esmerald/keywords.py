@@ -22,6 +22,7 @@ from esmerald.requests import Request
 from esmerald.signature import SignatureModel, get_signature_model
 from esmerald.types import Dependencies
 from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
+from esmerald.utils.pydantic import is_optional
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
 from pydantic.fields import (
@@ -36,13 +37,15 @@ from pydantic.fields import (
     ModelField,
     Undefined,
 )
-from pydantic_factories.utils import is_optional
 from starlette.datastructures import URL
 
 if TYPE_CHECKING:
     from esmerald.types import ReservedKwargs
     from esmerald.websockets import WebSocket
     from pydantic.typing import DictAny
+
+
+MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 
 
 @dataclass
@@ -105,6 +108,18 @@ def create_parameter_setting(
         is_sequence=is_sequence,
         is_required=is_required and (default_value is None and not allow_none),
     )
+
+
+def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
+    merged_result = first_set.intersection(second_set)
+    difference = first_set.symmetric_difference(second_set)
+    for parameter in difference:
+        if parameter.is_required or not any(
+            param.field_alias == parameter.field_alias and param.is_required
+            for param in difference
+        ):
+            merged_result.add(parameter)
+    return merged_result
 
 
 class KwargsModel(BaseModel):
@@ -250,10 +265,10 @@ class KwargsModel(BaseModel):
             signature_fields=signature_model.__fields__,
         )
 
-        _path_parameters = set()
+        path_params = set()
         for param in param_settings:
             if param.param_type == ParamType.PATH:
-                _path_parameters.add(param)
+                path_params.add(param)
 
         headers = set()
         for param in param_settings:
@@ -263,7 +278,74 @@ class KwargsModel(BaseModel):
         cookies = set()
         for param in param_settings:
             if param.param_type == ParamType.COOKIE:
-                cookies.add(cookie)
+                cookies.add(param)
+
+        query_params = set()
+        for param in param_settings:
+            if param.param_type == ParamType.QUERY and param.is_sequence:
+                query_params.add(param.field_alias)
+
+        form_data = None
+
+        # For the reserved keyword data
+        data_field = signature_model.__fields__.get("data")
+        if data_field:
+            media_type = data_field.field_info.extra.get("media_type")
+            if media_type in MEDIA_TYPES:
+                form_data = (media_type, data_field)
+
+        # Check the dependencies
+        for dependency in _dependencies:
+            dependency_model = cls.create_signature(
+                signature_model=get_signature_model(dependency.inject),
+                dependencies=dependencies,
+                path_parameters=path_parameters,
+            )
+            path_params = merge_sets(path_params, dependency_model.path_params)
+            query_params = merge_sets(query_params, dependency_model.query_params)
+            cookies = merge_sets(cookies, dependency_model.cookies)
+            headers = merge_sets(dependency_model.headers)
+
+            if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
+                cls.validate_data(form_data, dependency_model)
+            reserved_kwargs.update(dependency_model.reserved_kwargs)
+
+        is_field_optional = False
+        if "data" in reserved_kwargs:
+            is_field_optional = is_optional(signature_model.__fields__["data"])
+
+        return KwargsModel(
+            form_data=form_data,
+            dependencies=dependencies,
+            path_params=path_params,
+            cookies=cookies,
+            query_params=query_params,
+            headers=headers,
+            reserved_kwargs=reserved_kwargs,
+            is_optional=is_field_optional,
+        )
+
+    @classmethod
+    def validate_data(
+        cls, form_data: Optional[Tuple[EncodingType, ModelField]], dependency_model: "KwargsModel"
+    ) -> None:
+        if form_data and dependency_model.form_data:
+            media_type, _ = form_data
+            dependency_media_type, _ = dependency_model.form_data
+            if media_type != dependency_media_type:
+                raise ImproperlyConfigured(
+                    "Dependencies have incompatible form-data encoding. "
+                    "They should both be the same. Either url-encoded or multi-part."
+                )
+        if (
+            (form_data and not dependency_model.form_data)
+            or not form_data
+            and dependency_model.form_data
+        ):
+            raise ImproperlyConfigured(
+                "Dependencies haev incompativle 'data' kwarg types. "
+                "One expects JSON and the other expects form-data."
+            )
 
     @classmethod
     def validate_kwargs(
@@ -299,3 +381,13 @@ class KwargsModel(BaseModel):
             raise ImproperlyConfigured(
                 f"Kwargs ({', '.join(RESERVED_KWARGS)}) canot be used for parameters and/or dependencies."
             )
+
+    async def get_request_data(self, request: "Request") -> Any:
+        # Fast exit
+        if not self.form_data:
+            return await request.json()
+
+        media_type, field = self.form_data
+        form_data = await request.form()
+        parsed_form = parse_form_data(media_type=media_type, form_data=form_data, field=field)
+        return parsed_form if parsed_form or not self.is_optional else None
