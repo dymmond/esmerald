@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Generator, Optional, Set, Type
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, VALIDATION_NAMES
-from esmerald.transformers.datastructures import Parameter, Signature
+from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
 from esmerald.transformers.helpers import is_pydantic_constrained_field
 from esmerald.transformers.utils import get_field_definition_from_param
 from esmerald.utils.dependency import (
@@ -31,6 +31,9 @@ class SignatureFactory(BaseModel):
     field_definitions: Optional["DictAny"]
     defaults: Optional["DictAny"]
     dependency_names: Optional[Set[str]]
+
+    class Config:
+        arbitrary_types_allowed = True
 
     def __init__(self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: "DictAny") -> None:
         super().__init__(**kwargs)
@@ -74,7 +77,7 @@ class SignatureFactory(BaseModel):
     def skip_parameter_validation(self, param: Parameter) -> bool:
         return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
-    def create_signature(self) -> Type[Signature]:
+    def create_signature(self) -> Type[EsmeraldSignature]:
         try:
             for param in self.parameters:
                 self.validate_missing_dependency(param)
@@ -87,8 +90,10 @@ class SignatureFactory(BaseModel):
                     self.field_definitions[param.name] = (Any, ...)
                 self.field_definitions[param.name] = get_field_definition_from_param(param)
 
-                model: Type["Signature"] = create_model(
-                    self.fn_name + "_signature", __base__=Signature, **self.field_definitions
+                model: Type["EsmeraldSignature"] = create_model(
+                    self.fn_name + "_signature",
+                    __base__=EsmeraldSignature,
+                    **self.field_definitions,
                 )
                 model.return_annotation = self.signature.return_annotation
                 model.dependency_names = self.dependency_names

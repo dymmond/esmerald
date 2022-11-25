@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 IntValError = Union[InternalServerError, ValidationError]
 
 
-class Signature(BaseModel):
+class EsmeraldSignature(BaseModel):
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
 
@@ -108,6 +108,9 @@ class Parameter(BaseModel):
     fn_name: Optional[str]
     param_name: Optional[str]
     parameter: Optional[InspectParameter]
+
+    class Config:
+        arbitrary_types_allowed = True
 
     def __init__(
         self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: "DictAny"
