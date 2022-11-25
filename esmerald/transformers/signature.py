@@ -21,7 +21,6 @@ from pydantic.fields import Undefined
 
 if TYPE_CHECKING:
     from pydantic.typing import AnyCallable, DictAny
-    from starlette.datastructures import URL
 
 
 class SignatureFactory(BaseModel):
@@ -44,11 +43,12 @@ class SignatureFactory(BaseModel):
         self.fn_name = fn.__name__ if hasattr(fn, "__name__") else "anonymous"
         self.defaults = {}
         self.dependency_names = dependency_names
+        self.field_definitions = {}
 
     def validate_missing_dependency(self, param: Parameter) -> None:
-        if not is_dependency_field(param.default):
-            return
         if param.optional:
+            return
+        if not is_dependency_field(param.default):
             return
         field = param.default
         if field.default is not Undefined:
@@ -84,20 +84,22 @@ class SignatureFactory(BaseModel):
                 self.get_dependency_names(param)
                 self.set_default_field(param)
 
-                if is_pydantic_constrained_field(param.default):
-                    self.field_definitions[param.name] = (param.default, ...)
                 if self.skip_parameter_validation(param):
                     self.field_definitions[param.name] = (Any, ...)
+                    continue
+                if is_pydantic_constrained_field(param.default):
+                    self.field_definitions[param.name] = (param.default, ...)
+                    continue
                 self.field_definitions[param.name] = get_field_definition_from_param(param)
 
-                model: Type["EsmeraldSignature"] = create_model(
-                    self.fn_name + "_signature",
-                    __base__=EsmeraldSignature,
-                    **self.field_definitions,
-                )
-                model.return_annotation = self.signature.return_annotation
-                model.dependency_names = self.dependency_names
-                return model
+            model: Type["EsmeraldSignature"] = create_model(
+                self.fn_name + "_signature",
+                __base__=EsmeraldSignature,
+                **self.field_definitions,
+            )
+            model.return_annotation = self.signature.return_annotation
+            model.dependency_names = self.dependency_names
+            return model
         except TypeError as e:
             raise ImproperlyConfigured(
                 f"Error creating signature for '{self.fn_name}': '{e}'."

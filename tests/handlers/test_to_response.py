@@ -33,7 +33,7 @@ from esmerald.responses import Response, TemplateResponse, UJSONResponse
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get, post, route
 from esmerald.routing.router import HTTPHandler
-from esmerald.signature import SignatureModelFactory
+from esmerald.transformers.signature import SignatureFactory
 from esmerald.testclient import create_client
 from tests.models import Person, PersonFactory
 
@@ -101,9 +101,9 @@ async def test_to_response_async_await() -> None:
         return data
 
     person_instance = PersonFactory.build()
-    test_function.signature_model = SignatureModelFactory(
+    test_function.signature_model = SignatureFactory(
         test_function.fn, set()  # type:ignore[arg-type]
-    ).create_signature_model()
+    ).create_signature()
 
     response = await test_function.to_response(
         data=test_function.fn(data=person_instance), app=None  # type: ignore
@@ -119,9 +119,9 @@ async def test_to_response_async_await_with_post_handler() -> None:
         return data
 
     person_instance = PersonFactory.build()
-    test_function.signature_model = SignatureModelFactory(
+    test_function.signature_model = SignatureFactory(
         test_function.fn, set()  # type:ignore[arg-type]
-    ).create_signature_model()
+    ).create_signature()
 
     response = await test_function.to_response(
         data=test_function.fn(data=person_instance), app=None  # type: ignore

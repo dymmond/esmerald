@@ -1,22 +1,22 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, cast
 
-from esmerald.signature import SignatureModel
+from esmerald.transformers.datastructures import Signature as SignatureModel
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable
+from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
+    from pydantic.typing import AnyCallable, DictAny
 
 
-class Inject:
-    __slots__ = ("dependency", "use_cache", "value", "signature_model")
+class Inject(BaseModel):
+    dependency: Optional["AnyCallable"]
+    use_cache: Optional[bool]
+    value: Optional[Any]
+    signature_model: Optional["Type[SignatureModel]"]
 
-    def __init__(
-        self,
-        dependency: "AnyCallable",
-        use_cache: bool = False,
-    ):
-
+    def __init__(self, dependency: "AnyCallable", use_cache: bool = False, **kwargs: "DictAny"):
+        super().__init__(**kwargs)
         self.dependency = cast("AnyCallable", dependency)
         self.signature_model: Optional["Type[SignatureModel]"] = None
         self.use_cache = use_cache

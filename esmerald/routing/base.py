@@ -30,8 +30,9 @@ from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import ORJSONResponse, Response, UJSONResponse
 from esmerald.routing.views import APIView
-from esmerald.signature import SignatureModelFactory, get_signature_model
 from esmerald.transformers.model import TransformerModel
+from esmerald.transformers.signature import SignatureFactory
+from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
@@ -113,16 +114,16 @@ class BaseSignature:
         Websockets do not support methods.
         """
         if not self.signature_model:
-            self.signature_model = SignatureModelFactory(
+            self.signature_model = SignatureFactory(
                 fn=cast("AnyCallable", self.fn),
                 dependency_names=self.dependency_names,
-            ).create_signature_model()
+            ).create_signature()
 
         for dependency in list(self.get_dependencies().values()):
             if not dependency.signature_model:
-                dependency.signature_model = SignatureModelFactory(
+                dependency.signature_model = SignatureFactory(
                     fn=dependency.dependency, dependency_names=self.dependency_names
-                ).create_signature_model()
+                ).create_signature()
 
         kwargs_model = self.create_handler_kwargs_model()
         if not is_websocket:
@@ -135,7 +136,7 @@ class BaseSignature:
     def create_handler_kwargs_model(self) -> "TransformerModel":
         """Method to create a TransformerModel for a given handler."""
         dependencies = self.get_dependencies()
-        signature_model = get_signature_model(self)
+        signature_model = get_signature(self)
 
         return TransformerModel.create_signature(
             signature_model=signature_model,
@@ -343,7 +344,7 @@ class BaseResponseHandler:
 
         It supports more one object payload to be sent.
         """
-        signature_model = get_signature_model(route)
+        signature_model = get_signature(route)
 
         if parameter_model.has_kwargs:
             kwargs = parameter_model.to_kwargs(connection=request)
@@ -354,7 +355,7 @@ class BaseResponseHandler:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(
                     dependency=dependency, connection=request, **kwargs
                 )
-            parsed_kwargs = signature_model.parse_values_from_connection_kwargs(
+            parsed_kwargs = signature_model.parse_values_for_connection(
                 connection=request, **kwargs
             )
         else:

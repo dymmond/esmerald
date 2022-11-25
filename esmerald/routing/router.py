@@ -35,8 +35,9 @@ from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.views import APIView
-from esmerald.signature import SignatureModel, get_signature_model
+from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.model import TransformerModel
+from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.urls import include
 from esmerald.utils.constants import DATA, REDIRECT_STATUS_CODES, REQUEST, SOCKET
@@ -809,13 +810,13 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         """
         assert self.websocket_parameter_model, "handler parameter model not defined."
 
-        signature_model = get_signature_model(self)
+        signature_model = get_signature(self)
         kwargs = self.websocket_parameter_model.to_kwargs(connection=websocket)
         for dependency in self.websocket_parameter_model.dependencies:
             kwargs[dependency.key] = await self.websocket_parameter_model.get_dependencies(
                 dependency=dependency, connection=websocket, **kwargs
             )
-        return signature_model.parse_values_from_connection_kwargs(connection=websocket, **kwargs)
+        return signature_model.parse_values_for_connection(connection=websocket, **kwargs)
 
 
 class Include(Mount):

@@ -2,14 +2,14 @@ from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.injector import Inject
 from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
 from pydantic.fields import FieldInfo, Undefined
 from starlette.datastructures import URL
 
 if TYPE_CHECKING:
-    from esmerald.transformers.datastructures import Parameter, Signature
+    from esmerald.injector import Inject
+    from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
     from esmerald.typing import ConnectionType
     from pydantic.typing import DictAny, MappingIntStrAny
 
@@ -24,26 +24,9 @@ class ParamSetting(NamedTuple):
     field_info: FieldInfo
 
 
-# class Dependency(BaseModel):
-#     key: Optional[str]
-#     inject: Optional[Inject]
-#     dependencies: Optional[List["Dependency"]]
-
-#     def __init__(
-#         self, key: str, inject: Inject, dependencies: List["Dependency"], **kwargs: "DictAny"
-#     ) -> None:
-#         super().__init__(**kwargs)
-#         self.key = key
-#         self.inject = inject
-#         self.dependencies = dependencies
-
-#     class Config:
-#         arbitrary_types_allowed = True
-
-
 class Dependency:
     def __init__(
-        self, key: str, inject: Inject, dependencies: List["Dependency"], **kwargs: "DictAny"
+        self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: "DictAny"
     ) -> None:
         super().__init__(**kwargs)
         self.key = key
@@ -133,9 +116,9 @@ def get_connection_info(connection: "ConnectionType") -> Tuple[str, "URL"]:
     return method, connection.url
 
 
-def get_signature(value: Any) -> Type["Signature"]:
+def get_signature(value: Any) -> Type["EsmeraldSignature"]:
     try:
-        return cast("Type[Signature]", getattr(value, "signature"))
+        return cast("Type[EsmeraldSignature]", getattr(value, "signature_model"))
     except AttributeError as exc:
         raise ImproperlyConfigured(f"The 'signature' attribute for {value} is not set.") from exc
 

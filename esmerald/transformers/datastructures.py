@@ -4,48 +4,24 @@ A lot of great work was done using the Signature and Esmerald is no exception.
 """
 
 from inspect import Parameter as InspectParameter
-from inspect import Signature as InspectSignature
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    Dict,
-    Generator,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
-    cast,
-)
+from inspect import Signature
+from typing import TYPE_CHECKING, Any, ClassVar, Optional, Set, Union
 
-from esmerald.enums import ScopeType
 from esmerald.exceptions import (
     ImproperlyConfigured,
     InternalServerError,
     ValidationErrorException,
 )
 from esmerald.requests import Request
-from esmerald.transformers.constants import (
-    CLASS_SPECIAL_WORDS,
-    UNDEFINED,
-    VALIDATION_NAMES,
-)
+from esmerald.transformers.constants import UNDEFINED
 from esmerald.transformers.utils import get_connection_info
-from esmerald.utils.dependency import (
-    is_dependency_field,
-    should_skip_dependency_validation,
-)
 from esmerald.utils.helpers import is_optional_union
 from esmerald.websockets import WebSocket
-from pydantic import BaseConfig, BaseModel, ValidationError, create_model
-from pydantic_factories import ModelFactory
+from pydantic import BaseModel, ValidationError
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
-    from pydantic.typing import AnyCallable, DictAny
-    from starlette.datastructures import URL
+    from pydantic.typing import DictAny
 
 IntValError = Union[InternalServerError, ValidationError]
 
@@ -66,6 +42,7 @@ class EsmeraldSignature(BaseModel):
             values = {}
             for key in cls.__fields__:
                 values[key] = signature.field_value(key)
+            return values
         except ValidationError as e:
             raise cls.build_exception(connection, e) from e
 
@@ -124,6 +101,7 @@ class Parameter(BaseModel):
         self.annotation = parameter.annotation
         self.default = parameter.default
         self.param_name = param_name
+        self.name = param_name
         self.optional = is_optional_union(self.annotation)
 
     @property

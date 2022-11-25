@@ -4,12 +4,13 @@ from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import parse_form_data
 from esmerald.requests import Request
-from esmerald.signature import SignatureModel, get_signature_model
+from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.utils import (
     Dependency,
     ParamSetting,
     create_parameter_setting,
     get_request_params,
+    get_signature,
     merge_sets,
 )
 from esmerald.utils.constants import RESERVED_KWARGS
@@ -86,9 +87,7 @@ class TransformerModel(BaseModel):
     @classmethod
     def dependency_tree(cls, key: str, dependencies: "Dependencies") -> Dependency:
         inject = dependencies[key]
-        dependency_keys = [
-            key for key in get_signature_model(inject).__fields__ if key in dependencies
-        ]
+        dependency_keys = [key for key in get_signature(inject).__fields__ if key in dependencies]
         return Dependency(
             key=key,
             inject=inject,
@@ -254,7 +253,7 @@ class TransformerModel(BaseModel):
     ) -> Tuple["DictAny", "DictAny", "DictAny", "DictAny", "DictAny"]:
         for dependency in local_dependencies:
             dependency_model = cls.create_signature(
-                signature_model=get_signature_model(dependency.inject),
+                signature_model=get_signature(dependency.inject),
                 dependencies=global_dependencies,
                 path_parameters=path_parameters,
             )
@@ -403,12 +402,12 @@ class TransformerModel(BaseModel):
         connection: Union["WebSocket", "Request"],
         **kwargs: "DictAny",
     ) -> Any:
-        signature_model = get_signature_model(dependency.inject)
+        signature_model = get_signature(dependency.inject)
         for _dependency in dependency.dependencies:
             kwargs[_dependency.key] = await self.get_dependencies(
                 dependency=_dependency, connection=connection, **kwargs
             )
-        dependency_kwargs = signature_model.parse_values_from_connection_kwargs(
+        dependency_kwargs = signature_model.parse_values_for_connection(
             connection=connection, **kwargs
         )
         return await dependency.inject(**dependency_kwargs)
