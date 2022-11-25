@@ -12,7 +12,7 @@ from esmerald.websockets import WebSocket
 from pydantic import BaseModel
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from tests.models import Person, PersonFactory
+from tests.models import Individual, IndividualFactory
 
 
 @pytest.mark.parametrize(
@@ -23,16 +23,16 @@ from tests.models import Person, PersonFactory
             HttpMethod.GET,
             HTTP_200_OK,
             Response(
-                content=PersonFactory.build(),
+                content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
             ),
-            Response[Person],
+            Response[Individual],
         ),
-        (get, HttpMethod.GET, HTTP_200_OK, PersonFactory.build(), Person),
-        (post, HttpMethod.POST, HTTP_201_CREATED, PersonFactory.build(), Person),
-        (put, HttpMethod.PUT, HTTP_200_OK, PersonFactory.build(), Person),
-        (patch, HttpMethod.PATCH, HTTP_200_OK, PersonFactory.build(), Person),
+        (get, HttpMethod.GET, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (post, HttpMethod.POST, HTTP_201_CREATED, IndividualFactory.build(), Individual),
+        (put, HttpMethod.PUT, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (patch, HttpMethod.PATCH, HTTP_200_OK, IndividualFactory.build(), Individual),
         (delete, HttpMethod.DELETE, HTTP_204_NO_CONTENT, None, None),
     ],
 )
@@ -71,16 +71,16 @@ def test_controller_http_method(
             HttpMethod.GET,
             HTTP_200_OK,
             Response(
-                content=PersonFactory.build(),
+                content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
             ),
-            Response[Person],
+            Response[Individual],
         ),
-        (get, HttpMethod.GET, HTTP_200_OK, PersonFactory.build(), Person),
-        (post, HttpMethod.POST, HTTP_201_CREATED, PersonFactory.build(), Person),
-        (put, HttpMethod.PUT, HTTP_200_OK, PersonFactory.build(), Person),
-        (patch, HttpMethod.PATCH, HTTP_200_OK, PersonFactory.build(), Person),
+        (get, HttpMethod.GET, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (post, HttpMethod.POST, HTTP_201_CREATED, IndividualFactory.build(), Individual),
+        (put, HttpMethod.PUT, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (patch, HttpMethod.PATCH, HTTP_200_OK, IndividualFactory.build(), Individual),
         (delete, HttpMethod.DELETE, HTTP_204_NO_CONTENT, None, None),
     ],
 )
@@ -121,16 +121,16 @@ def test_controller_http_method_with_include(
             HttpMethod.GET,
             HTTP_200_OK,
             Response(
-                content=PersonFactory.build(),
+                content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
             ),
-            Response[Person],
+            Response[Individual],
         ),
-        (get, HttpMethod.GET, HTTP_200_OK, PersonFactory.build(), Person),
-        (post, HttpMethod.POST, HTTP_201_CREATED, PersonFactory.build(), Person),
-        (put, HttpMethod.PUT, HTTP_200_OK, PersonFactory.build(), Person),
-        (patch, HttpMethod.PATCH, HTTP_200_OK, PersonFactory.build(), Person),
+        (get, HttpMethod.GET, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (post, HttpMethod.POST, HTTP_201_CREATED, IndividualFactory.build(), Individual),
+        (put, HttpMethod.PUT, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (patch, HttpMethod.PATCH, HTTP_200_OK, IndividualFactory.build(), Individual),
         (delete, HttpMethod.DELETE, HTTP_204_NO_CONTENT, None, None),
     ],
 )
@@ -176,16 +176,16 @@ def test_controller_http_method_with_nested_include(
             HttpMethod.GET,
             HTTP_200_OK,
             Response(
-                content=PersonFactory.build(),
+                content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
             ),
-            Response[Person],
+            Response[Individual],
         ),
-        (get, HttpMethod.GET, HTTP_200_OK, PersonFactory.build(), Person),
-        (post, HttpMethod.POST, HTTP_201_CREATED, PersonFactory.build(), Person),
-        (put, HttpMethod.PUT, HTTP_200_OK, PersonFactory.build(), Person),
-        (patch, HttpMethod.PATCH, HTTP_200_OK, PersonFactory.build(), Person),
+        (get, HttpMethod.GET, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (post, HttpMethod.POST, HTTP_201_CREATED, IndividualFactory.build(), Individual),
+        (put, HttpMethod.PUT, HTTP_200_OK, IndividualFactory.build(), Individual),
+        (patch, HttpMethod.PATCH, HTTP_200_OK, IndividualFactory.build(), Individual),
         (delete, HttpMethod.DELETE, HTTP_204_NO_CONTENT, None, None),
     ],
 )
@@ -285,7 +285,7 @@ def test_controller_with_websocket_handler() -> None:
         path = test_path
 
         @get(path="/")
-        def get_person(self) -> Person:
+        def get_person(self) -> Individual:
             ...
 
         @websocket(path="/socket")
@@ -309,7 +309,7 @@ def test_controller_with_include_websocket_handler() -> None:
         path = test_path
 
         @get(path="/")
-        def get_person(self) -> Person:
+        def get_person(self) -> Individual:
             ...
 
         @websocket(path="/socket")
@@ -335,7 +335,7 @@ def test_controller_with_nested_include_websocket_handler() -> None:
         path = test_path
 
         @get(path="/")
-        def get_person(self) -> Person:
+        def get_person(self) -> Individual:
             ...
 
         @websocket(path="/socket")
@@ -366,7 +366,7 @@ def test_controller_with_super_nested_include_websocket_handler() -> None:
         path = test_path
 
         @get(path="/")
-        def get_person(self) -> Person:
+        def get_person(self) -> Individual:
             ...
 
         @websocket(path="/socket")

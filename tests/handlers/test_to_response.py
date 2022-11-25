@@ -35,7 +35,7 @@ from esmerald.routing.handlers import get, post, route
 from esmerald.routing.router import HTTPHandler
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.testclient import create_client
-from tests.models import Person, PersonFactory
+from tests.models import Individual, IndividualFactory
 
 if TYPE_CHECKING:
     from typing import AsyncGenerator
@@ -96,11 +96,11 @@ class MyAsyncIterator:
 @pytest.mark.asyncio()
 async def test_to_response_async_await() -> None:
     @route(methods=[HttpMethod.POST], path="/person")
-    async def test_function(data: Person) -> Person:
-        assert isinstance(data, Person)
+    async def test_function(data: Individual) -> Individual:
+        assert isinstance(data, Individual)
         return data
 
-    person_instance = PersonFactory.build()
+    person_instance = IndividualFactory.build()
     test_function.signature_model = SignatureFactory(
         test_function.fn, set()  # type:ignore[arg-type]
     ).create_signature()
@@ -114,11 +114,11 @@ async def test_to_response_async_await() -> None:
 @pytest.mark.asyncio()
 async def test_to_response_async_await_with_post_handler() -> None:
     @post(path="/person")
-    async def test_function(data: Person) -> Person:
-        assert isinstance(data, Person)
+    async def test_function(data: Individual) -> Individual:
+        assert isinstance(data, Individual)
         return data
 
-    person_instance = PersonFactory.build()
+    person_instance = IndividualFactory.build()
     test_function.signature_model = SignatureFactory(
         test_function.fn, set()  # type:ignore[arg-type]
     ).create_signature()
