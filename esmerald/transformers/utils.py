@@ -1,13 +1,16 @@
-from typing import TYPE_CHECKING, Any, List, NamedTuple, Set
+from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
 
-from esmerald.enums import ParamType
-from esmerald.exceptions import ValidationErrorException
+from esmerald.enums import ParamType, ScopeType
+from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.injector import Inject
+from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
 from pydantic.fields import FieldInfo, Undefined
 from starlette.datastructures import URL
 
 if TYPE_CHECKING:
+    from esmerald.transformers.datastructures import Parameter, Signature
+    from esmerald.typing import ConnectionType
     from pydantic.typing import DictAny, MappingIntStrAny
 
 
@@ -120,3 +123,28 @@ def get_request_params(
         param.field_name: params.get(param.field_alias, param.default_value) for param in expected
     }
     return values
+
+
+def get_connection_info(connection: "ConnectionType") -> Tuple[str, "URL"]:
+    """
+    Extacts the information from the ConnectionType.
+    """
+    method = connection.method if isinstance(connection, Request) else ScopeType.WEBSOCKET
+    return method, connection.url
+
+
+def get_signature(value: Any) -> Type["Signature"]:
+    try:
+        return cast("Type[Signature]", getattr(value, "signature"))
+    except AttributeError as exc:
+        raise ImproperlyConfigured(f"The 'signature' attribute for {value} is not set.") from exc
+
+
+def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
+    if param.default_defined:
+        definition = (param.annotation, param.default)
+    elif not param.optional:
+        definition = (param.annotation, ...)
+    else:
+        definition = (param.annotation, None)
+    return definition

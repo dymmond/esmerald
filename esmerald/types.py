@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from esmerald.responses import Response  # noqa
     from esmerald.routing.router import BaseRouterHandler, Gateway, Router
     from esmerald.routing.views import APIView  # noqa
+    from esmerald.websockets import WebSocket  # noqa
     from starlette.middleware import Middleware as StarletteMiddleware  # noqa: TC004
     from starlette.middleware.base import BaseHTTPMiddleware  # noqa: TC004
     from starlette.types import ASGIApp as ASGIApp  # noqa
@@ -47,6 +48,7 @@ else:
     BaseHTTPMiddleware = Any
     Inject = Any
     Request = Any
+    WebSocket = Any
     State = Any
     Response = Any
     ResponseHeader = Any
@@ -119,3 +121,5 @@ RouteParent = Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
 SecurityRequirement = Dict[str, List[str]]
+
+ConnectionType = Union["Request", "WebSocket"]
