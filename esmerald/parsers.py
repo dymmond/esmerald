@@ -16,7 +16,7 @@ def validate_media_type(field: "ModelField", values: "DictAny"):
     """
     Validates the media type against the available types.
     """
-    if (field.shape) in SHAPE_LIST:
+    if field.shape in SHAPE_LIST:
         return list(values.values())
     if field.shape in SHAPE_SINGLETON and field.type_in[UploadFile] and values:
         return list(values.values())[0]

@@ -4,7 +4,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 
-def is_optional(field: "ModelField") -> bool:
+def is_field_optional(field: "ModelField") -> bool:
     """
     Returns bool True or False for the optional model field.
     """

@@ -13,7 +13,7 @@ from esmerald.transformers.utils import (
     merge_sets,
 )
 from esmerald.utils.constants import RESERVED_KWARGS
-from esmerald.utils.pydantic import is_optional
+from esmerald.utils.pydantic import is_field_optional
 from pydantic import BaseModel
 from pydantic.fields import (
     SHAPE_DEQUE,
@@ -45,7 +45,7 @@ class TransformerModel(BaseModel):
     query_params: Optional[Set[ParamSetting]]
     reserved_kwargs: Optional[Set["ReservedKwargs"]]
     query_param_names: Optional[Set[str]]
-    is_data_optional: Optional[bool]
+    is_optional: Optional[bool]
 
     class Config:
         arbitrary_types_allowed = True
@@ -60,7 +60,7 @@ class TransformerModel(BaseModel):
         query_params: Set[ParamSetting],
         reserved_kwargs: Set["ReservedKwargs"],
         query_param_names: Set[str],
-        is_data_optional: bool,
+        is_optional: bool,
         **kwargs: "DictAny",
     ):
         super().__init__(**kwargs)
@@ -81,7 +81,7 @@ class TransformerModel(BaseModel):
             or query_params
             or reserved_kwargs
         )
-        self.is_data_optional = is_data_optional
+        self.is_optional = is_optional
 
     @classmethod
     def dependency_tree(cls, key: str, dependencies: "Dependencies") -> Dependency:
@@ -223,9 +223,9 @@ class TransformerModel(BaseModel):
             form_data=form_data,
         )
 
-        is_data_optional = False
+        is_optional = False
         if "data" in reserved_kwargs:
-            is_data_optional = is_optional(signature_model.__fields__["data"])
+            is_optional = is_field_optional(signature_model.__fields__["data"])
 
         return TransformerModel(
             form_data=form_data,
@@ -236,7 +236,7 @@ class TransformerModel(BaseModel):
             headers=headers,
             reserved_kwargs=reserved_kwargs,
             query_param_names=query_params_names,
-            is_data_optional=is_data_optional,
+            is_optional=is_optional,
         )
 
     @classmethod
