@@ -144,10 +144,10 @@ def get_request_params(
     _params = []
     for param in expected:
         if param.is_required and param.field_alias not in params:
-            _params.append(param)
+            _params.append(param.field_alias)
     if _params:
         raise ValidationErrorException(
-            f"Missing required parameter(s) {', '.join(_params)} for url {url}"
+            f"Missing required parameter(s) {', '.join(_params)} for url {url}."
         )
     values = {
         param.field_name: params.get(param.field_alias, param.default_value) for param in expected
