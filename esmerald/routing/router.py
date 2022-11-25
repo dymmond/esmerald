@@ -29,7 +29,6 @@ from esmerald.exceptions import (
     ValidationErrorException,
 )
 from esmerald.injector import Inject
-from esmerald.keywords import KwargsModel
 from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
@@ -37,6 +36,7 @@ from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.views import APIView
 from esmerald.signature import SignatureModel, get_signature_model
+from esmerald.transformers.model import TransformerModel
 from esmerald.typing import Void, VoidType
 from esmerald.urls import include
 from esmerald.utils.constants import DATA, REDIRECT_STATUS_CODES, REQUEST, SOCKET
@@ -491,7 +491,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.response_headers = response_headers
         self.background = background
         self.signature_model: Optional[Type["SignatureModel"]] = None
-        self.kwargs: Optional["KwargsModel"] = None
+        self.kwargs: Optional["TransformerModel"] = None
         self.response_description = response_description
         self.responses = responses or {}
         self.content_encoding = content_encoding
@@ -500,7 +500,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None
-        self.route_map: Dict["HTTPMethod" : Tuple["HTTPHandler", "KwargsModel"]] = {}
+        self.route_map: Dict["HTTPMethod" : Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
 
     def handle_status_code(self):
@@ -730,7 +730,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.permissions = permissions
         self.middleware = middleware
         self.signature_model: Optional[Type["SignatureModel"]] = None
-        self.websocket_parameter_model: Optional["KwargsModel"] = None
+        self.websocket_parameter_model: Optional["TransformerModel"] = None
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
         self.fn = fn

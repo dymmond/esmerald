@@ -26,12 +26,12 @@ from esmerald.datastructures import ResponseContainer
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
-from esmerald.keywords import KwargsModel
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import ORJSONResponse, Response, UJSONResponse
 from esmerald.routing.views import APIView
 from esmerald.signature import SignatureModelFactory, get_signature_model
+from esmerald.transformers.model import TransformerModel
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
@@ -132,12 +132,12 @@ class BaseSignature:
         else:
             self.websocket_parameter_model = kwargs_model
 
-    def create_handler_kwargs_model(self) -> "KwargsModel":
-        """Method to create a KwargsModel for a given handler."""
+    def create_handler_kwargs_model(self) -> "TransformerModel":
+        """Method to create a TransformerModel for a given handler."""
         dependencies = self.get_dependencies()
         signature_model = get_signature_model(self)
 
-        return KwargsModel.create_signature(
+        return TransformerModel.create_signature(
             signature_model=signature_model,
             dependencies=dependencies,
             path_parameters=self.path_parameters,
@@ -299,7 +299,7 @@ class BaseResponseHandler:
         scope: "Scope",
         request: Request,
         route: Union["HTTPHandler", "WebSocketHandler"],
-        parameter_model: "KwargsModel",
+        parameter_model: "TransformerModel",
     ) -> "StarletteResponse":
         response: Optional["StarletteResponse"] = None
         if not response:
@@ -317,7 +317,7 @@ class BaseResponseHandler:
         scope: "Scope",
         request: Request,
         route: Union["HTTPHandler", "WebSocketHandler"],
-        parameter_model: "KwargsModel",
+        parameter_model: "TransformerModel",
     ) -> "StarletteResponse":
         response_data = None
 
@@ -335,7 +335,7 @@ class BaseResponseHandler:
 
     @staticmethod
     async def _get_response_data(
-        route: "HTTPHandler", parameter_model: "KwargsModel", request: Request
+        route: "HTTPHandler", parameter_model: "TransformerModel", request: Request
     ) -> Any:
         """
         Determines what kwargs are required for the given handler and assignes to the specific

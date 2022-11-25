@@ -1,26 +1,20 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    NamedTuple,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Dict, Optional, Set, Tuple, Type, Union
 
 from esmerald.enums import EncodingType, ParamType
-from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.injector import Inject
+from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import parse_form_data
 from esmerald.requests import Request
 from esmerald.signature import SignatureModel, get_signature_model
-from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
+from esmerald.transformers.utils import (
+    Dependency,
+    ParamSetting,
+    create_parameter_setting,
+    get_request_params,
+    merge_sets,
+)
+from esmerald.utils.constants import RESERVED_KWARGS
 from esmerald.utils.pydantic import is_optional
 from pydantic import BaseModel
-from pydantic.dataclasses import dataclass
 from pydantic.fields import (
     SHAPE_DEQUE,
     SHAPE_FROZENSET,
@@ -29,133 +23,19 @@ from pydantic.fields import (
     SHAPE_SET,
     SHAPE_TUPLE,
     SHAPE_TUPLE_ELLIPSIS,
-    FieldInfo,
     ModelField,
-    Undefined,
 )
-from starlette.datastructures import URL
 
 if TYPE_CHECKING:
     from esmerald.types import Dependencies, ReservedKwargs
     from esmerald.websockets import WebSocket
-    from pydantic.typing import DictAny, MappingIntStrAny
+    from pydantic.typing import DictAny
 
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 
 
-class ParamSetting(NamedTuple):
-    default_value: Any
-    field_alias: str
-    field_name: str
-    is_required: bool
-    is_sequence: bool
-    param_type: ParamType
-    field_info: FieldInfo
-
-
-# class Dependency(BaseModel):
-#     key: Optional[str]
-#     inject: Optional[Inject]
-#     dependencies: Optional[List["Dependency"]]
-
-#     def __init__(
-#         self, key: str, inject: Inject, dependencies: List["Dependency"], **kwargs: "DictAny"
-#     ) -> None:
-#         super().__init__(**kwargs)
-#         self.key = key
-#         self.inject = inject
-#         self.dependencies = dependencies
-
-#     class Config:
-#         arbitrary_types_allowed = True
-
-
-class Dependency:
-    def __init__(
-        self, key: str, inject: Inject, dependencies: List["Dependency"], **kwargs: "DictAny"
-    ) -> None:
-        super().__init__(**kwargs)
-        self.key = key
-        self.inject = inject
-        self.dependencies = dependencies
-
-    class Config:
-        arbitrary_types_allowed = True
-
-
-def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
-    merged_result = first_set.intersection(second_set)
-    difference = first_set.symmetric_difference(second_set)
-    for parameter in difference:
-        if parameter.is_required or not any(
-            param.field_alias == parameter.field_alias and param.is_required
-            for param in difference
-        ):
-            merged_result.add(parameter)
-    return merged_result
-
-
-def create_parameter_setting(
-    allow_none: bool,
-    field_info: FieldInfo,
-    field_name: str,
-    path_parameters: Set[str],
-    is_sequence: bool,
-) -> ParamSetting:
-    """
-    Creates a setting definition for a parameter.
-    """
-    extra = field_info.extra
-    is_required = extra.get(REQUIRED, True)
-    default_value = field_info.default if field_info.default is not Undefined else None
-
-    field_alias = extra.get(ParamType.QUERY) or field_name
-    param_type = getattr(field_info, "in_", ParamType.QUERY)
-
-    if field_name in path_parameters:
-        field_alias = field_name
-        param_type = param_type.PATH
-    elif extra.get(ParamType.HEADER):
-        field_alias = extra[ParamType.HEADER]
-        param_type = ParamType.HEADER
-    elif extra.get(ParamType.COOKIE):
-        field_alias = extra[ParamType.COOKIE]
-        param_type = ParamType.COOKIE
-
-    param_settings = ParamSetting(
-        param_type=param_type,
-        field_alias=field_alias,
-        default_value=default_value,
-        field_name=field_name,
-        field_info=field_info,
-        is_sequence=is_sequence,
-        is_required=is_required and (default_value is None and not allow_none),
-    )
-    return param_settings
-
-
-def get_request_params(
-    params: "MappingIntStrAny", expected: Set[ParamSetting], url: URL
-) -> "DictAny":
-    """
-    Gather the parameters from the request.
-    """
-    _params = []
-    for param in expected:
-        if param.is_required and param.field_alias not in params:
-            _params.append(param.field_alias)
-    if _params:
-        raise ValidationErrorException(
-            f"Missing required parameter(s) {', '.join(_params)} for url {url}."
-        )
-    values = {
-        param.field_name: params.get(param.field_alias, param.default_value) for param in expected
-    }
-    return values
-
-
-class KwargsModel(BaseModel):
+class TransformerModel(BaseModel):
     has_kwargs: Optional[Any]
     cookies: Optional[Set[ParamSetting]]
     dependencies: Optional[Set[Dependency]]
@@ -278,7 +158,7 @@ class KwargsModel(BaseModel):
         signature_model: Type[SignatureModel],
         dependencies: "Dependencies",
         path_parameters: Set[str],
-    ) -> "KwargsModel":
+    ) -> "TransformerModel":
         cls.validate_kwargs(
             path_parameters=path_parameters,
             dependencies=dependencies,
@@ -331,27 +211,23 @@ class KwargsModel(BaseModel):
             if media_type in MEDIA_TYPES:
                 form_data = (media_type, data_field)
 
-        # Check the dependencies
-        for dependency in _dependencies:
-            dependency_model = cls.create_signature(
-                signature_model=get_signature_model(dependency.inject),
-                dependencies=dependencies,
-                path_parameters=path_parameters,
-            )
-            path_params = merge_sets(path_params, dependency_model.path_params)
-            query_params = merge_sets(query_params, dependency_model.query_params)
-            cookies = merge_sets(cookies, dependency_model.cookies)
-            headers = merge_sets(dependency_model.headers, dependency_model.headers)
-
-            if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
-                cls.validate_data(form_data, dependency_model)
-            reserved_kwargs.update(dependency_model.reserved_kwargs)
+        path_params, query_params, cookies, headers, reserved_kwargs = cls.update_parameters(
+            global_dependencies=dependencies,
+            local_dependencies=_dependencies,
+            path_params=path_params,
+            query_params=query_params,
+            cookies=cookies,
+            headers=headers,
+            reserved_kwargs=reserved_kwargs,
+            path_parameters=path_parameters,
+            form_data=form_data,
+        )
 
         is_data_optional = False
         if "data" in reserved_kwargs:
             is_data_optional = is_optional(signature_model.__fields__["data"])
 
-        return KwargsModel(
+        return TransformerModel(
             form_data=form_data,
             dependencies=_dependencies,
             path_params=path_params,
@@ -362,6 +238,36 @@ class KwargsModel(BaseModel):
             query_param_names=query_params_names,
             is_data_optional=is_data_optional,
         )
+
+    @classmethod
+    def update_parameters(
+        cls,
+        global_dependencies: "Dependencies",
+        local_dependencies: Set["Dependency"],
+        path_params: "DictAny",
+        query_params: "DictAny",
+        cookies: "DictAny",
+        headers: "DictAny",
+        reserved_kwargs: "DictAny",
+        path_parameters: "DictAny",
+        form_data: "DictAny",
+    ) -> Tuple["DictAny", "DictAny", "DictAny", "DictAny", "DictAny"]:
+        for dependency in local_dependencies:
+            dependency_model = cls.create_signature(
+                signature_model=get_signature_model(dependency.inject),
+                dependencies=global_dependencies,
+                path_parameters=path_parameters,
+            )
+            path_params = merge_sets(path_params, dependency_model.path_params)
+            query_params = merge_sets(query_params, dependency_model.query_params)
+            cookies = merge_sets(cookies, dependency_model.cookies)
+            headers = merge_sets(headers, dependency_model.headers)
+
+            if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
+                cls.validate_data(form_data, dependency_model)
+            reserved_kwargs.update(dependency_model.reserved_kwargs)
+
+        return path_params, query_params, cookies, headers, reserved_kwargs
 
     def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> "DictAny":
         connection_params = {}
@@ -424,7 +330,9 @@ class KwargsModel(BaseModel):
 
     @classmethod
     def validate_data(
-        cls, form_data: Optional[Tuple[EncodingType, ModelField]], dependency_model: "KwargsModel"
+        cls,
+        form_data: Optional[Tuple[EncodingType, ModelField]],
+        dependency_model: "TransformerModel",
     ) -> None:
         if form_data and dependency_model.form_data:
             media_type, _ = form_data
@@ -480,7 +388,7 @@ class KwargsModel(BaseModel):
             )
 
     async def get_request_data(self, request: "Request") -> Any:
-        # Fast exit
+        # Fast exit principle
         if not self.form_data:
             return await request.json()
 
