@@ -651,8 +651,10 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
                     "Functions decorated with 'route, websocket, get, patch, put, post and delete' must be async functions"
                 )
 
-    def validate_handler(self):
-        self.check_handler_function()
+    def validate_annotations(self):
+        """
+        Validate annotations of the handlers.
+        """
         return_annotation = self.signature.return_annotation
 
         if return_annotation is Signature.empty:
@@ -681,10 +683,21 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             MediaType.HTML,
         ]:
             self.media_type = MediaType.TEXT
-        if SOCKET in self.signature.parameters:
-            raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
+
+    def validate_reserved_kwargs(self):
+        """
+        Validates if special words are in the signature.
+        """
         if DATA in self.signature.parameters and "GET" in self.methods:
             raise ImproperlyConfigured("'data' argument is unsupported for 'GET' request handlers")
+
+        if SOCKET in self.signature.parameters:
+            raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
+
+    def validate_handler(self):
+        self.check_handler_function()
+        self.validate_annotations()
+        self.validate_reserved_kwargs()
 
     async def to_response(self, app: "Esmerald", data: Any) -> StarletteResponse:
         response_handler = self.get_response_handler()
@@ -738,19 +751,10 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.validate_websocket_handler_function()
         return self
 
-    def validate_websocket_handler_function(self) -> None:
+    def validate_reserved_words(self, signature: "Signature"):
         """
-        Validates the route handler function once it is set by inspecting its
-        return annotations.
+        Validates if special words are in the signature.
         """
-        if not self.fn:
-            raise ImproperlyConfigured(
-                "Cannot call check_handler_function without first setting self.fn"
-            )
-
-        fn = cast("AnyCallable", self.fn)
-        signature = Signature.from_callable(fn)
-
         if signature.return_annotation is not None:
             raise ImproperlyConfigured("Websocket functions should return 'None'.")
 
@@ -761,9 +765,21 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
                     f"The '{kwarg}'is not supported with websocket handlers."
                 )
 
+    def validate_websocket_handler_function(self) -> None:
+        """
+        Validates the route handler function once it is set by inspecting its
+        return annotations.
+        """
+        if not self.fn:
+            raise ImproperlyConfigured(
+                "Cannot call check_handler_function without first setting self.fn"
+            )
+        signature = Signature.from_callable(self.fn)
+        self.validate_reserved_words(signature=signature)
+
         if SOCKET not in signature.parameters:
             raise ImproperlyConfigured("Websocket handlers must set a 'socket' argument.")
-        if not is_async_callable(fn):
+        if not is_async_callable(self.fn):
             raise ImproperlyConfigured(
                 "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions."
             )
