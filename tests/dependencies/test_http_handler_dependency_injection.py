@@ -1,8 +1,6 @@
 from asyncio import sleep
 from typing import TYPE_CHECKING, Any, Dict
 
-from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-
 from esmerald.applications import ChildEsmerald
 from esmerald.injector import Inject
 from esmerald.routing.gateways import Gateway
@@ -10,6 +8,7 @@ from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
+from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 if TYPE_CHECKING:
     from esmerald.requests import Request

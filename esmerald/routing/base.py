@@ -26,7 +26,7 @@ from esmerald.datastructures import ResponseContainer
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
-from esmerald.kwargs import KwargsModel
+from esmerald.keywords import KwargsModel
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import ORJSONResponse, Response, UJSONResponse
@@ -137,7 +137,7 @@ class BaseSignature:
         dependencies = self.get_dependencies()
         signature_model = get_signature_model(self)
 
-        return KwargsModel.create_for_signature_model(
+        return KwargsModel.create_signature(
             signature_model=signature_model,
             dependencies=dependencies,
             path_parameters=self.path_parameters,
@@ -350,8 +350,8 @@ class BaseResponseHandler:
             request_data = kwargs.get("data")
             if request_data:
                 kwargs["data"] = await request_data
-            for dependency in parameter_model.expected_dependencies:
-                kwargs[dependency.key] = await parameter_model.resolve_dependency(
+            for dependency in parameter_model.dependencies:
+                kwargs[dependency.key] = await parameter_model.get_dependencies(
                     dependency=dependency, connection=request, **kwargs
                 )
             parsed_kwargs = signature_model.parse_values_from_connection_kwargs(

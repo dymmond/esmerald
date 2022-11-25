@@ -29,7 +29,7 @@ from esmerald.exceptions import (
     ValidationErrorException,
 )
 from esmerald.injector import Inject
-from esmerald.kwargs import KwargsModel
+from esmerald.keywords import KwargsModel
 from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
@@ -795,8 +795,8 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
         signature_model = get_signature_model(self)
         kwargs = self.websocket_parameter_model.to_kwargs(connection=websocket)
-        for dependency in self.websocket_parameter_model.expected_dependencies:
-            kwargs[dependency.key] = await self.websocket_parameter_model.resolve_dependency(
+        for dependency in self.websocket_parameter_model.dependencies:
+            kwargs[dependency.key] = await self.websocket_parameter_model.get_dependencies(
                 dependency=dependency, connection=websocket, **kwargs
             )
         return signature_model.parse_values_from_connection_kwargs(connection=websocket, **kwargs)

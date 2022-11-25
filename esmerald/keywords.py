@@ -1,4 +1,15 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    Union,
+)
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
@@ -6,7 +17,6 @@ from esmerald.injector import Inject
 from esmerald.parsers import parse_form_data
 from esmerald.requests import Request
 from esmerald.signature import SignatureModel, get_signature_model
-from esmerald.types import Dependencies
 from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
 from esmerald.utils.pydantic import is_optional
 from pydantic import BaseModel
@@ -26,7 +36,7 @@ from pydantic.fields import (
 from starlette.datastructures import URL
 
 if TYPE_CHECKING:
-    from esmerald.types import ReservedKwargs
+    from esmerald.types import Dependencies, ReservedKwargs
     from esmerald.websockets import WebSocket
     from pydantic.typing import DictAny, MappingIntStrAny
 
@@ -34,8 +44,7 @@ if TYPE_CHECKING:
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 
 
-@dataclass
-class ParamSetting:
+class ParamSetting(NamedTuple):
     default_value: Any
     field_alias: str
     field_name: str
@@ -45,13 +54,46 @@ class ParamSetting:
     field_info: FieldInfo
 
 
-class Dependency(BaseModel):
-    key: str
-    inject: Inject
-    Dependencies: List["Dependency"]
+# class Dependency(BaseModel):
+#     key: Optional[str]
+#     inject: Optional[Inject]
+#     dependencies: Optional[List["Dependency"]]
+
+#     def __init__(
+#         self, key: str, inject: Inject, dependencies: List["Dependency"], **kwargs: "DictAny"
+#     ) -> None:
+#         super().__init__(**kwargs)
+#         self.key = key
+#         self.inject = inject
+#         self.dependencies = dependencies
+
+#     class Config:
+#         arbitrary_types_allowed = True
+
+
+class Dependency:
+    def __init__(
+        self, key: str, inject: Inject, dependencies: List["Dependency"], **kwargs: "DictAny"
+    ) -> None:
+        super().__init__(**kwargs)
+        self.key = key
+        self.inject = inject
+        self.dependencies = dependencies
 
     class Config:
         arbitrary_types_allowed = True
+
+
+def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
+    merged_result = first_set.intersection(second_set)
+    difference = first_set.symmetric_difference(second_set)
+    for parameter in difference:
+        if parameter.is_required or not any(
+            param.field_alias == parameter.field_alias and param.is_required
+            for param in difference
+        ):
+            merged_result.add(parameter)
+    return merged_result
 
 
 def create_parameter_setting(
@@ -66,11 +108,7 @@ def create_parameter_setting(
     """
     extra = field_info.extra
     is_required = extra.get(REQUIRED, True)
-
-    if field_info.default is not Undefined:
-        default_value = field_info.default_value
-    else:
-        default_value = None
+    default_value = field_info.default if field_info.default is not Undefined else None
 
     field_alias = extra.get(ParamType.QUERY) or field_name
     param_type = getattr(field_info, "in_", ParamType.QUERY)
@@ -85,7 +123,7 @@ def create_parameter_setting(
         field_alias = extra[ParamType.COOKIE]
         param_type = ParamType.COOKIE
 
-    return ParamSetting(
+    param_settings = ParamSetting(
         param_type=param_type,
         field_alias=field_alias,
         default_value=default_value,
@@ -94,18 +132,7 @@ def create_parameter_setting(
         is_sequence=is_sequence,
         is_required=is_required and (default_value is None and not allow_none),
     )
-
-
-def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
-    merged_result = first_set.intersection(second_set)
-    difference = first_set.symmetric_difference(second_set)
-    for parameter in difference:
-        if parameter.is_required or not any(
-            param.field_alias == parameter.field_alias and param.is_required
-            for param in difference
-        ):
-            merged_result.add(parameter)
-    return merged_result
+    return param_settings
 
 
 def get_request_params(
@@ -130,15 +157,15 @@ def get_request_params(
 
 class KwargsModel(BaseModel):
     has_kwargs: Optional[Any]
-    cookies: Set[ParamSetting]
-    dependencies: Set[Dependency]
+    cookies: Optional[Set[ParamSetting]]
+    dependencies: Optional[Set[Dependency]]
     form_data: Optional[Tuple[EncodingType, ModelField]]
-    headers: Set[ParamSetting]
-    path_params: Set[ParamSetting]
-    query_params: Set[ParamSetting]
-    reserved_kwargs: Set["ReservedKwargs"]
-    query_param_names: Set[str]
-    is_optional: Optional[bool]
+    headers: Optional[Set[ParamSetting]]
+    path_params: Optional[Set[ParamSetting]]
+    query_params: Optional[Set[ParamSetting]]
+    reserved_kwargs: Optional[Set["ReservedKwargs"]]
+    query_param_names: Optional[Set[str]]
+    is_data_optional: Optional[bool]
 
     class Config:
         arbitrary_types_allowed = True
@@ -153,7 +180,7 @@ class KwargsModel(BaseModel):
         query_params: Set[ParamSetting],
         reserved_kwargs: Set["ReservedKwargs"],
         query_param_names: Set[str],
-        is_optional: bool,
+        is_data_optional: bool,
         **kwargs: "DictAny",
     ):
         super().__init__(**kwargs)
@@ -165,7 +192,6 @@ class KwargsModel(BaseModel):
         self.query_params = query_params
         self.reserved_kwargs = reserved_kwargs
         self.query_param_names = query_param_names
-        self.is_optional = is_optional
         self.has_kwargs = (
             cookies
             or dependencies
@@ -175,21 +201,21 @@ class KwargsModel(BaseModel):
             or query_params
             or reserved_kwargs
         )
+        self.is_data_optional = is_data_optional
 
     @classmethod
     def dependency_tree(cls, key: str, dependencies: "Dependencies") -> Dependency:
         inject = dependencies[key]
-        dependency_keys = []
-
-        for key in get_signature_model(inject).__fields__:
-            if key in dependencies:
-                dependency_keys.append(key)
-
-        _dependencies = []
-        for key in dependency_keys:
-            _dependencies.append(cls.dependency_tree(key=key, dependencies=dependencies))
-
-        return Dependency(key=key, inject=inject, dependencies=_dependencies)
+        dependency_keys = [
+            key for key in get_signature_model(inject).__fields__ if key in dependencies
+        ]
+        return Dependency(
+            key=key,
+            inject=inject,
+            dependencies=[
+                cls.dependency_tree(key=key, dependencies=dependencies) for key in dependency_keys
+            ],
+        )
 
     @classmethod
     def get_parameter_settings(
@@ -210,7 +236,7 @@ class KwargsModel(BaseModel):
 
         _dependencies = set()
 
-        for key in Dependencies:
+        for key in dependencies:
             if key in signature_fields:
                 _dependencies.add(cls.dependency_tree(key=key, dependencies=dependencies))
 
@@ -229,11 +255,11 @@ class KwargsModel(BaseModel):
                     )
                 )
 
-        for field_name, model_field in (
-            filter(lambda items: items[0] not in ignored_keys),
+        for field_name, model_field in filter(
+            lambda items: items[0] not in ignored_keys,
             signature_fields.items(),
         ):
-            signature_field = model_field.info
+            signature_field = model_field.field_info
             parameter_definitions.add(
                 create_parameter_setting(
                     allow_none=model_field.allow_none,
@@ -288,8 +314,13 @@ class KwargsModel(BaseModel):
 
         query_params = set()
         for param in param_settings:
+            if param.param_type == ParamType.QUERY:
+                query_params.add(param)
+
+        query_params_names = set()
+        for param in param_settings:
             if param.param_type == ParamType.QUERY and param.is_sequence:
-                query_params.add(param.field_alias)
+                query_params_names.add(param)
 
         form_data = None
 
@@ -310,35 +341,29 @@ class KwargsModel(BaseModel):
             path_params = merge_sets(path_params, dependency_model.path_params)
             query_params = merge_sets(query_params, dependency_model.query_params)
             cookies = merge_sets(cookies, dependency_model.cookies)
-            headers = merge_sets(dependency_model.headers)
+            headers = merge_sets(dependency_model.headers, dependency_model.headers)
 
             if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
                 cls.validate_data(form_data, dependency_model)
             reserved_kwargs.update(dependency_model.reserved_kwargs)
 
-        is_field_optional = False
+        is_data_optional = False
         if "data" in reserved_kwargs:
-            is_field_optional = is_optional(signature_model.__fields__["data"])
+            is_data_optional = is_optional(signature_model.__fields__["data"])
 
         return KwargsModel(
             form_data=form_data,
-            dependencies=dependencies,
+            dependencies=_dependencies,
             path_params=path_params,
-            cookies=cookies,
             query_params=query_params,
+            cookies=cookies,
             headers=headers,
             reserved_kwargs=reserved_kwargs,
-            is_optional=is_field_optional,
+            query_param_names=query_params_names,
+            is_data_optional=is_data_optional,
         )
 
     def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> "DictAny":
-        """
-        return (
-            value[0]
-            if key not in self.sequence_query_parameter_names and len(value) == 1
-            else value
-        )
-        """
         connection_params = {}
         for key, value in connection.query_params.items():
             if key not in self.query_param_names and len(value) == 1:
@@ -423,7 +448,7 @@ class KwargsModel(BaseModel):
     def validate_kwargs(
         cls,
         path_parameters: Set[str],
-        dependencies: Dict["Dependencies"],
+        dependencies: "Dependencies",
         model_fields: Dict[str, ModelField],
     ) -> None:
         keys = set(dependencies.keys())
@@ -451,7 +476,7 @@ class KwargsModel(BaseModel):
         reserved_kwargs = {*names, *path_parameters, *keys}.intersection(RESERVED_KWARGS)
         if reserved_kwargs:
             raise ImproperlyConfigured(
-                f"Kwargs ({', '.join(RESERVED_KWARGS)}) canot be used for parameters and/or dependencies."
+                f"Kwargs ({', '.join(RESERVED_KWARGS)}) cannot be used for parameters and/or dependencies."
             )
 
     async def get_request_data(self, request: "Request") -> Any:

@@ -8,7 +8,7 @@ def is_optional(field: "ModelField") -> bool:
     """
     Returns bool True or False for the optional model field.
     """
-    return not field.is_required and not is_any_type(field=field) and field.allow_none
+    return not field.required and not is_any_type(field=field) and field.allow_none
 
 
 def is_any_type(field: "ModelField") -> bool:
