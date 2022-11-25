@@ -1,5 +1,5 @@
 from contextlib import suppress
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
@@ -7,7 +7,6 @@ from orjson import JSONDecodeError, loads
 from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
 
 if TYPE_CHECKING:
-
     from pydantic.fields import ModelField
     from pydantic.typing import DictAny
     from starlette.datastructures import FormData

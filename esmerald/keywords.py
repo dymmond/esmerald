@@ -1,18 +1,4 @@
-from email import header
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Mapping,
-    NamedTuple,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Type, Union
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
@@ -42,7 +28,7 @@ from starlette.datastructures import URL
 if TYPE_CHECKING:
     from esmerald.types import ReservedKwargs
     from esmerald.websockets import WebSocket
-    from pydantic.typing import DictAny
+    from pydantic.typing import DictAny, MappingIntStrAny
 
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
@@ -120,6 +106,26 @@ def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> S
         ):
             merged_result.add(parameter)
     return merged_result
+
+
+def get_request_params(
+    params: "MappingIntStrAny", expected: Set[ParamSetting], url: URL
+) -> "DictAny":
+    """
+    Gather the parameters from the request.
+    """
+    _params = []
+    for param in expected:
+        if param.is_required and param.field_alias not in params:
+            _params.append(param)
+    if _params:
+        raise ValidationErrorException(
+            f"Missing required parameter(s) {', '.join(_params)} for url {url}"
+        )
+    values = {
+        param.field_name: params.get(param.field_alias, param.default_value) for param in expected
+    }
+    return values
 
 
 class KwargsModel(BaseModel):
@@ -325,6 +331,72 @@ class KwargsModel(BaseModel):
             is_optional=is_field_optional,
         )
 
+    def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> "DictAny":
+        """
+        return (
+            value[0]
+            if key not in self.sequence_query_parameter_names and len(value) == 1
+            else value
+        )
+        """
+        connection_params = {}
+        for key, value in connection.query_params.items():
+            if key not in self.query_param_names and len(value) == 1:
+                value = value[0]
+                connection_params[key] = value
+
+        query_params = get_request_params(
+            params=connection.query_params, expected=self.query_params, url=connection.url
+        )
+        path_params = get_request_params(
+            params=connection.path_params, expected=self.path_params, url=connection.url
+        )
+        headers = get_request_params(
+            params=connection.headers, expected=self.headers, url=connection.url
+        )
+        cookies = get_request_params(
+            params=connection.cookies, expected=self.cookies, url=connection.url
+        )
+
+        if not self.reserved_kwargs:
+            return {**query_params, **path_params, **headers, **cookies}
+
+        return self.handle_reserved_kwargs(
+            connection=connection,
+            connection_params=connection_params,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            cookies=cookies,
+        )
+
+    def handle_reserved_kwargs(
+        self,
+        connection: Union["WebSocket", "Request"],
+        connection_params: "DictAny",
+        path_params: "DictAny",
+        query_params: "DictAny",
+        headers: "DictAny",
+        cookies: "DictAny",
+    ) -> "DictAny":
+        reserved_kwargs: "DictAny" = {}
+        if "data" in self.reserved_kwargs:
+            reserved_kwargs["data"] = self.get_request_data(request=connection)
+        if "request" in self.reserved_kwargs:
+            reserved_kwargs["request"] = connection
+        if "socket" in self.reserved_kwargs:
+            reserved_kwargs["socket"] = connection
+        if "headers" in self.reserved_kwargs:
+            reserved_kwargs["headers"] = connection.headers
+        if "cookies" in self.reserved_kwargs:
+            reserved_kwargs["cookies"] = connection.cookies
+        if "query" in self.reserved_kwargs:
+            reserved_kwargs["query"] = connection_params
+        if "state" in self.reserved_kwargs:
+            reserved_kwargs["state"] = connection.app.state.copy()
+
+        return {**reserved_kwargs, **path_params, **query_params, **headers, **cookies}
+
     @classmethod
     def validate_data(
         cls, form_data: Optional[Tuple[EncodingType, ModelField]], dependency_model: "KwargsModel"
@@ -389,5 +461,21 @@ class KwargsModel(BaseModel):
 
         media_type, field = self.form_data
         form_data = await request.form()
-        parsed_form = parse_form_data(media_type=media_type, form_data=form_data, field=field)
+        parsed_form = parse_form_data(media_type, form_data, field)
         return parsed_form if parsed_form or not self.is_optional else None
+
+    async def get_dependencies(
+        self,
+        dependency: "Dependency",
+        connection: Union["WebSocket", "Request"],
+        **kwargs: "DictAny",
+    ) -> Any:
+        signature_model = get_signature_model(dependency.inject)
+        for _dependency in dependency.dependencies:
+            kwargs[_dependency.key] = await self.get_dependencies(
+                dependency=_dependency, connection=connection, **kwargs
+            )
+        dependency_kwargs = signature_model.parse_values_from_connection_kwargs(
+            connection=connection, **kwargs
+        )
+        return await dependency.inject(**dependency_kwargs)
