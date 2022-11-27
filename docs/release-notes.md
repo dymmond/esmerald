@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.3.0
+
+## Changed
+
+- Deprecated kwargs and signature to give place to Esmerald transformers.
+- Code cleaning and improved performance by applying pure pydantic models internally.
+
 ## 0.2.11
 
 November 21, 2022

@@ -68,7 +68,7 @@ class Esmerald(Starlette):
 
     __slots__ = (
         "title",
-        "name",
+        "app_name",
         "description",
         "version",
         "contact",
