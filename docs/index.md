@@ -43,8 +43,8 @@ of the current day-to-day problems of 99% of the applications but leaving the 1%
 and design/business without to much to do.
 
 Esmerald got the inspiration from those great frameworks out there and was built with all the known amazing
-features but with business in mind as well. Starlite, for example, gave the inspiration for the transformers and for the Signature models,
-something very useful that helped Esmerald integerating with pydantic.
+features but with business in mind as well. [Starlite](./vendors.md#starlite), for example, gave the inspiration for
+the transformers and for the Signature models, something very useful that helped Esmerald integerating with pydantic.
 FastAPI gave the inspiration for API designing, Django for the permissions, Flask for the simplicity, NestJS for the
 controllers and the list goes on.
 
