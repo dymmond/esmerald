@@ -87,10 +87,6 @@ PALETTES = {
         "SUCCESS": {},
         "WARNING": {},
         "NOTICE": {},
-        "SQL_FIELD": {},
-        "SQL_COLTYPE": {},
-        "SQL_KEYWORD": {},
-        "SQL_TABLE": {},
         "HTTP_INFO": {},
         "HTTP_SUCCESS": {},
         "HTTP_REDIRECT": {},
@@ -98,18 +94,12 @@ PALETTES = {
         "HTTP_BAD_REQUEST": {},
         "HTTP_NOT_FOUND": {},
         "HTTP_SERVER_ERROR": {},
-        "MIGRATE_HEADING": {},
-        "MIGRATE_LABEL": {},
     },
     DARK_PALETTE: {
         "ERROR": {"fg": "red", "opts": ("bold",)},
         "SUCCESS": {"fg": "green", "opts": ("bold",)},
         "WARNING": {"fg": "yellow", "opts": ("bold",)},
         "NOTICE": {"fg": "red"},
-        "SQL_FIELD": {"fg": "green", "opts": ("bold",)},
-        "SQL_COLTYPE": {"fg": "green"},
-        "SQL_KEYWORD": {"fg": "yellow"},
-        "SQL_TABLE": {"opts": ("bold",)},
         "HTTP_INFO": {"opts": ("bold",)},
         "HTTP_SUCCESS": {},
         "HTTP_REDIRECT": {"fg": "green"},
@@ -117,18 +107,12 @@ PALETTES = {
         "HTTP_BAD_REQUEST": {"fg": "red", "opts": ("bold",)},
         "HTTP_NOT_FOUND": {"fg": "yellow"},
         "HTTP_SERVER_ERROR": {"fg": "magenta", "opts": ("bold",)},
-        "MIGRATE_HEADING": {"fg": "cyan", "opts": ("bold",)},
-        "MIGRATE_LABEL": {"opts": ("bold",)},
     },
     LIGHT_PALETTE: {
         "ERROR": {"fg": "red", "opts": ("bold",)},
         "SUCCESS": {"fg": "green", "opts": ("bold",)},
         "WARNING": {"fg": "yellow", "opts": ("bold",)},
         "NOTICE": {"fg": "red"},
-        "SQL_FIELD": {"fg": "green", "opts": ("bold",)},
-        "SQL_COLTYPE": {"fg": "green"},
-        "SQL_KEYWORD": {"fg": "blue"},
-        "SQL_TABLE": {"opts": ("bold",)},
         "HTTP_INFO": {"opts": ("bold",)},
         "HTTP_SUCCESS": {},
         "HTTP_REDIRECT": {"fg": "green", "opts": ("bold",)},
@@ -136,8 +120,6 @@ PALETTES = {
         "HTTP_BAD_REQUEST": {"fg": "red", "opts": ("bold",)},
         "HTTP_NOT_FOUND": {"fg": "red"},
         "HTTP_SERVER_ERROR": {"fg": "magenta", "opts": ("bold",)},
-        "MIGRATE_HEADING": {"fg": "cyan", "opts": ("bold",)},
-        "MIGRATE_LABEL": {"opts": ("bold",)},
     },
 }
 DEFAULT_PALETTE = DARK_PALETTE
@@ -162,11 +144,10 @@ def parse_color_setting(config_string: str):
     definition will augment the base palette definition.
 
     Valid roles:
-        'error', 'success', 'warning', 'notice', 'sql_field', 'sql_coltype',
-        'sql_keyword', 'sql_table', 'http_info', 'http_success',
+        'error', 'success', 'warning', 'notice',
+        'http_info', 'http_success',
         'http_redirect', 'http_not_modified', 'http_bad_request',
-        'http_not_found', 'http_server_error', 'migrate_heading',
-        'migrate_label'
+        'http_not_found', 'http_server_error'
 
     Valid colors:
         'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
