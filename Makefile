@@ -25,7 +25,7 @@ build-docs: ## Runs the local docs
 
 .PHONY: test
 test: ## Runs the tests
-	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest $(TESTONLY) --disable-pytest-warnings -s -vv
+	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest $(TESTONLY) --disable-pytest-warnings -s -vv && scripts/clean
 
 .PHONY: coverage
 coverage: ## Run tests and coverage
