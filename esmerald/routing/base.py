@@ -127,7 +127,7 @@ class BaseSignature:
 
         transformer_model = self.create_handler_transformer_model()
         if not is_websocket:
-            self.kwargs = transformer_model
+            self.transformer = transformer_model
             for method in self.methods:
                 self.route_map[method] = (self, transformer_model)
         else:
@@ -371,7 +371,6 @@ class BaseResponseHandler:
 
         if is_async_callable(fn):
             return await fn()
-
         return fn()
 
     def get_response_handler(self) -> Callable[[Any], Awaitable[StarletteResponse]]:

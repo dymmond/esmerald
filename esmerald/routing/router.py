@@ -492,7 +492,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.response_headers = response_headers
         self.background = background
         self.signature_model: Optional[Type["SignatureModel"]] = None
-        self.kwargs: Optional["TransformerModel"] = None
+        self.transformer: Optional["TransformerModel"] = None
         self.response_description = response_description
         self.responses = responses or {}
         self.content_encoding = content_encoding
