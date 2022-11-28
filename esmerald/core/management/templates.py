@@ -150,7 +150,6 @@ class TemplateDirective(BaseDirective):
                     type=name_or_dir,
                 )
             )
-        # Check it cannot be imported.
         try:
             import_module(name)
         except ImportError:

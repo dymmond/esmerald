@@ -11,7 +11,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler as APSAsyncIOSchedul
 # │ │ │ │ │                                   7 is also Sunday on some systems)
 # │ │ │ │ │
 # │ │ │ │ │
-# * * * * * <command to execute>
+# * * * * * <command to run>
 
 
 def get_time():

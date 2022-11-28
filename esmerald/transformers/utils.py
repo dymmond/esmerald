@@ -28,7 +28,6 @@ class Dependency:
     def __init__(
         self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: "DictAny"
     ) -> None:
-        super().__init__(**kwargs)
         self.key = key
         self.inject = inject
         self.dependencies = dependencies

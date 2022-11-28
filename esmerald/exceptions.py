@@ -12,7 +12,6 @@ WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
 
 class EsmeraldAPIException(Exception):
     def __init__(self, *args: Any, detail: str = ""):
-        """Base `esmerald` exception."""
         self.detail = detail
         super().__init__(*(str(arg) for arg in args if arg), detail)
 
