@@ -1,8 +1,24 @@
 # Release Notes
 
+## 0.3.1
+
+## Added
+
+- HashableBaseModel allowing the __hash__ to be done via pydantic BaseModels.
+
+### Changed
+
+- Update transformer model field and functions.
+
+### Fixed
+
+-Minor doc fixes.
+
 ## 0.3.0
 
-## Changed
+November 27, 2022
+
+### Changed
 
 - Deprecated kwargs and signature to give place to Esmerald transformers.
 - Code cleaning and improved performance by applying pure pydantic models internally.
@@ -11,7 +27,7 @@
 
 November 21, 2022
 
-## Fixed
+### Fixed
 
 - When instantiating an `Esmerald` object, `app_name` should be passed instead of `name`.
 
@@ -19,7 +35,7 @@ November 21, 2022
 
 November 18, 2022
 
-## Changed
+### Changed
 
 - Supporting Starlette version 0.22.0.
 
