@@ -1,9 +1,20 @@
-from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    cast,
+)
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
+from pydantic import BaseModel
 from pydantic.fields import FieldInfo, Undefined
 from starlette.datastructures import URL
 

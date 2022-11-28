@@ -1,6 +1,7 @@
-from inspect import isclass
-from typing import Any, Type, Union
+import inspect
+from typing import Any
 
+from esmerald.transformers.types import ConstrainedField
 from pydantic import (
     ConstrainedBytes,
     ConstrainedDate,
@@ -12,27 +13,12 @@ from pydantic import (
     ConstrainedSet,
     ConstrainedStr,
 )
-from typing_extensions import TypeGuard
 
 
-def is_pydantic_constrained_field(
-    value: Any,
-) -> TypeGuard[
-    Union[
-        Type[ConstrainedBytes],
-        Type[ConstrainedDate],
-        Type[ConstrainedDecimal],
-        Type[ConstrainedFloat],
-        Type[ConstrainedFrozenSet],
-        Type[ConstrainedInt],
-        Type[ConstrainedList],
-        Type[ConstrainedSet],
-        Type[ConstrainedStr],
-    ]
-]:
-    return isclass(value) and any(
-        issubclass(value, c)
-        for c in (
+def is_pydantic_constrained_field(value: Any) -> ConstrainedField:
+    return inspect.isclass(value) and any(
+        issubclass(value, _type)
+        for _type in (
             ConstrainedBytes,
             ConstrainedDate,
             ConstrainedDecimal,
