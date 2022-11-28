@@ -12,9 +12,9 @@ from typing import (
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
+from esmerald.parsers import HashableBaseModel
 from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
-from pydantic import BaseModel
 from pydantic.fields import FieldInfo, Undefined
 from starlette.datastructures import URL
 
@@ -35,10 +35,15 @@ class ParamSetting(NamedTuple):
     field_info: FieldInfo
 
 
-class Dependency:
+class Dependency(HashableBaseModel):
+    key: Optional[str]
+    inject: Optional["Inject"]
+    dependencies: Optional[List["Dependency"]]
+
     def __init__(
         self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: "DictAny"
     ) -> None:
+        super().__init__(**kwargs)
         self.key = key
         self.inject = inject
         self.dependencies = dependencies

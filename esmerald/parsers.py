@@ -4,12 +4,33 @@ from typing import TYPE_CHECKING, Any
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
 from orjson import JSONDecodeError, loads
+from pydantic import BaseModel
 from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic.typing import DictAny
     from starlette.datastructures import FormData
+
+
+class HashableBaseModel(BaseModel):
+    """
+    Pydantic BaseModel by default doesn't handle with hashable types the same way
+    a python object would and therefore there are types that are mutable (list, set)
+    not hashable and those need to be handled properly.
+
+    HashableBaseModel handles those corner cases.
+    """
+
+    def __hash__(self):
+        values = {}
+        for key, value in self.__dict__.items():
+            values[key] = None
+            if isinstance(value, (list, set)):
+                values[key] = tuple(value)
+            else:
+                values[key] = value
+        return hash((type(self),) + tuple(values))
 
 
 def validate_media_type(field: "ModelField", values: "DictAny"):
