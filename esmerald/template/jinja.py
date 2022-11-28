@@ -2,7 +2,7 @@ from os import PathLike
 from typing import TYPE_CHECKING, Any, List, Union
 
 from esmerald.exceptions import MissingDependency, TemplateNotFound
-from esmerald.template.base import TemplateEngineProtocol
+from esmerald.protocols.template import TemplateEngineProtocol
 
 if TYPE_CHECKING:
     from pydantic import DirectoryPath

@@ -31,10 +31,10 @@ from esmerald.middleware.exceptions import (
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
+from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
 from esmerald.schedulers.apscheduler.handler import Scheduler
-from esmerald.template.base import TemplateEngineProtocol
 from esmerald.types import (
     APIGateHandler,
     ASGIApp,

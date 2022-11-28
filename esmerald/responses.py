@@ -27,7 +27,7 @@ from starlette.types import Receive, Scope, Send
 
 if TYPE_CHECKING:
     from esmerald.backgound import BackgroundTask, BackgroundTasks
-    from esmerald.template import TemplateEngineProtocol
+    from esmerald.protocols.template import TemplateEngineProtocol
     from esmerald.types import ResponseCookies
 
 T = TypeVar("T")
