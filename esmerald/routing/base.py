@@ -125,15 +125,15 @@ class BaseSignature:
                     fn=dependency.dependency, dependency_names=self.dependency_names
                 ).create_signature()
 
-        kwargs_model = self.create_handler_kwargs_model()
+        transformer_model = self.create_handler_transformer_model()
         if not is_websocket:
-            self.kwargs = kwargs_model
+            self.kwargs = transformer_model
             for method in self.methods:
-                self.route_map[method] = (self, kwargs_model)
+                self.route_map[method] = (self, transformer_model)
         else:
-            self.websocket_parameter_model = kwargs_model
+            self.websocket_parameter_model = transformer_model
 
-    def create_handler_kwargs_model(self) -> "TransformerModel":
+    def create_handler_transformer_model(self) -> "TransformerModel":
         """Method to create a TransformerModel for a given handler."""
         dependencies = self.get_dependencies()
         signature_model = get_signature(self)

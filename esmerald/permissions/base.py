@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 SAFE_METHODS = ("GET", "HEAD", "OPTIONS")
 
 
-class OperationHolderMixin:
+class BaseOperationHolder:
     def __and__(self, other):
         return OperandHolder(AND, self, other)
 
@@ -26,10 +26,10 @@ class OperationHolderMixin:
         return OperandHolder(OR, other, self)
 
     def __invert__(self):
-        return SingleOperandHolder(NOT, self)
+        return SingleOperand(NOT, self)
 
 
-class SingleOperandHolder(OperationHolderMixin):
+class SingleOperand(BaseOperationHolder):
     def __init__(self, operator_class, op1_class):
         self.operator_class = operator_class
         self.op1_class = op1_class
@@ -39,7 +39,7 @@ class SingleOperandHolder(OperationHolderMixin):
         return self.operator_class(op1)
 
 
-class OperandHolder(OperationHolderMixin):
+class OperandHolder(BaseOperationHolder):
     def __init__(self, operator_class, op1_class, op2_class):
         self.operator_class = operator_class
         self.op1_class = op1_class
@@ -93,7 +93,7 @@ class NOT:
         return not self.op1.has_permission(request, apiview)
 
 
-class BasePermissionMetaclass(OperationHolderMixin, type):
+class BasePermissionMetaclass(BaseOperationHolder, type):
     ...
 
 

@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from esmerald.protocols.middleware import MiddlewareProtocol
     from esmerald.requests import Request  # noqa
     from esmerald.responses import Response  # noqa
-    from esmerald.routing.router import BaseRouterHandler, Gateway, Router
+    from esmerald.routing.router import Gateway, HTTPHandler, Router  # noqa
     from esmerald.routing.views import APIView  # noqa
     from esmerald.websockets import WebSocket  # noqa
     from starlette.middleware import Middleware as StarletteMiddleware  # noqa: TC004
@@ -39,7 +39,7 @@ if TYPE_CHECKING:
     from starlette.types import Send as Send  # noqa
 else:
     ASGIApp = Any
-    BaseRouterHandler = Any
+    HTTPHandler = Any
     Message = Any
     Receive = Any
     Scope = Any
@@ -94,7 +94,6 @@ ReservedKwargs = Literal[
 
 ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
-# connection-lifecycle hook handlers
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 
 LifeSpanHandler = Union[
@@ -110,7 +109,7 @@ DatetimeType = TypeVar("DatetimeType", bound=datetime)
 ParentType = Union[APIView, Router]
 APIGateHandler = Union[
     Type[APIView],
-    BaseRouterHandler,
+    HTTPHandler,
     Router,
     AnyCallable,
     Gateway,
