@@ -2,6 +2,8 @@
 
 ## 0.3.1
 
+November 28, 2022
+
 ## Added
 
 - HashableBaseModel allowing the __hash__ to be done via pydantic BaseModels.
@@ -12,7 +14,7 @@
 
 ### Fixed
 
--Minor doc fixes.
+- Minor doc fixes.
 
 ## 0.3.0
 
