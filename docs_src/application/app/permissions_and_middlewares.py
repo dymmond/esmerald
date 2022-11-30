@@ -90,7 +90,7 @@ class UserApiView(APIView):
         ...
 
     @websocket(path="/ws")
-    async def websocket_endpoint(socket: WebSocket) -> None:
+    async def websocket_endpoint(self, socket: WebSocket) -> None:
         await socket.accept()
         await socket.send_text("Hello, world!")
         await socket.close()

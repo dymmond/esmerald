@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, List
 
-from esmerald import EsmeraldAPISettings, JWTConfig
+from esmerald import EsmeraldAPISettings
+from esmerald.config import JWTConfig
 from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 from esmerald.utils.module_loading import import_string
 from starlette.middleware import Middleware as StarletteMiddleware

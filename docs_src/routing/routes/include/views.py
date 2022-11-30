@@ -1,5 +1,3 @@
-from pydantic import BaseModel
-
 from esmerald import (
     APIView,
     ORJSONResponse,
@@ -13,6 +11,7 @@ from esmerald import (
     status,
     websocket,
 )
+from pydantic import BaseModel
 
 
 class Product(BaseModel):
@@ -37,7 +36,7 @@ async def another(request: Request) -> dict:
 
 
 @websocket(path="/{path_param:str}")
-async def world_socket(self, socket: WebSocket) -> None:
+async def world_socket(socket: WebSocket) -> None:
     await socket.accept()
     msg = await socket.receive_json()
     assert msg
