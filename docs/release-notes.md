@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.3.2
+
+## Fixed
+
+- [Token](./configurations/jwt.md#token-model) parameters being passed to `python-jose`.
+- Update internal references to the JWT.
+
 ## 0.3.1
 
 November 28, 2022

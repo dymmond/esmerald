@@ -1,11 +1,13 @@
 from datetime import datetime, timezone
-from typing import Dict, Optional, Union
-
-from jose import JWSError, JWTError, jwt
-from pydantic import BaseModel, Field, constr, validator
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.security.utils import convert_time
+from jose import JWSError, JWTError, jwt
+from pydantic import BaseModel, Field, constr, validator
+
+if TYPE_CHECKING:
+    from pydantic.typing import DictAny
 
 
 class Token(BaseModel):
@@ -38,13 +40,14 @@ class Token(BaseModel):
             return date
         raise ValueError("iat must be a current or past time")
 
-    def encode(self, key: str, algorithm: str) -> str:
+    @staticmethod
+    def encode(key: str, algorithm: str, **claims: "DictAny") -> str:
         """
-        Encodes the token into a proper str formatted.
+        Encodes the token into a proper str formatted and allows passing kwargs.
         """
         try:
             return jwt.encode(
-                claims=self.dict(exclude_none=True),
+                claims=claims,
                 key=key,
                 algorithm=algorithm,
             )
@@ -52,7 +55,7 @@ class Token(BaseModel):
             raise ImproperlyConfigured("Error encoding the token.") from e
 
     @staticmethod
-    def decode(token: str, key: Union[str, Dict[str, str]], algorithm: str) -> "Token":
+    def decode(token: str, key: Union[str, Dict[str, str]], algorithms: List[str]) -> "Token":
         """
         Decodes the given token.
         """
@@ -60,7 +63,7 @@ class Token(BaseModel):
             data = jwt.decode(
                 token=token,
                 key=key,
-                algorithms=[algorithm],
+                algorithms=[algorithms],
                 options={"verify_aud": False},
             )
         except (JWSError, JWTError) as e:
