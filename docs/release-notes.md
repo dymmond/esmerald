@@ -1,15 +1,23 @@
 # Release Notes
 
+## 0.4.1
+
+December 9, 2022
+
+### Changed
+
+- Added support for Starlette 0.23.1.
+
 ## 0.4.0
 
 December 9, 2022
 
-## Changed
+### Changed
 
 - Updated support to Starlette 0.23.0
 - Updated the EsmeraldTestClient to support headers.
 
-## Fixed
+### Fixed
 
 - [Token](./configurations/jwt.md#token-model) parameters being passed to `python-jose`.
 - Update internal references to the JWT.
@@ -18,7 +26,7 @@ December 9, 2022
 
 November 28, 2022
 
-## Added
+### Added
 
 - HashableBaseModel allowing the __hash__ to be done via pydantic BaseModels.
 
