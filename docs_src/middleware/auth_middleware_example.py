@@ -31,5 +31,5 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
             token=token, key=self.config.signing_key, algorithm=self.config.algorithm
         )
 
-        user = await self.retrive_user(token.sub)
+        user = await self.retrieve_user(token.sub)
         return AuthResult(user=user)

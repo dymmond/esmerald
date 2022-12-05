@@ -58,7 +58,7 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
         self.config = config
         self.user_model = user_model
 
-    async def retrive_user(self, user_id: int) -> Generic[T]:
+    async def retrieve_user(self, user_id: int) -> Generic[T]:
         """
         Retrieves a user from the database using the given token id.
         """
@@ -77,5 +77,5 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
             token=token, key=self.config.signing_key, algorithm=self.config.algorithm
         )
 
-        user = await self.retrive_user(token.sub)
+        user = await self.retrieve_user(token.sub)
         return AuthResult(user=user)
