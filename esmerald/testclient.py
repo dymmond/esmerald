@@ -33,6 +33,7 @@ if TYPE_CHECKING:
         LifeSpanHandler,
         Middleware,
         SchedulerType,
+        DictStr,
     )
     from typing_extensions import Literal
 
@@ -49,15 +50,17 @@ class EsmeraldTestClient(TestClient):
         backend: "Literal['asyncio', 'trio']" = "asyncio",
         backend_options: Optional[Dict[str, Any]] = None,
         cookies: Optional[httpx._client.CookieTypes] = None,
+        headers: Optional["DictStr"] = None,
     ):
         super().__init__(
-            app,
-            base_url,
-            raise_server_exceptions,
-            root_path,
-            backend,
-            backend_options,
-            cookies,
+            app=app,
+            base_url=base_url,
+            raise_server_exceptions=raise_server_exceptions,
+            root_path=root_path,
+            backend=backend,
+            backend_options=backend_options,
+            cookies=cookies,
+            headers=headers,
         )
 
     def __enter__(self, *args: Any, **kwargs: Dict[str, Any]) -> "EsmeraldTestClient":

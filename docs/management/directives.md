@@ -114,7 +114,7 @@ Using our previous example of [create project](#create-project), let's use the a
 
 ```shell
 $ cd myproject/apps/
-$ esmerald-admin createproject accounts
+$ esmerald-admin createapp accounts
 ```
 
 You should have a folder called `accounts` with a similar structure to this:

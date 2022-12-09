@@ -1,6 +1,13 @@
 # Release Notes
 
-## 0.3.2
+## 0.4.0
+
+December 9, 2022
+
+## Changed
+
+- Updated support to Starlette 0.23.0
+- Updated the EsmeraldTestClient to support headers.
 
 ## Fixed
 

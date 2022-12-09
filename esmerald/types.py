@@ -122,3 +122,4 @@ BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
 SecurityRequirement = Dict[str, List[str]]
 
 ConnectionType = Union["Request", "WebSocket"]
+DictStr = Dict[str, str]
