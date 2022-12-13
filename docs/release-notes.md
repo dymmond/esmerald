@@ -2,7 +2,7 @@
 
 ## 0.4.1
 
-December 9, 2022
+December 13, 2022
 
 ### Changed
 
