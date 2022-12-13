@@ -33,6 +33,15 @@ class HashableBaseModel(BaseModel):
         return hash((type(self),) + tuple(values))
 
 
+class BaseModelExtra(BaseModel):
+    """
+    BaseModel that allows extra to be passed.
+    """
+
+    class Config:
+        extra = "allow"
+
+
 def validate_media_type(field: "ModelField", values: "DictAny"):
     """
     Validates the media type against the available types.

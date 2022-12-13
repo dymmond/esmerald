@@ -3,7 +3,6 @@ from typing import (
     Any,
     List,
     NamedTuple,
-    Optional,
     Set,
     Tuple,
     Type,
@@ -12,7 +11,7 @@ from typing import (
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.parsers import HashableBaseModel
+from esmerald.parsers import BaseModelExtra, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
 from pydantic.fields import FieldInfo, Undefined
@@ -35,11 +34,7 @@ class ParamSetting(NamedTuple):
     field_info: FieldInfo
 
 
-class Dependency(HashableBaseModel):
-    key: Optional[str]
-    inject: Optional["Inject"]
-    dependencies: Optional[List["Dependency"]]
-
+class Dependency(HashableBaseModel, BaseModelExtra):
     def __init__(
         self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: "DictAny"
     ) -> None:
@@ -48,7 +43,7 @@ class Dependency(HashableBaseModel):
         self.inject = inject
         self.dependencies = dependencies
 
-    class Config:
+    class Config(BaseModelExtra.Config):
         arbitrary_types_allowed = True
 
 

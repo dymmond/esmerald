@@ -5,9 +5,10 @@ A lot of great work was done using the Signature and Esmerald is no exception.
 
 from inspect import Parameter
 from inspect import Signature as InspectSignature
-from typing import TYPE_CHECKING, Any, Generator, Optional, Set, Type
+from typing import Any, Generator, Set, TYPE_CHECKING, Type
 
 from esmerald.exceptions import ImproperlyConfigured
+from esmerald.parsers import BaseModelExtra
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, VALIDATION_NAMES
 from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
 from esmerald.transformers.helpers import is_pydantic_constrained_field
@@ -16,22 +17,15 @@ from esmerald.utils.dependency import (
     is_dependency_field,
     should_skip_dependency_validation,
 )
-from pydantic import BaseModel, create_model
+from pydantic import create_model
 from pydantic.fields import Undefined
 
 if TYPE_CHECKING:
     from pydantic.typing import AnyCallable, DictAny
 
 
-class SignatureFactory(BaseModel):
-    signature: Optional[InspectSignature]
-    fn: Optional["AnyCallable"]
-    fn_name: Optional[str]
-    field_definitions: Optional["DictAny"]
-    defaults: Optional["DictAny"]
-    dependency_names: Optional[Set[str]]
-
-    class Config:
+class SignatureFactory(BaseModelExtra):
+    class Config(BaseModelExtra.Config):
         arbitrary_types_allowed = True
 
     def __init__(self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: "DictAny") -> None:
