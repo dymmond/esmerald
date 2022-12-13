@@ -20,7 +20,7 @@ class User(BaseModel):
         return value
 
     @validator("name")
-    def validate_age(cls, value: int) -> str:
+    def validate_name(cls, value: str) -> str:
         """
         Validates the name of a user.
         """
