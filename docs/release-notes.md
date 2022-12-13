@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.4.2
+
+### Changed
+
+- Created `BaseModelExtra` parser removing repetition of code across transformers.
+
 ## 0.4.1
 
 December 13, 2022
