@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Set, Tuple, Type, Union
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.parsers import parse_form_data
+from esmerald.parsers import BaseModelExtra, parse_form_data
 from esmerald.requests import Request
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.utils import (
@@ -15,7 +15,6 @@ from esmerald.transformers.utils import (
 )
 from esmerald.utils.constants import RESERVED_KWARGS
 from esmerald.utils.pydantic import is_field_optional
-from pydantic import BaseModel
 from pydantic.fields import (
     SHAPE_DEQUE,
     SHAPE_FROZENSET,
@@ -36,19 +35,8 @@ if TYPE_CHECKING:
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 
 
-class TransformerModel(BaseModel):
-    has_kwargs: Optional[Any]
-    cookies: Optional[Set[ParamSetting]]
-    dependencies: Optional[Set[Dependency]]
-    form_data: Optional[Tuple[EncodingType, ModelField]]
-    headers: Optional[Set[ParamSetting]]
-    path_params: Optional[Set[ParamSetting]]
-    query_params: Optional[Set[ParamSetting]]
-    reserved_kwargs: Optional[Set["ReservedKwargs"]]
-    query_param_names: Optional[Set[str]]
-    is_optional: Optional[bool]
-
-    class Config:
+class TransformerModel(BaseModelExtra):
+    class Config(BaseModelExtra.Config):
         arbitrary_types_allowed = True
 
     def __init__(
