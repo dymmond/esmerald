@@ -28,6 +28,7 @@ class Scheduler:
         self.tasks = tasks or {}
         self.timezone = timezone
         self.scheduler_class = scheduler_class
+        self.configurations = configurations
 
         if not self.scheduler_class and self.app.enable_scheduler:
             raise ImproperlyConfigured(
@@ -41,7 +42,11 @@ class Scheduler:
             if not isinstance(task, str) or not isinstance(module, str):
                 raise ImproperlyConfigured("The dict of tasks must be Dict[str, str].")
 
-        self.handler = self.get_scheduler(scheduler=self.scheduler_class, timezone=self.timezone, configurations=configurations)
+        self.handler = self.get_scheduler(
+            scheduler=self.scheduler_class,
+            timezone=self.timezone,
+            configurations=self.configurations,
+        )
 
         if not self.tasks:
             warnings.warn(
@@ -104,9 +109,9 @@ class Scheduler:
             timezone = settings.timezone
 
         if not configurations:
-            return scheduler().configure(timezone=timezone)
-        else:
-            return scheduler().configure(configurations, timezone=timezone)
+            return scheduler(timezone=timezone)
+
+        return scheduler(global_config=configurations, timezone=timezone)
 
 
 class Task:
