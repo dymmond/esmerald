@@ -2,9 +2,16 @@
 
 ## 0.4.2
 
+December 16, 2022
+
 ### Changed
 
 - Created `BaseModelExtra` parser removing repetition of code across transformers.
+
+### Fix
+
+- Configurations for scheduler being passed as params.
+- Scheduler in the slots.
 
 ## 0.4.1
 
