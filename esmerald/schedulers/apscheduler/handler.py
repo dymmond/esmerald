@@ -28,6 +28,7 @@ class Scheduler:
         self.tasks = tasks or {}
         self.timezone = timezone
         self.scheduler_class = scheduler_class
+        self.configurations = configurations
 
         if not self.scheduler_class and self.app.enable_scheduler:
             raise ImproperlyConfigured(
@@ -41,11 +42,15 @@ class Scheduler:
             if not isinstance(task, str) or not isinstance(module, str):
                 raise ImproperlyConfigured("The dict of tasks must be Dict[str, str].")
 
-        self.handler = self.get_scheduler(scheduler=self.scheduler_class, timezone=self.timezone)
+        self.handler = self.get_scheduler(
+            scheduler=self.scheduler_class,
+            timezone=self.timezone,
+            configurations=self.configurations,
+        )
 
         if not self.tasks:
             warnings.warn(
-                "Esmerald is starting the scheduler, yet there are " "no tasks declared.",
+                "Esmerald is starting the scheduler, yet there are no tasks declared.",
                 UserWarning,
                 stacklevel=2,
             )
@@ -83,7 +88,10 @@ class Scheduler:
             self.handler.shutdown()
 
     def get_scheduler(
-        self, scheduler: "SchedulerType", timezone: Optional[dtimezone] = None
+        self,
+        scheduler: "SchedulerType",
+        timezone: Optional[dtimezone] = None,
+        configurations: Optional[Dict[str, str]] = None,
     ) -> SchedulerType:
         """
         Initiates the scheduler from the given time.
@@ -95,12 +103,15 @@ class Scheduler:
             scheduler: AsyncIOScheduler
 
         Return:
-            None
+            Scheduler
         """
         if not timezone:
             timezone = settings.timezone
 
-        return scheduler(timezone=timezone)
+        if not configurations:
+            return scheduler(timezone=timezone)
+
+        return scheduler(global_config=configurations, timezone=timezone)
 
 
 class Task:
