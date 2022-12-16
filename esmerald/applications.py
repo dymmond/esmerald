@@ -92,6 +92,7 @@ class Esmerald(Starlette):
         "response_cookies",
         "response_headers",
         "scheduler_class",
+        "scheduler",
         "tags",
         "root_path",
         "deprecated",
