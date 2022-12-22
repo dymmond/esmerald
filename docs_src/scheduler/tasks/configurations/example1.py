@@ -1,7 +1,7 @@
 import logging
 
+from asyncz.triggers import IntervalTrigger
 from esmerald import scheduler
-from esmerald.schedulers.apscheduler.triggers import IntervalTrigger
 from loguru import logger
 
 logging.basicConfig()
