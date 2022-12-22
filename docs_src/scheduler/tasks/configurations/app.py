@@ -1,20 +1,19 @@
 from esmerald import Esmerald
 
-scheduler_configurations = {
-    "apscheduler.jobstores.mongo": {"type": "mongodb"},
-    "apscheduler.jobstores.default": {
-        "type": "sqlalchemy",
-        "url": "sqlite:///jobs.sqlite",
+scheduler_configurations = (
+    {
+        "asyncz.stores.mongo": {"type": "mongodb"},
+        "asyncz.stores.default": {"type": "redis", "database": "0"},
+        "asyncz.executors.threadpool": {
+            "max_workers": "20",
+            "class": "asyncz.executors.threadpool:ThreadPoolExecutor",
+        },
+        "asyncz.executors.default": {"class": "asyncz.executors.asyncio::AsyncIOExecutor"},
+        "asyncz.task_defaults.coalesce": "false",
+        "asyncz.task_defaults.max_instances": "3",
+        "asyncz.task_defaults.timezone": "UTC",
     },
-    "apscheduler.executors.default": {
-        "class": "apscheduler.executors.pool:ThreadPoolExecutor",
-        "max_workers": "20",
-    },
-    "apscheduler.executors.processpool": {"type": "processpool", "max_workers": "5"},
-    "apscheduler.job_defaults.coalesce": "false",
-    "apscheduler.job_defaults.max_instances": "3",
-    "apscheduler.timezone": "UTC",
-}
+)
 
 app = Esmerald(
     enable_scheduler=True,

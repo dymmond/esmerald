@@ -1,6 +1,6 @@
 # Handler
 
-Esmerald uses <a href='https://apscheduler.readthedocs.io/en/3.x/' target='_blank'>APScheduler</a> to manage the
+Esmerald uses <a href='https://asyncz.tarsild.io' target='_blank'>Asyncz</a> to manage the
 scheduler internally and therefore their documentation is also up to date.
 
 The handler is the `scheduler` used to decorate a function that you want to process as a task.
@@ -20,37 +20,36 @@ performed internally.
 
     <sup>Default: `None`</sup>
 
-* **identifier** - Explicit identifier (id) for the job.
+* **id** - Explicit identifier (id) for the task.
 
     <sup>Default: `None`</sup>
 
-* **misfire_grace_time** - The seconds after the designated runtime that the job is still allowed to be run.
+* **misfire_grace_time** - The seconds after the designated runtime that the task is still allowed to be run.
 
     <sup>Default: `undefined`</sup>
 
-* **coalesce** - Run once instead of many times if the scheduler determines that the job should be run more than once
+* **coalesce** - Run once instead of many times if the scheduler determines that the task should be run more than once
 in succession.
 
     <sup>Default: `undefined`</sup>
 
-* **max_intances** - The maximum number of concurrently running instances allowed for this
-job.
+* **max_intances** - The maximum number of concurrently running instances allowed for this task.
 
     <sup>Default: `undefined`</sup>
 
-* **next_run_time** - When to first run the job, regardless of the trigger.
+* **next_run_time** - When to first run the task, regardless of the trigger.
 
     <sup>Default: `undefined`</sup>
 
-* **jobstore** - The alias of the [job store](#job-stores) to store the job in.
+* **store** - The alias of the [store](#stores) to store the task in.
 
     <sup>Default: `None`</sup>
 
-* **executor** - The  alias of the executor to run the job with.
+* **executor** - The  alias of the executor to run the task with.
 
     <sup>Default: `None`</sup>
 
-* **replace_existing** - True to replace an existing job with the same `id`.
+* **replace_existing** - True to replace an existing task with the same `id`.
 
     <sup>Default: `None`</sup>
 
@@ -69,7 +68,7 @@ job.
 To obtain the `undefined` type:
 
 ```python
-from apscheduler.util import undefined
+from asyncz.typing import undefined
 ```
 
 ## Triggers
@@ -78,10 +77,10 @@ Esmerald comes with some pre-defined triggers ready to be used by the applicatio
 
 The built-in trigger cover the majority of the needs of all users. However if that is not the case, there is always
 the option to create a
-<a href="https://apscheduler.readthedocs.io/en/3.x/extending.html#custom-triggers" target="_blank">custom</a>.
+<a href="https://asyncz.tarsild.io/triggers/#custom-trigger" target="_blank">custom</a>.
 
 * `BaseTrigger` - The base of all triggers and it can be extended to create a
-<a href="https://apscheduler.readthedocs.io/en/3.x/extending.html#custom-triggers" target="_blank">custom</a>.
+<a href="https://asyncz.tarsild.io/triggers/#basetrigger" target="_blank">custom</a>.
 * `CronTrigger`
 * `IntervalTrigger`
 * `DateTrigger`
@@ -91,7 +90,7 @@ the option to create a
 Importing the triggers:
 
 ```python
-from esmerald.schedulers.apscheduler.triggers import (
+from asyncz.triggers import (
     AndTrigger,
     BaseTrigger,
     CronTrigger,
@@ -101,7 +100,7 @@ from esmerald.schedulers.apscheduler.triggers import (
 )
 ```
 
-Or you can simply import directly from the `apscheduler` library as it is fully compatible.
+Or you can simply import directly from the `asyncz` library as it is fully compatible.
 
 ### CronTrigger
 
@@ -132,7 +131,7 @@ Triggers when current time matches all specified time constraits. Very similar t
 * **start_date** (*datetime*|*str*) – Earliest possible date/time to trigger on (inclusive)
 * **end_date** (*datetime*|*str*) – Latest possible date/time to trigger on (inclusive)
 * **timezone** (*datetime*.*tzinfo*|*str*) – Time zone to use for the date/time calculations (defaults to scheduler timezone)
-* **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most
+* **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most
 
 ```python
 {!> ../docs_src/scheduler/tasks/triggers/cron.py !}
@@ -152,7 +151,7 @@ Triggers on specified intervals, starting on `start_date` if specified or `datet
 * **start_date** (*datetime*|*str*) - Starting point for the interval calculation.
 * **end_date** (*datetime*|*str*) – Latest possible date/time to trigger on
 * **timezone** (*datetime*.*tzinfo*|*str*) – Time zone to use for the date/time calculations
-* **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most
+* **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most
 
 ```python
 {!> ../docs_src/scheduler/tasks/triggers/interval.py !}
@@ -164,7 +163,7 @@ Triggers once on the given datetime. If `run_date` is left empty, current time i
 
 **Parameters**:
 
-* **run_date** (*datetime*|*str*) – The date/time to run the job at.
+* **run_date** (*datetime*|*str*) – The date/time to run the task at.
 * **timezone** (*datetime*.*tzinfo*|*str*) – Time zone for run_date if it doesn’t have one already.
 
 ```python
@@ -179,7 +178,7 @@ The trigger is considered finished when all the given triggers have finished the
 **Parameters**:
 
 * **triggers** (*list*) – Triggers to combine.
-* **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most.
+* **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most.
 
 ```python
 {!> ../docs_src/scheduler/tasks/triggers/or.py !}
@@ -193,19 +192,19 @@ The trigger is considered to be finished when any of the given triggers has fini
 **Parameters**:
 
 * **triggers** (*list*) – Triggers to combine.
-* **jitter** (*int*|*None*) – Delay the job execution by jitter seconds at most.
+* **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most.
 
 ```python
 {!> ../docs_src/scheduler/tasks/triggers/and.py !}
 ```
 
 !!! Note
-    These triggers are the same as the `APScheduler` and we didn't want to break existing functionality.
+    These triggers are the same as the `Asyncz` and we didn't want to break existing functionality.
     For more examples how to use even different approaches, check their great documentation.
 
-## Job stores, executors and other configurations
+## Stores, executors and other configurations
 
-Using the scheduler also means access to a lot of extra possible configurations that can be added such as `jobstores`,
+Using the scheduler also means access to a lot of extra possible configurations that can be added such as `stores`,
 `executors` and any other extra configuration needed.
 
 Esmerald allows to pass those configurations via application instantiation or via [settings](../application/settings.md).
@@ -236,9 +235,9 @@ INFO:     Application startup complete.
 
 ### Configurations and the handler
 
-When creating a task and using the `scheduler` one of the parameters is the `jobstore`.
+When creating a task and using the `scheduler` one of the parameters is the `store`.
 
-From the [example](#via-application-instantiation) you have new job stores and executors and those can be passed:
+From the [example](#via-application-instantiation) you have new task stores and executors and those can be passed:
 
 ```python hl_lines="15-16 27-28"
 {!> ../docs_src/scheduler/tasks/configurations/example1.py !}
@@ -246,6 +245,6 @@ From the [example](#via-application-instantiation) you have new job stores and e
 
 !!! Tip
     Have a look at the documentation from
-    <a href="https://apscheduler.readthedocs.io/en/3.x/index.html" target="_blank">APScheduler</a> and learn more
-    about what can be done and how can be done. All the parameters available in the APScheduler `add_job` are also
+    <a href="https://asyncz.tarsild.io" target="_blank">Asyncz</a> and learn more
+    about what can be done and how can be done. All the parameters available in the Asyncz `add_task` are also
     available in the `@scheduler` handler in the same way.

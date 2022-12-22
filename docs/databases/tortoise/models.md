@@ -51,6 +51,25 @@ assemble.
 {!> ../docs_src/databases/tortoise/create_superuser.py !}
 ```
 
+**check_password**
+
+```python hl_lines="21"
+{!> ../docs_src/databases/tortoise/check_password.py !}
+```
+
+Because you are using the `User` provided by Esmerald, the same object is also prepared to validate
+the password against the system. If you are familiar with Django, this was based on it and has the
+same principle.
+
+**set_password**
+
+```python hl_lines="21"
+{!> ../docs_src/databases/tortoise/set_password.py !}
+```
+
+The same for setting passwords. The `User` already contains the functionality to set a password of
+a given `User` instance.
+
 ### What happened
 
 Although the way of using the `User` table was intentionally designed to be simple there is in fact a lot going
@@ -60,6 +79,9 @@ When using the `create_user` and `create_superuser` behind the scenes it is not 
 storing in the database but is also <a href='https://nordpass.com/blog/password-hash/' target='_blank'>hashing</a>
 the password for you using the built-in Esmerald [password hashers](#password-hashers) and this is a life saving
 time and implementation.
+
+Esmerald also provides the `set_password` and `check_password` functions to make it easier to
+validate and change a user's password using the `User` instance.
 
 ## Password Hashers
 

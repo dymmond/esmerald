@@ -76,8 +76,9 @@ nav:
   - Responses: "responses.md"
   - Protocols: "protocols.md"
   - Scheduler:
-      - Scheduler: "scheduler/scheduler.md"
-      - Handler: "scheduler/handler.md"
+      - Asyncz:
+          - Scheduler: "scheduler/scheduler.md"
+          - Handler: "scheduler/handler.md"
   - Extra & Advanced:
       - Request Data: "extras/request-data.md"
       - Body: "extras/body-fields.md"

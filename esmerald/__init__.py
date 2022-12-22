@@ -1,7 +1,7 @@
 """
 Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -45,7 +45,7 @@ from .routing.gateways import Gateway, WebSocketGateway
 from .routing.handlers import delete, get, patch, post, put, route, websocket
 from .routing.router import Include, Router
 from .routing.views import APIView
-from .schedulers.apscheduler.handler import scheduler
+from .schedulers.asyncz.handler import scheduler
 from .template import JinjaTemplateEngine, MakoTemplateEngine
 from .websockets import WebSocket, WebSocketDisconnect
 

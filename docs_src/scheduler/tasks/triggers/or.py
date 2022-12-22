@@ -1,5 +1,5 @@
+from asyncz.triggers import CronTrigger, OrTrigger
 from esmerald import scheduler
-from esmerald.schedulers.apscheduler.triggers import CronTrigger, OrTrigger
 
 
 @scheduler(

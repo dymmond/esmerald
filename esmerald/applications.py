@@ -11,6 +11,7 @@ from typing import (
     Union,
 )
 
+from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
 from esmerald.conf import settings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig, TemplateConfig
 from esmerald.config.openapi import OpenAPIConfig
@@ -34,7 +35,6 @@ from esmerald.permissions.types import Permission
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
-from esmerald.schedulers.apscheduler.handler import Scheduler
 from esmerald.types import (
     APIGateHandler,
     ASGIApp,
@@ -230,7 +230,7 @@ class Esmerald(Starlette):
                 self.router.routes.append(static_route)
 
         if self.enable_scheduler:
-            self.scheduler = Scheduler(
+            self.scheduler = EsmeraldScheduler(
                 app=self,
                 scheduler_class=self.scheduler_class,
                 tasks=self.scheduler_tasks,
