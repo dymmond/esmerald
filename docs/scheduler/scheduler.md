@@ -2,33 +2,39 @@
 
 Almost every application in one way or another needs some sort of automated scheduler to run automated tasks.
 In that in mind and with the help of the great widely used
-<a href='https://apscheduler.readthedocs.io/en/3.x/' target='_blank'>APScheduler</a>, Esmerald comes with a built-in
+<a href='https://asyncz.tarsild.io' target='_blank'>Asyncz</a>, Esmerald comes with a built-in
 scheduler, saving you tons of headaches and simplifying the process of creating them.
 
 ## Scheduler
 
 The `Scheduler` is the main object that manages the internal scheduler of `Esmerald` expecting:
 
-* `app` - The Esmerald application.
-* `scheduler_class` - An instance of the `APScheduler` schedule type.
+* `app` - The Esmerald application. Automatically passed upon creating an Esmerald instance.
+* `scheduler_class` - An instance of the `Asyncz` schedule type. Passed via `scheduler_class`.
 
     <sup>Default: `AsyncIOScheduler`</sup>
 
-* `tasks` - A python dictionary of both key, value string mapping the tasks.
+* `tasks` - A python dictionary of both key, value string mapping the tasks. Passed via
+`scheduler_tasks`.
 
     <sup>Default: `{}`</sup>
 
-* `timezone` - The `timezone` of the scheduler.
+* `timezone` - The `timezone` of the scheduler. Passed via `timezone`.
 
     <sup>Default: `UTC`</sup>
 
 * `configurations` - A python dictionary containing some extra configurations for the scheduler.
+Passed via `scheduler_configurations`.
 
 Since `Esmerald` is an `ASGI` framework, it is already provided a default scheduler class that works alongside with
 the application, the `AsyncIOScheduler`.
 
 If a `scheduler_class` is not provided while the `enable_scheduler` is true, it will raise an error 500
 [ImproperlyConfigured](../exceptions.md#improperlyconfigured).
+
+!!! Note
+    This is for representation and explanation purposes as the Scheduler cannot be instantiated,
+    instead, expects parameters being sent upon creating an Esmerald application.
 
 ```python hl_lines="4"
 from esmerald import Esmerald
@@ -129,5 +135,5 @@ The `scheduler_tasks` is expecting a python dictionary where the both key and va
 * `value` - Where the task is located.
 
 !!! Warning
-    Remember to activate the scheduler by enabling the `enable_scheduler` flag or else the internal scheduler will not
+    Remember to activate the scheduler by enabling the `enable_scheduler` flag or else the scheduler will not
     start.

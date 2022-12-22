@@ -1,7 +1,7 @@
 # Esmerald
 
 <p align="center">
-  <a href="https://esmerald.dymmond.com"><img src="https://res.cloudinary.com/dymmond/image/upload/v1664911052/esmerald/img/logo-green_uwjmcc.png" alt='Esmerald'></a>
+  <a href="https://esmerald.dymmond.com"><img src="https://res.cloudinary.com/dymmond/image/upload/v1671718628/esmerald/img/logo-gr_oyr4my.png" alt='Esmerald'></a>
 </p>
 
 <p align="center">
