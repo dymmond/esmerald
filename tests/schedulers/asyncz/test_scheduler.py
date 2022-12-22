@@ -3,7 +3,6 @@ from typing import Any, Dict, List, Optional, Union
 
 import pytest
 from asyncz.contrib.esmerald.decorator import scheduler
-from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
 from asyncz.executors.base import BaseExecutor
 from asyncz.schedulers import AsyncIOScheduler
 from asyncz.schedulers.base import BaseScheduler
