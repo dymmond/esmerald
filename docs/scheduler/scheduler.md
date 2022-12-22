@@ -5,9 +5,9 @@ In that in mind and with the help of the great widely used
 <a href='https://asyncz.tarsild.io' target='_blank'>Asyncz</a>, Esmerald comes with a built-in
 scheduler, saving you tons of headaches and simplifying the process of creating them.
 
-## Scheduler
+## EsmeraldScheduler
 
-The `Scheduler` is the main object that manages the internal scheduler of `Esmerald` expecting:
+The `EsmeraldScheduler` is the main object that manages the internal scheduler of `Esmerald` expecting:
 
 * `app` - The Esmerald application. Automatically passed upon creating an Esmerald instance.
 * `scheduler_class` - An instance of the `Asyncz` schedule type. Passed via `scheduler_class`.
@@ -33,7 +33,7 @@ If a `scheduler_class` is not provided while the `enable_scheduler` is true, it 
 [ImproperlyConfigured](../exceptions.md#improperlyconfigured).
 
 !!! Note
-    This is for representation and explanation purposes as the Scheduler cannot be instantiated,
+    This is for representation and explanation purposes as the EsmeraldScheduler cannot be instantiated,
     instead, expects parameters being sent upon creating an Esmerald application.
 
 ```python hl_lines="4"
@@ -48,9 +48,9 @@ You can have your own scheduler class as long as it is compatible with Esmerald,
 !!! warning
     Anything else that does not work with `AsyncIO` is very likely also not to work with Esmerald.
 
-## Scheduler and the application
+## EsmeraldScheduler and the application
 
-The `Scheduler` class is not accessible in any part of the application and it is instantiated when an `Esmerald`
+The `EsmeraldScheduler` class is not accessible in any part of the application and it is instantiated when an `Esmerald`
 application is created and the parameters are automatically provided.
 
 ### Enabling the scheduler
