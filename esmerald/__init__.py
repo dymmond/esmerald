@@ -45,7 +45,7 @@ from .routing.gateways import Gateway, WebSocketGateway
 from .routing.handlers import delete, get, patch, post, put, route, websocket
 from .routing.router import Include, Router
 from .routing.views import APIView
-from .schedulers.apscheduler.handler import scheduler
+from .schedulers.asyncz.handler import scheduler
 from .template import JinjaTemplateEngine, MakoTemplateEngine
 from .websockets import WebSocket, WebSocketDisconnect
 

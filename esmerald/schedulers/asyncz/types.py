@@ -1,6 +1,6 @@
 from typing import Union
 
-from esmerald.schedulers.apscheduler.triggers import (
+from asyncz.triggers import (
     AndTrigger,
     CronTrigger,
     DateTrigger,
