@@ -1,5 +1,23 @@
 # Release Notes
 
+## 0.5.0
+
+December 22, 2022
+
+!!! Warning
+    This changes might contain some backward incompatibilities if you are already using the
+    previous scheduler.
+
+## Changed
+
+- **Deprecated** the integration with `APScheduler` in favour of [Asyncz](https://asyncz.tarsild.io).
+- Upgraded the Esmerald official symbol.
+
+!!! Warning
+    If you are using the `@scheduler` with the `func` and `identifier` params, please check the
+    [documentation](./scheduler/handler.md) to understand how to upgrade to the new scheduler.
+    It is almost the same but with some minor changes to the parameters
+
 ## 0.4.2
 
 December 16, 2022

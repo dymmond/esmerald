@@ -13,7 +13,7 @@ from asyncz.triggers.base import BaseTrigger
 from esmerald import Esmerald
 from esmerald.exceptions import ImproperlyConfigured
 from loguru import logger
-from mock import MagicMock, Mock
+from mock import MagicMock
 
 
 class DummyScheduler(BaseScheduler):
