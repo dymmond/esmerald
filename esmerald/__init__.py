@@ -1,12 +1,13 @@
 """
 Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
-__version__ = "0.5.0"
+__version__ = "0.5.1"
+
+from starlette import status
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.injector import Inject
-from starlette import status
 
 from .applications import ChildEsmerald, Esmerald
 from .backgound import BackgroundTask, BackgroundTasks
@@ -34,13 +35,7 @@ from .params import Body, Cookie, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
-from .responses import (
-    JSONResponse,
-    ORJSONResponse,
-    Response,
-    TemplateResponse,
-    UJSONResponse,
-)
+from .responses import JSONResponse, ORJSONResponse, Response, TemplateResponse, UJSONResponse
 from .routing.gateways import Gateway, WebSocketGateway
 from .routing.handlers import delete, get, patch, post, put, route, websocket
 from .routing.router import Include, Router

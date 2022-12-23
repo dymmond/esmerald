@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.5.1
+
+December 23, 2022
+
+### Changed
+
+- Add support for Asyncz 0.1.2
+
 ## 0.5.0
 
 December 22, 2022
