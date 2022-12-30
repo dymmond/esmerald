@@ -2,6 +2,8 @@
 
 ## 0.5.2
 
+December 30, 2022
+
 - Support for Asyncz 0.1.3
 
 ## 0.5.1
