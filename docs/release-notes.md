@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.5.3
+
+January 2, 2023
+
+### Changed
+
+- Added support to httpx 0.23.2
+
 ## 0.5.2
 
 December 30, 2022
