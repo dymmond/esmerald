@@ -7,7 +7,7 @@ January 3, 2023
 ### Changed
 
 - Updated version of asyncz to support 0.1.4.
-- Fixed depedencies when installing Esmerald based on Asyncz requirements.
+- Fixed dependencies when installing Esmerald based on Asyncz requirements.
 - Minor fixes.
 
 ## 0.5.3
