@@ -3,7 +3,7 @@
 Dependencies are a piece of great functionality now common in a lot of the frameworks out there and allows the concept
 of dependency injection to take place.
 
-Esmerald uses the `Inject` object to manage those depedencies in every
+Esmerald uses the `Inject` object to manage those dependencies in every
 [application level](./exception-handlers.md)
 
 ## Dependencies and the application levels
@@ -11,7 +11,8 @@ Esmerald uses the `Inject` object to manage those depedencies in every
 In every level the `dependencies` parameter (among others) are available to be used and handle specific dependencies
 raised on each level.
 
-The depedencies are read from top-down in a python dictionary format, which means **the last one takes precedent**.
+The dependencies are read from top-down in a python dictionary format, which means
+**the last one takes the priority**.
 
 ## How to use
 

@@ -10,7 +10,7 @@ as you design. For all tastes.
 ## BasePermission and custom permissions
 
 If you are used to Django Rest Framework, the way **Esmerald** designed was very much within the same lines and with
-all the huge community of developer in mind to make a transition almost immediate and simpple as possible.
+all the huge community of developer in mind to make a transition almost immediate and simple as possible.
 
 All the permission classes **must derive** from `BasePermission`.
 
