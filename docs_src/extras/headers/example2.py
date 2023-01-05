@@ -1,5 +1,6 @@
-from esmerald import Esmerald, Gateway, ORJSONResponse, Param, post
 from pydantic import BaseModel, EmailStr
+
+from esmerald import Esmerald, Gateway, ORJSONResponse, Param, post
 
 
 class User(BaseModel):
@@ -10,7 +11,7 @@ class User(BaseModel):
 @post(path="/create")
 async def create_user(
     data: User,
-    token: str = Param(value="X-API-TOKEN"),
+    token: str = Param(header="X-API-TOKEN"),
 ) -> ORJSONResponse:
     """
     Run validations with the token header
