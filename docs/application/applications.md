@@ -62,10 +62,9 @@ very useful for development.
 * **version** - The version for the application. Used for OpenAPI.
 * **contact** - The contact of an admin. Used for OpenAPI.
 * **terms_of_service** - The terms of service of the application. Used for OpenAPI.
-* **license_info** - The license information. Used for OpenAPI.
+* **license** - The license information. Used for OpenAPI.
 * **servers** - The servers in dictionary format. Used for OpenAPI.
-* **name** - The name of the application. Used for OpenAPI.
-* **secret** - The secret key used for internal encryption (for example, user passwords).
+* **secret_key** - The secret key used for internal encryption (for example, user passwords).
 * **allowed_hosts** - A list of allowed hosts. Enables the built-in allowed hosts middleware.
 * **allow_origins** - A list of allowed origins. Enables the built-in CORS middleware. It can be only `allow_origins`
 or a [CORSConfig](../configurations/cors.md) object but not both.
@@ -87,7 +86,7 @@ functions on an application top level. Exception handler callables should be of 
 * **csrf_config** - If [CSRFConfig](../configurations/csrf.md) is set it will enable the CSRF built-in middleware.
 * **openapi_config** - If [OpenAPIConfig](../configurations/openapi/config.md) is set it will override the default OpenAPI
 docs settings.
-* **cors_cofig** - If [CORSConfig](../configurations/cors.md) is set it will enable the CORS built-in middleware.
+* **cors_config** - If [CORSConfig](../configurations/cors.md) is set it will enable the CORS built-in middleware.
 * **static_files_config** - If [StaticFilesConfig](../configurations/staticfiles.md) is set, it will enable the
 application static files configuration.
 * **template_config** - If [TemplateConfig](../configurations/template.md) is set it will enable the template
