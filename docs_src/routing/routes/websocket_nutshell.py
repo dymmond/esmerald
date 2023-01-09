@@ -2,7 +2,7 @@ from esmerald import Esmerald, Websocket, WebSocketGateway, websocket
 
 
 @websocket(path="/{path_param:str}")
-async def world_socket(self, socket: Websocket) -> None:
+async def world_socket(socket: Websocket) -> None:
     await socket.accept()
     msg = await socket.receive_json()
     assert msg

@@ -234,7 +234,7 @@ async def another(request: Request) -> dict:
     }
 
 @websocket(path="/{path_param:str}")
-async def world_socket(self, socket: Websocket) -> None:
+async def world_socket(socket: Websocket) -> None:
     await socket.accept()
     msg = await socket.receive_json()
     assert msg
@@ -287,7 +287,7 @@ async def another(request: Request) -> dict:
 
 
 @websocket(path="/{path_param:str}")
-async def world_socket(self, socket: Websocket) -> None:
+async def world_socket(socket: Websocket) -> None:
     await socket.accept()
     msg = await socket.receive_json()
     assert msg
