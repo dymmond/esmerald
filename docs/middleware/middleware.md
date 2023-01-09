@@ -263,6 +263,27 @@ in the [WSGI Frameworks](../wsgi.md) section.
 You can build your own middlewares as explained above but also reuse middlewares directly for Starlette if you wish.
 The middlewares are 100% compatible.
 
+Although some of the middlewares might mention Starlette or other ASGI framework, they are 100%
+compatible with Esmerald as well.
+
+#### <a href="https://github.com/abersheeran/asgi-ratelimit">RateLimitMiddleware</a>
+
+A ASGI Middleware to rate limit and highly customizable.
+
+#### <a href="https://github.com/snok/asgi-correlation-id">CorrelationIdMiddleware</a>
+
+A middleware class for reading/generating request IDs and attaching them to application logs.
+
+!!! Tip
+    For Esmerald apps, just substitute FastAPI with Esmerald in the examples given or implement
+    in the way Esmerald shows in this document.
+
+#### <a href="https://github.com/steinnes/timing-asgi">TimingMiddleware</a>
+
+ASGI middleware to record and emit timing metrics (to something like statsd).
+This integration works using [EsmeraldTimming](https://github.com/dymmond/esmerald-timing).
+
+
 ## Important points
 
 1. Esmerald supports [Starlette middleware](#starlette-middleware), [MiddlewareProtocol](#esmerald-protocols).
