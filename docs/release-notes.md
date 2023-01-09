@@ -1,5 +1,14 @@
 # Release Notes
 
+## 0.6.0
+
+January, 2023
+
+### Fixed
+
+- `JWTAuthMiddleware` from `esmerald.contrib.auth.tortoise.middleware` raising exception
+on invalid token.
+
 ## 0.5.4
 
 January 3, 2023
