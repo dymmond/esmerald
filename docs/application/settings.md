@@ -147,7 +147,7 @@ very useful for development.
 
     <sup>Default: `None`.</sup>
 
-* **license_info** - The license information. Used for OpenAPI.
+* **license** - The license information. Used for OpenAPI.
 
     <sup>Default: `None`.</sup>
 
@@ -155,7 +155,7 @@ very useful for development.
 
     <sup>Default: `None`.</sup>
 
-* **secret** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
+* **secret_key** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
 update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/tortoise.md)
 support.
 
@@ -274,7 +274,7 @@ application static files configuration.
 
     <sup>Default: `None`</sup>
 
-* **cors_cofig** - If [CORSConfig](../configurations/cors.md) is set it will enable the CORS built-in middleware.
+* **cors_config** - If [CORSConfig](../configurations/cors.md) is set it will enable the CORS built-in middleware.
 
     <sup>Default: `CORSConfig` if `allow_origins` is not set.</sup><br>
     <sup>Default: `None` if `allow_origins` is not set.</sup>
