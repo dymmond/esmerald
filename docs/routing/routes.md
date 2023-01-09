@@ -94,7 +94,7 @@ and feature and allows:
 2. Clean routing design.
 3. Separation of concerns.
 4. Separation of routes.
-5. Redution of the level of imports needed through files.
+5. Reduction of the level of imports needed through files.
 6. Less human lead bugs.
 
 !!! Warning
@@ -169,7 +169,7 @@ functions on an application top level. Exception handler callables should be of 
 #### Include and application instance
 
 The `Include` can be very helpful mostly when the goal is to avoid a lot of imports and massive list
-of objects to be passed into one single object. This can be particulary useful to make a clean start
+of objects to be passed into one single object. This can be particularly useful to make a clean start
 Esmerald object as well.
 
 **Example**:
