@@ -1,7 +1,7 @@
 from esmerald import CSRFConfig, Esmerald, settings
 
 csrf_config = CSRFConfig(
-    secret=settings.secret,
+    secret=settings.secret_key,
     cookie_name="csrftoken",
 )
 

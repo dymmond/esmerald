@@ -1,5 +1,7 @@
 from typing import Generic, TypeVar
 
+from jose import JWSError, JWTError
+from starlette.authentication import AuthenticationError
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp
 from tortoise.exceptions import DoesNotExist
@@ -68,14 +70,22 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
             raise NotAuthorized()
 
     async def authenticate(self, request: HTTPConnection) -> AuthResult:
+        """
+        Retrieves the header default of the config and validates against the decoding.
+
+        Raises Authentication error if invalid.
+        """
         token = request.headers.get(self.config.api_key_header)
 
         if not token:
-            raise NotAuthorized("JWT token not found.")
+            raise NotAuthorized("Token not found.")
 
-        token = Token.decode(
-            token=token, key=self.config.signing_key, algorithm=self.config.algorithm
-        )
+        try:
+            token = Token.decode(
+                token=token, key=self.config.signing_key, algorithm=self.config.algorithm
+            )
+        except (JWSError, JWTError) as e:
+            raise AuthenticationError(str(e))
 
         user = await self.retrieve_user(token.sub)
         return AuthResult(user=user)

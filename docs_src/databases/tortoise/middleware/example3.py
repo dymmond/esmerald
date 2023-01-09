@@ -16,7 +16,7 @@ class AppAuthMiddleware(JWTAuthMiddleware):
     Overriding the JWTAuthMiddleware
     """
 
-    jwt_config = JWTConfig(signing_key=settings.secret, auth_header_types=["Bearer", "Token"])
+    jwt_config = JWTConfig(signing_key=settings.secret_key, auth_header_types=["Bearer", "Token"])
 
     def __init__(self, app: "ASGIApp"):
 
