@@ -159,6 +159,7 @@ class Router(StarletteRouter, Parent):
         "name",
         "dependencies",
         "exception_handlers",
+        "interceptors",
         "permissions",
         "middleware",
         "response_class",
@@ -183,6 +184,7 @@ class Router(StarletteRouter, Parent):
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         response_class: Optional["ResponseType"] = None,
@@ -229,6 +231,7 @@ class Router(StarletteRouter, Parent):
         self.parent: Optional["Router"] = parent or self.app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
+        self.interceptors = interceptors or []
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.routes = routes

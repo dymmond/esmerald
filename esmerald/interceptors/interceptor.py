@@ -1,19 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-
 from esmerald.protocols.interceptor import InterceptorProtocol
 
 if TYPE_CHECKING:
-    from starlette.types import ASGIApp, Receive, Scope, Send
+    from starlette.types import Receive, Scope, Send
 
 
 class EsmeraldInterceptor(ABC, InterceptorProtocol):
     """Base class for any Esmerald interceptor in the system."""
-
-    def __init__(self, app: "ASGIApp") -> None:
-        super().__init__(app)
-        self.app = app
 
     # async def __call__(self, scope: "Scope", send: "Send", receive: "Receive") -> None:
     #     if scope["type"] not in ("http", "websocket"):
@@ -24,7 +19,7 @@ class EsmeraldInterceptor(ABC, InterceptorProtocol):
     #     await self.app(scope, receive, send)
 
     @abstractmethod
-    async def intercept(self, scope: "Scope", send: "Send", receive: "Receive") -> None:
+    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         The abstract method that needs to be implemented for any interceptor.
         """

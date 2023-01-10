@@ -108,6 +108,12 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
                 handler.operation_id = self.generate_operation_id()
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interception of messages and calls from the API.
+        """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         await self.handler.handle(scope, receive, send)
 
     def generate_operation_id(self):
@@ -185,4 +191,10 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         ) = compile_path(self.path)
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interception of messages and calls from the API.
+        """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         await self.handler.handle(scope, receive, send)

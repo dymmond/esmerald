@@ -2,9 +2,8 @@ from typing import TYPE_CHECKING, TypeVar
 
 from typing_extensions import Protocol, runtime_checkable
 
-
 if TYPE_CHECKING:
-    from starlette.types import ASGIApp, Receive, Scope, Send
+    from starlette.types import Receive, Scope, Send
 
 T = TypeVar("T")
 
@@ -19,9 +18,6 @@ class InterceptorProtocol(Protocol):  # pragma: no cover
 
     An interceptor could be anything from logging to rerouting or even input sanitizing.
     """
-
-    def __init__(self, app: "ASGIApp") -> None:
-        ...
 
     async def __call__(self, scope: "Scope", send: "Send", receive: "Receive") -> None:
         ...

@@ -27,7 +27,7 @@ from starlette.responses import JSONResponse
 from starlette.responses import Response as StarletteResponse
 from starlette.routing import Mount as Mount  # noqa
 from starlette.routing import compile_path
-from starlette.types import Scope
+from starlette.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -433,22 +433,6 @@ class BaseResponseHandler:
         )
 
 
-class BaseInterceptorMixin:
-    def get_interceptors(self) -> List["Interceptor"]:
-        """
-        Returns all the interceptors in the handler scope from the ownsership layers.
-        """
-        if self._interceptors is Void:
-            self._interceptors = []
-            for layer in self.parent_levels:
-                self._interceptors.extend(layer.interceptors or [])
-            self._interceptors = cast(
-                "List[Interceptor]",
-                [AsyncCallable(interceptors) for interceptors in self._interceptors],
-            )
-        return cast("List[Interceptor]", self._interceptors)
-
-
 class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixin):
     """
     Base of HTTPHandler and WebSocketHandler.
@@ -612,3 +596,27 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             permission = await permission()
             permission.has_permission(connection, self)
             continue_or_raise_permission_exception(connection, self, permission)
+
+
+class BaseInterceptorMixin(BaseHandlerMixin):
+    def get_interceptors(self) -> List["Interceptor"]:
+        """
+        Returns all the interceptors in the handler scope from the ownsership layers.
+        """
+        if self._interceptors is Void:
+            self._interceptors = []
+            for layer in self.parent_levels:
+                self._interceptors.extend(layer.interceptors or [])
+            self._interceptors = cast(
+                "List[Interceptor]",
+                [AsyncCallable(interceptors) for interceptors in self._interceptors],
+            )
+        return cast("List[Interceptor]", self._interceptors)
+
+    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Validates the interceptors and runs before hitting the handler.
+        """
+        for _interceptor in self.get_interceptors():
+            intecept = await _interceptor()
+            await intecept.intercept(scope, receive, send)
