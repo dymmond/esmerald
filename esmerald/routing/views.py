@@ -1,8 +1,9 @@
 from copy import copy
 from typing import TYPE_CHECKING, List, Optional, Union, cast
 
-from esmerald.utils.url import clean_path
 from starlette.routing import compile_path
+
+from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
     from esmerald.permissions.types import Permission
@@ -26,6 +27,7 @@ class APIView:
     __slots__ = (
         "dependencies",
         "exception_handlers",
+        "interceptors",
         "permissions",
         "middleware",
         "parent",
@@ -60,6 +62,7 @@ class APIView:
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
         self.parent = parent
+        self.interceptors = []
 
     def get_filtered_handler(self) -> List[str]:
         """

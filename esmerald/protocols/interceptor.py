@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, TypeVar
 
 from typing_extensions import Protocol, runtime_checkable
 
-from esmerald.requests import Request
 
 if TYPE_CHECKING:
     from starlette.types import ASGIApp, Receive, Scope, Send

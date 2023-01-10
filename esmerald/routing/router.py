@@ -19,6 +19,18 @@ from typing import (
     cast,
 )
 
+from starlette import status
+from starlette.requests import HTTPConnection
+from starlette.responses import JSONResponse
+from starlette.responses import Response as StarletteResponse
+from starlette.routing import BaseRoute as StarletteBaseRoute
+from starlette.routing import Host, Mount, NoMatchFound
+from starlette.routing import Route as StarletteRoute
+from starlette.routing import Router as StarletteRouter
+from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
+from starlette.routing import compile_path
+from starlette.types import ASGIApp, Receive, Scope, Send
+
 from esmerald.conf import settings
 from esmerald.datastructures import File, Redirect, URLPath
 from esmerald.enums import HttpMethod, MediaType
@@ -29,6 +41,7 @@ from esmerald.exceptions import (
     ValidationErrorException,
 )
 from esmerald.injector import Inject
+from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
@@ -44,19 +57,11 @@ from esmerald.utils.constants import DATA, REDIRECT_STATUS_CODES, REQUEST, SOCKE
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
-from starlette import status
-from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import BaseRoute as StarletteBaseRoute
-from starlette.routing import Host, Mount, NoMatchFound
-from starlette.routing import Route as StarletteRoute
-from starlette.routing import Router as StarletteRouter
-from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
-from starlette.routing import compile_path
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 if TYPE_CHECKING:
+    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+    from pydantic.typing import AnyCallable
+
     from esmerald.applications import Esmerald
     from esmerald.exceptions import HTTPException
     from esmerald.permissions.types import Permission
@@ -77,8 +82,6 @@ if TYPE_CHECKING:
         ResponseType,
         RouteParent,
     )
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
-    from pydantic.typing import AnyCallable
 
 
 class Parent:
@@ -287,6 +290,7 @@ class Router(StarletteRouter, Parent):
         handler: "HTTPHandler",
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
@@ -309,6 +313,7 @@ class Router(StarletteRouter, Parent):
             include_in_schema=include_in_schema,
             dependencies=dependencies,
             exception_handlers=exception_handlers,
+            interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,
             deprecated=deprecated,
@@ -324,6 +329,7 @@ class Router(StarletteRouter, Parent):
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ) -> None:
@@ -338,6 +344,7 @@ class Router(StarletteRouter, Parent):
             name=name,
             dependencies=dependencies,
             exception_handlers=exception_handlers,
+            interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,
         )
@@ -841,6 +848,7 @@ class Include(Mount):
         "name",
         "dependencies",
         "exception_handlers",
+        "interceptors",
         "permissions",
         "middleware",
         "deprecated",
@@ -858,6 +866,7 @@ class Include(Mount):
         parent: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
@@ -889,6 +898,7 @@ class Include(Mount):
         self.pattern = pattern
         self.include_in_schema = include_in_schema
         self.dependencies = dependencies or {}
+        self.interceptors = interceptors or []
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
@@ -988,6 +998,7 @@ class Include(Mount):
                             handler=route_handler,
                             name=route_handler.path,
                             middleware=route.middleware,
+                            interceptors=self.interceptors,
                             permissions=route.permissions,
                             exception_handlers=route.exception_handlers,
                         )
