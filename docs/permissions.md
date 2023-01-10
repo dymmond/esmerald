@@ -46,7 +46,6 @@ special needs and rules.
 * **DenyAll** - As the name suggests, blocks access to anyone. Can be useful if an API is under maintenance.
 * **AllowAny** - The opposite of DenyAll. Allows access to everyone. Useful as permission for the top Esmerald
 application.
-* **DenyAll** - As the name suggested, blocks access to anyone. Can be useful if an API is under maintenance.
 * **IsAdminUser** - Checks if a user is admin or not by inheriting the object and implementing `is_user_staff` function.
 * **IsAuthenticated** - Checks if a user is authenticated by inheriting from the object and implementing the logic
 for `is_user_authenticated` function.
