@@ -30,6 +30,8 @@ with the handler's path like `/home/homepage`.
 * **include_in_schema**: Boolean flag telling if it should be added to the OpenAPI docs.
 * **parent**: Who `owns` the Gateway. If not specified, the application automatically it assign it. The parent is usually
 a [router](./router.md) or an [Include](#include).
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
+requests (HTTP and Websockets).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Gateway will be checked from
@@ -67,6 +69,8 @@ In simple terms, a WebSocketGateway is not a direct route but instead is a "wrap
 * **name**: The name for the WebSocketGateway. The name can be reversed by [`url_path_for()`](./router.md).
 * **parent**: Who `owns` the WebSocketGateway. If not specified, the application automatically it assign it.
 The parent is usually a [router](./router.md) or an [Include](#include).
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
+requests (HTTP and Websockets).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a WebSocketGateway will be 
@@ -125,6 +129,8 @@ a [router](./router.md) or another [Include](#include).
 * **namespace**: The fully qualified module namespace where the file with routes is located.
 Example: `example.myapp.routes`.
 * **pattern**: The pattern to lookup inside a given namespace. Defaults to `route_patterns`.
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
+requests (HTTP and Websockets).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from

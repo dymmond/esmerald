@@ -59,6 +59,11 @@ arguments, and may be be either standard functions, or async functions.
 
     <sup>Default: `None`</sup>
 
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
+requests (HTTP and Websockets).
+
+    <sup>Default `None`</sup>
+
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 

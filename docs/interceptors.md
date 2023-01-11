@@ -96,6 +96,7 @@ exception to this but has some constraints.
 
 - The interceptors only work on [Esmerald](./application/applications.md),
 [ChildEsmerald](./routing/router.md#child-esmerald-application),
+[Router](./routing/router.md#router),
 [Gateway](./routing/routes.md#gateway),
 [WebsocketGateway](./routing/routes.md#websocketgateway) and [Include](./routing/routes.md#include)
 **and do not work on handlers directly**.
