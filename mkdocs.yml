@@ -66,6 +66,7 @@ nav:
           - Models: "databases/tortoise/models.md"
           - Middleware: "databases/tortoise/middleware.md"
           - Event Handlers: "databases/tortoise/event-handlers.md"
+  - Interceptors: "interceptors.md"
   - Permissions: "permissions.md"
   - Middleware: "middleware/middleware.md"
   - Exceptions: "exceptions.md"

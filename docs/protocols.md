@@ -96,6 +96,11 @@ DAO/AsyncDAO are your friends.
 !!! Info
     DAO and AsyncDAO are fundamentally the same but one is for `sync` and the other supports `async`.
 
+## InterceptorProtocol
+
+This is a special protocol used to implement [interceptors](./interceptors.md) for Esmerald. Check the
+[document](./interceptors.md) for more details about how to use it.
+
 ## Notes
 
 Implementing the DAO/AsyncDAO protocol is as simple as subclassing it and implement the methods but this does not mean

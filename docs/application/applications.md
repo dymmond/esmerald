@@ -71,6 +71,8 @@ or a [CORSConfig](../configurations/cors.md) object but not both.
 * **routes** - A list of routes to serve incoming HTTP and WebSocket requests.
 A list of [Gateway](../routing/routes.md#gateway), [WebSocketGateway](../routing/routes.md#websocketgateway)
 or [Include](../routing/routes.md#include)
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming 
+requests (HTTP and Websockets).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. A Esmerald application will always include the

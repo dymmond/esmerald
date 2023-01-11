@@ -297,6 +297,11 @@ internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/
 
     <sup>Default `None`</sup>
 
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
+requests (HTTP and Websockets).
+
+    <sup>Default `None`</sup>
+
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 
