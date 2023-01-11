@@ -183,3 +183,18 @@ def test_multiple_interceptors():
         response = client.post("/cookie/test", json=data, cookies={"csrftoken": "test-cookie"})
 
         assert response.status_code == 401
+
+
+def test_multiple_interceptors_change():
+    """
+    Uses multiple interceptors and raises a 401 in the CookieInterceptor
+    """
+    data = {"name": "test", "sku": "12345"}
+
+    with create_client(
+        routes=[Gateway(handler=cookie_test, interceptors=[TestInterceptor])],
+        interceptors=[CookieInterceptor],
+    ) as client:
+        response = client.post("/cookie/test", json=data, cookies={"csrftoken": "test-cookie"})
+
+        assert response.status_code == 401
