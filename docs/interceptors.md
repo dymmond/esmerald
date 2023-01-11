@@ -134,7 +134,7 @@ level.
 The same logic can algo be applied to [Include](./routing/routes.md#include) and
 [nested Include](./routing/routes.md#nested-routes).
 
-All of the levels describes here allow to pass `interceptors`.
+All of the levels described here allow to pass `interceptors`.
 
 ## Working in isolation
 
@@ -149,8 +149,8 @@ an Esmerald app and adding the `CookieInterceptor` in the ChildEsmerald will wor
 ```
 
 The `RequestParamInterceptor` will only work for the routes of the Esmerald directly and not for
-the ChildEsmerald, which means the ChildEsmerald to also have the `RequestParamInterceptor`
-it must add it on the top of it as well.
+the ChildEsmerald, which means for the ChildEsmerald to also have the `RequestParamInterceptor`
+**it must add it on the top of it as well**.
 
 ```python hl_lines="17-18 23"
 {!> ../docs_src/interceptors/child_esmerald.py !}
