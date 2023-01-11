@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from esmerald.protocols.interceptor import InterceptorProtocol
 
 if TYPE_CHECKING:
-    from starlette.types import ASGIApp, Receive, Scope, Send
+    from starlette.types import Receive, Scope, Send
 
 
 class EsmeraldInterceptor(ABC):

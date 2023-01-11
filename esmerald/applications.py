@@ -386,7 +386,6 @@ class Esmerald(Starlette):
     ):
         """
         Builds the middleware stack from the top to the bottom of the routes.
-        We need to make sure the Esmerald/ChildEsmerald app.
         """
         if not middlewares:
             middlewares = []
