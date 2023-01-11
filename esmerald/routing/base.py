@@ -618,6 +618,6 @@ class BaseInterceptorMixin(BaseHandlerMixin):
         Checks for every interceptor on each level and runs them all before reaching any
         of the handlers.
         """
-        for _interceptor in self.get_interceptors():
-            _intercept = await _interceptor()
-            await _intercept.intercept(scope, receive, send)
+        for interceptor in self.get_interceptors():
+            interceptor = await interceptor()
+            await interceptor.intercept(scope, receive, send)

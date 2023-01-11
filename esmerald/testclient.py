@@ -11,12 +11,15 @@ from typing import (
 )
 
 import httpx  # noqa
+from starlette.testclient import TestClient  # noqa
+
 from esmerald.applications import Esmerald
 from esmerald.conf import settings  # noqa
 from esmerald.utils.crypto import get_random_secret_key
-from starlette.testclient import TestClient  # noqa
 
 if TYPE_CHECKING:
+    from typing_extensions import Literal
+
     from esmerald.config import (
         CORSConfig,
         CSRFConfig,
@@ -25,17 +28,17 @@ if TYPE_CHECKING:
         StaticFilesConfig,
         TemplateConfig,
     )
+    from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
         Dependencies,
+        DictStr,
         ExceptionHandlers,
         LifeSpanHandler,
         Middleware,
         SchedulerType,
-        DictStr,
     )
-    from typing_extensions import Literal
 
 
 class EsmeraldTestClient(TestClient):
@@ -78,6 +81,7 @@ def create_client(
     base_url: str = "http://testserver",
     backend: "Literal['asyncio', 'trio']" = "asyncio",
     backend_options: Optional[Dict[str, Any]] = None,
+    interceptors: Optional[List["Interceptor"]] = settings.interceptors,
     permissions: Optional[List["Permission"]] = settings.permissions,
     dependencies: Optional["Dependencies"] = settings.dependencies,
     middleware: Optional[List["Middleware"]] = settings.middleware,
@@ -110,6 +114,7 @@ def create_client(
             secret_key=secret_key,
             allowed_hosts=allowed_hosts,
             allow_origins=allow_origins,
+            interceptors=interceptors,
             permissions=permissions,
             dependencies=dependencies,
             middleware=middleware,
