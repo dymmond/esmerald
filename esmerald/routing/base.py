@@ -615,8 +615,9 @@ class BaseInterceptorMixin(BaseHandlerMixin):
 
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
-        Validates the interceptors and runs before hitting the handler.
+        Checks for every interceptor on each level and runs them all before reaching any
+        of the handlers.
         """
         for _interceptor in self.get_interceptors():
-            intecept = await _interceptor()
-            await intecept.intercept(scope, receive, send)
+            _intercept = await _interceptor()
+            await _intercept.intercept(scope, receive, send)
