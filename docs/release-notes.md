@@ -1,5 +1,24 @@
 # Release Notes
 
+## 0.6.0
+
+January 11, 2023
+
+### Added
+
+- Added support to the new [Interceptors](./interceptors.md).
+
+### Changed
+
+- Added support to httpx 0.23.3
+- Updated document references pointing to [Interceptors](./interceptors.md).
+
+### Fixed
+
+- `JWTAuthMiddleware` from `esmerald.contrib.auth.tortoise.middleware` raising exception
+on invalid token.
+- Fixed code references to the `Void`.
+
 ## 0.5.4
 
 January 3, 2023

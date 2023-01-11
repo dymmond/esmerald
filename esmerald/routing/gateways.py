@@ -1,23 +1,27 @@
 import re
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Union
 
-from esmerald.routing.views import APIView
-from esmerald.utils.helpers import clean_string, is_class_and_subclass
-from esmerald.utils.url import clean_path
 from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import Receive, Scope, Send
 
-if TYPE_CHECKING:
+from esmerald.routing.base import BaseInterceptorMixin
+from esmerald.routing.views import APIView
+from esmerald.typing import Void
+from esmerald.utils.helpers import clean_string, is_class_and_subclass
+from esmerald.utils.url import clean_path
 
+if TYPE_CHECKING:
+    from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
     from esmerald.types import Dependencies, ExceptionHandlers, Middleware, ParentType
 
 
-class Gateway(StarletteRoute):
+class Gateway(StarletteRoute, BaseInterceptorMixin):
     __slots__ = (
+        "_interceptors",
         "path",
         "handler",
         "name",
@@ -26,6 +30,7 @@ class Gateway(StarletteRoute):
         "dependencies",
         "middleware",
         "exception_handlers",
+        "interceptors",
         "permissions",
         "deprecated",
     )
@@ -40,6 +45,7 @@ class Gateway(StarletteRoute):
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
         middleware: Optional["Middleware"] = None,
+        interceptors: Optional["Interceptor"] = None,
         permissions: Optional["Permission"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         deprecated: Optional[bool] = None,
@@ -74,8 +80,11 @@ class Gateway(StarletteRoute):
         Since the default Starlette Route endpoint does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
+        self._interceptors: Union[List["Interceptor"], "Void"] = Void
+
         self.handler = handler
         self.dependencies = dependencies or {}
+        self.interceptors = interceptors or []
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
@@ -99,6 +108,12 @@ class Gateway(StarletteRoute):
                 handler.operation_id = self.generate_operation_id()
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interception of messages and calls from the API.
+        """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         await self.handler.handle(scope, receive, send)
 
     def generate_operation_id(self):
@@ -112,14 +127,16 @@ class Gateway(StarletteRoute):
         return operation_id
 
 
-class WebSocketGateway(StarletteWebSocketRoute):
+class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
     __slots__ = (
+        "_interceptors",
         "path",
         "handler",
         "name",
         "dependencies",
         "middleware",
         "exception_handlers",
+        "interceptors",
         "permissions",
         "parent",
     )
@@ -134,6 +151,7 @@ class WebSocketGateway(StarletteWebSocketRoute):
         dependencies: Optional["Dependencies"] = None,
         middleware: Optional[List["Middleware"]] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
     ) -> None:
         if not path:
@@ -158,8 +176,10 @@ class WebSocketGateway(StarletteWebSocketRoute):
         Since the default Starlette Route endpoint does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
+        self._interceptors: Union[List["Interceptor"], "Void"] = Void
         self.handler = handler
         self.dependencies = dependencies or {}
+        self.interceptors = interceptors or []
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
@@ -171,4 +191,10 @@ class WebSocketGateway(StarletteWebSocketRoute):
         ) = compile_path(self.path)
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interception of messages and calls from the API.
+        """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         await self.handler.handle(scope, receive, send)

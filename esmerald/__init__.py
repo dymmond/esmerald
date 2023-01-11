@@ -1,7 +1,7 @@
 """
 Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
-__version__ = "0.5.4"
+__version__ = "0.6.0"
 
 from starlette import status
 
@@ -31,6 +31,7 @@ from .exceptions import (
     ServiceUnavailable,
     ValidationErrorException,
 )
+from .interceptors.interceptor import EsmeraldInterceptor
 from .params import Body, Cookie, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
@@ -60,6 +61,7 @@ __all__ = [
     "DenyAll",
     "Esmerald",
     "EsmeraldAPISettings",
+    "EsmeraldInterceptor",
     "Gateway",
     "Header",
     "HTTPException",

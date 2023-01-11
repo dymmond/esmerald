@@ -1,13 +1,7 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncContextManager,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, AsyncContextManager, Callable, Dict, List, Optional, Union
+
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from pydantic import BaseSettings
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
@@ -20,6 +14,7 @@ from esmerald.config import (
     TemplateConfig,
 )
 from esmerald.config.asyncexit import AsyncExitConfig
+from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
 from esmerald.schedulers import AsyncIOScheduler
 from esmerald.types import (
@@ -33,8 +28,6 @@ from esmerald.types import (
     ResponseType,
     SchedulerType,
 )
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from pydantic import BaseSettings
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -340,6 +333,13 @@ class EsmeraldAPISettings(BaseSettings):
         """
 
         return {}
+
+    @property
+    def interceptors(self) -> List[Interceptor]:
+        """
+        Returns the default interceptors of Esmerald.
+        """
+        return None
 
     @property
     def permissions(self) -> List[Permission]:

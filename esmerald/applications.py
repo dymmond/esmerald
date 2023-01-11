@@ -11,6 +11,11 @@ from typing import (
     Union,
 )
 
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
+from starlette.applications import Starlette
+from starlette.middleware import Middleware as StarletteMiddleware  # noqa
+
 from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
 from esmerald.conf import settings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig, TemplateConfig
@@ -22,13 +27,11 @@ from esmerald.exception_handlers import (
     validation_error_exception_handler,
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
+from esmerald.interceptors.types import Interceptor
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
 from esmerald.middleware.csrf import CSRFMiddleware
-from esmerald.middleware.exceptions import (
-    EsmeraldAPIExceptionMiddleware,
-    ExceptionMiddleware,
-)
+from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, ExceptionMiddleware
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
@@ -52,10 +55,6 @@ from esmerald.types import (
     Scope,
     Send,
 )
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
-from starlette.applications import Starlette
-from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
@@ -119,6 +118,7 @@ class Esmerald(Starlette):
         allowed_hosts: Optional[List[str]] = settings.allowed_hosts,
         allow_origins: Optional[List[str]] = settings.allow_origins,
         permissions: Optional[List["Permission"]] = settings.permissions,
+        interceptors: Optional[List["Interceptor"]] = settings.interceptors,
         dependencies: Optional["Dependencies"] = settings.dependencies,
         csrf_config: Optional["CSRFConfig"] = settings.csrf_config,
         openapi_config: Optional["OpenAPIConfig"] = settings.openapi_config,
@@ -171,6 +171,7 @@ class Esmerald(Starlette):
         self.allowed_hosts = allowed_hosts
         self.allow_origins = allow_origins
         self.dependencies = dependencies or {}
+        self.interceptors = interceptors or []
         self.permissions = permissions or []
         self.csrf_config = csrf_config
         self.cors_config = cors_config
@@ -265,6 +266,7 @@ class Esmerald(Starlette):
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
@@ -276,6 +278,7 @@ class Esmerald(Starlette):
             handler=handler,
             dependencies=dependencies,
             exception_handlers=exception_handlers,
+            interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,
             name=name,
@@ -292,6 +295,7 @@ class Esmerald(Starlette):
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
@@ -302,6 +306,7 @@ class Esmerald(Starlette):
             handler=handler,
             dependencies=dependencies,
             exception_handlers=exception_handlers,
+            interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,
             name=name,
@@ -321,6 +326,7 @@ class Esmerald(Starlette):
                         exception_handlers=route.exception_handlers,
                         name=route.name,
                         middleware=route.middleware,
+                        interceptors=route.interceptors,
                         permissions=route.permissions,
                         routes=route.routes,
                         parent=self.router,
@@ -346,6 +352,7 @@ class Esmerald(Starlette):
                     exception_handlers=route.exception_handlers,
                     name=route.name,
                     middleware=route.middleware,
+                    interceptors=route.interceptors,
                     permissions=route.permissions,
                     handler=route.handler,
                     parent=self.router,
@@ -381,7 +388,6 @@ class Esmerald(Starlette):
     ):
         """
         Builds the middleware stack from the top to the bottom of the routes.
-        We need to make sure the Esmerald/ChildEsmerald app.
         """
         if not middlewares:
             middlewares = []

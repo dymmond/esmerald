@@ -21,6 +21,15 @@ from typing import (
 )
 from uuid import UUID
 
+from starlette.convertors import CONVERTOR_TYPES
+from starlette.requests import HTTPConnection
+from starlette.responses import JSONResponse
+from starlette.responses import Response as StarletteResponse
+from starlette.routing import Mount as Mount  # noqa
+from starlette.routing import compile_path
+from starlette.types import Receive, Scope, Send
+from typing_extensions import TypedDict
+
 from esmerald.backgound import BackgroundTask, BackgroundTasks
 from esmerald.datastructures import ResponseContainer
 from esmerald.enums import MediaType
@@ -36,17 +45,12 @@ from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
-from starlette.convertors import CONVERTOR_TYPES
-from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import Mount as Mount  # noqa
-from starlette.routing import compile_path
-from starlette.types import Scope
-from typing_extensions import TypedDict
 
 if TYPE_CHECKING:
+    from pydantic.typing import AnyCallable
+
     from esmerald.applications import Esmerald
+    from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
     from esmerald.types import (
@@ -57,7 +61,6 @@ if TYPE_CHECKING:
         ResponseHeaders,
         ResponseType,
     )
-    from pydantic.typing import AnyCallable
 
 param_type_map = {
     "str": str,
@@ -593,3 +596,28 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             permission = await permission()
             permission.has_permission(connection, self)
             continue_or_raise_permission_exception(connection, self, permission)
+
+
+class BaseInterceptorMixin(BaseHandlerMixin):
+    def get_interceptors(self) -> List["Interceptor"]:
+        """
+        Returns all the interceptors in the handler scope from the ownsership layers.
+        """
+        if self._interceptors is Void:
+            self._interceptors = []
+            for layer in self.parent_levels:
+                self._interceptors.extend(layer.interceptors or [])
+            self._interceptors = cast(
+                "List[Interceptor]",
+                [AsyncCallable(interceptors) for interceptors in self._interceptors],
+            )
+        return cast("List[Interceptor]", self._interceptors)
+
+    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Checks for every interceptor on each level and runs them all before reaching any
+        of the handlers.
+        """
+        for interceptor in self.get_interceptors():
+            interceptor = await interceptor()
+            await interceptor.intercept(scope, receive, send)
