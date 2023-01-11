@@ -1,3 +1,4 @@
+from loguru import logger
 from pydantic import BaseModel
 from starlette.types import Receive, Scope, Send
 
@@ -26,6 +27,11 @@ class CookieInterceptor(EsmeraldInterceptor):
             raise NotAuthorized()
 
 
+class LoggingInterceptor(EsmeraldInterceptor):
+    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        logger.info("Intercepted for logging")
+
+
 class DummyInterceptor:
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         request = Request(scope=scope, receive=receive, send=send)
@@ -48,6 +54,11 @@ async def cookie_test(
 ) -> JSONResponse:
     breakpoint()
     return JSONResponse({"name": name, "cookie": cookie})
+
+
+@post("/logging/{name}")
+async def logging_view(data: Item, name: str) -> JSONResponse:
+    return JSONResponse({"name": name})
 
 
 def test_issubclassing_EsmeraldInterceptor():
@@ -198,3 +209,18 @@ def test_multiple_interceptors_change():
         response = client.post("/cookie/test", json=data, cookies={"csrftoken": "test-cookie"})
 
         assert response.status_code == 401
+
+
+def test_multiple_interceptors_change_two():
+    """
+    Uses multiple interceptors and raises a 401 in the CookieInterceptor
+    """
+    data = {"name": "test", "sku": "12345"}
+
+    with create_client(
+        routes=[Gateway(handler=logging_view, interceptors=[TestInterceptor])],
+        interceptors=[LoggingInterceptor],
+    ) as client:
+        response = client.post("/logging/test", json=data)
+
+        assert response.status_code == 201
