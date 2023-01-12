@@ -22,6 +22,3 @@ class JWTConfig(BaseModel):
     user_id_claim: str = "user_id"
     access_token_name: str = "access_token"
     refresh_token_name: str = "refresh_token"
-    """
-        Name of the key for the refresh token. Defaults to `refresh_token`.
-    """
