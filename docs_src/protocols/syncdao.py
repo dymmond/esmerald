@@ -80,7 +80,7 @@ async def create(data: UserModel) -> None:
 @post("/create-async-dao")
 async def create_async_dao(data: UserModel) -> None:
     user = AsyncUserDAO()
-    user.create(user=data)
+    await user.create(user=data)
 
 
 app = Esmerald(
