@@ -41,14 +41,13 @@ class Token(BaseModel):
             return date
         raise ValueError("iat must be a current or past time")
 
-    def encode(self, key: str, algorithm: str, **claims: "DictAny") -> str:
+    def encode(self, key: str, algorithm: str) -> str:
         """
         Encodes the token into a proper str formatted and allows passing kwargs.
         """
-        token_claims = claims or self.dict(exclude_none=True)
         try:
             return jwt.encode(
-                claims=token_claims,
+                claims=self.dict(exclude_none=True),
                 key=key,
                 algorithm=algorithm,
             )
@@ -64,7 +63,7 @@ class Token(BaseModel):
             data = jwt.decode(
                 token=token,
                 key=key,
-                algorithms=[algorithms],
+                algorithms=algorithms,
                 options={"verify_aud": False},
             )
         except (JWSError, JWTError) as e:

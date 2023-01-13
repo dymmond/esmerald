@@ -8,6 +8,6 @@ jwt_config = JWTConfig(
     signing_key=settings.secret_key,
 )
 
-auth_middleware = StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user=User)
+auth_middleware = StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)
 
 app = Esmerald(middleware=[auth_middleware])

@@ -13,7 +13,7 @@ WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
 class EsmeraldAPIException(Exception):
     def __init__(self, *args: Any, detail: str = ""):
         self.detail = detail
-        super().__init__(*(str(arg) for arg in args if arg), detail)
+        super().__init__(*(str(arg) for arg in args if arg), self.detail)
 
     def __repr__(self) -> str:
         if self.detail:
