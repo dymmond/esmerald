@@ -26,7 +26,7 @@ settings would be recommended as it would be the source of truth for any configu
 
 * **api_key_header** - API Key header for the jwt.
 
-    <sup>Default: `X-API-KEY`</sup>
+    <sup>Default: `X_API_TOKEN`</sup>
 
 * **algorithm** - Algorithm used for the jwt token encoding/decoding.
 
