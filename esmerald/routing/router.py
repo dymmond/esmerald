@@ -20,6 +20,7 @@ from typing import (
 )
 
 from starlette import status
+from starlette.middleware import Middleware as StarletteMiddleware
 from starlette.requests import HTTPConnection
 from starlette.responses import JSONResponse
 from starlette.responses import Response as StarletteResponse
@@ -915,11 +916,52 @@ class Include(Mount):
         if routes:
             routes = self.resolve_route_path_handler(routes)
 
-        super().__init__(self.path, app=self.app, routes=routes, name=name)
+        # Build the middleware from the routes
+        routes_middleware = []
+        for route in routes or []:
+            routes_middleware = self.build_routes_middleware(route)
+
+        # Add the middleware to the include
+        self.middleware += routes_middleware
+        include_middleware = []
+
+        if self.middleware:
+            for middleware in self.middleware:
+                if isinstance(middleware, StarletteMiddleware):
+                    include_middleware.append(middleware)
+                else:
+                    include_middleware.append(StarletteMiddleware(middleware))
+
+        super().__init__(
+            self.path, app=self.app, routes=routes, name=name, middleware=include_middleware
+        )
 
         self.path_regex, self.path_format, self.param_convertors = compile_path(
             self.path + "/{path:path}"
         )
+
+    def build_routes_middleware(
+        self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
+    ):
+        """
+        Builds the middleware stack from the top to the bottom of the routes.
+        """
+        from esmerald import ChildEsmerald, Esmerald
+
+        if not middlewares:
+            middlewares = []
+
+        if isinstance(route, Include):
+            app = getattr(route, "app", None)
+            if app and isinstance(app, (Esmerald, ChildEsmerald)):
+                return middlewares
+
+        if isinstance(route, (Gateway, WebSocketGateway)):
+            middlewares.extend(route.middleware)
+            if route.handler.middleware:
+                middlewares.extend(route.handler.middleware)
+
+        return middlewares
 
     def resolve_route_path_handler(self, routes: List[StarletteBaseRoute]):
         """

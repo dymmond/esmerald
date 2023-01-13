@@ -1,6 +1,5 @@
 from loguru import logger
 
-from esmerald import EsmeraldInterceptor
 from esmerald.types import Receive, Scope, Send
 
 

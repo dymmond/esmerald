@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Any
 
 from jose import JWSError, JWTError
 from starlette.authentication import AuthenticationError
@@ -60,12 +60,13 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
         self.config = config
         self.user_model = user_model
 
-    async def retrieve_user(self, user_id: int) -> Generic[T]:
+    async def retrieve_user(self, token_sub: Any) -> Generic[T]:
         """
         Retrieves a user from the database using the given token id.
         """
+        user_field = {self.config.user_id_field: token_sub}
         try:
-            await self.user_model.get(pk=user_id)
+            return await self.user_model.get(**user_field)
         except DoesNotExist:
             raise NotAuthorized()
 
@@ -75,17 +76,26 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
 
         Raises Authentication error if invalid.
         """
-        token = request.headers.get(self.config.api_key_header)
+        token = request.headers.get(self.config.api_key_header.lower())
 
         if not token:
-            raise NotAuthorized("Token not found.")
+            raise NotAuthorized(detail="Token not found in the request header")
+
+        token_partition = token.partition(" ")
+        token_type = token_partition[0]
+        auth_token = token_partition[-1]
+
+        if token_type not in self.config.auth_header_types:
+            raise NotAuthorized(detail=f"{token_type} is not an authorized header type")
 
         try:
             token = Token.decode(
-                token=token, key=self.config.signing_key, algorithm=self.config.algorithm
+                token=auth_token, key=self.config.signing_key, algorithms=[self.config.algorithm]
             )
         except (JWSError, JWTError) as e:
             raise AuthenticationError(str(e))
 
         user = await self.retrieve_user(token.sub)
+        if not user:
+            raise AuthenticationError("User not found")
         return AuthResult(user=user)
