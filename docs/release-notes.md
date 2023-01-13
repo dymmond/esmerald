@@ -6,11 +6,13 @@ January 13, 2023
 
 ### Changed
 
-- Include now supports its own middleware handling and loading.
+- Include now supports its own middleware handling and loading [#26](https://github.com/dymmond/esmerald/pull/26).
+This hange make sure that the parent level doesn't get affected and do not influence the middleware
+of other includes.
 
 ### Fixed
 
-- JWT Token encoding and decoding
+- JWT Token encoding and decoding [#26](https://github.com/dymmond/esmerald/pull/26).
 - JWT middleware handling the headers
 
 ## 0.6.0
@@ -19,7 +21,7 @@ January 11, 2023
 
 ### Added
 
-- Added support to the new [Interceptors](./interceptors.md).
+- Added support to the new [Interceptors](./interceptors.md). [#25](https://github.com/dymmond/esmerald/pull/25)
 
 ### Changed
 
@@ -77,6 +79,7 @@ December 22, 2022
 ## Changed
 
 - **Deprecated** the integration with `APScheduler` in favour of [Asyncz](https://asyncz.tarsild.io).
+[#15](https://github.com/dymmond/esmerald/pull/15)
 - Upgraded the Esmerald official symbol.
 
 !!! Warning
