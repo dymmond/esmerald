@@ -1,5 +1,18 @@
 # Release Notes
 
+## 0.6.1
+
+January 13, 2023
+
+### Changed
+
+- Include now supports its own middleware handling and loading.
+
+### Fixed
+
+- JWT Token encoding and decoding
+- JWT middleware handling the headers
+
 ## 0.6.0
 
 January 11, 2023
