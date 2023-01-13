@@ -388,6 +388,9 @@ class Esmerald(Starlette):
     ):
         """
         Builds the middleware stack from the top to the bottom of the routes.
+
+        The includes are anm exception as they are treated as an independent ASGI
+        application and therefore handles their own middlewares independently.
         """
         if not middlewares:
             middlewares = []
@@ -396,10 +399,6 @@ class Esmerald(Starlette):
             app = getattr(route, "app", None)
             if app and isinstance(app, (Esmerald, ChildEsmerald)):
                 return middlewares
-
-            middlewares.extend(route.middleware)
-            for _route in route.routes:
-                middlewares = self.build_routes_middleware(_route, middlewares)
 
         if isinstance(route, (gateways.Gateway, gateways.WebSocketGateway)):
             middlewares.extend(route.middleware)

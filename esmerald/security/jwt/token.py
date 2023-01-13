@@ -1,14 +1,11 @@
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from jose import JWSError, JWTError, jwt
 from pydantic import BaseModel, Field, constr, validator
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.security.utils import convert_time
-
-if TYPE_CHECKING:
-    from pydantic.typing import DictAny
 
 
 class Token(BaseModel):

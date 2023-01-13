@@ -64,7 +64,7 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
         """
         Retrieves a user from the database using the given token id.
         """
-        user_field = {self.config.user_id_field: token_sub }
+        user_field = {self.config.user_id_field: token_sub}
         try:
             return await self.user_model.get(**user_field)
         except DoesNotExist:
