@@ -1,5 +1,18 @@
 # Release Notes
 
+## 0.6.2
+
+January 16, 2023
+
+### Changed
+
+- Add support for kwargs in the Dao and AsyncDAO [#28](https://github.com/dymmond/esmerald/issues/28)
+
+### Fixed
+
+- Mypy references for the Gateway and WebsocketGateway being added to the handler.
+- References to the Esmerald types causing the IDE to misread them.
+
 ## 0.6.1
 
 January 13, 2023
