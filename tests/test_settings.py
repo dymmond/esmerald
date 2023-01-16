@@ -2,6 +2,7 @@ from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald import Gateway, JSONResponse, Request, get, settings
 from esmerald.conf import settings
+from esmerald.config import CORSConfig, CSRFConfig
 from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
 
@@ -114,3 +115,20 @@ def test_adding_middlewares():
         assert RequestSettingsMiddleware == client.app.middleware[0].cls
         assert "RequestSettingsMiddleware" == request_settings.json()["middleware"][0]
         assert "RequestSettingsMiddleware" == app_settings.json()["middleware"][0]
+
+
+def test_add_configs_to_settings():
+    cors_config = CORSConfig()
+    csrf_config = CSRFConfig(secret=settings.secret_key)
+
+    with create_client(
+        routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        cors_config=cors_config,
+        csrf_config=csrf_config,
+    ) as client:
+
+        assert client.app.csrf_config == settings.csrf_config
+        assert client.app.cors_config == settings.cors_config
+        assert client.app.settings.csrf_config == settings.csrf_config
+        assert client.app.settings.cors_config == settings.cors_config
