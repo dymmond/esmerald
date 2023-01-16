@@ -1,5 +1,6 @@
 from starlette import status
 
+from esmerald import Request, settings
 from esmerald.applications import ChildEsmerald
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
@@ -426,3 +427,28 @@ def test_add_children_esmerald_app_within_same_nested_include_simpler(
 
         assert response.json() == {"test": 3}
         assert response.status_code == status.HTTP_200_OK
+
+
+def test_child_esmerald_uses_main_app_settings():
+    @get(status_code=status.HTTP_202_ACCEPTED)
+    def child(request: Request) -> str:
+        breakpoint()
+        return request.app.secret_key
+
+    child_esmerald = ChildEsmerald(
+        routes=[
+            Gateway(path="/", handler=child),
+        ],
+        secret_key="child-key",
+    )
+
+    with create_client(
+        routes=[
+            Include(routes=[Include("/child", app=child_esmerald)]),
+        ],
+        secret_key="main-secret",
+    ) as client:
+
+        response = client.get("/child")
+        assert response.text == "main-secret"
+        assert response.status_code == status.HTTP_202_ACCEPTED
