@@ -1,6 +1,9 @@
-from typing import Any, List, TypeVar
+from typing import TYPE_CHECKING, Any, List, TypeVar
 
 from typing_extensions import Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    from esmerald.types import DictAny
 
 T = TypeVar("T")
 
@@ -21,17 +24,17 @@ class AsyncDAOProtocol(Protocol):  # pragma: no cover
     data access to a database.
     """
 
-    async def get(self, obj_id: Any) -> Any:
+    async def get(self, obj_id: Any, **kwargs: "DictAny") -> Any:
         ...
 
-    async def get_all(self, **kwargs: Any) -> List[Any]:
+    async def get_all(self, **kwargs: "DictAny") -> List[Any]:
         ...
 
-    async def update(self, obj_id: Any, **kwargs: Any) -> Any:
+    async def update(self, obj_id: Any, **kwargs: "DictAny") -> Any:
         ...
 
-    async def delete(self, obj_id: Any) -> Any:
+    async def delete(self, obj_id: Any, **kwargs: "DictAny") -> Any:
         ...
 
-    async def create(self, **kwargs: Any) -> Any:
+    async def create(self, **kwargs: "DictAny") -> Any:
         ...
