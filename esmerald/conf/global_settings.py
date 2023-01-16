@@ -66,6 +66,9 @@ class EsmeraldAPISettings(BaseSettings):
     enable_openapi: bool = True
     redirect_slashes: bool = True
 
+    class Config:
+        extra = "allow"
+
     @property
     def reload(self) -> bool:
         """

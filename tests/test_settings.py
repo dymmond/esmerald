@@ -1,4 +1,8 @@
+from starlette.middleware import Middleware as StarletteMiddleware
+
+from esmerald import Gateway, Request, get, settings
 from esmerald.conf import settings
+from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
 
 
@@ -38,3 +42,31 @@ def test_default_settings():
         assert client.app.settings.dependencies == settings.dependencies
         assert client.app.settings.exception_handlers == settings.exception_handlers
         assert client.app.settings.redirect_slashes == settings.redirect_slashes
+
+
+@get("/request-settings")
+async def _request_settings(request: Request) -> str:
+    return request.settings.app_name
+
+
+@get("/app-settings")
+async def _app_settings(request: Request) -> str:
+    return request.app.settings.app_name
+
+
+def test_settings_global():
+    """
+    Tests settings are setup properly
+    """
+    with create_client(
+        app_name="my app",
+        routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+        request_settings = client.get("/request-settings")
+        app_settings = client.get("/app-settings")
+
+        assert settings.app_name == "my app"
+        assert client.app.app_name == "my app"
+        assert request_settings.json() == "my app"
+        assert app_settings.json() == "my app"

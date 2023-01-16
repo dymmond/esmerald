@@ -14,7 +14,6 @@ async def home(request: Request) -> None:
 
 def test_assertation_error_on_missing_middleware():
     with create_client(routes=[Gateway(handler=home)]) as client:
-
         response = client.get("/")
         assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert "RequestSettingsMiddleware must be added to the middlewares" in response.text
