@@ -543,6 +543,8 @@ class Esmerald(Starlette):
         Make sure the settings are aligned with the application parameters.
         Request, local, app and global have the same values
         """
+        object_setattr = object.__setattr__
+
         for key in dir(self):
             if key == "_debug":
                 setattr(settings, "debug", self._debug)
@@ -550,7 +552,7 @@ class Esmerald(Starlette):
             if hasattr(settings, key) and not key.startswith("__") and not key.endswith("__"):
                 value = getattr(self, key, None)
                 if value:
-                    setattr(settings, key, value)
+                    object_setattr(settings, key, value)
 
     @property
     def settings(self) -> settings:

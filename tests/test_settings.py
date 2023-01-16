@@ -1,6 +1,6 @@
 from starlette.middleware import Middleware as StarletteMiddleware
 
-from esmerald import Gateway, Request, get, settings
+from esmerald import Gateway, JSONResponse, Request, get, settings
 from esmerald.conf import settings
 from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
@@ -73,9 +73,6 @@ def test_settings_global():
 
 
 def test_settings_global_without_parameters():
-    """
-    Tests settings are setup properly
-    """
     with create_client(
         routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
         middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
@@ -87,3 +84,33 @@ def test_settings_global_without_parameters():
         assert client.app.app_name == "test_client"
         assert request_settings.json() == "test_client"
         assert app_settings.json() == "test_client"
+
+
+def test_adding_middlewares():
+    @get("/request-settings")
+    async def _request_settings(request: Request) -> JSONResponse:
+        return JSONResponse(
+            {"middleware": [middleware.cls.__name__ for middleware in request.settings.middleware]}
+        )
+
+    @get("/app-settings")
+    async def _app_settings(request: Request) -> str:
+        return JSONResponse(
+            {
+                "middleware": [
+                    middleware.cls.__name__ for middleware in request.app.settings.middleware
+                ]
+            }
+        )
+
+    with create_client(
+        routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+        request_settings = client.get("/request-settings")
+        app_settings = client.get("/app-settings")
+
+        assert RequestSettingsMiddleware == settings.middleware[0].cls
+        assert RequestSettingsMiddleware == client.app.middleware[0].cls
+        assert "RequestSettingsMiddleware" == request_settings.json()["middleware"][0]
+        assert "RequestSettingsMiddleware" == app_settings.json()["middleware"][0]
