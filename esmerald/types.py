@@ -12,14 +12,17 @@ from typing import (
     Union,
 )
 
+from pydantic.typing import AnyCallable
+from starlette.middleware import Middleware as StarletteMiddleware  # noqa
+from starlette.responses import Response as StarletteResponse
+from starlette.types import ASGIApp
+from typing_extensions import Literal
+
 from esmerald.backgound import BackgroundTask, BackgroundTasks
 from esmerald.exceptions import HTTPException, StarletteHTTPException
 from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include
 from esmerald.schedulers import AsyncIOScheduler
-from pydantic.typing import AnyCallable
-from starlette.responses import Response as StarletteResponse
-from typing_extensions import Literal
 
 if TYPE_CHECKING:
     from esmerald.datastructures import Cookie, ResponseHeader, State  # noqa: TC004
@@ -56,7 +59,6 @@ HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
 
 Middleware = Union[
     StarletteMiddleware,
-    Type[BaseHTTPMiddleware],
     Type[MiddlewareProtocol],
     Callable[..., ASGIApp],
 ]
@@ -101,7 +103,7 @@ DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
 ParentType = Union[APIView, Router]
 APIGateHandler = Union[
-    Type[APIView],
+    APIView,
     HTTPHandler,
     Router,
     AnyCallable,
