@@ -44,7 +44,9 @@ class Request(StarletteRequest):
 
     @property
     def settings(self) -> Any:
-        assert "settings" in self.scope, "SettingsMiddleware must be added to the middlewares"
+        assert (
+            "settings" in self.scope
+        ), "RequestSettingsMiddleware must be added to the middlewares"
         return self.scope["settings"]
 
     async def json(self):

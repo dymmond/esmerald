@@ -1,6 +1,6 @@
 from starlette import status
 
-from esmerald import Request, settings
+from esmerald import Request
 from esmerald.applications import ChildEsmerald
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get

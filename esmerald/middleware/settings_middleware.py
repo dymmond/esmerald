@@ -1,14 +1,14 @@
-import inspect
-from typing import TYPE_CHECKING
+from typing import Optional
 
+from esmerald.conf import settings as app_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.exceptions import ImproperlyMiddlewareConfigured
 from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.types import ASGIApp, Receive, Scope, Send
 
 
-class SettingsMiddleware(MiddlewareProtocol):
-    def __init__(self, app: "ASGIApp", settings: "EsmeraldAPISettings"):
+class RequestSettingsMiddleware(MiddlewareProtocol):
+    def __init__(self, app: "ASGIApp", settings: Optional["EsmeraldAPISettings"] = None):
         """Settings Middleware class.
 
         Args:
@@ -17,7 +17,7 @@ class SettingsMiddleware(MiddlewareProtocol):
         """
         super().__init__(app)
         self.app = app
-        self.settings = settings
+        self.settings = settings or app_settings
 
     async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         app_settings = None
