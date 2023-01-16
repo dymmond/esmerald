@@ -1,9 +1,13 @@
-from typing import Any, List
+from typing import TYPE_CHECKING, Any, List
 
-from esmerald import AsyncDAOProtocol, DaoProtocol, Esmerald, Gateway, post
 from myapp.accounts.models import User
 from pydantic import BaseModel
 from tortoise.exceptions import DoesNotExist, IntegrityError
+
+from esmerald import AsyncDAOProtocol, DaoProtocol, Esmerald, Gateway, post
+
+if TYPE_CHECKING:
+    from esmerald.types import DictAny
 
 
 class UserModel(BaseModel):
@@ -14,23 +18,23 @@ class UserModel(BaseModel):
 class UserDAO(DaoProtocol):
     model = User
 
-    def get(self, obj_id: int) -> model:
+    def get(self, obj_id: int, **kwargs: "DictAny") -> model:
         # logic to get the user
         ...
 
-    def get_all(self, **kwargs: Any) -> List[User]:
+    def get_all(self, **kwargs: "DictAny") -> List[User]:
         # logic to get all the users
         ...
 
-    def update(self, obj_id: int, user: UserModel) -> None:
+    def update(self, obj_id: int, user: UserModel, **kwargs: "DictAny") -> None:
         # logic to update the user
         ...
 
-    def delete(self, obj_id: int) -> None:
+    def delete(self, obj_id: int, **kwargs: "DictAny") -> None:
         # logic to delete a user
         ...
 
-    def create(self, user: UserModel) -> Any:
+    def create(self, user: UserModel, **kwargs: "DictAny") -> Any:
         # logic to create the user
         # send email
         # call external service
@@ -48,19 +52,19 @@ class AsyncUserDAO(AsyncDAOProtocol):
         except DoesNotExist:
             ...
 
-    async def get_all(self, **kwargs: Any) -> List[User]:
+    async def get_all(self, **kwargs: "DictAny") -> List[User]:
         # logic to get all the users
         ...
 
-    async def update(self, obj_id: int, user: UserModel) -> None:
+    async def update(self, obj_id: int, user: UserModel, **kwargs: "DictAny") -> None:
         # logic to update the user
         ...
 
-    async def delete(self, obj_id: int) -> None:
+    async def delete(self, obj_id: int, **kwargs: "DictAny") -> None:
         # logic to delete a user
         ...
 
-    async def create(self, user: UserModel) -> Any:
+    async def create(self, user: UserModel, **kwargs: "DictAny") -> Any:
         # logic to create the user
         # send email
         # call external service

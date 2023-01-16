@@ -1,7 +1,8 @@
-from esmerald import Esmerald, Gateway, post
 from myapp.accounts import User
 from pydantic import BaseModel
 from tortoise.exceptions import DoesNotExist, IntegrityError
+
+from esmerald import Esmerald, Gateway, post
 
 
 class UserModel(BaseModel):
