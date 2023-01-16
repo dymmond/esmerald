@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
+    from esmerald.routing.views import APIView
     from esmerald.types import Dependencies, ExceptionHandlers, Middleware, ParentType
 
 
@@ -39,7 +40,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: "HTTPHandler",
+        handler: Union["HTTPHandler", "APIView"],
         name: Optional[str] = None,
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
@@ -145,7 +146,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: "WebSocketHandler",
+        handler: Union["WebSocketHandler", "APIView"],
         name: Optional[str] = None,
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
