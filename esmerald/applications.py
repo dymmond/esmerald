@@ -224,9 +224,6 @@ class Esmerald(Starlette):
 
         self.exception_handlers = {} if exception_handlers is None else dict(exception_handlers)
         self.get_default_exception_handlers()
-
-        self._parse_settings()
-
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.template_engine = self.get_template_engine(self.template_config)
@@ -250,6 +247,7 @@ class Esmerald(Starlette):
                 configurations=self.scheduler_configurations,
             )
 
+        self.resolve_settings()
         self.activate_openapi()
 
     def activate_openapi(self) -> None:
@@ -540,9 +538,10 @@ class Esmerald(Starlette):
 
         return app
 
-    def _parse_settings(self) -> None:
+    def resolve_settings(self) -> None:
         """
         Make sure the settings are aligned with the application parameters.
+        Request, local, app and global have the same values
         """
         for key in dir(self):
             if key == "_debug":

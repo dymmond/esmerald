@@ -70,3 +70,20 @@ def test_settings_global():
         assert client.app.app_name == "my app"
         assert request_settings.json() == "my app"
         assert app_settings.json() == "my app"
+
+
+def test_settings_global_without_parameters():
+    """
+    Tests settings are setup properly
+    """
+    with create_client(
+        routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+        request_settings = client.get("/request-settings")
+        app_settings = client.get("/app-settings")
+
+        assert settings.app_name == "test_client"
+        assert client.app.app_name == "test_client"
+        assert request_settings.json() == "test_client"
+        assert app_settings.json() == "test_client"
