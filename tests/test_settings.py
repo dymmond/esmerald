@@ -230,3 +230,41 @@ def test_nested_child_esmerald_settings_gateway(
         assert client.app.app_name == "my app"
         assert request_settings.json() == "my app"
         assert app_settings.json() == "my app"
+
+
+def test_nested_child_esmerald_settings_secret_key(
+    test_client_factory,
+) -> None:
+    @get("/request-settings")
+    async def _request_settings(request: Request) -> str:
+        return request.settings.secret_key
+
+    @get("/app-settings")
+    async def _app_settings(request: Request) -> str:
+        return request.app.settings.secret_key
+
+    child_esmerald = ChildEsmerald(
+        routes=[
+            Gateway(handler=_request_settings),
+        ]
+    )
+
+    main_child_esmerald = ChildEsmerald(
+        routes=[Gateway(handler=_app_settings), Include("/nested", app=child_esmerald)]
+    )
+
+    with create_client(
+        secret_key="my-secret",
+        routes=[
+            Include(routes=[Include("/child", app=main_child_esmerald)]),
+        ],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+
+        request_settings = client.get("/child/nested/request-settings")
+        app_settings = client.get("/child/app-settings")
+
+        assert settings.secret_key == "my-secret"
+        assert client.app.secret_key == "my-secret"
+        assert request_settings.json() == "my-secret"
+        assert app_settings.json() == "my-secret"
