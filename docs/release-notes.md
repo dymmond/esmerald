@@ -1,5 +1,24 @@
 # Release Notes
 
+## 0.7.0
+
+January 17, 2023
+
+### Added
+
+- New [RequestSettingsMiddleware](./middleware/middleware.md#requestsettingsmiddleware) allowing accessing the settings of the application
+from the request.
+- Settings resolution for the whole application [#30](https://github.com/dymmond/esmerald/issues/30).
+
+### Changed
+
+- Request now has a `settings` property that can be accessed upon the installation
+of the [RequestSettingsMiddleware](./middleware/middleware.md#requestsettingsmiddleware).
+
+### Fixed
+
+- `license` reference upon instantiation from the settings.
+
 ## 0.6.2
 
 January 16, 2023
