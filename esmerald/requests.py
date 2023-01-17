@@ -1,12 +1,13 @@
-from typing import Any, TYPE_CHECKING, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.typing import Void
 from orjson import loads
 from starlette.requests import ClientDisconnect as ClientDisconnect  # noqa
 from starlette.requests import HTTPConnection as HTTPConnection  # noqa: F401
 from starlette.requests import Request as StarletteRequest  # noqa: F401
 from starlette.requests import empty_receive, empty_send  # noqa
+
+from esmerald.exceptions import ImproperlyConfigured
+from esmerald.typing import Void
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -40,6 +41,13 @@ class Request(StarletteRequest):
     @property
     def method(self) -> "HTTPMethod":
         return cast("HTTPMethod", self.scope["method"])
+
+    @property
+    def settings(self) -> Any:
+        assert (
+            "settings" in self.scope
+        ), "RequestSettingsMiddleware must be added to the middlewares"
+        return self.scope["settings"]
 
     async def json(self):
         if self._json is Void:

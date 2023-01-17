@@ -68,6 +68,7 @@ class Esmerald(Starlette):
     __slots__ = (
         "title",
         "app_name",
+        "summary",
         "description",
         "version",
         "contact",
@@ -77,10 +78,14 @@ class Esmerald(Starlette):
         "secret",
         "allowed_hosts",
         "allow_origins",
+        "interceptors",
         "permissions",
         "dependencies",
         "middleware",
         "exception_handlers",
+        "openapi_schema",
+        "scheduler_tasks",
+        "scheduler_configurations",
         "csrf_config",
         "openapi_config",
         "cors_config",
@@ -98,6 +103,10 @@ class Esmerald(Starlette):
         "security",
         "include_in_schema",
         "redirect_slashes",
+        "enable_scheduler",
+        "enable_openapi",
+        "timezone",
+        "parent",
     )
 
     def __init__(
@@ -111,7 +120,7 @@ class Esmerald(Starlette):
         description: Optional[str] = settings.description,
         contact: Optional[Dict[str, Union[str, Any]]] = settings.contact,
         terms_of_service: Optional[str] = settings.terms_of_service,
-        license: Optional[License] = None,
+        license: Optional[License] = settings.license,
         security: Optional[List[SecurityRequirement]] = None,
         servers: List[Server] = [Server(url="/")],
         secret_key: Optional[str] = settings.secret_key,
@@ -159,13 +168,13 @@ class Esmerald(Starlette):
 
         self._debug = debug
         self.title = title
-        self.name = app_name
+        self.app_name = app_name
         self.description = description
         self.version = version
         self.summary = summary
         self.contact = contact
         self.terms_of_service = terms_of_service
-        self.license_info = license
+        self.license = license
         self.servers = servers
         self.secret_key = secret_key
         self.allowed_hosts = allowed_hosts
@@ -215,7 +224,6 @@ class Esmerald(Starlette):
 
         self.exception_handlers = {} if exception_handlers is None else dict(exception_handlers)
         self.get_default_exception_handlers()
-
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.template_engine = self.get_template_engine(self.template_config)
@@ -239,6 +247,7 @@ class Esmerald(Starlette):
                 configurations=self.scheduler_configurations,
             )
 
+        self.resolve_settings()
         self.activate_openapi()
 
     def activate_openapi(self) -> None:
@@ -528,6 +537,22 @@ class Esmerald(Starlette):
             app = cls(app=app, **options)
 
         return app
+
+    def resolve_settings(self) -> None:
+        """
+        Make sure the settings are aligned with the application parameters.
+        Request, local, app and global have the same values
+        """
+        object_setattr = object.__setattr__
+
+        for key in dir(self):
+            if key == "_debug":
+                setattr(settings, "debug", self._debug)
+
+            if hasattr(settings, key) and not key.startswith("__") and not key.endswith("__"):
+                value = getattr(self, key, None)
+                if value:
+                    object_setattr(settings, key, value)
 
     @property
     def settings(self) -> settings:

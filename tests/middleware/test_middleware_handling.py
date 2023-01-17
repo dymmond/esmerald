@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from esmerald.applications import ChildEsmerald, Esmerald
+from esmerald.applications import ChildEsmerald
 from esmerald.config import CORSConfig
 from esmerald.enums import ScopeType
 from esmerald.protocols.middleware import MiddlewareProtocol

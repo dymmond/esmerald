@@ -203,6 +203,7 @@ There are some available middlewares that are also available from Starlette.
 * `GZipMiddleware` - Same middleware as the one from Starlette.
 * `HTTPSRedirectMiddleware` - Middleware that handles HTTPS redirects for your application. Very useful to be used
 for production or production like environments.
+* `RequestSettingsMiddleware` - The middleware that exposes the application settings in the request.
 * `SessionMiddleware` - Same middleware as the one from Starlette.
 * `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Esmerald. A [great example](../wsgi.md)
 how to use it is available.
@@ -214,6 +215,19 @@ ways of using this middleware depending of the taste.
 
 ```python
 {!> ../docs_src/middleware/available/cors.py !}
+```
+
+### RequestSettingsMiddleware
+
+Exposes your Esmerald application settings in the request. This can be particulary useful to access
+the main settings module in any part of the application,
+inclusively [ChildEsmerald](../routing/router.md#child-esmerald-application).
+
+This middleware has `settings` as optional parameter.
+**If none is provided it will default to the internal settings**.
+
+```python hl_lines="4 10"
+{!> ../docs_src/middleware/available/request_settings_middleware.py !}
 ```
 
 ### SessionMiddleware

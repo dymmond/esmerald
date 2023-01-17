@@ -67,6 +67,10 @@ class ImproperlyConfigured(HTTPException, ValueError):
     ...
 
 
+class ImproperlyMiddlewareConfigured(ImproperlyConfigured):
+    ...
+
+
 class NotAuthenticated(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Authentication credentials were not provided."
