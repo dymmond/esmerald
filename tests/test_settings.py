@@ -1,6 +1,6 @@
 from starlette.middleware import Middleware as StarletteMiddleware
 
-from esmerald import Gateway, JSONResponse, Request, get, settings
+from esmerald import ChildEsmerald, Gateway, Include, JSONResponse, Request, get, settings
 from esmerald.conf import settings
 from esmerald.config import CORSConfig, CSRFConfig
 from esmerald.middleware import RequestSettingsMiddleware
@@ -132,3 +132,101 @@ def test_add_configs_to_settings():
         assert client.app.cors_config == settings.cors_config
         assert client.app.settings.csrf_config == settings.csrf_config
         assert client.app.settings.cors_config == settings.cors_config
+
+
+def test_child_esmerald_settings(
+    test_client_factory,
+) -> None:
+    """
+    Adds a ChildEsmerald application to the main app.
+    """
+
+    child_esmerald = ChildEsmerald(
+        routes=[
+            Gateway(handler=_request_settings),
+        ]
+    )
+
+    with create_client(
+        app_name="my app",
+        routes=[
+            Gateway(handler=_app_settings),
+            Include(routes=[Include("/child", app=child_esmerald)]),
+        ],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+
+        request_settings = client.get("/child/request-settings")
+        app_settings = client.get("/app-settings")
+
+        assert settings.app_name == "my app"
+        assert client.app.app_name == "my app"
+        assert request_settings.json() == "my app"
+        assert app_settings.json() == "my app"
+
+
+def test_nested_child_esmerald_settings(
+    test_client_factory,
+) -> None:
+    """
+    Adds a ChildEsmerald application to the main app.
+    """
+
+    child_esmerald = ChildEsmerald(
+        routes=[
+            Gateway(handler=_request_settings),
+        ]
+    )
+
+    main_child_esmerald = ChildEsmerald(routes=[Include("/nested", app=child_esmerald)])
+
+    with create_client(
+        app_name="my app",
+        routes=[
+            Gateway(handler=_app_settings),
+            Include(routes=[Include("/child", app=main_child_esmerald)]),
+        ],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+
+        request_settings = client.get("/child/nested/request-settings")
+        app_settings = client.get("/app-settings")
+
+        assert settings.app_name == "my app"
+        assert client.app.app_name == "my app"
+        assert request_settings.json() == "my app"
+        assert app_settings.json() == "my app"
+
+
+def test_nested_child_esmerald_settings_gateway(
+    test_client_factory,
+) -> None:
+    """
+    Adds a ChildEsmerald application to the main app.
+    """
+
+    child_esmerald = ChildEsmerald(
+        routes=[
+            Gateway(handler=_request_settings),
+        ]
+    )
+
+    main_child_esmerald = ChildEsmerald(
+        routes=[Gateway(handler=_app_settings), Include("/nested", app=child_esmerald)]
+    )
+
+    with create_client(
+        app_name="my app",
+        routes=[
+            Include(routes=[Include("/child", app=main_child_esmerald)]),
+        ],
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    ) as client:
+
+        request_settings = client.get("/child/nested/request-settings")
+        app_settings = client.get("/child/app-settings")
+
+        assert settings.app_name == "my app"
+        assert client.app.app_name == "my app"
+        assert request_settings.json() == "my app"
+        assert app_settings.json() == "my app"
