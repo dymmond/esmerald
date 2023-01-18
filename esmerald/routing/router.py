@@ -680,7 +680,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         ) and return_annotation not in [NoReturn, None]:
             raise ImproperlyConfigured(
                 "A status code 204, 304 or in the range below 200 does not support a response body."
-                "If the function should return a value, change the route handler status code to an appropriate value.",
+                " If the function should return a value, change the route handler status code to an appropriate value.",
             )
         if (
             is_class_and_subclass(return_annotation, Redirect)
