@@ -1,8 +1,10 @@
 from esmerald import Esmerald, TemplateConfig
 from esmerald.template import MakoTemplateEngine
 
+from pathlib import Path
+
 template_config = TemplateConfig(
-    directory="/static",
+    directory=Path("templates"),
     engine=MakoTemplateEngine,
 )
 

@@ -1,8 +1,11 @@
 from esmerald import Esmerald, TemplateConfig
 from esmerald.template import JinjaTemplateEngine
 
+from pathlib import Path
+
+
 template_config = TemplateConfig(
-    directory="/static",
+    directory=Path("templates"),
     engine=JinjaTemplateEngine,
 )
 

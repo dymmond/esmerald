@@ -1,6 +1,7 @@
 from esmerald import EsmeraldAPISettings, TemplateConfig
 from esmerald.template import JinjaTemplateEngine
 
+from pathlib import Path
 
 class CustomSettings(EsmeraldAPISettings):
     @property
@@ -16,6 +17,6 @@ class CustomSettings(EsmeraldAPISettings):
         are standards in the market.
         """
         return TemplateConfig(
-            directory="/static",
+            directory=Path("templates"),
             engine=JinjaTemplateEngine,
         )
