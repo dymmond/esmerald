@@ -20,7 +20,7 @@ The available datastructures to be imported from `Esmerald` are as follow.
     * `Headers`
     * `MutableHeaders`
     * `QueryParams`
-    * `UploadFule`
+    * [UploadFile](./extras/upload-files.md)
     * `URLPath`
 * **Esmerald**:
     * `Secret`

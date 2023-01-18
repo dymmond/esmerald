@@ -80,8 +80,9 @@ nav:
       - Asyncz:
           - Scheduler: "scheduler/scheduler.md"
           - Handler: "scheduler/handler.md"
-  - Extra & Advanced:
+  - Extra, Advanced & Useful:
       - Request Data: "extras/request-data.md"
+      - Upload Files: "extras/upload-files.md"
       - Body: "extras/body-fields.md"
       - Headers: "extras/header-fields.md"
       - Cookies: "extras/cookie-fields.md"

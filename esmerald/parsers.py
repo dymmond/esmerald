@@ -1,11 +1,12 @@
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 
+from orjson import JSONDecodeError, loads
+from pydantic import BaseConfig, BaseModel
+from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
+
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
-from orjson import JSONDecodeError, loads
-from pydantic import BaseModel
-from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -40,6 +41,15 @@ class BaseModelExtra(BaseModel):
 
     class Config:
         extra = "allow"
+
+
+class ArbitraryBaseModel(BaseModel):
+    """
+    ArbitratyBaseModel that allows arbitrary_types_allowed to be passed.
+    """
+
+    class Config(BaseConfig):
+        arbitrary_types_allowed = True
 
 
 def validate_media_type(field: "ModelField", values: "DictAny"):
