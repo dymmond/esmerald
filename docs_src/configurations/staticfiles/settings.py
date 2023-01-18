@@ -1,5 +1,6 @@
 from esmerald import EsmeraldAPISettings, StaticFilesConfig
 
+from pathlib import Path
 
 class CustomSettings(EsmeraldAPISettings):
     @property
@@ -8,4 +9,4 @@ class CustomSettings(EsmeraldAPISettings):
         Simple configuration indicating where the statics will be placed in
         the application.
         """
-        return StaticFilesConfig(path="/static", packages=["mypackage"], directory="/static")
+        return StaticFilesConfig(path="/static", packages=["mypackage"], directory=Path("static"))
