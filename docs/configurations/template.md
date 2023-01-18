@@ -25,7 +25,7 @@ Another example
 
     <sup>Default: 'JinjaTemplateEngine'</sup>
 
-* **directory** - The directory for the templates in the format of a path like. E.g: `templates`.
+* **directory** - The directory for the templates in the format of a path like. E.g: `/templates`.
 
     <sup>Default: 'None'</sup>
 
