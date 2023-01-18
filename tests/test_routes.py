@@ -3,7 +3,7 @@ from starlette import status
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, websocket
+from esmerald.routing.handlers import get, route, websocket
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 
@@ -21,6 +21,11 @@ def route_two() -> dict:
 @get(status_code=status.HTTP_200_OK)
 def route_three() -> dict:
     return {"test": 3}
+
+
+@route(status_code=status.HTTP_202_ACCEPTED, methods=["GET", "POST", "PUT"])
+def routes_multiple() -> dict:
+    return {"test": 1}
 
 
 @websocket(path="/")
@@ -43,7 +48,7 @@ async def simple_websocket_handler_two(socket: WebSocket) -> None:
     await socket.close()
 
 
-def test_add_route_from_router() -> None:
+def test_add_route_from_router(test_client_factory) -> None:
     """
     Adds a route to the router.
     """
@@ -62,7 +67,36 @@ def test_add_route_from_router() -> None:
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
 
 
-def test_add_route_from_application() -> None:
+def test_add_route_from_router_multiple_methods(test_client_factory) -> None:
+    """
+    Adds a route to the router using @route
+    """
+
+    with create_client(routes=[Gateway(handler=route_one)]) as client:
+        response = client.get("/")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        client.app.router.add_route("/multiple", handler=routes_multiple)
+
+        response = client.get("/multiple")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        response = client.post("/multiple")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        response = client.put("/multiple")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+
+def test_add_route_from_application(test_client_factory) -> None:
     """
     Adds a route to the application router.
     """
@@ -88,7 +122,36 @@ def test_add_route_from_application() -> None:
         assert response.status_code == status.HTTP_200_OK
 
 
-def test_raise_exception_on_add_route() -> None:
+def test_add_route_multiple_from_application(test_client_factory) -> None:
+    """
+    Adds a route to the application router using @route
+    """
+
+    with create_client(routes=[Gateway(handler=route_one)]) as client:
+        response = client.get("/")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        client.app.router.add_route("/multiple", handler=routes_multiple)
+
+        response = client.get("/multiple")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        response = client.post("/multiple")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        response = client.put("/multiple")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+
+def test_raise_exception_on_add_route(test_client_factory) -> None:
     """
     Raises improperly configured.
     """
@@ -99,7 +162,7 @@ def test_raise_exception_on_add_route() -> None:
             client.app.add_route("/one", handler=handler)
 
 
-def test_websocket_handler_gateway_from_router() -> None:
+def test_websocket_handler_gateway_from_router(test_client_factory) -> None:
     client = create_client(routes=[WebSocketGateway(path="/", handler=simple_websocket_handler)])
 
     with client.websocket_connect("/") as websocket_client:
@@ -114,7 +177,7 @@ def test_websocket_handler_gateway_from_router() -> None:
         assert data
 
 
-def test_websocket_handler_gateway_from_application() -> None:
+def test_websocket_handler_gateway_from_application(test_client_factory) -> None:
     client = create_client(routes=[WebSocketGateway(path="/", handler=simple_websocket_handler)])
 
     with client.websocket_connect("/") as websocket_client:
@@ -129,7 +192,7 @@ def test_websocket_handler_gateway_from_application() -> None:
         assert data
 
 
-def test_raise_exception_on_add_websocket_route() -> None:
+def test_raise_exception_on_add_websocket_route(test_client_factory) -> None:
     """
     Raises improperly configured for websockets.
     """

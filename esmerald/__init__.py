@@ -32,7 +32,7 @@ from .exceptions import (
     ValidationErrorException,
 )
 from .interceptors.interceptor import EsmeraldInterceptor
-from .params import Body, Cookie, Header, Injects, Param, Path, Query
+from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
@@ -62,6 +62,8 @@ __all__ = [
     "Esmerald",
     "EsmeraldAPISettings",
     "EsmeraldInterceptor",
+    "File",
+    "Form",
     "Gateway",
     "Header",
     "HTTPException",
