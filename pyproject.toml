@@ -77,7 +77,7 @@ test = [
     "mypy ==0.982",
     "flake8 >=5.0.4",
     "black == 22.12.0",
-    "isort ==5.11.4",
+    "isort >=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<23",
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
@@ -120,7 +120,7 @@ dev = [
 doc = [
     "mkautodoc >=0.2.0,<0.3.0",
     "mkdocs >=1.1.2,<2.0.0",
-    "mkdocs-material >=9.0.5,<10.0.0",
+    "mkdocs-material==8.1.4",
     "mdx-include >=1.4.1,<2.0.0",
     "mkdocs-markdownextradata-plugin >=0.1.7,<0.3.0",
     "mkdocstrings>=0.19.0,<0.20.0",
