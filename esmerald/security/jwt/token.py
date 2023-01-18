@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional, Union
 
 from jose import JWSError, JWTError, jwt
+from jose.exceptions import JWSAlgorithmError, JWSSignatureError
 from pydantic import BaseModel, Field, constr, validator
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -63,6 +64,6 @@ class Token(BaseModel):
                 algorithms=algorithms,
                 options={"verify_aud": False},
             )
-        except (JWSError, JWTError) as e:
-            raise ImproperlyConfigured("Invalid token.") from e
+        except (JWSError, JWTError, JWSAlgorithmError, JWSSignatureError) as e:
+            raise ImproperlyConfigured("Invalid token") from e
         return Token(**data)
