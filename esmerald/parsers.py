@@ -34,6 +34,16 @@ class HashableBaseModel(BaseModel):
         return hash((type(self),) + tuple(values))
 
 
+class ArbitraryHashableBaseModel(HashableBaseModel):
+    """
+    Same as HashableBaseModel but allowing arbitrary values
+    """
+
+    class Config(HashableBaseModel.Config):
+        extra = "allow"
+        arbitrary_types_allowed = True
+
+
 class BaseModelExtra(BaseModel):
     """
     BaseModel that allows extra to be passed.
