@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, cast
 
-from esmerald.parsers import BaseModelExtra, HashableBaseModel
+from esmerald.parsers import ArbitraryHashableBaseModel
 from esmerald.transformers.datastructures import Signature
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from pydantic.typing import AnyCallable, DictAny
 
 
-class Inject(HashableBaseModel, BaseModelExtra):
+class Inject(ArbitraryHashableBaseModel):
     def __init__(self, dependency: "AnyCallable", use_cache: bool = False, **kwargs: "DictAny"):
         super().__init__(**kwargs)
         self.dependency = cast("AnyCallable", dependency)

@@ -9,13 +9,13 @@ TemplateConfig is simple set of configurations that when passed enables the temp
 
 To use the TemplateConfig in an application instance.
 
-```python hl_lines="5-6 9"
+```python hl_lines="1-2 9"
 {!> ../docs_src/configurations/template/example1.py!}
 ```
 
 Another example
 
-```python hl_lines="5-6 9"
+```python hl_lines="1-2 8"
 {!> ../docs_src/configurations/template/example2.py!}
 ```
 

@@ -11,19 +11,19 @@ When a StaticFilesConfig object is passed to an application instance, it will au
 
 To use the StaticFilesConfig in an application instance.
 
-```python hl_lines="4 7"
+```python hl_lines="1 9"
 {!> ../docs_src/configurations/staticfiles/example1.py!}
 ```
 
 Another example
 
-```python hl_lines="4 7"
+```python hl_lines="1 9"
 {!> ../docs_src/configurations/staticfiles/example2.py!}
 ```
 
 **With Packages and directory**:
 
-```python hl_lines="4 7"
+```python hl_lines="1 10"
 {!> ../docs_src/configurations/staticfiles/example3.py!}
 ```
 

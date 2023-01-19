@@ -2,11 +2,11 @@ import os
 from abc import ABC, abstractmethod
 from copy import copy
 from http.cookies import SimpleCookie
-from typing import (  # noqa
+from typing import AsyncIterable  # noqa
+from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
-    AsyncIterable,
     AsyncIterator,
     Callable,
     Dict,
@@ -22,7 +22,6 @@ from typing import (  # noqa
     cast,
 )
 
-from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
 from pydantic import BaseConfig, BaseModel, FilePath, validator  # noqa
 from pydantic.generics import GenericModel  # noqa
 from starlette.datastructures import URL as URL  # noqa: F401
@@ -38,6 +37,8 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.responses import Response as StarletteResponse
 from starlette.responses import StreamingResponse
 from typing_extensions import Literal, ParamSpec
+
+from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
 
 P = ParamSpec("P")
 R = TypeVar("R", bound=StarletteResponse)

@@ -14,8 +14,6 @@ def home() -> Template:
     return Template(
         name="my-tem",
         context={"user": "me"},
-        headers={"response-header": "template-header"},
-        cookies=[Cookie(key="template-cookie", value="template-cookie")],
     )
 
 

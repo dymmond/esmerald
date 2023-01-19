@@ -23,6 +23,7 @@ from esmerald.enums import HttpMethod
 from esmerald.openapi.path_item import create_path_item
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.router import Include
+from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
@@ -112,9 +113,13 @@ class OpenAPIConfig(BaseModel):
 
             # Making sure that ChildEsmerald or esmerald
             if hasattr(app, "app"):
-                if isinstance(app.app, (Esmerald, ChildEsmerald)) and not getattr(
-                    app.app, "enable_openapi", False
-                ):
+                if (
+                    isinstance(app.app, (Esmerald, ChildEsmerald))
+                    and (
+                        is_class_and_subclass(app.app, ChildEsmerald)
+                        or is_class_and_subclass(app.app, ChildEsmerald)
+                    )
+                ) and not getattr(app.app, "enable_openapi", False):
                     return
 
             for route in app.routes:

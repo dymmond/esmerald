@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union
 
+from starlette import status
+
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import HTTPException, ImproperlyConfigured
 from esmerald.openapi.datastructures import ResponseSpecification
@@ -18,11 +20,11 @@ from esmerald.types import (
     ResponseType,
 )
 from esmerald.utils.constants import AVAILABLE_METHODS
-from starlette import status
 
 if TYPE_CHECKING:
-    from esmerald.exceptions import HTTPException
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+
+    from esmerald.exceptions import HTTPException
 
 
 class get(HTTPHandler):
