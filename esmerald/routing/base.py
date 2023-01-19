@@ -240,7 +240,6 @@ class BaseResponseHandler:
         self,
         cookies: "ResponseCookies",
         headers: Optional["ResponseHeaders"] = None,
-        media_type: Optional["MediaType"] = MediaType.TEXT,
     ) -> "AsyncAnyCallable":
         """Creates an handler for Starlette Responses."""
 
@@ -256,8 +255,6 @@ class BaseResponseHandler:
             }
             for cookie in _cookies:
                 data.set_cookie(**cookie)
-
-            data.media_type = media_type
 
             for header, value in _headers.items():
                 data.headers[header] = value
@@ -414,7 +411,6 @@ class BaseResponseHandler:
             elif is_class_and_subclass(self.signature.return_annotation, StarletteResponse):
                 handler = self.starlette_response_handler(
                     cookies=cookies,
-                    media_type=self.media_type,
                     headers=headers,
                 )
             else:
