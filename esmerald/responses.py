@@ -1,17 +1,7 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generic,
-    NoReturn,
-    Optional,
-    TypeVar,
-    Union,
-    cast,
-)
+from mimetypes import guess_type
+from pathlib import PurePath
+from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
 
-from esmerald.enums import MediaType
-from esmerald.exceptions import ImproperlyConfigured
 from orjson import OPT_OMIT_MICROSECONDS  # noqa
 from orjson import OPT_SERIALIZE_NUMPY, dumps
 from pydantic import BaseModel
@@ -24,6 +14,9 @@ from starlette.responses import RedirectResponse as RedirectResponse  # noqa
 from starlette.responses import Response as StarletteResponse  # noqa
 from starlette.responses import StreamingResponse as StreamingResponse  # noqa
 from starlette.types import Receive, Scope, Send
+
+from esmerald.enums import MediaType
+from esmerald.exceptions import ImproperlyConfigured
 
 if TYPE_CHECKING:
     from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -49,7 +42,7 @@ class Response(StarletteResponse, Generic[T]):
         content: T,
         *,
         status_code: Optional[int] = status.HTTP_200_OK,
-        media_type: Optional[Union["MediaType", str]] = None,
+        media_type: Optional[Union["MediaType", str]] = MediaType.JSON,
         background: Optional[Union["BackgroundTask", "BackgroundTasks"]] = None,
         headers: Optional[Dict[str, Any]] = None,
         cookies: Optional["ResponseCookies"] = None,
@@ -134,7 +127,18 @@ class TemplateResponse(Response):
         background: Optional[Union["BackgroundTask", "BackgroundTasks"]] = None,
         headers: Optional[Dict[str, Any]] = None,
         cookies: Optional["ResponseCookies"] = None,
+        media_type: Union[MediaType, str] = MediaType.HTML,
     ):
+        if media_type == MediaType.JSON:  # we assume this is the default
+            suffixes = PurePath(template_name).suffixes
+            for suffix in suffixes:
+                _type = guess_type("name" + suffix)[0]
+                if _type:
+                    media_type = _type
+                    break
+            else:
+                media_type = MediaType.TEXT
+
         self.template = template_engine.get_template(template_name)
         self.context = context or {}
         content = self.template.render(**context)
@@ -142,7 +146,7 @@ class TemplateResponse(Response):
             content=content,
             status_code=status_code,
             headers=headers,
-            media_type=MediaType.HTML,
+            media_type=media_type,
             background=background,
             cookies=cookies,
         )

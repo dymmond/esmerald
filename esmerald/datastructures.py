@@ -39,6 +39,7 @@ from starlette.responses import StreamingResponse
 from typing_extensions import Literal, ParamSpec
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+from esmerald.responses import TemplateResponse
 
 P = ParamSpec("P")
 R = TypeVar("R", bound=StarletteResponse)
@@ -46,7 +47,6 @@ R = TypeVar("R", bound=StarletteResponse)
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
     from esmerald.enums import MediaType
-    from esmerald.responses import TemplateResponse
 
 
 class Secret:
@@ -213,7 +213,7 @@ class Stream(ResponseContainer[StreamingResponse]):
         )
 
 
-class Template(ResponseContainer["TemplateResponse"]):
+class Template(ResponseContainer[TemplateResponse]):
     name: str
     context: Optional[Dict[str, Any]] = None
 
@@ -236,6 +236,7 @@ class Template(ResponseContainer["TemplateResponse"]):
             status_code=status_code,
             template_engine=app.template_engine,
             template_name=self.name,
+            media_type=media_type,
         )
 
 
