@@ -13,7 +13,8 @@ The available responses from `Esmerald` are:
 * `Response`
 * `ORJSONResponse`
 * `UJSONResponse`
-* `TemplateResponse`
+* `JSONResponse`
+* `Template`
 
 ### Response
 
@@ -44,6 +45,7 @@ Another super fast JSON serialization/deserialization response.
 
 !!! Check
     More details about the UJSON can be [found here](https://github.com/ultrajson/ultrajson).
+    For JSONResponse the way of doing it the same as ORJSONResponse and UJSONResponse.
 
 ### Template
 
