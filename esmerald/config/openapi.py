@@ -1,10 +1,6 @@
 from functools import partial
 from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
 
-from esmerald.enums import HttpMethod
-from esmerald.openapi.path_item import create_path_item
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.utils.url import clean_path
 from openapi_schemas_pydantic import construct_open_api_with_schema_class
 from openapi_schemas_pydantic.v3_1_0 import (
     Components,
@@ -22,6 +18,12 @@ from openapi_schemas_pydantic.v3_1_0 import (
 from openapi_schemas_pydantic.v3_1_0.path_item import PathItem
 from pydantic import AnyUrl, BaseModel
 from typing_extensions import Literal
+
+from esmerald.enums import HttpMethod
+from esmerald.openapi.path_item import create_path_item
+from esmerald.routing.gateways import Gateway, WebSocketGateway
+from esmerald.routing.router import Include
+from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -99,6 +101,8 @@ class OpenAPIConfig(BaseModel):
             return HttpMethod.HEAD.value.lower()
 
     def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
+        from esmerald.applications import ChildEsmerald, Esmerald
+
         schema = self.to_openapi_schema()
         schema.paths = {}
 
@@ -106,9 +110,19 @@ class OpenAPIConfig(BaseModel):
             if not app.routes:
                 return
 
-            for route in app.routes:
-                if isinstance(route, WebSocketGateway):
+            # Making sure that ChildEsmerald or esmerald
+            if hasattr(app, "app"):
+                if isinstance(app.app, (Esmerald, ChildEsmerald)) and not getattr(
+                    app.app, "enable_openapi", False
+                ):
                     return
+
+            for route in app.routes:
+                if isinstance(route, Include) and not route.include_in_schema:
+                    continue
+
+                if isinstance(route, WebSocketGateway):
+                    continue
 
                 if isinstance(route, Gateway):
                     if (
