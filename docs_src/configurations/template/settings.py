@@ -3,6 +3,7 @@ from esmerald.template import JinjaTemplateEngine
 
 from pathlib import Path
 
+
 class CustomSettings(EsmeraldAPISettings):
     @property
     def template_config(self) -> TemplateConfig:
