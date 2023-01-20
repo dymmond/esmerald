@@ -125,18 +125,18 @@ class Esmerald(Starlette):
         self,
         *,
         settings_config: Optional["SettingsType"] = None,
-        debug: bool = esmerald_settings.debug,
-        title: Optional[str] = esmerald_settings.title,
-        version: Optional[str] = esmerald_settings.version,
-        summary: Optional[str] = esmerald_settings.summary,
-        app_name: Optional[str] = esmerald_settings.app_name,
-        description: Optional[str] = esmerald_settings.description,
-        contact: Optional[Dict[str, Union[str, Any]]] = esmerald_settings.contact,
-        terms_of_service: Optional[str] = esmerald_settings.terms_of_service,
-        license: Optional[License] = esmerald_settings.license,
+        debug: Optional[bool] = None,
+        app_name: Optional[str] = None,
+        title: Optional[str] = None,
+        version: Optional[str] = None,
+        summary: Optional[str] = None,
+        description: Optional[str] = None,
+        contact: Optional[Dict[str, Union[str, Any]]] = None,
+        terms_of_service: Optional[str] = None,
+        license: Optional[License] = None,
         security: Optional[List[SecurityRequirement]] = None,
-        servers: List[Server] = [Server(url="/")],
-        secret_key: Optional[str] = esmerald_settings.secret_key,
+        servers: Optional[List[Server]] = None,
+        secret_key: Optional[str] = None,
         allowed_hosts: Optional[List[str]] = esmerald_settings.allowed_hosts,
         allow_origins: Optional[List[str]] = esmerald_settings.allow_origins,
         permissions: Optional[List["Permission"]] = esmerald_settings.permissions,
@@ -156,7 +156,7 @@ class Esmerald(Starlette):
         scheduler_configurations: Optional[
             Dict[str, Union[str, Dict[str, str]]]
         ] = esmerald_settings.scheduler_configurations,
-        enable_scheduler: bool = esmerald_settings.enable_scheduler,
+        enable_scheduler: Optional[bool] = esmerald_settings.enable_scheduler,
         timezone: Optional[timezone] = esmerald_settings.timezone,
         routes: Optional[List["APIGateHandler"]] = esmerald_settings.routes,
         root_path: str = esmerald_settings.root_path,
@@ -168,10 +168,10 @@ class Esmerald(Starlette):
             Callable[["Esmerald"], "AsyncContextManager"]
         ] = esmerald_settings.lifespan,
         tags: Optional[List[str]] = esmerald_settings.tags,
-        include_in_schema: bool = esmerald_settings.include_in_schema,
+        include_in_schema: Optional[bool] = esmerald_settings.include_in_schema,
         deprecated: Optional[bool] = None,
-        enable_openapi: bool = esmerald_settings.enable_openapi,
-        redirect_slashes: bool = esmerald_settings.redirect_slashes,
+        enable_openapi: Optional[bool] = esmerald_settings.enable_openapi,
+        redirect_slashes: Optional[bool] = esmerald_settings.redirect_slashes,
     ) -> None:
 
         self.settings_config = None
@@ -195,19 +195,19 @@ class Esmerald(Starlette):
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
-        get_app_settings(self)
+        app_settings = get_app_settings(self)
 
-        self._debug = debug
-        self.title = title
-        self.app_name = app_name
-        self.description = description
-        self.version = version
-        self.summary = summary
-        self.contact = contact
-        self.terms_of_service = terms_of_service
-        self.license = license
-        self.servers = servers
-        self.secret_key = secret_key
+        self._debug = debug or app_settings.debug
+        self.title = title or app_settings.title
+        self.app_name = app_name or app_settings.app_name
+        self.description = description or app_settings.description
+        self.version = version or app_settings.version
+        self.summary = summary or app_settings.summary
+        self.contact = contact or app_settings.contact
+        self.terms_of_service = terms_of_service or app_settings.terms_of_service
+        self.license = license or app_settings.license
+        self.servers = servers or app_settings.servers
+        self.secret_key = secret_key or app_settings.secret_key
         self.allowed_hosts = allowed_hosts
         self.allow_origins = allow_origins
         self.dependencies = dependencies or {}
