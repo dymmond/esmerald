@@ -274,7 +274,7 @@ class EsmeraldAPISettings(BaseSettings):
                 def middleware(self) -> List[Middleware]:
                     return [EsmeraldMiddleware]
         """
-        return None
+        return []
 
     @property
     def scheduler_tasks(self) -> Dict[str, str]:
@@ -342,42 +342,42 @@ class EsmeraldAPISettings(BaseSettings):
         """
         Returns the default interceptors of Esmerald.
         """
-        return None
+        return []
 
     @property
     def permissions(self) -> List[Permission]:
         """
         Returns the default permissions of Esmerald.
         """
-        return None
+        return []
 
     @property
     def dependencies(self) -> Dependencies:
         """
         Returns the dependencies of Esmerald main app.
         """
-        return None
+        return {}
 
     @property
     def exception_handlers(self) -> ExceptionHandlers:
         """
         Default exception handlers to be loaded when the application starts
         """
-        return None
+        return {}
 
     @property
     def on_startup(self) -> List[LifeSpanHandler]:
         """
         List of events/actions to be done on_startup.
         """
-        return None
+        return []
 
     @property
     def on_shutdown(self) -> List[LifeSpanHandler]:
         """
         List of events/actions to be done on_shutdown.
         """
-        return None
+        return []
 
     @property
     def lifespan(self) -> Callable[["Esmerald"], AsyncContextManager]:
