@@ -43,11 +43,18 @@ class Request(StarletteRequest):
         return cast("HTTPMethod", self.scope["method"])
 
     @property
-    def settings(self) -> Any:
+    def global_settings(self) -> Any:
         assert (
-            "settings" in self.scope
+            "global_settings" in self.scope
         ), "RequestSettingsMiddleware must be added to the middlewares"
-        return self.scope["settings"]
+        return self.scope["global_settings"]
+
+    @property
+    def app_settings(self) -> Any:
+        assert (
+            "app_settings" in self.scope
+        ), "RequestSettingsMiddleware must be added to the middlewares"
+        return self.scope["app_settings"]
 
     async def json(self):
         if self._json is Void:

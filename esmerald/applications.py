@@ -361,8 +361,6 @@ class Esmerald(Starlette):
                 timezone=self.timezone,
                 configurations=self.scheduler_configurations,
             )
-
-        # self.resolve_settings()
         self.activate_openapi()
 
     def get_settings_value(
@@ -675,7 +673,13 @@ class Esmerald(Starlette):
         """
         object_setattr = object.__setattr__
 
+        if isinstance(self, ChildEsmerald):
+            return
+
         for key in dir(self):
+            if key == "settings_config":
+                continue
+
             if key == "_debug":
                 setattr(esmerald_settings, "debug", self._debug)
 
@@ -689,9 +693,16 @@ class Esmerald(Starlette):
                     object_setattr(esmerald_settings, key, value)
 
     @property
-    def settings(self) -> esmerald_settings:
+    def settings(self) -> Type["EsmeraldAPISettings"]:
         """
         Returns the Esmerald settings object for easy access.
+        """
+        return self.settings_config if self.settings_config else esmerald_settings
+
+    @property
+    def default_settings(self) -> Type["EsmeraldAPISettings"]:
+        """
+        Returns the default global settings.
         """
         return esmerald_settings
 

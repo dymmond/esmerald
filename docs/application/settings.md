@@ -114,7 +114,10 @@ The parameters available inside `EsmeraldAPISettings` can be overridden by any c
 
 ### The current parameters available inside the `EsmeraldAPISettings`
 
-* **debug**: Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
+* **settings_config** - A settings instance, derived from `EsmeraldAPISettings` that will serve as the
+application settings instead of using `ESMERALD_SETTINGS_MODULE`. An alternative to it.
+
+* **debug** - Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
 very useful for development.
 
     <sup>Default: `False`</sup>
