@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, AsyncContextManager, Callable, Dict, List, Optional, Union
 
 from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from pydantic import BaseSettings
+from pydantic import BaseConfig, BaseSettings
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
@@ -55,7 +55,6 @@ class EsmeraldAPISettings(BaseSettings):
     response_class: Optional[ResponseType] = None
     response_cookies: Optional[ResponseCookies] = None
     response_headers: Optional[ResponseHeaders] = None
-    scheduler_class: SchedulerType = AsyncIOScheduler
     include_in_schema: bool = True
     tags: Optional[List[str]] = None
     timezone: str = "UTC"
@@ -66,7 +65,7 @@ class EsmeraldAPISettings(BaseSettings):
     enable_openapi: bool = True
     redirect_slashes: bool = True
 
-    class Config:
+    class Config(BaseConfig):
         extra = "allow"
 
     @property
@@ -274,7 +273,14 @@ class EsmeraldAPISettings(BaseSettings):
                 def middleware(self) -> List[Middleware]:
                     return [EsmeraldMiddleware]
         """
-        return None
+        return []
+
+    @property
+    def scheduler_class(self) -> SchedulerType:
+        """
+        Scheduler class to be used within the application.
+        """
+        return AsyncIOScheduler
 
     @property
     def scheduler_tasks(self) -> Dict[str, str]:
@@ -342,28 +348,28 @@ class EsmeraldAPISettings(BaseSettings):
         """
         Returns the default interceptors of Esmerald.
         """
-        return None
+        return []
 
     @property
     def permissions(self) -> List[Permission]:
         """
         Returns the default permissions of Esmerald.
         """
-        return None
+        return []
 
     @property
     def dependencies(self) -> Dependencies:
         """
         Returns the dependencies of Esmerald main app.
         """
-        return None
+        return {}
 
     @property
     def exception_handlers(self) -> ExceptionHandlers:
         """
         Default exception handlers to be loaded when the application starts
         """
-        return None
+        return {}
 
     @property
     def on_startup(self) -> List[LifeSpanHandler]:

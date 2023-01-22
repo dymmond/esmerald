@@ -114,7 +114,10 @@ The parameters available inside `EsmeraldAPISettings` can be overridden by any c
 
 ### The current parameters available inside the `EsmeraldAPISettings`
 
-* **debug**: Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
+* **settings_config** - A settings instance, derived from `EsmeraldAPISettings` that will serve as the
+application settings instead of using `ESMERALD_SETTINGS_MODULE`. An alternative to it.
+
+* **debug** - Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
 very useful for development.
 
     <sup>Default: `False`</sup>
@@ -295,28 +298,28 @@ can be subclasses of the [MiddlewareProtocol](../protocols.md).
 or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 
-    <sup>Default `None`</sup>
+    <sup>Default `[]`</sup>
 
 * **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
 requests (HTTP and Websockets).
 
-    <sup>Default `None`</sup>
+    <sup>Default `[]`</sup>
 
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
 
-    <sup>Default `None`</sup>
+    <sup>Default `[]`</sup>
 
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
 
-    <sup>Default `None`</sup>
+    <sup>Default `{}`</sup>
 
 * **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 
-    <sup>Default `None`</sup>
+    <sup>Default `{}`</sup>
 
 * **on_startup** - A list of callables to run on application startup. Startup handler callables do not take any
 arguments, and may be be either standard functions, or async functions.

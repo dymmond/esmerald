@@ -25,6 +25,7 @@ from esmerald.routing.router import Include
 from esmerald.schedulers import AsyncIOScheduler
 
 if TYPE_CHECKING:
+    from esmerald.conf.global_settings import EsmeraldAPISettings  # noqa
     from esmerald.datastructures import Cookie, ResponseHeader, State  # noqa: TC004
     from esmerald.injector import Inject  # noqa
     from esmerald.protocols.middleware import MiddlewareProtocol
@@ -119,3 +120,4 @@ SecurityRequirement = Dict[str, List[str]]
 ConnectionType = Union["Request", "WebSocket"]
 DictStr = Dict[str, str]
 DictAny = Dict[str, Any]
+SettingsType = Type["EsmeraldAPISettings"]
