@@ -12,6 +12,11 @@ from typing import (
     Union,
 )
 
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
+from starlette.applications import Starlette
+from starlette.middleware import Middleware as StarletteMiddleware  # noqa
+
 from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -28,10 +33,7 @@ from esmerald.interceptors.types import Interceptor
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
 from esmerald.middleware.csrf import CSRFMiddleware
-from esmerald.middleware.exceptions import (
-    EsmeraldAPIExceptionMiddleware,
-    ExceptionMiddleware,
-)
+from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, ExceptionMiddleware
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
@@ -56,14 +58,11 @@ from esmerald.types import (
     Send,
 )
 from esmerald.utils.helpers import is_class_and_subclass
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
-from starlette.applications import Starlette
-from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
 if TYPE_CHECKING:
-    from esmerald.types import SettingsType
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+
+    from esmerald.types import SettingsType
 
 
 class Esmerald(Starlette):
@@ -332,8 +331,8 @@ class Esmerald(Starlette):
             else self.get_settings_value(self.settings_config, esmerald_settings, "enable_openapi")
         )
         self.redirect_slashes = (
-            redirect_slashes is not None
-            if redirect_slashes
+            redirect_slashes
+            if redirect_slashes is not None
             else self.get_settings_value(
                 self.settings_config, esmerald_settings, "redirect_slashes"
             )

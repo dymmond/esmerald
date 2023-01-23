@@ -269,3 +269,19 @@ def test_raises_exception_on_wrong_settings(settings_config, test_client_factory
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[], settings_config=settings_config) as client:
             ...
+
+
+def test_basic_settings(test_client_factory):
+    app = Esmerald(
+        debug=False,
+        enable_scheduler=False,
+        include_in_schema=False,
+        enable_openapi=False,
+        redirect_slashes=False,
+    )
+
+    assert app.debug == False
+    assert app.enable_scheduler == False
+    assert app.include_in_schema == False
+    assert app.enable_openapi == False
+    assert app.redirect_slashes == False
