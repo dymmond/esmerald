@@ -1,7 +1,13 @@
-from typing import TYPE_CHECKING, Any, AsyncContextManager, Callable, Dict, List, Optional, Union
-
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from pydantic import BaseConfig, BaseSettings
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncContextManager,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Union,
+)
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
@@ -28,6 +34,8 @@ from esmerald.types import (
     ResponseType,
     SchedulerType,
 )
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from pydantic import BaseConfig, BaseSettings
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald

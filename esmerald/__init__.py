@@ -1,7 +1,7 @@
 """
 Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 
 from starlette import status
 
@@ -20,7 +20,7 @@ from .config import (
     StaticFilesConfig,
     TemplateConfig,
 )
-from .datastructures import UploadFile
+from .datastructures import Redirect, Template, UploadFile
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -85,12 +85,14 @@ __all__ = [
     "Path",
     "PermissionDenied",
     "Query",
+    "Redirect",
     "Request",
     "Response",
     "Router",
     "ServiceUnavailable",
     "SessionConfig",
     "StaticFilesConfig",
+    "Template",
     "TemplateConfig",
     "TemplateResponse",
     "UJSONResponse",

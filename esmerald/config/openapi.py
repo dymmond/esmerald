@@ -115,8 +115,8 @@ class OpenAPIConfig(BaseModel):
             if hasattr(app, "app"):
                 if (
                     isinstance(app.app, (Esmerald, ChildEsmerald))
-                    and (
-                        is_class_and_subclass(app.app, ChildEsmerald)
+                    or (
+                        is_class_and_subclass(app.app, Esmerald)
                         or is_class_and_subclass(app.app, ChildEsmerald)
                     )
                 ) and not getattr(app.app, "enable_openapi", False):

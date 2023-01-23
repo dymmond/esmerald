@@ -1,5 +1,14 @@
 # Release Notes
 
+## 0.8.1
+
+January, 2023
+
+### Added
+
+- Added Template and Redirect to app imports.
+This was supposed to go in the release 0.8.0 but somehow it was missed.
+
 ## 0.8.0
 
 January, 2023

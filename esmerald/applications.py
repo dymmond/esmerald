@@ -12,11 +12,6 @@ from typing import (
     Union,
 )
 
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
-from starlette.applications import Starlette
-from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-
 from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -33,7 +28,10 @@ from esmerald.interceptors.types import Interceptor
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
 from esmerald.middleware.csrf import CSRFMiddleware
-from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, ExceptionMiddleware
+from esmerald.middleware.exceptions import (
+    EsmeraldAPIExceptionMiddleware,
+    ExceptionMiddleware,
+)
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
@@ -58,11 +56,14 @@ from esmerald.types import (
     Send,
 )
 from esmerald.utils.helpers import is_class_and_subclass
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
+from starlette.applications import Starlette
+from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
-
     from esmerald.types import SettingsType
+    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
 
 
 class Esmerald(Starlette):
@@ -183,8 +184,10 @@ class Esmerald(Starlette):
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
-        self._debug = debug or self.get_settings_value(
-            self.settings_config, esmerald_settings, "debug"
+        self._debug = (
+            debug
+            if debug is not None
+            else self.get_settings_value(self.settings_config, esmerald_settings, "debug")
         )
         self.title = title or self.get_settings_value(
             self.settings_config, esmerald_settings, "title"
@@ -279,8 +282,12 @@ class Esmerald(Starlette):
             )
             or {}
         )
-        self.enable_scheduler = enable_scheduler or self.get_settings_value(
-            self.settings_config, esmerald_settings, "enable_scheduler"
+        self.enable_scheduler = (
+            enable_scheduler
+            if enable_scheduler is not None
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "enable_scheduler"
+            )
         )
         self.timezone = timezone or self.get_settings_value(
             self.settings_config, esmerald_settings, "timezone"
@@ -309,17 +316,27 @@ class Esmerald(Starlette):
         self.tags = tags or self.get_settings_value(
             self.settings_config, esmerald_settings, "tags"
         )
-        self.include_in_schema = include_in_schema or self.get_settings_value(
-            self.settings_config, esmerald_settings, "include_in_schema"
+        self.include_in_schema = (
+            include_in_schema
+            if include_in_schema is not None
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "include_in_schema"
+            )
         )
         self.security = security or self.get_settings_value(
             self.settings_config, esmerald_settings, "security"
         )
-        self.enable_openapi = enable_openapi or self.get_settings_value(
-            self.settings_config, esmerald_settings, "enable_openapi"
+        self.enable_openapi = (
+            enable_openapi
+            if enable_openapi is not None
+            else self.get_settings_value(self.settings_config, esmerald_settings, "enable_openapi")
         )
-        self.redirect_slashes = redirect_slashes or self.get_settings_value(
-            self.settings_config, esmerald_settings, "redirect_slashes"
+        self.redirect_slashes = (
+            redirect_slashes is not None
+            if redirect_slashes
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "redirect_slashes"
+            )
         )
 
         self.openapi_schema: Optional["OpenAPI"] = None
