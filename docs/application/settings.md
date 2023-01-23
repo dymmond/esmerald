@@ -132,7 +132,7 @@ The `settings_config` is a parameter available in every single `Esmerald` instan
 
 The configurations have **literally the same concept**
 as the [EsmeraldAPISettings](#esmeraldapisettings-and-the-application), which means that every single
-``settings_config` **must be derived from the EsmeraldAPISettings** or an `ImproperlyConfigured` exception
+`settings_config` **must be derived from the EsmeraldAPISettings** or an `ImproperlyConfigured` exception
 is thrown.
 
 The reason why the above is to keep the integrity of the application and settings.
