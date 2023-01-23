@@ -11,6 +11,7 @@ from esmerald.typing import Void
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
+    from esmerald.conf.global_settings import EsmeraldAPISettings
     from esmerald.types import HTTPMethod, Receive, Scope, Send
 
 User = TypeVar("User")
@@ -43,11 +44,18 @@ class Request(StarletteRequest):
         return cast("HTTPMethod", self.scope["method"])
 
     @property
-    def settings(self) -> Any:
+    def global_settings(self) -> Any:
         assert (
-            "settings" in self.scope
+            "global_settings" in self.scope
         ), "RequestSettingsMiddleware must be added to the middlewares"
-        return self.scope["settings"]
+        return cast("EsmeraldAPISettings", self.scope["global_settings"])
+
+    @property
+    def app_settings(self) -> Any:
+        assert (
+            "app_settings" in self.scope
+        ), "RequestSettingsMiddleware must be added to the middlewares"
+        return cast("EsmeraldAPISettings", self.scope["app_settings"])
 
     async def json(self):
         if self._json is Void:

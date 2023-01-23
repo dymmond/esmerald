@@ -1,10 +1,29 @@
+import json
+from typing import TYPE_CHECKING, Any, Dict, List
+
+import pytest
+from pydantic import BaseModel
 from starlette.middleware import Middleware as StarletteMiddleware
 
-from esmerald import ChildEsmerald, Gateway, Include, JSONResponse, Request, get, settings
+from esmerald import (
+    ChildEsmerald,
+    Esmerald,
+    EsmeraldAPISettings,
+    Gateway,
+    Include,
+    JSONResponse,
+    Request,
+    get,
+    settings,
+)
 from esmerald.conf import settings
 from esmerald.config import CORSConfig, CSRFConfig
+from esmerald.exceptions import ImproperlyConfigured
 from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
+
+if TYPE_CHECKING:
+    from esmerald.types import Middleware
 
 
 def test_default_settings():
@@ -45,9 +64,21 @@ def test_default_settings():
         assert client.app.settings.redirect_slashes == settings.redirect_slashes
 
 
+class DummySettings(BaseModel):
+    app_name: str = "test"
+
+
+class DummyObject:
+    ...
+
+
 @get("/request-settings")
-async def _request_settings(request: Request) -> str:
-    return request.settings.app_name
+async def _request_settings(request: Request) -> JSONResponse:
+    return JSONResponse(
+        {
+            "global_settings": request.global_settings.app_name,
+        }
+    )
 
 
 @get("/app-settings")
@@ -55,7 +86,7 @@ async def _app_settings(request: Request) -> str:
     return request.app.settings.app_name
 
 
-def test_settings_global():
+def test_settings_global(test_client_factory):
     """
     Tests settings are setup properly
     """
@@ -67,13 +98,13 @@ def test_settings_global():
         request_settings = client.get("/request-settings")
         app_settings = client.get("/app-settings")
 
-        assert settings.app_name == "my app"
         assert client.app.app_name == "my app"
-        assert request_settings.json() == "my app"
-        assert app_settings.json() == "my app"
+        assert settings.app_name == "test_client"
+        assert request_settings.json()["global_settings"] == "test_client"
+        assert app_settings.json() == "test_client"
 
 
-def test_settings_global_without_parameters():
+def test_settings_global_without_parameters(test_client_factory):
     with create_client(
         routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
         middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
@@ -83,188 +114,158 @@ def test_settings_global_without_parameters():
 
         assert settings.app_name == "test_client"
         assert client.app.app_name == "test_client"
-        assert request_settings.json() == "test_client"
+        assert request_settings.json()["global_settings"] == "test_client"
         assert app_settings.json() == "test_client"
 
 
-def test_adding_middlewares():
-    @get("/request-settings")
-    async def _request_settings(request: Request) -> JSONResponse:
-        return JSONResponse(
-            {"middleware": [middleware.cls.__name__ for middleware in request.settings.middleware]}
-        )
+def test_inner_settings_config(test_client_factory):
+    """
+    Test passing a settings config and being used with teh ESMERALD_SETTINGS_MODULE
+    """
+
+    class AppSettings(EsmeraldAPISettings):
+        app_name = "new app"
+        allowed_hosts: List[str] = ["*", "*.testserver.com"]
+
+        @property
+        def middleware(self) -> List["Middleware"]:
+            return [RequestSettingsMiddleware]
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> str:
         return JSONResponse(
-            {
-                "middleware": [
-                    middleware.cls.__name__ for middleware in request.app.settings.middleware
-                ]
-            }
+            {"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]}
         )
 
     with create_client(
-        routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        routes=[Gateway(handler=_app_settings)], settings_config=AppSettings
     ) as client:
-        request_settings = client.get("/request-settings")
-        app_settings = client.get("/app-settings")
 
-        assert RequestSettingsMiddleware == settings.middleware[0].cls
-        assert RequestSettingsMiddleware == client.app.middleware[0].cls
-        assert "RequestSettingsMiddleware" == request_settings.json()["middleware"][0]
-        assert "RequestSettingsMiddleware" == app_settings.json()["middleware"][0]
+        response = client.get("/app-settings")
+
+        assert client.app.settings.app_name == "new app"
+        assert client.app.app_name == "new app"
+        assert settings.app_name == "test_client"
+        assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
 
 
-def test_add_configs_to_settings():
-    cors_config = CORSConfig()
+def test_child_esmerald_independent_settings(test_client_factory):
+    """
+    Tests that a ChildEsmerald can have indepedent settings module
+    """
+
+    class ChildSettings(EsmeraldAPISettings):
+        app_name: str = "child app"
+        secret_key: str = "child key"
+
+    @get("/app-settings")
+    async def _app_settings(request: Request) -> Dict[Any, Any]:
+        return request.app_settings.json()
+
+    child = ChildEsmerald(
+        routes=[Gateway(handler=_app_settings)],
+        settings_config=ChildSettings,
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    )
+
+    with create_client(routes=[Include("/child", app=child)]) as client:
+
+        response = client.get("/child/app-settings")
+        data = json.loads(response.json())
+
+        assert data["app_name"] == "child app"
+        assert data["secret_key"] == "child key"
+        assert child.app_name == "child app"
+        assert child.secret_key == "child key"
+        assert client.app.app_name == settings.app_name
+
+
+def test_child_esmerald_independent_cors_config(test_client_factory):
+    """
+    Tests that a ChildEsmerald can have indepedent settings module
+    """
+    cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
-    with create_client(
-        routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
-        cors_config=cors_config,
-        csrf_config=csrf_config,
-    ) as client:
+    class ChildSettings(EsmeraldAPISettings):
+        app_name: str = "child app"
+        secret_key: str = "child key"
 
-        assert client.app.csrf_config == settings.csrf_config
-        assert client.app.cors_config == settings.cors_config
-        assert client.app.settings.csrf_config == settings.csrf_config
-        assert client.app.settings.cors_config == settings.cors_config
-
-
-def test_child_esmerald_settings(
-    test_client_factory,
-) -> None:
-    """
-    Adds a ChildEsmerald application to the main app.
-    """
-
-    child_esmerald = ChildEsmerald(
-        routes=[
-            Gateway(handler=_request_settings),
-        ]
-    )
-
-    with create_client(
-        app_name="my app",
-        routes=[
-            Gateway(handler=_app_settings),
-            Include(routes=[Include("/child", app=child_esmerald)]),
-        ],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
-    ) as client:
-
-        request_settings = client.get("/child/request-settings")
-        app_settings = client.get("/app-settings")
-
-        assert settings.app_name == "my app"
-        assert client.app.app_name == "my app"
-        assert request_settings.json() == "my app"
-        assert app_settings.json() == "my app"
-
-
-def test_nested_child_esmerald_settings(
-    test_client_factory,
-) -> None:
-    """
-    Adds a ChildEsmerald application to the main app.
-    """
-
-    child_esmerald = ChildEsmerald(
-        routes=[
-            Gateway(handler=_request_settings),
-        ]
-    )
-
-    main_child_esmerald = ChildEsmerald(routes=[Include("/nested", app=child_esmerald)])
-
-    with create_client(
-        app_name="my app",
-        routes=[
-            Gateway(handler=_app_settings),
-            Include(routes=[Include("/child", app=main_child_esmerald)]),
-        ],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
-    ) as client:
-
-        request_settings = client.get("/child/nested/request-settings")
-        app_settings = client.get("/app-settings")
-
-        assert settings.app_name == "my app"
-        assert client.app.app_name == "my app"
-        assert request_settings.json() == "my app"
-        assert app_settings.json() == "my app"
-
-
-def test_nested_child_esmerald_settings_gateway(
-    test_client_factory,
-) -> None:
-    """
-    Adds a ChildEsmerald application to the main app.
-    """
-
-    child_esmerald = ChildEsmerald(
-        routes=[
-            Gateway(handler=_request_settings),
-        ]
-    )
-
-    main_child_esmerald = ChildEsmerald(
-        routes=[Gateway(handler=_app_settings), Include("/nested", app=child_esmerald)]
-    )
-
-    with create_client(
-        app_name="my app",
-        routes=[
-            Include(routes=[Include("/child", app=main_child_esmerald)]),
-        ],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
-    ) as client:
-
-        request_settings = client.get("/child/nested/request-settings")
-        app_settings = client.get("/child/app-settings")
-
-        assert settings.app_name == "my app"
-        assert client.app.app_name == "my app"
-        assert request_settings.json() == "my app"
-        assert app_settings.json() == "my app"
-
-
-def test_nested_child_esmerald_settings_secret_key(
-    test_client_factory,
-) -> None:
-    @get("/request-settings")
-    async def _request_settings(request: Request) -> str:
-        return request.settings.secret_key
+        @property
+        def cors_config(self) -> CORSConfig:
+            return CORSConfig(allow_origins=["www.example.com"])
 
     @get("/app-settings")
-    async def _app_settings(request: Request) -> str:
-        return request.app.settings.secret_key
+    async def _app_settings(request: Request) -> Dict[Any, Any]:
+        return request.app_settings.json()
 
-    child_esmerald = ChildEsmerald(
-        routes=[
-            Gateway(handler=_request_settings),
-        ]
-    )
-
-    main_child_esmerald = ChildEsmerald(
-        routes=[Gateway(handler=_app_settings), Include("/nested", app=child_esmerald)]
+    child = ChildEsmerald(
+        routes=[Gateway(handler=_app_settings)],
+        settings_config=ChildSettings,
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        csrf_config=CSRFConfig(secret="child"),
     )
 
     with create_client(
-        secret_key="my-secret",
-        routes=[
-            Include(routes=[Include("/child", app=main_child_esmerald)]),
-        ],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        routes=[Include("/child", app=child)], cors_config=cors_config, csrf_config=csrf_config
     ) as client:
 
-        request_settings = client.get("/child/nested/request-settings")
-        app_settings = client.get("/child/app-settings")
+        child = client.app.routes[0].app
 
-        assert settings.secret_key == "my-secret"
-        assert client.app.secret_key == "my-secret"
-        assert request_settings.json() == "my-secret"
-        assert app_settings.json() == "my-secret"
+        assert child.cors_config.allow_origins == ["www.example.com"]
+        assert child.csrf_config.secret == "child"
+        assert client.app.cors_config.allow_origins == ["*"]
+        assert client.app.csrf_config.secret == settings.secret_key
+
+
+def test_nested_child_esmerald_independent_settings(test_client_factory):
+    """
+    Tests that a nested ChildEsmerald can have indepedent settings module
+    """
+
+    class NestedChildSettings(EsmeraldAPISettings):
+        app_name: str = "nested child app"
+        secret_key: str = "nested child key"
+
+    class ChildSettings(EsmeraldAPISettings):
+        app_name: str = "child app"
+        secret_key: str = "child key"
+
+    @get("/app-settings")
+    async def _app_settings(request: Request) -> Dict[Any, Any]:
+        return request.app_settings.json()
+
+    child = ChildEsmerald(
+        routes=[Gateway(handler=_app_settings)],
+        settings_config=NestedChildSettings,
+        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+    )
+
+    nested_child = ChildEsmerald(routes=[Include(app=child)], settings_config=ChildSettings)
+
+    with create_client(
+        routes=[Include("/child", app=nested_child)],
+    ) as client:
+
+        response = client.get("/child/app-settings")
+        data = json.loads(response.json())
+
+        _child = client.app.routes[0].app
+
+        assert data["app_name"] == "nested child app"
+        assert data["secret_key"] == "nested child key"
+        assert nested_child.app_name == "child app"
+        assert nested_child.secret_key == "child key"
+
+        assert _child.app_name == "child app"
+        assert _child.secret_key == "child key"
+
+        assert client.app.app_name == settings.app_name
+
+
+@pytest.mark.parametrize("settings_config", [Esmerald, ChildEsmerald, DummySettings, DummyObject])
+def test_raises_exception_on_wrong_settings(settings_config, test_client_factory):
+    """If a settings_config is thrown but not type EsmeraldAPISettings"""
+    with pytest.raises(ImproperlyConfigured):
+        with create_client(routes=[], settings_config=settings_config) as client:
+            ...

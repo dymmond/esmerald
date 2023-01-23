@@ -8,6 +8,7 @@ from typing import (
     List,
     Optional,
     Sequence,
+    Type,
     Union,
 )
 
@@ -17,7 +18,8 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
 from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
-from esmerald.conf import settings
+from esmerald.conf import settings as esmerald_settings
+from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig, TemplateConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
@@ -55,9 +57,12 @@ from esmerald.types import (
     Scope,
     Send,
 )
+from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+
+    from esmerald.types import SettingsType
 
 
 class Esmerald(Starlette):
@@ -112,52 +117,64 @@ class Esmerald(Starlette):
     def __init__(
         self,
         *,
-        debug: bool = settings.debug,
-        title: Optional[str] = settings.title,
-        version: Optional[str] = settings.version,
-        summary: Optional[str] = settings.summary,
-        app_name: Optional[str] = settings.app_name,
-        description: Optional[str] = settings.description,
-        contact: Optional[Dict[str, Union[str, Any]]] = settings.contact,
-        terms_of_service: Optional[str] = settings.terms_of_service,
-        license: Optional[License] = settings.license,
+        settings_config: Optional["SettingsType"] = None,
+        debug: Optional[bool] = None,
+        app_name: Optional[str] = None,
+        title: Optional[str] = None,
+        version: Optional[str] = None,
+        summary: Optional[str] = None,
+        description: Optional[str] = None,
+        contact: Optional[Dict[str, Union[str, Any]]] = None,
+        terms_of_service: Optional[str] = None,
+        license: Optional[License] = None,
         security: Optional[List[SecurityRequirement]] = None,
-        servers: List[Server] = [Server(url="/")],
-        secret_key: Optional[str] = settings.secret_key,
-        allowed_hosts: Optional[List[str]] = settings.allowed_hosts,
-        allow_origins: Optional[List[str]] = settings.allow_origins,
-        permissions: Optional[List["Permission"]] = settings.permissions,
-        interceptors: Optional[List["Interceptor"]] = settings.interceptors,
-        dependencies: Optional["Dependencies"] = settings.dependencies,
-        csrf_config: Optional["CSRFConfig"] = settings.csrf_config,
-        openapi_config: Optional["OpenAPIConfig"] = settings.openapi_config,
-        cors_config: Optional["CORSConfig"] = settings.cors_config,
-        static_files_config: Optional["StaticFilesConfig"] = settings.static_files_config,
-        template_config: Optional["TemplateConfig"] = settings.template_config,
-        session_config: Optional["SessionConfig"] = settings.session_config,
-        response_class: Optional["ResponseType"] = settings.response_class,
-        response_cookies: Optional["ResponseCookies"] = settings.response_cookies,
-        response_headers: Optional["ResponseHeaders"] = settings.response_headers,
-        scheduler_class: Optional["SchedulerType"] = settings.scheduler_class,
-        scheduler_tasks: Optional[Dict[str, str]] = settings.scheduler_tasks,
-        scheduler_configurations: Optional[
-            Dict[str, Union[str, Dict[str, str]]]
-        ] = settings.scheduler_configurations,
-        enable_scheduler: bool = settings.enable_scheduler,
-        timezone: Optional[timezone] = settings.timezone,
-        routes: Optional[List["APIGateHandler"]] = settings.routes,
-        root_path: str = settings.root_path,
-        middleware: Optional[Sequence["Middleware"]] = settings.middleware,
-        exception_handlers: Optional["ExceptionHandlers"] = settings.exception_handlers,
-        on_shutdown: Optional[List["LifeSpanHandler"]] = settings.on_shutdown,
-        on_startup: Optional[List["LifeSpanHandler"]] = settings.on_startup,
-        lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = settings.lifespan,
-        tags: Optional[List[str]] = settings.tags,
-        include_in_schema: bool = settings.include_in_schema,
+        servers: Optional[List[Server]] = None,
+        secret_key: Optional[str] = None,
+        allowed_hosts: Optional[List[str]] = None,
+        allow_origins: Optional[List[str]] = None,
+        permissions: Optional[List["Permission"]] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
+        dependencies: Optional["Dependencies"] = None,
+        csrf_config: Optional["CSRFConfig"] = None,
+        openapi_config: Optional["OpenAPIConfig"] = None,
+        cors_config: Optional["CORSConfig"] = None,
+        static_files_config: Optional["StaticFilesConfig"] = None,
+        template_config: Optional["TemplateConfig"] = None,
+        session_config: Optional["SessionConfig"] = None,
+        response_class: Optional["ResponseType"] = None,
+        response_cookies: Optional["ResponseCookies"] = None,
+        response_headers: Optional["ResponseHeaders"] = None,
+        scheduler_class: Optional["SchedulerType"] = None,
+        scheduler_tasks: Optional[Dict[str, str]] = None,
+        scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
+        enable_scheduler: Optional[bool] = None,
+        timezone: Optional[timezone] = None,
+        routes: Optional[List["APIGateHandler"]] = None,
+        root_path: Optional[str] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
+        exception_handlers: Optional["ExceptionHandlers"] = None,
+        on_startup: Optional[List["LifeSpanHandler"]] = None,
+        on_shutdown: Optional[List["LifeSpanHandler"]] = None,
+        lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
+        tags: Optional[List[str]] = None,
+        include_in_schema: Optional[bool] = None,
         deprecated: Optional[bool] = None,
-        enable_openapi: bool = settings.enable_openapi,
-        redirect_slashes: bool = settings.redirect_slashes,
+        enable_openapi: Optional[bool] = None,
+        redirect_slashes: Optional[bool] = None,
     ) -> None:
+        self.settings_config = None
+
+        if settings_config:
+            if not isinstance(settings_config, EsmeraldAPISettings) and not is_class_and_subclass(
+                settings_config, EsmeraldAPISettings
+            ):
+                raise ImproperlyConfigured(
+                    "settings_config must be a subclass of EsmeraldSettings"
+                )
+            elif isinstance(settings_config, EsmeraldAPISettings):
+                self.settings_config = settings_config
+            elif is_class_and_subclass(settings_config, EsmeraldAPISettings):
+                self.settings_config = settings_config()
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -166,63 +183,161 @@ class Esmerald(Starlette):
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
-        self._debug = debug
-        self.title = title
-        self.app_name = app_name
-        self.description = description
-        self.version = version
-        self.summary = summary
-        self.contact = contact
-        self.terms_of_service = terms_of_service
-        self.license = license
-        self.servers = servers
-        self.secret_key = secret_key
-        self.allowed_hosts = allowed_hosts
-        self.allow_origins = allow_origins
-        self.dependencies = dependencies or {}
-        self.interceptors = interceptors or []
-        self.permissions = permissions or []
-        self.csrf_config = csrf_config
-        self.cors_config = cors_config
-        self.openapi_config = openapi_config
-        self.openapi_schema: Optional["OpenAPI"] = None
-        self.template_config = template_config
-        self.static_files_config = static_files_config
-        self.session_config = session_config
-        self.response_class = response_class
-        self.response_cookies = response_cookies
-        self.response_headers = response_headers
-        self.scheduler_class = scheduler_class
-        self.scheduler_tasks = scheduler_tasks or {}
-        self.scheduler_configurations = scheduler_configurations or {}
-        self.enable_scheduler = enable_scheduler
-        self.timezone = timezone
-        self.tags = tags
-        self.include_in_schema = include_in_schema
-        self.middleware = middleware or []
+        self._debug = debug or self.get_settings_value(
+            self.settings_config, esmerald_settings, "debug"
+        )
+        self.title = title or self.get_settings_value(
+            self.settings_config, esmerald_settings, "title"
+        )
+        self.app_name = app_name or self.get_settings_value(
+            self.settings_config, esmerald_settings, "app_name"
+        )
+        self.description = description or self.get_settings_value(
+            self.settings_config, esmerald_settings, "app_name"
+        )
+        self.version = version or self.get_settings_value(
+            self.settings_config, esmerald_settings, "version"
+        )
+        self.summary = summary or self.get_settings_value(
+            self.settings_config, esmerald_settings, "summary"
+        )
+        self.contact = contact or self.get_settings_value(
+            self.settings_config, esmerald_settings, "contact"
+        )
+        self.terms_of_service = terms_of_service or self.get_settings_value(
+            self.settings_config, esmerald_settings, "terms_of_service"
+        )
+        self.license = license or self.get_settings_value(
+            self.settings_config, esmerald_settings, "license"
+        )
+        self.servers = servers or self.get_settings_value(
+            self.settings_config, esmerald_settings, "servers"
+        )
+        self.secret_key = secret_key or self.get_settings_value(
+            self.settings_config, esmerald_settings, "secret_key"
+        )
+        self.allowed_hosts = allowed_hosts or self.get_settings_value(
+            self.settings_config, esmerald_settings, "allowed_hosts"
+        )
+        self.allow_origins = allow_origins or self.get_settings_value(
+            self.settings_config, esmerald_settings, "allow_origins"
+        )
+        self.permissions = (
+            permissions
+            or self.get_settings_value(self.settings_config, esmerald_settings, "permissions")
+            or []
+        )
+        self.interceptors = (
+            interceptors
+            or self.get_settings_value(self.settings_config, esmerald_settings, "interceptors")
+            or []
+        )
+        self.dependencies = (
+            dependencies
+            or self.get_settings_value(self.settings_config, esmerald_settings, "dependencies")
+            or {}
+        )
+        self.csrf_config = csrf_config or self.get_settings_value(
+            self.settings_config, esmerald_settings, "csrf_config"
+        )
+        self.cors_config = cors_config or self.get_settings_value(
+            self.settings_config, esmerald_settings, "cors_config"
+        )
+        self.openapi_config = openapi_config or self.get_settings_value(
+            self.settings_config, esmerald_settings, "openapi_config"
+        )
+        self.template_config = template_config or self.get_settings_value(
+            self.settings_config, esmerald_settings, "template_config"
+        )
+        self.static_files_config = static_files_config or self.get_settings_value(
+            self.settings_config, esmerald_settings, "static_files_config"
+        )
+        self.session_config = session_config or self.get_settings_value(
+            self.settings_config, esmerald_settings, "session_config"
+        )
+        self.response_class = response_class or self.get_settings_value(
+            self.settings_config, esmerald_settings, "response_class"
+        )
+        self.response_cookies = response_cookies or self.get_settings_value(
+            self.settings_config, esmerald_settings, "response_cookies"
+        )
+        self.response_headers = response_headers or self.get_settings_value(
+            self.settings_config, esmerald_settings, "response_headers"
+        )
+        self.scheduler_class = scheduler_class or self.get_settings_value(
+            self.settings_config, esmerald_settings, "scheduler_class"
+        )
+        self.scheduler_tasks = (
+            scheduler_tasks
+            or self.get_settings_value(self.settings_config, esmerald_settings, "scheduler_tasks")
+            or {}
+        )
+        self.scheduler_configurations = (
+            scheduler_configurations
+            or self.get_settings_value(
+                self.settings_config, esmerald_settings, "scheduler_configurations"
+            )
+            or {}
+        )
+        self.enable_scheduler = enable_scheduler or self.get_settings_value(
+            self.settings_config, esmerald_settings, "enable_scheduler"
+        )
+        self.timezone = timezone or self.get_settings_value(
+            self.settings_config, esmerald_settings, "timezone"
+        )
+        self.root_path = root_path or self.get_settings_value(
+            self.settings_config, esmerald_settings, "root_path"
+        )
+        self.middleware = (
+            middleware
+            or self.get_settings_value(self.settings_config, esmerald_settings, "middleware")
+            or []
+        )
+        _exception_handlers = exception_handlers or self.get_settings_value(
+            self.settings_config, esmerald_settings, "exception_handlers"
+        )
+        self.exception_handlers = {} if _exception_handlers is None else dict(_exception_handlers)
+        self.on_startup = on_startup or self.get_settings_value(
+            self.settings_config, esmerald_settings, "on_startup"
+        )
+        self.on_shutdown = on_shutdown or self.get_settings_value(
+            self.settings_config, esmerald_settings, "on_shutdown"
+        )
+        self.lifespan = lifespan or self.get_settings_value(
+            self.settings_config, esmerald_settings, "lifespan"
+        )
+        self.tags = tags or self.get_settings_value(
+            self.settings_config, esmerald_settings, "tags"
+        )
+        self.include_in_schema = include_in_schema or self.get_settings_value(
+            self.settings_config, esmerald_settings, "include_in_schema"
+        )
+        self.security = security or self.get_settings_value(
+            self.settings_config, esmerald_settings, "security"
+        )
+        self.enable_openapi = enable_openapi or self.get_settings_value(
+            self.settings_config, esmerald_settings, "enable_openapi"
+        )
+        self.redirect_slashes = redirect_slashes or self.get_settings_value(
+            self.settings_config, esmerald_settings, "redirect_slashes"
+        )
 
+        self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
-        self.async_exit_config = settings.async_exit_config
-        self.root_path = root_path
+        self.async_exit_config = esmerald_settings.async_exit_config
         self.parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None
-        self.on_shutdown = on_shutdown
-        self.on_startup = on_startup
-        self.security = security
-        self.enable_openapi = enable_openapi
-        self.redirect_slashes = redirect_slashes
 
         self.router: "Router" = Router(
-            on_shutdown=on_shutdown,
-            on_startup=on_startup,
+            on_shutdown=self.on_shutdown,
+            on_startup=self.on_startup,
             routes=routes,
             app=self,
-            lifespan=lifespan,
+            lifespan=self.lifespan,
             deprecated=deprecated,
             security=security,
             redirect_slashes=self.redirect_slashes,
         )
 
-        self.exception_handlers = {} if exception_handlers is None else dict(exception_handlers)
         self.get_default_exception_handlers()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
@@ -247,8 +362,22 @@ class Esmerald(Starlette):
                 configurations=self.scheduler_configurations,
             )
 
-        self.resolve_settings()
         self.activate_openapi()
+
+    def get_settings_value(
+        self,
+        local_settings: Type["EsmeraldAPISettings"],
+        global_settings: Type["EsmeraldAPISettings"],
+        value: str,
+    ) -> Any:
+        """Obtains the value from a settings module or defaults to the global settings"""
+        setting_value = None
+
+        if local_settings:
+            setting_value = getattr(local_settings, value, None)
+        if not setting_value:
+            return getattr(global_settings, value, None)
+        return setting_value
 
     def activate_openapi(self) -> None:
         if self.openapi_config and self.enable_openapi:
@@ -538,28 +667,19 @@ class Esmerald(Starlette):
 
         return app
 
-    def resolve_settings(self) -> None:
-        """
-        Make sure the settings are aligned with the application parameters.
-        Request, local, app and global have the same values
-        """
-        object_setattr = object.__setattr__
-
-        for key in dir(self):
-            if key == "_debug":
-                setattr(settings, "debug", self._debug)
-
-            if hasattr(settings, key) and not key.startswith("__") and not key.endswith("__"):
-                value = getattr(self, key, None)
-                if value:
-                    object_setattr(settings, key, value)
-
     @property
-    def settings(self) -> settings:
+    def settings(self) -> Type["EsmeraldAPISettings"]:
         """
         Returns the Esmerald settings object for easy access.
         """
-        return settings
+        return self.settings_config if self.settings_config else esmerald_settings
+
+    @property
+    def default_settings(self) -> Type["EsmeraldAPISettings"]:
+        """
+        Returns the default global settings.
+        """
+        return esmerald_settings
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         scope["app"] = self

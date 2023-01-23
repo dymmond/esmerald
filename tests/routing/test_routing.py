@@ -2,6 +2,11 @@ import typing
 import uuid
 
 import pytest
+from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.responses import Response as StarletteResponse
+from starlette.routing import Host, NoMatchFound
+from starlette.websockets import WebSocket, WebSocketDisconnect
+
 from esmerald.applications import Esmerald
 from esmerald.enums import MediaType
 from esmerald.permissions import AllowAny, DenyAll
@@ -12,10 +17,6 @@ from esmerald.routing.handlers import get, post, put, websocket
 from esmerald.routing.router import Include, Router
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
-from starlette.responses import JSONResponse, PlainTextResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import Host, NoMatchFound
-from starlette.websockets import WebSocket, WebSocketDisconnect
 
 
 @get(path="/", permissions=[DenyAll])
@@ -572,7 +573,7 @@ def test_protocol_switch(test_client_factory):
     with create_client(routes=mixed_protocol_app) as client:
         response = client.get("/")
         assert response.status_code == 200
-        assert response.text == "URL: http://testserver/"
+        assert response.json() == "URL: http://testserver/"
 
         with client.websocket_connect("/") as session:
             assert session.receive_json() == {"URL": "ws://testserver/"}
