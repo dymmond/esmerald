@@ -17,8 +17,6 @@ class RequestSettingsMiddleware(MiddlewareProtocol):
     async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         app = scope["app"]
         scope["global_settings"] = esmerald_settings
-
-        if app.settings_config:
-            scope["app_settings"] = app.settings_config
+        scope["app_settings"] = app.settings_config if app.settings_config else None
 
         await self.app(scope, receive, send)

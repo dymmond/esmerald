@@ -165,7 +165,7 @@ class Esmerald(Starlette):
         self.settings_config = None
 
         if settings_config:
-            if not isinstance(settings_config, EsmeraldAPISettings) or not is_class_and_subclass(
+            if not isinstance(settings_config, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_config, EsmeraldAPISettings
             ):
                 raise ImproperlyConfigured(
@@ -361,6 +361,7 @@ class Esmerald(Starlette):
                 timezone=self.timezone,
                 configurations=self.scheduler_configurations,
             )
+
         self.activate_openapi()
 
     def get_settings_value(

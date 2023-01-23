@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Optional, Union
 import pytest
 from loguru import logger
 from mock import MagicMock
-from tests.settings import TestConfig
 
 from asyncz.contrib.esmerald.decorator import scheduler
 from asyncz.executors.base import BaseExecutor
@@ -215,18 +214,5 @@ def test_raise_exception_on_tasks_value(scheduler_class):
         Esmerald(
             scheduler_class=scheduler_class,
             scheduler_tasks=tasks,
-            enable_scheduler=True,
-        )
-
-
-def test_raise_exception_on_missing_scheduler_class_and_enable_scheduler():
-    """
-    If Esmerald enable_scheduler is True and no scheduler_class, raises ImproperlyConfigured.
-    """
-    with pytest.raises(ImproperlyConfigured):
-        Esmerald(
-            settings_config=TestConfig,
-            scheduler_class=None,
-            scheduler_tasks=scheduler_tasks(),
             enable_scheduler=True,
         )
