@@ -1,5 +1,29 @@
 # Release Notes
 
+## 0.8.0
+
+January, 2023
+
+### Added
+
+- New `File` and `Form` params to Esmerald.
+- Add new `Injects` as parameter function.
+- Add new `ArbitraryHashableBaseModel` to handle the `Inject` with arbitrary types.
+- Add new [settings_config](./application/settings.md#the-settings_config) parameter. [#40](https://github.com/dymmond/esmerald/pull/40).
+
+### Changed
+
+- Removed unused internal parameters for old functions.
+- `scheduler_class` is now a property in the EsmeraldSettings. This allows to override fields
+without issues.
+- Deprecate `settings` parameter from `RequestSettingsMiddleware`.
+
+### Fixed
+
+- Error messages being thrown.
+- Fix `enable_openapi` boolean for ChildEsmerald and submodules and `include_in_schema` for Include [#37](https://github.com/dymmond/esmerald/pull/37)
+- Fix types for OpenAPI for applications that are subclasses of Esmerald or ChildEsmerald [#38](https://github.com/dymmond/esmerald/pull/38)
+
 ## 0.7.0
 
 January 17, 2023
