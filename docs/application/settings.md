@@ -13,6 +13,18 @@ Inspired by Django and by the experience of 99% of the developed applications us
 [Pydantic](https://pydantic-docs.helpmanual.io/visual_studio_code/#basesettings-and-ignoring-pylancepyright-errors)
 to leverage those.
 
+!!! Note
+    From the version 0.8.X, Esmerald allows settings on [levels](./levels.md) making it 100% modular.
+
+## The way of the settings
+
+There are two ways of using the settings object within an Esmerald application.
+
+* Using the **ESMERALD_SETTINGS_MODULE**
+* Using the **[settings_config](#the-settings_config)**
+
+Each one of them has particular use cases but they also work together is perfect harmony.
+
 ## EsmeraldAPISettings and the application
 
 When starting a Esmerald instance if no parameters are provided, it will automatically load the defaults from the
@@ -108,14 +120,127 @@ if nothing is provided then it will execute the application defaults.
 It is very simple, `ESMERALD_SETTINGS_MODULE` looks for the custom settings class created for the application
 and loads it in lazy mode.
 
+## The settings_config
+
+This is a great tool to make your Esmerald applications 100% independent and modular. There are cases
+where you simply want to plug an existing esmerald application into another and that same esmerald application
+already has unique settings and defaults.
+
+The `settings_config` is a parameter available in every single `Esmerald` instance as well as `ChildEsmerald`.
+
+### Creating a settings_config
+
+The configurations have **literally the same concept**
+as the [EsmeraldAPISettings](#esmeraldapisettings-and-the-application), which means that every single
+``settings_config` **must be derived from the EsmeraldAPISettings** or an `ImproperlyConfigured` exception
+is thrown.
+
+The reason why the above is to keep the integrity of the application and settings.
+
+```python hl_lines="21"
+{!> ../docs_src/application/settings/settings_config/example2.py !}
+```
+
+Is this simple, literally, Esmerald simplifies the way you can manipulate settings on each level
+and keeping the intregrity at the same time.
+
+Check out the [order of priority](#order-of-priority) to understand a bit more.
+
+## Order of priority
+
+There is an order or priority in which Esmerald reads your settings.
+
+If a `settings_config` is passed into an Esmerald instance, that same object takes priority above
+anything else. Let us imagine the following:
+
+* An Esmerald application with normal settings.
+* A ChildEsmerald with a specific set of configurations unique to it.
+
+```python hl_lines="11"
+{!> ../docs_src/application/settings/settings_config/example1.py !}
+```
+
+**What is happenening here?**
+
+In the example above we:
+
+1. Created a settings object derived from the main `EsmeraldAPISettings` and
+passed some defaults.
+1. Passed the `ChildEsmeraldSettings` into the `ChildEsmerald` instance.
+2. Passed the `ChildEsmerald` into the `Esmerald` application.
+
+So, how does the priority take place here using the `settings_config`?
+
+1. If no parameter value (upon instantiation), for example `app_name`, is provided, it will check for that same value
+inside the `settings_config`.
+2. If `settings_config` does not provide an `app_name` value, it will look for the value in the
+`ESMERALD_SETTINGS_MODULE`.
+3. If no `ESMERALD_SETTINGS_MODULE` environment variable is provided by you, then it will default
+to the Esmerald defaults. [Read more about this here](#esmerald-settings-module).
+
+So the order of priority:
+
+1. Parameter instance value takes priority above `settings_config`.
+2. `settings_config` takes priority above `ESMERALD_SETTINGS_MODULE`.
+3. `ESMERALD_SETTINGS_MODULE` is the last being checked.
+
+## Settings config and Esmerald settings module
+
+The beauty of this modular approach is the fact that makes it possible to use **both** approaches at
+the same time ([order of priority](#order-of-priority)).
+
+Let us use an example where:
+
+1. We create a main Esmerald settings object to be used by the `ESMERALD_SETTINGS_MODULE`.
+2. We create a `settings_config` to be used by the Esmerald instance.
+3. We start the application using both.
+
+Let us also assume you have all the settings inside a `src/configs` directory.
+
+**Create a configuration to be used by the ESMERALD_SETTINGS_MODULE**
+
+```python title="src/configs/main_settings.py"
+{!> ../docs_src/application/settings/settings_config/main_settings.py !}
+```
+
+**Create a configuration to be used by the setting_config**
+
+```python title="src/configs/main_settings.py"
+{!> ../docs_src/application/settings/settings_config/app_settings.py !}
+```
+
+**Create an Esmerald instance**
+
+```python title="src/configs/app_settings.py" hl_lines="14"
+{!> ../docs_src/application/settings/settings_config/app.py !}
+```
+
+Now we can start the server using the `AppSettings` as global and `InstanceSettings` being passed
+via instantiation.
+
+```shell
+ESMERALD_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
+
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [28720]
+INFO:     Started server process [28722]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+```
+
+Great! Now not only we have used the `settings_config` and `ESMERALD_SETTINGS_MODULE` but we used
+them at the same time!
+
+Check out the [order of priority](#order-of-priority) to understand which value takes precedence
+and how Esmerald reads them out.
+
 ## Parameters
 
 The parameters available inside `EsmeraldAPISettings` can be overridden by any custom settings.
 
 ### The current parameters available inside the `EsmeraldAPISettings`
 
-* **settings_config** - A settings instance, derived from `EsmeraldAPISettings` that will serve as the
-application settings instead of using `ESMERALD_SETTINGS_MODULE`. An alternative to it.
+* **settings_config** - A settings instance, derived from `EsmeraldAPISettings`.
 
 * **debug** - Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
 very useful for development.

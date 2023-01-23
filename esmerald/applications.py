@@ -667,32 +667,6 @@ class Esmerald(Starlette):
 
         return app
 
-    def resolve_settings(self) -> None:
-        """
-        Make sure the settings are aligned with the application parameters.
-        Request, local, app and global have the same values
-        """
-        object_setattr = object.__setattr__
-
-        if isinstance(self, ChildEsmerald):
-            return
-
-        for key in dir(self):
-            if key == "settings_config":
-                continue
-
-            if key == "_debug":
-                setattr(esmerald_settings, "debug", self._debug)
-
-            if (
-                hasattr(esmerald_settings, key)
-                and not key.startswith("__")
-                and not key.endswith("__")
-            ):
-                value = getattr(self, key, None)
-                if value:
-                    object_setattr(esmerald_settings, key, value)
-
     @property
     def settings(self) -> Type["EsmeraldAPISettings"]:
         """
