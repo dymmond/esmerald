@@ -8,7 +8,7 @@ class ChildEsmeraldSettings(EsmeraldAPISettings):
 
 
 ## Create a ChildEsmerald application
-child_app = ChildEsmerald(routes=[...], settings_config=ChildEsmerald)
+child_app = ChildEsmerald(routes=[...], settings_config= ChildEsmeraldSettings)
 
 # Create an Esmerald application
 app = Esmerald(routes=[Include("/child", app=child_app)])
