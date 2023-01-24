@@ -211,7 +211,7 @@ Let us also assume you have all the settings inside a `src/configs` directory.
 
 **Create an Esmerald instance**
 
-```python title="src/configs/app_settings.py" hl_lines="14"
+```python title="src/app.py" hl_lines="14"
 {!> ../docs_src/application/settings/settings_config/app.py !}
 ```
 
