@@ -205,7 +205,7 @@ Let us also assume you have all the settings inside a `src/configs` directory.
 
 **Create a configuration to be used by the setting_config**
 
-```python title="src/configs/main_settings.py"
+```python title="src/configs/app_settings.py"
 {!> ../docs_src/application/settings/settings_config/app_settings.py !}
 ```
 
@@ -216,7 +216,7 @@ Let us also assume you have all the settings inside a `src/configs` directory.
 ```
 
 Now we can start the server using the `AppSettings` as global and `InstanceSettings` being passed
-via instantiation.
+via instantiation. The AppSettings from the main_settings.py is used to call from the command-line.
 
 ```shell
 ESMERALD_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
