@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 from pydantic.fields import FieldInfo, Undefined
 
@@ -456,3 +456,14 @@ class Injects(FieldInfo):
             SKIP_VALIDATION: skip_validation,
         }
         super().__init__(default, **extra)
+
+
+class DirectInject:
+    def __init__(
+        self,
+        dependency: Optional[Callable[..., Any]] = None,
+        *,
+        use_cache: bool = True,
+    ):
+        self.dependency = dependency
+        self.use_cache = use_cache

@@ -1,20 +1,21 @@
 from typing import TYPE_CHECKING, Any, Dict, List, cast
 
+from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
+from pydantic.fields import Undefined
+
 from esmerald.enums import ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.schema import create_schema
 from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
 from esmerald.utils.dependency import is_dependency_field
-from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
-from pydantic.fields import Undefined
-
 
 if TYPE_CHECKING:
-    from esmerald.routing.router import HTTPHandler
-    from esmerald.types import Dependencies
     from openapi_schemas_pydantic.v3_1_0.schema import Schema
     from pydantic import BaseModel
     from pydantic.fields import ModelField
+
+    from esmerald.routing.router import HTTPHandler
+    from esmerald.types import Dependencies
 
 
 def create_path_parameter_schema(

@@ -1,18 +1,20 @@
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
 
-from esmerald.enums import HttpMethod
-from esmerald.openapi.parameters import create_parameter_for_handler
-from esmerald.openapi.request_body import create_request_body
-from esmerald.openapi.responses import create_responses
 from openapi_schemas_pydantic.v3_1_0.operation import Operation
 from openapi_schemas_pydantic.v3_1_0.path_item import PathItem
 from starlette.routing import get_name
 
+from esmerald.enums import HttpMethod
+from esmerald.openapi.parameters import create_parameter_for_handler
+from esmerald.openapi.request_body import create_request_body
+from esmerald.openapi.responses import create_responses
+
 if TYPE_CHECKING:
-    from esmerald.routing.handlers import HTTPHandler
-    from esmerald.types import AnyCallable
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from pydantic import BaseModel
+
+    from esmerald.routing.handlers import HTTPHandler
+    from esmerald.types import AnyCallable
 
 
 def get_description_for_handler(

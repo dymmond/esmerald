@@ -1,27 +1,20 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    List,
-    NamedTuple,
-    Set,
-    Tuple,
-    Type,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
+
+from pydantic.fields import FieldInfo, Undefined
+from starlette.datastructures import URL
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.parsers import BaseModelExtra, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
-from pydantic.fields import FieldInfo, Undefined
-from starlette.datastructures import URL
 
 if TYPE_CHECKING:
+    from pydantic.typing import DictAny, MappingIntStrAny
+
     from esmerald.injector import Inject
     from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
     from esmerald.typing import ConnectionType
-    from pydantic.typing import DictAny, MappingIntStrAny
 
 
 class ParamSetting(NamedTuple):
