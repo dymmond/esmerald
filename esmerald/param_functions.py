@@ -7,6 +7,7 @@ def DirectInjects(  # noqa: N802
     dependency: Optional[Callable[..., Any]] = None, *, use_cache: bool = True
 ) -> Any:
     """
-    This function should be only called if not Inject()/Injects is used in the dependencies
+    This function should be only called if not Inject()/Injects is used in the dependencies.
+    This is a simple wrapper of the classic Inject()
     """
     return DirectInject(dependency=dependency, use_cache=use_cache)

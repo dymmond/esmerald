@@ -214,7 +214,8 @@ class OpenAPIView(APIView):
             schema_copy = schema.copy()
             schema_copy.openapi = "3.0.3"
             self._dumped_modified_schema = dumps(
-                schema_copy.json(by_alias=True, exclude_none=True), option=OPT_INDENT_2
+                schema_copy.json(by_alias=True, exclude_none=True),
+                option=OPT_INDENT_2,
             ).decode("utf-8")
 
         head = f"""
