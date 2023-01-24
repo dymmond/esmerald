@@ -130,6 +130,9 @@ class OpenAPIConfig(BaseModel):
                     continue
 
                 if isinstance(route, Gateway):
+                    if route.include_in_schema is False:
+                        continue
+
                     if (
                         isinstance(route, Gateway)
                         and any(

@@ -141,13 +141,21 @@ class Parent:
                         if not isinstance(route_handler, WebSocketHandler)
                         else WebSocketGateway
                     )
+                    include_in_schema = (
+                        value.include_in_schema
+                        if value.include_in_schema is not None
+                        else route_handler.include_in_schema
+                    )
+
                     gate = gateway(
                         path=value.path,
                         handler=route_handler,
                         name=route_handler.path,
                         middleware=value.middleware,
+                        interceptors=value.interceptors,
                         permissions=value.permissions,
                         exception_handlers=value.exception_handlers,
+                        include_in_schema=include_in_schema,
                     )
                     self.routes.append(gate)
                 self.routes.pop(self.routes.index(value))
@@ -1038,6 +1046,11 @@ class Include(Mount):
                             if not isinstance(route_handler, WebSocketHandler)
                             else WebSocketGateway
                         )
+                        include_in_schema = (
+                            route.include_in_schema
+                            if route.include_in_schema is not None
+                            else route_handler.include_in_schema
+                        )
                         gate = gateway(
                             path=route.path,
                             handler=route_handler,
@@ -1046,6 +1059,7 @@ class Include(Mount):
                             interceptors=self.interceptors,
                             permissions=route.permissions,
                             exception_handlers=route.exception_handlers,
+                            include_in_schema=include_in_schema,
                         )
 
                         routing.append(gate)
