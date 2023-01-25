@@ -51,12 +51,35 @@ Another super fast JSON serialization/deserialization response.
 
 As the name suggests, it is the response used to render HTML templates.
 
-Although this one is a bit different to import as it is a datastructure that internally
-uses the `TemplateResponse`.
+This response returns a `TemplateResponse`.
 
 ```python
 {!> ../docs_src/responses/template.py !}
 ```
+
+**Parameters**:
+
+* **name** - Template name/location. E.g.: `accounts/list.html`.
+* **context** - The dict context to be sent to the template.
+
+### Redirect
+
+As the name indicates, it is the response used to redirect to another endpoint/path.
+
+This response returns a `ResponseRedirect`.
+
+```python
+{!> ../docs_src/responses/redirect.py !}
+```
+
+**Parameters**:
+
+* **path** - The url path to redirect.
+
+**Parameters**:
+
+* **name** - Template name/location. E.g.: `accounts/list.html`.
+* **context** - The dict context to be sent to the template.
 
 ## OpenAPI Responses
 

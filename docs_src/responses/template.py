@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, get
-from esmerald.datastructures import Cookie, ResponseHeader, Template
+from esmerald import Esmerald, Gateway, Template, get
+from esmerald.datastructures import Cookie, ResponseHeader
 
 
 @get(
