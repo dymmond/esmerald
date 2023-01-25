@@ -8,10 +8,11 @@ import stat
 from importlib import import_module
 from typing import Any, Dict, Union
 
-import esmerald
-from esmerald.core.management.base import BaseDirective, DirectiveError
 from jinja2 import Environment, FileSystemLoader
 from pydantic import FilePath
+
+import esmerald
+from esmerald.core.management.base import BaseDirective, DirectiveError
 
 
 class TemplateDirective(BaseDirective):
@@ -124,7 +125,7 @@ class TemplateDirective(BaseDirective):
         Goes through every file generated and replaces the variables with the given
         context variables.
         """
-        environment = Environment(loader=FileSystemLoader(template_dir))
+        environment = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
         template = environment.get_template(template)
         rendered_template = template.render(context)
         if os.path.isfile(destination):
