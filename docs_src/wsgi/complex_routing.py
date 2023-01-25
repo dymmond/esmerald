@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, escape, request
 
 from esmerald import Esmerald, Gateway, Include, Request, get
 from esmerald.middleware import WSGIMiddleware
@@ -10,13 +10,13 @@ second_flask_app = Flask(__name__)
 @flask_app.route("/")
 def flask_main():
     name = request.args.get("name", "Esmerald")
-    return f"Hello, {name} from your Flask integrated!"
+    return f"Hello, {escape(name)} from your Flask integrated!"
 
 
 @second_flask_app.route("/")
 def flask_main():
     name = request.args.get("name", "Esmerald")
-    return f"Hello, {name} from your Flask integrated!"
+    return f"Hello, {escape(name)} from your Flask integrated!"
 
 
 @get("/home/{name:str}")
