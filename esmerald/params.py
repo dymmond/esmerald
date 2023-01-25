@@ -1,5 +1,6 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
+from pydantic.dataclasses import dataclass
 from pydantic.fields import FieldInfo, Undefined
 
 from esmerald.enums import EncodingType, ParamType
@@ -456,3 +457,25 @@ class Injects(FieldInfo):
             SKIP_VALIDATION: skip_validation,
         }
         super().__init__(default, **extra)
+
+
+@dataclass
+class DirectInject:
+    def __init__(
+        self,
+        dependency: Optional[Callable[..., Any]] = None,
+        *,
+        use_cache: bool = True,
+    ):
+        self.dependency = dependency
+        self.use_cache = use_cache
+
+    def __hash__(self):
+        values = {}
+        for key, value in self.__dict__.items():
+            values[key] = None
+            if isinstance(value, (list, set)):
+                values[key] = tuple(value)
+            else:
+                values[key] = value
+        return hash((type(self),) + tuple(values))

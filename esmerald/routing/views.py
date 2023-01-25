@@ -40,6 +40,7 @@ class APIView:
         "path_format",
         "param_convertors",
         "deprecated",
+        "include_in_schema",
     )
 
     path: str
@@ -53,6 +54,7 @@ class APIView:
     response_headers: Optional["ResponseHeaders"]
     tags: Optional[List[str]]
     deprecated: Optional[bool]
+    include_in_schema: Optional[bool]
 
     def __init__(self, parent: "Router") -> None:
         for key in self.__slots__:
@@ -89,7 +91,9 @@ class APIView:
         Returns:
             A list containing a copy of the route handlers defined inside the APIView.
         """
-        route_handlers: List[Union["HTTPHandler", "WebSocketHandler"]] = []
+        from esmerald.routing.router import HTTPHandler, WebSocketHandler
+
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = []
         filtered_handlers = self.get_filtered_handler()
 
         for handler in filtered_handlers:
@@ -98,6 +102,11 @@ class APIView:
             )
             route_handler = copy(source_route_handler)
             route_handler.parent = self
+
+            if self.include_in_schema is not None and not isinstance(
+                route_handler, WebSocketHandler
+            ):
+                route_handler.include_in_schema = self.include_in_schema
 
             if self.middleware:
                 self.get_route_middleware(route_handler)

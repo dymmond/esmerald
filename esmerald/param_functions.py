@@ -1,9 +1,13 @@
 from typing import Any, Callable, Optional
 
-from esmerald import injector
+from esmerald.params import DirectInject
 
 
-def Injects(  # noqa: N802
+def DirectInjects(  # noqa: N802
     dependency: Optional[Callable[..., Any]] = None, *, use_cache: bool = True
 ) -> Any:
-    return injector.Inject(dependency=dependency, use_cache=use_cache)
+    """
+    This function should be only called if not Inject()/Injects is used in the dependencies.
+    This is a simple wrapper of the classic Inject()
+    """
+    return DirectInject(dependency=dependency, use_cache=use_cache)

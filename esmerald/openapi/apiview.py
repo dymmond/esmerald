@@ -1,13 +1,14 @@
 from typing import TYPE_CHECKING, Callable, Dict
 
+from orjson import OPT_INDENT_2, dumps
+from starlette.status import HTTP_200_OK, HTTP_404_NOT_FOUND
+
 from esmerald.enums import MediaType, OpenAPIMediaType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.handlers import get
 from esmerald.routing.views import APIView
-from orjson import OPT_INDENT_2, dumps
-from starlette.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI

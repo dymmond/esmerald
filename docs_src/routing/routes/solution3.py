@@ -1,16 +1,16 @@
-from flask import Flask, request
+from flask import Flask, escape, request
 
 from esmerald import Esmerald, Include
 from esmerald.middleware import WSGIMiddleware
 
-flask_app = Flask(__name_)
-another_flask_app = Flask(__name_)
+flask_app = Flask(__name__)
+another_flask_app = Flask(__name__)
 
 
 @flask_app.route("/")
 def flask_main():
     name = request.args.get("name", "Esmerald")
-    return f"Hello, {name} from Flask!"
+    return f"Hello, {escape(name)} from Flask!"
 
 
 app = Esmerald(

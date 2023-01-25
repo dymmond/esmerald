@@ -53,11 +53,8 @@ class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):
         env.globals["url_for"] = url_for
         return env
 
-    def get_template(self, name: str) -> JinjaTemplate:
-        return self.env.get_template(name)
-
-    def _get_template(self, template_name: str) -> JinjaTemplate:
+    def get_template(self, template_name: str) -> JinjaTemplate:
         try:
-            return self.engine.get_template(name=template_name)
+            return self.env.get_template(template_name)
         except JinjaTemplateNotFound as e:
             raise TemplateNotFound(template_name=template_name) from e
