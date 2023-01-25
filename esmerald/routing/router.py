@@ -145,7 +145,7 @@ class Parent:
                     gate = gateway(
                         path=value.path,
                         handler=route_handler,
-                        name=route_handler.path,
+                        name=route_handler.fn.__name__,
                         middleware=value.middleware,
                         interceptors=value.interceptors,
                         permissions=value.permissions,
@@ -1053,7 +1053,7 @@ class Include(Mount):
                         gate = gateway(
                             path=route.path,
                             handler=route_handler,
-                            name=route_handler.path,
+                            name=route_handler.fn.__name__,
                             middleware=route.middleware,
                             interceptors=self.interceptors,
                             permissions=route.permissions,

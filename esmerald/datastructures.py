@@ -39,6 +39,7 @@ from starlette.responses import StreamingResponse
 from typing_extensions import Literal, ParamSpec
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+from esmerald.exceptions import TemplateNotFound
 from esmerald.responses import TemplateResponse
 
 P = ParamSpec("P")
@@ -214,8 +215,19 @@ class Stream(ResponseContainer[StreamingResponse]):
 
 
 class Template(ResponseContainer[TemplateResponse]):
+    """
+    Template allows to pass the original template name and an alternative in case of exception
+    not found.
+
+    Args:
+        name: Template name
+        context: The context to be passed to the template
+        alternative_template: The alternative template to be rendered if the original doesn't exist.
+    """
+
     name: str
     context: Optional[Dict[str, Any]] = None
+    alternative_template: Optional[str] = None
 
     def to_response(
         self,
@@ -229,15 +241,21 @@ class Template(ResponseContainer[TemplateResponse]):
 
         if not app.template_engine:
             raise ImproperlyConfigured("Template engine is not configured")
-        return TemplateResponse(
-            background=self.background,
-            context=self.context,
-            headers=headers,
-            status_code=status_code,
-            template_engine=app.template_engine,
-            template_name=self.name,
-            media_type=media_type,
-        )
+
+        data = {
+            "background": self.background,
+            "context": self.context,
+            "headers": headers,
+            "status_code": status_code,
+            "template_engine": app.template_engine,
+            "media_type": media_type,
+        }
+        try:
+            return TemplateResponse(template_name=self.name, **data)
+        except TemplateNotFound as e:
+            if self.alternative_template:
+                return TemplateResponse(template_name=self.alternative_template, **data)
+            raise e
 
 
 class ResponseHeader(BaseModel):
