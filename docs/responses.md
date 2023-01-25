@@ -103,10 +103,16 @@ This will add an extra response description and details to your OpenAPI spec han
 ## Other responses
 
 There are other responses you can have that does not necessessarily have to be the ones provided here. Every case is
-unique and yuo might want to return directly a `string`, a `dict`, an `integer`, a `list` or whatever you want.
+unique and you might want to return directly a `string`, a `dict`, an `integer`, a `list` or whatever you want.
 
 ```python
 {!> ../docs_src/responses/others.py !}
+```
+
+**Or a unique custom response**: 
+
+```python
+{!> ../docs_src/responses/custom.py !}
 ```
 
 Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
