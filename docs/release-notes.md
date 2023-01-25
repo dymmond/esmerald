@@ -1,8 +1,24 @@
 # Release Notes
 
+## 0.9.0
+
+January 25, 2023
+
+### Added
+
+- `DirectInjects` object for the direct dependency injection without [#42](https://github.com/dymmond/esmerald/pull/42).
+
+### Fixed
+
+- `include_in_schema` on a Gateway level for OpenAPI specification [#42](https://github.com/dymmond/esmerald/pull/42)/
+- `redirect_slashes` when instantiating an Esmerald/ChildEsmerald application wasn't
+validating the value properly.
+- TemplateNotFound raised when a template is not found [#42](https://github.com/dymmond/esmerald/pull/42).
+- jinja2 Environment to have autoescape by default [#43](https://github.com/dymmond/esmerald/pull/43)
+
 ## 0.8.1
 
-January, 2023
+January 23, 2023
 
 ### Added
 
@@ -11,7 +27,7 @@ This was supposed to go in the release 0.8.0 but somehow it was missed.
 
 ## 0.8.0
 
-January, 2023
+January 22, 2023
 
 ### Added
 
