@@ -76,11 +76,6 @@ This response returns a `ResponseRedirect`.
 
 * **path** - The url path to redirect.
 
-**Parameters**:
-
-* **name** - Template name/location. E.g.: `accounts/list.html`.
-* **context** - The dict context to be sent to the template.
-
 ## OpenAPI Responses
 
 This is a special attribute that is used for OpenAPI spec purposes and can be created and added to a specific handler.
