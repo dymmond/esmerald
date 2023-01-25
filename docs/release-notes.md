@@ -6,7 +6,7 @@ January 25, 2023
 
 ### Added
 
-- `DirectInjects` object for the direct dependency injection without [#42](https://github.com/dymmond/esmerald/pull/42).
+- `DirectInjects` object for the direct dependency injection without using Inject and `dependencies` from the handler [#42](https://github.com/dymmond/esmerald/pull/42).
 
 ### Fixed
 
