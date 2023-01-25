@@ -274,7 +274,7 @@ class Router(StarletteRouter, Parent):
     def activate(self):
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: "APIView"):
+    def add_apiview(self, value: Type["APIView"]):
         routes = []
         if not value.handler.parent:
             value(parent=self)
@@ -302,7 +302,7 @@ class Router(StarletteRouter, Parent):
     def add_route(
         self,
         path: str,
-        handler: "HTTPHandler",
+        handler: Type["HTTPHandler"],
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
@@ -340,7 +340,7 @@ class Router(StarletteRouter, Parent):
     def add_websocket_route(
         self,
         path: str,
-        handler: "WebSocketHandler",
+        handler: Type["WebSocketHandler"],
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,

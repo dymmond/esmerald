@@ -174,6 +174,7 @@ class Redirect(ResponseContainer[RedirectResponse]):
         status_code: int,
         app: "Esmerald",
     ) -> RedirectResponse:
+
         return RedirectResponse(
             headers=headers,
             status_code=status_code,
