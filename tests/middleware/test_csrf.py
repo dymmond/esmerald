@@ -8,6 +8,7 @@ from esmerald.config import CSRFConfig
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import delete, get, patch, post, put, websocket
 from esmerald.testclient import create_client
+from esmerald.utils.crypto import get_random_secret_key
 from esmerald.websockets import WebSocket
 
 
@@ -42,7 +43,7 @@ def test_csrf_successful_flow() -> None:
             Gateway(path="/", handler=get_handler),
             Gateway(path="/", handler=post_handler),
         ],
-        csrf_config=CSRFConfig(secret="secret"),
+        csrf_config=CSRFConfig(secret=get_random_secret_key()),
     ) as client:
         response = client.get("/")
         assert response.status_code == HTTP_200_OK
@@ -75,7 +76,7 @@ def test_unsafe_method_fails_without_csrf_header(method: str) -> None:
             Gateway(path="/", handler=delete_handler),
             Gateway(path="/", handler=patch_handler),
         ],
-        csrf_config=CSRFConfig(secret="secret"),
+        csrf_config=CSRFConfig(secret=get_random_secret_key()),
     ) as client:
         response = client.get("/")
         assert response.status_code == HTTP_200_OK
@@ -97,7 +98,7 @@ def test_invalid_csrf_token() -> None:
             Gateway(path="/", handler=get_handler),
             Gateway(path="/", handler=post_handler),
         ],
-        csrf_config=CSRFConfig(secret="secret"),
+        csrf_config=CSRFConfig(secret=get_random_secret_key()),
     ) as client:
         response = client.get("/")
         assert response.status_code == HTTP_200_OK
@@ -119,7 +120,7 @@ def test_csrf_token_too_short() -> None:
             Gateway(path="/", handler=get_handler),
             Gateway(path="/", handler=post_handler),
         ],
-        csrf_config=CSRFConfig(secret="secret"),
+        csrf_config=CSRFConfig(secret=get_random_secret_key()),
     ) as client:
         response = client.get("/")
         assert response.status_code == HTTP_200_OK
@@ -143,7 +144,7 @@ def test_websocket_ignored() -> None:
 
     with create_client(
         routes=[WebSocketGateway(path="/", handler=websocket_handler)],
-        csrf_config=CSRFConfig(secret="secret"),
+        csrf_config=CSRFConfig(secret=get_random_secret_key()),
     ) as client, client.websocket_connect("/") as ws:
         response = ws.receive_json()
         assert response is not None
@@ -157,7 +158,7 @@ def test_custom_csrf_config() -> None:
             Gateway(path="/", handler=post_handler),
         ],
         csrf_config=CSRFConfig(
-            secret="secret",
+            secret=get_random_secret_key(),
             cookie_name="custom-csrftoken",
             header_name="x-custom-csrftoken",
         ),

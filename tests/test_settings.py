@@ -21,6 +21,7 @@ from esmerald.config import CORSConfig, CSRFConfig
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
+from esmerald.utils.crypto import get_random_secret_key
 
 if TYPE_CHECKING:
     from esmerald.types import Middleware
@@ -199,11 +200,12 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.json()
 
+    secret = get_random_secret_key()
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
         settings_config=ChildSettings,
         middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
-        csrf_config=CSRFConfig(secret="child"),
+        csrf_config=CSRFConfig(secret=secret),
     )
 
     with create_client(
@@ -213,7 +215,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
         child = client.app.routes[0].app
 
         assert child.cors_config.allow_origins == ["www.example.com"]
-        assert child.csrf_config.secret == "child"
+        assert child.csrf_config.secret == secret
         assert client.app.cors_config.allow_origins == ["*"]
         assert client.app.csrf_config.secret == settings.secret_key
 
