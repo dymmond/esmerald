@@ -12,14 +12,14 @@ theme:
       accent: "orange"
       media: "(prefers-color-scheme: light)"
       toggle:
-        icon: "material/toggle-switch-variant"
+        icon: "material/lightbulb"
         name: "Switch to dark mode"
     - scheme: "slate"
       media: "(prefers-color-scheme: dark)"
       primary: "green"
       accent: "orange"
       toggle:
-        icon: "material/toggle-switch-variant-off"
+        icon: "material/lightbulb-outline"
         name: "Switch to light mode"
   favicon: statics/images/favicon.ico
   logo: statics/images/logo-white.svg
@@ -101,6 +101,7 @@ nav:
   - Vendors: "vendors.md"
   - Release Notes: "release-notes.md"
 markdown_extensions:
+  - attr_list
   - toc:
       permalink: true
   - markdown.extensions.codehilite:
@@ -115,9 +116,11 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.tabbed:
       alternate_style: true
-  - attr_list
   - md_in_html
 
 extra:

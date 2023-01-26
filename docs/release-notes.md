@@ -1,5 +1,25 @@
 # Release Notes
 
+## 0.10.0
+
+January 26, 2023
+
+### Added
+
+- `add_apiview` to the Esmerald class.
+- [JSON](./responses.md#json), [OrJSON](./responses.md#orjson) and [UJSON]((./responses.md#ujson) responses [#44(https://github.com/dymmond/esmerald/pull/44).
+
+### Changed
+
+- `Template` now accepts an extra `alternative_template` for the cases of raising TemplateNotFound [#44](https://github.com/dymmond/esmerald/pull/44).
+- Removed `handle_status_code` internal functionality as it is no longer used.
+
+### Fixed
+
+- `handler` type for Gateway and WebsocketGateway.
+- The split bytes intead of b''.
+
+
 ## 0.9.0
 
 January 25, 2023
