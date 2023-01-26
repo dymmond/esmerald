@@ -2,8 +2,6 @@
 
 ## 0.10.0
 
-January 26, 2023
-
 ### Added
 
 - `add_apiview` to the Esmerald class.
@@ -22,8 +20,6 @@ January 26, 2023
 
 ## 0.9.0
 
-January 25, 2023
-
 ### Added
 
 - `DirectInjects` object for the direct dependency injection without using Inject and `dependencies` from the handler [#42](https://github.com/dymmond/esmerald/pull/42).
@@ -37,8 +33,6 @@ validating the value properly.
 - jinja2 Environment to have autoescape by default [#43](https://github.com/dymmond/esmerald/pull/43)
 
 ## 0.8.1
-
-January 23, 2023
 
 ### Added
 
@@ -71,8 +65,6 @@ without issues.
 
 ## 0.7.0
 
-January 17, 2023
-
 ### Added
 
 - New [RequestSettingsMiddleware](./middleware/middleware.md#requestsettingsmiddleware) allowing accessing the settings of the application
@@ -90,8 +82,6 @@ of the [RequestSettingsMiddleware](./middleware/middleware.md#requestsettingsmid
 
 ## 0.6.2
 
-January 16, 2023
-
 ### Changed
 
 - Add support for kwargs in the Dao and AsyncDAO [#28](https://github.com/dymmond/esmerald/issues/28)
@@ -102,8 +92,6 @@ January 16, 2023
 - References to the Esmerald types causing the IDE to misread them.
 
 ## 0.6.1
-
-January 13, 2023
 
 ### Changed
 
@@ -118,8 +106,6 @@ of other includes.
 - JWT middleware handling the headers
 
 ## 0.6.0
-
-January 11, 2023
 
 ### Added
 
@@ -138,8 +124,6 @@ on invalid token.
 
 ## 0.5.4
 
-January 3, 2023
-
 ### Changed
 
 - Updated version of asyncz to support 0.1.4.
@@ -148,15 +132,11 @@ January 3, 2023
 
 ## 0.5.3
 
-January 2, 2023
-
 ### Changed
 
 - Added support to httpx 0.23.2
 
 ## 0.5.2
-
-December 30, 2022
 
 ### Changed
 
@@ -164,15 +144,11 @@ December 30, 2022
 
 ## 0.5.1
 
-December 23, 2022
-
 ### Changed
 
 - Add support for Asyncz 0.1.2
 
 ## 0.5.0
-
-December 22, 2022
 
 !!! Warning
     This changes might contain some backward incompatibilities if you are already using the
@@ -191,8 +167,6 @@ December 22, 2022
 
 ## 0.4.2
 
-December 16, 2022
-
 ### Changed
 
 - Created `BaseModelExtra` parser removing repetition of code across transformers.
@@ -204,15 +178,11 @@ December 16, 2022
 
 ## 0.4.1
 
-December 13, 2022
-
 ### Changed
 
 - Added support for Starlette 0.23.1.
 
 ## 0.4.0
-
-December 9, 2022
 
 ### Changed
 
@@ -225,8 +195,6 @@ December 9, 2022
 - Update internal references to the JWT.
 
 ## 0.3.1
-
-November 28, 2022
 
 ### Added
 
@@ -242,8 +210,6 @@ November 28, 2022
 
 ## 0.3.0
 
-November 27, 2022
-
 ### Changed
 
 - Deprecated kwargs and signature to give place to Esmerald transformers.
@@ -251,15 +217,11 @@ November 27, 2022
 
 ## 0.2.11
 
-November 21, 2022
-
 ### Fixed
 
 - When instantiating an `Esmerald` object, `app_name` should be passed instead of `name`.
 
 ## 0.2.10
-
-November 18, 2022
 
 ### Changed
 
@@ -272,15 +234,11 @@ and can be used for testing purposes or to clear a session.
 
 ## 0.2.9
 
-November 15, 2022
-
 ### Fixed
 
 - `redirect_slashes` property added to the main Esmerald object and settings options.
 
 ## 0.2.8
-
-November 14, 2022
 
 ### Fixed
 
@@ -288,15 +246,11 @@ November 14, 2022
 
 ## 0.2.7
 
-November 11, 2022
-
 ### Added
 
 - Officially supporting python 3.11.
 
 ## 0.2.6
-
-November 11, 2022
 
 ### Changed
 
@@ -305,15 +259,11 @@ November 11, 2022
 
 ## 0.2.5
 
-November 9, 2022
-
 ### Changed
 
 - Removed `auth.py` from security package as is no longer used. This was supposed to go in the release 0.2.4.
 
 ## 0.2.4
-
-November 9, 2022
 
 ### Changed
 
@@ -321,23 +271,17 @@ November 9, 2022
 
 ## 0.2.3
 
-November 5, 2022
-
 ### Fixed
 
 - OpenAPI documentation rendering for the same path with different http methods.
 
 ## 0.2.2
 
-November 2, 2022.
-
 ### Added
 
 - `httpx` and `itsdangerous` dependencies.
 
 ## 0.2.1
-
-November 1, 2022.
 
 ### Changed
 
@@ -350,8 +294,6 @@ November 1, 2022.
 
 ## 0.2.0
 
-November 1, 2022.
-
 ### Added
 
 - `esmerald-admin` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
@@ -362,8 +304,6 @@ November 1, 2022.
 
 ## 0.1.3
 
-October 26, 2022.
-
 ### Changed
 
 - `add_route` - Fixed the way the add_route was managing the paths and import to OpenAPI docs.
@@ -371,23 +311,17 @@ October 26, 2022.
 
 ## 0.1.2
 
-October 26, 2022.
-
 ### Changed
 
 - `add_routes` - Fixed the way the add_route was managing the paths and import to OpenAPI docs.
 
 ## 0.1.1
 
-October 25, 2022.
-
 ### Changed
 
 - `pyproject.toml` - Added missing dependencies.
 
 ## 0.1.0
-
-October 25, 2022.
 
 This release is the first release of Esmerald and it contain all the essentials to start a project from the simplest
 version to the most advanced.
