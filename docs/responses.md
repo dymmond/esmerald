@@ -15,6 +15,9 @@ The available responses from `Esmerald` are:
 * `UJSONResponse`
 * `JSONResponse`
 * `Template`
+* `Redirect`
+* `File`
+* `Stream`
 
 ### Response
 
@@ -23,6 +26,15 @@ Classic and generic `Response` that fits almost every single use case out there.
 ```python
 {!> ../docs_src/responses/response.py !}
 ```
+
+**Or a unique custom response**:
+
+```python
+{!> ../docs_src/responses/custom.py !}
+```
+
+Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
+unless you want to.
 
 ### ORJSONResponse
 
@@ -76,6 +88,40 @@ This response returns a `ResponseRedirect`.
 
 * **path** - The url path to redirect.
 
+### File
+
+The File response sends a file. This response returns a `FileResponse`.
+
+```python
+{!> ../docs_src/responses/file.py !}
+```
+
+**Parameters**:
+
+* **path** - The path to the file to download.
+* **filename** - The name of the file to be added to the `Content-Disposition` attachment.
+
+### Stream
+
+The Stream response uses the `StreamResponse`.
+
+```python
+{!> ../docs_src/responses/stream.py !}
+```
+
+**Parameters**:
+
+* **iterator** - Any iterable function.
+
+## Important notes
+
+[Template](#template), [Redirect](#redirect), [File](#file) and [Stream](#stream) are wrappers
+around the Starlette `TemplateResponse`, `RedirectResponse`, `FileResponse` and `StreamResponse`.
+
+Those responses are also possible to be used directly without the need of using the wrapper.
+
+The wrappers, like Starlette, also accept the classic parameters such as `headers` and `cookies`.
+
 ## OpenAPI Responses
 
 This is a special attribute that is used for OpenAPI spec purposes and can be created and added to a specific handler.
@@ -108,12 +154,3 @@ unique and you might want to return directly a `string`, a `dict`, an `integer`,
 ```python
 {!> ../docs_src/responses/others.py !}
 ```
-
-**Or a unique custom response**: 
-
-```python
-{!> ../docs_src/responses/custom.py !}
-```
-
-Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
-unless you want to.

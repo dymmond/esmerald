@@ -20,7 +20,7 @@ from .config import (
     StaticFilesConfig,
     TemplateConfig,
 )
-from .datastructures import Redirect, Template, UploadFile
+from .datastructures import Redirect, Stream, Template, UploadFile
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -94,6 +94,7 @@ __all__ = [
     "ServiceUnavailable",
     "SessionConfig",
     "StaticFilesConfig",
+    "Stream",
     "Template",
     "TemplateConfig",
     "TemplateResponse",
