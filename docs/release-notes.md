@@ -7,7 +7,7 @@ January 26, 2023
 ### Added
 
 - `add_apiview` to the Esmerald class.
-- [JSON](./responses.md#json), [OrJSON](./responses.md#orjson) and [UJSON]((./responses.md#ujson) responses [#44(https://github.com/dymmond/esmerald/pull/44).
+- [JSON](./responses.md#json), [OrJSON](./responses.md#orjson) and [UJSON](./responses.md#ujson) responses [#44](https://github.com/dymmond/esmerald/pull/44).
 
 ### Changed
 
