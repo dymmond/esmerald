@@ -530,18 +530,16 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         """
         Returns the appropriate status code.
         """
-        if HttpMethod.GET in self.methods and not self.status_code:
+        if (
+            HttpMethod.GET in self.methods
+            or HttpMethod.PUT in self.methods
+            or HttpMethod.HEAD in self.methods
+        ) and not self.status_code:
             return status.HTTP_200_OK
         elif HttpMethod.POST in self.methods and not self.status_code:
             return status.HTTP_201_CREATED
         elif HttpMethod.DELETE in self.methods and not self.status_code:
             return status.HTTP_204_NO_CONTENT
-        elif HttpMethod.PUT in self.methods and not self.status_code:
-            return status.HTTP_200_OK
-        elif HttpMethod.PATCH in self.methods and not self.status_code:
-            return status.HTTP_200_OK
-        elif HttpMethod.HEAD in self.methods and not self.status_code:
-            return status.HTTP_200_OK
         return self.status_code
 
     @property

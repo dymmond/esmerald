@@ -136,7 +136,7 @@ def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
     # second block, decode the first 2 bytes if they represent a hex code to
     # decode. The rest of the block is the part after '%AB', not containing
     # any '%'. Add that to the output without further processing.
-    bits = uri.split(b"%")
+    bits = uri.split(bytes("%"))
     if len(bits) == 1:
         iri = uri
     else:

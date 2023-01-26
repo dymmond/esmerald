@@ -125,10 +125,13 @@ def create_parameter_for_handler(
     parameters = ParameterCollection(handler=handler)
     dependencies = handler.get_dependencies()
 
-    for field_name, model_field in filter(
-        lambda items: items[0] not in RESERVED_KWARGS and items[0] not in {},
-        handler_fields.items(),
-    ):
+    filtered = [
+        item
+        for item in handler_fields.items()
+        if item[0] not in RESERVED_KWARGS and item[0] not in {}
+    ]
+
+    for field_name, model_field in filtered:
         if is_dependency_field(model_field.field_info) and field_name not in dependencies:
             continue
 
