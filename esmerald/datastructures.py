@@ -39,15 +39,11 @@ from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import Literal, ParamSpec
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
-<<<<<<< Updated upstream
-from esmerald.exceptions import TemplateNotFound
-from esmerald.responses import TemplateResponse
-=======
+from esmerald.exceptions import TemplateNotFound  # noqa
 from esmerald.responses import JSONResponse  # noqa
 from esmerald.responses import ORJSONResponse  # noqa
 from esmerald.responses import TemplateResponse  # noqa
 from esmerald.responses import UJSONResponse  # noqa; noqa
->>>>>>> Stashed changes
 
 P = ParamSpec("P")
 R = TypeVar("R", bound=StarletteResponse)
