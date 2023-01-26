@@ -145,7 +145,7 @@ class Parent:
                     gate = gateway(
                         path=value.path,
                         handler=route_handler,
-                        name=route_handler.path,
+                        name=route_handler.fn.__name__,
                         middleware=value.middleware,
                         interceptors=value.interceptors,
                         permissions=value.permissions,
@@ -274,7 +274,7 @@ class Router(StarletteRouter, Parent):
     def activate(self):
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: "APIView"):
+    def add_apiview(self, value: Type["APIView"]):
         routes = []
         if not value.handler.parent:
             value(parent=self)
@@ -302,7 +302,7 @@ class Router(StarletteRouter, Parent):
     def add_route(
         self,
         path: str,
-        handler: "HTTPHandler",
+        handler: Type["HTTPHandler"],
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
@@ -340,7 +340,7 @@ class Router(StarletteRouter, Parent):
     def add_websocket_route(
         self,
         path: str,
-        handler: "WebSocketHandler",
+        handler: Type["WebSocketHandler"],
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
@@ -500,7 +500,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         if isinstance(status_code, IntEnum):
             status_code = int(status_code)
         self.status_code = status_code
-        self.status_code = self.handle_status_code()
 
         self.exception_handlers = exception_handlers or {}
         self.dependencies = dependencies or {}
@@ -525,24 +524,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.app: Optional["ASGIApp"] = None
         self.route_map: Dict["HTTPMethod" : Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
-
-    def handle_status_code(self):
-        """
-        Returns the appropriate status code.
-        """
-        if HttpMethod.GET in self.methods and not self.status_code:
-            return status.HTTP_200_OK
-        elif HttpMethod.POST in self.methods and not self.status_code:
-            return status.HTTP_201_CREATED
-        elif HttpMethod.DELETE in self.methods and not self.status_code:
-            return status.HTTP_204_NO_CONTENT
-        elif HttpMethod.PUT in self.methods and not self.status_code:
-            return status.HTTP_200_OK
-        elif HttpMethod.PATCH in self.methods and not self.status_code:
-            return status.HTTP_200_OK
-        elif HttpMethod.HEAD in self.methods and not self.status_code:
-            return status.HTTP_200_OK
-        return self.status_code
 
     @property
     def http_methods(self) -> List[str]:
@@ -1053,7 +1034,7 @@ class Include(Mount):
                         gate = gateway(
                             path=route.path,
                             handler=route_handler,
-                            name=route_handler.path,
+                            name=route_handler.fn.__name__,
                             middleware=route.middleware,
                             interceptors=self.interceptors,
                             permissions=route.permissions,

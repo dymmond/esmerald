@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Callable, List, Optional, Type, Union
 
 from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
@@ -40,7 +40,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: Union["HTTPHandler", "APIView"],
+        handler: Union[Type["HTTPHandler"], Type["APIView"], Type[Callable]],
         name: Optional[str] = None,
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
@@ -146,7 +146,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: Union["WebSocketHandler", "APIView"],
+        handler: Union[Type["WebSocketHandler"], Type["APIView"], Type[Callable]],
         name: Optional[str] = None,
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,

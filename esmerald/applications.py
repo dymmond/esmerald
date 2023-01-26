@@ -399,7 +399,7 @@ class Esmerald(Starlette):
         if self.openapi_config and self.enable_openapi:
             self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
             gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
-            self.router.add_apiview(value=gateway)
+            self.add_apiview(value=gateway)
 
     def get_template_engine(
         self, template_config: "TemplateConfig"
@@ -412,6 +412,15 @@ class Esmerald(Starlette):
 
         engine = template_config.engine(template_config.directory)
         return engine
+
+    def add_apiview(
+        self,
+        value: Union[Type["gateways.Gateway"], Type["gateways.WebSocketGateway"]],
+    ) -> None:
+        """
+        Adds an APIView via application instance.
+        """
+        self.router.add_apiview(value=value)
 
     def add_route(
         self,

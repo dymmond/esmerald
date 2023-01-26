@@ -7,11 +7,12 @@ import sys
 
 import anyio
 import pytest
-from esmerald.testclient import EsmeraldTestClient
-from esmerald.websockets import WebSocket
 from starlette import status
 from starlette.types import Receive, Scope, Send
 from starlette.websockets import WebSocketDisconnect, WebSocketState
+
+from esmerald.testclient import EsmeraldTestClient
+from esmerald.websockets import WebSocket
 
 
 def test_websocket_url(test_client_factory):
@@ -352,8 +353,10 @@ def test_websocket_scope_interface():
         receive=mock_receive,
         send=mock_send,
     )
+    # deepcode ignore CopyPasteError/test: This is for testing purposes
     assert websocket == websocket
     assert websocket in {websocket}
+    # deepcode ignore CopyPasteError/test: This is for testing purposes
     assert {websocket} == {websocket}
 
 

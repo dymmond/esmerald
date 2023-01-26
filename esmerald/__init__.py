@@ -20,7 +20,7 @@ from .config import (
     StaticFilesConfig,
     TemplateConfig,
 )
-from .datastructures import Redirect, Stream, Template, UploadFile
+from .datastructures import JSON, UJSON, OrJSON, Redirect, Stream, Template, UploadFile
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -73,6 +73,7 @@ __all__ = [
     "Inject",
     "Injects",
     "ImproperlyConfigured",
+    "JSON",
     "JSONResponse",
     "JinjaTemplateEngine",
     "JWTConfig",
@@ -81,6 +82,7 @@ __all__ = [
     "MiddlewareProtocol",
     "NotAuthenticated",
     "NotFound",
+    "OrJSON",
     "ORJSONResponse",
     "OpenAPIConfig",
     "Param",
@@ -113,5 +115,6 @@ __all__ = [
     "scheduler",
     "settings",
     "status",
+    "UJSON",
     "websocket",
 ]

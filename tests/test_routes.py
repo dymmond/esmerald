@@ -3,7 +3,8 @@ from starlette import status
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, route, websocket
+from esmerald.routing.handlers import delete, get, post, put, route, websocket
+from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 
@@ -201,3 +202,40 @@ def test_raise_exception_on_add_websocket_route(test_client_factory) -> None:
         with create_client(routes=[]) as client:
             handler = WebSocketGateway(handler=simple_websocket_handler)
             client.app.add_websocket_route("/ws", handler=handler)
+
+
+@pytest.mark.parametrize(
+    "method, fn_path, status_code, response_text",
+    [
+        (get, "/get", 200, "ok"),
+        (post, "/post", 200, "ok"),
+        (put, "/put", 200, "ok"),
+        (delete, "/delete", 200, "ok"),
+        (post, "/another-post", 201, "created!"),
+        (put, "/another-post", 201, "updated!"),
+        (delete, "/another-post", 201, "updated!"),
+        (get, "/another-post", 201, "updated!"),
+    ],
+)
+def test_add_apiview_multiple_from_application(
+    method, fn_path, status_code, response_text, test_client_factory
+) -> None:
+    """
+    Adds a route to the application router using @route
+    """
+
+    class View(APIView):
+        path = "/"
+
+        @method(fn_path, status_code=status_code)
+        async def test(self) -> str:
+            return response_text
+
+    with create_client(routes=[]) as client:
+        gateway = Gateway(handler=View)
+        client.app.add_apiview(value=gateway)
+
+        response = getattr(client, method.__name__)(fn_path)
+
+        assert response.json() == response_text
+        assert response.status_code == status_code

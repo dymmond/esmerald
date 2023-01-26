@@ -10,7 +10,7 @@ January 25, 2023
 
 ### Fixed
 
-- `include_in_schema` on a Gateway level for OpenAPI specification [#42](https://github.com/dymmond/esmerald/pull/42)/
+- `include_in_schema` on a Gateway level for OpenAPI specification [#42](https://github.com/dymmond/esmerald/pull/42).
 - `redirect_slashes` when instantiating an Esmerald/ChildEsmerald application wasn't
 validating the value properly.
 - TemplateNotFound raised when a template is not found [#42](https://github.com/dymmond/esmerald/pull/42).

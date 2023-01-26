@@ -1,5 +1,16 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Set, Tuple, Type, Union
 
+from pydantic.fields import (
+    SHAPE_DEQUE,
+    SHAPE_FROZENSET,
+    SHAPE_LIST,
+    SHAPE_SEQUENCE,
+    SHAPE_SET,
+    SHAPE_TUPLE,
+    SHAPE_TUPLE_ELLIPSIS,
+    ModelField,
+)
+
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import BaseModelExtra, parse_form_data
@@ -15,21 +26,12 @@ from esmerald.transformers.utils import (
 )
 from esmerald.utils.constants import RESERVED_KWARGS
 from esmerald.utils.pydantic import is_field_optional
-from pydantic.fields import (
-    SHAPE_DEQUE,
-    SHAPE_FROZENSET,
-    SHAPE_LIST,
-    SHAPE_SEQUENCE,
-    SHAPE_SET,
-    SHAPE_TUPLE,
-    SHAPE_TUPLE_ELLIPSIS,
-    ModelField,
-)
 
 if TYPE_CHECKING:
+    from pydantic.typing import DictAny
+
     from esmerald.types import Dependencies, ReservedKwargs
     from esmerald.websockets import WebSocket
-    from pydantic.typing import DictAny
 
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
@@ -122,10 +124,8 @@ class TransformerModel(BaseModelExtra):
                     )
                 )
 
-        for field_name, model_field in filter(
-            lambda items: items[0] not in ignored_keys,
-            signature_fields.items(),
-        ):
+        filtered = [item for item in signature_fields.items() if item[0] not in ignored_keys]
+        for field_name, model_field in filtered:
             signature_field = model_field.field_info
             parameter_definitions.add(
                 create_parameter_setting(

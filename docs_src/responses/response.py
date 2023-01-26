@@ -14,11 +14,11 @@ from esmerald import (
 
 class World(APIView):
     @get(path="/{url}")
-    async def home(request: Request, url: str) -> Response:
+    async def home(self, request: Request, url: str) -> Response:
         return Response(f"URL: {url}")
 
     @post(path="/{url}", status_code=status.HTTP_201_CREATED)
-    async def mars(request: Request, url: str) -> Response:
+    async def mars(self, request: Request, url: str) -> Response:
         ...
 
     @websocket(path="/{path_param:str}")
