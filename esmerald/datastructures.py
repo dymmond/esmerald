@@ -33,14 +33,21 @@ from starlette.datastructures import QueryParams as QueryParams  # noqa: F401
 from starlette.datastructures import State as StarletteStateClass  # noqa: F401
 from starlette.datastructures import UploadFile as UploadFile  # noqa
 from starlette.datastructures import URLPath as URLPath  # noqa: F401
-from starlette.responses import FileResponse, RedirectResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.responses import StreamingResponse
+from starlette.responses import StreamingResponse  # noqa
+from starlette.responses import FileResponse, RedirectResponse  # noqa
+from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import Literal, ParamSpec
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+<<<<<<< Updated upstream
 from esmerald.exceptions import TemplateNotFound
 from esmerald.responses import TemplateResponse
+=======
+from esmerald.responses import JSONResponse  # noqa
+from esmerald.responses import ORJSONResponse  # noqa
+from esmerald.responses import TemplateResponse  # noqa
+from esmerald.responses import UJSONResponse  # noqa; noqa
+>>>>>>> Stashed changes
 
 P = ParamSpec("P")
 R = TypeVar("R", bound=StarletteResponse)
@@ -257,6 +264,40 @@ class Template(ResponseContainer[TemplateResponse]):
             if self.alternative_template:
                 return TemplateResponse(template_name=self.alternative_template, **data)
             raise e
+
+
+class JSON(ResponseContainer[JSONResponse]):
+    """
+    Returns a wrapper of a JSONResponse.
+    """
+
+    content: Optional[Dict[str, Any]] = None
+    status_code: Optional[int] = None
+
+    def to_response(
+        self,
+        headers: Dict[str, Any],
+        media_type: Union["MediaType", str],
+        status_code: int,
+        app: "Esmerald",
+    ) -> JSONResponse:
+        status = self.status_code or status_code
+
+        return JSONResponse(
+            content=self.content,
+            headers=headers,
+            status_code=status,
+            media_type=media_type,
+            background=self.background,
+        )
+
+
+class OrJSON(JSON, ResponseContainer[ORJSONResponse]):
+    ...
+
+
+class UJSON(JSON, ResponseContainer[UJSONResponse]):
+    ...
 
 
 class ResponseHeader(BaseModel):
