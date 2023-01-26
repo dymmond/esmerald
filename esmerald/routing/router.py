@@ -500,7 +500,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         if isinstance(status_code, IntEnum):
             status_code = int(status_code)
         self.status_code = status_code
-        self.status_code = self.handle_status_code()
 
         self.exception_handlers = exception_handlers or {}
         self.dependencies = dependencies or {}
@@ -525,22 +524,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.app: Optional["ASGIApp"] = None
         self.route_map: Dict["HTTPMethod" : Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
-
-    def handle_status_code(self):
-        """
-        Returns the appropriate status code.
-        """
-        if (
-            HttpMethod.GET in self.methods
-            or HttpMethod.PUT in self.methods
-            or HttpMethod.HEAD in self.methods
-        ) and not self.status_code:
-            return status.HTTP_200_OK
-        elif HttpMethod.POST in self.methods and not self.status_code:
-            return status.HTTP_201_CREATED
-        elif HttpMethod.DELETE in self.methods and not self.status_code:
-            return status.HTTP_204_NO_CONTENT
-        return self.status_code
 
     @property
     def http_methods(self) -> List[str]:
