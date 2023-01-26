@@ -1,10 +1,7 @@
-import os
-import pathlib
-
 import pytest
 
-from esmerald import Gateway, JinjaTemplateEngine, TemplateConfig, get, status
-from esmerald.datastructures import JSON, UJSON, OrJSON, Redirect, Template
+from esmerald import Gateway, get, status
+from esmerald.datastructures import JSON, OrJSON, UJSON
 from esmerald.testclient import create_client
 
 

@@ -21,7 +21,7 @@ class Template(ResponseContainer[TemplateResponse]):
     """
 
     name: str
-    context: Optional[Dict[str, Any]] = None
+    context: Optional[Dict[str, Any]] = {}
     alternative_template: Optional[str] = None
 
     def to_response(
