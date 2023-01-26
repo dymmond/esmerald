@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Union, Type
+from typing import TYPE_CHECKING, Any, Dict, Type, Union
 
 from starlette.responses import RedirectResponse  # noqa
 

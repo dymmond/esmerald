@@ -167,8 +167,8 @@ You need to be mindful when it comes to return a specific status code when using
 [JSON](#json), [OrJSON](#orjson) and [UJSON](#ujson) wrappers.
 
 Esmerald allows you to pass the status codes via [handler](./routing/handlers.md) and directly via
-return of that same response but the if the handler has a `status_code` declared, this
-**takes precedence**.
+return of that same response but the if the handler has a `status_code` declared, the returned
+`status_code` **takes precedence**.
 
 Let us use an example to be more clear. This example is applied to `JSON`, `UJSON` and `OrJSON`.
 
@@ -198,8 +198,8 @@ Now what happens if we declare the status_code in both?
 {!> ../docs_src/responses/status_both.py !}
 ```
 
-This **will return 201 Created** and not `202 Accepted` and the reason for that is because the
-**handler takes always precedence** over the return.
+This **will return 202 Accepted** and not `201 Created` and the reason for that is because the
+**return takes precedence** over the handler.
 
 ## OpenAPI Responses
 
