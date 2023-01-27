@@ -30,6 +30,7 @@ from esmerald.datastructures import UploadFile
 from esmerald.datastructures.types import EncoderType
 from esmerald.openapi.enums import OpenAPIType
 from esmerald.openapi.utils import get_openapi_type_for_complex_type
+from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
 
 
@@ -162,7 +163,7 @@ def update_schema_field_info(schema: Schema, field_info: FieldInfo) -> Schema:
 
 def get_schema_for_field_type(field: ModelField) -> Schema:
     field_type = field.outer_type_
-    if issubclass(field_type, EncoderType):
+    if is_class_and_subclass(field_type, EncoderType):
         return Schema()
 
     if field_type in TYPE_MAP:
