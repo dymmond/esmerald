@@ -1,28 +1,14 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncContextManager,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, AsyncContextManager, Callable, Dict, List, Optional, Union
+
+from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from pydantic import BaseConfig, BaseSettings
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
-from esmerald.config import (
-    CORSConfig,
-    CSRFConfig,
-    OpenAPIConfig,
-    SessionConfig,
-    StaticFilesConfig,
-    TemplateConfig,
-)
+from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
-from esmerald.schedulers import AsyncIOScheduler
 from esmerald.types import (
     APIGateHandler,
     Dependencies,
@@ -34,11 +20,10 @@ from esmerald.types import (
     ResponseType,
     SchedulerType,
 )
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from pydantic import BaseConfig, BaseSettings
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
+    from esmerald.types import TemplateConfig
 
 
 class EsmeraldAPISettings(BaseSettings):
@@ -153,7 +138,7 @@ class EsmeraldAPISettings(BaseSettings):
         return AsyncExitConfig()
 
     @property
-    def template_config(self) -> TemplateConfig:
+    def template_config(self) -> "TemplateConfig":
         """
         Initial Default configuration for the TemplateConfig.
         This can be overwritten in another setting or simply override `template_config` or then override
@@ -169,7 +154,7 @@ class EsmeraldAPISettings(BaseSettings):
 
             class MySettings(EsmeraldAPISettings):
                 @property
-                def template_config(self) -> TemplateConfig:
+                def template_config(self) -> "TemplateConfig":
                     TemplateConfig(directory='templates', engine=MakoTemplateEngine)
         """
         return None
@@ -288,6 +273,15 @@ class EsmeraldAPISettings(BaseSettings):
         """
         Scheduler class to be used within the application.
         """
+        if not self.enable_scheduler:
+            return None
+
+        try:
+            from asyncz.schedulers import AsyncIOScheduler
+        except ImportError:
+            raise ImportError(
+                "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
+            )
         return AsyncIOScheduler
 
     @property

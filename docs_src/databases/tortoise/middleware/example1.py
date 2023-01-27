@@ -1,7 +1,8 @@
 from starlette.middleware import Middleware as StarletteMiddleware
 
-from esmerald import Esmerald, JWTConfig
+from esmerald import Esmerald
 from esmerald.conf import settings
+from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 from esmerald.utils.module_loading import import_string
 

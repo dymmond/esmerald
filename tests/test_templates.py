@@ -2,13 +2,15 @@ import os
 import pathlib
 
 import pytest
+
 from esmerald.applications import Esmerald
-from esmerald.config import TemplateConfig
+from esmerald.config.template import TemplateConfig
 from esmerald.datastructures import Template
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
-from esmerald.template import JinjaTemplateEngine, MakoTemplateEngine
+from esmerald.template.jinja import JinjaTemplateEngine
+from esmerald.template.mako import MakoTemplateEngine
 from esmerald.testclient import EsmeraldTestClient, create_client
 
 

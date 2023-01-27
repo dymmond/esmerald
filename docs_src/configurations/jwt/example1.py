@@ -1,7 +1,8 @@
 from myapp.models import User
 from starlette.middleware import Middleware as StarletteMiddleware
 
-from esmerald import Esmerald, JWTConfig, settings
+from esmerald import Esmerald, settings
+from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 
 jwt_config = JWTConfig(

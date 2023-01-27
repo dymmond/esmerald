@@ -43,7 +43,6 @@ classifiers = [
 dependencies = [
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
-    "asyncz==0.1.4",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
     "itsdangerous>=2.1.2,<3.0.0",
@@ -75,7 +74,7 @@ test = [
     "aiofiles>=0.8.0,<23",
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
-    "asyncz==0.1.4",
+    "asyncz>=0.1.4",
     "awesome-slugify>=1.6.5,<2",
     "anyio[trio] >=3.2.1,<4.0.0",
     "asyncio[trio] >=3.4.3,<4.0.0",
@@ -135,10 +134,14 @@ encoders = [
     "ujson>=5.7.0,<6",
 ]
 
+schedulers = [
+    "asyncz>=0.1.4",
+]
+
 all = [
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
-    "asyncz==0.1.4",
+    "asyncz>=0.1.4",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
     "jsonschema_rs>=0.16.2,<0.20.0",

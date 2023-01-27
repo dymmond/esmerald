@@ -1,5 +1,5 @@
+from asyncz.contrib.esmerald.decorator import scheduler
 from asyncz.triggers import IntervalTrigger
-from esmerald import scheduler
 
 
 @scheduler(trigger=IntervalTrigger(minutes=5))

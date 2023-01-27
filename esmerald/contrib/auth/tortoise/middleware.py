@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Any
+from typing import Any, Generic, TypeVar
 
 from jose import JWSError, JWTError
 from starlette.authentication import AuthenticationError
@@ -6,7 +6,7 @@ from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp
 from tortoise.exceptions import DoesNotExist
 
-from esmerald.config import JWTConfig
+from esmerald.config.jwt import JWTConfig
 from esmerald.exceptions import NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.security.jwt.token import Token

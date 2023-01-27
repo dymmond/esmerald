@@ -1,12 +1,13 @@
-from esmerald import EsmeraldAPISettings, TemplateConfig
-from esmerald.template import JinjaTemplateEngine
-
 from pathlib import Path
+
+from esmerald import EsmeraldAPISettings
+from esmerald.config.template import TemplateConfig
+from esmerald.template.jinja import JinjaTemplateEngine
 
 
 class CustomSettings(EsmeraldAPISettings):
     @property
-    def template_config(self) -> TemplateConfig:
+    def template_config(self) -> "TemplateConfig":
         """
         Initial Default configuration for the StaticFilesConfig.
         This can be overwritten in another setting or simply override

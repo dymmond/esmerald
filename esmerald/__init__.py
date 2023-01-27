@@ -11,15 +11,7 @@ from esmerald.injector import Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .backgound import BackgroundTask, BackgroundTasks
-from .config import (
-    CORSConfig,
-    CSRFConfig,
-    JWTConfig,
-    OpenAPIConfig,
-    SessionConfig,
-    StaticFilesConfig,
-    TemplateConfig,
-)
+from .config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from .datastructures import JSON, Redirect, Stream, Template, UploadFile
 from .exceptions import (
     HTTPException,
@@ -42,8 +34,6 @@ from .routing.gateways import Gateway, WebSocketGateway
 from .routing.handlers import delete, get, patch, post, put, route, websocket
 from .routing.router import Include, Router
 from .routing.views import APIView
-from .schedulers.asyncz.handler import scheduler
-from .template import JinjaTemplateEngine, MakoTemplateEngine
 from .websockets import WebSocket, WebSocketDisconnect
 
 __all__ = [
@@ -75,9 +65,6 @@ __all__ = [
     "ImproperlyConfigured",
     "JSON",
     "JSONResponse",
-    "JinjaTemplateEngine",
-    "JWTConfig",
-    "MakoTemplateEngine",
     "MethodNotAllowed",
     "MiddlewareProtocol",
     "NotAuthenticated",
@@ -96,7 +83,6 @@ __all__ = [
     "StaticFilesConfig",
     "Stream",
     "Template",
-    "TemplateConfig",
     "TemplateResponse",
     "UploadFile",
     "ValidationErrorException",
@@ -109,7 +95,6 @@ __all__ = [
     "post",
     "put",
     "route",
-    "scheduler",
     "settings",
     "status",
     "websocket",

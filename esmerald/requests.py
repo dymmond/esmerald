@@ -1,6 +1,6 @@
+from json import loads
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-from orjson import loads
 from starlette.requests import ClientDisconnect as ClientDisconnect  # noqa
 from starlette.requests import HTTPConnection as HTTPConnection  # noqa: F401
 from starlette.requests import Request as StarletteRequest  # noqa: F401

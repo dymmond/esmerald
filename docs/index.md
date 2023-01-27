@@ -80,6 +80,12 @@ If you want install esmerald with specifics:
 pip install esmerald[templates]
 ```
 
+**Support for the internal scheduler**:
+
+```shell
+pip install esmerald[schedulers]
+```
+
 **Support for the jwt used internally by Esmerald**:
 
 ```shell

@@ -5,6 +5,11 @@ scheduler internally and therefore their documentation is also up to date.
 
 The handler is the `scheduler` used to decorate a function that you want to process as a task.
 
+## Requirements
+
+Please check the [minimum requirements](./scheduler.md#requirements) to use this feature within
+your project.
+
 ## The scheduler
 
 This decorator does a lot of the magic containing all the information needed about a task and how it should be

@@ -5,6 +5,14 @@ In that in mind and with the help of the great widely used
 <a href='https://asyncz.tarsild.io' target='_blank'>Asyncz</a>, Esmerald comes with a built-in
 scheduler, saving you tons of headaches and simplifying the process of creating them.
 
+## Requirements
+
+Esmerald uses `asyncz` for this integration. You can install by running:
+
+```shell
+pip install esmerald[schedulers]
+```
+
 ## EsmeraldScheduler
 
 The `EsmeraldScheduler` is the main object that manages the internal scheduler of `Esmerald` expecting:
@@ -38,7 +46,7 @@ If a `scheduler_class` is not provided while the `enable_scheduler` is true, it 
 
 ```python hl_lines="4"
 from esmerald import Esmerald
-from esmerald.schedulers import AsyncIOScheduler
+from asyncz.schedulers import AsyncIOScheduler
 
 app = Esmerald(scheduler_class=AsyncIOScheduler)
 ```

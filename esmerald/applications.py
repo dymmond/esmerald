@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import timezone as dtimezone
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -17,10 +17,9 @@ from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 
-from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.config import CORSConfig, CSRFConfig, SessionConfig, TemplateConfig
+from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
@@ -62,7 +61,7 @@ from esmerald.utils.helpers import is_class_and_subclass
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
 
-    from esmerald.types import SettingsType
+    from esmerald.types import SettingsType, TemplateConfig
 
 
 class Esmerald(Starlette):
@@ -148,7 +147,7 @@ class Esmerald(Starlette):
         scheduler_tasks: Optional[Dict[str, str]] = None,
         scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
         enable_scheduler: Optional[bool] = None,
-        timezone: Optional[timezone] = None,
+        timezone: Optional[Union[dtimezone, str]] = None,
         routes: Optional[List["APIGateHandler"]] = None,
         root_path: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
@@ -370,15 +369,28 @@ class Esmerald(Starlette):
                 self.router.routes.append(static_route)
 
         if self.enable_scheduler:
-            self.scheduler = EsmeraldScheduler(
-                app=self,
-                scheduler_class=self.scheduler_class,
-                tasks=self.scheduler_tasks,
-                timezone=self.timezone,
-                configurations=self.scheduler_configurations,
-            )
+            self.activate_scheduler()
 
         self.activate_openapi()
+
+    def activate_scheduler(self):
+        """
+        Makes sure the scheduler is accessible.
+        """
+        try:
+            from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
+        except ImportError:
+            raise ImportError(
+                "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
+            )
+
+        self.scheduler = EsmeraldScheduler(
+            app=self,
+            scheduler_class=self.scheduler_class,
+            tasks=self.scheduler_tasks,
+            timezone=self.timezone,
+            configurations=self.scheduler_configurations,
+        )
 
     def get_settings_value(
         self,

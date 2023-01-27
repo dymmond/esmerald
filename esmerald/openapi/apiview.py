@@ -1,6 +1,6 @@
+from json import dumps
 from typing import TYPE_CHECKING, Callable, Dict
 
-from orjson import OPT_INDENT_2, dumps
 from starlette.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 from esmerald.enums import MediaType, OpenAPIMediaType
@@ -215,8 +215,7 @@ class OpenAPIView(APIView):
             schema_copy.openapi = "3.0.3"
             self._dumped_modified_schema = dumps(
                 schema_copy.json(by_alias=True, exclude_none=True),
-                option=OPT_INDENT_2,
-            ).decode("utf-8")
+            )
 
         head = f"""
           <head>
@@ -291,8 +290,7 @@ class OpenAPIView(APIView):
         if self._dumped_schema == "":
             self._dumped_schema = dumps(
                 schema.json(by_alias=True, exclude_none=True),
-                option=OPT_INDENT_2,
-            ).decode("utf-8")
+            )
         head = f"""
           <head>
             <title>{schema.info.title}</title>

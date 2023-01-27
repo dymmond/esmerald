@@ -10,14 +10,14 @@ try:
     from orjson import OPT_SERIALIZE_NUMPY
 except ImportError:  # pragma: nocover
     raise ImportError(
-        "You must install the orjson. You can do it with `pip install esmerald[encoders]`"
+        "You must install the encoders. You can do it with `pip install esmerald[encoders]`"
     )
 
 try:
     import ujson
 except ImportError:  # pragma: nocover
     raise ImportError(
-        "You must install the orjson. You can do it with `pip install esmerald[encoders]`"
+        "You must install the encoders. You can do it with `pip install esmerald[encoders]`"
     )
 
 
