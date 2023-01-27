@@ -17,4 +17,4 @@ else
 fi
 
 "$PIP" install -U pip
-"$PIP" pip install -e .[all,dev,test,doc,template,jwt,encoders]
+"$PIP" install -e .[all,dev,test,doc,template,jwt,encoders]
