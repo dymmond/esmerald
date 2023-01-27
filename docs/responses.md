@@ -57,11 +57,6 @@ The classic JSON response for 99% of the responses used nowaday. The `JSON` retu
 {!> ../docs_src/responses/json.py !}
 ```
 
-!!! Note
-    UJSON is not used for OpenAPI documentation, if you want to have it there, you should use
-    the [JSONResponse](#jsonresponse) instead. When JSON is used the flag `include_in_schema`
-    should be `False` in the handler.
-
 #### JSONResponse
 
 You can always use directly the `JSONResponse` from Starlette without using the Esmerald wrapper.
@@ -84,11 +79,6 @@ Super fast JSON serialization/deserialization response.
 {!> ../docs_src/responses/orjson.py !}
 ```
 
-!!! Note
-    UJSON is not used for OpenAPI documentation, if you want to have it there, you should use
-    the [ORJSONResponse](#orjsonresponse) instead. When OJSON is used the flag `include_in_schema`
-    should be `False` in the handler.
-
 !!! Warning
     Please read the [important requirements](#important-requirements) before using this response.
 
@@ -110,11 +100,6 @@ Another super fast JSON serialization/deserialization response.
 ```python
 {!> ../docs_src/responses/ujson.py !}
 ```
-
-!!! Note
-    UJSON is not used for OpenAPI documentation, if you want to have it there, you should use
-    the [UJSONResponse](#ujsonresponse) instead. When UJSON is used the flag `include_in_schema`
-    should be `False` in the handler.
 
 !!! Warning
     Please read the [important requirements](#important-requirements) before using this response.
