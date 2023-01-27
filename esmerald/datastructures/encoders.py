@@ -19,10 +19,12 @@ except ImportError:
 
 
 class OrJSON(ResponseContainer[ORJSONResponse]):
-    
+    content: Optional[Dict[str, Any]] = None
+    status_code: Optional[int] = None
+
     def __init__(
         self,
-        content: Dict[str, Any],
+        content: Optional[Dict[str, Any]] = None,
         status_code: Optional[int] = None,
         **kwargs: Dict[str, Any]
     ):
@@ -51,9 +53,12 @@ class OrJSON(ResponseContainer[ORJSONResponse]):
 
 
 class UJSON(ResponseContainer[UJSONResponse]):
+    content: Optional[Dict[str, Any]] = None
+    status_code: Optional[int] = None
+
     def __init__(
         self,
-        content: Dict[str, Any],
+        content: Optional[Dict[str, Any]] = None,
         status_code: Optional[int] = None,
         **kwargs: Dict[str, Any]
     ):
