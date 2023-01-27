@@ -75,6 +75,32 @@ pip install uvicorn
 
 ```
 
+If you want install esmerald with specifics:
+
+**Support for template system such as jinja2 and mako**:
+
+```shell
+pip install esmerald[templates]
+```
+
+**Support for the jwt used internally by Esmerald**:
+
+```shell
+pip install esmerald[jwt]
+```
+
+**Support for ORJSON and UJSON**:
+
+```shell
+pip install esmerald[encoders]
+```
+
+**All the esmerald features**:
+
+```shell
+pip install esmerald[all]
+```
+
 ### Start a project using directives
 
 If you wish to start an Esmerald project with a default suggested structure.

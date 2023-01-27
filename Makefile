@@ -33,7 +33,7 @@ coverage: ## Run tests and coverage
 
 .PHONY: requirements
 requirements: ## Install requirements for development
-	pip install -e .[all,dev,test,doc]
+	pip install -e .[all,dev,test,doc,template,jwt,encoders]
 
 
 ifndef VERBOSE
