@@ -18,7 +18,7 @@ A lot of people cannot be bothered with running cookiecutters and go straight to
 Currently there are two built-in directives.
 
 * [createproject](#create-project) - Used to generate a scaffold for a project.
-* [createapp](#create-app) - Used to generate a scaffold for an application.
+* [createapp](#create-app) - Used to generate a scaffold for an 
 
 ## Create project
 
@@ -232,3 +232,13 @@ You can also access the application OpenAPI documentation and validate what was 
 <p align="center">
   <a href="https://res.cloudinary.com/dymmond/image/upload/v1667327131/esmerald/management/redoc_xmllvv.png" target="_blank"><img src="https://res.cloudinary.com/dymmond/image/upload/v1667327131/esmerald/management/redoc_xmllvv.png" alt='Swagger'></a>
 </p>
+
+## Auto generated test files
+
+The test files generated are using the EsmeraldTestClient, so make sure you run:
+
+```shell
+pip install esmerald[test]
+```
+
+Or you can jump this step if you don't want to use the EsmeraldTestClient at all.
