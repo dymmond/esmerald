@@ -17,13 +17,13 @@ pip install esmerald[templates]
 
 To use the TemplateConfig in an application instance.
 
-```python hl_lines="1-2 9"
+```python hl_lines="4-5 9"
 {!> ../docs_src/configurations/template/example1.py!}
 ```
 
 Another example
 
-```python hl_lines="1-2 8"
+```python hl_lines="4-5 9"
 {!> ../docs_src/configurations/template/example2.py!}
 ```
 

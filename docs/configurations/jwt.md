@@ -19,7 +19,7 @@ pip install esmerald[jwt]
 
 To use the JWTConfig with a middleware.
 
-```python hl_lines="11 13"
+```python hl_lines="5 8-10 12"
 {!> ../docs_src/configurations/jwt/example1.py!}
 ```
 

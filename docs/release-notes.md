@@ -1,5 +1,46 @@
 # Release Notes
 
+## 0.11.0
+
+### Added
+
+To make esmerald more optional and feature modular, this release brings some backwards
+incompatibilities that should be addressed when moving to this version. Check out
+the dcumentation for more details if this release notes doesn't cover it all.
+
+### Changed
+
+- Moved `UJSON`, `UJSONResponse`, `OrJSON` and `ORJSONResponse` to be optional dependencies [#45](https://github.com/dymmond/esmerald/pull/45).
+- Changed the imports for `ORJSONResponse` to `from esmerald.responses.encoders import ORJSONResponse` [#45](https://github.com/dymmond/esmerald/pull/45).
+- Changed the imports for `UJSONResponse` to `from esmerald.responses.encoders import UJSONResponse` [#45](https://github.com/dymmond/esmerald/pull/45).
+- Changed the imports for `OrJSON` to `from esmerald.datastructures.encoders import OrJSON` [#45](https://github.com/dymmond/esmerald/pull/45).
+- Changed the imports for `UJSON` to `from esmerald.datastructures.encoders import UJSON` [#45](https://github.com/dymmond/esmerald/pull/45).
+- Moved the scheduler to optional installation with `pip install esmerald[schedulers]` [#45](https://github.com/dymmond/esmerald/pull/45).
+
+#### Backwards compatibility
+This is only applied for those who have esmerald prior to `0.11.0`.
+If you already had template configurations, jwt, schedulers or all the features you need to update the imports to:
+
+- **TemplateConfig**:
+    ```python
+    from esmerald.config.template import TemplateConfig
+    ```
+
+- **JWTConfig**:
+    ```python
+    from esmerald.config.jwt import JWTConfig
+    ```
+- Scheduler class is now imported directly from `asyncz`:
+    ```python
+    from asyncz.schedulers import AsyncIOScheduler # for the Scheduler class
+    from asyncz.contrib.esmerald.decorator import scheduler # for the decorator
+    ```
+
+Optionally, you can simply run `pip install esmerald[all]`
+
+### Fixed
+
+
 ## 0.10.0
 
 ### Added
@@ -16,7 +57,6 @@
 
 - `handler` type for Gateway and WebsocketGateway.
 - The split bytes intead of b''.
-
 
 ## 0.9.0
 
