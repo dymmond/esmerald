@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.11.1
+
+### Changed
+
+- Improved OrJSON, UJSON, ORJSONResponse and UJSONResponse when importing dependency.
+
 ## 0.11.0
 
 ### Added
