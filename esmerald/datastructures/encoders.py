@@ -51,7 +51,7 @@ class UJSON(ResponseContainer[UJSONResponse]):
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],
-    ) -> ORJSONResponse:
+    ) -> UJSONResponse:
         assert UJSONResponse is not None, "You must install the encoders or ujson to use UJSONResponse"
         status = self.status_code or status_code
         
