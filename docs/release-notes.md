@@ -38,9 +38,6 @@ If you already had template configurations, jwt, schedulers or all the features 
 
 Optionally, you can simply run `pip install esmerald[all]`
 
-### Fixed
-
-
 ## 0.10.0
 
 ### Added
