@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Type, cast
 
 from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
 from pydantic.fields import Undefined
@@ -27,7 +27,7 @@ def create_path_parameter_schema(
 
 
 class ParameterCollection:
-    def __init__(self, handler: "HTTPHandler") -> None:
+    def __init__(self, handler: Type["HTTPHandler"]) -> None:
         self.handler = handler
         self._parameters: Dict[str, Parameter] = {}
 
