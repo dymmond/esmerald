@@ -10,11 +10,6 @@ try:
 except ImportError:  # pragma: nocover
     orjson = None  # type: ignore
 
-try:
-    import ujson
-except ImportError:  # pragma: nocover
-    ujson = None  # type: ignore
-
 
 class BaseJSONResponse(JSONResponse):
     """
@@ -40,9 +35,3 @@ class ORJSONResponse(BaseJSONResponse):
             default=self.transform,
             option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
         )
-
-
-class UJSONResponse(BaseJSONResponse):
-    def render(self, content: Any) -> bytes:
-        assert ujson is not None, "ujson must be installed to use UJSONResponse"
-        return ujson.dumps(content, ensure_ascii=False, default=self.transform).encode("utf-8")

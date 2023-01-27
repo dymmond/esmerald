@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 from esmerald.datastructures.base import ResponseContainer  # noqa
 from esmerald.responses import JSONResponse  # noqa
 from esmerald.responses import ORJSONResponse  # noqa
-from esmerald.responses import UJSONResponse  # noqa; noqa
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -39,6 +38,3 @@ class JSON(ResponseContainer[JSONResponse]):
 class OrJSON(JSON, ResponseContainer[ORJSONResponse]):
     ...
 
-
-class UJSON(JSON, ResponseContainer[UJSONResponse]):
-    ...

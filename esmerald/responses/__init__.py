@@ -7,7 +7,7 @@ from .base import (
     StarletteResponse,
     StreamingResponse,
 )
-from .json import ORJSONResponse, UJSONResponse
+from .json import ORJSONResponse
 from .template import TemplateResponse
 
 __all__ = [
@@ -20,5 +20,4 @@ __all__ = [
     "StarletteResponse",
     "StreamingResponse",
     "TemplateResponse",
-    "UJSONResponse",
 ]

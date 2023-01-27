@@ -14,7 +14,7 @@ from .base import (
     URLPath,
 )
 from .file import File
-from .json import JSON, UJSON, OrJSON
+from .json import JSON, OrJSON
 from .redirect import Redirect
 from .stream import Stream
 from .template import Template
@@ -36,7 +36,6 @@ __all__ = [
     "State",
     "Stream",
     "Template",
-    "UJSON",
     "URL",
     "URLPath",
     "UploadFile",
