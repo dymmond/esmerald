@@ -7,14 +7,12 @@ from .base import (
     StarletteResponse,
     StreamingResponse,
 )
-from .json import ORJSONResponse
 from .template import TemplateResponse
 
 __all__ = [
     "FileResponse",
     "HTMLResponse",
     "JSONResponse",
-    "ORJSONResponse",
     "PlainTextResponse",
     "Response",
     "StarletteResponse",

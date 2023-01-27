@@ -20,7 +20,7 @@ from .config import (
     StaticFilesConfig,
     TemplateConfig,
 )
-from .datastructures import JSON, OrJSON, Redirect, Stream, Template, UploadFile
+from .datastructures import JSON, Redirect, Stream, Template, UploadFile
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -37,7 +37,7 @@ from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Quer
 from .permissions import AllowAny, BasePermission, DenyAll
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
-from .responses import JSONResponse, ORJSONResponse, Response, TemplateResponse
+from .responses import JSONResponse, Response, TemplateResponse
 from .routing.gateways import Gateway, WebSocketGateway
 from .routing.handlers import delete, get, patch, post, put, route, websocket
 from .routing.router import Include, Router
@@ -82,8 +82,6 @@ __all__ = [
     "MiddlewareProtocol",
     "NotAuthenticated",
     "NotFound",
-    "OrJSON",
-    "ORJSONResponse",
     "OpenAPIConfig",
     "Param",
     "Path",

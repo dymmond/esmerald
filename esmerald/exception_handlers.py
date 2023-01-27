@@ -8,12 +8,12 @@ from starlette.responses import Response as StarletteResponse
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import ExceptionErrorMap, HTTPException, ImproperlyConfigured
-from esmerald.responses import ORJSONResponse, Response
+from esmerald.responses import JSONResponse, Response
 
 
 async def http_exception_handler(
     request: Request, exc: Union[HTTPException, StarletteHTTPException]
-) -> Union[ORJSONResponse, Response]:
+) -> Union[JSONResponse, Response]:
     """
     Default exception handler for StarletteHTTPException and Esmerald HTTPException.
     """
@@ -21,42 +21,42 @@ async def http_exception_handler(
     headers = getattr(exc, "headers", None)
 
     if exc.status_code in {204, 304}:
-        return ORJSONResponse(status_code=exc.status_code, headers=headers)
+        return JSONResponse(status_code=exc.status_code, headers=headers)
 
     if headers and not extra:
-        return ORJSONResponse({"detail": exc.detail}, status_code=exc.status_code, headers=headers)
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code, headers=headers)
     elif headers and extra:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail, "extra": extra},
             status_code=exc.status_code,
             headers=headers,
         )
     elif not headers and extra:
-        return ORJSONResponse({"detail": exc.detail, "extra": extra}, status_code=exc.status_code)
+        return JSONResponse({"detail": exc.detail, "extra": extra}, status_code=exc.status_code)
     else:
-        return ORJSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
 async def validation_error_exception_handler(
     request: Request, exc: ValidationError
-) -> ORJSONResponse:
+) -> JSONResponse:
     extra = getattr(exc, "extra", None)
     status_code = status.HTTP_400_BAD_REQUEST
 
     if extra:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
             status_code=status_code,
         )
     else:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail},
             status_code=status_code,
         )
 
 
-async def http_error_handler(_: Request, exc: ExceptionErrorMap) -> ORJSONResponse:
-    return ORJSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+async def http_error_handler(_: Request, exc: ExceptionErrorMap) -> JSONResponse:
+    return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
 async def improperly_configured_exception_handler(
