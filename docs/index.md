@@ -98,6 +98,12 @@ pip install esmerald[encoders]
 pip install esmerald[all]
 ```
 
+**If you want to use the esmerald testing client**:
+
+```shell
+pip install esmerald[test]
+```
+
 ### Start a project using directives
 
 If you wish to start an Esmerald project with a default suggested structure.
