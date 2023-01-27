@@ -1,10 +1,10 @@
-from esmerald import Esmerald, Gateway, Request, UJSONResponse, get
+from esmerald import Esmerald, Gateway, JSONResponse, Request, get
 from esmerald.datastructures import State
 
 
 @get()
-async def user(request: Request) -> UJSONResponse:
-    return UJSONResponse({"admin_email": request.app.state["ADMIN_EMAIL"]})
+async def user(request: Request) -> JSONResponse:
+    return JSONResponse({"admin_email": request.app.state["ADMIN_EMAIL"]})
 
 
 app = Esmerald(routes=[Gateway(handler=user)])

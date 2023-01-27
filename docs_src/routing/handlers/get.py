@@ -1,9 +1,9 @@
-from esmerald import Esmerald, Gateway, Request, UJSONResponse, get
+from esmerald import Esmerald, Gateway, JSONResponse, Request, get
 
 
 @get()
-async def example(request: Request) -> UJSONResponse:
-    return UJSONResponse({"message": "Welcome home!"})
+async def example(request: Request) -> JSONResponse:
+    return JSONResponse({"message": "Welcome home!"})
 
 
 @get(path="/another")

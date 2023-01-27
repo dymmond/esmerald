@@ -253,11 +253,11 @@ Those are special objects that allow all the magic of Esmerald to happen.
 === "In a nutshell"
 
     ```python title='src/app.py'
-    from esmerald import Esmerald, Gateway, Request, UJSONResponse, Websocket, WebSocketGateway, get, status
+    from esmerald import Esmerald, Gateway, JSONResponse, Request, Websocket, WebSocketGateway, get, status
 
     @get(status_code=status.HTTP_200_OK)
-    async def home() -> UJSONResponse:
-        return UJSONResponse({
+    async def home() -> JSONResponse:
+        return JSONResponse({
             "detail": "Hello world"
         })
 

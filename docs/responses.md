@@ -75,7 +75,7 @@ Super fast JSON serialization/deserialization response.
 You can always use directly the `ORJSONResponse` from Esmerald without using the wrapper.
 
 ```python
-from esmerald.responses import ORJSONResponse
+from esmerald.responses.encoders import ORJSONResponse
 ```
 
 ### UJSON
@@ -95,7 +95,7 @@ Another super fast JSON serialization/deserialization response.
 You can always use directly the `UJSONResponse` from Esmerald without using the wrapper.
 
 ```python
-from esmerald.responses import UJSONResponse
+from esmerald.responses.encoders import UJSONResponse
 ```
 
 ### Template

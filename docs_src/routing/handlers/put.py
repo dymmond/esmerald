@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, UJSONResponse, put
+from esmerald import Esmerald, Gateway, JSONResponse, put
 
 
 @put(path="/update/{item_id:int}")
@@ -7,8 +7,8 @@ def update(item_id: int) -> int:
 
 
 @put(path="/")
-def another_update(item_id: int) -> UJSONResponse:
-    return UJSONResponse({"Success", {item_id}})
+def another_update(item_id: int) -> JSONResponse:
+    return JSONResponse({"Success", {item_id}})
 
 
 app = Esmerald(

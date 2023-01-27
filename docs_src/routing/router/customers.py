@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import Gateway, Router, UJSONResponse, get, post
+from esmerald import Gateway, JSONResponse, Router, get, post
 
 
 class Address(BaseModel):
@@ -16,13 +16,13 @@ class Customer(BaseModel):
 
 
 @post("/")
-def create(data: Customer) -> UJSONResponse:
-    return UJSONResponse({"created": True})
+def create(data: Customer) -> JSONResponse
+    return JSONResponse({"created": True})
 
 
 @get("/{customer_id:int}")
-async def get_customer(customer_id: int) -> UJSONResponse:
-    return UJSONResponse({"created": True})
+async def get_customer(customer_id: int) -> JSONResponse:
+    return JSONResponse({"created": True})
 
 
 router = Router(

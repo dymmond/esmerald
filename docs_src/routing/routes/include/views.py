@@ -1,9 +1,10 @@
+from pydantic import BaseModel
+
 from esmerald import (
     APIView,
-    ORJSONResponse,
+    JSONResponse,
     Request,
     Response,
-    UJSONResponse,
     WebSocket,
     get,
     post,
@@ -11,7 +12,6 @@ from esmerald import (
     status,
     websocket,
 )
-from pydantic import BaseModel
 
 
 class Product(BaseModel):
@@ -26,8 +26,8 @@ def update_product(product_id: int, data: Product) -> dict:
 
 
 @get(status_code=status.HTTP_200_OK)
-async def home() -> UJSONResponse:
-    return UJSONResponse({"detail": "Hello world"})
+async def home() -> JSONResponse:
+    return JSONResponse({"detail": "Hello world"})
 
 
 @get()
@@ -50,7 +50,7 @@ class World(APIView):
         return Response(f"URL: {url}")
 
     @post(path="/{url}", status_code=status.HTTP_201_CREATED)
-    async def mars(request: Request, url: str) -> ORJSONResponse:
+    async def mars(request: Request, url: str) -> JSONResponse:
         ...
 
     @websocket(path="/{path_param:str}")

@@ -1,7 +1,6 @@
 from typing import Any, Dict
 
 from orjson import OPT_OMIT_MICROSECONDS  # noqa
-from orjson import OPT_SERIALIZE_NUMPY
 from pydantic import BaseModel
 from starlette.responses import JSONResponse as JSONResponse  # noqa
 

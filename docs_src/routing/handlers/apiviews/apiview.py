@@ -1,6 +1,6 @@
 from esmerald.permissions import DenyAll, IsAuthenticated
 from esmerald.requests import Request
-from esmerald.responses import UJSONResponse
+from esmerald.responses import JSONResponse
 from esmerald.routing.handlers import delete, get, post
 from esmerald.routing.views import APIView
 
@@ -10,20 +10,20 @@ class UserAPIView(APIView):
     permissions = [IsAuthenticated]
 
     @get(path="/")
-    async def all_users(self, request: Request) -> UJSONResponse:
+    async def all_users(self, request: Request) -> JSONResponse:
         # logic to get all users here
         users = ...
 
-        return UJSONResponse({"users": users})
+        return JSONResponse{"users": users})
 
     @get(path="/deny", permissions=[DenyAll], description="API description")
-    async def all_usersa(self, request: Request) -> UJSONResponse:
+    async def all_usersa(self, request: Request) -> JSONResponse
         ...
 
     @get(path="/allow")
-    async def all_usersb(self, request: Request) -> UJSONResponse:
+    async def all_usersb(self, request: Request) -> JSONResponse:
         users = ...
-        return UJSONResponse({"Total Users": users.count()})
+        return JSONResponse({"Total Users": users.count()})
 
     @post(path="/create")
     async def create_user(self, request: Request) -> None:
