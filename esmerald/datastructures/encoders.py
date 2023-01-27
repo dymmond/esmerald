@@ -10,7 +10,7 @@ try:
     from esmerald.responses.encoders import ORJSONResponse, UJSONResponse
 except ImportError:
     raise ImportError(
-        "You must install the encoders. You can do it with `pip install esmerald[encoders]`"
+        "You must install the encoders to use URJSON and OrJSON. You can do it with `pip install esmerald[encoders]`"
     )
 
 
