@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include, UJSONResponse, delete
+from esmerald import Esmerald, Gateway, Include, JSONResponse, delete
 
 
 @delete(path="/{item_id:int}")
@@ -8,7 +8,7 @@ def delete_item(item_id: int) -> int:
 
 
 @delete(path="/")
-def another_delete(item_id: int) -> UJSONResponse:
+def another_delete(item_id: int) -> JSONResponse:
     # logic that deletes an item
     ...
 

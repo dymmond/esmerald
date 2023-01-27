@@ -1,5 +1,6 @@
-from esmerald import Esmerald, Gateway, ORJSONResponse, Param, post
 from pydantic import BaseModel, EmailStr
+
+from esmerald import Esmerald, Gateway, JSONResponse, Param, post
 
 
 class User(BaseModel):
@@ -11,7 +12,7 @@ class User(BaseModel):
 async def create_user(
     data: User,
     cookie: str = Param(cookie="csrftoken"),
-) -> ORJSONResponse:
+) -> JSONResponse:
     """
     Run validations with the token header
     """

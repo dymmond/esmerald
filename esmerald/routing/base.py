@@ -37,7 +37,7 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
-from esmerald.responses import ORJSONResponse, Response, UJSONResponse
+from esmerald.responses import JSONResponse, Response
 from esmerald.routing.views import APIView
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
@@ -275,8 +275,7 @@ class BaseResponseHandler:
 
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies, [])
-            # Making sure ORJSONResponse and JSONResponse are properly handled
-            if isinstance(data, (JSONResponse, ORJSONResponse, UJSONResponse)):
+            if isinstance(data, JSONResponse):
                 response = data
                 response.status_code = status_code
                 response.background = background
@@ -396,7 +395,7 @@ class BaseResponseHandler:
                 )
             elif is_class_and_subclass(
                 self.signature.return_annotation,
-                (JSONResponse, ORJSONResponse, UJSONResponse),
+                JSONResponse,
             ):
                 handler = self.json_response_handler(
                     status_code=self.status_code, cookies=cookies, headers=headers

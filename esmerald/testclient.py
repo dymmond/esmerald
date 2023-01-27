@@ -26,7 +26,6 @@ if TYPE_CHECKING:
         OpenAPIConfig,
         SessionConfig,
         StaticFilesConfig,
-        TemplateConfig,
     )
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
@@ -39,6 +38,7 @@ if TYPE_CHECKING:
         Middleware,
         SchedulerType,
         SettingsType,
+        TemplateConfig,
     )
 
 

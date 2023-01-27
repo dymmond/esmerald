@@ -70,7 +70,44 @@ up to you.
 
 ```shell
 pip install uvicorn
+```
 
+If you want install esmerald with specifics:
+
+**Support for template system such as jinja2 and mako**:
+
+```shell
+pip install esmerald[templates]
+```
+
+**Support for the internal scheduler**:
+
+```shell
+pip install esmerald[schedulers]
+```
+
+**Support for the jwt used internally by Esmerald**:
+
+```shell
+pip install esmerald[jwt]
+```
+
+**Support for ORJSON and UJSON**:
+
+```shell
+pip install esmerald[encoders]
+```
+
+**All the esmerald features**:
+
+```shell
+pip install esmerald[all]
+```
+
+**If you want to use the esmerald testing client**:
+
+```shell
+pip install esmerald[test]
 ```
 
 ### Start a project using directives
@@ -222,11 +259,11 @@ Those are special objects that allow all the magic of Esmerald to happen.
 === "In a nutshell"
 
     ```python title='src/app.py'
-    from esmerald import Esmerald, Gateway, Request, UJSONResponse, Websocket, WebSocketGateway, get, status
+    from esmerald import Esmerald, Gateway, JSONResponse, Request, Websocket, WebSocketGateway, get, status
 
     @get(status_code=status.HTTP_200_OK)
-    async def home() -> UJSONResponse:
-        return UJSONResponse({
+    async def home() -> JSONResponse:
+        return JSONResponse({
             "detail": "Hello world"
         })
 

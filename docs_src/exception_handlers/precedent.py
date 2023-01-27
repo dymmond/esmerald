@@ -5,7 +5,7 @@ from esmerald import (
     Esmerald,
     Gateway,
     Include,
-    ORJSONResponse,
+    JSONResponse,
     Request,
     ValidationErrorException,
     get,
@@ -14,31 +14,31 @@ from esmerald import (
 
 async def validation_error_exception_handler(
     request: Request, exc: ValidationError
-) -> ORJSONResponse:
+) -> JSONResponse:
     extra = getattr(exc, "extra", None)
     if extra:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     else:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
 
 
-async def validation_error_gateway(request: Request, exc: ValidationError) -> ORJSONResponse:
+async def validation_error_gateway(request: Request, exc: ValidationError) -> JSONResponse:
     extra = getattr(exc, "extra", None)
     status_code = status.HTTP_400_BAD_REQUEST
 
     if extra:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
             status_code=status_code,
         )
     else:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail},
             status_code=status_code,
         )

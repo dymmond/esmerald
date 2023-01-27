@@ -1,5 +1,5 @@
+from asyncz.schedulers import AsyncIOScheduler
 from esmerald import Esmerald, EsmeraldAPISettings
-from esmerald.schedulers import AsyncIOScheduler
 from esmerald.types import SchedulerType
 
 

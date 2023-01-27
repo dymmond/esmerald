@@ -19,10 +19,19 @@ from starlette.types import ASGIApp
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
-from esmerald.exceptions import HTTPException, StarletteHTTPException
+from esmerald.exceptions import HTTPException, MissingDependency, StarletteHTTPException
 from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include
-from esmerald.schedulers import AsyncIOScheduler
+
+try:
+    from asyncz.schedulers import AsyncIOScheduler
+except ImportError:
+    AsyncIOScheduler = Any
+
+try:
+    from esmerald.config.template import TemplateConfig
+except MissingDependency:
+    TemplateConfig = Any
 
 if TYPE_CHECKING:
     from esmerald.conf.global_settings import EsmeraldAPISettings  # noqa

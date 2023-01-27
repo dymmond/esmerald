@@ -17,25 +17,19 @@ from starlette.responses import (
 from starlette.responses import Response as StarletteResponse
 from starlette.responses import StreamingResponse
 from starlette.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
+from tests.models import Individual, IndividualFactory
 
 from esmerald.backgound import BackgroundTask
-from esmerald.datastructures import (
-    Cookie,
-    File,
-    Redirect,
-    ResponseHeader,
-    Stream,
-    Template,
-)
+from esmerald.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.requests import Request
-from esmerald.responses import Response, TemplateResponse, UJSONResponse
+from esmerald.responses import Response, TemplateResponse
+from esmerald.responses.encoders import UJSONResponse
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get, post, route
 from esmerald.routing.router import HTTPHandler
-from esmerald.transformers.signature import SignatureFactory
 from esmerald.testclient import create_client
-from tests.models import Individual, IndividualFactory
+from esmerald.transformers.signature import SignatureFactory
 
 if TYPE_CHECKING:
     from typing import AsyncGenerator

@@ -75,6 +75,44 @@ pip install uvicorn
 
 ```
 
+If you want install esmerald with specifics:
+
+**Support for template system such as jinja2 and mako**:
+
+```shell
+pip install esmerald[templates]
+```
+
+**Support for the internal scheduler**:
+
+```shell
+pip install esmerald[schedulers]
+```
+
+**Support for the jwt used internally by Esmerald**:
+
+```shell
+pip install esmerald[jwt]
+```
+
+**Support for ORJSON and UJSON**:
+
+```shell
+pip install esmerald[encoders]
+```
+
+**All the esmerald features**:
+
+```shell
+pip install esmerald[all]
+```
+
+**If you want to use the esmerald testing client**:
+
+```shell
+pip install esmerald[test]
+```
+
 ### Start a project using directives
 
 If you wish to start an Esmerald project with a default suggested structure.
@@ -257,7 +295,7 @@ Good design is always encouraged and Esmerald allows complex routing on any leve
 ### The handlers (views)
 
 ```python title="myapp/accounts/views.py"
-from esmerald import get, post, put, status, websocket, APIView, Request, UJSONResponse, Response, WebSocket
+from esmerald import get, post, put, status, websocket, APIView, Request, JSONResponse, Response, WebSocket
 from pydantic import BaseModel
 
 
@@ -273,8 +311,8 @@ def update_product(product_id: int, data: Product) -> dict:
 
 
 @get(status_code=status.HTTP_200_OK)
-async def home() -> UJSONResponse:
-    return UJSONResponse({
+async def home() -> JSONResponse:
+    return JSONResponse({
         "detail": "Hello world"
     })
 
@@ -302,7 +340,7 @@ class World(APIView):
         return Response(f"URL: {url}")
 
     @post(path='/{url}', status_code=status.HTTP_201_CREATED)
-    async def mars(request: Request, url: str) -> ORJSONResponse:
+    async def mars(request: Request, url: str) -> JSONResponse:
         ...
     
     @websocket(path="/{path_param:str}")

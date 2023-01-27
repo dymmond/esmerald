@@ -2,8 +2,6 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
 from esmerald.responses import JSONResponse  # noqa
-from esmerald.responses import ORJSONResponse  # noqa
-from esmerald.responses import UJSONResponse  # noqa; noqa
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -17,6 +15,16 @@ class JSON(ResponseContainer[JSONResponse]):
 
     content: Optional[Dict[str, Any]] = None
     status_code: Optional[int] = None
+
+    def __init__(
+        self,
+        content: Optional[Dict[str, Any]] = None,
+        status_code: Optional[int] = None,
+        **kwargs: Dict[str, Any]
+    ):
+        super().__init__(**kwargs)
+        self.content = content
+        self.status_code = status_code
 
     def to_response(
         self,
@@ -34,11 +42,3 @@ class JSON(ResponseContainer[JSONResponse]):
             media_type=media_type,
             background=self.background,
         )
-
-
-class OrJSON(JSON, ResponseContainer[ORJSONResponse]):
-    ...
-
-
-class UJSON(JSON, ResponseContainer[UJSONResponse]):
-    ...

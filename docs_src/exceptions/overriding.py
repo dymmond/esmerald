@@ -6,7 +6,7 @@ from starlette.responses import Response as StarletteResponse
 from esmerald import (
     HTTPException,
     ImproperlyConfigured,
-    ORJSONResponse,
+    JSONResponse,
     Request,
     Response,
     ValidationErrorException,
@@ -41,15 +41,15 @@ async def improperly_configured_exception_handler(
 
 async def validation_error_exception_handler(
     request: Request, exc: ValidationError
-) -> ORJSONResponse:
+) -> JSONResponse:
     extra = getattr(exc, "extra", None)
     if extra:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     else:
-        return ORJSONResponse(
+        return JSONResponse(
             {"detail": exc.detail},
             status_code=status.HTTP_400_BAD_REQUEST,
         )

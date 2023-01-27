@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include, UJSONResponse, patch
+from esmerald import Esmerald, Gateway, Include, JSONResponse, patch
 
 
 @patch(path="/partial/{item_id:int}")
@@ -7,8 +7,8 @@ def update(item_id: int) -> int:
 
 
 @patch(path="/")
-def another_update(item_id: int) -> UJSONResponse:
-    return UJSONResponse({"Success", {item_id}})
+def another_update(item_id: int) -> JSONResponse:
+    return JSONResponse({"Success", {item_id}})
 
 
 app = Esmerald(

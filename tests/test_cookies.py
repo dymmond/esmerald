@@ -1,8 +1,10 @@
-from esmerald import Cookie, Gateway, ORJSONResponse, Param, Response, post
+from pydantic import BaseModel
+
+from esmerald import Cookie, Gateway, Param, Response, post
 from esmerald.datastructures import Cookie as ResponseCookie
 from esmerald.enums import MediaType
+from esmerald.responses.encoders import ORJSONResponse
 from esmerald.testclient import create_client
-from pydantic import BaseModel
 
 
 class User(BaseModel):

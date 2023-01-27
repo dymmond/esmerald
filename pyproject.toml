@@ -43,22 +43,15 @@ classifiers = [
 dependencies = [
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
-    "asyncz==0.1.4",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
     "itsdangerous>=2.1.2,<3.0.0",
-    "jinja2>=3.1.2,<4.0.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
     "loguru>=0.6.0,<0.7.0",
-    "mako==1.2.4",
-    "passlib==1.7.4",
     "pydantic>=1.10.4,<2.0.0",
     "pydantic-factories==1.12.0",
-    "python-jose>=3.3.0,<4",
     "openapi-schemas-pydantic>=1.1.0",
-    "orjson >=3.8.5,<4.0.0",
     "starlette==0.23.1",
-    "ujson>=5.7.0,<6",
 ]
 keywords = ["api", "rest", "http", "asgi", "pydantic", "starlette", "fastapi", "framework", "websocket", "openapi", "ml", "machine learning"]
 
@@ -80,8 +73,7 @@ test = [
     "isort >=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<23",
     "a2wsgi>=1.6.0,<2",
-    "aiofiles>=0.8.0,<23",
-    "asyncz==0.1.4",
+    "asyncz>=0.1.4",
     "awesome-slugify>=1.6.5,<2",
     "anyio[trio] >=3.2.1,<4.0.0",
     "asyncio[trio] >=3.4.3,<4.0.0",
@@ -91,7 +83,6 @@ test = [
     "flask >=1.1.2,<3.0.0",
     "freezegun >=1.2.2,<2.0.0",
     "httpx >=0.23.3,<0.24.0",
-    "mako ==1.2.4",
     "mock ==4.0.3",
     "passlib ==1.7.4",
     "pydantic ==1.10.4",
@@ -127,14 +118,33 @@ doc = [
     "pyyaml >=5.3.1,<7.0.0",
 ]
 
+templates = [
+    "jinja2>=3.1.2,<4.0.0",
+    "mako==1.2.4",
+]
+
+jwt = [
+    "passlib==1.7.4",
+    "python-jose>=3.3.0,<4",
+]
+
+encoders = [
+    "orjson >=3.8.5,<4.0.0",
+    "ujson>=5.7.0,<6",
+]
+
+schedulers = [
+    "asyncz>=0.1.4",
+]
+
 all = [
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
-    "asyncz==0.1.4",
+    "asyncz>=0.1.4",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
-    "jinja2>=3.1.2,<4.0.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
+    "jinja2>=3.1.2,<4.0.0",
     "loguru>=0.6.0,<0.7.0",
     "mako==1.2.4",
     "passlib==1.7.4",

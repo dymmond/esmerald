@@ -18,7 +18,7 @@ from esmerald import (
     settings,
     websocket,
 )
-from esmerald.config import JWTConfig
+from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.tortoise.base_user import User
 from esmerald.exceptions import NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware

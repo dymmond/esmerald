@@ -1,10 +1,5 @@
-from esmerald import APIView, Esmerald, Gateway, Request, UJSONResponse, get
-from esmerald.permissions import (
-    AllowAny,
-    IsAdminUser,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from esmerald import APIView, Esmerald, Gateway, JSONResponse, Request, get
+from esmerald.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 
 class IsAdmin(IsAdminUser):
@@ -38,8 +33,8 @@ class UserAPIView(APIView):
     permissions = [IsUserAuthenticated]
 
     @get("/admin", permissions=[IsAdmin])
-    async def admin(self, request: Request) -> UJSONResponse:
-        return UJSONResponse({"message": "ok"})
+    async def admin(self, request: Request) -> JSONResponse:
+        return JSONResponse({"message": "ok"})
 
 
 app = Esmerald(

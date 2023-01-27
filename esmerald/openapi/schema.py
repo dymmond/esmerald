@@ -3,10 +3,6 @@ from decimal import Decimal
 from enum import Enum, EnumMeta
 from typing import Any, List, Optional, Type, Union
 
-from esmerald.datastructures import UploadFile
-from esmerald.openapi.enums import OpenAPIType
-from esmerald.openapi.utils import get_openapi_type_for_complex_type
-from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
 from openapi_schemas_pydantic.utils.constants import (
     EXTRA_TO_OPENAPI_PROPERTY_MAP,
     PYDANTIC_TO_OPENAPI_PROPERTY_MAP,
@@ -29,6 +25,13 @@ from pydantic.fields import FieldInfo, ModelField, Undefined
 from pydantic_factories import ModelFactory
 from pydantic_factories.exceptions import ParameterError
 from pydantic_factories.utils import is_optional, is_pydantic_model, is_union
+
+from esmerald.datastructures import UploadFile
+from esmerald.datastructures.types import EncoderType
+from esmerald.openapi.enums import OpenAPIType
+from esmerald.openapi.utils import get_openapi_type_for_complex_type
+from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
 
 
 def clean_values_from_example(value: Any):
@@ -160,6 +163,9 @@ def update_schema_field_info(schema: Schema, field_info: FieldInfo) -> Schema:
 
 def get_schema_for_field_type(field: ModelField) -> Schema:
     field_type = field.outer_type_
+    if is_class_and_subclass(field_type, EncoderType):
+        return Schema()
+
     if field_type in TYPE_MAP:
         return TYPE_MAP[field_type].copy()
     if is_pydantic_model(field_type):

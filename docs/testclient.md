@@ -3,14 +3,18 @@
 Esmerald comes with a test client for your application tests. It is not mandatory use it as every application and
 development team has its own way of testing it but just in case, it is provided.
 
-```python
-{!> ../docs_src/testclient/example1.py !}
-```
+## Requirements
 
-Esmerald also uses `httpx` with its client, so if you want to use any of the given testing tools provided, run:
+This section requires the esmerald testing suite to be installed. You can do it so by running:
 
 ```shell
-pip install httpx
+pip install esmerald[test]
+```
+
+## The test client
+
+```python
+{!> ../docs_src/testclient/example1.py !}
 ```
 
 The test client is very similar to its original as it extends it and adds extra unique and specifics for `Esmerald`
@@ -48,7 +52,7 @@ The framework also brings a ready to use functionality to be used as context man
 
 This function is prepared to be used as a context manager for your tests and ready to use at any given time.
 
-```python hl_lines="14 79"
+```python hl_lines="14 77"
 {!> ../docs_src/testclient/example4.py !}
 ```
 

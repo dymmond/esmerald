@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING, List
 
 from starlette.types import ASGIApp
 
-from esmerald import EsmeraldAPISettings, JWTConfig
+from esmerald import EsmeraldAPISettings
 from esmerald.conf import settings
+from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 from esmerald.utils.module_loading import import_string
 

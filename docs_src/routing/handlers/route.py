@@ -1,9 +1,9 @@
-from esmerald import Esmerald, Gateway, Request, UJSONResponse, route
+from esmerald import Esmerald, Gateway, JSONResponse, Request, route
 
 
 @route(methods=["GET"])
-async def my_route(request: Request) -> UJSONResponse:
-    return UJSONResponse({"message": "Welcome home!"})
+async def my_route(request: Request) -> JSONResponse:
+    return JSONResponse({"message": "Welcome home!"})
 
 
 @route(path="/another", methods=["GET", "POST"])
