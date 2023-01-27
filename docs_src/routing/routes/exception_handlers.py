@@ -7,7 +7,7 @@ async def http_esmerald_handler(_: Request, exc: EsmeraldAPIException) -> JSONRe
 
 
 async def http_internal_server_error_handler(_: Request, exc: InternalServerError) -> JSONResponse:
-    return JSONResponse{"detail": exc.detail}, status_code=exc.status_code)
+    return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
 async def http_not_authorized_handler(_: Request, exc: NotAuthorized) -> JSONResponse:

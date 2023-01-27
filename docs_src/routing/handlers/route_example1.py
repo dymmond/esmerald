@@ -8,7 +8,7 @@ async def multiple_methods_function(request: Request) -> JSONResponse:
     if method == "GET":
         return JSONResponse({"message": "I'm a GET!"})
     elif method == "PUT":
-        return JSONResponse{"message": "I'm a PUT!"})
+        return JSONResponse({"message": "I'm a PUT!"})
     return JSONResponse({"message": "I'm a POST!"})
 
 

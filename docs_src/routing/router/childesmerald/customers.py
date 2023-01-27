@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import ChildEsmerald, Gateway, JSONResponse get, post
+from esmerald import ChildEsmerald, Gateway, JSONResponse, get, post
 
 
 class Address(BaseModel):
@@ -17,7 +17,7 @@ class Customer(BaseModel):
 
 @post("/")
 def create(data: Customer) -> JSONResponse:
-    return JSONResponse{"created": True})
+    return JSONResponse({"created": True})
 
 
 @get("/{customer_id:int}")

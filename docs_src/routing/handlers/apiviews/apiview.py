@@ -14,10 +14,10 @@ class UserAPIView(APIView):
         # logic to get all users here
         users = ...
 
-        return JSONResponse{"users": users})
+        return JSONResponse({"users": users})
 
     @get(path="/deny", permissions=[DenyAll], description="API description")
-    async def all_usersa(self, request: Request) -> JSONResponse
+    async def all_usersa(self, request: Request) -> JSONResponse:
         ...
 
     @get(path="/allow")

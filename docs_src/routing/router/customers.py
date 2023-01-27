@@ -16,7 +16,7 @@ class Customer(BaseModel):
 
 
 @post("/")
-def create(data: Customer) -> JSONResponse
+def create(data: Customer) -> JSONResponse:
     return JSONResponse({"created": True})
 
 
