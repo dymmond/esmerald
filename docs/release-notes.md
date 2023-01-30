@@ -1,10 +1,21 @@
 # Release Notes
 
+## 0.11.2
+
+### Changed
+
+- Code clean for responses and encoders.
+- JWTConfig leeway parameter to accept int and str.
+
+### Fixed
+
+- `ujson` dumps parameter error.
+
 ## 0.11.1
 
 ### Changed
 
-- Improved OrJSON, UJSON, ORJSONResponse and UJSONResponse when importing dependency.
+- Improved `OrJSON`, `UJSON`, `ORJSONResponse` and `UJSONResponse` when importing dependency.
 
 ## 0.11.0
 
