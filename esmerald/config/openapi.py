@@ -148,9 +148,9 @@ class OpenAPIConfig(BaseModel):
                             use_handler_docstrings=self.use_handler_docstrings,
                         )
                         verb = self.get_http_verb(path_item)
-                        if not path in schema.paths:
+                        if path not in schema.paths:
                             schema.paths[path] = {}
-                        if not verb in schema.paths[path]:
+                        if verb not in schema.paths[path]:
                             schema.paths[path][verb] = {}
                         schema.paths[path][verb] = getattr(path_item, verb, None)
                     continue

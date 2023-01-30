@@ -3,7 +3,7 @@ from typing import Any, Callable, Optional
 from esmerald.params import DirectInject
 
 
-def DirectInjects(  # NOSONAR
+def DirectInjects(
     dependency: Optional[Callable[..., Any]] = None, *, use_cache: bool = True
 ) -> Any:
     """

@@ -38,7 +38,7 @@ def get_random_string(
                 ("%s%s%s" % (random.getstate(), time.time(), settings.secret_key)).encode("utf-8")
             ).digest()
         )
-    return "".join(random.choice(allowed_chars) for _ in range(length))  # NOSONAR
+    return "".join(random.choice(allowed_chars) for _ in range(length))
 
 
 def get_random_secret_key():

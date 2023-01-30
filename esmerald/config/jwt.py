@@ -13,7 +13,7 @@ class JWTConfig(BaseModel):
     auth_header_types: List[str] = ["Bearer"]
     jti_claim: str = "jti"
     verifying_key: str = ""
-    leeway: str = 0
+    leeway: Union[str, int] = 0
     sliding_token_lifetime: Union[datetime, timedelta, str, float] = timedelta(minutes=5)
     sliding_token_refresh_lifetime: Union[datetime, timedelta, str, float] = timedelta(days=1)
     user_id_field: str = "id"

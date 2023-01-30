@@ -168,7 +168,7 @@ class TemplateDirective(BaseDirective):
             )
 
     def apply_umask(self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]):
-        current_umask = os.umask(0)  # NOSONAR
+        current_umask = os.umask(0)
         os.umask(current_umask)
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)
         os.chmod(new_path, current_mode & ~current_umask)

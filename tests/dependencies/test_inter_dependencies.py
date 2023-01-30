@@ -44,7 +44,7 @@ def test_inter_dependencies() -> None:
 
 def test_inter_dependencies_on_same_app_level() -> None:
     def first_dependency() -> int:
-        return randint(1, 10)  # NOSONAR
+        return randint(1, 10)
 
     def second_dependency(injected_integer: int) -> bool:
         return injected_integer % 2 == 0

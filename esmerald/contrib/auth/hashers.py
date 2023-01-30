@@ -121,7 +121,7 @@ def get_random_string(length, allowed_chars=RANDOM_STRING_CHARS):
       * length: 12, bit length =~ 71 bits
       * length: 22, bit length =~ 131 bits
     """
-    return "".join(secrets.choice(allowed_chars) for i in range(length))  # pragma no cover
+    return "".join(secrets.choice(allowed_chars) for _ in range(length))  # pragma no cover
 
 
 def get_hasher(algorithm="default"):
@@ -216,7 +216,7 @@ class BasePasswordHasher:
         if not salt or "$" in salt:
             raise ValueError("salt must be provided and cannot contain $.")
 
-    def must_update(self, encoded=None):  # NOSONAR
+    def must_update(self, encoded=None):
         return False
 
 
@@ -240,7 +240,7 @@ class PBKDF2PasswordHasher(BasePasswordHasher):
             "salt": salt,
         }
 
-    def must_update(self, encoded):  # NOSONAR
+    def must_update(self, encoded):
         decoded = self.decode(encoded)
         update_salt = must_update_salt(decoded["salt"], self.salt_entropy)
         return (decoded["iterations"] != self.iterations) or update_salt
@@ -256,4 +256,4 @@ class PBKDF2SHA1PasswordHasher(PBKDF2PasswordHasher):
 
     algorithm = "django_pbkdf2_sha1"
     algorithm_name = "pbkdf2_sha1"
-    digest = hashlib.sha1  # NOSONAR
+    digest = hashlib.sha1
