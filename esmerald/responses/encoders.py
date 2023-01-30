@@ -30,4 +30,4 @@ class ORJSONResponse(BaseJSONResponse):
 class UJSONResponse(BaseJSONResponse):
     def render(self, content: Any) -> bytes:
         assert ujson is not None, "You must install the encoders or ujson to use UJSONResponse"
-        return ujson.dumps(content, ensure_ascii=False, default=self.transform).encode("utf-8")
+        return ujson.dumps(content, ensure_ascii=False).encode("utf-8")
