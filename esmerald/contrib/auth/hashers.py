@@ -216,7 +216,7 @@ class BasePasswordHasher:
         if not salt or "$" in salt:
             raise ValueError("salt must be provided and cannot contain $.")
 
-    def must_update(self, encoded=None):  # pragma: no cover
+    def must_update(self, encoded=None):  # NOSONAR
         return False
 
 
@@ -240,7 +240,7 @@ class PBKDF2PasswordHasher(BasePasswordHasher):
             "salt": salt,
         }
 
-    def must_update(self, encoded):
+    def must_update(self, encoded):  # NOSONAR
         decoded = self.decode(encoded)
         update_salt = must_update_salt(decoded["salt"], self.salt_entropy)
         return (decoded["iterations"] != self.iterations) or update_salt
@@ -256,4 +256,4 @@ class PBKDF2SHA1PasswordHasher(PBKDF2PasswordHasher):
 
     algorithm = "django_pbkdf2_sha1"
     algorithm_name = "pbkdf2_sha1"
-    digest = hashlib.sha1
+    digest = hashlib.sha1  # NOSONAR

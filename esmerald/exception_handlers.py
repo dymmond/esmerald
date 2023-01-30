@@ -12,7 +12,7 @@ from esmerald.responses import JSONResponse, Response
 
 
 async def http_exception_handler(
-    request: Request, exc: Union[HTTPException, StarletteHTTPException]
+    request: Request, exc: Union[HTTPException, StarletteHTTPException]  # NOSONAR
 ) -> Union[JSONResponse, Response]:
     """
     Default exception handler for StarletteHTTPException and Esmerald HTTPException.
@@ -38,7 +38,7 @@ async def http_exception_handler(
 
 
 async def validation_error_exception_handler(
-    request: Request, exc: ValidationError
+    request: Request, exc: ValidationError  # NOSONAR
 ) -> JSONResponse:
     extra = getattr(exc, "extra", None)
     status_code = status.HTTP_400_BAD_REQUEST
@@ -60,7 +60,7 @@ async def http_error_handler(_: Request, exc: ExceptionErrorMap) -> JSONResponse
 
 
 async def improperly_configured_exception_handler(
-    request: Request, exc: ImproperlyConfigured
+    request: Request, exc: ImproperlyConfigured  # NOSONAR
 ) -> StarletteResponse:
     status_code = (
         exc.status_code

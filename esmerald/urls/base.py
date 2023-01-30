@@ -62,9 +62,7 @@ def include(arg: Any, pattern: Optional[str] = DEFAULT_PATTERN):
     """
 
     if not isinstance(arg, str):
-        raise ImproperlyConfigured(
-            "The value should be a string with the format " "<module>.<file>"
-        )
+        raise ImproperlyConfigured("The value should be a string with the format <module>.<file>")
 
     router_conf_module = import_module(arg)
     pattern = pattern or DEFAULT_PATTERN

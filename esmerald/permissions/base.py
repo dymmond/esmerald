@@ -104,8 +104,8 @@ class BasePermission(metaclass=BasePermissionMetaclass):
 
     def has_permission(
         self,
-        request: "Request",
-        apiview: "APIGateHandler",
+        request: "Request",  # NOSONAR
+        apiview: "APIGateHandler",  # NOSONAR
     ):
         """
         Return `True` if permission is granted, `False` otherwise.
@@ -121,7 +121,7 @@ class BaseAbstractUserPermission(ABC):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        apiview: "APIGateHandler",  # NOSONAR
     ) -> bool:
         try:
             hasattr(request, "user")

@@ -374,14 +374,14 @@ class EsmeraldAPISettings(BaseSettings):
         return {}
 
     @property
-    def on_startup(self) -> List[LifeSpanHandler]:
+    def on_startup(self) -> Union[List[LifeSpanHandler], None]:
         """
         List of events/actions to be done on_startup.
         """
         return None
 
     @property
-    def on_shutdown(self) -> List[LifeSpanHandler]:
+    def on_shutdown(self) -> Union[List[LifeSpanHandler], None]:
         """
         List of events/actions to be done on_shutdown.
         """

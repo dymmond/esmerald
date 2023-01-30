@@ -19,7 +19,7 @@ except NotImplementedError:
 
 def get_random_string(
     length: int = 12,
-    allowed_chars: str = "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    allowed_chars: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
 ) -> str:
     """
     Returns a securely generated random string.
@@ -38,7 +38,7 @@ def get_random_string(
                 ("%s%s%s" % (random.getstate(), time.time(), settings.secret_key)).encode("utf-8")
             ).digest()
         )
-    return "".join(random.choice(allowed_chars) for i in range(length))
+    return "".join(random.choice(allowed_chars) for _ in range(length))  # NOSONAR
 
 
 def get_random_secret_key():

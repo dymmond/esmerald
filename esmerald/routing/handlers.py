@@ -27,6 +27,9 @@ if TYPE_CHECKING:
     from esmerald.exceptions import HTTPException
 
 
+SUCCESSFUL_RESPONSE = "Successful response"
+
+
 class get(HTTPHandler):
     def __init__(
         self,
@@ -52,7 +55,7 @@ class get(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful response",
+        response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
@@ -108,7 +111,7 @@ class post(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful response",
+        response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
@@ -164,7 +167,7 @@ class put(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful response",
+        response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
@@ -220,7 +223,7 @@ class patch(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful response",
+        response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
@@ -276,7 +279,7 @@ class delete(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful response",
+        response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         super().__init__(
@@ -333,7 +336,7 @@ class route(HTTPHandler):
         security: Optional[List["SecurityRequirement"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
-        response_description: Optional[str] = "Successful response",
+        response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, ResponseSpecification]] = None,
     ) -> None:
         if not methods or not isinstance(methods, list):

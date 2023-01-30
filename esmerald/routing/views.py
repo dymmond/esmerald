@@ -113,7 +113,7 @@ class APIView:
 
             if self.exception_handlers:
                 route_handler.exception_handlers = self.get_exception_handlers(route_handler)
-            if self.tags or []:
+            if self.tags or []:  # NOSONAR
                 for tag in reversed(self.tags):
                     route_handler.tags.insert(0, tag)
             route_handlers.append(route_handler)
@@ -132,7 +132,7 @@ class APIView:
 
     def get_exception_handlers(
         self, handler: Union["HTTPHandler", "WebSocketHandler"]
-    ) -> List["ExceptionHandlers"]:
+    ) -> "ExceptionHandlers":
         """
         Gets the dict of extended exception handlers for the handler starting from the last
         to the first by reversing the list

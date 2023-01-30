@@ -319,14 +319,11 @@ class BaseResponseHandler:
         route: Union["HTTPHandler", "WebSocketHandler"],
         parameter_model: "TransformerModel",
     ) -> "StarletteResponse":
-        response_data = None
-
-        if not response_data:
-            response_data = await self._get_response_data(
-                route=route,
-                parameter_model=parameter_model,
-                request=request,
-            )
+        response_data = await self._get_response_data(
+            route=route,
+            parameter_model=parameter_model,
+            request=request,
+        )
 
         return await self.to_response(
             app=scope["app"],

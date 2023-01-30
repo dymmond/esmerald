@@ -48,7 +48,7 @@ class EsmeraldTestClient(TestClient):
     def __init__(
         self,
         app: Esmerald,
-        base_url: str = "http://testserver",
+        base_url: str = "http://testserver",  # NOSONAR
         raise_server_exceptions: bool = True,
         root_path: str = "",
         backend: "Literal['asyncio', 'trio']" = "asyncio",
@@ -80,7 +80,7 @@ def create_client(
     secret_key: Optional[str] = get_random_secret_key(),
     allowed_hosts: Optional[List[str]] = None,
     allow_origins: Optional[List[str]] = None,
-    base_url: str = "http://testserver",
+    base_url: str = "http://testserver",  # NOSONAR
     backend: "Literal['asyncio', 'trio']" = "asyncio",
     backend_options: Optional[Dict[str, Any]] = None,
     interceptors: Optional[List["Interceptor"]] = None,
