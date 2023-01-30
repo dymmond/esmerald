@@ -1,3 +1,7 @@
+# Starlite
+
+## Attribution
+
 Esmerald initially started a small idea that was also initially designed to run on the top of Starlite. Excelent framework out there doing amazing things but plans have changed and so has
 Esmerald in many ways.
 
@@ -11,3 +15,9 @@ Up to the version 0.2.X, we had some common ground but Starlite has evolved and 
 We thank Starlite for all the support given to us and all the great tech that allow us to imagine, create and deploy Esmerald in its own unique way and we also wish Starlite all the success that they deserve.
 
 Starlite deserves to be mentioned here as a thanks for the inspiration given to Esmerald to be built in an also unique way.
+
+## Commit MIT license
+
+By the time of the use of the license, the latest commit is linked to:
+
+https://github.com/starlite-api/starlite/commit/7f135c35f46de5836d663c3d4aa814e2b2a90581
