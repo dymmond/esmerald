@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from orjson import OPT_OMIT_MICROSECONDS  # noqa
 from pydantic import BaseModel
-from starlette.responses import JSONResponse as JSONResponse  # noqa
+from esmerald.responses import JSONResponse as JSONResponse  # noqa
 
 try:
     import orjson
