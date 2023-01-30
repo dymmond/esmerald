@@ -108,7 +108,6 @@ class Header(Param):
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> Any:
-        self.in_ = self.in_
         super().__init__(
             default=default,
             header=value,
@@ -166,7 +165,6 @@ class Cookie(Param):
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> Any:
-        self.in_ = self.in_
         super().__init__(
             default=default,
             cookie=value,
@@ -224,7 +222,6 @@ class Query(Param):
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> Any:
-        self.in_ = self.in_
         super().__init__(
             default=default,
             query=value,
@@ -277,7 +274,6 @@ class Path(Param):
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> Any:
-        self.in_ = self.in_
         super().__init__(
             default=default,
             title=title,

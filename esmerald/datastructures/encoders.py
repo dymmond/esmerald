@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
-from esmerald.datastructures.json import JSON
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -32,7 +31,6 @@ class OrJSON(ResponseContainer[ORJSONResponse]):
         self.content = content
         self.status_code = status_code
 
-
     def to_response(
         self,
         headers: Dict[str, Any],
@@ -40,9 +38,11 @@ class OrJSON(ResponseContainer[ORJSONResponse]):
         status_code: int,
         app: Type["Esmerald"],
     ) -> ORJSONResponse:
-        assert ORJSONResponse is not None, "You must install the encoders or orjson to use ORJSONResponse"
+        assert (
+            ORJSONResponse is not None
+        ), "You must install the encoders or orjson to use ORJSONResponse"
         status = self.status_code or status_code
-        
+
         return ORJSONResponse(
             content=self.content,
             headers=headers,
@@ -73,9 +73,11 @@ class UJSON(ResponseContainer[UJSONResponse]):
         status_code: int,
         app: Type["Esmerald"],
     ) -> UJSONResponse:
-        assert UJSONResponse is not None, "You must install the encoders or ujson to use UJSONResponse"
+        assert (
+            UJSONResponse is not None
+        ), "You must install the encoders or ujson to use UJSONResponse"
         status = self.status_code or status_code
-        
+
         return UJSONResponse(
             content=self.content,
             headers=headers,

@@ -956,9 +956,12 @@ def test_duplicated_param_names():
 
 
 def test_exception_on_mounted_apps(test_app_client_factory):
+    class CustomException(Exception):
+        ...
+
     @get(path="/")
-    def exc(request: Request) -> Exception:
-        raise Exception("Exc")
+    def exc(request: Request) -> CustomException:
+        raise CustomException("Exc")
 
     sub_app = Esmerald(routes=[Gateway("/", handler=exc)])
     app = Esmerald(routes=[Include("/sub", app=sub_app)])
@@ -967,5 +970,5 @@ def test_exception_on_mounted_apps(test_app_client_factory):
     response = client.get("/sub/")
 
     "Exception: Exc" in response.text
-    response.status_code == 500
-    response.reason_phrase == "Internal Server Error"
+    response.status_code == 500  # NOSONAR
+    response.reason_phrase == "Internal Server Error"  # NOSONAR

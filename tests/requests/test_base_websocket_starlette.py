@@ -354,10 +354,10 @@ def test_websocket_scope_interface():
         send=mock_send,
     )
     # deepcode ignore CopyPasteError/test: This is for testing purposes
-    assert websocket == websocket
+    assert websocket == websocket  # NOSONAR
     assert websocket in {websocket}
     # deepcode ignore CopyPasteError/test: This is for testing purposes
-    assert {websocket} == {websocket}
+    assert {websocket} == {websocket}  # NOSONAR
 
 
 def test_websocket_close_reason(test_client_factory) -> None:

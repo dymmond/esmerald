@@ -1,6 +1,5 @@
 from typing import Optional
 
-
 from esmerald.conf.global_settings import EsmeraldAPISettings
 
 
@@ -17,7 +16,7 @@ class TestSettings(EsmeraldAPISettings):
 class TestConfig(TestSettings):
     @property
     def scheduler_class(self) -> None:
-        None
+        ...
 
     class Config:
         extra = "allow"
