@@ -9,7 +9,7 @@ They provide a set of available parameters like `status_code`, `response_class`,
 
 There different http handlers representing the different
 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods" target="_blank">HTTP Methods</a> available
-and special one for special circunstances.
+and special one for special circumstances.
 
 !!! warning
     In every HTTP handler ([get](#get), [post](#post), [put](#put), [patch](#patch), [delete](#delete) and [route](#route))
