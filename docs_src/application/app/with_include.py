@@ -25,9 +25,9 @@ def user(request: Request) -> Response:
 
 @websocket()
 async def websocket_endpoint(socket: Websocket) -> None:
-    await websocket.accept()
-    await websocket.send_text("Hello, websocket!")
-    await websocket.close()
+    await socket.accept()
+    await socket.send_text("Hello, websocket!")
+    await socket.close()
 
 
 def startup():
