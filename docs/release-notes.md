@@ -4,7 +4,11 @@
 
 ### Changed
 
-- Added support for Starlette 0.24.0
+- Added support for Starlette 0.24.0.
+
+### Fixed
+
+- `debug` parameter regression.
 
 ## 0.11.2
 

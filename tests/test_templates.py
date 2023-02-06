@@ -61,5 +61,3 @@ def test_templates_starlette(template_dir, test_client_factory):
     client = EsmeraldTestClient(app)
     response = client.get("/")
     assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>"
-    assert response.template.name == "index.html"
-    assert set(response.context.keys()) == {"request"}

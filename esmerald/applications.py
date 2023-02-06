@@ -70,6 +70,7 @@ class Esmerald(Starlette):
     """
 
     __slots__ = (
+        "debug",
         "title",
         "app_name",
         "summary",
@@ -187,6 +188,7 @@ class Esmerald(Starlette):
             if debug is not None
             else self.get_settings_value(self.settings_config, esmerald_settings, "debug")
         )
+        self.debug = self._debug
         self.title = title or self.get_settings_value(
             self.settings_config, esmerald_settings, "title"
         )
