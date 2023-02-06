@@ -1,5 +1,15 @@
 # Release Notes
 
+## 0.12.0
+
+### Changed
+
+- Added support for Starlette 0.24.0.
+
+### Fixed
+
+- `debug` parameter regression.
+
 ## 0.11.2
 
 ### Changed
