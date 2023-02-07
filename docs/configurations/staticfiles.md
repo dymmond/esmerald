@@ -17,7 +17,7 @@ To use the StaticFilesConfig in an application instance.
 
 Another example
 
-```python hl_lines="1 9"
+```python hl_lines="1 10"
 {!> ../docs_src/configurations/staticfiles/example2.py!}
 ```
 

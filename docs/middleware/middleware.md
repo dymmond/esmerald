@@ -231,7 +231,7 @@ the global Esmerald settings and the `app_settings` which corresponds to the
 [settings_config](../application/settings.md#the-settings_config), if any,
 passed to the Esmerald or ChildEsmerald instance.
 
-```python hl_lines="8"
+```python hl_lines="6 8"
 {!> ../docs_src/middleware/available/request_settings_middleware.py !}
 ```
 

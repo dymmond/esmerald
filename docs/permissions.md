@@ -56,7 +56,7 @@ part the `is_user_authenticated` needs to be implemented.
 
 To use the `IsAdminUser`, `IsAuthenticated` and `IsAuthenticatedOrReadOnly` is as simple as the example below.
 
-```python hl_lines="38 40 47"
+```python hl_lines="33 35 42"
 {!> ../docs_src/permissions/admin.py !}
 ```
 

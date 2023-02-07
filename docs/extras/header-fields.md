@@ -42,7 +42,7 @@ as well.
 
 The `response_headers` is a simple python dictionary.
 
-```python hl_lines="12"
+```python hl_lines="11"
 {!> ../docs_src/extras/headers/example3.py !}
 ```
 

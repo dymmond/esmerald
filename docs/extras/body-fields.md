@@ -5,7 +5,7 @@ documentation for the request body schema or how to control its validation.
 
 The simplest way is by importing the `Body` object from Esmerald.
 
-```python hl_lines="12-14"
+```python hl_lines="12-13"
 {!> ../docs_src/extras/body/body_object.py !}
 ```
 

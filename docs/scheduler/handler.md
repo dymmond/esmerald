@@ -216,13 +216,13 @@ Esmerald allows to pass those configurations via application instantiation or vi
 
 ### Via application instantiation
 
-```python hl_lines="3 22"
+```python
 {!> ../docs_src/scheduler/tasks/configurations/app.py !}
 ```
 
 ### Via application settings
 
-```python hl_lines="3 14"
+```python
 {!> ../docs_src/scheduler/tasks/configurations/settings.py !}
 ```
 

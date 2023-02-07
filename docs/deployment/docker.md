@@ -87,7 +87,7 @@ You find more details about Nginx but exploring [their documentation](https://ww
 
 Let's start by building our simple nginx application.
 
-```nginx hl_lines="22 36"
+```nginx
 {!> ../docs_src/deployment/nginx.conf !}
 ```
 
@@ -228,6 +228,6 @@ To disable the documentation for being generated you can simply use the internal
 
 Or do it via your [custom settings](../application/settings.md#custom-settings)
 
-```python hl_lines="21"
+```python
 {!> ../docs_src/deployment/settings.py !}
 ```
