@@ -113,10 +113,6 @@ DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
 ParentType = Union[APIView, Router]
 APIGateHandler = Union[
-    APIView,
-    HTTPHandler,
-    Router,
-    AnyCallable,
     Gateway,
     WebSocketGateway,
 ]
