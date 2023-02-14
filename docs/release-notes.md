@@ -1,5 +1,15 @@
 # Release Notes
 
+## 0.13.0
+
+### Changed 
+
+- Added support for Starlette 0.25.0
+
+### Fixed
+
+- Internal mapping types [#45](https://github.com/dymmond/esmerald/pull/56)
+
 ## 0.12.0
 
 ### Changed
