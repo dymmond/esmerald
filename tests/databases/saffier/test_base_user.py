@@ -41,7 +41,7 @@ async def rollback_transactions():
 
 
 async def test_create_user():
-    user = await User.create_user(
+    user = await User.query.create_user(
         first_name="Test",
         last_name="a test",
         email="esmerald@test.com",
@@ -56,7 +56,7 @@ async def test_create_user():
 
 async def test_create_superuser():
     for i in range(5):
-        await User.create_superuser(
+        await User.query.create_superuser(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
             username=get_random_string(10),
@@ -70,7 +70,7 @@ async def test_create_superuser():
 
 async def test_create_normal_users():
     for i in range(10):
-        await User.create_user(
+        await User.query.create_user(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
             username=get_random_string(6),
@@ -85,7 +85,7 @@ async def test_create_normal_users():
 
 async def test_create_normal_all():
     for i in range(5):
-        await User.create_superuser(
+        await User.query.create_superuser(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
             username=get_random_string(4),
@@ -94,7 +94,7 @@ async def test_create_normal_all():
         )
 
     for i in range(10):
-        await User.create_user(
+        await User.query.create_user(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
             username=get_random_string(5),
