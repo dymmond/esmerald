@@ -12,7 +12,6 @@ from typing import (
     Union,
 )
 
-from pydantic.typing import AnyCallable
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.responses import Response as StarletteResponse
 from starlette.types import ASGIApp

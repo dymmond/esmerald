@@ -47,7 +47,6 @@ def test_add_child_esmerald_app(test_client_factory) -> None:
     with create_client(
         routes=[Gateway(handler=route_one), Include("/child", app=child_esmerald)]
     ) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED
@@ -81,7 +80,6 @@ def test_add_child_esmerald_app_within_include(test_client_factory) -> None:
             Include(routes=[Include("/child", app=child_esmerald)]),
         ]
     ) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED
@@ -145,7 +143,6 @@ def test_add_child_esmerald_app_within_nested_include_two(test_client_factory) -
             ),
         ]
     ) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED
@@ -219,7 +216,6 @@ def test_add_child_esmerald_app_within_nested_include(test_client_factory):
             ),
         ]
     ) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED
@@ -309,7 +305,6 @@ def test_add_children_esmerald_app_within_same_nested_include(
             ),
         ]
     ) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED
@@ -382,7 +377,6 @@ def test_add_children_esmerald_app_within_same_nested_include_simpler(
             ),
         ]
     ) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED

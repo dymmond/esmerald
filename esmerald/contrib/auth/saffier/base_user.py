@@ -1,51 +1,21 @@
-from tortoise import fields
-from tortoise.models import Model
-
-from esmerald.contrib.auth.hashers import (
-    check_password,
-    is_password_usable,
-    make_password,
-)
+import saffier
+from esmerald.contrib.auth.hashers import check_password, is_password_usable, make_password
 
 
-class AutoIncrementIntMixin(Model):
+class AbstractUser(saffier.Model):
     """
-    Auto increment for integers.
+    Base model used for a custom user of any application.
     """
 
-    id = fields.IntField(pk=True)
-
-    class Meta:
-        ordering = ["-id"]
-        abstract = True
-
-
-class AutoIncrementBigIntMixin(Model):
-    """
-    Auto increment for big integers.
-    """
-
-    id = fields.BigIntField(pk=True)
-
-    class Meta:
-        ordering = ["-id"]
-        abstract = True
-
-
-class AbstractUser(Model):
-    """
-    Base model used for a custom model of an application.
-    """
-
-    first_name = fields.CharField(description="First name", max_length=150)
-    last_name = fields.CharField(description="Last name", max_length=150)
-    username = fields.CharField(description="Username", max_length=150, unique=True)
-    email = fields.CharField(description="Email address", max_length=120, unique=True)
-    password = fields.CharField(description="Password", max_length=128)
-    last_login = fields.DatetimeField(description="Last login", null=True)
-    is_active = fields.BooleanField(default=True)
-    is_staff = fields.BooleanField(default=False)
-    is_superuser = fields.BooleanField(default=False)
+    first_name = saffier.CharField(max_length=150)
+    last_name = saffier.CharField(max_length=150)
+    username = saffier.CharField(max_length=150, unique=True)
+    email = saffier.EmailField(max_length=120, unique=True)
+    password = saffier.CharField(max_length=128)
+    last_login = saffier.DateTimeField(null=True)
+    is_active = saffier.BooleanField(default=True)
+    is_staff = saffier.BooleanField(default=False)
+    is_superuser = saffier.BooleanField(default=False)
 
     # Stores the raw password if set_password() is called so that it can
     # be passed to password_changed() after the model is saved.
@@ -64,7 +34,7 @@ class AbstractUser(Model):
     async def set_password(self, raw_password):
         self.password = make_password(raw_password)
         self._password = raw_password
-        await self.save()
+        await self.update(password=make_password(raw_password))
 
     async def check_password(self, raw_password):
         """
@@ -76,7 +46,7 @@ class AbstractUser(Model):
             self.set_password(raw_password)
             # Password hash upgrades shouldn't be considered password changes.
             self._password = None
-            await self.save(update_fields=["password"])
+            await self.update(password=self.password)
 
         return check_password(raw_password, self.password, setter)
 
@@ -97,9 +67,10 @@ class AbstractUser(Model):
         """
         if not username:
             raise ValueError("The given username must be set")
-        user = cls(username=username, email=email, **extra_fields)
-        user.password = make_password(password)
-        await user.save()
+        password = make_password(password)
+        user = await cls.query.create(
+            username=username, email=email, password=password, **extra_fields
+        )
         return user
 
     @classmethod

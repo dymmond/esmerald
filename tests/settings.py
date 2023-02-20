@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
+from saffier import Database, Registry
 
 
 class TestSettings(EsmeraldAPISettings):
@@ -11,6 +12,11 @@ class TestSettings(EsmeraldAPISettings):
     environment: Optional[str] = "testing"
     redirect_slashes: bool = True
     include_in_schema: bool = False
+
+    @property
+    def registry(self) -> Tuple[Database, Registry]:
+        database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
+        return database, Registry(database=database)
 
 
 class TestConfig(TestSettings):

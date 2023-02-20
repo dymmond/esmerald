@@ -78,7 +78,6 @@ class APIView:
         route_handlers = []
 
         for handler_name in filtered_handlers:
-
             if handler_name not in dir(APIView) and isinstance(
                 getattr(self, handler_name), (HTTPHandler, WebSocketHandler)
             ):

@@ -79,7 +79,6 @@ def test_controller_dependency_injection() -> None:
 
 
 def xtest_controller_dependency_injection_for_child_esmerald() -> None:
-
     child = ChildEsmerald(routes=[Gateway(path="/", handler=FirstController)])
 
     with create_client(

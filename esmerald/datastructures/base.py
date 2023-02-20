@@ -45,7 +45,6 @@ class Secret:
 
 
 class State(StarletteStateClass):
-
     state: Dict[str, Any]
 
     def __copy__(self) -> "State":

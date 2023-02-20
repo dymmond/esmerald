@@ -20,7 +20,7 @@ class JSON(ResponseContainer[JSONResponse]):
         self,
         content: Optional[Dict[str, Any]] = None,
         status_code: Optional[int] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ):
         super().__init__(**kwargs)
         self.content = content

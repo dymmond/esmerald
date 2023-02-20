@@ -28,7 +28,6 @@ if TYPE_CHECKING:
 
 
 def test_default_settings():
-
     with create_client([]) as client:
         assert client.app.settings.app_name == settings.app_name
         assert client.app.settings.environment == "testing"
@@ -141,7 +140,6 @@ def test_inner_settings_config(test_client_factory):
     with create_client(
         routes=[Gateway(handler=_app_settings)], settings_config=AppSettings
     ) as client:
-
         response = client.get("/app-settings")
 
         assert client.app.settings.app_name == "new app"
@@ -170,7 +168,6 @@ def test_child_esmerald_independent_settings(test_client_factory):
     )
 
     with create_client(routes=[Include("/child", app=child)]) as client:
-
         response = client.get("/child/app-settings")
         data = json.loads(response.json())
 
@@ -211,7 +208,6 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
     with create_client(
         routes=[Include("/child", app=child)], cors_config=cors_config, csrf_config=csrf_config
     ) as client:
-
         child = client.app.routes[0].app
 
         assert child.cors_config.allow_origins == ["www.example.com"]
@@ -248,7 +244,6 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
     with create_client(
         routes=[Include("/child", app=nested_child)],
     ) as client:
-
         response = client.get("/child/app-settings")
         data = json.loads(response.json())
 

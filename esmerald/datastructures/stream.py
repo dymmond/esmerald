@@ -23,7 +23,6 @@ if TYPE_CHECKING:
 
 
 class Stream(ResponseContainer[StreamingResponse]):
-
     iterator: Union[
         Iterator[Union[str, bytes]],
         Generator[Union[str, bytes], Any, Any],
@@ -42,7 +41,6 @@ class Stream(ResponseContainer[StreamingResponse]):
         status_code: int,
         app: Type["Esmerald"],
     ) -> StreamingResponse:
-
         return StreamingResponse(
             background=self.background,
             content=self.iterator

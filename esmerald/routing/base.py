@@ -246,7 +246,6 @@ class BaseResponseHandler:
         async def response_content(
             data: StarletteResponse, **kwargs: Dict[str, Any]
         ) -> StarletteResponse:
-
             _cookies = self.get_cookies(cookies, [])
             _headers = {
                 **self.get_headers(headers),
@@ -272,7 +271,6 @@ class BaseResponseHandler:
         status_code: int,
     ) -> "AsyncAnyCallable":
         async def response_content(data: Any, **kwargs: Dict[str, Any]) -> StarletteResponse:
-
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies, [])
             if isinstance(data, JSONResponse):

@@ -58,7 +58,6 @@ def clean_values_from_example(value: Any):
 
 
 class ExampleFactory(ModelFactory[BaseModel]):
-
     __model__ = BaseModel
     __allow_none_optionals__: bool = False
 
@@ -66,7 +65,6 @@ class ExampleFactory(ModelFactory[BaseModel]):
 def create_numerical_constrained_field_schema(
     field_type: Union[Type[ConstrainedFloat], Type[ConstrainedInt], Type[ConstrainedDecimal]]
 ) -> Schema:
-
     schema = Schema(
         type=OpenAPIType.INTEGER if issubclass(field_type, int) else OpenAPIType.NUMBER
     )

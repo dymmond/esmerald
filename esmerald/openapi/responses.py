@@ -24,7 +24,6 @@ from starlette.routing import get_name
 from typing_extensions import get_args, get_origin
 
 if TYPE_CHECKING:
-
     from esmerald.datastructures import Cookie
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import AnyCallable
@@ -136,7 +135,6 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
 def create_error_responses(
     exceptions: List[Type[HTTPException]],
 ) -> Iterator[Tuple[str, Response]]:
-
     grouped_exceptions: Dict[int, List[Type[HTTPException]]] = {}
     for exc in exceptions:
         if not grouped_exceptions.get(exc.status_code):
@@ -201,7 +199,6 @@ def create_additional_responses(
 def create_responses(
     handler: "HTTPHandler", raises_validation_error: bool, create_examples: bool
 ) -> Optional["Responses"]:
-
     responses: "Responses" = {
         str(handler.status_code): create_success_response(
             handler=handler, create_examples=create_examples

@@ -14,7 +14,7 @@ class DirectiveParser(ArgumentParser):
         *,
         missing_args_message: Optional[str] = None,
         called_from_command_line: Optional[Any] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ):
         self.missing_args_message = missing_args_message
         self.called_from_command_line = called_from_command_line

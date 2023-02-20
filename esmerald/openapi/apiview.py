@@ -100,7 +100,6 @@ class OpenAPIView(APIView):
         include_in_schema=False,
     )
     def retrieve_schema_yaml(self, request: Request) -> Response:
-
         if not request.app.openapi_config:  # pragma: no cover
             raise ImproperlyConfigured(MSG_OPENAPI_NOT_INITIALIZED)
 

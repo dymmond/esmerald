@@ -26,7 +26,6 @@ def test_serve_flask_via_esmerald(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -47,7 +46,6 @@ def test_serve_flask_via_nested_include(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -91,7 +89,6 @@ def test_serve_flask_via_deep_nested_include(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -118,7 +115,6 @@ def test_serve_more_than_one_flask_app_via_esmerald(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -140,7 +136,6 @@ def test_serve_more_than_one_flask_app_via_esmerald_two(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -191,7 +186,6 @@ def test_serve_more_than_one_flask_app_via_nested_include(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -218,7 +212,6 @@ def test_serve_routes_inder_main_path(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -250,7 +243,6 @@ def test_serve_routes_inder_main_path_with_different_names(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/api/v1/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -265,7 +257,6 @@ def test_serve_routes_inder_main_path_with_different_names(test_client_factory):
 
 
 def test_serve_under_another_esmerald_app(test_client_factory):
-
     esmerald_app = Esmerald(
         routes=[
             Gateway(handler=home),
@@ -279,7 +270,6 @@ def test_serve_under_another_esmerald_app(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/esmerald/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}
@@ -294,7 +284,6 @@ def test_serve_under_another_esmerald_app(test_client_factory):
 
 
 def test_serve_under_another_esmerald_app_two(test_client_factory):
-
     esmerald_app = Esmerald(
         routes=[
             Gateway(handler=home),
@@ -310,7 +299,6 @@ def test_serve_under_another_esmerald_app_two(test_client_factory):
     ]
 
     with create_client(routes=routes) as client:
-
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}

@@ -121,7 +121,6 @@ def create_parameter_for_handler(
     path_parameters: Any,
     create_examples: bool,
 ):
-
     parameters = ParameterCollection(handler=handler)
     dependencies = handler.get_dependencies()
 

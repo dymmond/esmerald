@@ -467,7 +467,6 @@ def test_api_view_path_parameter():
             return f"Test {name} {param}"
 
     with create_client(routes=[Gateway(handler=MyAPIView)]) as client:
-
         response = client.get("/customer/esmerald")
         assert response.status_code == HTTP_200_OK
         assert response.json() == "esmerald"

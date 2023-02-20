@@ -648,7 +648,6 @@ mixed_hosts_app = [
 
 def test_host_routing(test_client_factory):
     with create_client(routes=mixed_hosts_app, base_url="https://api.example.org/") as client:
-
         response = client.get("/users")
         assert response.status_code == 200
         assert response.json() == {"users": [{"username": "tom"}]}
@@ -657,7 +656,6 @@ def test_host_routing(test_client_factory):
         assert response.status_code == 404
 
     with create_client(routes=mixed_hosts_app, base_url="https://www.example.org/") as client:
-
         response = client.get("/users")
         assert response.status_code == 200
         assert response.text == "All users"
@@ -668,7 +666,6 @@ def test_host_routing(test_client_factory):
     with create_client(
         routes=mixed_hosts_app, base_url="https://port.example.org:3600/"
     ) as client:
-
         response = client.get("/users")
         assert response.status_code == 404
 
@@ -682,7 +679,6 @@ def test_host_routing(test_client_factory):
     with create_client(
         routes=mixed_hosts_app, base_url="https://port.example.org:5600/"
     ) as client:
-
         response = client.get("/")
         assert response.status_code == 200
 
@@ -757,7 +753,6 @@ echo_url_routes = [
 
 
 def test_url_for_with_root_path(test_client_factory):
-
     with create_client(
         routes=echo_url_routes,
         base_url="https://www.example.org/",
