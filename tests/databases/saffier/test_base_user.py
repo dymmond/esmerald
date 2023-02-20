@@ -1,10 +1,16 @@
 import random
 import string
+import sys
 
 import pytest
 
 from esmerald.conf import settings
-from esmerald.contrib.auth.saffier.base_user import AbstractUser
+from esmerald.typing import Void
+
+try:
+    from esmerald.contrib.auth.saffier.base_user import AbstractUser
+except ImportError:
+    AbstractUser = Void
 
 database, models = settings.registry
 pytestmark = pytest.mark.anyio
@@ -16,6 +22,7 @@ def get_random_string(length):
     return result_str
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 class User(AbstractUser):
     """
     Inherits from the abstract user and adds the registry
@@ -26,6 +33,7 @@ class User(AbstractUser):
         registry = models
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 @pytest.fixture(autouse=True, scope="module")
 async def create_test_database():
     await models.create_all()
@@ -33,6 +41,7 @@ async def create_test_database():
     await models.drop_all()
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 @pytest.fixture(autouse=True)
 async def rollback_transactions():
     with database.force_rollback():
@@ -40,6 +49,7 @@ async def rollback_transactions():
             yield
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 async def test_create_user():
     user = await User.query.create_user(
         first_name="Test",
@@ -54,6 +64,7 @@ async def test_create_user():
     assert users[0].pk == user.pk
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 async def test_create_superuser():
     for i in range(5):
         await User.query.create_superuser(
@@ -68,6 +79,7 @@ async def test_create_superuser():
     assert len(superusers) == 5
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 async def test_create_normal_users():
     for i in range(10):
         await User.query.create_user(
@@ -83,6 +95,7 @@ async def test_create_normal_users():
     assert len(users) == 10
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Not supported in python 3.7")
 async def test_create_normal_all():
     for i in range(5):
         await User.query.create_superuser(
