@@ -31,7 +31,7 @@ There are different ways of calling this middleware in any Esmerald application.
 ### Via application instantiation
 
 ```python
-{!> ../docs_src/databases/tortoise/middleware/example1.py !}
+{!> ../docs_src/databases/saffier/middleware/example1.py !}
 ```
 
 ### Via overriding the JWTAuthMiddleware
@@ -39,13 +39,13 @@ There are different ways of calling this middleware in any Esmerald application.
 === "Via app instance"
 
     ```python
-    {!> ../docs_src/databases/tortoise/middleware/example2.py !}
+    {!> ../docs_src/databases/saffier/middleware/example2.py !}
     ```
 
 === "Via app settings"
 
     ```python
-    {!> ../docs_src/databases/tortoise/middleware/example3.py !}
+    {!> ../docs_src/databases/saffier/middleware/example3.py !}
     ```
 
 ### Important note

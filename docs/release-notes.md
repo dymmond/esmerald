@@ -6,7 +6,9 @@
 
 - Brand new support for [Saffier](https://saffier.tarsild.io). A brand new ORM running
 on the top of SQLAlchemy in an async fashion.
-- Added new `base_user` and `middleware` support for Saffier with Esmerald.
+- New `base_user` and `middleware` support for Saffier with Esmerald.
+- New docs regarding the [Saffier](http://localhost:8000/databases/saffier/motivation/) integration.
+Those include also an example how to use it.
 
 ### Changed
 

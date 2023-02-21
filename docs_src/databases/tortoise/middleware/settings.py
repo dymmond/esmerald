@@ -4,7 +4,7 @@ from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald import EsmeraldAPISettings
 from esmerald.config.jwt import JWTConfig
-from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
+from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
 from esmerald.utils.module_loading import import_string
 
 if TYPE_CHECKING:

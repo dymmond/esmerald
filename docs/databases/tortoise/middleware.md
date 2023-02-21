@@ -25,7 +25,7 @@ There are different ways of calling this middleware in any Esmerald application.
 ### Via settings
 
 ```python
-{!> ../docs_src/configurations/jwt/settings.py!}
+{!> ../docs_src/databases/tortoise/middleware/settings.py !}
 ```
 
 ### Via application instantiation
