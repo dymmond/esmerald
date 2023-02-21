@@ -2,13 +2,7 @@ import sys
 from typing import Optional, Tuple
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.typing import Void
-
-try:
-    from saffier import Database, Registry
-except ImportError:
-    Database = Void
-    Registry = Void
+from saffier import Database, Registry
 
 
 class TestSettings(EsmeraldAPISettings):
@@ -22,8 +16,6 @@ class TestSettings(EsmeraldAPISettings):
 
     @property
     def registry(self) -> Tuple[Database, Registry]:
-        if sys.version_info < (3, 8):
-            return database, Registry
         database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
         return database, Registry(database=database)
 

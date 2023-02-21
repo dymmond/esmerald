@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     services:
       postgres:
@@ -47,8 +47,5 @@ jobs:
       - name: "Install dependencies"
         if: steps.cache.outputs.cache-hit != 'true'
         run: "scripts/install"
-      - name: "Install saffier"
-        if: ${{ matrix.python-version != '3.7' }}
-        run: pip install saffier[postgres]
       - name: "Run tests"
         run: "scripts/test"
