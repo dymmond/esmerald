@@ -125,6 +125,10 @@ class WebSocketException(WebSocketException):
     ...
 
 
+class AuthenticationError(HTTPException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
 ExceptionErrorMap = Union[
     HTTPException,
     NotAuthenticated,

@@ -1,5 +1,22 @@
 # Release Notes
 
+## 0.14.0
+
+### Added
+
+- Brand new support for [Saffier](https://saffier.tarsild.io). A brand new ORM running
+on the top of SQLAlchemy in an async fashion.
+- Added new `base_user` and `middleware` support for Saffier with Esmerald.
+
+### Changed
+
+- **Breaking change** - Removed support for python 3.7. This was blocking the technology from
+evolving at a normal pace and blocking security patches from being properly applied.
+
+### Fixed
+
+- Old package versioning conflicts.
+
 ## 0.13.0
 
 ### Changed 
@@ -328,7 +345,7 @@ and can be used for testing purposes or to clear a session.
 
 ### Changed
 
-- Removed [Tortoise ORM](./databases/tortoise/tortoise.md#how-to-use) dependency from the main package.
+- Removed [Tortoise ORM](./databases/tortoise/motivation.md#how-to-use) dependency from the main package.
 - Removed `asyncpg` from the main package as dependency.
 
 ## 0.2.5
@@ -414,7 +431,7 @@ version to the most advanced.
 - **Exception Handlers**: Apply exception handlers on any desired level.
 - **Permissions**: Apply specific rules and permissions on each API.
 - **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
-- **Tortoise ORM**: Native support for [Tortoise ORM](./databases/tortoise/tortoise.md).
+- **Tortoise ORM**: Native support for [Tortoise ORM](./databases/tortoise/motivation.md).
 - **APIView**: Class Based endpoints for your beloved OOP design.
 - **JSON serialization/deserialization**: Both UJSON and ORJON support.
 - **Lifespan**: Support for the newly lifespan and on_start/on_shutdown events.

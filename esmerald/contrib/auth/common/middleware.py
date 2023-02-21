@@ -1,12 +1,11 @@
 from typing import Generic, TypeVar
 
 from jose import JWSError, JWTError
-from starlette.authentication import AuthenticationError
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp
 
 from esmerald.config.jwt import JWTConfig
-from esmerald.exceptions import NotAuthorized
+from esmerald.exceptions import AuthenticationError, NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.security.jwt.token import Token
 
@@ -86,5 +85,5 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):
 
         user = await self.retrieve_user(token.sub)
         if not user:
-            raise AuthenticationError("User not found")
+            raise AuthenticationError("User not found.")
         return AuthResult(user=user)

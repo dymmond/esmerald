@@ -31,6 +31,6 @@ class UserAPIView(APIView):
         ...
 
     @delete(path="/delete/{user_id}")
-    async def create_user(self, request: Request, user_id: str) -> None:
+    async def delete_user(self, request: Request, user_id: str) -> None:
         # logic to delete a user goes here
         ...

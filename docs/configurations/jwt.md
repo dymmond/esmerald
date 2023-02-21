@@ -134,7 +134,6 @@ from esmerald.conf import settings
 token = Token(exp=..., iat=..., sub=...)
 
 # Generate the JWT token
-claims = {"sub": token.sub, "exp": token.exp}
 jwt_token = Token.encode(key=settings.secret_key, algorithm="HS256", **claims)
 ```
 

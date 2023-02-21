@@ -28,14 +28,14 @@ All the permission classes **must derive** from `BasePermission`.
 
 ## Esmerald and permissions
 
-Esmerald giving support to [Tortoise ORM](./databases/tortoise/tortoise.md) also provides some default permissions
+Esmerald giving support to [Tortoise ORM](./databases/tortoise/motivation.md) also provides some default permissions
 that can be linked to the models also provided by **Esmerald**.
 
 ### IsAdminUser and example of provided permissions
 
 This is a simple permission that extends the `BaseAbstractUserPermission` and checks if a user is authenticated or not.
 The functionality of verifying if a user might be or not authenticated was separated from the
-[Tortoise](./databases/tortoise/tortoise.md) and instead you must implement the `is_user_authenticated()`
+[Tortoise](./databases/tortoise/motivation.md) and instead you must implement the `is_user_authenticated()`
 function when inheriting from `BaseAbstractUserPermission` or `IsAdminUser`.
 
 ## Esmerald and provided permissions
