@@ -93,7 +93,7 @@ Now it the time where we assemble everything in one place and create our Esmeral
 Did you notice the import of the `JWTAuthMiddleware` is inside the
 [Include](../../routing/routes.md#include) and not in the main Esmerald instance?
 
-**It is intentional!**. Each include handles their own middlewares and to create a user and login
+**It is intentional!** Each include handles its own middlewares and to create a user and login
 you **don't want to be logged-in** and for that reason, the `JWTAuthMiddleware` is only for those
 endpoints that **require authentication**.
 
