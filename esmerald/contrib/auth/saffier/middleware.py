@@ -1,11 +1,11 @@
 from typing import Any, Generic, TypeVar
 
 from starlette.types import ASGIApp
-from tortoise.exceptions import DoesNotExist
 
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.common.middleware import CommonJWTAuthMiddleware
-from esmerald.exceptions import NotAuthorized
+from esmerald.exceptions import AuthenticationError, NotAuthorized
+from saffier.exceptions import DoesNotFound
 
 T = TypeVar("T")
 
@@ -21,7 +21,7 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         config: "JWTConfig",
         user_model: Generic[T],
     ):
-        super().__init__(app)
+        super().__init__(app, config, user_model)
         """
         The user is simply the class type to be queried from the Saffier ORM.
 
@@ -60,8 +60,16 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         """
         Retrieves a user from the database using the given token id.
         """
+        try:
+            sub = int(token_sub)
+            token_sub = sub
+        except (TypeError, ValueError):
+            ...
+
         user_field = {self.config.user_id_field: token_sub}
         try:
             return await self.user_model.query.get(**user_field)
-        except DoesNotExist:
+        except DoesNotFound:
             raise NotAuthorized()
+        except Exception as e:
+            raise AuthenticationError(detail=str(e))

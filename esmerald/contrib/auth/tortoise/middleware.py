@@ -21,7 +21,7 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         config: "JWTConfig",
         user_model: Generic[T],
     ):
-        super().__init__(app)
+        super().__init__(app, config, user_model)
         """
         The user is simply the class type to be queried from the Tortoise ORM.
 

@@ -65,5 +65,5 @@ class Token(BaseModel):
                 options={"verify_aud": False},
             )
         except (JWSError, JWTError, JWSAlgorithmError, JWSSignatureError) as e:
-            raise ImproperlyConfigured("Invalid token") from e
+            raise e
         return Token(**data)
