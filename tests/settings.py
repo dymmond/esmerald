@@ -1,4 +1,3 @@
-import sys
 from typing import Optional, Tuple
 
 from esmerald.conf.global_settings import EsmeraldAPISettings

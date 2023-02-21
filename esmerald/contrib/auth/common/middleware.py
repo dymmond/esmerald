@@ -1,16 +1,19 @@
-from typing import Any, Generic, TypeVar
+from typing import Generic, TypeVar
 
+from jose import JWSError, JWTError
+from starlette.authentication import AuthenticationError
+from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp
-from tortoise.exceptions import DoesNotExist
 
 from esmerald.config.jwt import JWTConfig
-from esmerald.contrib.auth.common.middleware import CommonJWTAuthMiddleware
 from esmerald.exceptions import NotAuthorized
+from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
+from esmerald.security.jwt.token import Token
 
 T = TypeVar("T")
 
 
-class JWTAuthMiddleware(CommonJWTAuthMiddleware):
+class CommonJWTAuthMiddleware(BaseAuthMiddleware):
     """
     The simple JWT authentication Middleware.
     """
@@ -56,12 +59,32 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         self.config = config
         self.user_model = user_model
 
-    async def retrieve_user(self, token_sub: Any) -> Generic[T]:
+    async def authenticate(self, request: HTTPConnection) -> AuthResult:
         """
-        Retrieves a user from the database using the given token id.
+        Retrieves the header default of the config and validates against the decoding.
+
+        Raises Authentication error if invalid.
         """
-        user_field = {self.config.user_id_field: token_sub}
+        token = request.headers.get(self.config.api_key_header.lower())
+
+        if not token:
+            raise NotAuthorized(detail="Token not found in the request header")
+
+        token_partition = token.partition(" ")
+        token_type = token_partition[0]
+        auth_token = token_partition[-1]
+
+        if token_type not in self.config.auth_header_types:
+            raise NotAuthorized(detail=f"{token_type} is not an authorized header type")
+
         try:
-            return await self.user_model.get(**user_field)
-        except DoesNotExist:
-            raise NotAuthorized()
+            token = Token.decode(
+                token=auth_token, key=self.config.signing_key, algorithms=[self.config.algorithm]
+            )
+        except (JWSError, JWTError) as e:
+            raise AuthenticationError(str(e))
+
+        user = await self.retrieve_user(token.sub)
+        if not user:
+            raise AuthenticationError("User not found")
+        return AuthResult(user=user)
