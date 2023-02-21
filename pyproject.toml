@@ -7,7 +7,7 @@ name = "esmerald"
 description = "Highly scalable, performant, easy to learn, easy to code and for every application."
 long_description = "Highly scalable, performant, easy to learn, easy to code and for every application."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dynamic = ['version']
 license = "MIT"
 authors = [
@@ -48,7 +48,7 @@ dependencies = [
     "itsdangerous>=2.1.2,<3.0.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
     "loguru>=0.6.0,<0.7.0",
-    "pydantic>=1.10.4,<2.0.0",
+    "pydantic>=1.10.5,<2.0.0",
     "pydantic-factories==1.12.0",
     "openapi-schemas-pydantic>=1.1.0",
     "starlette==0.25.0",
@@ -73,7 +73,7 @@ test = [
     "isort>=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<23",
     "a2wsgi>=1.6.0,<2",
-    "asyncz>=0.1.4",
+    "asyncz>=0.2.0",
     "awesome-slugify>=1.6.5,<2",
     "anyio[trio]>=3.2.1,<4.0.0",
     "asyncio[trio]>=3.4.3,<4.0.0",
@@ -85,7 +85,7 @@ test = [
     "httpx>=0.23.3,<0.24.0",
     "mock==4.0.3",
     "passlib==1.7.4",
-    "pydantic==1.10.5",
+    "pydantic>=1.10.5,<2.0.0",
     "pydantic-factories==1.12.0",
     "python-jose>=3.3.0,<4",
     "orjson>=3.8.5,<4.0.0",
@@ -134,13 +134,13 @@ encoders = [
 ]
 
 schedulers = [
-    "asyncz>=0.1.4",
+    "asyncz>=0.2.0",
 ]
 
 all = [
     "a2wsgi>=1.6.0,<2",
     "aiofiles>=0.8.0,<23",
-    "asyncz>=0.1.4",
+    "asyncz>=0.2.0",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
@@ -148,7 +148,7 @@ all = [
     "loguru>=0.6.0,<0.7.0",
     "mako==1.2.4",
     "passlib==1.7.4",
-    "pydantic>=1.10.4,<2.0.0",
+    "pydantic>=1.10.5,<2.0.0",
     "pydantic-factories==1.12.0",
     "python-jose>=3.3.0,<4",
     "openapi-schemas-pydantic>=1.1.0",
