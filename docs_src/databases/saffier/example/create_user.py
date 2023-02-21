@@ -19,9 +19,9 @@ async def create_user(data: UserIn) -> None:
     status code.
     """
     await User.query.create_user(
-        first_name="Test",
-        last_name="test",
-        email="foo@bar.com",
-        password="1234password",
-        username="test",
+        first_name=data.first_name,
+        last_name=data.last_name,
+        email=data.email,
+        password=data.password,
+        username=data.username,
     )
