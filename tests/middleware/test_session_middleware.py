@@ -68,7 +68,6 @@ def test_session(test_client_factory):
         ],
         session_config=session_config,
     ) as client:
-
         response = client.get("/view_session")
         assert response.json() == {"session": {}}
 

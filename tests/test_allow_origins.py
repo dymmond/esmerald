@@ -6,7 +6,6 @@ from esmerald.testclient import create_client
 
 
 def test_raise_error_on_allow_origins(test_client_factory):
-
     cors_config = CORSConfig()
 
     with pytest.raises(ImproperlyConfigured):
@@ -15,7 +14,6 @@ def test_raise_error_on_allow_origins(test_client_factory):
 
 
 def test_raise_error_on_allow_origins_esmerald_object(test_client_factory):
-
     cors_config = CORSConfig()
 
     with pytest.raises(ImproperlyConfigured):

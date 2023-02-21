@@ -2,6 +2,7 @@ import functools
 import pathlib
 
 import pytest
+
 from esmerald.testclient import EsmeraldTestClient
 
 

@@ -25,7 +25,6 @@ def test_websocket_handler_function_validation() -> None:
     websocket_handler_with_no_fn = websocket(path="/")
 
     with pytest.raises(AttributeError):
-
         create_client(routes=[WebSocketGateway(path="/", handler=websocket_handler_with_no_fn)])
 
     with pytest.raises(ImproperlyConfigured):

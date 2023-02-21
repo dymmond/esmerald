@@ -48,7 +48,6 @@ def test_add_router() -> None:
     """
 
     with create_client(routes=[Gateway(handler=route_one)]) as client:
-
         response = client.get("/")
         assert response.json() == {"test": 1}
         assert response.status_code == status.HTTP_202_ACCEPTED
@@ -70,7 +69,6 @@ def test_add_router_with_includes() -> None:
     with create_client(
         routes=[Gateway(handler=route_one)],
     ) as client:
-
         router = Router(
             path="/aditional/include",
             routes=[Include(routes=[Gateway("/second", handler=route_two)])],
@@ -91,7 +89,6 @@ def test_add_router_with_nested_includes() -> None:
     with create_client(
         routes=[Gateway(handler=route_one)],
     ) as client:
-
         router = Router(
             path="/aditional/include",
             routes=[
@@ -149,7 +146,6 @@ def test_add_router_with_nested_includes_mid_path() -> None:
     with create_client(
         routes=[Gateway(handler=route_one)],
     ) as client:
-
         router = Router(
             path="/aditional/include",
             routes=[

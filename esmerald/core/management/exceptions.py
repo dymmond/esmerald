@@ -17,5 +17,4 @@ class DirectiveError(EsmeraldAPIException):
 
 
 class SystemCheckError(DirectiveError):
-
     ...

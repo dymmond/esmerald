@@ -60,7 +60,6 @@ def with_include(name: str) -> str:
 
 
 def test_handler_route(test_client_factory):
-
     with create_client(
         routes=[
             Gateway("/home", handler=home),
@@ -68,7 +67,6 @@ def test_handler_route(test_client_factory):
             Include("/try", routes=[Gateway("/{name}", handler=with_include)]),
         ]
     ) as client:
-
         response = client.get("/home")
         assert response.status_code == status.HTTP_202_ACCEPTED
         assert response.json() == "home"
@@ -87,13 +85,11 @@ def test_handler_route(test_client_factory):
 
 
 def test_handler_route_two(test_client_factory):
-
     with create_client(
         routes=[
             Gateway("/home", handler=home),
         ]
     ) as client:
-
         response = client.delete("/home")
         assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert response.json()["detail"] == "Method DELETE not allowed."

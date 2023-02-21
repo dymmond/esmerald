@@ -23,20 +23,20 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
     ):
         super().__init__(app)
         """
-        The user is simply the class type to be queried from the Tortoise ORM.
+        The user is simply the class type to be queried from the Saffier ORM.
 
         Example how to use:
 
             1. User table
 
-                from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
+                from esmerald.contrib.auth.saffier.base_user import User as BaseUser
 
                 class User(BaseUser):
                     ...
 
             2. Middleware
 
-                from esmerald.contrib.auth.tortoise.middleware import JWTAuthMiddleware
+                from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
                 from esmerald.config import JWTConfig
 
                 jwt_config = JWTConfig(...)
@@ -62,6 +62,6 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         """
         user_field = {self.config.user_id_field: token_sub}
         try:
-            return await self.user_model.get(**user_field)
+            return await self.user_model.query.get(**user_field)
         except DoesNotExist:
             raise NotAuthorized()

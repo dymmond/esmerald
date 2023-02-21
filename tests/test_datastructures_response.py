@@ -13,7 +13,6 @@ def test_json_datastructure(response, test_client_factory):
         return response(content={"detail": "using JSON structure"})
 
     with create_client(routes=[Gateway(handler=home)]) as client:
-
         response = client.get("/")
 
         assert response.status_code == 200
@@ -27,7 +26,6 @@ def test_json_datastructure_with_different_status_code(response, test_client_fac
         return response(content={"detail": "using JSON structure"}, status_code=201)
 
     with create_client(routes=[Gateway(handler=home_two)]) as client:
-
         response = client.get("/")
 
         assert response.status_code == 201
@@ -41,7 +39,6 @@ def test_json_datastructure_with_different_status_code_on_handler(response, test
         return response(content={"detail": "using JSON structure"})
 
     with create_client(routes=[Gateway(handler=home_three)]) as client:
-
         response = client.get("/")
 
         assert response.status_code == 202
@@ -57,7 +54,6 @@ def test_json_datastructure_with_different_status_code_on_handler_two(
         return response(content={"detail": "using JSON structure"}, status_code=201)
 
     with create_client(routes=[Gateway(handler=home_three)]) as client:
-
         response = client.get("/")
 
         assert response.status_code == 201
