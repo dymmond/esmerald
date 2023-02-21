@@ -7,9 +7,9 @@ making a possible password even more secure.
 
 ## Esmerald and password hashing
 
-Esmerald supporting [Tortoise](./databases/tortoise/tortoise.md) also means providing some of the features internally.
+Esmerald supporting [Tortoise](./databases/tortoise/motivation.md) also means providing some of the features internally.
 
-A lof of what is explained here is explained in more detail in the [tortoise orm support](./databases/tortoise/tortoise.md).
+A lof of what is explained here is explained in more detail in the [tortoise orm support](./databases/tortoise/motivation.md).
 
 Esmerald already brings some pre-defined password hashers that are available in the
 [Esmerald settings](./application/settings.md) and ready to be used.

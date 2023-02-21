@@ -61,8 +61,13 @@ nav:
       - Handlers: "routing/handlers.md"
       - APIView: "routing/apiview.md"
   - Databases:
+      - Saffier:
+          - Motivation: "databases/saffier/motivation.md"
+          - Models: "databases/saffier/models.md"
+          - Middleware: "databases/saffier/middleware.md"
+          - Event Handlers: "databases/saffier/event-handlers.md"
       - Tortoise-ORM:
-          - Motivation: "databases/tortoise/tortoise.md"
+          - Motivation: "databases/tortoise/motivation.md"
           - Models: "databases/tortoise/models.md"
           - Middleware: "databases/tortoise/middleware.md"
           - Event Handlers: "databases/tortoise/event-handlers.md"

@@ -284,7 +284,7 @@ very useful for development.
     <sup>Default: `None`.</sup>
 
 * **secret_key** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
-update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/tortoise.md)
+update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/motivation.md)
 support.
 
     <sup>Default: `my secret`</sup>
@@ -373,7 +373,7 @@ The default environment is `production`.
     </sup>
 
     !!! warning
-        The password hashers are linked to [Tortoise](../databases/tortoise/tortoise.md) support and are used
+        The password hashers are linked to [Tortoise](../databases/tortoise/motivation.md) support and are used
         with the models provided by default with Esmerald.
 
 * **routes** - A list of routes to serve incoming HTTP and WebSocket requests.

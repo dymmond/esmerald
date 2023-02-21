@@ -149,7 +149,7 @@ example.
 * **Exception Handlers**: Apply exception handlers on any desired level.
 * **Permissions**: Apply specific rules and permissions on each API.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
-* **Tortoise ORM**: Native support for [Tortoise ORM](./databases/tortoise/tortoise.md).
+* **Tortoise ORM**: Native support for [Tortoise ORM](./databases/tortoise/motivation.md).
 * **APIView**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJON support.
 * **Lifespan**: Support for the newly Starlette lifespan.
