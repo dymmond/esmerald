@@ -64,8 +64,9 @@ nav:
       - Saffier:
           - Motivation: "databases/saffier/motivation.md"
           - Models: "databases/saffier/models.md"
-          - Middleware: "databases/saffier/middleware.md"
-          - Event Handlers: "databases/saffier/event-handlers.md"
+          - Middleware:
+              - JWT: "databases/saffier/middleware.md"
+              - Example: "databases/saffier/example.md"
       - Tortoise-ORM:
           - Motivation: "databases/tortoise/motivation.md"
           - Models: "databases/tortoise/models.md"

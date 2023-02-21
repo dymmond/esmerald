@@ -5,18 +5,53 @@ implementing.
 
 ## User models
 
-Esmerald comes with some pre-defined models that helps the initial configuration of users.
+Integrating with Saffier, Esmerald already provides some of the models that helps you with the
+initial configuration.
 
 1. `AbstractUser` - The base user class containing all the fields required a user.
-2. `User` - An subsclass of `AbstractUser`
+2. `User` - A subsclass of `AbstractUser`
 
 ## User
 
 Extenting the existing `User` model is as simple as this: 
 
-```python
-{!> ../docs_src/databases/tortoise/models.py !}
+```python hl_lines="7 31"
+{!> ../docs_src/databases/saffier/models.py !}
 ```
+
+This is a clean way of declaring the models and using the Saffier docs, you can easily understand
+why this is like the way it is.
+
+### Meta class
+
+There are wayf of making the models and the registry cleaner, after all, you might want to use the
+same registry in different models across multiple applications in your codebase.
+
+One way and a way Esmerald always recommend, is by leveraging the [settings](../../application/settings.md)
+
+### Leveraging the settings for your models
+
+Let us use the same example but this time, we will be using the settings.
+Since **you can access the settings anywhere in the codebase**.
+
+Check it out the example below and how by using the settings, you can literally leverage Esmerald
+with Saffier.
+
+=== "settings.py"
+
+    ```python hl_lines="9-11"
+    {!> ../docs_src/databases/saffier/settings/settings.py !}
+    ```
+
+=== "models.py"
+
+    ```python hl_lines="7 31"
+    {!> ../docs_src/databases/saffier/settings/models.py !}
+    ```
+
+You simply isolated your common database connection and registry inside the globally accessible
+settings and with that you can import in any Esmerald application, ChildEsmerald or whatever you
+prefer without the need of repeating yourself.
 
 ### User model fields
 
@@ -39,22 +74,26 @@ Using simply this model it does not bring too much benefits as it si something y
 functionality applied to this model is already something that can be something that requires some extra time to
 assemble.
 
+!!! Warning
+    The following examples assume that you are taking advantage of the settings as
+    [decribed before](#leveraging-the-settings-for-your-models).
+
 **create_user**
 
 ```python
-{!> ../docs_src/databases/tortoise/create_user.py !}
+{!> ../docs_src/databases/saffier/create_user.py !}
 ```
 
 **create_superuser**
 
 ```python
-{!> ../docs_src/databases/tortoise/create_superuser.py !}
+{!> ../docs_src/databases/saffier/create_superuser.py !}
 ```
 
 **check_password**
 
-```python hl_lines="21"
-{!> ../docs_src/databases/tortoise/check_password.py !}
+```python hl_lines="28"
+{!> ../docs_src/databases/saffier/check_password.py !}
 ```
 
 Because you are using the `User` provided by Esmerald, the same object is also prepared to validate
@@ -63,8 +102,8 @@ same principle.
 
 **set_password**
 
-```python hl_lines="21"
-{!> ../docs_src/databases/tortoise/set_password.py !}
+```python hl_lines="28"
+{!> ../docs_src/databases/saffier/set_password.py !}
 ```
 
 The same for setting passwords. The `User` already contains the functionality to set a password of
@@ -111,18 +150,13 @@ You can always override the property `password_hashers` in your
 
 ## Migrations
 
-You can use any migration tool as you see fit. Tortoise also developed one tool to help you out with simple
-configurations, <a href='https://github.com/tortoise/aerich' target='_blank'>aerich</a>.
+You can use any migration tool as you see fit. It is recommended 
+<a href='https://alembic.sqlalchemy.org/en/latest/' target='_blank'>Alembic</a>.
+
+Saffier also provides some insights in
+[how to migrate using alembic](https://saffier.tarsild.io/migrations/).
 
 ## General example
 
-Totoise, as mentioned before and in their docs, is heavily inspired by Django and therefore for a lot of people this
-will be very familiar.
-
-Lets create a model using the supported models from Esmerald.
-
-```python
-{!> ../docs_src/databases/tortoise/general_example.py !}
-```
-
-For more detailed information/how to, please check the [tortoise documentation](https://tortoise.github.io/)
+More examples and more thorough explanations how to use [Saffier](https://saffier.tarsild.io)
+can be consulted in their [documentation](https://saffier.tarsild.io).

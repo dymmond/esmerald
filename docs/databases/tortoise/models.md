@@ -8,7 +8,7 @@ implementing.
 Esmerald comes with some pre-defined models that helps the initial configuration of users.
 
 1. `AbstractUser` - The base user class containing all the fields required a user.
-2. `User` - An subsclass of `AbstractUser`
+2. `User` - A subsclass of `AbstractUser`
 
 ## User
 
