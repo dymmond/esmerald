@@ -1,7 +1,7 @@
 from pydantic import EmailStr
 
 from esmerald.conf import settings
-from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
+from esmerald.contrib.auth.saffier.base_user import User as BaseUser
 
 database, models = settings.registry
 
