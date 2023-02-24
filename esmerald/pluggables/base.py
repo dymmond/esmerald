@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Iterator
 from esmerald.protocols.extension import ExtensionProtocol
 
 if TYPE_CHECKING:
-    from starlette.types import ASGIApp, Receive, Scope, Send
+    pass
 
     from esmerald.applications import Esmerald
     from esmerald.types import DictAny
@@ -38,19 +38,13 @@ class BaseExtension(ABC, ExtensionProtocol):
     The base for any Esmerald plugglable.
     """
 
-    def __init__(self, app: "Esmerald", **kwargs: "DictAny"):
-        self.plug(app, **kwargs)
+    def __init__(self, app: "Esmerald"):
+        super().__init__(app)
 
     @abstractmethod
-    async def plug(self, app: "Esmerald", **kwargs: "DictAny") -> None:
-        raise NotImplemented("Plug must be implemented by the subclasses.")
+    def extend(self, **kwargs: "DictAny") -> None:
+        raise NotImplementedError("plug must be implemented by the subclasses.")
 
 
 class Extension(BaseExtension):
-    def __init__(self, app: "Esmerald", **kwargs: "DictAny"):
-        super().__init__(app, **kwargs)
-        self.app = app
-        self.kwargs = kwargs
-
-    async def __call__(self, *args: Any, **kwds: Any) -> Any:
-        await self.plug(self.app, **self.kwargs)
+    ...

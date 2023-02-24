@@ -36,7 +36,7 @@ from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, Excep
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
-from esmerald.pluggables import Pluggable
+from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
@@ -163,7 +163,7 @@ class Esmerald(Starlette):
         deprecated: Optional[bool] = None,
         enable_openapi: Optional[bool] = None,
         redirect_slashes: Optional[bool] = None,
-        pluggables: Optional[Dict[str, Pluggable]] = None
+        pluggables: Optional[Dict[str, Extension]] = None
     ) -> None:
         self.settings_config = None
 
@@ -575,7 +575,7 @@ class Esmerald(Starlette):
         """
         Builds the middleware stack from the top to the bottom of the routes.
 
-        The includes are anm exception as they are treated as an independent ASGI
+        The includes are an exception as they are treated as an independent ASGI
         application and therefore handles their own middlewares independently.
         """
         if not middlewares:
@@ -712,7 +712,6 @@ class Esmerald(Starlette):
         app: "ASGIApp" = self.router
         for cls, options in reversed(middleware):
             app = cls(app=app, **options)
-
         return app
 
     def build_pluggable_stack(self) -> None:
@@ -723,13 +722,28 @@ class Esmerald(Starlette):
         if not self.pluggables:
             return
 
-        for name, pluggable in self.pluggables.items():
+        pluggables = {}
+
+        for name, extension in self.pluggables.items():
             if not isinstance(name, str):
                 raise ImproperlyConfigured("Pluggable names should be in string format.")
-            if not is_class_and_subclass(pluggable, Pluggable):
+            elif isinstance(extension, Pluggable):
+                pluggables[name] = extension
+                continue
+            elif not is_class_and_subclass(extension, Extension):
                 raise ImproperlyConfigured(
-                    "A pluggable must subclass from esmerald.pluggables.Pluggable"
+                    "An extension must subclass from esmerald.pluggables.Extension"
                 )
+            else:
+                pluggables[name] = Pluggable(extension)
+
+        app: "ASGIApp" = self
+        for name, pluggable in pluggables.items():
+            for cls, options in [pluggable]:
+                app: "Extension" = cls(app=app, **options)
+                app.extend(**options)
+                self.pluggables[name] = cls
+        return app
 
     @property
     def settings(self) -> Type["EsmeraldAPISettings"]:
