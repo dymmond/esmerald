@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any, Iterator, Optional
 
 from esmerald.protocols.extension import ExtensionProtocol
 
@@ -38,8 +38,9 @@ class BaseExtension(ABC, ExtensionProtocol):
     The base for any Esmerald plugglable.
     """
 
-    def __init__(self, app: "Esmerald"):
+    def __init__(self, app: Optional["Esmerald"] = None):
         super().__init__(app)
+        self.app = app
 
     @abstractmethod
     def extend(self, **kwargs: "DictAny") -> None:

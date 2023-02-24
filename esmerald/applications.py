@@ -163,7 +163,7 @@ class Esmerald(Starlette):
         deprecated: Optional[bool] = None,
         enable_openapi: Optional[bool] = None,
         redirect_slashes: Optional[bool] = None,
-        pluggables: Optional[Dict[str, Extension]] = None
+        pluggables: Optional[Dict[str, Pluggable]] = None
     ) -> None:
         self.settings_config = None
 

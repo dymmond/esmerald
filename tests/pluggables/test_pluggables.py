@@ -1,6 +1,7 @@
 from typing import Optional
 
 import pytest
+from loguru import logger
 from pydantic import BaseModel
 
 from esmerald import Esmerald, Extension, Pluggable
@@ -55,7 +56,7 @@ class MyExtension(Extension):
         self.config = config
 
     def extend(self, config: Config) -> None:
-        ...
+        logger.info(f"Started extension with config name {config.name}")
 
 
 def test_generates_pluggable():
@@ -74,7 +75,7 @@ def test_generates_many_pluggables():
             self.name = name
 
         def extend(self, name) -> None:
-            ...
+            logger.info(f"Started logging extension with name {name}")
 
     class DatabaseExtension(Extension):
         def __init__(self, app: "Esmerald", database):
@@ -83,7 +84,7 @@ def test_generates_many_pluggables():
             self.database = database
 
         def extend(self, database) -> None:
-            ...
+            logger.info(f"Started extension with database {database}")
 
     app = Esmerald(
         routes=[],
