@@ -9,6 +9,7 @@ from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
+from esmerald.pluggables import Pluggable
 from esmerald.types import (
     APIGateHandler,
     Dependencies,
@@ -396,3 +397,13 @@ class EsmeraldAPISettings(BaseSettings):
         on_startup / on_shutdown handlers. Use one or the other, not both.
         """
         return None
+
+    @property
+    def pluggables(self) -> Dict[str, "Pluggable"]:
+        """
+        A pluggable is whatever adds extra level of functionality to
+        your an Esmerald application and is used as support for your application.
+
+        Can be from databases, to stores to whatever you desire.
+        """
+        return {}

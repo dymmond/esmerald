@@ -36,6 +36,7 @@ from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, Excep
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
+from esmerald.pluggables import Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
@@ -70,48 +71,49 @@ class Esmerald(Starlette):
     """
 
     __slots__ = (
-        "debug",
-        "title",
-        "app_name",
-        "summary",
-        "description",
-        "version",
-        "contact",
-        "terms_of_service",
-        "license",
-        "servers",
-        "secret",
-        "allowed_hosts",
         "allow_origins",
-        "interceptors",
-        "permissions",
-        "dependencies",
-        "middleware",
-        "exception_handlers",
-        "openapi_schema",
-        "scheduler_tasks",
-        "scheduler_configurations",
-        "csrf_config",
-        "openapi_config",
+        "allowed_hosts",
+        "app_name",
+        "contact",
         "cors_config",
-        "static_files_config",
-        "template_config",
-        "session_config",
+        "csrf_config",
+        "debug",
+        "dependencies",
+        "deprecated",
+        "description",
+        "enable_openapi",
+        "enable_scheduler",
+        "exception_handlers",
+        "include_in_schema",
+        "interceptors",
+        "license",
+        "middleware",
+        "openapi_config",
+        "openapi_schema",
+        "parent",
+        "permissions",
+        "pluggables",
+        "redirect_slashes",
         "response_class",
         "response_cookies",
         "response_headers",
-        "scheduler_class",
-        "scheduler",
-        "tags",
         "root_path",
-        "deprecated",
+        "scheduler",
+        "scheduler_class",
+        "scheduler_configurations",
+        "scheduler_tasks",
+        "secret",
         "security",
-        "include_in_schema",
-        "redirect_slashes",
-        "enable_scheduler",
-        "enable_openapi",
+        "servers",
+        "session_config",
+        "static_files_config",
+        "summary",
+        "tags",
+        "template_config",
+        "terms_of_service",
         "timezone",
-        "parent",
+        "title",
+        "version",
     )
 
     def __init__(
@@ -161,6 +163,7 @@ class Esmerald(Starlette):
         deprecated: Optional[bool] = None,
         enable_openapi: Optional[bool] = None,
         redirect_slashes: Optional[bool] = None,
+        pluggables: Optional[Dict[str, Pluggable]] = None
     ) -> None:
         self.settings_config = None
 
@@ -338,6 +341,11 @@ class Esmerald(Starlette):
                 self.settings_config, esmerald_settings, "redirect_slashes"
             )
         )
+        self.pluggables = (
+            pluggables
+            if pluggables
+            else self.get_settings_value(self.settings_config, esmerald_settings, "pluggables")
+        )
 
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
@@ -358,6 +366,7 @@ class Esmerald(Starlette):
         self.get_default_exception_handlers()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
+        self.pluggable_stack = self.build_pluggable_stack()
         self.template_engine = self.get_template_engine(self.template_config)
 
         if self.static_files_config:
@@ -705,6 +714,22 @@ class Esmerald(Starlette):
             app = cls(app=app, **options)
 
         return app
+
+    def build_pluggable_stack(self) -> None:
+        """
+        Validates the pluggable types passed and builds the stack
+        and triggers the plug
+        """
+        if not self.pluggables:
+            return
+
+        for name, pluggable in self.pluggables.items():
+            if not isinstance(name, str):
+                raise ImproperlyConfigured("Pluggable names should be in string format.")
+            if not is_class_and_subclass(pluggable, Pluggable):
+                raise ImproperlyConfigured(
+                    "A pluggable must subclass from esmerald.pluggables.Pluggable"
+                )
 
     @property
     def settings(self) -> Type["EsmeraldAPISettings"]:

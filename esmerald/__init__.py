@@ -27,6 +27,7 @@ from .interceptors.interceptor import EsmeraldInterceptor
 from .param_functions import DirectInjects
 from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
+from .pluggables import Extension, Pluggable
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
@@ -54,6 +55,7 @@ __all__ = [
     "Esmerald",
     "EsmeraldAPISettings",
     "EsmeraldInterceptor",
+    "Extension",
     "File",
     "Form",
     "Gateway",
@@ -73,6 +75,7 @@ __all__ = [
     "Param",
     "Path",
     "PermissionDenied",
+    "Pluggable",
     "Query",
     "Redirect",
     "Request",
