@@ -23,7 +23,10 @@ def test_raises_improperly_configured_for_subsclass(test_client_factory):
     with pytest.raises(ImproperlyConfigured) as raised:
         Esmerald(routes=[], pluggables={"test": MyNewPluggable})
 
-    assert raised.value.detail == "An extension must subclass from esmerald.pluggables.Extension"
+    assert (
+        raised.value.detail
+        == "An extension must subclass from esmerald.pluggables.Extension and added to a Pluggable object"
+    )
 
 
 def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory):
@@ -112,3 +115,23 @@ def test_start_extension_directly(test_client_factory):
 
     assert "custom" in app.pluggables
     assert isinstance(app.pluggables["custom"], Extension)
+
+
+def test_add_extension_(test_client_factory):
+    class CustomExtension(Extension):
+        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+            super().__init__(app, **kwargs)
+            self.app = app
+
+        def extend(self, config) -> None:
+            logger.success(f"Started standalone plugging with the name: {config.name}")
+
+            self.app.add_pluggable("manual", self)
+
+    app = Esmerald(routes=[])
+    config = Config(name="manual")
+    extension = CustomExtension(app=app)
+    extension.extend(config=config)
+
+    assert "manual" in app.pluggables
+    assert isinstance(app.pluggables["manual"], Extension)

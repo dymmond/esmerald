@@ -458,6 +458,9 @@ class Esmerald(Starlette):
         name: Optional[str] = None,
         include_in_schema: bool = True,
     ) -> None:
+        """
+        Adds a route into the router.
+        """
         router = router or self.router
         route = router.add_route(
             path=path,
@@ -498,6 +501,43 @@ class Esmerald(Starlette):
             name=name,
         )
 
+    def add_child_esmerald(
+        self,
+        path: str,
+        child: "ChildEsmerald",
+        name: Optional[str] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
+        dependencies: Optional["Dependencies"] = None,
+        exception_handlers: Optional["ExceptionHandlers"] = None,
+        interceptors: Optional[List["Interceptor"]] = None,
+        permissions: Optional[List["Permission"]] = None,
+        include_in_schema: Optional[bool] = True,
+        deprecated: Optional[bool] = None,
+        security: Optional[List["SecurityRequirement"]] = None,
+    ):
+        """
+        Adds a child esmerald into the application routers.
+        """
+        if not isinstance(child, ChildEsmerald):
+            raise ImproperlyConfigured("The child must be an instance of a ChildEsmerald.")
+
+        self.router.routes.append(
+            Include(
+                path=path,
+                name=name,
+                app=child,
+                parent=self.router,
+                dependencies=dependencies,
+                middleware=middleware,
+                exception_handlers=exception_handlers,
+                interceptors=interceptors,
+                permissions=permissions,
+                include_in_schema=include_in_schema,
+                deprecated=deprecated,
+                security=security,
+            )
+        )
+
     def add_router(self, router: "Router"):
         """
         Adds a router to the application.
@@ -516,6 +556,7 @@ class Esmerald(Starlette):
                         permissions=route.permissions,
                         routes=route.routes,
                         parent=self.router,
+                        security=route.security,
                     )
                 )
                 continue
@@ -732,7 +773,8 @@ class Esmerald(Starlette):
                 continue
             elif not is_class_and_subclass(extension, Extension):
                 raise ImproperlyConfigured(
-                    "An extension must subclass from esmerald.pluggables.Extension"
+                    "An extension must subclass from esmerald.pluggables.Extension and added to "
+                    "a Pluggable object"
                 )
             else:
                 pluggables[name] = Pluggable(extension)
@@ -744,6 +786,12 @@ class Esmerald(Starlette):
                 app.extend(**options)
                 self.pluggables[name] = cls
         return app
+
+    def add_pluggable(self, name: str, extension: Any) -> None:
+        """
+        Adds an extension to the application pluggables
+        """
+        self.pluggables[name] = extension
 
     @property
     def settings(self) -> Type["EsmeraldAPISettings"]:

@@ -435,6 +435,10 @@ requests (HTTP and Websockets).
 
     <sup>Default `[]`</sup>
 
+* **pluggables** - A list of [pluggables](../pluggables.md) to be added to your esmerald application.
+
+    <sup>Default `[]`</sup>
+
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
 
