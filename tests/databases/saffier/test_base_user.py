@@ -10,7 +10,7 @@ database, models = settings.registry
 pytestmark = pytest.mark.anyio
 
 
-def get_random_string(length):
+def get_random_string(length=10):
     letters = string.ascii_lowercase
     result_str = "".join(random.choice(letters) for i in range(length))
     return result_str
@@ -28,9 +28,12 @@ class User(AbstractUser):
 
 @pytest.fixture(autouse=True, scope="module")
 async def create_test_database():
-    await models.create_all()
-    yield
-    await models.drop_all()
+    try:
+        await models.create_all()
+        yield
+        await models.drop_all()
+    except Exception:
+        pytest.skip("No database available")
 
 
 @pytest.fixture(autouse=True)
@@ -46,7 +49,7 @@ async def test_create_user():
         last_name="a test",
         email="esmerald@test.com",
         username="user",
-        password="123password",
+        password=get_random_string(),
     )
     users = await User.query.all()
 

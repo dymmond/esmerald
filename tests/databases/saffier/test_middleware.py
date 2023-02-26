@@ -22,7 +22,7 @@ database, models = settings.registry
 pytestmark = pytest.mark.anyio
 
 
-def get_random_string(length):
+def get_random_string(length=10):
     letters = string.ascii_lowercase
     result_str = "".join(random.choice(letters) for i in range(length))
     return result_str
@@ -43,9 +43,12 @@ jwt_config = JWTConfig(signing_key=settings.secret_key)
 
 @pytest.fixture(autouse=True, scope="module")
 async def create_test_database():
-    await models.create_all()
-    yield
-    await models.drop_all()
+    try:
+        await models.create_all()
+        yield
+        await models.drop_all()
+    except Exception:
+        pytest.skip("No database available")
 
 
 @pytest.fixture(autouse=True)
@@ -73,7 +76,7 @@ async def get_user_and_token(time=None):
         first_name="Test",
         last_name="test",
         email="foo@bar.com",
-        password="1234password",
+        password=get_random_string(),
         username="test",
     )
 
@@ -148,13 +151,16 @@ async def login(data: UserIn, request: Request) -> JSONResponse:
     return JSONResponse({jwt_config.access_token_name: token})
 
 
+_string_pass = get_random_string()
+
+
 @post()
 async def create_user(data: CreateUser) -> None:
     await User.query.create_user(
         first_name="Test",
         last_name="test",
         email="foo@bar.com",
-        password="1234password",
+        password=_string_pass,
         username="test",
     )
 
@@ -243,7 +249,7 @@ async def test_can_access_endpoint_with_valid_token_after_login_failed(
         first_name="Test",
         last_name="test",
         email="foo@bar.com",
-        password="1234password",
+        password=_string_pass,
         username="test",
     )
 

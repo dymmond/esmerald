@@ -148,6 +148,9 @@ example.
 * **Middleware**: Apply middlewares on the application level or API level.
 * **Exception Handlers**: Apply exception handlers on any desired level.
 * **Permissions**: Apply specific rules and permissions on each API.
+* **Interceptors**: Intercept requests and add logic before reaching the endpoint.
+* **Pluggables**: Create plugins for Esmerald and hook them into any application and/or
+distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
 * **Tortoise ORM**: Native support for [Tortoise ORM](./databases/tortoise/motivation.md).
 * **APIView**: Class Based endpoints for your beloved OOP design.
