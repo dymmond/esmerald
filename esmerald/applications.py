@@ -537,6 +537,7 @@ class Esmerald(Starlette):
                 security=security,
             )
         )
+        self.activate_openapi()
 
     def add_router(self, router: "Router"):
         """
