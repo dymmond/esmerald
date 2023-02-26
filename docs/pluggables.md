@@ -149,3 +149,30 @@ into the current applications being plugged.
 ```
 
 Crazy dynamic, isn't it? So clean and so simple that you can do whatever you desire with Esmerald.
+
+## Pluggables and the application settings
+
+Like almost everythin in Esmerald, you can also add the [Pluggables](#pluggable) via
+[settings](./application/settings.md) instead of adding when you instantiate the application.
+
+```python hl_lines="29-31"
+{!> ../docs_src/pluggables/settings.py !}
+```
+
+And simply start the application.
+
+```shell
+ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [28720]
+INFO:     Started server process [28722]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+```
+
+If you prefer, you can also use the [settings_config](./application/settings.md#the-settings_config).
+
+```python hl_lines="34"
+{!> ../docs_src/pluggables/settings_config.py !}
+```
