@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from esmerald import Esmerald, Extension, Pluggable
 from esmerald.exceptions import ImproperlyConfigured
+from esmerald.types import DictAny
 
 
 class MyNewPluggable:
@@ -96,3 +97,23 @@ def test_generates_many_pluggables():
     )
 
     assert len(app.pluggables.keys()) == 3
+
+
+def test_start_extension_directly(test_client_factory):
+    class CustomExtension(Extension):
+        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+            super().__init__(app, **kwargs)
+
+        def extend(self, **kwargs) -> None:
+            app = kwargs.get("app")
+            config = kwargs.get("config")
+            logger.success(f"Started standalone plugging with the name: {config.name}")
+            app.pluggables["custom"] = self
+
+    app = Esmerald(routes=[])
+    config = Config(name="standalone")
+    extension = CustomExtension()
+    extension.extend(app=app, config=config)
+
+    assert "custom" in app.pluggables
+    assert isinstance(app.pluggables["custom"], Extension)

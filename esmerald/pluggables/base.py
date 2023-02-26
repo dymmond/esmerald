@@ -38,8 +38,8 @@ class BaseExtension(ABC, ExtensionProtocol):
     The base for any Esmerald plugglable.
     """
 
-    def __init__(self, app: Optional["Esmerald"] = None):
-        super().__init__(app)
+    def __init__(self, app: Optional["Esmerald"] = None, **kwargs: Any):
+        super().__init__(app, **kwargs)
         self.app = app
 
     @abstractmethod
