@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from typing_extensions import Protocol, runtime_checkable
 
@@ -8,8 +8,8 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class ExtensionProtocol(Protocol):  # pragma: no cover
-    def __init__(self, app: Optional["ASGIApp"] = None):
+    def __init__(self, app: Optional["ASGIApp"] = None, **kwargs: Dict[Any, Any]):
         ...
 
-    def plug(self, app: "ASGIApp", kwargs: Any) -> None:
+    def extend(self, **kwargs: Any) -> None:
         ...
