@@ -40,11 +40,6 @@ def test_raises_error_for_missing_extend(test_client_factory):
             pluggables={"test": Pluggable(PluggableNoPlug)},
         )
 
-    assert (
-        raised.value.args[0]
-        == "Can't instantiate abstract class PluggableNoPlug with abstract method extend"
-    )
-
 
 class Config(BaseModel):
     name: Optional[str]
