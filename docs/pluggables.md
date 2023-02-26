@@ -152,7 +152,7 @@ Crazy dynamic, isn't it? So clean and so simple that you can do whatever you des
 
 ## Pluggables and the application settings
 
-Like almost everythin in Esmerald, you can also add the [Pluggables](#pluggable) via
+Like almost everything in Esmerald, you can also add the [Pluggables](#pluggable) via
 [settings](./application/settings.md) instead of adding when you instantiate the application.
 
 ```python hl_lines="29-31"
