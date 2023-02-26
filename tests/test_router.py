@@ -1,5 +1,6 @@
 from starlette import status
 
+from esmerald import ChildEsmerald
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get, websocket
 from esmerald.routing.router import Include, Router
@@ -42,7 +43,7 @@ async def simple_websocket_handler_two(socket: WebSocket) -> None:
     await socket.close()
 
 
-def test_add_router() -> None:
+def test_add_router(test_client_factory) -> None:
     """
     Adds a route to the router.
     """
@@ -61,7 +62,7 @@ def test_add_router() -> None:
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
 
 
-def test_add_router_with_includes() -> None:
+def test_add_router_with_includes(test_client_factory) -> None:
     """
     Adds a route to the router with includes.
     """
@@ -81,7 +82,7 @@ def test_add_router_with_includes() -> None:
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
 
 
-def test_add_router_with_nested_includes() -> None:
+def test_add_router_with_nested_includes(test_client_factory) -> None:
     """
     Adds a route to the router with nested includes.
     """
@@ -138,7 +139,7 @@ def test_add_router_with_nested_includes() -> None:
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
 
 
-def test_add_router_with_nested_includes_mid_path() -> None:
+def test_add_router_with_nested_includes_mid_path(test_client_factory) -> None:
     """
     Adds a route to the router with nested includes.
     """
@@ -195,3 +196,15 @@ def test_add_router_with_nested_includes_mid_path() -> None:
 
         assert response.json() == {"test": 2}
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
+
+
+def test_add_child_esmerald(test_client_factory):
+    child = ChildEsmerald(routes=[Gateway(handler=route_one)])
+
+    with create_client(routes=[]) as client:
+        client.app.add_child_esmerald(path="/child", child=child)
+
+        response = client.get("/child")
+
+        response.status_code == 200
+        response.json() == {"test": 1}
