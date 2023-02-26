@@ -69,6 +69,10 @@ requests (HTTP and Websockets).
 
     <sup>Default: `[]`</sup>
 
+* **interceptors** - A list of [interceptors](../interceptors.md).
+
+    <sup>Default: `[]`</sup>
+
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
 or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
@@ -198,7 +202,7 @@ instance of the `Include`. The options are endeless.
 
 The `Router` object has some available functionalities that can be useful.
 
-### add_route
+### add_route()
 
 ```python
 {!> ../docs_src/routing/router/add_route.py!}
@@ -213,6 +217,7 @@ The `Router` object has some available functionalities that can be useful.
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
+* **interceptors** - A list of [interceptors](../interceptors.md).
 or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
@@ -221,19 +226,19 @@ injection.
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 
-### add_websocket_route
-
-#### Parameters
+### add_websocket_route()
 
 ```python
 {!> ../docs_src/routing/router/add_websocket_route.py!}
-
 ```
+
+#### Parameters
 
 * **name** - Name of the route.
 * [Websocket handler](./handlers.md#websocket-handler) - A websocket handler.
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
+* **interceptors** - A list of [interceptors](../interceptors.md).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
 or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
@@ -243,3 +248,31 @@ injection.
 * **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+
+### add_child_esmerald()
+
+```python
+{!> ../docs_src/routing/router/add_child_esmerald.py!}
+```
+
+#### Parameters
+
+* **path** - The path for the child esmerald.
+* **child** - The [ChildEsmerald](#child-esmerald-application) instance.
+* **name** - Name of the route.
+* [Websocket handler](./handlers.md#websocket-handler) - A websocket handler.
+* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
+requests (HTTP and Websockets).
+* **interceptors** - A list of [interceptors](../interceptors.md).
+* **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
+top-down.
+or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
+internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
+injection.
+* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
+functions on an application top level. Exception handler callables should be of the form of
+`handler(request, exc) -> response` and may be be either standard functions, or async functions.
+* **include_in_schema** - Boolean if this ChildEsmerald should be included in the schema.
+* **deprecated** - Boolean if this ChildEsmerald should be marked as deprecated.
+* **include_in_schema** - Security definition (OpenAPI) of the ChildEsmerald.
