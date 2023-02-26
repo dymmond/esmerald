@@ -1,8 +1,7 @@
-import sys
+from json import JSONDecodeError
 from unittest.mock import patch
 
 import pytest
-from orjson import JSONDecodeError
 
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
@@ -10,7 +9,6 @@ from esmerald.routing.handlers import get
 from esmerald.testclient import create_client
 
 
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="Skipping. Python 3.7 has async issues.")  # type: ignore[misc]
 @pytest.mark.asyncio()  # type: ignore[misc]
 async def test_request_empty_body_to_json() -> None:
     with patch.object(Request, "body", return_value=b""):
@@ -19,17 +17,15 @@ async def test_request_empty_body_to_json() -> None:
         assert request_json is None
 
 
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="Skipping. Python 3.7 has async issues.")  # type: ignore[misc]
 @pytest.mark.asyncio()  # type: ignore[misc]
-async def xtest_request_invalid_body_to_json() -> None:
+async def test_request_invalid_body_to_json() -> None:
     with patch.object(Request, "body", return_value=b"invalid"), pytest.raises(JSONDecodeError):
         request_empty_payload: Request = Request(scope={"type": "http"})
         await request_empty_payload.json()
 
 
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="Skipping. Python 3.7 has async issues.")  # type: ignore[misc]
 @pytest.mark.asyncio()  # type: ignore[misc]
-async def xtest_request_valid_body_to_json() -> None:
+async def test_request_valid_body_to_json() -> None:
     with patch.object(Request, "body", return_value=b'{"test": "valid"}'):
         request_empty_payload: Request = Request(scope={"type": "http"})
         request_json = await request_empty_payload.json()

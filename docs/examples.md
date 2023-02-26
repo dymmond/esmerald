@@ -41,7 +41,7 @@ that helps you out with the startup of a project. **Should only be used for deve
 
 To use the [scaffold](https://github.com/dymmond/esmerald-scaffold) you will need to have installed:
 
-* Python 3.7+
+* python 3.8+
 * [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/)
 
 And to install, run:
@@ -143,7 +143,7 @@ approach to the normal go-lives.
 
 To use the [scaffold](https://github.com/dymmond/esmerald-tortoise-nginx-gunicorn-supervisor) you will need to have installed:
 
-* Python 3.7+
+* python 3.8+
 * [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/)
 
 And to install, run:
