@@ -94,7 +94,7 @@ test = [
     "ujson>=5.7.0,<6",
 
     # types
-    "types-ujson==5.7.0.0",
+    "types-ujson==5.7.0.1",
     "types-orjson==3.6.2",
 ]
 
