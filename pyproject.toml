@@ -82,7 +82,7 @@ test = [
     "flask>=1.1.2,<3.0.0",
     "freezegun>=1.2.2,<2.0.0",
     "httpx>=0.23.3,<0.24.0",
-    "mock==4.0.3",
+    "mock==5.0.1",
     "passlib==1.7.4",
     "pydantic>=1.10.5,<2.0.0",
     "pydantic-factories==1.12.0",
