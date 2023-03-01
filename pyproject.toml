@@ -68,7 +68,7 @@ test = [
     "pytest-asyncio>=0.19.0",
     "mypy==0.982",
     "flake8>=5.0.4",
-    "black== 22.12.0",
+    "black== 23.1.0",
     "isort>=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<23",
     "a2wsgi>=1.6.0,<2",
@@ -94,7 +94,7 @@ test = [
     "ujson>=5.7.0,<6",
 
     # types
-    "types-ujson==5.7.0.0",
+    "types-ujson==5.7.0.1",
     "types-orjson==3.6.2",
 ]
 
