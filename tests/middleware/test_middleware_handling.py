@@ -437,3 +437,59 @@ def test_middleware_call_order_with_child_esmerald() -> None:
         client.get("/child/esmerald/controller/handler")
 
         assert results == [0, 1, 2, 3, 4, 5, 6, 7]
+
+
+def test_middleware_call_order_with_child_esmerald_as_parent() -> None:
+    """Test that middlewares are called in the order they have been passed with include."""
+
+    results: List[int] = []
+
+    def create_test_middleware(middleware_id: int) -> "Type[MiddlewareProtocol]":
+        class TestMiddleware(MiddlewareProtocol):
+            def __init__(self, app: "ASGIApp") -> None:
+                self.app = app
+
+            async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+                results.append(middleware_id)
+                await self.app(scope, receive, send)
+
+        return TestMiddleware
+
+    class MyController(APIView):
+        path = "/controller"
+        middleware = [create_test_middleware(4), create_test_middleware(5)]
+
+        @get(
+            "/handler",
+            middleware=[create_test_middleware(6), create_test_middleware(7)],
+        )
+        def my_handler(self) -> None:
+            return None
+
+    child_esmerald = ChildEsmerald(routes=[Gateway(path="/", handler=MyController)])
+
+    with create_client(
+        routes=[
+            Include(
+                path="/child",
+                routes=[
+                    Include(
+                        path="/esmerald",
+                        routes=[
+                            Include(
+                                routes=[Include(app=child_esmerald)],
+                                middleware=[create_test_middleware(2), create_test_middleware(3)],
+                            )
+                        ],
+                    )
+                ],
+            ),
+        ],
+        middleware=[
+            create_test_middleware(0),
+            create_test_middleware(1),
+        ],
+    ) as client:
+        client.get("/child/esmerald/controller/handler")
+
+        assert results == [0, 1, 2, 3, 4, 5, 6, 7]

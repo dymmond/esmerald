@@ -600,6 +600,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         await self.allowed_methods(scope, receive, send, methods)
 
         request = Request(scope=scope, receive=receive, send=send)
+        self.get_dependencies(force=True)
         route_handler, parameter_model = self.route_map[scope["method"]]
 
         if self.get_permissions():
@@ -924,13 +925,21 @@ class Include(Mount):
                 else:
                     include_middleware.append(StarletteMiddleware(middleware))
 
+        app = self.resolve_app_parent(app=app)
+
         super().__init__(
             self.path, app=self.app, routes=routes, name=name, middleware=include_middleware
         )
 
-        self.path_regex, self.path_format, self.param_convertors = compile_path(
-            self.path + "/{path:path}"
-        )
+    def resolve_app_parent(self, app: Optional[Any]):
+        """
+        Resolves the owner of ChildEsmerald or Esmerald iself.
+        """
+        from esmerald import ChildEsmerald, Esmerald
+
+        if app is not None and isinstance(app, (Esmerald, ChildEsmerald)):
+            app.parent = self
+        return app
 
     def build_routes_middleware(
         self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
@@ -1008,6 +1017,7 @@ class Include(Mount):
         for route in routes:
             if not isinstance(route, (Include, Gateway, WebSocketGateway, Mount)):
                 raise ImproperlyConfigured("The route must be of type Gateway or Include")
+
             route.parent = self
             if isinstance(route, Include):
                 routing.append(route)

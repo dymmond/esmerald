@@ -502,7 +502,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             )
         return cast("List[Permission]", self._permissions)
 
-    def get_dependencies(self) -> Dict[str, Inject]:
+    def get_dependencies(self, force: bool = False) -> Dict[str, Inject]:
         """
         Returns all dependencies of the handler function's starting from the parent levels.
         """
