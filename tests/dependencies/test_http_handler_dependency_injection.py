@@ -209,29 +209,3 @@ def test_dependency_isolation_with_child_esmerald() -> None:
     with create_client(routes=[Include(app=child_esmerald)]) as client:
         response = client.get("/second")
         assert response.status_code == HTTP_400_BAD_REQUEST
-
-
-def xtest_function_dependency_injection_child() -> None:
-    @get(
-        path="/{path_param:str}",
-        dependencies={
-            "first": Inject(local_method_first_dependency),
-            "third": Inject(local_method_second_dependency),
-        },
-    )
-    def test_function(first: int, second: bool, third: str) -> None:
-        assert isinstance(first, int)
-        assert second is False
-        assert isinstance(third, str)
-
-    with create_client(
-        routes=[
-            Include(app=ChildEsmerald(routes=[Gateway(path=test_path, handler=test_function)]))
-        ],
-        dependencies={
-            "first": Inject(router_first_dependency),
-            "second": Inject(router_second_dependency),
-        },
-    ) as client:
-        response = client.get(f"{test_path}/abcdef?query_param=12345")
-        assert response.status_code == HTTP_200_OK

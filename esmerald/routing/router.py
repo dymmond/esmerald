@@ -600,7 +600,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         await self.allowed_methods(scope, receive, send, methods)
 
         request = Request(scope=scope, receive=receive, send=send)
-        self.get_dependencies(force=True)
         route_handler, parameter_model = self.route_map[scope["method"]]
 
         if self.get_permissions():
