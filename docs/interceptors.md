@@ -157,8 +157,8 @@ the ChildEsmerald, which means, you can also achieve the same result by doing th
 ```
 
 !!! Tip
-    Prior to version 0.16.0, sharing resources between Esmerald and ChildEsmerald was not allowed
-    and it needed to be treated as completely isolated application. In the version 0.16.0 you can
+    Prior to version 1.0.0, sharing resources between Esmerald and ChildEsmerald was not allowed
+    and it needed to be treated as completely isolated application. In the version 1.0.0 you can
     still isolate them but you can also share resources.
 
 ## Interceptors and the application

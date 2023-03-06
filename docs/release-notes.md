@@ -8,8 +8,8 @@
 across main application and children.
         
     !!! Note
-        Prior to version 0.16.0, sharing resources between Esmerald and ChildEsmerald was not allowed
-        and it needed to be treated as completely isolated application. In the version 0.16.0 you can
+        Prior to version 1.0.0, sharing resources between Esmerald and ChildEsmerald was not allowed
+        and it needed to be treated as completely isolated application. In the version 1.0.0 you can
         still isolate them but you can also share resources.
 
 

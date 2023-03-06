@@ -3,7 +3,7 @@
 All the levels are managed in a simple top-down approach where one takes priority over another as previously mentioned
 but.
 
-Pior to version 0.16.0, a `ChildEsmerald` was an independent instance that is plugged into a main `Esmerald` application but since
+Pior to version 1.0.0, a `ChildEsmerald` was an independent instance that is plugged into a main `Esmerald` application but since
 it is like another `Esmerald` instance that also means the ChildEsmerald didn't take priority over the top-level
 application.
 
