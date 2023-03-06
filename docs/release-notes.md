@@ -2,7 +2,7 @@
 
 ## 1.0.0
 
-## Changed
+### Changed
 
 - ChildEsmerald now supports the parent which means it can share middlewares and interceptors
 across main application and children.
