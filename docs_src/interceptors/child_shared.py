@@ -14,11 +14,9 @@ async def home_child() -> JSONResponse:
 
 
 child_esmerald = ChildEsmerald(
-    routes=[Gateway(handler=home_child, interceptors=[CookieInterceptor])],
-    interceptors=[RequestParamInterceptor],
+    routes=[Gateway(handler=home_child, interceptors=[CookieInterceptor, RequestParamInterceptor])]
 )
 
 app = Esmerald(
     routes=[Include("/child", app=child_esmerald), Gateway(handler=home)],
-    interceptors=[RequestParamInterceptor],
 )

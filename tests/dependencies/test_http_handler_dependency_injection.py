@@ -189,3 +189,23 @@ def test_dependency_isolation_with_nested_include() -> None:
     ) as client:
         response = client.get("/second")
         assert response.status_code == HTTP_400_BAD_REQUEST
+
+
+def test_dependency_isolation_with_child_esmerald() -> None:
+    class SecondController(APIView):
+        path = "/second"
+
+        @get(path="/")
+        def test_method(self, first: dict) -> None:
+            pass
+
+    child_esmerald = ChildEsmerald(
+        routes=[
+            Gateway(path="/", handler=FirstController),
+            Gateway(path="/", handler=SecondController),
+        ]
+    )
+
+    with create_client(routes=[Include(app=child_esmerald)]) as client:
+        response = client.get("/second")
+        assert response.status_code == HTTP_400_BAD_REQUEST

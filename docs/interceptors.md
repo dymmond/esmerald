@@ -138,8 +138,9 @@ All of the levels described here allow to pass `interceptors`.
 
 ## Working in isolation
 
-This is one of the exceptions of working with the interceptors. Every **Esmerald** and
-**ChildEsmerald** application is considered independent, which means, the resources are "isolated".
+Every **Esmerald** and **ChildEsmerald** application is considered independent, which means,
+the resources can be "isolated" but Esmerald also allows the share of the resources across parent
+and children.
 
 For example, using the example from before, adding `RequestParamInterceptor` on the top of
 an Esmerald app and adding the `CookieInterceptor` in the ChildEsmerald will work separately.
@@ -148,19 +149,17 @@ an Esmerald app and adding the `CookieInterceptor` in the ChildEsmerald will wor
 {!> ../docs_src/interceptors/child.py !}
 ```
 
-The `RequestParamInterceptor` will only work for the routes of the Esmerald directly and not for
-the ChildEsmerald, which means for the ChildEsmerald to also have the `RequestParamInterceptor`
-**it must add it on the top of it as well**.
+The `RequestParamInterceptor` will work for the routes of the Esmerald and subsequent chilren,
+the ChildEsmerald, which means, you can also achieve the same result by doing this:
 
-```python hl_lines="17-18 23"
-{!> ../docs_src/interceptors/child_esmerald.py !}
+```python hl_lines="17"
+{!> ../docs_src/interceptors/child_shared.py !}
 ```
 
 !!! Tip
-    Think of this like if you were building two completely different Esmerald applications with
-    their own interceptors, middlewares, exception handlers... The ChildEsmerald does not need to
-    know that is being imported by the main Esmerald object and therefore
-    **does not implement parent interceptors and works in isolation**.
+    Prior to version 0.16.0, sharing resources between Esmerald and ChildEsmerald was not allowed
+    and it needed to be treated as completely isolated application. In the version 0.16.0 you can
+    still isolate them but you can also share resources.
 
 ## Interceptors and the application
 

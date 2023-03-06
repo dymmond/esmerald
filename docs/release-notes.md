@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.0.0
+
+## Changed
+
+- ChildEsmerald now supports the parent which means it can share middlewares and interceptors
+across main application and children.
+        
+    !!! Note
+        Prior to version 0.16.0, sharing resources between Esmerald and ChildEsmerald was not allowed
+        and it needed to be treated as completely isolated application. In the version 0.16.0 you can
+        still isolate them but you can also share resources.
+
+
 ## 0.15.0
 
 ### Added

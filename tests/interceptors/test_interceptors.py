@@ -60,11 +60,11 @@ async def logging_view(data: Item, name: str) -> JSONResponse:
     return JSONResponse({"name": name})
 
 
-def test_issubclassing_EsmeraldInterceptor():
+def test_issubclassing_EsmeraldInterceptor(test_client_factory):
     assert issubclass(TestInterceptor, EsmeraldInterceptor)
 
 
-def test_interceptor_on_application_instance():
+def test_interceptor_on_application_instance(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     with create_client(routes=[Gateway(handler=create)], interceptors=[TestInterceptor]) as client:
@@ -74,7 +74,7 @@ def test_interceptor_on_application_instance():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_application_with_dummy_interceptor():
+def test_interceptor_on_application_with_dummy_interceptor(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     with create_client(
@@ -86,7 +86,7 @@ def test_interceptor_on_application_with_dummy_interceptor():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_gateway_level():
+def test_interceptor_on_gateway_level(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     with create_client(routes=[Gateway(handler=create, interceptors=[TestInterceptor])]) as client:
@@ -96,7 +96,7 @@ def test_interceptor_on_gateway_level():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_include_level():
+def test_interceptor_on_include_level(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     with create_client(
@@ -108,7 +108,7 @@ def test_interceptor_on_include_level():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_nested_include():
+def test_interceptor_on_nested_include(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     with create_client(
@@ -124,7 +124,7 @@ def test_interceptor_on_nested_include():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald():
+def test_interceptor_on_child_esmerald(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     child = ChildEsmerald(routes=[Gateway(handler=create)], interceptors=[TestInterceptor])
@@ -136,7 +136,7 @@ def test_interceptor_on_child_esmerald():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_gateway():
+def test_interceptor_on_child_esmerald_gateway(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     child = ChildEsmerald(routes=[Gateway(handler=create, interceptors=[TestInterceptor])])
@@ -148,7 +148,7 @@ def test_interceptor_on_child_esmerald_gateway():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_include():
+def test_interceptor_on_child_esmerald_include(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     child = ChildEsmerald(
@@ -162,7 +162,7 @@ def test_interceptor_on_child_esmerald_include():
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_nested_include():
+def test_interceptor_on_child_esmerald_nested_include(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
     child = ChildEsmerald(
@@ -180,7 +180,7 @@ def test_interceptor_on_child_esmerald_nested_include():
         assert response.json() == {"name": "intercept"}
 
 
-def test_multiple_interceptors():
+def test_multiple_interceptors(test_client_factory):
     """
     Uses multiple interceptors and raises a 401 in the CookieInterceptor
     """
@@ -195,7 +195,7 @@ def test_multiple_interceptors():
         assert response.status_code == 401
 
 
-def test_multiple_interceptors_change():
+def test_multiple_interceptors_change(test_client_factory):
     """
     Uses multiple interceptors and raises a 401 in the CookieInterceptor
     """
@@ -210,7 +210,7 @@ def test_multiple_interceptors_change():
         assert response.status_code == 401
 
 
-def test_multiple_interceptors_change_two():
+def test_multiple_interceptors_change_two(test_client_factory):
     """
     Uses multiple interceptors and raises a 401 in the CookieInterceptor
     """
@@ -223,3 +223,17 @@ def test_multiple_interceptors_change_two():
         response = client.post("/logging/test", json=data)
 
         assert response.status_code == 201
+
+
+def test_interceptor_is_cross_child_and_application(test_client_factory):
+    data = {"name": "test", "sku": "12345"}
+
+    child = ChildEsmerald(routes=[Include(routes=[Include(routes=[Gateway(handler=create)])])])
+
+    with create_client(
+        routes=[Include("/child", app=child)], interceptors=[TestInterceptor]
+    ) as client:
+        response = client.post("/child/create/test", json=data)
+
+        assert response.status_code == 201
+        assert response.json() == {"name": "intercept"}

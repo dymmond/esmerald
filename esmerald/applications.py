@@ -163,7 +163,8 @@ class Esmerald(Starlette):
         deprecated: Optional[bool] = None,
         enable_openapi: Optional[bool] = None,
         redirect_slashes: Optional[bool] = None,
-        pluggables: Optional[Dict[str, Pluggable]] = None
+        pluggables: Optional[Dict[str, Pluggable]] = None,
+        parent: Optional[Type["Esmerald"]] = None,
     ) -> None:
         self.settings_config = None
 
@@ -185,6 +186,8 @@ class Esmerald(Starlette):
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
+
+        self.parent = parent
 
         self._debug = (
             debug
@@ -298,6 +301,7 @@ class Esmerald(Starlette):
         self.root_path = root_path or self.get_settings_value(
             self.settings_config, esmerald_settings, "root_path"
         )
+
         self.middleware = (
             middleware
             or self.get_settings_value(self.settings_config, esmerald_settings, "middleware")
@@ -419,6 +423,8 @@ class Esmerald(Starlette):
         return setting_value
 
     def activate_openapi(self) -> None:
+        pass
+
         if self.openapi_config and self.enable_openapi:
             self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
             gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)

@@ -5,7 +5,7 @@ from starlette.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from starlette.websockets import WebSocketDisconnect
 
 from esmerald.applications import ChildEsmerald
-from esmerald.permissions import BasePermission
+from esmerald.permissions import AllowAny, BasePermission, DenyAll
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import get, route, websocket
@@ -134,9 +134,26 @@ def test_permissions_with_child_esmerald_two() -> None:
             response.json().get("detail") == "You do not have permission to perform this action."
         )
 
-        response = client.get("/secret", headers={"Authorization": "yes"})
-        assert response.status_code == HTTP_200_OK
-        assert response.text == ""
+        response = client.get("/secret", headers={"Authorization": "allow_all"})
+        assert response.status_code == HTTP_403_FORBIDDEN
+        assert (
+            response.json().get("detail") == "You do not have permission to perform this action."
+        )
 
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == HTTP_200_OK
+
+
+def test_permissions_with_child_esmerald_three() -> None:
+    @route(methods=["GET"], path="/secret")
+    async def my_asgi_handler() -> None:
+        ...
+
+    child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)], permissions=[AllowAny])
+
+    with create_client(permissions=[DenyAll], routes=[Include(app=child)]) as client:
+        response = client.get("/secret")
+        assert response.status_code == HTTP_403_FORBIDDEN
+        assert (
+            response.json().get("detail") == "You do not have permission to perform this action."
+        )
