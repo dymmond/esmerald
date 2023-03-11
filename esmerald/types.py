@@ -2,11 +2,13 @@ from datetime import datetime
 from typing import (
     TYPE_CHECKING,
     Any,
+    AsyncContextManager,
     Awaitable,
     Callable,
     Coroutine,
     Dict,
     List,
+    Mapping,
     Type,
     TypeVar,
     Union,
@@ -33,6 +35,7 @@ except MissingDependency:
     TemplateConfig = Any
 
 if TYPE_CHECKING:
+    from esmerald.applications import Esmerald
     from esmerald.conf.global_settings import EsmeraldAPISettings  # noqa
     from esmerald.datastructures import Cookie, ResponseHeader, State  # noqa: TC004
     from esmerald.injector import Inject  # noqa
@@ -62,6 +65,7 @@ else:
     MiddlewareProtocol = Any
     APIView = Any
     Gateway = Any
+    Esmerald = Any
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
@@ -100,12 +104,6 @@ ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 
-LifeSpanHandler = Union[
-    Callable[[], Any],
-    Callable[[State], Any],
-    Callable[[], Awaitable[Any]],
-    Callable[[State], Awaitable[Any]],
-]
 
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
@@ -125,3 +123,13 @@ ConnectionType = Union["Request", "WebSocket"]
 DictStr = Dict[str, str]
 DictAny = Dict[str, Any]
 SettingsType = Type["EsmeraldAPISettings"]
+
+LifeSpanHandler = Union[
+    Callable[[], Any],
+    Callable[[State], Any],
+    Callable[[], Awaitable[Any]],
+    Callable[[State], Awaitable[Any]],
+]
+StatelessLifespan = Callable[["Esmerald"], AsyncContextManager[None]]
+StatefulLifespan = Callable[["Esmerald"], AsyncContextManager[Mapping[str, Any]]]
+Lifespan = Union[StatelessLifespan, StatefulLifespan]

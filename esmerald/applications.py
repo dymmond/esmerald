@@ -1,3 +1,4 @@
+import warnings
 from datetime import timezone as dtimezone
 from typing import (
     TYPE_CHECKING,
@@ -45,6 +46,7 @@ from esmerald.types import (
     ASGIApp,
     Dependencies,
     ExceptionHandlers,
+    Lifespan,
     LifeSpanHandler,
     Middleware,
     ParentType,
@@ -157,7 +159,7 @@ class Esmerald(Starlette):
         exception_handlers: Optional["ExceptionHandlers"] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-        lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
+        lifespan: Optional["Lifespan"] = None,
         tags: Optional[List[str]] = None,
         include_in_schema: Optional[bool] = None,
         deprecated: Optional[bool] = None,
@@ -183,6 +185,14 @@ class Esmerald(Starlette):
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
         ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+
+        if on_startup or on_shutdown:
+            warnings.warn(
+                "The on_startup and on_shutdown are deprecated and they will be "
+                "removed on version 2.0. Use the lifespan parameter instead. "
+                "More details about how to use it on https://www.esmerald.dev/lifespan",
+                DeprecationWarning,
+            )
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")

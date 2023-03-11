@@ -14,6 +14,7 @@ from esmerald.types import (
     APIGateHandler,
     Dependencies,
     ExceptionHandlers,
+    Lifespan,
     LifeSpanHandler,
     Middleware,
     ResponseCookies,
@@ -389,7 +390,7 @@ class EsmeraldAPISettings(BaseSettings):
         return None
 
     @property
-    def lifespan(self) -> Callable[["Esmerald"], AsyncContextManager]:
+    def lifespan(self) -> "Lifespan":
         """
         Custom lifespan that can be passed instead of the default Starlette.
 
