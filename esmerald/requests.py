@@ -1,6 +1,7 @@
 from json import loads
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
+from starlette.datastructures import URL
 from starlette.requests import ClientDisconnect as ClientDisconnect  # noqa
 from starlette.requests import HTTPConnection as HTTPConnection  # noqa: F401
 from starlette.requests import Request as StarletteRequest  # noqa: F401
@@ -65,3 +66,9 @@ class Request(StarletteRequest):
                 body = self.scope["_body"] = await self.body() or "null".encode("utf-8")
             self._json = loads(body)
         return self._json
+
+    def url_for(self, __name: str, **path_params: Any) -> URL:
+        url = super().url_for(__name, **path_params)
+        if isinstance(url, URL):
+            return str(url)
+        return url
