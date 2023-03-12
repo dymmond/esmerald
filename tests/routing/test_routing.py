@@ -1,3 +1,4 @@
+import contextlib
 import typing
 import uuid
 
@@ -867,6 +868,27 @@ def test_lifespan_async(test_client_factory):
 
     assert startup_complete
     assert shutdown_complete
+
+
+def test_lifespan_state_unsupported(test_client_factory):
+    @contextlib.asynccontextmanager
+    async def lifespan(app):
+        yield {"test": "esmerald"}
+
+    app = Router(
+        lifespan=lifespan,
+        routes=[Include("/", PlainTextResponse("hello, esmerald"))],
+    )
+
+    async def no_state_wrapper(scope, receive, send):
+        del scope["state"]
+        await app(scope, receive, send)
+
+    with pytest.raises(
+        RuntimeError, match='The server does not support "state" in the lifespan scope'
+    ):
+        with test_client_factory(no_state_wrapper):
+            raise AssertionError("Should not be called")  # pragma: no cover
 
 
 def test_lifespan_sync(test_client_factory):
