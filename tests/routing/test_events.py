@@ -11,10 +11,6 @@ from esmerald.testclient import EsmeraldTestClient
 class State(BaseModel):
     app_startup: bool = False
     app_shutdown: bool = False
-    router_startup: bool = False
-    router_shutdown: bool = False
-    sub_router_startup: bool = False
-    sub_router_shutdown: bool = False
 
 
 @pytest.fixture
