@@ -2,13 +2,11 @@ from datetime import datetime
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncContextManager,
     Awaitable,
     Callable,
     Coroutine,
     Dict,
     List,
-    Mapping,
     Type,
     TypeVar,
     Union,
@@ -130,6 +128,3 @@ LifeSpanHandler = Union[
     Callable[[], Awaitable[Any]],
     Callable[[State], Awaitable[Any]],
 ]
-StatelessLifespan = Callable[["Esmerald"], AsyncContextManager[None]]
-StatefulLifespan = Callable[["Esmerald"], AsyncContextManager[Mapping[str, Any]]]
-Lifespan = Union[StatelessLifespan, StatefulLifespan]

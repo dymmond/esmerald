@@ -3,7 +3,6 @@ from datetime import timezone as dtimezone
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncContextManager,
     Callable,
     Dict,
     List,
@@ -17,6 +16,7 @@ from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
+from starlette.types import Lifespan
 
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -46,7 +46,6 @@ from esmerald.types import (
     ASGIApp,
     Dependencies,
     ExceptionHandlers,
-    Lifespan,
     LifeSpanHandler,
     Middleware,
     ParentType,

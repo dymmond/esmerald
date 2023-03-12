@@ -1,7 +1,8 @@
-from typing import TYPE_CHECKING, Any, AsyncContextManager, Callable, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
 from pydantic import BaseConfig, BaseSettings
+from starlette.types import Lifespan
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
@@ -14,7 +15,6 @@ from esmerald.types import (
     APIGateHandler,
     Dependencies,
     ExceptionHandlers,
-    Lifespan,
     LifeSpanHandler,
     Middleware,
     ResponseCookies,
@@ -24,7 +24,6 @@ from esmerald.types import (
 )
 
 if TYPE_CHECKING:
-    from esmerald.applications import Esmerald
     from esmerald.types import TemplateConfig
 
 
