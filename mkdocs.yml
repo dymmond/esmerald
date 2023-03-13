@@ -83,6 +83,7 @@ nav:
   - Password Hashers: "password-hashers.md"
   - Responses: "responses.md"
   - Background Tasks: "background-tasks.md"
+  - Lifespan Events: "lifespan-events.md"
   - Protocols: "protocols.md"
   - Scheduler:
       - Asyncz:
