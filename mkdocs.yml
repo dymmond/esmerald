@@ -82,6 +82,7 @@ nav:
   - Datastructures: "datastructures.md"
   - Password Hashers: "password-hashers.md"
   - Responses: "responses.md"
+  - Background Tasks: "background-tasks.md"
   - Protocols: "protocols.md"
   - Scheduler:
       - Asyncz:
