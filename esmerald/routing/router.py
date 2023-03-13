@@ -5,7 +5,6 @@ from inspect import Signature
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncContextManager,
     Awaitable,
     Callable,
     Dict,
@@ -30,7 +29,7 @@ from starlette.routing import Route as StarletteRoute
 from starlette.routing import Router as StarletteRouter
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
-from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
 
 from esmerald.conf import settings
 from esmerald.datastructures import File, Redirect, URLPath
@@ -47,6 +46,7 @@ from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
+from esmerald.routing.events import AyncLifespanContextManager
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.views import APIView
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
@@ -164,7 +164,7 @@ class Parent:
                 self.routes.pop(self.routes.index(value))
 
 
-class Router(StarletteRouter, Parent):
+class Router(Parent, StarletteRouter):
     __slots__ = (
         "redirect_slashes",
         "default",
@@ -202,7 +202,7 @@ class Router(StarletteRouter, Parent):
         response_class: Optional["ResponseType"] = None,
         response_cookies: Optional["ResponseCookies"] = None,
         response_headers: Optional["ResponseHeaders"] = None,
-        lifespan: Optional[Callable[["Esmerald"], AsyncContextManager]] = None,
+        lifespan: Optional["Lifespan"] = None,
         tags: Optional[List[Union[str, Enum]]] = None,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
@@ -231,13 +231,20 @@ class Router(StarletteRouter, Parent):
             ):
                 raise ImproperlyConfigured(f"The route {route} must be of type Gateway or Include")
         routes = routes or []
+
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+
+        self.esmerald_lifespan = self.handle_lifespan_events(
+            on_startup=on_startup, on_shutdown=on_shutdown, lifespan=lifespan
+        )
+
         super().__init__(
-            on_startup=on_startup,
-            on_shutdown=on_shutdown,
             redirect_slashes=redirect_slashes,
             routes=routes,
             default=default,
-            lifespan=lifespan,
+            lifespan=self.esmerald_lifespan,
         )
         self.path = path
         self.parent: Optional["Router"] = parent or self.app
@@ -270,6 +277,23 @@ class Router(StarletteRouter, Parent):
             key=lambda router: router.path != "" and router.path != "/",
             reverse=True,
         )
+
+    def handle_lifespan_events(
+        self,
+        on_shutdown: Optional[List["LifeSpanHandler"]] = None,
+        on_startup: Optional[List["LifeSpanHandler"]] = None,
+        lifespan: Optional["Lifespan"] = None,
+    ) -> Any:
+        """Handles with the lifespan events in the new Starlette format of lifespan.
+        This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable
+        declaration for legacy and comprehension purposes and build the async context manager
+        for the lifespan.
+        """
+        if on_startup or on_shutdown:
+            return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)
+        elif lifespan:
+            return lifespan
+        return None
 
     def activate(self):
         self.routes = self.reorder_routes()
@@ -401,6 +425,21 @@ class Router(StarletteRouter, Parent):
                     pass
 
         raise NoMatchFound(name, path_params)
+
+    def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
+        assert event_type in ("startup", "shutdown")
+
+        if event_type == "startup":
+            self.on_startup.append(func)
+        else:
+            self.on_shutdown.append(func)
+
+    def on_event(self, event_type: str) -> Callable:
+        def decorator(func: Callable) -> Callable:
+            self.add_event_handler(event_type, func)
+            return func
+
+        return decorator
 
 
 class HTTPHandler(BaseHandlerMixin, StarletteRoute):
