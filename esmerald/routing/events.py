@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 _T = TypeVar("_T")
 
 
-class LifespanContext:
+class AyncLifespanContextManager:
     """
     Manages and handles the on_startup and on_shutdown events
     in an Esmerald way.

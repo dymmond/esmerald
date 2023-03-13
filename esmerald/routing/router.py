@@ -46,7 +46,7 @@ from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
-from esmerald.routing.events import LifespanContext
+from esmerald.routing.events import AyncLifespanContextManager
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.views import APIView
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
@@ -287,10 +287,10 @@ class Router(Parent, StarletteRouter):
         """Handles with the lifespan events in the new Starlette format of lifespan.
         This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable
         declaration for legacy and comprehension purposes and build the async context manager
-        for the new lifespan.
+        for the lifespan.
         """
         if on_startup or on_shutdown:
-            return LifespanContext(on_startup=on_startup, on_shutdown=on_shutdown)
+            return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)
         elif lifespan:
             return lifespan
         return None
@@ -425,6 +425,21 @@ class Router(Parent, StarletteRouter):
                     pass
 
         raise NoMatchFound(name, path_params)
+
+    def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
+        assert event_type in ("startup", "shutdown")
+
+        if event_type == "startup":
+            self.on_startup.append(func)
+        else:
+            self.on_shutdown.append(func)
+
+    def on_event(self, event_type: str) -> Callable:
+        def decorator(func: Callable) -> Callable:
+            self.add_event_handler(event_type, func)
+            return func
+
+        return decorator
 
 
 class HTTPHandler(BaseHandlerMixin, StarletteRoute):

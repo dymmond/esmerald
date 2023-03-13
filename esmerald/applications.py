@@ -834,6 +834,18 @@ class Esmerald(Starlette):
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
         raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
 
+    def on_event(self, event_type: str) -> Callable:  # pragma: nocover
+        """
+        Add an event on_startup and on_shutdown with Esmerald underlying
+        implementation of the lifespan.
+
+        Check: https://www.esmerald.dev/lifespan-events/
+        """
+        return self.router.on_event(event_type)
+
+    def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
+        self.router.add_event_handler(event_type, func)
+
 
 class ChildEsmerald(Esmerald):
     """
