@@ -50,7 +50,7 @@ dependencies = [
     "pydantic>=1.10.5,<2.0.0",
     "pydantic-factories==1.17.2",
     "openapi-schemas-pydantic>=1.1.0",
-    "starlette>=0.26.0,<0.27.0",
+    "starlette>=0.26.1,<0.27.0",
 ]
 keywords = ["api", "rest", "http", "asgi", "pydantic", "starlette", "fastapi", "framework", "websocket", "openapi", "ml", "machine learning"]
 
