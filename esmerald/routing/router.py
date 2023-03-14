@@ -202,7 +202,7 @@ class Router(Parent, StarletteRouter):
         response_class: Optional["ResponseType"] = None,
         response_cookies: Optional["ResponseCookies"] = None,
         response_headers: Optional["ResponseHeaders"] = None,
-        lifespan: Optional["Lifespan"] = None,
+        lifespan: Optional[Lifespan[Any]] = None,
         tags: Optional[List[Union[str, Enum]]] = None,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
@@ -282,7 +282,7 @@ class Router(Parent, StarletteRouter):
         self,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
-        lifespan: Optional["Lifespan"] = None,
+        lifespan: Optional[Lifespan[Any]] = None,
     ) -> Any:
         """Handles with the lifespan events in the new Starlette format of lifespan.
         This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable

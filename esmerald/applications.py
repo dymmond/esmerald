@@ -1,5 +1,16 @@
 from datetime import timezone as dtimezone
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
@@ -54,6 +65,8 @@ if TYPE_CHECKING:
 
     from esmerald.types import SettingsType, TemplateConfig
 
+AppType = TypeVar("AppType", bound="Esmerald")
+
 
 class Esmerald(Starlette):
     """
@@ -107,7 +120,7 @@ class Esmerald(Starlette):
     )
 
     def __init__(
-        self,
+        self: AppType,
         *,
         settings_config: Optional["SettingsType"] = None,
         debug: Optional[bool] = None,
@@ -147,7 +160,7 @@ class Esmerald(Starlette):
         exception_handlers: Optional["ExceptionHandlers"] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-        lifespan: Optional["Lifespan"] = None,
+        lifespan: Optional[Lifespan[AppType]] = None,
         tags: Optional[List[str]] = None,
         include_in_schema: Optional[bool] = None,
         deprecated: Optional[bool] = None,
