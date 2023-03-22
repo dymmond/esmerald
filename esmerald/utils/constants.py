@@ -26,4 +26,5 @@ AVAILABLE_METHODS = [
     HttpMethod.POST,
     HttpMethod.DELETE,
     HttpMethod.OPTIONS,
+    HttpMethod.TRACE,
 ]

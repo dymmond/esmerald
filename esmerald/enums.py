@@ -9,6 +9,7 @@ class HttpMethod(str, Enum):
     DELETE = "DELETE"
     HEAD = "HEAD"
     OPTIONS = "OPTIONS"
+    TRACE = "TRACE"
 
 
 class MediaType(str, Enum):

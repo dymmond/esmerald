@@ -14,7 +14,7 @@ class EmptyValueValidator(Validator):
 
     def __call__(self, value: str):
         if not value:
-            raise ValidationError(f"Value can not be empty")
+            raise ValidationError("Value can not be empty")
 
 
 class UserType(Enum):

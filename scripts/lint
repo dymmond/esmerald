@@ -15,6 +15,6 @@ export EXCLUDE=__init__.py
 set -x
 
 # mypy saffier
-${PREFIX}autoflake --remove-all-unused-imports  --remove-unused-variables --exclude $EXCLUDE --in-place --recursive $SOURCE_FILES
-${PREFIX}isort $SOURCE_FILES --project=esmerald --line-length 99
+${PREFIX}ruff $SOURCE_FILES --fix --line-length 99
 ${PREFIX}black $SOURCE_FILES --check --line-length 99
+${PREFIX}isort $SOURCE_FILES --project=esmerald --line-length 99

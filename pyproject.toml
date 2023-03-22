@@ -10,9 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 dynamic = ['version']
 license = "MIT"
-authors = [
-    { name = "Tiago Silva", email = "tiago.silva@dymmond.com" },
-]
+authors = [{ name = "Tiago Silva", email = "tiago.silva@dymmond.com" }]
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -52,7 +50,20 @@ dependencies = [
     "openapi-schemas-pydantic>=1.1.0",
     "starlette>=0.26.1,<0.27.0",
 ]
-keywords = ["api", "rest", "http", "asgi", "pydantic", "starlette", "fastapi", "framework", "websocket", "openapi", "ml", "machine learning"]
+keywords = [
+    "api",
+    "rest",
+    "http",
+    "asgi",
+    "pydantic",
+    "starlette",
+    "fastapi",
+    "framework",
+    "websocket",
+    "openapi",
+    "ml",
+    "machine learning",
+]
 
 [project.urls]
 Homepage = "https://github.com/dymmond/esmerald"
@@ -88,8 +99,9 @@ test = [
     "pydantic-factories==1.17.2",
     "python-jose>=3.3.0,<4",
     "orjson>=3.8.5,<4.0.0",
-    "saffier[postgres]>=0.2.1",
+    "saffier[postgres]>=0.4.0",
     "requests>=2.28.2,<3.0.0",
+    "ruff>=0.0.256,<1.0.0",
     "ujson>=5.7.0,<6",
 
     # types
@@ -103,7 +115,7 @@ dev = [
     "uvicorn[standard]>=0.19.0",
     "pre-commit>=2.17.0,<4.0.0",
     "loguru>=0.6.0,<0.7.0",
-    "watchfiles>=0.16.1,<0.20.0"
+    "watchfiles>=0.16.1,<0.20.0",
 ]
 
 doc = [
@@ -116,24 +128,13 @@ doc = [
     "pyyaml>=6.0,<7.0.0",
 ]
 
-templates = [
-    "jinja2>=3.1.2,<4.0.0",
-    "mako==1.2.4",
-]
+templates = ["jinja2>=3.1.2,<4.0.0", "mako==1.2.4"]
 
-jwt = [
-    "passlib==1.7.4",
-    "python-jose>=3.3.0,<4",
-]
+jwt = ["passlib==1.7.4", "python-jose>=3.3.0,<4"]
 
-encoders = [
-    "orjson>=3.8.5,<4.0.0",
-    "ujson>=5.7.0,<6",
-]
+encoders = ["orjson>=3.8.5,<4.0.0", "ujson>=5.7.0,<6"]
 
-schedulers = [
-    "asyncz>=0.2.0",
-]
+schedulers = ["asyncz>=0.2.0"]
 
 all = [
     "a2wsgi>=1.6.0,<2",
@@ -167,21 +168,53 @@ known_third_party = ["esmerald", "pydantic", "starlette"]
 
 [tool.mypy]
 strict = true
+disallow_any_generics = false
+disallow_untyped_decorators = true
+implicit_reexport = true
+disallow_incomplete_defs = true
+disable_error_code = "attr-defined"
+exclude = "esmerald/conf,esmerald/utils"
+
+[tool.ruff]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+]
+ignore = [
+    "E501", # line too long, handled by black
+    "B008", # do not perform function calls in argument defaults
+    "C901", # too complex
+]
 
 [[tool.mypy.overrides]]
 module = "esmerald.tests.*"
 ignore_missing_imports = true
 check_untyped_defs = true
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "docs_src.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sqlalchemy.*",
+    "asyncpg",
+    "alembic",
+    "sqlalchemy_utils.*",
+    "slugify",
+    "pytz",
+]
+ignore_missing_imports = true
+ignore_errors = true
 
 [tool.pytest.ini_options]
-addopts = [
-  "--strict-config",
-  "--strict-markers",
-]
+addopts = ["--strict-config", "--strict-markers"]
 xfail_strict = true
 junit_family = "xunit2"
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/esmerald",
-]
+include = ["/esmerald"]

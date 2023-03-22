@@ -20,7 +20,7 @@ def build_path():
     Path(__file__).resolve().parent.parent
     SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
-    if not SITE_ROOT in sys.path:
+    if SITE_ROOT not in sys.path:
         sys.path.append(SITE_ROOT)
         sys.path.append(os.path.join(SITE_ROOT, "apps"))
 

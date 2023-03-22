@@ -92,7 +92,7 @@ def get_hashers():
     for hasher_path in settings.password_hashers:
         hasher_cls = import_string(hasher_path)
         hasher = hasher_cls()
-        if not getattr(hasher, "algorithm"):
+        if not hasher.algorithm:
             raise ImproperlyConfigured(
                 "hasher doesn't specify an algorithm name: %s" % hasher_path
             )

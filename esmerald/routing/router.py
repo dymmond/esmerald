@@ -537,8 +537,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
                 raise ImproperlyConfigured(f"`{method}` in `methods` must be a string.")
 
         self.methods: Set[str] = {HttpMethod[method].value for method in methods}
-        if HttpMethod.GET in methods:
-            self.methods.add(HttpMethod.HEAD.value)
 
         if isinstance(status_code, IntEnum):
             status_code = int(status_code)
@@ -573,7 +571,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         """
         Converts the methods set into a list of methods.
         """
-        return [method for method in self.methods]
+        return list(self.methods)
 
     async def allowed_methods(
         self, scope: "Scope", receive: "Receive", send: "Send", methods: List[str]
@@ -784,6 +782,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
 
+        self.endpoint = endpoint
         self.parent: "ParentType" = None
         self.dependencies = dependencies
         self.exception_handlers = exception_handlers

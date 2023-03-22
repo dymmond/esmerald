@@ -264,7 +264,7 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
 def test_raises_exception_on_wrong_settings(settings_config, test_client_factory):
     """If a settings_config is thrown but not type EsmeraldAPISettings"""
     with pytest.raises(ImproperlyConfigured):
-        with create_client(routes=[], settings_config=settings_config) as client:
+        with create_client(routes=[], settings_config=settings_config):
             ...
 
 
@@ -277,8 +277,8 @@ def test_basic_settings(test_client_factory):
         redirect_slashes=False,
     )
 
-    assert app.debug == False
-    assert app.enable_scheduler == False
-    assert app.include_in_schema == False
-    assert app.enable_openapi == False
-    assert app.redirect_slashes == False
+    assert app.debug is False
+    assert app.enable_scheduler is False
+    assert app.include_in_schema is False
+    assert app.enable_openapi is False
+    assert app.redirect_slashes is False

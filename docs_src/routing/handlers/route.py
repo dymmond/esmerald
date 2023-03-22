@@ -1,7 +1,7 @@
 from esmerald import Esmerald, Gateway, JSONResponse, Request, route
 
 
-@route(methods=["GET"])
+@route(methods=["GET", "POST"])
 async def my_route(request: Request) -> JSONResponse:
     return JSONResponse({"message": "Welcome home!"})
 
@@ -16,7 +16,7 @@ def last_route(name: str) -> str:
     return f"Another welcome, {name}!"
 
 
-@route(path="/", methods=["DELETE"])
+@route(path="/", methods=["DELETE", "HEAD"])
 def delete(name: str) -> str:
     return f"Another welcome, {name}!"
 
