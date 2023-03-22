@@ -58,7 +58,7 @@ async def test_create_user():
 
 
 async def test_create_superuser():
-    for i in range(5):
+    for _i in range(5):
         await User.query.create_superuser(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
@@ -110,7 +110,7 @@ async def test_set_password(password, new_password):
 
 
 async def test_create_normal_users():
-    for i in range(10):
+    for _i in range(10):
         await User.query.create_user(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
@@ -125,7 +125,7 @@ async def test_create_normal_users():
 
 
 async def test_create_normal_all():
-    for i in range(5):
+    for _i in range(5):
         await User.query.create_superuser(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
@@ -134,7 +134,7 @@ async def test_create_normal_all():
             password=get_random_string(23),
         )
 
-    for i in range(10):
+    for _i in range(10):
         await User.query.create_user(
             first_name=get_random_string(10),
             last_name=get_random_string(12),

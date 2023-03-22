@@ -11,6 +11,7 @@ from typing import (
     List,
     NoReturn,
     Optional,
+    Sequence,
     Set,
     Tuple,
     Type,
@@ -247,6 +248,8 @@ class Router(Parent, StarletteRouter):
             lifespan=self.esmerald_lifespan,
         )
         self.path = path
+        self.on_startup = [] if on_startup is None else list(on_startup)
+        self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
         self.parent: Optional["Router"] = parent or self.app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
@@ -280,8 +283,8 @@ class Router(Parent, StarletteRouter):
 
     def handle_lifespan_events(
         self,
-        on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-        on_startup: Optional[List["LifeSpanHandler"]] = None,
+        on_startup: Optional[Sequence[Callable]] = None,
+        on_shutdown: Optional[Sequence[Callable]] = None,
         lifespan: Optional[Lifespan[Any]] = None,
     ) -> Any:
         """Handles with the lifespan events in the new Starlette format of lifespan.
@@ -431,10 +434,11 @@ class Router(Parent, StarletteRouter):
 
         if event_type == "startup":
             self.on_startup.append(func)
+
         else:
             self.on_shutdown.append(func)
 
-    def on_event(self, event_type: str) -> Callable:
+    def on_event(self, event_type: str) -> Callable:  # pragma: no cover
         def decorator(func: Callable) -> Callable:
             self.add_event_handler(event_type, func)
             return func
@@ -533,8 +537,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
                 raise ImproperlyConfigured(f"`{method}` in `methods` must be a string.")
 
         self.methods: Set[str] = {HttpMethod[method].value for method in methods}
-        if HttpMethod.GET in methods:
-            self.methods.add(HttpMethod.HEAD.value)
 
         if isinstance(status_code, IntEnum):
             status_code = int(status_code)
@@ -569,7 +571,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         """
         Converts the methods set into a list of methods.
         """
-        return [method for method in self.methods]
+        return list(self.methods)
 
     async def allowed_methods(
         self, scope: "Scope", receive: "Receive", send: "Send", methods: List[str]
@@ -780,6 +782,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
 
+        self.endpoint = endpoint
         self.parent: "ParentType" = None
         self.dependencies = dependencies
         self.exception_handlers = exception_handlers

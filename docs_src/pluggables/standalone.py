@@ -32,7 +32,7 @@ async def home(request: Request) -> JSONResponse:
 
     "pluggables": ["standalone"]
     """
-    pluggables = [key for key in request.app.pluggables]
+    pluggables = list(request.app.pluggables)
 
     return JSONResponse({"pluggables": pluggables})
 

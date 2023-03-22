@@ -121,7 +121,7 @@ def get_connection_info(connection: "ConnectionType") -> Tuple[str, "URL"]:
 
 def get_signature(value: Any) -> Type["EsmeraldSignature"]:
     try:
-        return cast("Type[EsmeraldSignature]", getattr(value, "signature_model"))
+        return cast("Type[EsmeraldSignature]", value.signature_model)
     except AttributeError as exc:
         raise ImproperlyConfigured(f"The 'signature' attribute for {value} is not set.") from exc
 

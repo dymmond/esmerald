@@ -291,7 +291,7 @@ def test_no_additional_headers(test_client_factory):
 
 def test_websocket_exception(test_client_factory):
     async def app(scope: Scope, receive: Receive, send: Send) -> None:
-        assert False
+        raise AssertionError()
 
     client = EsmeraldTestClient(app)
     with pytest.raises(AssertionError):

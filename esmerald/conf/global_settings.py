@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
+from functools import cached_property
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
 from pydantic import BaseConfig, BaseSettings
@@ -61,6 +62,7 @@ class EsmeraldAPISettings(BaseSettings):
 
     class Config(BaseConfig):
         extra = "allow"
+        keep_untouched = (cached_property,)
 
     @property
     def reload(self) -> bool:

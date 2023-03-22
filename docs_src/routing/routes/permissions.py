@@ -8,7 +8,7 @@ class IsAdmin(BasePermission):
         request: "Request",
         apiview: "APIView",
     ) -> bool:
-        return bool(request.path_params["admin"] == True)
+        return bool(request.path_params["admin"] is True)
 
 
 @get(path="/home", permissions=[AllowAny])

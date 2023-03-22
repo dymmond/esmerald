@@ -245,19 +245,19 @@ async def test_can_access_endpoint_with_valid_token_after_login_failed(
     assert response.status_code == 401
 
     # Create a user
-    user_data = dict(
-        first_name="Test",
-        last_name="test",
-        email="foo@bar.com",
-        password=_string_pass,
-        username="test",
-    )
+    user_data = {
+        "first_name": "Test",
+        "last_name": "test",
+        "email": "foo@bar.com",
+        "password": _string_pass,
+        "username": "test",
+    }
 
     response = await async_client.post("/create", json=user_data)
     assert response.status_code == 201
 
     # login to get the JWT token
-    user_login = dict(email=user_data["email"], password=user_data["password"])
+    user_login = {"email": user_data["email"], "password": user_data["password"]}
     response = await async_client.post("/login", json=user_login)
     assert response.status_code == 200
 

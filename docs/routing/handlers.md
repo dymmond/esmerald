@@ -74,6 +74,32 @@ Example:
 {!> ../docs_src/routing/handlers/route_example1.py !}
 ```
 
+There are also three more **unique** and exotic ones:
+
+### HEAD
+
+```python hl_lines="4 9 14"
+{!> ../docs_src/routing/handlers/head.py !}
+```
+
+**Default status code**: `200`
+
+### OPTIONS
+
+```python hl_lines="4 9 14"
+{!> ../docs_src/routing/handlers/options.py !}
+```
+
+**Default status code**: `200`
+
+### TRACE
+
+```python hl_lines="4 9 14"
+{!> ../docs_src/routing/handlers/trace.py !}
+```
+
+**Default status code**: `200`
+
 **Parameters**:
 
 * **path** - The path for the handler. The path is then joined with the [Gateway](./routes.md#gateway) path.
@@ -82,6 +108,8 @@ Example:
 
 * **summary** - The sumamry of the handler. Used for OpenAPI docs.
 * **description** - Description of the handler. Used for OpenAPI docs.
+* **content_media_type** - Content media type. Used for OpenAPI specification
+* **content_encoding** - Content encoding. Used for OpenAPI specification
 * **status_code** - Status code used for the response.
 
     <sup>GET - `200`</sup><br />
@@ -90,9 +118,12 @@ Example:
     <sup>PATCH - `200`</sup><br />
     <sup>DELETE - `204`</sup><br />
     <sup>Route - `200`</sup>
+    <sup>HEAD - `200`</sup>
+    <sup>OPTIONS - `200`</sup>
+    <sup>TRACE - `200`</sup>
 
 * **include_in_schema** - If handler should be included in the OpenAPI schema.
-* **background_task** - An instance of `BackgroundTask`.
+* **background** - An instance of `BackgroundTask`. Check [backgoround tasks](../background-tasks.md) for more insights.
 * **media_type** - The content type of the response.
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
@@ -114,12 +145,12 @@ class.
 * **security** - Security definition of the application. Used for OpenAPI.
 * **operation_id** - Internal unique identifier of the handler. Used for OpenAPI.
 * **response_description** - Description of the response. Used for OpenAPI.
-* **responses** - The available responses of the handler. Used for OpenAPI. [More details](../responses.md#openapi-responses).
+* **responses** - The available responses of the handler. Used for OpenAPI. [Check for more details](../responses.md#openapi-responses) how to use it.
 
 ## HTTP handler summary
 
 * Handlers are used alongside [Gateway](./routes.md#gateway).
-* There are `GET`, `POST`, `PUT`, `PATCH`, `DELETE` available to be used.
+* There are `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`, `TRACE` available to be used.
 * There is a `route` special to handle more than one HTTP method at once.
 
 ## WebSocket handler

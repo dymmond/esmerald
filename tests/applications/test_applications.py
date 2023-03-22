@@ -3,19 +3,20 @@ from contextlib import asynccontextmanager
 
 import anyio
 import pytest
+from starlette import status
+from starlette.middleware import Middleware
+from starlette.routing import Host, Router
+
 from esmerald import Request
 from esmerald.applications import Esmerald
 from esmerald.exceptions import HTTPException, WebSocketException
 from esmerald.middleware import TrustedHostMiddleware
 from esmerald.responses import JSONResponse, PlainTextResponse
 from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, websocket
+from esmerald.routing.handlers import get, head, options, route, websocket
 from esmerald.routing.router import Include, Router
 from esmerald.staticfiles import StaticFiles
 from esmerald.websockets import WebSocket
-from starlette import status
-from starlette.middleware import Middleware
-from starlette.routing import Host, Router
 
 
 async def error_500(request, exc):
@@ -30,7 +31,7 @@ async def http_exception(request, exc):
     return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
-@get()
+@route(methods=["GET", "HEAD", "TRACE"])
 def func_homepage(request: Request) -> PlainTextResponse:
     return PlainTextResponse("Hello, world!")
 
@@ -59,6 +60,16 @@ def custom_subdomain(request: Request) -> PlainTextResponse:
 @get()
 def runtime_error(request: Request) -> None:
     raise RuntimeError()
+
+
+@head()
+def head_func(request: Request) -> PlainTextResponse:
+    return PlainTextResponse("Hello, world!")
+
+
+@options()
+def head_options(request: Request) -> PlainTextResponse:
+    return PlainTextResponse("Hello, world!")
 
 
 @websocket()
@@ -112,6 +123,8 @@ middleware = [Middleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.
 
 app = Esmerald(
     routes=[
+        Gateway("/head", handler=head_func),
+        Gateway("/options", handler=head_options),
         Gateway("/func", handler=func_homepage),
         Gateway("/async", handler=async_homepage),
         Gateway("/500", handler=runtime_error),
@@ -139,11 +152,28 @@ def test_url_path_for():
 def test_func_route(client):
     response = client.get("/func")
     assert response.status_code == 200
-    assert response.text == "Hello, world!"
 
     response = client.head("/func")
     assert response.status_code == 200
     assert response.text == ""
+
+
+def test_head_route(client):
+    response = client.head("/head")
+    assert response.status_code == 200
+
+    response = client.get("/head")
+    assert response.status_code == 405
+
+
+def test_options_route(client):
+
+    response = client.options("/options")
+    assert response.status_code == 200
+    assert response.text == "Hello, world!"
+
+    response = client.get("/options")
+    assert response.status_code == 405
 
 
 def test_async_route(client):

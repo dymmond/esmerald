@@ -14,7 +14,7 @@ export EXCLUDE=__init__.py
 
 set -x
 
-# mypy esmerald
-${PREFIX}autoflake --remove-all-unused-imports  --remove-unused-variables --exclude $EXCLUDE --in-place --recursive $SOURCE_FILES
+# mypy saffier
+${PREFIX}ruff $SOURCE_FILES --fix --line-length 99
 ${PREFIX}black $SOURCE_FILES --check --line-length 99
-${PREFIX}isort $SOURCE_FILES --check-only
+${PREFIX}isort $SOURCE_FILES --project=esmerald --line-length 99

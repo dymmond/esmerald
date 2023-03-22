@@ -32,7 +32,7 @@ from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
 from .routing.gateways import Gateway, WebSocketGateway
-from .routing.handlers import delete, get, patch, post, put, route, websocket
+from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
 from .routing.router import Include, Router
 from .routing.views import APIView
 from .websockets import WebSocket, WebSocketDisconnect
@@ -94,11 +94,14 @@ __all__ = [
     "WebSocketGateway",
     "delete",
     "get",
+    "head",
+    "options",
     "patch",
     "post",
     "put",
     "route",
     "settings",
     "status",
+    "trace",
     "websocket",
 ]
