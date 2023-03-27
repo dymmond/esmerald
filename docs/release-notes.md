@@ -1,5 +1,28 @@
 # Release Notes
 
+## 1.1.0
+
+### Changed
+
+- Updated support for Starlette 0.26.1
+- Updated support for Lifespan [./lifespan.md] events
+- Requests url_for parsing the URL type to return string on parsing [#69](https://github.com/dymmond/esmerald/pull/69).
+- Esmerald official documentation also available on https://esmerald.dev [#70](https://github.com/dymmond/esmerald/pull/70).
+- Updated Github CI to deploy also to https://esmerald.dev [#73](https://github.com/dymmond/esmerald/pull/73)
+
+### Added
+
+- Internal implementation of on_startup and on_shutdown. [#74](https://github.com/dymmond/esmerald/pull/74).
+- Added new internal implementation of on_event and add_event_handler functions. [#74](https://github.com/dymmond/esmerald/pull/74).
+- Missing documentation about the background tasks [#71](https://github.com/dymmond/esmerald/pull/71)
+- Documentation for lifespan events [#72](https://github.com/dymmond/esmerald/pull/72)
+- Added condition to allow cached_properties from the EsmeraldAPISettings and in the settings without raising an Exception.
+- New handlers. OPTIONS, HEAD and TRACE. Check out the  [handlers](./routing/handlers.md) for more details.
+
+### Fixed
+
+- New Starlette Lifespan [#75](https://github.com/dymmond/esmerald/pull/75). This is now also available to be done in the same way Starlette does. Internally Esmerald also implements the on_startup and on_shutdown but that is an unique implementation. This implementation follows the same pattern as the official [Starlette Bridge](https://starlette-bridge.tarsild.io/)
+
 ## 1.0.0
 
 ### Changed
