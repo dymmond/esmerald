@@ -39,7 +39,7 @@ classifiers = [
 ]
 dependencies = [
     "a2wsgi>=1.7.0,<2",
-    "aiofiles>=0.8.0,<23",
+    "aiofiles>=0.8.0,<24",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
     "itsdangerous>=2.1.2,<3.0.0",
@@ -81,7 +81,7 @@ test = [
     "flake8>=5.0.4",
     "black== 23.1.0",
     "isort>=5.0.6,<6.0.0",
-    "aiofiles>=0.8.0,<23",
+    "aiofiles>=0.8.0,<24",
     "a2wsgi>=1.6.0,<2",
     "asyncz>=0.2.0",
     "awesome-slugify>=1.6.5,<2",
@@ -138,7 +138,7 @@ schedulers = ["asyncz>=0.2.0"]
 
 all = [
     "a2wsgi>=1.6.0,<2",
-    "aiofiles>=0.8.0,<23",
+    "aiofiles>=0.8.0,<24",
     "asyncz>=0.2.0",
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.23.3,<0.30.0",
