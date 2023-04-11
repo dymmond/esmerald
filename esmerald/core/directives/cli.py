@@ -21,8 +21,8 @@ from esmerald.core.directives.operations import create_app, create_project
 def esmerald_cli(ctx: click.Context, path: typing.Optional[str]) -> None:
     """Performs database migrations"""
     if HELP_PARAMETER not in sys.argv:
-        migration = DirectiveEnv()
-        app_env = migration.load_from_env(path=path)
+        directive = DirectiveEnv()
+        app_env = directive.load_from_env(path=path)
         ctx.obj = app_env.app
 
 
