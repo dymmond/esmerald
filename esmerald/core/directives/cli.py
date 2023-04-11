@@ -24,6 +24,7 @@ def esmerald_cli(ctx: click.Context, path: typing.Optional[str]) -> None:
         directive = DirectiveEnv()
         app_env = directive.load_from_env(path=path)
         ctx.obj = app_env.app
+        ctx.path = app_env.path
 
 
 esmerald_cli.add_command(create_project, name="create-project")
