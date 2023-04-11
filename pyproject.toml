@@ -47,6 +47,7 @@ dependencies = [
     "loguru>=0.6.0,<0.7.0",
     "pydantic>=1.10.7,<2.0.0",
     "pydantic-factories==1.17.2",
+    "python-multipart>=0.0.5,<0.0.7",
     "openapi-schemas-pydantic>=1.1.0",
     "rich>=13.3.1,<14.0.0",
     "starlette>=0.26.1,<0.27.0",
