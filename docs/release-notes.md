@@ -141,9 +141,7 @@ If you already had template configurations, jwt, schedulers or all the features 
     from asyncz.schedulers import AsyncIOScheduler # for the Scheduler class
     from asyncz.contrib.esmerald.decorator import scheduler # for the decorator
     ```
-
-Optionally, you can simply run `pip install esmerald[all]`
-
+    
 ## 0.10.0
 
 ### Added

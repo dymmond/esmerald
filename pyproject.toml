@@ -45,9 +45,10 @@ dependencies = [
     "itsdangerous>=2.1.2,<3.0.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
     "loguru>=0.6.0,<0.7.0",
-    "pydantic>=1.10.5,<2.0.0",
+    "pydantic>=1.10.7,<2.0.0",
     "pydantic-factories==1.17.2",
     "openapi-schemas-pydantic>=1.1.0",
+    "rich>=13.3.1,<14.0.0",
     "starlette>=0.26.1,<0.27.0",
 ]
 keywords = [
@@ -95,8 +96,6 @@ test = [
     "httpx>=0.24.0,<0.30.0",
     "mock==5.0.1",
     "passlib==1.7.4",
-    "pydantic>=1.10.5,<2.0.0",
-    "pydantic-factories==1.17.2",
     "python-jose>=3.3.0,<4",
     "orjson>=3.8.5,<4.0.0",
     "saffier[postgres]>=0.6.1",
@@ -136,44 +135,30 @@ encoders = ["orjson>=3.8.5,<4.0.0", "ujson>=5.7.0,<6"]
 
 schedulers = ["asyncz>=0.2.0"]
 
-all = [
-    "a2wsgi>=1.6.0,<2",
-    "aiofiles>=0.8.0,<24",
-    "asyncz>=0.2.0",
-    "awesome-slugify>=1.6.5,<2",
-    "httpx>=0.24.0,<0.30.0",
-    "jsonschema_rs>=0.16.2,<0.20.0",
-    "jinja2>=3.1.2,<4.0.0",
-    "loguru>=0.6.0,<0.7.0",
-    "mako==1.2.4",
-    "passlib==1.7.4",
-    "pydantic>=1.10.5,<2.0.0",
-    "pydantic-factories==1.17.2",
-    "python-jose>=3.3.0,<4",
-    "openapi-schemas-pydantic>=1.1.0",
-    "orjson>=3.8.5,<4.0.0",
-    "python-multipart>=0.0.5,<0.0.7",
-    "ujson>=5.7.0,<6",
-]
-
 [tool.hatch.version]
 path = "esmerald/__init__.py"
 
 [project.scripts]
-esmerald-admin = "esmerald.core.management:run_from_command_line"
+esmerald-admin = "esmerald.core.directives.cli:esmerald_cli"
 
 [tool.isort]
 profile = "black"
 known_third_party = ["esmerald", "pydantic", "starlette"]
 
 [tool.mypy]
+warn_unused_configs = true
+warn_unreachable = true
+warn_return_any = true
 strict = true
-disallow_any_generics = false
 disallow_untyped_decorators = true
-implicit_reexport = true
+disallow_any_generics = false
+implicit_reexport = false
+show_error_codes = true
 disallow_incomplete_defs = true
 disable_error_code = "attr-defined"
 exclude = "esmerald/conf,esmerald/utils"
+warn_unused_ignores = true
+warn_redundant_casts = true
 
 [tool.ruff]
 select = [

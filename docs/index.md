@@ -98,12 +98,6 @@ pip install esmerald[jwt]
 pip install esmerald[encoders]
 ```
 
-**All the esmerald features**:
-
-```shell
-pip install esmerald[all]
-```
-
 **If you want to use the esmerald testing client**:
 
 ```shell

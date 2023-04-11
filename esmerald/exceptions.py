@@ -129,6 +129,10 @@ class AuthenticationError(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
+class EnvironmentError(EsmeraldAPIException):
+    ...
+
+
 ExceptionErrorMap = Union[
     HTTPException,
     NotAuthenticated,
