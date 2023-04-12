@@ -42,9 +42,9 @@ def find_application_directives(management_dir: str) -> typing.List[str]:
             continue
 
         directive_dir = os.path.join(root, "operations")
-        for _, name, is_package in pkgutil.iter_modules([directive_dir]):
+        for location, name, is_package in pkgutil.iter_modules([directive_dir]):
             if not is_package and not name.startswith("_"):
-                directive_list.append(name)
+                directive_list.append({"name": name, "location": location.path})
     return directive_list
 
 
@@ -53,34 +53,64 @@ def load_directive_class(app_name: str, name: str) -> Any:
     return module.Directive()
 
 
+def load_directive_class_by_filename(app_name: str, name: str) -> Any:
+    module = import_module("%s.directives.operations.%s" % (app_name, name))
+    return module.Directive()
+
+
 @functools.lru_cache(maxsize=None)
 def get_directives(location: str) -> typing.List[str]:
     command_list = find_directives(location)
-    directives = {name: "esmerald.core" for name in command_list}
+    directives = []
+
+    for name in command_list:
+        directives.append({name: "esmerald.core", "location": None})
     return directives
 
 
 @functools.lru_cache(maxsize=None)
 def get_application_directives(location: str) -> typing.List[str]:
     command_list = find_application_directives(location)
-    directives = {name: "application" for name in command_list}
+    directives = []
+
+    for value in command_list:
+        directives.append({value["name"]: "application", "location": value["location"]})
     return directives
 
 
-def fetch_directive(subdirective: Any, location: str) -> Any:
-    """Fetches the directive classes"""
-    directives = get_directives(location)
+def fetch_custom_directive(subdirective: Any, location: str) -> Any:
+    """Fetches the directive classes custom and native"""
+    directives = get_application_directives(location)
+
     try:
         app_name = directives[subdirective]
     except KeyError:
         possible_matches = get_close_matches(subdirective, directives)
-        printer.write_error("Unknown directive: %r" % subdirective)
-
         if possible_matches:
             printer.write_error(". Did you mean %s?" % possible_matches[0])
+        return None
 
-        printer.write_error("\nType '%s help' for usage.\n" % self.program_name)
-        sys.exit(1)
+    if isinstance(app_name, BaseDirective):
+        klass = app_name
+    else:
+        klass = load_directive_class_by_filename(app_name, subdirective)
+    return klass
+
+
+def fetch_directive(subdirective: Any, location: str, is_custom: bool = False) -> Any:
+    """Fetches the directive classes custom and native"""
+    if not is_custom:
+        directives = get_directives(location)
+    else:
+        return fetch_custom_directive(subdirective, location)
+
+    try:
+        app_name = directives[subdirective]
+    except KeyError:
+        possible_matches = get_close_matches(subdirective, directives)
+        if possible_matches:
+            printer.write_error(". Did you mean %s?" % possible_matches[0])
+        return None
 
     if isinstance(app_name, BaseDirective):
         klass = app_name

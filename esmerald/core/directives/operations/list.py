@@ -37,15 +37,19 @@ def list(ctx: Any) -> None:
     if getattr(ctx, "obj", None) is not None:
         app_directives = get_application_directives(ctx.obj.command_path)
         if app_directives:
-            directives.update(**app_directives)
+            directives.extend(app_directives)
 
     directives_dict = defaultdict(lambda: [])
-    for name, app in directives.items():
-        if app == "esmerald.core":
-            app = "esmerald"
-        else:
-            app = app.rpartition(".")[-1]
-        directives_dict[app].append(name)
+    for directive in directives:
+        for name, app in directive.items():
+            if name == "location":
+                continue
+
+            if app == "esmerald.core":
+                app = "esmerald"
+            else:
+                app = app.rpartition(".")[-1]
+            directives_dict[app].append(name)
 
     for app in sorted(directives_dict):
         usage.append("")
