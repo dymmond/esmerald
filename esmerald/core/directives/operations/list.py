@@ -11,7 +11,7 @@ from typing import Any
 import click
 
 from esmerald.core.directives.utils import get_directives, load_directive_class
-from esmerald.core.terminal.output import Output, OutputColour
+from esmerald.core.terminal import OutputColour, Terminal
 
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
@@ -27,7 +27,7 @@ def list(ctx: Any) -> None:
     Goes through the Esmerald core native directives and given --app
     and lists all the available directives in the system.
     """
-    output = Output()
+    output = Terminal()
     usage = [
         "",
         "Type '<directive> <subcommand> --help' for help on a specific subcommand.",

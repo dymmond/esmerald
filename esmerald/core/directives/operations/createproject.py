@@ -6,18 +6,21 @@ from typing import Any
 
 import click
 
+from esmerald.core.terminal import Print
 
-@click.option(
-    "-n",
-    "--name",
-    help=("Name of the project"),
-)
-@click.option(
-    "-d",
-    "--directory",
-    default=None,
-    help=("Directory to place the project scaffold"),
-)
-@click.command(context_settings={"ignore_unknown_options": True})
-def create_project(name: str, directory: str) -> None:
-    """Creates the scaffold of a project"""
+printer = Print()
+
+
+@click.argument("name", type=str)
+@click.command()
+def create_project(name: str) -> None:
+    """
+    Creates the scaffold of a project.
+
+    How to run: `esmerald-admin createproject <NAME>`
+
+    Example: `esmerald-admin createproject myproject`
+
+    """
+
+    printer.write_success(name)
