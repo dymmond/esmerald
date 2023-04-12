@@ -35,7 +35,9 @@ class BaseDirective:
         """
         return esmerald.__version__
 
-    def create_parser(self, prog_name: Any, subdirective: Any, **kwargs: Dict[str, Any]):
+    def create_parser(
+        self, prog_name: Any, subdirective: Any, **kwargs: Dict[str, Any]
+    ):
         """
         Create and return the ``ArgumentParser`` which will be used to
         parse the arguments to this directive.
@@ -126,4 +128,6 @@ class BaseDirective:
         """
         The logic of the directive. Subclasses must implement this method.
         """
-        raise NotImplementedError("subclasses of BaseDirective must provide a handle() method")
+        raise NotImplementedError(
+            "subclasses of BaseDirective must provide a handle() method"
+        )

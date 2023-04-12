@@ -15,5 +15,5 @@ import click
 )
 @click.command()
 @click.pass_context
-def create_project(ctx: Any, directory: str) -> None:
+def run(ctx: Any, directory: str) -> None:
     """Creates the scaffold of a project"""
