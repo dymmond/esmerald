@@ -1,26 +1,33 @@
-"""
-Client to interact with Saffier models and migrations.
-"""
-
-from typing import Any
-
 import click
 
+from esmerald.core.directives.exceptions import DirectiveError
+from esmerald.core.directives.operations._constants import SECRET_KEY_INSECURE_PREFIX
+from esmerald.core.directives.templates import TemplateDirective
 from esmerald.core.terminal import Print
+from esmerald.utils.crypto import get_random_secret_key
 
 printer = Print()
 
 
+@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
 @click.argument("name", type=str)
-@click.command()
-def create_project(name: str) -> None:
+@click.command(name="createproject")
+def create_project(name: str, verbosity: int) -> None:
     """
     Creates the scaffold of a project.
 
     How to run: `esmerald-admin createproject <NAME>`
 
     Example: `esmerald-admin createproject myproject`
-
     """
+    options = {
+        "secret_key": SECRET_KEY_INSECURE_PREFIX + get_random_secret_key(),
+        "verbosity": verbosity,
+    }
+    directive = TemplateDirective()
 
-    printer.write_success(name)
+    try:
+        directive.handle("project", name=name, **options)
+        printer.write_success(f"Project {name} generated successfully!")
+    except DirectiveError as e:
+        printer.write_error(str(e))

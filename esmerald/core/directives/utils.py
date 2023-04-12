@@ -4,9 +4,16 @@ Utils used by the Esmerald core management.
 import functools
 import os
 import pkgutil
+import sys
 import typing
+from difflib import get_close_matches
 from importlib import import_module
-from typing import TYPE_CHECKING, Any
+from typing import Any
+
+from esmerald.core.directives.base import BaseDirective
+from esmerald.core.terminal import Print
+
+printer = Print()
 
 
 def find_directives(management_dir):
@@ -28,3 +35,25 @@ def get_directives(location: str) -> typing.List[str]:
     command_list = find_directives(location)
     directives = {name: "esmerald.core" for name in command_list}
     return directives
+
+
+def fetch_directive(subdirective: Any, location: str) -> Any:
+    """Fetches the directive classes"""
+    directives = get_directives(location)
+    try:
+        app_name = directives[subdirective]
+    except KeyError:
+        possible_matches = get_close_matches(subdirective, directives)
+        printer.write_error("Unknown directive: %r" % subdirective)
+
+        if possible_matches:
+            printer.write_error(". Did you mean %s?" % possible_matches[0])
+
+        printer.write_error("\nType '%s help' for usage.\n" % self.program_name)
+        sys.exit(1)
+
+    if isinstance(app_name, BaseDirective):
+        klass = app_name
+    else:
+        klass = load_directive_class(app_name, subdirective)
+    return klass

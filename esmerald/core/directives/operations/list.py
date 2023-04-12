@@ -2,18 +2,14 @@
 Client to interact with Saffier models and migrations.
 """
 
-import os
-import sys
 from collections import defaultdict
-from difflib import get_close_matches
 from typing import Any
 
 import click
 
-from esmerald.core.directives.utils import get_directives, load_directive_class
+from esmerald.core.directives.operations._constants import PATH
+from esmerald.core.directives.utils import get_directives
 from esmerald.core.terminal import OutputColour, Terminal
-
-PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 EXCUDED_DIRECTIVES = ["list", "run"]
 
@@ -47,7 +43,7 @@ def list(ctx: Any) -> None:
 
     for app in sorted(directives_dict):
         usage.append("")
-        usage.append(output.message("\[%s]" % app, colour=OutputColour.SUCCESS))
+        usage.append(output.message("\\[%s]" % app, colour=OutputColour.SUCCESS))
 
         for name in sorted(directives_dict[app]):
             usage.append(output.message(f"    {name}", colour=OutputColour.INFO))

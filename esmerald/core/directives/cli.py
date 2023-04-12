@@ -37,5 +37,5 @@ def esmerald_cli(ctx: click.Context, path: typing.Optional[str]) -> None:
 
 
 esmerald_cli.add_command(list, name="directives")
-esmerald_cli.add_command(create_project, name="createproject")
-esmerald_cli.add_command(create_app, name="createapp")
+esmerald_cli.add_command(create_project)
+esmerald_cli.add_command(create_app)

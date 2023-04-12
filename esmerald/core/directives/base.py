@@ -9,18 +9,11 @@ from pydantic import BaseConfig, BaseModel
 from rich.console import Console
 
 import esmerald
-from esmerald.core.terminal import TerminalOutput
 
 console = Console()
 
 
-class Core(BaseModel, TerminalOutput):
-    class Config(BaseConfig):
-        extra = "allow"
-        arbitrary_types_allowed = True
-
-
-class BaseDirective(Core, ABC):
+class BaseDirective(BaseModel, ABC):
     """The base class from which all directrives derive"""
 
     help: str = ""
@@ -40,3 +33,7 @@ class BaseDirective(Core, ABC):
     def handle(self, *args: Any, **options: Any) -> Any:
         """The logic of the directive. Subclasses must implement this method"""
         raise NotImplementedError("subclasses of BaseDirective must provide a handle() method.")
+
+    class Config(BaseConfig):
+        extra = "allow"
+        arbitrary_types_allowed = True
