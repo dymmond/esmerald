@@ -5,12 +5,11 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
-from rich.console import Console
-
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
+from esmerald.core.terminal import Print
 from esmerald.exceptions import EnvironmentError
 
-console = Console()
+printer = Print()
 
 
 @dataclass
@@ -34,6 +33,7 @@ class DirectiveEnv:
 
     path: typing.Optional[str] = None
     app: typing.Optional[typing.Any] = None
+    command_path: typing.Optional[str] = None
 
     def load_from_env(
         self, path: typing.Optional[str] = None, enable_logging: bool = True
@@ -56,7 +56,7 @@ class DirectiveEnv:
         _path = os.getenv(ESMERALD_DISCOVER_APP) if not path else path
         _app = self.find_app(path=_path, enable_logging=enable_logging)
 
-        return DirectiveEnv(path=_app.path, app=_app.app)
+        return DirectiveEnv(path=_app.path, app=_app.app, command_path=command_path)
 
     def import_app_from_string(cls, path: typing.Optional[str] = None) -> Scaffold:
         if path is None:
@@ -73,5 +73,5 @@ class DirectiveEnv:
         Loads the application based on the path provided via env var.
         """
         if enable_logging:
-            console.print(f"[bright_blue]Loading application: [bright_green]{path}")
+            printer.write_info(f"Loading application: {path}", colour="bright_blue")
         return self.import_app_from_string(path)

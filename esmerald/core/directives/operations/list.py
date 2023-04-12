@@ -2,19 +2,20 @@
 Client to interact with Saffier models and migrations.
 """
 
+import os
 from collections import defaultdict
 from typing import Any
 
 import click
 
 from esmerald.core.directives.operations._constants import PATH
-from esmerald.core.directives.utils import get_directives
+from esmerald.core.directives.utils import get_application_directives, get_directives
 from esmerald.core.terminal import OutputColour, Terminal
 
 EXCUDED_DIRECTIVES = ["list", "run"]
 
 
-@click.command()
+@click.command(name="directives")
 @click.pass_context
 def list(ctx: Any) -> None:
     """
@@ -30,8 +31,13 @@ def list(ctx: Any) -> None:
         "",
         "Available directives:",
     ]
-
     directives = get_directives(PATH)
+
+    # Handles the application directives
+    if getattr(ctx, "obj", None) is not None:
+        app_directives = get_application_directives(ctx.obj.command_path)
+        if app_directives:
+            directives.update(**app_directives)
 
     directives_dict = defaultdict(lambda: [])
     for name, app in directives.items():

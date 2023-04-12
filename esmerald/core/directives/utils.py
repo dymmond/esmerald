@@ -15,13 +15,36 @@ from esmerald.core.terminal import Print
 
 printer = Print()
 
+IGNORE_FOLDERS = ["__pycache__"]
+OPERATIONS = "operations"
 
-def find_directives(management_dir):
+
+def find_directives(management_dir: str) -> typing.List[str]:
+    """
+    Shows the available directives from Esmerald.
+    """
     directive_dir = os.path.join(management_dir, "operations")
     directive_list = []
     for _, name, is_package in pkgutil.iter_modules([directive_dir]):
         if not is_package and not name.startswith("_"):
             directive_list.append(name)
+    return directive_list
+
+
+def find_application_directives(management_dir: str) -> typing.List[str]:
+    """
+    Iterates through the application tree and finds the directives available
+    to run.
+    """
+    directive_list = []
+    for root, folders, _ in os.walk(management_dir):
+        if OPERATIONS not in folders:
+            continue
+
+        directive_dir = os.path.join(root, "operations")
+        for _, name, is_package in pkgutil.iter_modules([directive_dir]):
+            if not is_package and not name.startswith("_"):
+                directive_list.append(name)
     return directive_list
 
 
@@ -34,6 +57,13 @@ def load_directive_class(app_name: str, name: str) -> Any:
 def get_directives(location: str) -> typing.List[str]:
     command_list = find_directives(location)
     directives = {name: "esmerald.core" for name in command_list}
+    return directives
+
+
+@functools.lru_cache(maxsize=None)
+def get_application_directives(location: str) -> typing.List[str]:
+    command_list = find_application_directives(location)
+    directives = {name: "application" for name in command_list}
     return directives
 
 

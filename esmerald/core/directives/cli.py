@@ -29,13 +29,12 @@ def esmerald_cli(ctx: click.Context, path: typing.Optional[str]) -> None:
             try:
                 directive = DirectiveEnv()
                 app_env = directive.load_from_env(path=path)
-                ctx.obj = app_env.app
-                ctx.path = app_env.path
+                ctx.obj = app_env
             except EnvironmentError as e:
                 console.print(f"[red]{str(e)}[/red]")
                 sys.exit(1)
 
 
-esmerald_cli.add_command(list, name="directives")
+esmerald_cli.add_command(list)
 esmerald_cli.add_command(create_project)
 esmerald_cli.add_command(create_app)
