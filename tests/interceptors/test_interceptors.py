@@ -6,7 +6,6 @@ from esmerald import ChildEsmerald, Gateway, Include, JSONResponse, Request, pos
 from esmerald.exceptions import NotAuthorized
 from esmerald.interceptors.interceptor import EsmeraldInterceptor
 from esmerald.params import Cookie
-from esmerald.requests import Request
 from esmerald.testclient import create_client
 
 
@@ -24,7 +23,7 @@ class CookieInterceptor(EsmeraldInterceptor):
         try:
             int(csrf_token)
         except (TypeError, ValueError):
-            raise NotAuthorized()
+            raise NotAuthorized() from None
 
 
 class LoggingInterceptor(EsmeraldInterceptor):

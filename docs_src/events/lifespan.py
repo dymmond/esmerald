@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
 
 from pydantic import BaseModel
+from saffier import Database, Registry
 
 from esmerald import Esmerald, Gateway, post
-from saffier import Database, Registry
 
 database = Database("postgresql+asyncpg://user:password@host:port/database")
 registry = Registry(database=database)

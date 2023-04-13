@@ -3,7 +3,6 @@ Signature is widely used by Pydantic and comes from the inpect library.
 A lot of great work was done using the Signature and Esmerald is no exception.
 """
 
-from inspect import Parameter
 from inspect import Signature as InspectSignature
 from typing import TYPE_CHECKING, Any, Generator, Set, Type
 
@@ -37,7 +36,7 @@ class SignatureFactory(BaseModelExtra):
         self.dependency_names = dependency_names
         self.field_definitions = {}
 
-    def validate_missing_dependency(self, param: Parameter) -> None:
+    def validate_missing_dependency(self, param: Any) -> None:
         if param.optional:
             return
         if not is_dependency_field(param.default):
@@ -51,11 +50,11 @@ class SignatureFactory(BaseModelExtra):
                 f"or provided dependency."
             )
 
-    def get_dependency_names(self, param: Parameter) -> None:
+    def get_dependency_names(self, param: Any) -> None:
         if is_dependency_field(param.default):
             self.dependency_names.add(param.name)
 
-    def set_default_field(self, param: Parameter) -> None:
+    def set_default_field(self, param: Any) -> None:
         if param.default_defined:
             self.defaults[param.name] = param.default
 

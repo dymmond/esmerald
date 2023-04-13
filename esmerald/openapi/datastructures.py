@@ -1,7 +1,8 @@
 from typing import Type
 
-from esmerald.enums import MediaType
 from pydantic import BaseModel
+
+from esmerald.enums import MediaType
 
 
 class ResponseSpecification(BaseModel):

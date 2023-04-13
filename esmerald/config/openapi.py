@@ -15,7 +15,6 @@ from openapi_schemas_pydantic.v3_1_0 import (
     Server,
     Tag,
 )
-from openapi_schemas_pydantic.v3_1_0.path_item import PathItem
 from pydantic import AnyUrl, BaseModel
 from typing_extensions import Literal
 

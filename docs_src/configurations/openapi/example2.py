@@ -1,5 +1,6 @@
-from esmerald import Esmerald, OpenAPIConfig
 from myapp.openapi.views import MyOpenAPIView
+
+from esmerald import Esmerald, OpenAPIConfig
 
 
 class MyOpenAPIConfig(OpenAPIConfig):

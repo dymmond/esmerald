@@ -1,7 +1,8 @@
 from enum import Enum
 
-from esmerald.contrib.auth.saffier.base_user import User as BaseUser
 from saffier import Database, Registry, fields
+
+from esmerald.contrib.auth.saffier.base_user import User as BaseUser
 
 database = Database("<YOUR-SQL-QUERY_STRING")
 models = Registry(database=database)

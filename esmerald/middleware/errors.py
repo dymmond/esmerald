@@ -1,8 +1,6 @@
 import traceback
 
-from starlette.middleware.errors import (
-    ServerErrorMiddleware as StarletteServerErrorMiddleware,
-)
+from starlette.middleware.errors import ServerErrorMiddleware as StarletteServerErrorMiddleware
 from starlette.responses import HTMLResponse, PlainTextResponse, Response
 
 from esmerald.requests import Request

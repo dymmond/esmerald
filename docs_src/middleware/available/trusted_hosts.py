@@ -1,8 +1,9 @@
 from typing import List
 
+from starlette.middleware import Middleware as StarletteMiddleware
+
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.middleware import TrustedHostMiddleware
-from starlette.middleware import Middleware as StarletteMiddleware
 
 routes = [...]
 

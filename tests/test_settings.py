@@ -16,7 +16,6 @@ from esmerald import (
     get,
     settings,
 )
-from esmerald.conf import settings
 from esmerald.config import CORSConfig, CSRFConfig
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.middleware import RequestSettingsMiddleware

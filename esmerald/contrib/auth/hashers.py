@@ -86,7 +86,7 @@ def get_hashers():
 
     password_hashers = getattr(settings, "password_hashers", None)
     if not password_hashers:
-        warnings.warn("`password_hashers` missing from settings.")
+        warnings.warn("`password_hashers` missing from settings.", stacklevel=2)
         return hashers
 
     for hasher_path in settings.password_hashers:
@@ -141,12 +141,12 @@ def get_hasher(algorithm="default"):
         hashers = get_hashers_by_algorithm()
         try:
             return hashers[algorithm]
-        except KeyError:
+        except KeyError as e:
             raise ValueError(
                 "Unknown password hashing algorithm '%s'. "
                 "Did you specify it in your settings? "
                 "setting?" % algorithm
-            )
+            ) from e
 
 
 def identify_hasher(encoded):

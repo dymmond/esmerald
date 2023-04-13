@@ -1,5 +1,6 @@
-from esmerald.enums import HttpMethod
 from starlette import status
+
+from esmerald.enums import HttpMethod
 
 RESERVED_KWARGS = {"state", "headers", "cookies", "request", "socket", "data", "query"}
 REQUIRED = "required"

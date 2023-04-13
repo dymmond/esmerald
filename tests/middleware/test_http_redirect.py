@@ -1,8 +1,9 @@
-from esmerald.applications import Esmerald
 from starlette.middleware import Middleware
+
+from esmerald import Gateway, Request, get
+from esmerald.applications import Esmerald
 from esmerald.middleware.https import HTTPSRedirectMiddleware
 from esmerald.responses import PlainTextResponse
-from esmerald import Gateway, get, Request
 
 
 def test_https_redirect_middleware(test_client_factory):

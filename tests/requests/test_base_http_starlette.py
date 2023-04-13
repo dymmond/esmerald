@@ -9,12 +9,12 @@ import anyio
 import pytest
 from starlette.datastructures import Address, State
 from starlette.status import HTTP_200_OK
-from esmerald.testclient import EsmeraldTestClient
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import InternalServerError
 from esmerald.requests import ClientDisconnect, Request, empty_send
 from esmerald.responses import JSONResponse, PlainTextResponse, Response
+from esmerald.testclient import EsmeraldTestClient
 
 if TYPE_CHECKING:
     from starlette.types import Receive, Send

@@ -2,8 +2,9 @@ from functools import partial
 from typing import Awaitable, Callable, Generic, List, TypeVar, Union
 
 from anyio.to_thread import run_sync
-from esmerald.utils.helpers import is_async_callable
 from typing_extensions import ParamSpec
+
+from esmerald.utils.helpers import is_async_callable
 
 P = ParamSpec("P")
 T = TypeVar("T")

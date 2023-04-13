@@ -1,7 +1,8 @@
+from starlette.middleware import Middleware as StarletteMiddleware
+
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.config import SessionConfig
 from esmerald.middleware import SessionMiddleware
-from starlette.middleware import Middleware as StarletteMiddleware
 
 routes = [...]
 

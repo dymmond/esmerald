@@ -3,10 +3,11 @@ Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
 __version__ = "1.1.0"
 
+from starlette import status
+
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.injector import Inject
-from starlette import status
 
 from .applications import ChildEsmerald, Esmerald
 from .backgound import BackgroundTask, BackgroundTasks

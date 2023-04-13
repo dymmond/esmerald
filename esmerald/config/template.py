@@ -1,8 +1,9 @@
 from typing import List, Type, Union
 
+from pydantic import BaseConfig, BaseModel, DirectoryPath
+
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.template.jinja import JinjaTemplateEngine
-from pydantic import BaseConfig, BaseModel, DirectoryPath
 
 
 class TemplateConfig(BaseModel):

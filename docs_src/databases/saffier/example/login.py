@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 
 from accounts.models import User
 from pydantic import BaseModel
+from saffier.exceptions import DoesNotFound
 
 from esmerald import JSONResponse, post, status
 from esmerald.conf import settings
 from esmerald.security.jwt.token import Token
-from saffier.exceptions import DoesNotFound
 
 
 class LoginIn(BaseModel):

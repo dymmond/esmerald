@@ -1,7 +1,7 @@
 from contextlib import suppress
+from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING, Any
 
-from json import JSONDecodeError, loads
 from pydantic import BaseConfig, BaseModel
 from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
 

@@ -1,7 +1,8 @@
+from starlette.middleware import Middleware as StarletteMiddleware
+
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.config import CORSConfig
 from esmerald.middleware import CORSMiddleware
-from starlette.middleware import Middleware as StarletteMiddleware
 
 routes = [...]
 

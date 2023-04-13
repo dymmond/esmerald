@@ -7,6 +7,7 @@ from typing import AsyncGenerator
 import pytest
 from httpx import AsyncClient
 from pydantic import BaseModel
+from saffier.exceptions import DoesNotFound
 from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald import Esmerald, Gateway, Include, JSONResponse, Request, get, post, status
@@ -16,7 +17,6 @@ from esmerald.contrib.auth.saffier.base_user import AbstractUser
 from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
-from saffier.exceptions import DoesNotFound
 
 database, models = settings.registry
 pytestmark = pytest.mark.anyio

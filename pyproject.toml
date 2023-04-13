@@ -175,6 +175,8 @@ ignore = [
     "C901", # too complex
 ]
 
+exclude = ["docs_src/*"]
+
 [[tool.mypy.overrides]]
 module = "esmerald.tests.*"
 ignore_missing_imports = true

@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
-from esmerald.enums import ScopeType
-from esmerald.protocols.middleware import MiddlewareProtocol
 from pydantic import BaseConfig, BaseModel
 from starlette.requests import HTTPConnection
+
+from esmerald.enums import ScopeType
+from esmerald.protocols.middleware import MiddlewareProtocol
 
 if TYPE_CHECKING:
     from starlette.types import ASGIApp, Receive, Scope, Send

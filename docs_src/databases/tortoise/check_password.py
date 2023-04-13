@@ -1,5 +1,6 @@
-from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
 from pydantic import EmailStr
+
+from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
 
 
 class User(BaseUser):

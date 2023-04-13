@@ -41,9 +41,9 @@ class TemplateDirective(BaseDirective):
         try:
             os.makedirs(top_dir)
         except FileExistsError:
-            raise DirectiveError(f"{top_dir} already exists.")
+            raise DirectiveError(f"{top_dir} already exists.") from None
         except OSError as e:
-            raise DirectiveError(e)
+            raise DirectiveError(e) from e
 
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"

@@ -64,4 +64,4 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         try:
             return await self.user_model.get(**user_field)
         except DoesNotExist:
-            raise NotAuthorized()
+            raise NotAuthorized() from None

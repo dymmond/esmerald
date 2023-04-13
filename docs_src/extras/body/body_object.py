@@ -1,5 +1,6 @@
-from esmerald import Body, Esmerald, Gateway, post
 from pydantic import BaseModel, EmailStr
+
+from esmerald import Body, Esmerald, Gateway, post
 
 
 class User(BaseModel):

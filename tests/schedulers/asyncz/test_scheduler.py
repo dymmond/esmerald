@@ -2,9 +2,6 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
 import pytest
-from loguru import logger
-from mock import MagicMock
-
 from asyncz.contrib.esmerald.decorator import scheduler
 from asyncz.executors.base import BaseExecutor
 from asyncz.schedulers import AsyncIOScheduler
@@ -13,6 +10,9 @@ from asyncz.stores.base import BaseStore
 from asyncz.tasks.types import TaskType
 from asyncz.triggers import IntervalTrigger
 from asyncz.triggers.base import BaseTrigger
+from loguru import logger
+from mock import MagicMock
+
 from esmerald import Esmerald
 from esmerald.exceptions import ImproperlyConfigured
 

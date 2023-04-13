@@ -1,7 +1,8 @@
 from typing import List
 
-from esmerald import Esmerald, Gateway, post
 from pydantic import BaseModel, EmailStr, Field, validator
+
+from esmerald import Esmerald, Gateway, post
 
 
 class User(BaseModel):

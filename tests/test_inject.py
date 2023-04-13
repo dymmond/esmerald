@@ -2,6 +2,7 @@ from functools import partial
 from typing import Any
 
 import pytest
+
 from esmerald.injector import Inject
 from esmerald.typing import Void
 

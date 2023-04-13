@@ -13,8 +13,8 @@ from typing import (
 )
 
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-from starlette.responses import Response as StarletteResponse
-from starlette.types import ASGIApp
+from starlette.responses import Response as StarletteResponse  # noqa
+from starlette.types import ASGIApp  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -23,12 +23,12 @@ from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include
 
 try:
-    from asyncz.schedulers import AsyncIOScheduler
+    from asyncz.schedulers import AsyncIOScheduler  # noqa
 except ImportError:
     AsyncIOScheduler = Any
 
 try:
-    from esmerald.config.template import TemplateConfig
+    from esmerald.config.template import TemplateConfig as TemplateConfig  # noqa
 except MissingDependency:
     TemplateConfig = Any
 
@@ -44,13 +44,11 @@ if TYPE_CHECKING:
     from esmerald.routing.views import APIView  # noqa
     from esmerald.websockets import WebSocket  # noqa
 else:
-    ASGIApp = Any
     HTTPHandler = Any
     Message = Any
     Receive = Any
     Scope = Any
     Send = Any
-    StarletteMiddleware = Any
     BaseHTTPMiddleware = Any
     Inject = Any
     Request = Any

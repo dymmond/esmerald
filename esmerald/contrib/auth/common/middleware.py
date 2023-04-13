@@ -81,7 +81,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):
                 token=auth_token, key=self.config.signing_key, algorithms=[self.config.algorithm]
             )
         except (JWSError, JWTError) as e:
-            raise AuthenticationError(str(e))
+            raise AuthenticationError(str(e)) from e
 
         user = await self.retrieve_user(token.sub)
         if not user:

@@ -1,11 +1,7 @@
 from tortoise import fields
 from tortoise.models import Model
 
-from esmerald.contrib.auth.hashers import (
-    check_password,
-    is_password_usable,
-    make_password,
-)
+from esmerald.contrib.auth.hashers import check_password, is_password_usable, make_password
 
 
 class AutoIncrementIntMixin(Model):

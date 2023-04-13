@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
-    from esmerald.routing.views import APIView
     from esmerald.types import Dependencies, ExceptionHandlers, Middleware, ParentType
 
 
