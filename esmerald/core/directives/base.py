@@ -26,13 +26,6 @@ class BaseDirective(BaseModel, ABC):
         """
         return esmerald.__version__
 
-    def print_help(self, name: str, subdirective: str) -> str:
-        """
-        Prints the help of the directive.
-        """
-        parser = self.create_parser(name, subdirective)
-        parser.print_help()
-
     def add_arguments(self, parser: Type["argparse.ArgumentParser"]) -> Any:
         """
         Entrypoint for directives and custom arguments

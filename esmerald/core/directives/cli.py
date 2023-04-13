@@ -1,6 +1,3 @@
-"""
-Client to interact with Saffier models and migrations.
-"""
 import os
 import sys
 import typing

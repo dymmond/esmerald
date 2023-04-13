@@ -14,7 +14,3 @@ class DirectiveError(EsmeraldAPIException):
     def __init__(self, detail: str, returncode: int = 1, **kwargs: "DictAny"):
         self.returncode = returncode
         super().__init__(detail=detail, **kwargs)
-
-
-class SystemCheckError(DirectiveError):
-    ...

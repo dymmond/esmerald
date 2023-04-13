@@ -1,7 +1,3 @@
-"""
-Client to interact with Saffier models and migrations.
-"""
-
 import os
 import sys
 from enum import Enum
@@ -63,11 +59,7 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
     # The arguments for the directives start at the position 6
     position = get_position()
     program_name = " ".join(value for value in sys.argv[:position])
-
-    if sys.argv[position + 1 :] in (["--help"],):
-        directive.print_help(program_name, sys.argv[position])
-    else:
-        directive.execute_from_command(sys.argv[:], program_name, position)
+    directive.execute_from_command(sys.argv[:], program_name, position)
 
 
 def get_position():
