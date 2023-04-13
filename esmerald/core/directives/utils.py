@@ -82,13 +82,24 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
     """Fetches the directive classes custom and native"""
     directives = get_application_directives(location)
 
-    try:
-        app_name = directives[subdirective]
-    except KeyError:
-        possible_matches = get_close_matches(subdirective, directives)
-        if possible_matches:
-            printer.write_error(". Did you mean %s?" % possible_matches[0])
-        return None
+    counter = 0
+    matches = []
+
+    for directive in directives:
+        try:
+            app_name = directive[subdirective]
+        except KeyError:
+            counter += 1
+
+            directive = {k: v for k, v in directive.items() if k != "location"}
+            matches.extend(get_close_matches(subdirective, directive))
+
+            if matches and len(directives) == counter:
+                printer.write_error("Did you mean %s?" % matches[0])
+
+            if len(directives) == counter:
+                return None
+            continue
 
     if isinstance(app_name, BaseDirective):
         klass = app_name
@@ -104,13 +115,24 @@ def fetch_directive(subdirective: Any, location: str, is_custom: bool = False) -
     else:
         return fetch_custom_directive(subdirective, location)
 
-    try:
-        app_name = directives[subdirective]
-    except KeyError:
-        possible_matches = get_close_matches(subdirective, directives)
-        if possible_matches:
-            printer.write_error(". Did you mean %s?" % possible_matches[0])
-        return None
+    counter = 0
+    matches = []
+
+    for directive in directives:
+        try:
+            app_name = directive[subdirective]
+        except KeyError:
+            counter += 1
+
+            directive = {k: v for k, v in directive.items() if k != "location"}
+            matches.extend(get_close_matches(subdirective, directive))
+
+            if matches and len(directives) == counter:
+                printer.write_error("Did you mean %s?" % matches[0])
+
+            if len(directives) == counter:
+                return None
+            continue
 
     if isinstance(app_name, BaseDirective):
         klass = app_name

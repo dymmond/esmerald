@@ -47,6 +47,6 @@ def run(ctx: Any, name: str) -> None:
 
     directive = fetch_directive(name, ctx.obj.command_path, True)
     if not directive:
-        # directive = fetch_directive(name, PATH)
+        directive = fetch_directive(name, PATH)
         printer.write_error("Unknown directive: %r" % name)
         sys.exit(1)
