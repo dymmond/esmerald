@@ -2,7 +2,6 @@
 Client to interact with Saffier models and migrations.
 """
 
-import os
 from collections import defaultdict
 from typing import Any
 

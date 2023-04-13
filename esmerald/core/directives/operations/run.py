@@ -5,7 +5,7 @@ Client to interact with Saffier models and migrations.
 import os
 import sys
 from enum import Enum
-from typing import Any, List
+from typing import Any
 
 import click
 
@@ -21,12 +21,6 @@ class Position(int, Enum):
     BACK = 3
 
 
-@click.command(
-    name="run",
-    context_settings=dict(
-        ignore_unknown_options=True,
-    ),
-)
 @click.option(
     "--directive",
     "directive",
@@ -34,6 +28,13 @@ class Position(int, Enum):
     help=("The name of the custom directive to run"),
 )
 @click.argument("directive_args", nargs=-1, type=click.UNPROCESSED)
+@click.command(
+    # cls=ConditionalHelp,
+    name="run",
+    context_settings={
+        "ignore_unknown_options": True,
+    },
+)
 @click.pass_context
 def run(ctx: Any, directive: str, directive_args: Any) -> None:
     """
@@ -63,7 +64,7 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
     position = get_position()
     program_name = " ".join(value for value in sys.argv[:position])
 
-    if sys.argv[position + 1 :] in (["--info"],):
+    if sys.argv[position + 1 :] in (["--help"],):
         directive.print_help(program_name, sys.argv[position])
     else:
         directive.execute_from_command(sys.argv[:], program_name, position)

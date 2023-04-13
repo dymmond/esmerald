@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Type
+from typing import Any, Type
 
 from pydantic import BaseConfig, BaseModel
 
