@@ -46,7 +46,3 @@ class Terminal(Base):
 
     def write(self, message: str) -> None:
         console.print(message)
-
-    def message(self, message: str, colour: str) -> str:
-        """Returns a message formated with specific colours"""
-        return f"[{colour}]{message}[/{colour}]"
