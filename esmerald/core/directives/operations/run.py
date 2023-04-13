@@ -54,6 +54,7 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
     # Execute the directive
     # The arguments for the directives start at the position 6
     if sys.argv[6:] in (["--info"],):
-        directive.print_help(sys.argv[0], sys.argv[5])
+        message = " ".join(value for value in sys.argv[:5])
+        directive.print_help(message, sys.argv[5])
     else:
         directive.execute_from_command(sys.argv[:])
