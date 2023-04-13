@@ -2,6 +2,7 @@
 Utils used by the Esmerald core management.
 """
 import functools
+import importlib
 import os
 import pkgutil
 import sys
@@ -11,6 +12,7 @@ from importlib import import_module
 from typing import Any
 
 from esmerald.core.directives.base import BaseDirective
+from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.terminal import Print
 
 printer = Print()
@@ -49,12 +51,26 @@ def find_application_directives(management_dir: str) -> typing.List[str]:
 
 
 def load_directive_class(app_name: str, name: str) -> Any:
+    """
+    Loads the directive class from native Esmerald.
+    """
     module = import_module("%s.directives.operations.%s" % (app_name, name))
     return module.Directive()
 
 
-def load_directive_class_by_filename(app_name: str, name: str) -> Any:
-    module = import_module("%s.directives.operations.%s" % (app_name, name))
+def load_directive_class_by_filename(app_name: str, location: str) -> Any:
+    """
+    Loads the directive by filename.
+
+    Passing a name a location, dynamically searches for the directive python file
+    and loads it.
+    """
+    spec = importlib.util.spec_from_file_location(app_name, location)
+    if not spec or spec is None:
+        printer.write_error(f"{app_name} not found")
+        sys.exit(1)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
     return module.Directive()
 
 
@@ -85,9 +101,13 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
     counter = 0
     matches = []
 
-    for directive in directives:
+    for directive in sorted(directives, key=lambda d: d["location"]):
         try:
-            app_name = directive[subdirective]
+            for key, _ in directive.items():
+                if key == subdirective:
+                    app_name = key
+                    location = directive["location"]
+                    break
         except KeyError:
             counter += 1
 
@@ -101,10 +121,11 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
                 return None
             continue
 
-    if isinstance(app_name, BaseDirective):
-        klass = app_name
-    else:
-        klass = load_directive_class_by_filename(app_name, subdirective)
+    name = f"{location}/{app_name}.py"
+    klass = load_directive_class_by_filename(app_name, name)
+
+    if not isinstance(klass, BaseDirective):
+        raise DirectiveError(detail="The directive must be a subclass of BaseDirective")
     return klass
 
 
