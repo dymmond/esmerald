@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING, Optional
 
-from esmerald.enums import EncodingType
-from esmerald.openapi.schema import create_schema, update_schema_field_info
 from openapi_schemas_pydantic.v3_1_0.media_type import MediaType as OpenAPIMediaType
 from openapi_schemas_pydantic.v3_1_0.request_body import RequestBody
+
+from esmerald.enums import EncodingType
+from esmerald.openapi.schema import create_schema, update_schema_field_info
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField

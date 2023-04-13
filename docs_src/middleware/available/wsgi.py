@@ -1,6 +1,7 @@
+from flask import Flask, make_response
+
 from esmerald import Esmerald, Include
 from esmerald.middleware import WSGIMiddleware
-from flask import Flask, make_response
 
 flask = Flask(__name__)
 

@@ -1,7 +1,8 @@
 from typing import Optional
 
-from esmerald import Esmerald, Gateway, post
 from pydantic import BaseModel, EmailStr
+
+from esmerald import Esmerald, Gateway, post
 
 
 class Address(BaseModel):

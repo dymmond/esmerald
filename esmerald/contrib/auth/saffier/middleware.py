@@ -1,11 +1,11 @@
 from typing import Any, Generic, TypeVar
 
+from saffier.exceptions import DoesNotFound
 from starlette.types import ASGIApp
 
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.common.middleware import CommonJWTAuthMiddleware
 from esmerald.exceptions import AuthenticationError, NotAuthorized
-from saffier.exceptions import DoesNotFound
 
 T = TypeVar("T")
 
@@ -64,12 +64,12 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
             sub = int(token_sub)
             token_sub = sub
         except (TypeError, ValueError):
-            ...
+            ...  # noqa
 
         user_field = {self.config.user_id_field: token_sub}
         try:
             return await self.user_model.query.get(**user_field)
         except DoesNotFound:
-            raise NotAuthorized()
+            raise NotAuthorized() from None
         except Exception as e:
-            raise AuthenticationError(detail=str(e))
+            raise AuthenticationError(detail=str(e)) from e

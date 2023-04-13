@@ -69,7 +69,7 @@ def force_str(
         else:
             s = str(s)
     except UnicodeDecodeError as e:
-        raise ExtraUnicodeDecodeError(s, *e.args)
+        raise ExtraUnicodeDecodeError(s, *e.args) from e
     return s
 
 

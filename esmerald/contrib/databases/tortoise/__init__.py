@@ -4,9 +4,10 @@ Helpers for the TortoiseORM integragion.
 from types import ModuleType
 from typing import Dict, Iterable, List, Optional, Type, Union
 
-from esmerald.conf import settings
 from loguru import logger
 from tortoise import Tortoise
+
+from esmerald.conf import settings
 
 
 async def init_database(

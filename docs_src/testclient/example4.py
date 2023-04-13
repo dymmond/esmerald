@@ -1,18 +1,11 @@
 import pytest
-from esmerald import (
-    Gateway,
-    Include,
-    Request,
-    WebSocket,
-    WebSocketGateway,
-    get,
-    websocket,
-)
+from starlette.responses import Response
+
+from esmerald import Gateway, Include, Request, WebSocket, WebSocketGateway, get, websocket
 from esmerald.enums import MediaType
 from esmerald.permissions import AllowAny, DenyAll
 from esmerald.responses import JSONResponse
 from esmerald.testclient import create_client
-from starlette.responses import Response
 
 
 @get(path="/", permissions=[DenyAll])

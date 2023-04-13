@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from asyncz.schedulers import AsyncIOScheduler
+
 from esmerald import Esmerald, EsmeraldAPISettings
 
 if TYPE_CHECKING:

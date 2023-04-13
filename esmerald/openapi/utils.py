@@ -1,8 +1,9 @@
 import re
 from typing import TYPE_CHECKING
 
-from esmerald.exceptions import ImproperlyConfigured
 from openapi_schemas_pydantic.utils.constants import PYDANTIC_FIELD_SHAPE_MAP
+
+from esmerald.exceptions import ImproperlyConfigured
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.utils.enums import OpenAPIType

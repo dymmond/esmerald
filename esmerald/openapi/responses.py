@@ -2,32 +2,28 @@ from http import HTTPStatus
 from inspect import Signature
 from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Tuple, Type, cast
 
+from openapi_schemas_pydantic.v3_1_0 import Response
+from openapi_schemas_pydantic.v3_1_0.header import Header
+from openapi_schemas_pydantic.v3_1_0.media_type import MediaType as OpenAPISchemaMediaType
+from openapi_schemas_pydantic.v3_1_0.schema import Schema
+from starlette.routing import get_name
+from typing_extensions import get_args, get_origin
+
 from esmerald.datastructures import File, Redirect, Stream, Template
 from esmerald.enums import MediaType
-from esmerald.exceptions import (
-    HTTPException,
-    ImproperlyConfigured,
-    ValidationErrorException,
-)
+from esmerald.exceptions import HTTPException, ImproperlyConfigured, ValidationErrorException
 from esmerald.openapi.enums import OpenAPIFormat, OpenAPIType
 from esmerald.openapi.schema import create_schema
 from esmerald.openapi.utils import pascal_case_to_text
 from esmerald.responses import Response as EsmeraldResponse
 from esmerald.utils.model import create_parsed_model_field
-from openapi_schemas_pydantic.v3_1_0 import Response
-from openapi_schemas_pydantic.v3_1_0.header import Header
-from openapi_schemas_pydantic.v3_1_0.media_type import (
-    MediaType as OpenAPISchemaMediaType,
-)
-from openapi_schemas_pydantic.v3_1_0.schema import Schema
-from starlette.routing import get_name
-from typing_extensions import get_args, get_origin
 
 if TYPE_CHECKING:
+    from openapi_schemas_pydantic.v3_1_0.responses import Responses
+
     from esmerald.datastructures import Cookie
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import AnyCallable
-    from openapi_schemas_pydantic.v3_1_0.responses import Responses
 
 
 def create_cookie_schema(cookie: "Cookie") -> Schema:

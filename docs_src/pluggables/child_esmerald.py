@@ -2,15 +2,7 @@ from typing import Optional
 
 from loguru import logger
 
-from esmerald import (
-    ChildEsmerald,
-    Esmerald,
-    Extension,
-    Gateway,
-    JSONResponse,
-    Pluggable,
-    get,
-)
+from esmerald import ChildEsmerald, Esmerald, Extension, Gateway, JSONResponse, Pluggable, get
 from esmerald.types import DictAny
 
 

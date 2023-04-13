@@ -1,8 +1,9 @@
-from esmerald.applications import Esmerald
 from starlette.middleware import Middleware
+
+from esmerald import CORSConfig, Gateway, Request, get, route
+from esmerald.applications import Esmerald
 from esmerald.middleware.cors import CORSMiddleware
 from esmerald.responses import PlainTextResponse
-from esmerald import Gateway, Request, get, route, CORSConfig
 
 
 def test_cors_allow_all(test_client_factory):

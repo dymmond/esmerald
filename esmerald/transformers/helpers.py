@@ -1,7 +1,6 @@
 import inspect
 from typing import Any
 
-from esmerald.transformers.types import ConstrainedField
 from pydantic import (
     ConstrainedBytes,
     ConstrainedDate,
@@ -13,6 +12,8 @@ from pydantic import (
     ConstrainedSet,
     ConstrainedStr,
 )
+
+from esmerald.transformers.types import ConstrainedField
 
 
 def is_pydantic_constrained_field(value: Any) -> ConstrainedField:

@@ -24,8 +24,6 @@ from esmerald.utils.constants import AVAILABLE_METHODS
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
 
-    from esmerald.exceptions import HTTPException
-
 
 SUCCESSFUL_RESPONSE = "Successful response"
 

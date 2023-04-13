@@ -1,8 +1,9 @@
 from enum import Enum
 
+from saffier import fields
+
 from esmerald.conf import settings
 from esmerald.contrib.auth.saffier.base_user import User as BaseUser
-from saffier import fields
 
 database, models = settings.registry
 

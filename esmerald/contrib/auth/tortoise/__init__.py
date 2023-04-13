@@ -1,11 +1,6 @@
 from tortoise import fields, models
 
-from .base_user import (
-    AbstractUser,
-    AutoIncrementBigIntMixin,
-    AutoIncrementIntMixin,
-    User,
-)
+from .base_user import AbstractUser, AutoIncrementBigIntMixin, AutoIncrementIntMixin, User
 
 __all__ = [
     "User",

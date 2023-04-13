@@ -1,7 +1,6 @@
-from esmerald import Esmerald, StaticFilesConfig
-
 from pathlib import Path
 
+from esmerald import Esmerald, StaticFilesConfig
 
 static_files_config = StaticFilesConfig(
     path="/static", packages=["mypackage"], directory=Path("static")

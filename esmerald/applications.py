@@ -61,8 +61,6 @@ from esmerald.types import (
 from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
-
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -397,10 +395,10 @@ class Esmerald(Starlette):
         """
         try:
             from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
-            )
+            ) from e
 
         self.scheduler = EsmeraldScheduler(
             app=self,

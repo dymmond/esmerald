@@ -1,18 +1,18 @@
-"""
-Esmerald readapted the same concept to allow a simple integration for the
-`esmerald-admin` allowing the creation of a project and app via command line.
-"""
 import os
 import shutil
 import stat
 from importlib import import_module
+from pathlib import Path
 from typing import Any, Dict, Union
 
 from jinja2 import Environment, FileSystemLoader
-from pydantic import FilePath
 
 import esmerald
-from esmerald.core.management.base import BaseDirective, DirectiveError
+from esmerald.core.directives.base import BaseDirective
+from esmerald.core.directives.exceptions import DirectiveError
+from esmerald.core.terminal import Print
+
+printer = Print()
 
 
 class TemplateDirective(BaseDirective):
@@ -28,16 +28,9 @@ class TemplateDirective(BaseDirective):
         (".e-tpl", ""),
     )
 
-    def add_arguments(self, parser: Any):
-        parser.add_argument("name", help="Name of the application or project.")
-
-    def handle(
-        self,
-        app_or_project: str,
-        name: str,
-        **options: Dict[str, Any],
-    ):
+    def handle(self, app_or_project: str, name: str, **options: Any) -> Any:
         self.app_or_project = app_or_project
+        self.name = name
         self.a_or_an = "an" if app_or_project == "app" else "a"
         self.paths_to_remove = []
         self.verbosity = options["verbosity"]
@@ -48,9 +41,9 @@ class TemplateDirective(BaseDirective):
         try:
             os.makedirs(top_dir)
         except FileExistsError:
-            raise DirectiveError(f"{top_dir} already exists.")
+            raise DirectiveError(f"{top_dir} already exists.") from None
         except OSError as e:
-            raise DirectiveError(e)
+            raise DirectiveError(e) from e
 
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"
@@ -87,7 +80,7 @@ class TemplateDirective(BaseDirective):
                     if new_path.endswith(old_suffix):
                         new_path = new_path[: -len(old_suffix)] + new_suffix
                         template_name = template_name[: -len(old_suffix)] + new_suffix
-                        break  # Only rewrite once
+                        break
 
                 if os.path.exists(new_path):
                     raise DirectiveError(
@@ -99,26 +92,26 @@ class TemplateDirective(BaseDirective):
                             app_or_project,
                         )
                     )
+
                 shutil.copyfile(old_path, new_path)
                 if self.verbosity >= 2:
-                    self.stdout.write("Creating %s" % new_path)
+                    printer.write_info("Creating %s" % new_path)
                 try:
                     self.manage_template_variables(template_name, new_path, project_dir, context)
                     self.apply_umask(old_path, new_path)
                     self.make_file_writable(new_path)
                 except OSError:
-                    self.stderr.write(
+                    printer.write_error(
                         "Notice: Couldn't set permission bits on %s. You're "
                         "probably using an uncommon filesystem setup. No "
                         "problem." % new_path,
-                        self.style.NOTICE,
                     )
 
     def manage_template_variables(
         self,
-        template: Union[str, FilePath],
-        destination: Union[str, FilePath],
-        template_dir: Union[str, FilePath],
+        template: Union[str, Path],
+        destination: Union[str, Path],
+        template_dir: Union[str, Path],
         context: Dict[str, Any],
     ):
         """
@@ -167,7 +160,7 @@ class TemplateDirective(BaseDirective):
                 )
             )
 
-    def apply_umask(self, old_path: Union[str, FilePath], new_path: Union[str, FilePath]):
+    def apply_umask(self, old_path: Union[str, Path], new_path: Union[str, Path]):
         current_umask = os.umask(0)
         os.umask(current_umask)
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)

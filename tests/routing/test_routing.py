@@ -986,6 +986,6 @@ def test_exception_on_mounted_apps(test_app_client_factory):
     client = test_app_client_factory(app)
     response = client.get("/sub/")
 
-    "Exception: Exc" in response.text
-    response.status_code == 500
-    response.reason_phrase == "Internal Server Error"
+    assert "Exception: Exc" in response.text
+    assert response.status_code == 500
+    assert response.reason_phrase == "Internal Server Error"

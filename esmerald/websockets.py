@@ -3,9 +3,7 @@ from typing import Generic, Optional, TypeVar
 from starlette.requests import HTTPConnection as HTTPConnection  # noqa: F401
 from starlette.websockets import WebSocket as StarletteWebSocket  # noqa
 from starlette.websockets import WebSocketClose as WebSocketClose  # noqa
-from starlette.websockets import (
-    WebSocketDisconnect as StarletteWebSocketDisconnect,
-)  # noqa
+from starlette.websockets import WebSocketDisconnect as StarletteWebSocketDisconnect  # noqa
 from starlette.websockets import WebSocketState as WebSocketState  # noqa
 
 User = TypeVar("User")

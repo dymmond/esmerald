@@ -281,10 +281,10 @@ class EsmeraldAPISettings(BaseSettings):
 
         try:
             from asyncz.schedulers import AsyncIOScheduler
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
-            )
+            ) from e
         return AsyncIOScheduler
 
     @property

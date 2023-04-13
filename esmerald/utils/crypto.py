@@ -12,7 +12,8 @@ except NotImplementedError:
 
     warnings.warn(
         "A secure pseudo-random number generator is not available "
-        "on your system. Falling back to Mersenne Twister."
+        "on your system. Falling back to Mersenne Twister.",
+        stacklevel=2,
     )
     using_sysrandom = False
 

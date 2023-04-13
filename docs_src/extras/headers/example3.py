@@ -1,6 +1,7 @@
+from pydantic import BaseModel, EmailStr
+
 from esmerald import Esmerald, Gateway, Response, post
 from esmerald.datastructures import ResponseHeader
-from pydantic import BaseModel, EmailStr
 
 
 class User(BaseModel):

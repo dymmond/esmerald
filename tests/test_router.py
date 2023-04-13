@@ -206,5 +206,5 @@ def test_add_child_esmerald(test_client_factory):
 
         response = client.get("/child")
 
-        response.status_code == 200
-        response.json() == {"test": 1}
+        assert response.status_code == 202
+        assert response.json() == {"test": 1}

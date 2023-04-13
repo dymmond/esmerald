@@ -1,7 +1,5 @@
 from starlette.middleware.base import BaseHTTPMiddleware  # noqa
-from starlette.middleware.base import (
-    RequestResponseEndpoint as RequestResponseEndpoint,
-)  # noqa
+from starlette.middleware.base import RequestResponseEndpoint as RequestResponseEndpoint  # noqa
 
 from esmerald.requests import Request
 from esmerald.responses import Response

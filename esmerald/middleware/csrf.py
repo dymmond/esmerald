@@ -26,16 +26,18 @@ import hmac
 import secrets
 from typing import TYPE_CHECKING, Optional
 
+from starlette.datastructures import MutableHeaders
+
 from esmerald.datastructures import Cookie
 from esmerald.enums import ScopeType
 from esmerald.exceptions import PermissionDenied
 from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.requests import Request
-from starlette.datastructures import MutableHeaders
 
 if TYPE_CHECKING:
-    from esmerald.config import CSRFConfig
     from starlette.types import ASGIApp, Message, Receive, Scope, Send
+
+    from esmerald.config import CSRFConfig
 
 CSRF_SECRET_BYTES = 32
 CSRF_SECRET_LENGTH = CSRF_SECRET_BYTES * 2

@@ -1,5 +1,6 @@
-from esmerald.testclient import EsmeraldTestClient
 from starlette.responses import HTMLResponse
+
+from esmerald.testclient import EsmeraldTestClient
 
 
 async def app(scope, receive, send):

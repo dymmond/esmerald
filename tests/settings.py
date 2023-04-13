@@ -1,7 +1,8 @@
 from typing import Optional, Tuple
 
-from esmerald.conf.global_settings import EsmeraldAPISettings
 from saffier import Database, Registry
+
+from esmerald.conf.global_settings import EsmeraldAPISettings
 
 
 class TestSettings(EsmeraldAPISettings):

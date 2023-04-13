@@ -1,5 +1,6 @@
-from esmerald import Esmerald, Gateway, Request, get, post
 from pydantic import EmailStr
+
+from esmerald import Esmerald, Gateway, Request, get, post
 
 
 @get(path="/me")

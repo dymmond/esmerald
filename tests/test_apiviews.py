@@ -1,6 +1,9 @@
 from typing import Any, Type, Union
 
 import pytest
+from pydantic import BaseModel
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
+
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.responses import Response
 from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -9,9 +12,6 @@ from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
-from pydantic import BaseModel
-from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
-
 from tests.models import Individual, IndividualFactory
 
 

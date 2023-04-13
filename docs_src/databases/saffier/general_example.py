@@ -1,5 +1,6 @@
-from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
 from tortoise import fields, models
+
+from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
 
 
 class User(BaseUser):

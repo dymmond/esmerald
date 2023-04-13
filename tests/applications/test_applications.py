@@ -5,7 +5,7 @@ import anyio
 import pytest
 from starlette import status
 from starlette.middleware import Middleware
-from starlette.routing import Host, Router
+from starlette.routing import Host
 
 from esmerald import Request
 from esmerald.applications import Esmerald
@@ -167,7 +167,6 @@ def test_head_route(client):
 
 
 def test_options_route(client):
-
     response = client.options("/options")
     assert response.status_code == 200
     assert response.text == "Hello, world!"

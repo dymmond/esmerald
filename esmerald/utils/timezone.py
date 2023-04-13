@@ -3,21 +3,16 @@ Timezone-related classes and functions.
 """
 import functools
 import sys
+import zoneinfo
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Optional, Union
 from zoneinfo import ZoneInfo
 
-try:
-    import zoneinfo
-except ImportError:
-    from backports import zoneinfo
-
-from datetime import date, datetime, timedelta, timezone
-
 from asgiref.local import Local
+
 from esmerald.conf import settings
 
 __all__ = [
-    "utc",
     "get_fixed_timezone",
     "get_default_timezone",
     "get_default_timezone_name",

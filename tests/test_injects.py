@@ -1,6 +1,8 @@
 from typing import Any, Dict, Optional
 
 import pytest
+from starlette.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
+
 from esmerald.applications import Esmerald
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
@@ -11,7 +13,6 @@ from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.utils.constants import IS_DEPENDENCY
-from starlette.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
 
 
 def test_is_dependency_inserted_into_field_extra() -> None:
