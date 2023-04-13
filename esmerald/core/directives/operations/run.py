@@ -2,16 +2,23 @@
 Client to interact with Saffier models and migrations.
 """
 
+import os
 import sys
-from collections import defaultdict
-from typing import Any
+from enum import Enum
+from typing import Any, List
 
 import click
 
+from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
 from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
 
 printer = Print()
+
+
+class Position(int, Enum):
+    DEFAULT = 5
+    BACK = 3
 
 
 @click.command(
@@ -53,8 +60,22 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
 
     # Execute the directive
     # The arguments for the directives start at the position 6
-    if sys.argv[6:] in (["--info"],):
-        message = " ".join(value for value in sys.argv[:5])
-        directive.print_help(message, sys.argv[5])
+    position = get_position()
+    program_name = " ".join(value for value in sys.argv[:position])
+
+    if sys.argv[position + 1 :] in (["--info"],):
+        directive.print_help(program_name, sys.argv[position])
     else:
-        directive.execute_from_command(sys.argv[:])
+        directive.execute_from_command(sys.argv[:], program_name, position)
+
+
+def get_position():
+    """
+    Gets the position of the arguments to read and pass them
+    onto the directive.
+    """
+    if os.getenv(ESMERALD_DISCOVER_APP) is None and APP_PARAMETER in sys.argv:
+        return Position.DEFAULT
+    elif os.getenv(ESMERALD_DISCOVER_APP) is not None and APP_PARAMETER in sys.argv:
+        return Position.DEFAULT
+    return Position.BACK

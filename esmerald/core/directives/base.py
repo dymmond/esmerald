@@ -18,6 +18,7 @@ class BaseDirective(BaseModel, ABC):
     """The base class from which all directrives derive"""
 
     help: str = ""
+    suppressed_base_arguments = set()
 
     def get_version(self) -> str:
         """
@@ -38,13 +39,6 @@ class BaseDirective(BaseModel, ABC):
         """
         ...
 
-    def add_base_argument(self, parser: Any, *args: Any, **kwargs: Dict[str, Any]):
-        for arg in args:
-            if arg in self.suppressed_base_arguments:
-                kwargs["help"] = argparse.SUPPRESS
-                break
-        parser.add_argument(*args, **kwargs)
-
     def create_parser(self, name: str, subdirective: str, **kwargs):
         parser = DirectiveParser(
             prog="%s %s" % (os.path.basename(name), subdirective), description=self.help, **kwargs
@@ -52,13 +46,13 @@ class BaseDirective(BaseModel, ABC):
         self.add_arguments(parser)
         return parser
 
-    def execute_from_command(self, argv: Any) -> None:
+    def execute_from_command(self, argv: Any, program_name: str, position: int = 5) -> None:
         """
         Executes dynamically the directive from the command line and passing the parameters
         """
-        parser = self.create_parser(argv[0], argv[5])
+        parser = self.create_parser(program_name, argv[position])
 
-        options = parser.parse_args(argv[6:])
+        options = parser.parse_args(argv[position + 1 :])
         cmd_options = vars(options)
 
         # Move positional args out of options to mimic legacy optparse
