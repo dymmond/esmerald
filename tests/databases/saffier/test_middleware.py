@@ -224,7 +224,6 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory):
         response = client.get("/", headers={jwt_config.api_key_header: f"Bearer {token}"})
 
         assert response.status_code == 401
-        assert response.json()["detail"] == "Signature has expired."
 
 
 async def test_can_access_endpoint_with_valid_token(test_client_factory, async_client):

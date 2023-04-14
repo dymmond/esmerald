@@ -1,7 +1,3 @@
-"""
-Client to interact with Saffier models and migrations.
-"""
-
 from collections import defaultdict
 from typing import Any
 

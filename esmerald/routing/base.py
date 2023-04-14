@@ -455,6 +455,17 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return parameters
 
     @property
+    def stringify_parameters(self) -> List[Dict[str, str]]:
+        """
+        Gets the param:type in string like list.
+        """
+        path_components = self.parse_path(self.path)
+        parameters = [component for component in path_components if isinstance(component, dict)]
+
+        parameters = [f"{param['name']}:{param['type'].__name__}" for param in parameters]
+        return parameters
+
+    @property
     def parent_levels(self) -> List[Union[T, "ParentType"]]:
         """
         Returns the handler from the app down to the route handler.
