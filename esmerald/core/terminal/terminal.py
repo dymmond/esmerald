@@ -44,5 +44,6 @@ class Terminal(Base):
         message = self.message(message, colour)
         return message
 
-    def write(self, message: str) -> None:
-        console.print(message)
+    def write_plain(self, message: str, colour: str = OutputColour.WHITE) -> None:
+        message = self.message(message, colour)
+        return message

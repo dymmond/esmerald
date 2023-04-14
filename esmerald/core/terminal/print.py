@@ -31,6 +31,10 @@ class Print(Base):
         message = self.message(message, colour)
         console.print(message)
 
+    def write_plain(self, message: str, colour: str = OutputColour.WHITE) -> None:
+        message = self.message(message, colour)
+        console.print(message)
+
     def write_error(
         self,
         message: str,

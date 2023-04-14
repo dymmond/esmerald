@@ -6,7 +6,7 @@ import click
 
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP, HELP_PARAMETER
 from esmerald.core.directives.env import DirectiveEnv
-from esmerald.core.directives.operations import create_app, create_project, list, run
+from esmerald.core.directives.operations import create_app, create_project, list, run, show_urls
 from esmerald.core.terminal.print import Print
 from esmerald.exceptions import EnvironmentError
 
@@ -57,6 +57,7 @@ def esmerald_cli(ctx: click.Context, path: typing.Optional[str], name: str) -> N
 
 
 esmerald_cli.add_command(list)
+esmerald_cli.add_command(show_urls)
+esmerald_cli.add_command(run)
 esmerald_cli.add_command(create_project)
 esmerald_cli.add_command(create_app)
-esmerald_cli.add_command(run)
