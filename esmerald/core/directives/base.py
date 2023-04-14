@@ -10,6 +10,8 @@ import esmerald
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.parsers import DirectiveParser
 from esmerald.core.terminal.print import Print
+from esmerald.utils.helpers import is_async_callable
+from esmerald.utils.sync import execsync
 
 printer = Print()
 
@@ -60,7 +62,10 @@ class BaseDirective(BaseModel, ABC):
         """
         Executes the handle()
         """
-        output = self.handle(*args, **options)
+        if not is_async_callable(self.handle):
+            output = self.handle(*args, **options)
+        else:
+            output = execsync(self.handle)(*args, **options)
         if output:
             printer.write_info(output)
         return output

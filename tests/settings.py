@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import Optional, Tuple
 
 from saffier import Database, Registry
@@ -14,7 +15,7 @@ class TestSettings(EsmeraldAPISettings):
     redirect_slashes: bool = True
     include_in_schema: bool = False
 
-    @property
+    @cached_property
     def registry(self) -> Tuple[Database, Registry]:
         database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
         return database, Registry(database=database)

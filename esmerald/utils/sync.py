@@ -1,6 +1,9 @@
+import functools
 from functools import partial
-from typing import Awaitable, Callable, Generic, List, TypeVar, Union
+from typing import Any, Awaitable, Callable, Generic, List, TypeVar, Union
 
+import anyio
+from anyio._core._eventloop import threadlocals
 from anyio.to_thread import run_sync
 from typing_extensions import ParamSpec
 
@@ -28,3 +31,19 @@ def as_async_callable_list(value: Union[Callable, List[Callable]]) -> List[Async
     if not isinstance(value, list):
         return [AsyncCallable(value)]
     return [AsyncCallable(v) for v in value]
+
+
+def execsync(async_function: Any, raise_error: bool = True):
+    """
+    Runs any async function inside a blocking function (sync).
+    """
+
+    @functools.wraps(async_function)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        current_async_module = getattr(threadlocals, "current_async_module", None)
+        partial_func = functools.partial(async_function, *args, **kwargs)
+        if current_async_module is not None and raise_error is True:
+            return anyio.from_thread.run(partial_func)
+        return anyio.run(partial_func)
+
+    return wrapper
