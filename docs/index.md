@@ -109,7 +109,7 @@ pip install esmerald[test]
 If you wish to start an Esmerald project with a default suggested structure.
 
 ```shell
-esmerald-admin createproject <YOUR-PROJECT-NAME>
+esmerald createproject <YOUR-PROJECT-NAME>
 ```
 
 This will generate a scaffold for your project with some pre-defined files in a simple fashion.

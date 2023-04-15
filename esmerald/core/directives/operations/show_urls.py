@@ -48,9 +48,9 @@ def get_http_verb(mapping: Any) -> str:
 def show_urls(ctx: click.Context, verbosity: int) -> None:
     """Shows the information regarding the urls of a given application
 
-    How to run: `esmerald-admin show_urls`
+    How to run: `esmerald show_urls`
 
-    Example: `esmerald-admin show_urls`
+    Example: `esmerald show_urls`
     """
     if os.getenv(ESMERALD_DISCOVER_APP) is None and getattr(ctx, "obj", None) is None:
         error = (

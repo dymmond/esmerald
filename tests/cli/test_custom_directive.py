@@ -84,12 +84,12 @@ async def rollback_transactions():
 
 
 def generate():
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald-admin createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald-admin createapp myapp")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
 
 
 async def test_custom_directive(create_folders):
@@ -114,7 +114,7 @@ async def test_custom_directive(create_folders):
     # Execute custom directive
     name = "Esmerald"
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", f"esmerald-admin run --directive createsuperuser -n {name}"
+        "tests.cli.main:app", f"esmerald run --directive createsuperuser -n {name}"
     )
 
     users = await User.query.all()

@@ -53,7 +53,7 @@ def create_folders():
 
 
 def test_create_project(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald-admin createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
     with open("myproject/Makefile", "rt") as f:
@@ -65,7 +65,7 @@ def test_create_project(create_folders):
 
 
 def test_create_project_files(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald-admin createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
     assert os.path.isfile("myproject/Makefile") is True

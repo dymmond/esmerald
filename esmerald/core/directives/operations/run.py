@@ -36,9 +36,9 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
     """
     Runs every single custom directive in the system.
 
-    How to run: `esmerald-admin --app <APP-LOCATION> run -n <DIRECTIVE NAME> <ARGS>`.
+    How to run: `esmerald --app <APP-LOCATION> run -n <DIRECTIVE NAME> <ARGS>`.
 
-        Example: `esmerald-admin --app myapp:app run -n createsuperuser`
+        Example: `esmerald --app myapp:app run -n createsuperuser`
     """
     name = directive
     if name is not None and getattr(ctx, "obj", None) is None:

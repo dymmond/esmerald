@@ -141,7 +141,7 @@ schedulers = ["asyncz>=0.2.0"]
 path = "esmerald/__init__.py"
 
 [project.scripts]
-esmerald-admin = "esmerald.core.directives.cli:esmerald_cli"
+esmerald = "esmerald.core.directives.cli:esmerald_cli"
 
 [tool.isort]
 profile = "black"
