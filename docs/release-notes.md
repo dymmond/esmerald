@@ -431,13 +431,13 @@ and can be used for testing purposes or to clear a session.
 
 ### Fixed
 
-- Generation of projects and apps using `esmerald-admin` by removing the clutter.
+- Generation of projects and apps using `esmerald` by removing the clutter.
 
 ## 0.2.0
 
 ### Added
 
-- `esmerald-admin` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
+- `esmerald` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
 
 ### Fixed
 

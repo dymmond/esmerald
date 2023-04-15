@@ -16,9 +16,9 @@ def create_project(name: str, verbosity: int) -> None:
     """
     Creates the scaffold of a project.
 
-    How to run: `esmerald-admin createproject <NAME>`
+    How to run: `esmerald createproject <NAME>`
 
-    Example: `esmerald-admin createproject myproject`
+    Example: `esmerald createproject myproject`
     """
     options = {
         "secret_key": SECRET_KEY_INSECURE_PREFIX + get_random_secret_key(),

@@ -25,7 +25,7 @@ Currently there are two built-in directives.
 This is a simple directive that generates a folder structure with some files for your Esmerald project.
 
 ```shell
-$ esmerald-admin createproject <YOUR-PROJECT-NAME>
+$ esmerald createproject <YOUR-PROJECT-NAME>
 ```
 
 The directive will generate a tree of files and folders with some pre-populated files ready to be used.
@@ -33,7 +33,7 @@ The directive will generate a tree of files and folders with some pre-populated 
 **Example**:
 
 ```shell
-$ esmerald-admin createproject myproject
+$ esmerald createproject myproject
 ```
 
 You should have a folder called `myproject` with a similar structure to this:
@@ -105,7 +105,7 @@ Do you also provide any other directive that suggests how to design an app, just
 This is another directive that allows you to generate a scaffold for a possible app to be used within Esmerald.
 
 ```shell
-$ esmerald-admin createapp <YOUR-APP-NAME>
+$ esmerald createapp <YOUR-APP-NAME>
 ```
 
 **Example**:
@@ -114,7 +114,7 @@ Using our previous example of [create project](#create-project), let's use the a
 
 ```shell
 $ cd myproject/apps/
-$ esmerald-admin createapp accounts
+$ esmerald createapp accounts
 ```
 
 You should have a folder called `accounts` with a similar structure to this:

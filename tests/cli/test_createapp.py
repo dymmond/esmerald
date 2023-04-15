@@ -53,12 +53,12 @@ def create_folders():
 
 
 def test_create_project(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald-admin createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald-admin createapp myapp")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
 
     assert os.path.isfile("myapp/__init__.py") is True
     assert os.path.isfile("myapp/tests.py") is True

@@ -19,9 +19,9 @@ printer = Print()
 def create_app(name: str, verbosity: int) -> None:
     """Creates the scaffold of an application
 
-    How to run: `esmerald-admin createapp <NAME>`
+    How to run: `esmerald createapp <NAME>`
 
-    Example: `esmerald-admin createapp myapp`
+    Example: `esmerald createapp myapp`
     """
     options = {
         "secret_key": SECRET_KEY_INSECURE_PREFIX + get_random_secret_key(),

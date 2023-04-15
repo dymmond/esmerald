@@ -43,14 +43,14 @@ def esmerald_cli(ctx: click.Context, path: typing.Optional[str], name: str) -> N
     Esmerald command line tool allowing to run Esmerald native directives or
     project unique and specific directives by passing the `-n` parameter.
 
-    How to run Esmerald native: `esmerald-admin createproject <NAME>`. Or any other Esmerald native command.
+    How to run Esmerald native: `esmerald createproject <NAME>`. Or any other Esmerald native command.
 
-        Example: `esmerald-admin createproject myapp`
+        Example: `esmerald createproject myapp`
 
 
-    How to run custom directives: `esmerald-admin --app <APP-LOCATION> run -n <DIRECTIVE NAME> <ARGS>`.
+    How to run custom directives: `esmerald --app <APP-LOCATION> run -n <DIRECTIVE NAME> <ARGS>`.
 
-        Example: `esmerald-admin --app myapp:app run -n createsuperuser`
+        Example: `esmerald --app myapp:app run -n createsuperuser`
 
     """
     ...
