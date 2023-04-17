@@ -219,9 +219,36 @@ are `argparse` related arguments so the syntax should be familiar.
 As you can see, the Directive has five parameters and all of them required.
 
 ```shell
-esmerald --app teste.main:app run --directive mydiretive --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald      
+esmerald --app teste.main:app run --directive mydirective --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald      
 
 ```
+
+## Help
+
+There are two helps in place for the directives. The one you run the esmerald executor (run) and the
+one for the `directive`.
+
+### --help
+
+This command **is only used for the executor help**, for example:
+
+```shell
+$ esmerald run --help
+```
+
+### -h
+
+This flag is used to access the `directive` help and not the `run`.
+
+```shell
+$ esmerald run --directive mydirective -h
+```
+
+### Notes
+
+The **only way to see the help of a directive** is via `-h`. 
+
+If `--help` is used, it will only show the help of the `run` and not the `directive` itself.
 
 ## Order of priority
 
@@ -288,3 +315,78 @@ In other words, if you want to execute the `createsuperuser` from the `accounts`
 directive inside `./directives/operations/` **shall have a different name** or else it will execute
 it instead of the intended from `accounts`.
 
+## Execution
+
+Esmerald directives use the same events as the one passed in the application. 
+
+For example, if you want to execute database operations and the database connections should be
+established before hand, you can do in two ways:
+
+* Use [Lifespan](../lifespan-events.md) events and the directives will use them.
+* Establish the connections (open and close) inside the Directive directly.
+
+The [pratical example](#a-practical-example) uses the [lifespan events](../lifespan-events.md) to
+execute the operations. This way you only need one place to manage the needed application events.
+
+## A practical example
+
+Let us run an example of a custom directive for your application. Since we keep mentioning the
+`createsuperuser` often, let us then create that same directive and apply to our Esmerald application.
+
+For this example we will be using [Saffier][saffier] since it is from the same author and will
+allow us to do a complete end-to-end directive using the async approach.
+
+This example is very simple in its own design.
+
+For production you should have your models inside models dedicated place and your `registry`
+and `database` settings somwhere in your `settings` where you can access it anywhere in your code via
+[esmerald settings](../application/settings.md), for example.
+
+P.S.: For the registry and database strategy with [saffier][saffier], it is good to have a read
+the [tips and tricks](https://saffier.tarsild.io/tips-and-tricks/) with saffier.
+
+The design is up to you.
+
+What will we be creating:
+
+* **myproject/main/main.py** - The entry-point for our Esmerald application
+* **createsuperuser** - Our directive.
+
+In the end we simply run the directive.
+
+We will be also using the [saffier support from Esmerald models](../databases/saffier/models.md)
+as this will make the example simpler.
+
+### The application entrypoint
+
+```python title="myproject/main.py"
+{!> ../docs_src/directives/example/app.py !}
+```
+
+### The createsuperuser
+
+Now it is time to create the directive `createsuperuser`. As mentioned [above](#where-should-directives-be-placed-at),
+the directive shall be inside a `directives/operations` package.
+
+
+```python title="myproject/directives/operations/createsuperuser.py"
+{!> ../docs_src/directives/example/createsuperuser.py !}
+```
+
+And this should be it. We now have a `createsuperuser` and an application and now we can run
+in the command line:
+
+```shell
+$ esmerald --app myproject.main:app run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+```
+
+Or
+
+```shell
+$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ esmerald run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+```
+
+After the command is executed, you should be able to see the superuser created in your database.
+
+[saffier]: https://saffier.tarsild.io
