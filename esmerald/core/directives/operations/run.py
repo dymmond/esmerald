@@ -4,10 +4,13 @@ from enum import Enum
 from typing import Any
 
 import click
+from starlette.types import Lifespan
 
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
 from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
+from esmerald.routing.events import handle_lifespan_events
+from esmerald.utils.sync import execsync
 
 printer = Print()
 
@@ -25,7 +28,6 @@ class Position(int, Enum):
 )
 @click.argument("directive_args", nargs=-1, type=click.UNPROCESSED)
 @click.command(
-    # cls=ConditionalHelp,
     name="run",
     context_settings={
         "ignore_unknown_options": True,
@@ -59,7 +61,13 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
     # The arguments for the directives start at the position 6
     position = get_position()
     program_name = " ".join(value for value in sys.argv[:position])
-    directive.execute_from_command(sys.argv[:], program_name, position)
+
+    ## Check if application is up and execute any event
+    # Shutting down after
+    lifespan = handle_lifespan_events(
+        ctx.obj.app.on_startup, ctx.obj.app.on_shutdown, ctx.obj.app.lifespan
+    )
+    execsync(execute_lifespan)(ctx.obj.app, lifespan, directive, program_name, position)
 
 
 def get_position():
@@ -72,3 +80,13 @@ def get_position():
     elif os.getenv(ESMERALD_DISCOVER_APP) is not None and APP_PARAMETER in sys.argv:
         return Position.DEFAULT
     return Position.BACK
+
+
+async def execute_lifespan(
+    app, lifespan: Lifespan, directive: Any, program_name: str, position: int
+):
+    """
+    Executes the lifespan events and the directive.
+    """
+    async with lifespan(app):
+        await directive.execute_from_command(sys.argv[:], program_name, position)

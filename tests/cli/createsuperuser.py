@@ -5,7 +5,7 @@ from typing import Any, Type
 
 from esmerald.core.directives import BaseDirective
 from esmerald.core.terminal import Print
-from tests.cli.test_custom_directive import User, database
+from tests.cli.test_custom_directive import User
 
 printer = Print()
 
@@ -25,8 +25,6 @@ class Directive(BaseDirective):
         """
         Generates a superuser
         """
-        await database.connect()
-
         name = options["name"]
 
         user = await User.query.create_superuser(
@@ -37,5 +35,4 @@ class Directive(BaseDirective):
             password=self.get_random_string(8),
         )
 
-        await database.disconnect()
         printer.write_success(f"Superuser {user.email} created successfully.")

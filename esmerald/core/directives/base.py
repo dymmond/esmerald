@@ -11,7 +11,6 @@ from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.parsers import DirectiveParser
 from esmerald.core.terminal.print import Print
 from esmerald.utils.helpers import is_async_callable
-from esmerald.utils.sync import execsync
 
 printer = Print()
 
@@ -41,7 +40,7 @@ class BaseDirective(BaseModel, ABC):
         self.add_arguments(parser)
         return parser
 
-    def execute_from_command(self, argv: Any, program_name: str, position: int = 5) -> None:
+    async def execute_from_command(self, argv: Any, program_name: str, position: int = 5) -> None:
         """
         Executes dynamically the directive from the command line and passing the parameters
         """
@@ -53,19 +52,19 @@ class BaseDirective(BaseModel, ABC):
         # Move positional args out of options to mimic legacy optparse
         args = cmd_options.pop("args", ())
         try:
-            self.run(*args, **cmd_options)
+            await self.run(*args, **cmd_options)
         except DirectiveError as e:
             printer.write_error("%s: %s" % (e.__class__.__name__, e))
             sys.exit(e.returncode)
 
-    def run(self, *args: Any, **options: Any) -> Any:
+    async def run(self, *args: Any, **options: Any) -> Any:
         """
         Executes the handle()
         """
         if not is_async_callable(self.handle):
             output = self.handle(*args, **options)
         else:
-            output = execsync(self.handle)(*args, **options)
+            output = await self.handle(*args, **options)
         if output:
             printer.write_info(output)
         return output
