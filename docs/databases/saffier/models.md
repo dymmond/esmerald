@@ -15,7 +15,7 @@ initial configuration.
 
 Extenting the existing `User` model is as simple as this: 
 
-```python hl_lines="7 31"
+```python hl_lines="17 32"
 {!> ../docs_src/databases/saffier/models.py !}
 ```
 
@@ -39,13 +39,13 @@ with Saffier.
 
 === "settings.py"
 
-    ```python hl_lines="9-11"
+    ```python hl_lines="10-12"
     {!> ../docs_src/databases/saffier/settings/settings.py !}
     ```
 
 === "models.py"
 
-    ```python hl_lines="7 31"
+    ```python hl_lines="17 32"
     {!> ../docs_src/databases/saffier/settings/models.py !}
     ```
 

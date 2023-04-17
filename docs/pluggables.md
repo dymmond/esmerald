@@ -144,7 +144,7 @@ You can do whatever you want with a pluggable, that is the beauty of this system
 Let us see how it would look like if you had a pluggable where the goal was to add a **ChildEsmerald**
 into the current applications being plugged.
 
-```python hl_lines="35-36"
+```python hl_lines="33"
 {!> ../docs_src/pluggables/child_esmerald.py !}
 ```
 

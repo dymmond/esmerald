@@ -9,7 +9,7 @@ Esmerald is prepared to handle those with ease and that is thanks to Pydantic.
 When sending a payload to the backend to be validated, the handler needs to have a `data` field declared. Without it,
 it will not be possible to process the information and/or will not be recognised.
 
-```python hl_lines="11"
+```python hl_lines="12"
 {!> ../docs_src/extras/request_data/data_field.py !}
 ```
 
@@ -22,7 +22,7 @@ pydantic models.
 
 You can also do nested models for the `data` to be processed.
 
-```python hl_lines="5 15 19"
+```python hl_lines="6 16 20"
 {!> ../docs_src/extras/request_data/nested_models.py !}
 ```
 
@@ -49,7 +49,7 @@ There are many ways to process and validate a field and also the option to make 
 
 That can be achieved by using the typing `Optional` to make it not mandatory.
 
-```python hl_lines="10-11 17"
+```python hl_lines="9-10 16"
 {!> ../docs_src/extras/request_data/not_mandatory.py !}
 ```
 
@@ -81,7 +81,7 @@ What about the field validation? What if you need to validate some of the data b
 
 Since Esmerald uses pydantic, you can take advantage of it.
 
-```python hl_lines="8 10-11"
+```python hl_lines="9 11-12"
 {!> ../docs_src/extras/request_data/validation.py !}
 ```
 

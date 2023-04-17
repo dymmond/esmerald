@@ -137,7 +137,7 @@ is thrown.
 
 The reason why the above is to keep the integrity of the application and settings.
 
-```python hl_lines="21"
+```python hl_lines="22"
 {!> ../docs_src/application/settings/settings_config/example2.py !}
 ```
 
