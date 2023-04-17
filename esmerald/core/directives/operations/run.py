@@ -24,7 +24,7 @@ class Position(int, Enum):
     "--directive",
     "directive",
     required=True,
-    help=("The name of the custom directive to run"),
+    help=("The name of the file of the custom directive to run."),
 )
 @click.argument("directive_args", nargs=-1, type=click.UNPROCESSED)
 @click.command(
