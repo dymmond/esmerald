@@ -17,11 +17,36 @@ A lot of people cannot be bothered with running cookiecutters and go straight to
 
 Currently there are two built-in directives.
 
+* [directives](#all-directives) - Lists all the available directives.
 * [createproject](#create-project) - Used to generate a scaffold for a project.
 * [createapp](#create-app) - Used to generate a scaffold for an application.
 * [show_urls](#show-urls) - Shows the information about the your esmerald application.
 
 {! ../docs_src/_shared/envvars.md !}
+
+## All Directives
+
+This is the most simple directive to run and lists all the available directives from Esmerald
+and with a flag `--app` shows also the available directives in your project.
+
+**Only esmerald directives**
+
+```shell
+$ esmerald directives
+```
+
+**All the directives including your project**
+
+```shell
+$ esmerald --app myproject.main:app directives
+```
+
+Or
+
+```shell
+$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ esmerald directives
+```
 
 ## Create project
 
