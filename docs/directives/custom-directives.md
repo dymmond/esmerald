@@ -12,7 +12,7 @@ Python was and still is heavily used as a scripting language. The scripts are is
 code and logic that can run on every machine that has python installed and execute without too
 much trouble or hurdle.
 
-Quite simple, right? 
+Quite simple, right?
 
 So, what does this have to do with directives? Well, directives follow the same principle but
 applied to your own project. What if you could create your own structured scripts inside your
@@ -120,7 +120,7 @@ If one of this conditions fails, it will raise a `DirectiveError`.
 ### Where should directives be placed at?
 
 All the custom directives created **must be** inside a `directives/operations` package in order to
-be discovered. 
+be discovered.
 
 The place for the `directives/operations` can be anywhere in your application and
 you can have **more than one** as well.
@@ -188,7 +188,7 @@ esmerald always looks at.
 #### handle()
 
 The `Diretive` logic is implemented inside a `handle` function that can be either `sync` or
-`async`. 
+`async`.
 
 When calling a `Directive`, `esmerald` will execute the `handle()` and run the all the logic.
 
@@ -219,7 +219,7 @@ are `argparse` related arguments so the syntax should be familiar.
 As you can see, the Directive has five parameters and all of them required.
 
 ```shell
-esmerald --app teste.main:app run --directive mydirective --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald      
+esmerald --app teste.main:app run --directive mydirective --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
 
 ```
 
@@ -246,13 +246,13 @@ $ esmerald run --directive mydirective -h
 
 ### Notes
 
-The **only way to see the help of a directive** is via `-h`. 
+The **only way to see the help of a directive** is via `-h`.
 
 If `--help` is used, it will only show the help of the `run` and not the `directive` itself.
 
 ## Order of priority
 
-**This is very important to understand**. 
+**This is very important to understand**.
 
 What happens if we have two custom directives with the same
 name?
@@ -309,7 +309,7 @@ The first directive is inside `./directives/operations/` and the second inside
 
 Esmerald directives work on a **First Found First Executed** principle and that means if you have
 two custom directives with the same name, esmerald will
-**execute the first found directive with that given name**. 
+**execute the first found directive with that given name**.
 
 In other words, if you want to execute the `createsuperuser` from the `accounts`, the first found
 directive inside `./directives/operations/` **shall have a different name** or else it will execute
@@ -317,7 +317,7 @@ it instead of the intended from `accounts`.
 
 ## Execution
 
-Esmerald directives use the same events as the one passed in the application. 
+Esmerald directives use the same events as the one passed in the application.
 
 For example, if you want to execute database operations and the database connections should be
 established before hand, you can do in two ways:
@@ -362,6 +362,8 @@ as this will make the example simpler.
 ```python title="myproject/main.py"
 {!> ../docs_src/directives/example/app.py !}
 ```
+
+The connection string should be replaced with whatever is your detail.
 
 ### The createsuperuser
 

@@ -72,7 +72,7 @@ $ scripts/test tests/test_apiviews.py
 To run the linting, use:
 
 ```shell
-$ scripts/lint
+$ scripts/format
 ```
 
 ### Documentation
