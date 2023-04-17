@@ -77,7 +77,7 @@ The default behaviour is `enable_scheduler = False`.
 As mentioned in this documentation, Esmerald is unique with [settings](../application/settings.md) and therefore
 the `enable_scheduler` can also be set to `True`/`False` there.
 
-```python hl_lines="6"
+```python hl_lines="7"
 {!> ../docs_src/scheduler/scheduler_settings.py !}
 ```
 

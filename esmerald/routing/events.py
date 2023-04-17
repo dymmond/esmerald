@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, List, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, TypeVar
 
 from starlette._utils import is_async_callable
-from starlette.types import Receive, Scope, Send
+from starlette.types import Lifespan, Receive, Scope, Send
 
 if TYPE_CHECKING:
     from esmerald.types import DictAny, LifeSpanHandler
@@ -50,3 +50,20 @@ class AyncLifespanContextManager:
                 await handler()
             else:
                 handler()
+
+
+def handle_lifespan_events(
+    on_startup: Optional[Sequence[Callable]] = None,
+    on_shutdown: Optional[Sequence[Callable]] = None,
+    lifespan: Optional[Lifespan[Any]] = None,
+) -> Any:
+    """Handles with the lifespan events in the new Starlette format of lifespan.
+    This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable
+    declaration for legacy and comprehension purposes and build the async context manager
+    for the lifespan.
+    """
+    if on_startup or on_shutdown:
+        return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)
+    elif lifespan:
+        return lifespan
+    return None

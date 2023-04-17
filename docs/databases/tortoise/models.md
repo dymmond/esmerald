@@ -53,7 +53,7 @@ assemble.
 
 **check_password**
 
-```python hl_lines="21"
+```python hl_lines="22"
 {!> ../docs_src/databases/tortoise/check_password.py !}
 ```
 
@@ -63,7 +63,7 @@ same principle.
 
 **set_password**
 
-```python hl_lines="21"
+```python hl_lines="22"
 {!> ../docs_src/databases/tortoise/set_password.py !}
 ```
 

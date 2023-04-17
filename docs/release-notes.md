@@ -437,7 +437,7 @@ and can be used for testing purposes or to clear a session.
 
 ### Added
 
-- `esmerald` entrypoint allowing generating projects and apps via [directives](./management/directives.md).
+- `esmerald` entrypoint allowing generating projects and apps via [directives](./directives/directives.md).
 
 ### Fixed
 

@@ -325,10 +325,10 @@ class EsmeraldAPISettings(BaseSettings):
                 @property
                 def scheduler_configurations(self) -> Dict[str, str]:
                     configurations = {
-                        'apscheduler.jobstores.mongo': {
+                        'apscheduler.stores.mongo': {
                             'type': 'mongodb'
                         },
-                        'apscheduler.jobstores.default': {
+                        'apscheduler.stores.default': {
                             'type': 'sqlalchemy',
                             'url': 'sqlite:///jobs.sqlite'
                         },
@@ -340,8 +340,8 @@ class EsmeraldAPISettings(BaseSettings):
                             'type': 'processpool',
                             'max_workers': '5'
                         },
-                        'apscheduler.job_defaults.coalesce': 'false',
-                        'apscheduler.job_defaults.max_instances': '3',
+                        'apscheduler.task_defaults.coalesce': 'false',
+                        'apscheduler.task_defaults.max_instances': '3',
                         'apscheduler.timezone': 'UTC',
                     }
         """

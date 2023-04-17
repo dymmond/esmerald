@@ -52,7 +52,7 @@ The framework also brings a ready to use functionality to be used as context man
 
 This function is prepared to be used as a context manager for your tests and ready to use at any given time.
 
-```python hl_lines="14 77"
+```python
 {!> ../docs_src/testclient/example4.py !}
 ```
 

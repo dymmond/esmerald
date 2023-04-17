@@ -39,7 +39,7 @@ it clear to understand and get the required help.
 
 To develop for Esmerald, create a fork of the [Esmerald repository](https://github.com/dymmond/esmerald) on GitHub.
 
-After, clone your fork with the follow command replacing `YOUR-USERNAME` wih your GitHub username:
+After, clone your fork with the follow command replacing `YOUR-USERNAME` with your GitHub username:
 
 ```shell
 $ git clone https://github.com/YOUR-USERNAME/esmerald
@@ -50,6 +50,14 @@ $ git clone https://github.com/YOUR-USERNAME/esmerald
 ```shell
 $ cd esmerald
 $ scripts/install
+```
+
+### Enable pre-commit
+
+The project comes with a pre-commit hook configuration. To enable it, just run inside the clone:
+
+```shell
+$ pre-commit
 ```
 
 ### Run the tests
@@ -72,7 +80,7 @@ $ scripts/test tests/test_apiviews.py
 To run the linting, use:
 
 ```shell
-$ scripts/lint
+$ scripts/format
 ```
 
 ### Documentation

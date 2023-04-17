@@ -121,11 +121,11 @@ pip install esmerald[test]
 
 Or you can jump this step if you don't want to use the EsmeraldTestClient.
 
-You can find [more information](./management/directives.md) about this directive and how to use it with a detailed
+You can find [more information](./directives/directives.md) about this directive and how to use it with a detailed
 example.
 
 !!! Warning
-    Running this [directive](./management/directives.md) will generate only the scaffold of the project
+    Running this [directive](./directives/directives.md) will generate only the scaffold of the project
     but some additional information is still needed to start the project. This only provides a structure of
     files that can be used to start an Esmerald application but **it is not mandatory**.
 

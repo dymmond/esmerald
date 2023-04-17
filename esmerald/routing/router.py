@@ -11,7 +11,6 @@ from typing import (
     List,
     NoReturn,
     Optional,
-    Sequence,
     Set,
     Tuple,
     Type,
@@ -47,7 +46,7 @@ from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
-from esmerald.routing.events import AyncLifespanContextManager
+from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.views import APIView
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
@@ -237,7 +236,7 @@ class Router(Parent, StarletteRouter):
             on_startup is None and on_shutdown is None
         ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
-        self.esmerald_lifespan = self.handle_lifespan_events(
+        self.esmerald_lifespan = handle_lifespan_events(
             on_startup=on_startup, on_shutdown=on_shutdown, lifespan=lifespan
         )
 
@@ -280,23 +279,6 @@ class Router(Parent, StarletteRouter):
             key=lambda router: router.path != "" and router.path != "/",
             reverse=True,
         )
-
-    def handle_lifespan_events(
-        self,
-        on_startup: Optional[Sequence[Callable]] = None,
-        on_shutdown: Optional[Sequence[Callable]] = None,
-        lifespan: Optional[Lifespan[Any]] = None,
-    ) -> Any:
-        """Handles with the lifespan events in the new Starlette format of lifespan.
-        This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable
-        declaration for legacy and comprehension purposes and build the async context manager
-        for the lifespan.
-        """
-        if on_startup or on_shutdown:
-            return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)
-        elif lifespan:
-            return lifespan
-        return None
 
     def activate(self):
         self.routes = self.reorder_routes()

@@ -18,7 +18,10 @@ A lot of people cannot be bothered with running cookiecutters and go straight to
 Currently there are two built-in directives.
 
 * [createproject](#create-project) - Used to generate a scaffold for a project.
-* [createapp](#create-app) - Used to generate a scaffold for an 
+* [createapp](#create-app) - Used to generate a scaffold for an application.
+* [show_urls](#show-urls) - Shows the information about the your esmerald application.
+
+{! ../docs_src/_shared/envvars.md !}
 
 ## Create project
 
@@ -242,3 +245,22 @@ pip install esmerald[test]
 ```
 
 Or you can jump this step if you don't want to use the EsmeraldTestClient at all.
+
+## Show URLs
+
+This is another built-in Esmerald application and it simply to show the information about the
+URLs of your application via command line.
+
+This command can be run like this:
+
+**Using the --app parameter**
+
+```shell
+$ esmerald --app myproject.main:app show_urls
+```
+
+**Using the ESMERALD_DEFAULT_APP environment variable already exported**:
+
+```shell
+$ esmerald myproject.main:app show_urls
+```

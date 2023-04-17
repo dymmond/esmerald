@@ -12,7 +12,7 @@ logging.getLogger("esmerald").setLevel(logging.DEBUG)
     name="collect_data",
     trigger=IntervalTrigger(hours=12),
     max_intances=3,
-    jobstore="mongo",
+    store="mongo",
     executor="default",
 )
 def collect_market_data():
@@ -24,7 +24,7 @@ def collect_market_data():
     name="collect_data",
     trigger=IntervalTrigger(hours=12),
     max_intances=3,
-    jobstore="default",
+    store="default",
     executor="processpoll",
 )
 def another_example():
