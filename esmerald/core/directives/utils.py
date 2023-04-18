@@ -20,6 +20,8 @@ printer = Print()
 IGNORE_FOLDERS = ["__pycache__"]
 OPERATIONS = "operations"
 
+EXCUDED_DIRECTIVES = ["list", "run"]
+
 
 def find_directives(management_dir: str) -> typing.List[str]:
     """
@@ -29,7 +31,8 @@ def find_directives(management_dir: str) -> typing.List[str]:
     directive_list = []
     for _, name, is_package in pkgutil.iter_modules([directive_dir]):
         if not is_package and not name.startswith("_"):
-            directive_list.append(name)
+            if name not in EXCUDED_DIRECTIVES:
+                directive_list.append(name)
     return directive_list
 
 

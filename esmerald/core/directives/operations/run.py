@@ -7,6 +7,7 @@ import click
 from starlette.types import Lifespan
 
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
+from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
 from esmerald.routing.events import handle_lifespan_events
@@ -33,8 +34,7 @@ class Position(int, Enum):
         "ignore_unknown_options": True,
     },
 )
-@click.pass_context
-def run(ctx: Any, directive: str, directive_args: Any) -> None:
+def run(env: DirectiveEnv, directive: str, directive_args: Any) -> None:
     """
     Runs every single custom directive in the system.
 
@@ -43,7 +43,7 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
         Example: `esmerald --app myapp:app run -n createsuperuser`
     """
     name = directive
-    if name is not None and getattr(ctx, "obj", None) is None:
+    if name is not None and getattr(env, "app", None) is None:
         error = (
             "You cannot specify a custom directive without specifying the --app or setting "
             "ESMERALD_DEFAULT_APP environment variable."
@@ -52,7 +52,7 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
         sys.exit(1)
 
     # Loads the directive object
-    directive = fetch_directive(name, ctx.obj.command_path, True)
+    directive = fetch_directive(name, env.command_path, True)
     if not directive:
         printer.write_error("Unknown directive: %r" % name)
         sys.exit(1)
@@ -64,10 +64,8 @@ def run(ctx: Any, directive: str, directive_args: Any) -> None:
 
     ## Check if application is up and execute any event
     # Shutting down after
-    lifespan = handle_lifespan_events(
-        ctx.obj.app.on_startup, ctx.obj.app.on_shutdown, ctx.obj.app.lifespan
-    )
-    execsync(execute_lifespan)(ctx.obj.app, lifespan, directive, program_name, position)
+    lifespan = handle_lifespan_events(env.app.on_startup, env.app.on_shutdown, env.app.lifespan)
+    execsync(execute_lifespan)(env.app, lifespan, directive, program_name, position)
 
 
 def get_position():

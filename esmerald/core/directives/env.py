@@ -5,7 +5,12 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
-from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
+from esmerald import Esmerald
+from esmerald.core.directives.constants import (
+    DISCOVERY_FILES,
+    DISCOVERY_FUNCTIONS,
+    ESMERALD_DISCOVER_APP,
+)
 from esmerald.core.terminal import Print
 from esmerald.exceptions import EnvironmentError
 
@@ -35,15 +40,14 @@ class DirectiveEnv:
     app: typing.Optional[typing.Any] = None
     command_path: typing.Optional[str] = None
 
-    def load_from_env(
-        self, path: typing.Optional[str] = None, enable_logging: bool = True
-    ) -> "DirectiveEnv":
+    def load_from_env(self, path: typing.Optional[str] = None) -> "DirectiveEnv":
         """
         Loads the environment variables into the scaffold.
         """
         # Adds the current path where the command is being invoked
         # To the system path
-        command_path = str(Path().cwd())
+        cwd = Path().cwd()
+        command_path = str(cwd)
         if command_path not in sys.path:
             sys.path.append(command_path)
         try:
@@ -54,7 +58,7 @@ class DirectiveEnv:
             ...
 
         _path = os.getenv(ESMERALD_DISCOVER_APP) if not path else path
-        _app = self.find_app(path=_path, enable_logging=enable_logging)
+        _app = self.find_app(path=_path, cwd=cwd)
 
         return DirectiveEnv(path=_app.path, app=_app.app, command_path=command_path)
 
@@ -68,10 +72,71 @@ class DirectiveEnv:
         app = getattr(module, app_name)
         return Scaffold(path=path, app=app)
 
-    def find_app(self, path: typing.Optional[str], enable_logging: bool = True) -> Scaffold:
+    def _get_folders(self, path: Path) -> typing.List[str]:
+        """
+        Lists all the folders and checks if there is any file from the DISCOVERY_FILES available
+        """
+        return [directory.path for directory in os.scandir(path) if directory.is_dir()]
+
+    def _find_app_in_folder(
+        self, path: Path, cwd: Path
+    ) -> typing.Union[typing.NoReturn, typing.Callable[..., typing.Any]]:
+        """
+        Iterates inside the folder and looks up to the DISCOVERY_FILES.
+        """
+        for discovery_file in DISCOVERY_FILES:
+            filename = f"{str(path)}/{discovery_file}"
+            if not os.path.exists(filename):
+                continue
+
+            file_path = path / discovery_file
+            dotted_path = ".".join(file_path.relative_to(cwd).with_suffix("").parts)
+
+            # Load file from module
+            module = import_module(dotted_path)
+
+            # Iterates through the elements of the module.
+            for attr, value in module.__dict__.items():
+                if isinstance(value, Esmerald):
+                    app_path = f"{dotted_path}:{attr}"
+                    return Scaffold(app=value, path=app_path)
+
+            # Iterate over default pattern application functions
+            for func in DISCOVERY_FUNCTIONS:
+                if hasattr(module, func):
+                    app_path = f"{dotted_path}:{func}"
+                    fn = getattr(module, func)
+                    return Scaffold(app=fn(), path=app_path)
+
+    def find_app(self, path: typing.Optional[str], cwd: Path) -> Scaffold:
         """
         Loads the application based on the path provided via env var.
+
+        If no --app is provided, goes into auto discovery up to one level.
         """
-        if enable_logging:
-            printer.write_info(f"Loading application: {path}", colour="bright_blue")
-        return self.import_app_from_string(path)
+
+        if path:
+            return self.import_app_from_string(path)
+
+        scaffold: Scaffold = None
+
+        # Check current folder
+        scaffold = self._find_app_in_folder(cwd, cwd)
+        if scaffold:
+            return scaffold
+
+        # Goes into auto discovery mode for one level, only.
+        folders = self._get_folders(cwd)
+
+        for folder in folders:
+            folder_path = cwd / folder
+            scaffold = self._find_app_in_folder(folder_path, cwd)
+
+            if not scaffold:
+                continue
+            break
+
+        if not scaffold:
+            raise EnvironmentError(detail="Could not find an Esmerald application.")
+
+        return scaffold

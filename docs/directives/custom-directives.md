@@ -4,6 +4,8 @@ Having [built-in directives](./directives.md) from Esmerald is great as it gives
 niceties for your project but having **custom directives** is what really powers up your
 application and takes it to another level.
 
+{!> ../docs_src/_shared/autodiscovery.md !}
+
 ## What is a custom directive?
 
 Before jumping into that, let us go back to the roots of python.
@@ -26,8 +28,6 @@ This is what a directive is.
     principle. There is an [excelent article](https://simpleisbetterthancomplex.com/tutorial/2018/08/27/how-to-create-custom-django-management-commands.html)
     about those if you want to get familiar with.
 
-
-{! ../docs_src/_shared/envvars.md !}
 
 ### Examples
 
@@ -53,6 +53,12 @@ is a special object with some defaults that you can use.
 
 Directives were inspired by the management commands of Django with extra flavours and therefore
 the syntax is very similar.
+
+### Parameters
+
+* **--directive** - The directive name (the file where the Directive was created).
+Check [list all directives](./directives.md#list-available-directives) for more details in obtaining
+the names.
 
 ### How to run
 
@@ -377,6 +383,14 @@ the directive shall be inside a `directives/operations` package.
 
 And this should be it. We now have a `createsuperuser` and an application and now we can run
 in the command line:
+
+**Using the auto discover**
+
+```shell
+$ esmerald run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+```
+
+**Using the --app or ESMERALD_DEFAULT_APP**
 
 ```shell
 $ esmerald --app myproject.main:app run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald

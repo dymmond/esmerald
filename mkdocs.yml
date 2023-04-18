@@ -96,6 +96,7 @@ nav:
       - Headers: "extras/header-fields.md"
       - Cookies: "extras/cookie-fields.md"
   - Directives:
+      - Application Discovery: "directives/discovery.md"
       - Directives: "directives/directives.md"
       - Custom Directives: "directives/custom-directives.md"
   - WSGI Frameworks: "wsgi.md"

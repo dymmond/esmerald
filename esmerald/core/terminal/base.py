@@ -255,7 +255,7 @@ class OutputColour(str, Enum):
         return str(self)
 
 
-class Base(ABC):
+class Base(ABC, Console):
     """Base output class for the terminal"""
 
     @abstractmethod
@@ -281,7 +281,7 @@ class Base(ABC):
         raise NotImplementedError()
 
     def write(self, message: Any) -> None:
-        console.print(message)
+        self.print(message)
 
     def message(self, message: str, colour: str) -> str:
         """Returns a message formated with specific colours"""

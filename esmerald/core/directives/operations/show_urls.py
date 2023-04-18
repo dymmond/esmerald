@@ -9,6 +9,7 @@ from rich.table import Table
 
 from esmerald import Gateway
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
+from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
 from esmerald.enums import HttpMethod
 from esmerald.utils.url import clean_path
@@ -42,17 +43,15 @@ def get_http_verb(mapping: Any) -> str:
         return HttpMethod.HEAD.value
 
 
-@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
 @click.command(name="show_urls")
-@click.pass_context
-def show_urls(ctx: click.Context, verbosity: int) -> None:
+def show_urls(env: DirectiveEnv) -> None:
     """Shows the information regarding the urls of a given application
 
     How to run: `esmerald show_urls`
 
     Example: `esmerald show_urls`
     """
-    if os.getenv(ESMERALD_DISCOVER_APP) is None and getattr(ctx, "obj", None) is None:
+    if os.getenv(ESMERALD_DISCOVER_APP) is None and getattr(env, "app", None) is None:
         error = (
             "You cannot specify a custom directive without specifying the --app or setting "
             "ESMERALD_DEFAULT_APP environment variable."
@@ -60,7 +59,7 @@ def show_urls(ctx: click.Context, verbosity: int) -> None:
         printer.write_error(error)
         sys.exit(1)
 
-    app = ctx.obj.app
+    app = env.app
     table = Table(title=app.app_name)
     table = get_routes_table(app, table)
     printer.write(table)
