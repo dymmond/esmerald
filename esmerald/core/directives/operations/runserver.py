@@ -27,7 +27,7 @@ terminal = Terminal()
     "--reload",
     type=bool,
     default=True,
-    help="Release server on file changes.",
+    help="Reload server on file changes.",
     is_flag=True,
     show_default=True,
 )
@@ -35,14 +35,14 @@ terminal = Terminal()
     "--host",
     type=str,
     default="localhost",
-    help="Server hostyping. Tipically localhostyping.",
+    help="Server host. Tipically localhost.",
     show_default=True,
 )
 @click.option(
     "--debug",
     type=bool,
     default=True,
-    help="Start the server in debug mode.",
+    help="Start the application in debug mode.",
     show_default=True,
     is_flag=True,
 )
@@ -50,14 +50,14 @@ terminal = Terminal()
     "--log-level",
     type=str,
     default="debug",
-    help="What log level should show.",
+    help="What log level should uvicorn run.",
     show_default=True,
 )
 @click.option(
     "--lifespan",
     type=str,
     default="on",
-    help="Enable lifespan.",
+    help="Enable lifespan events.",
     show_default=True,
 )
 @click.option(
@@ -81,6 +81,8 @@ def runserver(
 
     The --app can be passed in the form of <module>.<submodule>:<app> or be set
     as environment variable ESMERALD_DEFAULT_APP.
+
+    Alternatively, if none is passed, Esmerald will perform the application discovery.
 
     It is strongly advised not to run this command in any pther environment but developmentyping.
     This was designed to facilitate the development environment and should not be used in pr

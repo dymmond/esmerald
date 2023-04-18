@@ -54,6 +54,12 @@ is a special object with some defaults that you can use.
 Directives were inspired by the management commands of Django with extra flavours and therefore
 the syntax is very similar.
 
+### Parameters
+
+* **--directive** - The directive name (the file where the Directive was created).
+Check [list all directives](./directives.md#list-available-directives) for more details in obtaining
+the names.
+
 ### How to run
 
 The syntax is very simple for a custom directive:
@@ -377,6 +383,14 @@ the directive shall be inside a `directives/operations` package.
 
 And this should be it. We now have a `createsuperuser` and an application and now we can run
 in the command line:
+
+**Using the auto discover**
+
+```shell
+$ esmerald run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+```
+
+**Using the --app or ESMERALD_DEFAULT_APP**
 
 ```shell
 $ esmerald --app myproject.main:app run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald

@@ -43,9 +43,8 @@ def get_http_verb(mapping: Any) -> str:
         return HttpMethod.HEAD.value
 
 
-@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
 @click.command(name="show_urls")
-def show_urls(env: DirectiveEnv, verbosity: int) -> None:
+def show_urls(env: DirectiveEnv) -> None:
     """Shows the information regarding the urls of a given application
 
     How to run: `esmerald show_urls`
