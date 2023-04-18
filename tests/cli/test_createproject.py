@@ -45,11 +45,11 @@ def test_create_project(create_folders):
     (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
-    with open("myproject/Makefile", "rt") as f:
+    with open("myproject/Makefile") as f:
         assert f.readline().strip() == ".DEFAULT_GOAL := help"
-    with open("myproject/.gitignore", "rt") as f:
+    with open("myproject/.gitignore") as f:
         assert f.readline().strip() == "# Byte-compiled / optimized / DLL files"
-    with open("myproject/myproject/urls.py", "rt") as f:
+    with open("myproject/myproject/urls.py") as f:
         assert f.readline().strip() == '"""myproject Routes Configuration'
 
 
@@ -79,7 +79,7 @@ def test_create_project_files_with_env_var(create_folders):
 
 
 def test_create_project_files_without_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=True)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=False)
     assert ss == 0
 
     _run_asserts()
@@ -89,7 +89,7 @@ def test_create_project_files_without_env_var_and_with_app_flag(create_folders):
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
         "esmerald --app tests.cli.main:app createproject myproject",
-        is_app=True,
+        is_app=False,
     )
     assert ss == 0
 

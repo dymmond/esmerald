@@ -64,24 +64,24 @@ def test_create_app_with_env_var(create_folders):
 
 
 def test_create_app_without_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=True)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=False)
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp", is_app=True)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp", is_app=False)
 
     _run_asserts()
 
 
 def test_create_app_without_env_var_with_app_flag(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=True)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=False)
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald --app tests.cli.main:app createapp myapp", is_app=True
+        "tests.cli.main:app", "esmerald --app tests.cli.main:app createapp myapp", is_app=False
     )
 
     _run_asserts()

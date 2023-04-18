@@ -8,7 +8,7 @@ import click
 
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.exceptions import DirectiveError
-from esmerald.core.terminal import Print, Terminal
+from esmerald.core.terminal import OutputColour, Print, Terminal
 
 printer = Print()
 terminal = Terminal()
@@ -100,8 +100,10 @@ def runserver(
     except ImportError:
         raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald.") from None
 
-    message = terminal.write_info("Starting server...")
-    terminal.rule(message, align="left")
+    message = terminal.write_info(
+        f"Starting {env.app.settings.environment} server @ {host}", colour=OutputColour.BRIGHT_CYAN
+    )
+    terminal.rule(message, align="center")
 
     if debug:
         env.app.debug = debug
