@@ -4,6 +4,8 @@ Having [built-in directives](./directives.md) from Esmerald is great as it gives
 niceties for your project but having **custom directives** is what really powers up your
 application and takes it to another level.
 
+{!> ../docs_src/_shared/autodiscovery.md !}
+
 ## What is a custom directive?
 
 Before jumping into that, let us go back to the roots of python.
@@ -26,8 +28,6 @@ This is what a directive is.
     principle. There is an [excelent article](https://simpleisbetterthancomplex.com/tutorial/2018/08/27/how-to-create-custom-django-management-commands.html)
     about those if you want to get familiar with.
 
-
-{! ../docs_src/_shared/envvars.md !}
 
 ### Examples
 

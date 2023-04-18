@@ -3,6 +3,8 @@
 What are these directives? In simple terms, those are special `command-line` scripts that run special
 pieces of code for **Esmerald**.
 
+{!> ../docs_src/_shared/autodiscovery.md !}
+
 ## Built-in Esmerald directives
 
 Starting a project can be troublesome for some people mostly because there questions about the structure of the files
@@ -17,14 +19,12 @@ A lot of people cannot be bothered with running cookiecutters and go straight to
 
 Currently there are two built-in directives.
 
-* [directives](#all-directives) - Lists all the available directives.
+* [directives](#available-esmerald-directives) - Lists all the available directives.
 * [createproject](#create-project) - Used to generate a scaffold for a project.
 * [createapp](#create-app) - Used to generate a scaffold for an application.
 * [show_urls](#show-urls) - Shows the information about the your esmerald application.
 
-{! ../docs_src/_shared/envvars.md !}
-
-## All Directives
+## Available Esmerald Directives
 
 This is the most simple directive to run and lists all the available directives from Esmerald
 and with a flag `--app` shows also the available directives in your project.
@@ -97,7 +97,7 @@ peoject locally, for example:
     * `make run` - Starts your project with the development settings.
     * `make test` - Runs your local tests with the testing settings.
     * `make clean` - Removes all the `*.pyc` from your project.
-    
+
     !!! Info
         The tests are using [pytest](https://docs.pytest.org/) but you can change to whatever you want.
 
