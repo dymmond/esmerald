@@ -1,7 +1,8 @@
 import saffier
+from saffier import Database, Registry
+
 from esmerald import Esmerald
 from esmerald.contrib.auth.saffier.base_user import AbstractUser
-from saffier import Database, Registry
 
 database = Database("postgres://postgres:password@localhost:5432/my_db")
 registry = Registry(database=database)

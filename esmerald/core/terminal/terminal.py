@@ -1,8 +1,4 @@
-from rich.console import Console
-
 from esmerald.core.terminal.base import Base, OutputColour
-
-console = Console()
 
 
 class Terminal(Base):

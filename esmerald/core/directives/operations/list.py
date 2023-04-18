@@ -1,18 +1,15 @@
 from collections import defaultdict
-from typing import Any
 
 import click
 
+from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.operations._constants import PATH
 from esmerald.core.directives.utils import get_application_directives, get_directives
 from esmerald.core.terminal import OutputColour, Terminal
 
-EXCUDED_DIRECTIVES = ["list", "run"]
-
 
 @click.command(name="directives")
-@click.pass_context
-def list(ctx: Any) -> None:
+def list(env: DirectiveEnv) -> None:
     """
     Lists the available directives
 
@@ -29,8 +26,8 @@ def list(ctx: Any) -> None:
     directives = get_directives(PATH)
 
     # Handles the application directives
-    if getattr(ctx, "obj", None) is not None:
-        app_directives = get_application_directives(ctx.obj.command_path)
+    if getattr(env, "app", None) is not None:
+        app_directives = get_application_directives(env.command_path)
         if app_directives:
             directives.extend(app_directives)
 

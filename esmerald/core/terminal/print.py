@@ -1,8 +1,4 @@
-from rich.console import Console
-
 from esmerald.core.terminal.base import Base, OutputColour
-
-console = Console()
 
 
 class Print(Base):
@@ -15,12 +11,12 @@ class Print(Base):
     ) -> None:
         """Outputs the successes to the console"""
         message = self.message(message, colour)
-        console.print(message)
+        self.print(message)
 
     def write_info(self, message: str, colour: str = OutputColour.INFO) -> None:
         """Outputs the info to the console"""
         message = self.message(message, colour)
-        console.print(message)
+        self.print(message)
 
     def write_warning(
         self,
@@ -29,11 +25,11 @@ class Print(Base):
     ) -> None:
         """Outputs the warnings to the console"""
         message = self.message(message, colour)
-        console.print(message)
+        self.print(message)
 
     def write_plain(self, message: str, colour: str = OutputColour.WHITE) -> None:
         message = self.message(message, colour)
-        console.print(message)
+        self.print(message)
 
     def write_error(
         self,
@@ -42,4 +38,4 @@ class Print(Base):
     ) -> None:
         """Outputs the errors to the console"""
         message = self.message(message, colour)
-        console.print(message)
+        self.print(message)
