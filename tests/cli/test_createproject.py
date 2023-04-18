@@ -54,21 +54,21 @@ def test_create_project(create_folders):
 
 
 def _run_asserts():
-    assert os.path.isfile("myproject/Makefile") == True
-    assert os.path.isfile("myproject/.gitignore") == True
-    assert os.path.isfile("myproject/myproject/__init__.py") == True
-    assert os.path.isfile("myproject/myproject/main.py") == True
-    assert os.path.isfile("myproject/myproject/serve.py") == True
-    assert os.path.isfile("myproject/myproject/urls.py") == True
-    assert os.path.isfile("myproject/myproject/tests/__init__.py") == True
-    assert os.path.isfile("myproject/myproject/tests/test_app.py") == True
-    assert os.path.isfile("myproject/myproject/configs/__init__.py") == True
-    assert os.path.isfile("myproject/myproject/configs/settings.py") == True
-    assert os.path.isfile("myproject/myproject/configs/development/__init__.py") == True
-    assert os.path.isfile("myproject/myproject/configs/development/settings.py") == True
-    assert os.path.isfile("myproject/myproject/configs/testing/__init__.py") == True
-    assert os.path.isfile("myproject/myproject/configs/testing/settings.py") == True
-    assert os.path.isfile("myproject/myproject/apps/__init__.py") == True
+    assert os.path.isfile("myproject/Makefile") is True
+    assert os.path.isfile("myproject/.gitignore") is True
+    assert os.path.isfile("myproject/myproject/__init__.py") is True
+    assert os.path.isfile("myproject/myproject/main.py") is True
+    assert os.path.isfile("myproject/myproject/serve.py") is True
+    assert os.path.isfile("myproject/myproject/urls.py") is True
+    assert os.path.isfile("myproject/myproject/tests/__init__.py") is True
+    assert os.path.isfile("myproject/myproject/tests/test_app.py") is True
+    assert os.path.isfile("myproject/myproject/configs/__init__.py") is True
+    assert os.path.isfile("myproject/myproject/configs/settings.py") is True
+    assert os.path.isfile("myproject/myproject/configs/development/__init__.py") is True
+    assert os.path.isfile("myproject/myproject/configs/development/settings.py") is True
+    assert os.path.isfile("myproject/myproject/configs/testing/__init__.py") is True
+    assert os.path.isfile("myproject/myproject/configs/testing/settings.py") is True
+    assert os.path.isfile("myproject/myproject/apps/__init__.py") is True
 
 
 def test_create_project_files_with_env_var(create_folders):

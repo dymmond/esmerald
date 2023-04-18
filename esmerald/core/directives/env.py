@@ -6,14 +6,15 @@ from importlib import import_module
 from pathlib import Path
 
 from esmerald import Esmerald
-from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
+from esmerald.core.directives.constants import (
+    DISCOVERY_FILES,
+    DISCOVERY_FUNCTIONS,
+    ESMERALD_DISCOVER_APP,
+)
 from esmerald.core.terminal import Print
 from esmerald.exceptions import EnvironmentError
 
 printer = Print()
-
-
-DISCOVERY_FILES = ["application.py", "app.py", "main.py"]
 
 
 @dataclass
@@ -77,7 +78,7 @@ class DirectiveEnv:
         """
         return [directory.path for directory in os.scandir(path) if directory.is_dir()]
 
-    def _check_folder(
+    def _find_app_in_folder(
         self, path: Path, cwd: Path
     ) -> typing.Union[typing.NoReturn, typing.Callable[..., typing.Any]]:
         """
@@ -98,15 +99,14 @@ class DirectiveEnv:
             for attr, value in module.__dict__.items():
                 if isinstance(value, Esmerald):
                     app_path = f"{dotted_path}:{attr}"
-                    printer.write_info(
-                        f"Found {value.__class__.__name__} application from {app_path}"
-                    )
                     return Scaffold(app=value, path=app_path)
 
-            if hasattr(module, "get_application"):
-                app_path = f"{dotted_path}:get_application"
-                printer.write_info(f"Found {value.__class__.__name__} application from {app_path}")
-                return Scaffold(app=value, path=app_path)
+            # Iterate over default pattern application functions
+            for func in DISCOVERY_FUNCTIONS:
+                if hasattr(module, func):
+                    app_path = f"{dotted_path}:{func}"
+                    fn = getattr(module, func)
+                    return Scaffold(app=fn(), path=app_path)
 
     def find_app(self, path: typing.Optional[str], cwd: Path) -> Scaffold:
         """
@@ -121,7 +121,7 @@ class DirectiveEnv:
         scaffold: Scaffold = None
 
         # Check current folder
-        scaffold = self._check_folder(cwd, cwd)
+        scaffold = self._find_app_in_folder(cwd, cwd)
         if scaffold:
             return scaffold
 
@@ -130,7 +130,7 @@ class DirectiveEnv:
 
         for folder in folders:
             folder_path = cwd / folder
-            scaffold = self._check_folder(folder_path, cwd)
+            scaffold = self._find_app_in_folder(folder_path, cwd)
 
             if not scaffold:
                 continue

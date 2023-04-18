@@ -2,17 +2,13 @@
 Client to interact with Saffier models and migrations.
 """
 
-import os
 import sys
-import typing
 
 import click
-from rich.table import Table
 
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.exceptions import DirectiveError
-from esmerald.core.directives.operations._constants import ESMERALD_SETTINGS_MODULE
-from esmerald.core.terminal import OutputColour, Print, Terminal
+from esmerald.core.terminal import Print, Terminal
 
 printer = Print()
 terminal = Terminal()
@@ -110,12 +106,6 @@ def runserver(
     if debug:
         env.app.debug = debug
 
-    if settings:
-        settings_module: str = os.environ.get(ESMERALD_SETTINGS_MODULE, settings)
-        os.environ.setdefault(ESMERALD_SETTINGS_MODULE, settings_module)
-
-    get_app_info(env.app)
-
     uvicorn.run(
         app=env.path,
         port=port,
@@ -124,13 +114,3 @@ def runserver(
         lifespan=lifespan,
         log_level=log_level,
     )
-
-
-def get_app_info(app: typing.Any) -> None:
-    table = Table(show_header=False)
-
-    table.add_column("Title", style=OutputColour.CYAN)
-
-    table.add_row(app.app_name)
-
-    printer.print(table)

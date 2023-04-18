@@ -42,14 +42,14 @@ def create_folders():
 
 
 def _run_asserts():
-    assert os.path.isfile("myapp/__init__.py") == True
-    assert os.path.isfile("myapp/tests.py") == True
-    assert os.path.isfile("myapp/v1/__init__.py") == True
-    assert os.path.isfile("myapp/v1/schemas.py") == True
-    assert os.path.isfile("myapp/v1/urls.py") == True
-    assert os.path.isfile("myapp/v1/views.py") == True
-    assert os.path.isfile("myapp/directives/__init__.py") == True
-    assert os.path.isfile("myapp/directives/operations/__init__.py") == True
+    assert os.path.isfile("myapp/__init__.py") is True
+    assert os.path.isfile("myapp/tests.py") is True
+    assert os.path.isfile("myapp/v1/__init__.py") is True
+    assert os.path.isfile("myapp/v1/schemas.py") is True
+    assert os.path.isfile("myapp/v1/urls.py") is True
+    assert os.path.isfile("myapp/v1/views.py") is True
+    assert os.path.isfile("myapp/directives/__init__.py") is True
+    assert os.path.isfile("myapp/directives/operations/__init__.py") is True
 
 
 def test_create_app_with_env_var(create_folders):

@@ -1,4 +1,5 @@
 import inspect
+import os
 import sys
 import typing
 from functools import wraps
@@ -20,6 +21,7 @@ from esmerald.core.directives.operations import (
     runserver,
     show_urls,
 )
+from esmerald.core.directives.operations._constants import ESMERALD_SETTINGS_MODULE
 from esmerald.core.terminal.print import Print
 from esmerald.exceptions import EnvironmentError
 
@@ -27,18 +29,7 @@ printer = Print()
 
 
 class DirectiveGroup(click.Group):
-    """Custom directive group to handle with the context objects"""
-
-    def __init__(
-        self,
-        name: typing.Optional[str] = None,
-        commands: typing.Optional[
-            typing.Union[typing.Dict[str, click.Command], typing.Sequence[click.Command]]
-        ] = None,
-        **attrs: typing.Any,
-    ) -> None:
-        self.group_class = DirectiveGroup
-        super().__init__(name, commands, **attrs)
+    """Custom directive group to handle with the context and directives commands"""
 
     def add_command(self, cmd: click.Command, name: typing.Optional[str] = None) -> None:
         if cmd.callback:
@@ -57,12 +48,31 @@ class DirectiveGroup(click.Group):
 
         return click.pass_context(wrapped)
 
+    def process_settings(self, ctx: click.Context):
+        """
+        Process the settings context" if any is passed.
+
+        Exports any ESMERALD_SETTINGS_MODULE to the environment if --settings is passed and exists
+        as one of the params of any subcommand.
+        """
+        args = [*ctx.protected_args, *ctx.args]
+        cmd_name, cmd, args = self.resolve_command(ctx, args)
+        sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)
+
+        settings = sub_ctx.params.get("settings", None)
+        if settings:
+            settings_module: str = os.environ.get(ESMERALD_SETTINGS_MODULE, settings)
+            os.environ.setdefault(ESMERALD_SETTINGS_MODULE, settings_module)
+
     def invoke(self, ctx: click.Context) -> typing.Any:
         """
         Directives can be ignored depending of the functionality from what is being
         called.
         """
         path = ctx.params.get("path", None)
+
+        # Process any settings
+        self.process_settings(ctx)
 
         if HELP_PARAMETER not in sys.argv and not any(
             value in sys.argv for value in EXCLUDED_DIRECTIVES
@@ -87,14 +97,12 @@ class DirectiveGroup(click.Group):
     help="Module path to the application to generate the migrations. In a module:path formatyping.",
 )
 @click.option("--n", "name", help="The directive name to run.")
-@click.option(
-    "--settings",
-    type=str,
-    help="Start the server with specific settings.",
-    required=False,
-)
 @click.pass_context
-def esmerald_cli(ctx: click.Context, path: typing.Optional[str], name: str, settings: str) -> None:
+def esmerald_cli(
+    ctx: click.Context,
+    path: typing.Optional[str],
+    name: str,
+) -> None:
     """
     Esmerald command line tool allowing to run Esmerald native directives or
     project unique and specific directives by passing the `-n` parameter.
