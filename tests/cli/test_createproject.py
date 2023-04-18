@@ -1,23 +1,12 @@
 import os
-import shlex
 import shutil
-import subprocess
 
 import pytest
 
 from esmerald import Esmerald
+from tests.cli.utils import run_cmd
 
 app = Esmerald(routes=[])
-
-
-def run_cmd(app, cmd):
-    os.environ["SAFFIER_DEFAULT_APP"] = app
-    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (stdout, stderr) = process.communicate()
-    print("\n$ " + cmd)
-    print(stdout.decode("utf-8"))
-    print(stderr.decode("utf-8"))
-    return stdout, stderr, process.wait()
 
 
 @pytest.fixture(scope="module")
@@ -64,22 +53,44 @@ def test_create_project(create_folders):
         assert f.readline().strip() == '"""myproject Routes Configuration'
 
 
-def test_create_project_files(create_folders):
+def _run_asserts():
+    assert os.path.isfile("myproject/Makefile") == True
+    assert os.path.isfile("myproject/.gitignore") == True
+    assert os.path.isfile("myproject/myproject/__init__.py") == True
+    assert os.path.isfile("myproject/myproject/main.py") == True
+    assert os.path.isfile("myproject/myproject/serve.py") == True
+    assert os.path.isfile("myproject/myproject/urls.py") == True
+    assert os.path.isfile("myproject/myproject/tests/__init__.py") == True
+    assert os.path.isfile("myproject/myproject/tests/test_app.py") == True
+    assert os.path.isfile("myproject/myproject/configs/__init__.py") == True
+    assert os.path.isfile("myproject/myproject/configs/settings.py") == True
+    assert os.path.isfile("myproject/myproject/configs/development/__init__.py") == True
+    assert os.path.isfile("myproject/myproject/configs/development/settings.py") == True
+    assert os.path.isfile("myproject/myproject/configs/testing/__init__.py") == True
+    assert os.path.isfile("myproject/myproject/configs/testing/settings.py") == True
+    assert os.path.isfile("myproject/myproject/apps/__init__.py") == True
+
+
+def test_create_project_files_with_env_var(create_folders):
     (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
-    assert os.path.isfile("myproject/Makefile") is True
-    assert os.path.isfile("myproject/.gitignore") is True
-    assert os.path.isfile("myproject/myproject/__init__.py") is True
-    assert os.path.isfile("myproject/myproject/main.py") is True
-    assert os.path.isfile("myproject/myproject/serve.py") is True
-    assert os.path.isfile("myproject/myproject/urls.py") is True
-    assert os.path.isfile("myproject/myproject/tests/__init__.py") is True
-    assert os.path.isfile("myproject/myproject/tests/test_app.py") is True
-    assert os.path.isfile("myproject/myproject/configs/__init__.py") is True
-    assert os.path.isfile("myproject/myproject/configs/settings.py") is True
-    assert os.path.isfile("myproject/myproject/configs/development/__init__.py") is True
-    assert os.path.isfile("myproject/myproject/configs/development/settings.py") is True
-    assert os.path.isfile("myproject/myproject/configs/testing/__init__.py") is True
-    assert os.path.isfile("myproject/myproject/configs/testing/settings.py") is True
-    assert os.path.isfile("myproject/myproject/apps/__init__.py") is True
+    _run_asserts()
+
+
+def test_create_project_files_without_env_var(create_folders):
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=True)
+    assert ss == 0
+
+    _run_asserts()
+
+
+def test_create_project_files_without_env_var_and_with_app_flag(create_folders):
+    (o, e, ss) = run_cmd(
+        "tests.cli.main:app",
+        "esmerald --app tests.cli.main:app createproject myproject",
+        is_app=True,
+    )
+    assert ss == 0
+
+    _run_asserts()

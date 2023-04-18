@@ -5,7 +5,12 @@ from functools import wraps
 
 import click
 
-from esmerald.core.directives.constants import APP_PARAMETER, HELP_PARAMETER
+from esmerald.core.directives.constants import (
+    APP_PARAMETER,
+    EXCLUDED_DIRECTIVES,
+    HELP_PARAMETER,
+    IGNORE_DIRECTIVES,
+)
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.operations import (
     create_app,
@@ -19,9 +24,6 @@ from esmerald.core.terminal.print import Print
 from esmerald.exceptions import EnvironmentError
 
 printer = Print()
-
-
-EXCLUDED_DIRECTIVES = ["createproject", "createapp"]
 
 
 class DirectiveGroup(click.Group):
@@ -44,7 +46,6 @@ class DirectiveGroup(click.Group):
         return super().add_command(cmd, name)
 
     def wrap_args(self, func: typing.Any) -> typing.Any:
-        """Inject the app instance into a ``Command``"""
         params = inspect.signature(func).parameters
 
         @wraps(func)
@@ -57,6 +58,10 @@ class DirectiveGroup(click.Group):
         return click.pass_context(wrapped)
 
     def invoke(self, ctx: click.Context) -> typing.Any:
+        """
+        Directives can be ignored depending of the functionality from what is being
+        called.
+        """
         path = ctx.params.get("path", None)
 
         if HELP_PARAMETER not in sys.argv and not any(
@@ -67,8 +72,9 @@ class DirectiveGroup(click.Group):
                 app_env = directive.load_from_env(path=path)
                 ctx.obj = app_env
             except EnvironmentError as e:
-                printer.write_error(str(e))
-                sys.exit(1)
+                if not any(value in sys.argv for value in IGNORE_DIRECTIVES):
+                    printer.write_error(str(e))
+                    sys.exit(1)
         return super().invoke(ctx)
 
 

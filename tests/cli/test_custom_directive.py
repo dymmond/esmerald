@@ -1,27 +1,14 @@
 import os
-import shlex
 import shutil
-import subprocess
 
 import pytest
 
 from esmerald.conf import settings
 from esmerald.contrib.auth.saffier.base_user import AbstractUser
+from tests.cli.utils import run_cmd
 
 database, models = settings.registry
 pytestmark = pytest.mark.anyio
-
-
-def run_cmd(app, cmd, is_app=True):
-    if is_app:
-        os.environ["ESMERALD_DEFAULT_APP"] = app
-
-    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (stdout, stderr) = process.communicate()
-    print("\n$ " + cmd)
-    print(stdout.decode("utf-8"))
-    print(stderr.decode("utf-8"))
-    return stdout, stderr, process.wait()
 
 
 @pytest.fixture(scope="module")

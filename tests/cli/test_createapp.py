@@ -1,23 +1,12 @@
 import os
-import shlex
 import shutil
-import subprocess
 
 import pytest
 
 from esmerald import Esmerald
+from tests.cli.utils import run_cmd
 
 app = Esmerald(routes=[])
-
-
-def run_cmd(app, cmd):
-    os.environ["SAFFIER_DEFAULT_APP"] = app
-    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (stdout, stderr) = process.communicate()
-    print("\n$ " + cmd)
-    print(stdout.decode("utf-8"))
-    print(stderr.decode("utf-8"))
-    return stdout, stderr, process.wait()
 
 
 @pytest.fixture(scope="module")
@@ -52,7 +41,18 @@ def create_folders():
         pass
 
 
-def test_create_project(create_folders):
+def _run_asserts():
+    assert os.path.isfile("myapp/__init__.py") == True
+    assert os.path.isfile("myapp/tests.py") == True
+    assert os.path.isfile("myapp/v1/__init__.py") == True
+    assert os.path.isfile("myapp/v1/schemas.py") == True
+    assert os.path.isfile("myapp/v1/urls.py") == True
+    assert os.path.isfile("myapp/v1/views.py") == True
+    assert os.path.isfile("myapp/directives/__init__.py") == True
+    assert os.path.isfile("myapp/directives/operations/__init__.py") == True
+
+
+def test_create_app_with_env_var(create_folders):
     (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
@@ -60,11 +60,28 @@ def test_create_project(create_folders):
 
     (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
 
-    assert os.path.isfile("myapp/__init__.py") is True
-    assert os.path.isfile("myapp/tests.py") is True
-    assert os.path.isfile("myapp/v1/__init__.py") is True
-    assert os.path.isfile("myapp/v1/schemas.py") is True
-    assert os.path.isfile("myapp/v1/urls.py") is True
-    assert os.path.isfile("myapp/v1/views.py") is True
-    assert os.path.isfile("myapp/directives/__init__.py") is True
-    assert os.path.isfile("myapp/directives/operations/__init__.py") is True
+    _run_asserts()
+
+
+def test_create_app_without_env_var(create_folders):
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=True)
+    assert ss == 0
+
+    os.chdir("myproject/myproject/apps")
+
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp", is_app=True)
+
+    _run_asserts()
+
+
+def test_create_app_without_env_var_with_app_flag(create_folders):
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject", is_app=True)
+    assert ss == 0
+
+    os.chdir("myproject/myproject/apps")
+
+    (o, e, ss) = run_cmd(
+        "tests.cli.main:app", "esmerald --app tests.cli.main:app createapp myapp", is_app=True
+    )
+
+    _run_asserts()
