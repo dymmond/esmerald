@@ -1,5 +1,33 @@
 # Release Notes
 
+## 1.2.0
+
+### Changed
+
+- Updated native requirements of the project.
+- Removed old core management in favour of click.
+- Deprecated `management` package in favour of `directives`. [#83](https://github.com/dymmond/esmerald/pull/83).
+- Deprecate `esmerald-admin`. Now you can simply call `esmerald` with the same directives
+as before. Simplification via command line [#86](https://github.com/dymmond/esmerald/pull/86).
+	- Example:
+		- `esmerald createproject <NAME>`
+		- `esmerald createpapp <NAME>`
+
+### Added
+
+- Support for Ruff.
+- New esmerald core admin management directives [#83](https://github.com/dymmond/esmerald/pull/83).
+- New directives client.
+- Added rich for command line colours, tables.
+- New native directives:
+	- [directives](./directives/directives.md#list-available-directives).
+	- [runserver](./directives/directives.md#runserver).
+	- [show_urls](./directives/directives.md#show-urls).
+
+### Fixed
+
+- Linting and formatting issues with Ruff.
+
 ## 1.1.0
 
 ### Changed
@@ -29,7 +57,7 @@
 
 - ChildEsmerald now supports the parent which means it can share middlewares and interceptors
 across main application and children.
-        
+
     !!! Note
         Prior to version 1.0.0, sharing resources between Esmerald and ChildEsmerald was not allowed
         and it needed to be treated as completely isolated application. In the version 1.0.0 you can
@@ -71,7 +99,7 @@ evolving at a normal pace and blocking security patches from being properly appl
 
 ## 0.13.0
 
-### Changed 
+### Changed
 
 - Added support for Starlette 0.25.0
 
@@ -141,7 +169,7 @@ If you already had template configurations, jwt, schedulers or all the features 
     from asyncz.schedulers import AsyncIOScheduler # for the Scheduler class
     from asyncz.contrib.esmerald.decorator import scheduler # for the decorator
     ```
-    
+
 ## 0.10.0
 
 ### Added
