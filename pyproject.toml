@@ -44,6 +44,7 @@ dependencies = [
     "awesome-slugify>=1.6.5,<2",
     "httpx>=0.24.0,<0.30.0",
     "itsdangerous>=2.1.2,<3.0.0",
+    "jinja2>=3.1.2,<4.0.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
     "loguru>=0.6.0,<0.7.0",
     "pydantic>=1.10.7,<2.0.0",
@@ -125,7 +126,7 @@ doc = [
     "pyyaml>=6.0,<7.0.0",
 ]
 
-templates = ["jinja2>=3.1.2,<4.0.0", "mako==1.2.4"]
+templates = ["mako==1.2.4"]
 
 jwt = ["passlib==1.7.4", "python-jose>=3.3.0,<4"]
 

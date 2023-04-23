@@ -57,7 +57,7 @@ def load_directive_class(app_name: str, name: str) -> Any:
     """
     Loads the directive class from native Esmerald.
     """
-    module = import_module("%s.directives.operations.%s" % (app_name, name))
+    module = import_module("{}.directives.operations.{}".format(app_name, name))
     return module.Directive()
 
 
@@ -103,6 +103,7 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
 
     counter = 0
     matches = []
+    app_name = None
 
     for directive in sorted(directives, key=lambda d: d["location"]):
         try:
@@ -113,7 +114,6 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
                     break
         except KeyError:
             counter += 1
-
             directive = {k: v for k, v in directive.items() if k != "location"}
             matches.extend(get_close_matches(subdirective, directive))
 
@@ -123,6 +123,15 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
             if len(directives) == counter:
                 return None
             continue
+
+    if not app_name:
+        directive = {k: v for k, v in directive.items() if k != "location"}
+        matches.extend(get_close_matches(subdirective, directive))
+
+        if matches:
+            printer.write_error("Did you mean %s?" % matches[0])
+            return None
+        return None
 
     name = f"{location}/{app_name}.py"
     klass = load_directive_class_by_filename(app_name, name)
