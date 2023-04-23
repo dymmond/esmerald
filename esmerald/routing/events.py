@@ -67,3 +67,13 @@ def handle_lifespan_events(
     elif lifespan:
         return lifespan
     return None
+
+
+def generate_lifespan_events(
+    on_startup: Optional[Sequence[Callable]] = None,
+    on_shutdown: Optional[Sequence[Callable]] = None,
+    lifespan: Optional[Lifespan[Any]] = None,
+) -> Any:
+    if lifespan:
+        return lifespan
+    return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)
