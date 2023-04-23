@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.2.1
+
+### Fixed
+
+- Lifespan generator for the run directive.
+
 ## 1.2.0
 
 ### Changed
