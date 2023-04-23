@@ -1,5 +1,6 @@
 import random
 import string
+from uuid import uuid4
 
 import pytest
 
@@ -58,11 +59,12 @@ async def test_create_user():
 
 
 async def test_create_superuser():
+    uuid = str(uuid4())[:6]
     for _i in range(5):
         await User.query.create_superuser(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
-            username=get_random_string(10),
+            username=f"{uuid}{get_random_string(10)}",
             email=f"mail@{get_random_string(12)}.com",
             password=get_random_string(8),
         )
@@ -77,10 +79,11 @@ async def test_create_superuser():
     ids=["check-password-true", "check-password-false"],
 )
 async def test_check_password(password, repeat_password, is_value):
+    uuid = str(uuid4())[:6]
     user = await User.query.create_superuser(
         first_name=get_random_string(10),
         last_name=get_random_string(12),
-        username=get_random_string(10),
+        username=f"{uuid}{get_random_string(10)}",
         email=f"mail@{get_random_string(12)}.com",
         password=password,
     )
@@ -93,10 +96,11 @@ async def test_check_password(password, repeat_password, is_value):
     [("123password", "pass223edsd!@3214"), ("-0987ewur3iwohrnf", "3029847389-4u@")],
 )
 async def test_set_password(password, new_password):
+    uuid = str(uuid4())[:6]
     user = await User.query.create_superuser(
         first_name=get_random_string(10),
         last_name=get_random_string(12),
-        username=get_random_string(10),
+        username=f"{uuid}{get_random_string(10)}",
         email=f"mail@{get_random_string(12)}.com",
         password=password,
     )
@@ -111,10 +115,11 @@ async def test_set_password(password, new_password):
 
 async def test_create_normal_users():
     for _i in range(10):
+        uuid = str(uuid4())[:6]
         await User.query.create_user(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
-            username=get_random_string(6),
+            username=f"{uuid}{get_random_string(10)}",
             email=f"mail@{get_random_string(12)}.com",
             password=get_random_string(5),
         )
@@ -126,19 +131,21 @@ async def test_create_normal_users():
 
 async def test_create_normal_all():
     for _i in range(5):
+        uuid = str(uuid4())[:6]
         await User.query.create_superuser(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
-            username=get_random_string(4),
+            username=f"{uuid}{get_random_string(10)}",
             email=f"mail@{get_random_string(12)}.com",
             password=get_random_string(23),
         )
 
     for _i in range(10):
+        uuid = str(uuid4())[:6]
         await User.query.create_user(
             first_name=get_random_string(10),
             last_name=get_random_string(12),
-            username=get_random_string(5),
+            username=f"{uuid}{get_random_string(10)}",
             email=f"mail@{get_random_string(12)}.com",
             password=get_random_string(12),
         )
