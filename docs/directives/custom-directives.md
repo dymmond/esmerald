@@ -344,8 +344,8 @@ allow us to do a complete end-to-end directive using the async approach.
 
 This example is very simple in its own design.
 
-For production you should have your models inside models dedicated place and your `registry`
-and `database` settings somwhere in your `settings` where you can access it anywhere in your code via
+For production you should have your models inside a models dedicated place and your `registry`
+and `database` settings somewhere in your `settings` where you can access it anywhere in your code via
 [esmerald settings](../application/settings.md), for example.
 
 P.S.: For the registry and database strategy with [saffier][saffier], it is good to have a read
