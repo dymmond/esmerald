@@ -1,10 +1,16 @@
 # Release Notes
 
+## 1.2.2
+
+### Fixed
+
+- Exception handler message when `run` directive does not find custom directive properly.
+
 ## 1.2.1
 
 ### Fixed
 
-- Lifespan generator for the run directive.
+- Lifespan generator for the `run` directive.
 
 ## 1.2.0
 

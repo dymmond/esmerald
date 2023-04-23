@@ -1,7 +1,7 @@
 """
 Esmerald: Highly scalable, performant, easy to learn and for every application.
 """
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 
 from starlette import status
