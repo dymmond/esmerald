@@ -1,7 +1,3 @@
-"""
-Client to interact with Saffier models and migrations.
-"""
-
 import click
 
 from esmerald.core.directives.exceptions import DirectiveError
