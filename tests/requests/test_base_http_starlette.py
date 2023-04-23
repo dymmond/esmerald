@@ -329,7 +329,7 @@ def test_request_state_object() -> None:
     del s.new
 
     with pytest.raises(AttributeError):
-        s.new
+        s.new  # noqa
 
 
 def test_request_state() -> None:
