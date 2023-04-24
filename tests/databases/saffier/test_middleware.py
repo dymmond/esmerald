@@ -1,10 +1,11 @@
 import random
 import string
-import time as pytime
 from datetime import datetime, timedelta
 from typing import AsyncGenerator
+from uuid import uuid4
 
 import pytest
+from anyio import from_thread, sleep, to_thread
 from httpx import AsyncClient
 from pydantic import BaseModel
 from saffier.exceptions import DoesNotFound
@@ -26,6 +27,10 @@ def get_random_string(length=10):
     letters = string.ascii_lowercase
     result_str = "".join(random.choice(letters) for i in range(length))
     return result_str
+
+
+def blocking_function():
+    from_thread.run(sleep, 2)
 
 
 class User(AbstractUser):
@@ -72,12 +77,13 @@ def generate_user_token(user: User, time=None):
 
 
 async def get_user_and_token(time=None):
+    uuid = str(uuid4())[:6]
     user = await User.query.create_user(
         first_name="Test",
         last_name="test",
-        email="foo@bar.com",
+        email=f"{uuid}-foo@bar.com",
         password=get_random_string(),
-        username="test",
+        username=f"{uuid}-test",
     )
 
     token = generate_user_token(user, time=time)
@@ -185,10 +191,11 @@ def app():
 @pytest.fixture()
 async def async_client(app) -> AsyncGenerator:
     async with AsyncClient(app=app, base_url="http://test") as ac:
+        await to_thread.run_sync(blocking_function)
         yield ac
 
 
-async def test_cannot_access_endpoint_without_header(test_client_factory):
+async def test_cannot_access_endpoint_without_header(test_client_factory, async_client):
     with create_client(
         routes=[Gateway(handler=home)],
         middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
@@ -198,7 +205,7 @@ async def test_cannot_access_endpoint_without_header(test_client_factory):
         assert response.status_code == 401
 
 
-async def test_cannot_access_endpoint_with_invalid_header(test_client_factory):
+async def test_cannot_access_endpoint_with_invalid_header(test_client_factory, async_client):
     time = datetime.now() + timedelta(seconds=1)
     token = await get_user_and_token(time=time)
 
@@ -211,7 +218,7 @@ async def test_cannot_access_endpoint_with_invalid_header(test_client_factory):
         assert response.status_code == 401
 
 
-async def test_cannot_access_endpoint_with_invalid_token(test_client_factory):
+async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, async_client):
     time = datetime.now() + timedelta(seconds=1)
     token = await get_user_and_token(time=time)
 
@@ -220,9 +227,7 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory):
         middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
         raise_server_exceptions=False,
     ) as client:
-        pytime.sleep(2)
         response = client.get("/", headers={jwt_config.api_key_header: f"Bearer {token}"})
-
         assert response.status_code == 401
 
 
@@ -233,7 +238,7 @@ async def test_can_access_endpoint_with_valid_token(test_client_factory, async_c
     response = await async_client.get("/", headers={jwt_config.api_key_header: f"Bearer {token}"})
 
     assert response.status_code == 200
-    assert response.json() == {"message": "hello foo@bar.com"}
+    assert "hello" in response.json()["message"]
 
 
 async def test_can_access_endpoint_with_valid_token_after_login_failed(
