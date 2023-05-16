@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.2.3
+
+### Fixed
+
+- Upgrade Starlette version to >=0.27.0 for a security release. Details on [Starlette's security](https://github.com/encode/starlette/security/advisories/GHSA-v5gw-mw7f-84px)
+
 ## 1.2.2
 
 ### Fixed
