@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.2.4
+
+### Changed
+
+- Updated pyproject.toml keywords.
+- Updated to the latest [Starlette 0.28.0](https://www.starlette.io/release-notes/).
+- Exception handler logic refactored.
+
 ## 1.2.3
 
 ### Fixed
