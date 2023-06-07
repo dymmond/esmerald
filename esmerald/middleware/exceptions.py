@@ -1,20 +1,18 @@
-import inspect
 from inspect import getmro
 from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, cast
 
 from pydantic import BaseModel
 from starlette import status
-from starlette._utils import is_async_callable
-from starlette.concurrency import run_in_threadpool
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.errors import ServerErrorMiddleware
 from starlette.middleware.exceptions import ExceptionMiddleware as StarletteExceptionMiddleware
 from starlette.responses import Response as StarletteResponse
-from starlette.types import ASGIApp, Message, Receive, Scope, Send
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
 from esmerald.exceptions import HTTPException, WebSocketException
+from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.types import ExceptionHandler, ExceptionHandlers
@@ -49,49 +47,18 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
             await self.app(scope, receive, send)
             return
 
-        response_started = False
+        scope["starlette.exception_handlers"] = (
+            self._exception_handlers,
+            self._status_handlers,
+        )
 
-        async def sender(message: Message) -> None:
-            nonlocal response_started
+        conn: Union[Request, WebSocket]
+        if scope["type"] == "http":
+            conn = Request(scope, receive, send)
+        else:
+            conn = WebSocket(scope, receive, send)
 
-            if message["type"] == "http.response.start":
-                response_started = True
-            await send(message)
-
-        try:
-            await self.app(scope=scope, receive=receive, send=send)
-        except Exception as exc:
-            handler = None
-
-            if isinstance(exc, StarletteHTTPException):
-                handler = self._status_handlers.get(exc.status_code)
-
-            if handler is None:
-                handler = self._lookup_exception_handler(exc)
-
-            if handler is None:
-                raise exc
-
-            if response_started:
-                msg = "Caught handled exception, but response already started."
-                raise RuntimeError(msg) from exc
-
-            if scope["type"] == "http":
-                request = Request(scope, receive=receive)
-                if is_async_callable(handler):
-                    response = await handler(request, exc)
-                else:
-                    response = await run_in_threadpool(handler, request, exc)
-                await response(scope, receive, sender)
-            elif scope["type"] == "websocket":
-                websocket = WebSocket(scope, receive=receive, send=send)
-                if is_async_callable(handler):
-                    if inspect.isfunction(handler):
-                        await self.app(scope, receive, send)
-                    else:
-                        await handler(websocket, exc)
-                else:
-                    await run_in_threadpool(handler, websocket, exc)
+        await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
 
 
 class ResponseContent(BaseModel):
