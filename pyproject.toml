@@ -47,7 +47,7 @@ dependencies = [
     "jinja2>=3.1.2,<4.0.0",
     "jsonschema_rs>=0.16.2,<0.20.0",
     "loguru>=0.6.0,<0.7.0",
-    "pydantic>=1.10.7,<2.0.0",
+    "pydantic>=1.10.9,<2.0.0",
     "pydantic-factories==1.17.2",
     "python-multipart>=0.0.5,<0.0.7",
     "openapi-schemas-pydantic>=1.1.0",
