@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.2.5
+
+### Fixed
+
+- Removed deprecated functions allowing the mount and host.
+- Fixed show_urls for openapi specification.
+
 ## 1.2.4
 
 ### Changed
