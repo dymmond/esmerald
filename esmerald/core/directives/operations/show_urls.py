@@ -74,7 +74,7 @@ def get_routes_table(app, table: Table) -> None:
     table.add_column("HTTP Methods", style=OutputColour.RED, vertical="center")
 
     def parse_routes(app, table: table, route: Optional[Any] = None, prefix: Optional[str] = ""):
-        if not app.routes:
+        if getattr(app, "routes", None) is None:
             return
 
         for route in app.routes:
