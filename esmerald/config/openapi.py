@@ -107,7 +107,7 @@ class OpenAPIConfig(BaseModel):
         schema.paths = {}
 
         def parse_route(app, prefix=""):
-            if not app.routes:
+            if getattr(app, "routes", None) is None:
                 return
 
             # Making sure that ChildEsmerald or esmerald

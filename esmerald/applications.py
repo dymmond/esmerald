@@ -424,8 +424,6 @@ class Esmerald(Starlette):
         return setting_value
 
     def activate_openapi(self) -> None:
-        pass
-
         if self.openapi_config and self.enable_openapi:
             self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
             gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
@@ -507,6 +505,11 @@ class Esmerald(Starlette):
             middleware=middleware,
             name=name,
         )
+
+    def add_include(self, include: Include) -> None:
+        """Adds an include directly to the active application router"""
+        self.router.routes.append(include)
+        self.activate_openapi()
 
     def add_child_esmerald(
         self,
@@ -824,14 +827,6 @@ class Esmerald(Starlette):
             scope["root_path"] = self.root_path
         scope["state"] = {}
         await super().__call__(scope, receive, send)
-
-    def mount(self, path: str, app: ASGIApp, name: Optional[str] = None) -> None:
-        raise ImproperlyConfigured("`mount` is not supported by Esmerald. Use Include() instead.")
-
-    def host(self, host: str, app: ASGIApp, name: Optional[str] = None) -> None:
-        raise ImproperlyConfigured(
-            "`host` is not supported by Esmerald. Use Starlette Host() instead."
-        )
 
     def route(
         self,
