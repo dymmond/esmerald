@@ -24,7 +24,7 @@
 
 ---
 
-**Documentation**: [https://esmerald.dev](https://www,esmerald.dev) 📚
+**Documentation**: [https://esmerald.dev](https://www.esmerald.dev) 📚
 
 **Source Code**: [https://github.com/dymmond/esmerald](https://github.com/dymmond/esmerald)
 
