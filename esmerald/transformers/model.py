@@ -25,7 +25,7 @@ from esmerald.transformers.utils import (
     merge_sets,
 )
 from esmerald.utils.constants import RESERVED_KWARGS
-from esmerald.utils.pydantic import is_field_optional
+from esmerald.utils.pydantic.schema import is_field_optional
 
 if TYPE_CHECKING:
     from pydantic.typing import DictAny
