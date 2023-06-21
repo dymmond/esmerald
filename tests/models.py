@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel
-from pydantic_factories import ModelFactory
+from pyfactories import ModelFactory
 
 
 class Individual(BaseModel):
