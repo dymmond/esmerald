@@ -32,6 +32,7 @@ from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
 
 from esmerald.conf import settings
+from esmerald.core.urls import include
 from esmerald.datastructures import File, Redirect, URLPath
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import (
@@ -53,7 +54,6 @@ from esmerald.transformers.datastructures import EsmeraldSignature as SignatureM
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
-from esmerald.urls import include
 from esmerald.utils.constants import DATA, REDIRECT_STATUS_CODES, REQUEST, SOCKET
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.url import clean_path

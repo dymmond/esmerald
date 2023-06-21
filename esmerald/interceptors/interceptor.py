@@ -12,6 +12,6 @@ class EsmeraldInterceptor(ABC, InterceptorProtocol):
 
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
-        The abstract method that needs to be implemented for any interceptor.
+        The method that needs to be implemented for any interceptor.
         """
         raise NotImplementedError("intercept must be implemented")
