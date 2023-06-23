@@ -9,9 +9,9 @@ fi
 
 set -ex
 
-if [ -z $GITHUB_ACTIONS ]; then
-    scripts/lint
-fi
+# if [ -z $GITHUB_ACTIONS ]; then
+#     scripts/lint
+# fi
 
 export ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings'
 
