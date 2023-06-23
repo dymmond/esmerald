@@ -100,7 +100,7 @@ class OpenAPIConfig(BaseModel):
         elif getattr(path_item, "header", None):
             return HttpMethod.HEAD.value.lower()
 
-    def create_openapi_schema_model(self, app: Type["Esmerald"]) -> "OpenAPI":
+    def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
         from esmerald.applications import ChildEsmerald, Esmerald
 
         schema = self.to_openapi_schema()

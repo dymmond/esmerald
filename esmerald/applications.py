@@ -155,7 +155,7 @@ class Esmerald(Starlette):
         scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
         enable_scheduler: Optional[bool] = None,
         timezone: Optional[Union[dtimezone, str]] = None,
-        routes: Optional[List["APIGateHandler"]] = None,
+        routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
         root_path: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
@@ -168,7 +168,7 @@ class Esmerald(Starlette):
         enable_openapi: Optional[bool] = None,
         redirect_slashes: Optional[bool] = None,
         pluggables: Optional[Dict[str, Pluggable]] = None,
-        parent: Optional[Type["Esmerald"]] = None,
+        parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
     ) -> None:
         self.settings_config = None
 
@@ -180,7 +180,7 @@ class Esmerald(Starlette):
                     "settings_config must be a subclass of EsmeraldSettings"
                 )
             elif isinstance(settings_config, EsmeraldAPISettings):
-                self.settings_config = settings_config
+                self.settings_config = settings_config  # type: ignore
             elif is_class_and_subclass(settings_config, EsmeraldAPISettings):
                 self.settings_config = settings_config()
 
@@ -306,8 +306,8 @@ class Esmerald(Starlette):
             self.settings_config, esmerald_settings, "root_path"
         )
 
-        self.middleware = (
-            middleware
+        self.middleware = (  # type: ignore
+            middleware  # type: ignore
             or self.get_settings_value(self.settings_config, esmerald_settings, "middleware")
             or []
         )
@@ -358,7 +358,6 @@ class Esmerald(Starlette):
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
         self.async_exit_config = esmerald_settings.async_exit_config
-        self.parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None
 
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
@@ -392,7 +391,7 @@ class Esmerald(Starlette):
 
         self.activate_openapi()
 
-    def activate_scheduler(self):
+    def activate_scheduler(self) -> None:
         """
         Makes sure the scheduler is accessible.
         """
@@ -408,7 +407,7 @@ class Esmerald(Starlette):
             scheduler_class=self.scheduler_class,
             tasks=self.scheduler_tasks,
             timezone=self.timezone,
-            configurations=self.scheduler_configurations,
+            configurations=self.scheduler_configurations,  # type: ignore
         )
 
     def get_settings_value(
@@ -439,14 +438,14 @@ class Esmerald(Starlette):
         Returns the template engine for the application.
         """
         if not template_config:
-            return
+            return None
 
         engine = template_config.engine(template_config.directory)
         return engine
 
     def add_apiview(
         self,
-        value: Union[Type["gateways.Gateway"], Type["gateways.WebSocketGateway"]],
+        value: Union["gateways.Gateway", "gateways.WebSocketGateway"],
     ) -> None:
         """
         Adds an APIView via application instance.

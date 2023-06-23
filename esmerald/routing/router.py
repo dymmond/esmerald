@@ -284,7 +284,7 @@ class Router(Parent, StarletteRouter):
     def activate(self):
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: Union[Type["Gateway"], Type["WebSocketGateway"]]):
+    def add_apiview(self, value: Union["Gateway", "WebSocketGateway"]):
         routes = []
         if not value.handler.parent:
             value.handler(parent=self)

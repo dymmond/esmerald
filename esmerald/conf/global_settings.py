@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
 from pydantic import AnyUrl, BaseConfig, BaseSettings
@@ -252,7 +252,7 @@ class EsmeraldAPISettings(BaseSettings):
         )
 
     @property
-    def middleware(self) -> List[Middleware]:
+    def middleware(self) -> Sequence[Middleware]:
         """
         Initial Default configuration for the middleware.
         This can be overwritten in another setting or simply override `def middleware()`.
