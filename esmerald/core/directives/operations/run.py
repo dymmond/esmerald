@@ -1,7 +1,7 @@
 import os
 import sys
 from enum import Enum
-from typing import Any
+from typing import Any, TypeVar
 
 import click
 from starlette.types import Lifespan
@@ -12,6 +12,8 @@ from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
 from esmerald.routing.events import generate_lifespan_events
 from esmerald.utils.sync import execsync
+
+T = TypeVar("T")
 
 printer = Print()
 
@@ -64,11 +66,11 @@ def run(env: DirectiveEnv, directive: str, directive_args: Any) -> None:
 
     ## Check if application is up and execute any event
     # Shutting down after
-    lifespan = generate_lifespan_events(env.app.on_startup, env.app.on_shutdown, env.app.lifespan)
-    execsync(execute_lifespan)(env.app, lifespan, directive, program_name, position)
+    lifespan = generate_lifespan_events(env.app.on_startup, env.app.on_shutdown, env.app.lifespan)  # type: ignore
+    execsync(execute_lifespan)(env.app, lifespan, directive, program_name, position)  # type: ignore
 
 
-def get_position():
+def get_position() -> int:
     """
     Gets the position of the arguments to read and pass them
     onto the directive.
@@ -82,7 +84,7 @@ def get_position():
 
 async def execute_lifespan(
     app, lifespan: Lifespan, directive: Any, program_name: str, position: int
-):
+) -> None:
     """
     Executes the lifespan events and the directive.
     """

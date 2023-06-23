@@ -9,7 +9,7 @@ import sys
 import typing
 from difflib import get_close_matches
 from importlib import import_module
-from typing import Any
+from typing import Any, Optional
 
 from esmerald.core.directives.base import BaseDirective
 from esmerald.core.directives.exceptions import DirectiveError
@@ -141,7 +141,7 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
     return klass
 
 
-def fetch_directive(subdirective: Any, location: str, is_custom: bool = False) -> Any:
+def fetch_directive(subdirective: Any, location: Optional[str], is_custom: bool = False) -> Any:
     """Fetches the directive classes custom and native"""
     if not is_custom:
         directives = get_directives(location)
