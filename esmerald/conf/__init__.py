@@ -33,18 +33,18 @@ class EsmeraldLazySettings(LazyObject):
 
         self._wrapped = settings()
 
-    def __repr__(self: "EsmeraldLazySettings"):
+    def __repr__(self: "EsmeraldLazySettings") -> str:
         # Hardcode the class name as otherwise it yields 'Settings'.
         if self._wrapped is empty:
             return "<EsmeraldLazySettings [Unevaluated]>"
-        return '<EsmeraldLazySettings "%(settings_module)s">' % {
-            "settings_module": self._wrapped.__class__.__name__
-        }
+        return '<EsmeraldLazySettings "{settings_module}">'.format(
+            settings_module=self._wrapped.__class__.__name__
+        )
 
     @property
-    def configured(self):
+    def configured(self) -> Any:
         """Return True if the settings have already been configured."""
         return self._wrapped is not empty
 
 
-settings: APISettings = EsmeraldLazySettings()
+settings: APISettings = EsmeraldLazySettings()  # type: ignore
