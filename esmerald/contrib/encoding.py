@@ -1,18 +1,28 @@
 import codecs
 import datetime
 import locale
-import typing
 from decimal import Decimal
+from typing import Any, Union
 from urllib.parse import quote
+
+_PROTECTED_TYPES = (
+    type(None),
+    int,
+    float,
+    Decimal,
+    datetime.datetime,
+    datetime.date,
+    datetime.time,
+)
 
 
 class ExtraUnicodeDecodeError(UnicodeDecodeError):
-    def __init__(self, obj: typing.Any, *args):
+    def __init__(self, obj: Any, *args: Any) -> None:
         self.obj = obj
         super().__init__(*args)
 
-    def __str__(self):
-        return "%s. You passed in %r (%s)" % (
+    def __str__(self) -> str:
+        return "{}. You passed in {!r} ({})".format(
             super().__str__(),
             self.obj,
             type(self.obj),
@@ -29,18 +39,7 @@ def smart_str(
     return force_str(s, encoding, strings_only, errors)
 
 
-_PROTECTED_TYPES = (
-    type(None),
-    int,
-    float,
-    Decimal,
-    datetime.datetime,
-    datetime.date,
-    datetime.time,
-)
-
-
-def is_protected_type(obj: typing.Any) -> bool:
+def is_protected_type(obj: Any) -> bool:
     """Determine if the object instance is of a protected type.
 
     Objects of protected types are preserved as-is when passed to
@@ -119,7 +118,7 @@ _hexdig = "0123456789ABCDEFabcdef"
 _hextobyte.update({(a + b).encode(): bytes.fromhex(a + b) for a in _hexdig[8:] for b in _hexdig})
 
 
-def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
+def uri_to_iri(uri: Union[str, bytes]) -> Union[str, bytes]:
     """
     Convert a Uniform Resource Identifier(URI) into an Internationalized
     Resource Identifier(IRI).
@@ -156,7 +155,7 @@ def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
     return repercent_broken_unicode(iri).decode()
 
 
-def escape_uri_path(path: str) -> typing.Union[str, bytes]:
+def escape_uri_path(path: str) -> Union[str, bytes]:
     """
     Escape the unsafe characters from the path portion of a Uniform Resource
     Identifier (URI).
@@ -173,7 +172,7 @@ def escape_uri_path(path: str) -> typing.Union[str, bytes]:
     return quote(path, safe="/:@&+$,-_.!~*'()")
 
 
-def punycode(domain: typing.Union[str, bytes]) -> str:
+def punycode(domain: Union[str, bytes]) -> str:
     """Return the Punycode of the given domain if it's non-ASCII."""
     return domain.encode("idna").decode("ascii")
 
