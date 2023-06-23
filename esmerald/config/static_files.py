@@ -30,14 +30,14 @@ class StaticFilesConfig(BaseModel):
         """
         kwargs = {"html": self.html, "check_dir": self.check_dir}
         if self.packages:
-            kwargs.update({"packages": self.packages})
+            kwargs.update({"packages": self.packages})  # type: ignore
         if self.directory:
-            kwargs.update({"directory": str(self.directory)})
-        return kwargs
+            kwargs.update({"directory": str(self.directory)})  # type: ignore
+        return kwargs  # type: ignore
 
     def to_app(self) -> "ASGIApp":
         """
         It can be three scenarios
         """
 
-        return StaticFiles(**self._build_kwargs())
+        return StaticFiles(**self._build_kwargs())  # type: ignore

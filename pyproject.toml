@@ -205,6 +205,8 @@ module = [
     "sqlalchemy_utils.*",
     "slugify",
     "pytz",
+    "jose",
+    "tortoise",
 ]
 ignore_missing_imports = true
 ignore_errors = true
