@@ -1,7 +1,7 @@
 import os
 import sys
 from enum import Enum
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
 
 import click
 from starlette.types import Lifespan
@@ -12,6 +12,9 @@ from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
 from esmerald.routing.events import generate_lifespan_events
 from esmerald.utils.sync import execsync
+
+if TYPE_CHECKING:
+    from esmerald.applications import ChildEsmerald, Esmerald
 
 T = TypeVar("T")
 
@@ -83,7 +86,11 @@ def get_position() -> int:
 
 
 async def execute_lifespan(
-    app, lifespan: Lifespan, directive: Any, program_name: str, position: int
+    app: Optional[Union["Esmerald", "ChildEsmerald"]],
+    lifespan: Lifespan,
+    directive: Any,
+    program_name: str,
+    position: int,
 ) -> None:
     """
     Executes the lifespan events and the directive.

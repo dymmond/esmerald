@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from jose import JWSError, JWTError
 from starlette.requests import HTTPConnection
@@ -21,7 +21,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):
         self,
         app: "ASGIApp",
         config: "JWTConfig",
-        user_model: Generic[T],
+        user_model: T,
     ):
         super().__init__(app)
         """
@@ -79,7 +79,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):
         try:
             token = Token.decode(
                 token=auth_token, key=self.config.signing_key, algorithms=[self.config.algorithm]
-            )
+            )  # type: ignore
         except (JWSError, JWTError) as e:
             raise AuthenticationError(str(e)) from e
 

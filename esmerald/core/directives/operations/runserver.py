@@ -1,10 +1,14 @@
 import sys
+from typing import TYPE_CHECKING
 
 import click
 
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.terminal import OutputColour, Print, Terminal
+
+if TYPE_CHECKING:
+    pass
 
 printer = Print()
 terminal = Terminal()
@@ -56,12 +60,6 @@ terminal = Terminal()
     help="Enable lifespan events.",
     show_default=True,
 )
-@click.option(
-    "--settings",
-    type=str,
-    help="Start the server with specific settings.",
-    required=False,
-)
 @click.command(name="runserver")
 def runserver(
     env: DirectiveEnv,
@@ -71,7 +69,6 @@ def runserver(
     debug: bool,
     log_level: str,
     lifespan: str,
-    settings: str,
 ) -> None:
     """Starts the Esmerald development server.
 
@@ -98,19 +95,21 @@ def runserver(
     except ImportError:
         raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald.") from None
 
+    app = env.app
+    settings = app.settings  # type: ignore
     message = terminal.write_info(
-        f"Starting {env.app.settings.environment} server @ {host}", colour=OutputColour.BRIGHT_CYAN
+        f"Starting {settings.environment} server @ {host}", colour=OutputColour.BRIGHT_CYAN
     )
     terminal.rule(message, align="center")
 
     if debug:
-        env.app.debug = debug
+        app.debug = debug  # type: ignore
 
     uvicorn.run(
-        app=env.path,
+        app=env.path,  # type: ignore
         port=port,
         host=host,
         reload=reload,
-        lifespan=lifespan,
+        lifespan=lifespan,  # type: ignore
         log_level=log_level,
     )
