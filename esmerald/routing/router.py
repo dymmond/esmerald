@@ -11,6 +11,7 @@ from typing import (
     List,
     NoReturn,
     Optional,
+    Sequence,
     Set,
     Tuple,
     Type,
@@ -283,10 +284,10 @@ class Router(Parent, StarletteRouter):
     def activate(self):
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: Type["APIView"]):
+    def add_apiview(self, value: Union[Type["Gateway"], Type["WebSocketGateway"]]):
         routes = []
         if not value.handler.parent:
-            value(parent=self)
+            value.handler(parent=self)
 
         route_handlers = value.handler.get_route_handlers()
         for route_handler in route_handlers:
@@ -355,7 +356,7 @@ class Router(Parent, StarletteRouter):
         exception_handlers: Optional["ExceptionHandlers"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
     ) -> None:
         if not isinstance(handler, WebSocketHandler):
             raise ImproperlyConfigured(
@@ -888,7 +889,7 @@ class Include(Mount):
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
