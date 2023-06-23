@@ -64,7 +64,7 @@ class DirectiveEnv:
     def import_app_from_string(cls, path: typing.Optional[str] = None) -> Scaffold:
         if path is None:
             raise OSError(
-                detail="Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
+                "Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
             )
         module_str_path, app_name = path.split(":")
         module = import_module(module_str_path)
@@ -77,9 +77,7 @@ class DirectiveEnv:
         """
         return [directory.path for directory in os.scandir(path) if directory.is_dir()]
 
-    def _find_app_in_folder(
-        self, path: Path, cwd: Path
-    ) -> typing.Union[typing.NoReturn, typing.Callable[..., typing.Any]]:
+    def _find_app_in_folder(self, path: Path, cwd: Path) -> typing.Union[Scaffold, None]:
         """
         Iterates inside the folder and looks up to the DISCOVERY_FILES.
         """
@@ -106,6 +104,7 @@ class DirectiveEnv:
                     app_path = f"{dotted_path}:{func}"
                     fn = getattr(module, func)
                     return Scaffold(app=fn(), path=app_path)
+        return None
 
     def find_app(self, path: typing.Optional[str], cwd: Path) -> Scaffold:
         """
@@ -117,7 +116,7 @@ class DirectiveEnv:
         if path:
             return self.import_app_from_string(path)
 
-        scaffold: Scaffold = None
+        scaffold: typing.Union[Scaffold, None] = None
 
         # Check current folder
         scaffold = self._find_app_in_folder(cwd, cwd)
@@ -136,6 +135,6 @@ class DirectiveEnv:
             break
 
         if not scaffold:
-            raise OSError(detail="Could not find an Esmerald application.")
+            raise OSError("Could not find an Esmerald application.")
 
         return scaffold

@@ -19,7 +19,6 @@ class BaseDirective(BaseModel, ABC):
     """The base class from which all directrives derive"""
 
     help: str = ""
-    suppressed_base_arguments = set()
 
     def get_version(self) -> str:
         """
@@ -33,11 +32,13 @@ class BaseDirective(BaseModel, ABC):
         """
         ...
 
-    def create_parser(self, name: str, subdirective: str, **kwargs):
+    def create_parser(self, name: str, subdirective: str, **kwargs: Any) -> DirectiveParser:
         parser = DirectiveParser(
-            prog="%s %s" % (os.path.basename(name), subdirective), description=self.help, **kwargs
+            prog="{} {}".format(os.path.basename(name), subdirective),
+            description=self.help,
+            **kwargs
         )
-        self.add_arguments(parser)
+        self.add_arguments(parser)  # type: ignore
         return parser
 
     async def execute_from_command(self, argv: Any, program_name: str, position: int = 5) -> None:
@@ -54,7 +55,7 @@ class BaseDirective(BaseModel, ABC):
         try:
             await self.run(*args, **cmd_options)
         except DirectiveError as e:
-            printer.write_error("%s: %s" % (e.__class__.__name__, e))
+            printer.write_error("{}: {}".format(e.__class__.__name__, e))
             sys.exit(e.returncode)
 
     async def run(self, *args: Any, **options: Any) -> Any:
@@ -75,5 +76,5 @@ class BaseDirective(BaseModel, ABC):
         raise NotImplementedError("subclasses of BaseDirective must provide a handle() method.")
 
     class Config(BaseConfig):
-        extra = "allow"
+        extra = "allow"  # type: ignore
         arbitrary_types_allowed = True
