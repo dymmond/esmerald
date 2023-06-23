@@ -61,6 +61,7 @@ from esmerald.types import (
 from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
+    from esmerald.conf import EsmeraldLazySettings
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -410,8 +411,8 @@ class Esmerald(Starlette):
 
     def get_settings_value(
         self,
-        local_settings: Type["EsmeraldAPISettings"],
-        global_settings: Type["EsmeraldAPISettings"],
+        local_settings: Optional["EsmeraldAPISettings"],
+        global_settings: Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]],
         value: str,
     ) -> Any:
         """Obtains the value from a settings module or defaults to the global settings"""
