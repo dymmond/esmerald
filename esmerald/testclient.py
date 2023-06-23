@@ -14,7 +14,6 @@ import httpx  # noqa
 from starlette.testclient import TestClient  # noqa
 
 from esmerald.applications import Esmerald
-from esmerald.conf import settings  # noqa
 from esmerald.utils.crypto import get_random_secret_key
 
 if TYPE_CHECKING:
