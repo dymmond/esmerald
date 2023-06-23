@@ -3,7 +3,7 @@ import shutil
 import stat
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -32,7 +32,6 @@ class TemplateDirective(BaseDirective):
         self.app_or_project = app_or_project
         self.name = name
         self.a_or_an = "an" if app_or_project == "app" else "a"
-        self.paths_to_remove = []
         self.verbosity = options["verbosity"]
 
         self.validate_name(name)
@@ -43,7 +42,7 @@ class TemplateDirective(BaseDirective):
         except FileExistsError:
             raise DirectiveError(f"{top_dir} already exists.") from None
         except OSError as e:
-            raise DirectiveError(e) from e
+            raise DirectiveError(detail=str(e)) from e
 
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"
@@ -113,20 +112,20 @@ class TemplateDirective(BaseDirective):
         destination: Union[str, Path],
         template_dir: Union[str, Path],
         context: Dict[str, Any],
-    ):
+    ) -> None:
         """
         Goes through every file generated and replaces the variables with the given
         context variables.
         """
         environment = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
-        template = environment.get_template(template)
-        rendered_template = template.render(context)
+        template = environment.get_template(template)  # type: ignore
+        rendered_template = template.render(context)  # type: ignore
         if os.path.isfile(destination):
             os.unlink(destination)
         with open(destination, "w") as f:
             f.write(rendered_template)
 
-    def validate_name(self, name, name_or_dir="name"):
+    def validate_name(self, name: Optional[str], name_or_dir: str = "name") -> None:
         if name is None:
             raise DirectiveError(
                 "you must provide {an} {app} name".format(
@@ -160,13 +159,13 @@ class TemplateDirective(BaseDirective):
                 )
             )
 
-    def apply_umask(self, old_path: Union[str, Path], new_path: Union[str, Path]):
+    def apply_umask(self, old_path: Union[str, Path], new_path: Union[str, Path]) -> None:
         current_umask = os.umask(0)
         os.umask(current_umask)
         current_mode = stat.S_IMODE(os.stat(old_path).st_mode)
         os.chmod(new_path, current_mode & ~current_umask)
 
-    def make_file_writable(self, filename: str):
+    def make_file_writable(self, filename: str) -> None:
         """
         Make sure that the file is writeable.
         Useful if our source is read-only.
