@@ -5,14 +5,13 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
-from esmerald import Esmerald
+from esmerald import ChildEsmerald, Esmerald
 from esmerald.core.directives.constants import (
     DISCOVERY_FILES,
     DISCOVERY_FUNCTIONS,
     ESMERALD_DISCOVER_APP,
 )
 from esmerald.core.terminal import Print
-from esmerald.exceptions import EnvironmentError
 
 printer = Print()
 
@@ -26,7 +25,7 @@ class Scaffold:
     """
 
     path: str
-    app: typing.Any
+    app: typing.Union[Esmerald, ChildEsmerald]
 
 
 @dataclass
@@ -37,7 +36,7 @@ class DirectiveEnv:
     """
 
     path: typing.Optional[str] = None
-    app: typing.Optional[typing.Any] = None
+    app: typing.Optional[typing.Union[Esmerald, ChildEsmerald]] = None
     command_path: typing.Optional[str] = None
 
     def load_from_env(self, path: typing.Optional[str] = None) -> "DirectiveEnv":
@@ -64,7 +63,7 @@ class DirectiveEnv:
 
     def import_app_from_string(cls, path: typing.Optional[str] = None) -> Scaffold:
         if path is None:
-            raise EnvironmentError(
+            raise OSError(
                 detail="Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
             )
         module_str_path, app_name = path.split(":")
@@ -137,6 +136,6 @@ class DirectiveEnv:
             break
 
         if not scaffold:
-            raise EnvironmentError(detail="Could not find an Esmerald application.")
+            raise OSError(detail="Could not find an Esmerald application.")
 
         return scaffold
