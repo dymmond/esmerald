@@ -9,7 +9,7 @@ import sys
 import typing
 from difflib import get_close_matches
 from importlib import import_module
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar
 
 from esmerald.core.directives.base import BaseDirective
 from esmerald.core.directives.exceptions import DirectiveError
@@ -21,6 +21,8 @@ IGNORE_FOLDERS = ["__pycache__"]
 OPERATIONS = "operations"
 
 EXCUDED_DIRECTIVES = ["list", "run"]
+
+T = TypeVar("T")
 
 
 def find_directives(management_dir: str) -> typing.List[str]:
@@ -92,7 +94,7 @@ def get_directives(location: str) -> typing.Sequence[typing.Union[typing.Dict[An
 @functools.lru_cache(maxsize=None)
 def get_application_directives(
     location: str,
-) -> typing.Sequence[typing.Union[typing.Dict[Any, Any], str]]:
+) -> typing.Sequence[typing.Dict[Any, Any]]:
     command_list = find_application_directives(location)
     directives = []
 
@@ -103,7 +105,7 @@ def get_application_directives(
     return directives
 
 
-def fetch_custom_directive(subdirective: Any, location: str) -> Any:
+def fetch_custom_directive(subdirective: Any, location: Optional[str]) -> Any:
     """Fetches the directive classes custom and native"""
     directives = get_application_directives(location)
 
@@ -114,7 +116,7 @@ def fetch_custom_directive(subdirective: Any, location: str) -> Any:
     for directive in sorted(directives, key=lambda d: d["location"]):  # type: ignore
         try:
             for key, _ in directive.items():
-                if key == subdirective:  # type: ignore
+                if key == subdirective:
                     app_name = key
                     location = directive["location"]
                     break
@@ -163,7 +165,7 @@ def fetch_directive(subdirective: Any, location: Optional[str], is_custom: bool 
         except KeyError:
             counter += 1
 
-            directive = {k: v for k, v in directive.items() if k != "location"}
+            directive = {k: v for k, v in directive.items() if k != "location"}  # type: ignore
             matches.extend(get_close_matches(subdirective, directive))
 
             if matches and len(directives) == counter:
