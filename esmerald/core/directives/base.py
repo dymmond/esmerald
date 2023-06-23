@@ -36,7 +36,7 @@ class BaseDirective(BaseModel, ABC):
         parser = DirectiveParser(
             prog="{} {}".format(os.path.basename(name), subdirective),
             description=self.help,
-            **kwargs
+            **kwargs,
         )
         self.add_arguments(parser)  # type: ignore
         return parser
