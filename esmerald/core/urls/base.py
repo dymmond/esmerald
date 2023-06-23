@@ -15,7 +15,7 @@ DEFAULT_PATTERN = "route_patterns"
 
 def include(
     arg: Any, pattern: Optional[str] = DEFAULT_PATTERN
-) -> List[Union[Gateway, WebSocketGateway, Router, Include]]:
+) -> List[Union["Gateway", "WebSocketGateway", "Router", "Include"]]:
     """Simple retrieve functionality to make it easier to include
     routes in the urls. Example, nested routes.
 
