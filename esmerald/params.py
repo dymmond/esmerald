@@ -39,13 +39,13 @@ class Param(FieldInfo):
         examples: Optional[Dict[str, Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
-    ) -> Any:
+    ) -> None:
         self.deprecated = deprecated
         self.example = example
         self.examples = examples
         self.include_in_schema = include_in_schema
 
-        extra: Dict[Union[str, int], Any] = {}
+        extra: Dict[str, Any] = {}
         extra.update(header=header)
         extra.update(cookie=cookie)
         extra.update(query=query)
@@ -107,7 +107,7 @@ class Header(Param):
         examples: Optional[Dict[str, Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
-    ) -> Any:
+    ) -> None:
         super().__init__(
             default=default,
             header=value,
@@ -164,7 +164,7 @@ class Cookie(Param):
         examples: Optional[Dict[str, Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
-    ) -> Any:
+    ) -> None:
         super().__init__(
             default=default,
             cookie=value,
@@ -221,7 +221,7 @@ class Query(Param):
         examples: Optional[Dict[str, Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
-    ) -> Any:
+    ) -> None:
         super().__init__(
             default=default,
             query=value,
@@ -273,7 +273,7 @@ class Path(Param):
         examples: Optional[Dict[str, Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
-    ) -> Any:
+    ) -> None:
         super().__init__(
             default=default,
             title=title,
@@ -307,6 +307,7 @@ class Body(FieldInfo):
         alias: Optional[str] = None,
         description: Optional[str] = None,
         const: Optional[bool] = None,
+        embed: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
         lt: Optional[float] = None,
@@ -319,7 +320,7 @@ class Body(FieldInfo):
         regex: Optional[str] = None,
         example: Any = Undefined,
         examples: Optional[Dict[str, Any]] = None,
-    ) -> Any:
+    ) -> None:
         extra: Dict[str, Any] = {}
         self.media_type = media_type
         self.content_encoding = content_encoding
@@ -327,6 +328,7 @@ class Body(FieldInfo):
         self.examples = examples
         extra.update(media_type=self.media_type)
         extra.update(content_encoding=self.content_encoding)
+        extra.update(embed=embed)
         super().__init__(
             default=default,
             title=title,
@@ -367,7 +369,7 @@ class Form(Body):
         example: Any = Undefined,
         examples: Optional[Dict[str, Any]] = None,
         **extra: Any,
-    ):
+    ) -> None:
         super().__init__(
             default=default,
             embed=True,
@@ -409,7 +411,7 @@ class File(Form):
         example: Any = Undefined,
         examples: Optional[Dict[str, Any]] = None,
         **extra: Any,
-    ):
+    ) -> None:
         super().__init__(
             default=default,
             embed=True,
@@ -462,12 +464,12 @@ class DirectInject:
         dependency: Optional[Callable[..., Any]] = None,
         *,
         use_cache: bool = True,
-    ):
+    ) -> None:
         self.dependency = dependency
         self.use_cache = use_cache
 
-    def __hash__(self):
-        values = {}
+    def __hash__(self) -> int:
+        values: Dict[str, Any] = {}
         for key, value in self.__dict__.items():
             values[key] = None
             if isinstance(value, (list, set)):
