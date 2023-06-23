@@ -157,6 +157,7 @@ profile = "black"
 known_third_party = ["esmerald", "pydantic", "starlette"]
 
 [tool.mypy]
+
 warn_unused_configs = true
 warn_unreachable = true
 warn_return_any = true
@@ -170,6 +171,8 @@ disable_error_code = "attr-defined"
 exclude = "esmerald/conf,esmerald/utils"
 warn_unused_ignores = true
 warn_redundant_casts = true
+no_implicit_optional = false
+
 
 [tool.ruff]
 select = [

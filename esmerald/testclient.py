@@ -11,6 +11,7 @@ from typing import (
 )
 
 import httpx  # noqa
+from httpx._client import CookieTypes
 from starlette.testclient import TestClient  # noqa
 
 from esmerald.applications import Esmerald
@@ -31,7 +32,6 @@ if TYPE_CHECKING:
     from esmerald.types import (
         APIGateHandler,
         Dependencies,
-        DictStr,
         ExceptionHandlers,
         LifeSpanHandler,
         Middleware,
@@ -52,8 +52,8 @@ class EsmeraldTestClient(TestClient):
         root_path: str = "",
         backend: "Literal['asyncio', 'trio']" = "asyncio",
         backend_options: Optional[Dict[str, Any]] = None,
-        cookies: Optional[httpx._client.CookieTypes] = None,
-        headers: Optional["DictStr"] = None,
+        cookies: Optional[CookieTypes] = None,
+        headers: Dict[str, str] = None,
     ):
         super().__init__(
             app=app,
@@ -67,7 +67,7 @@ class EsmeraldTestClient(TestClient):
         )
 
     def __enter__(self, *args: Any, **kwargs: Dict[str, Any]) -> "EsmeraldTestClient":
-        return super().__enter__(*args, **kwargs)
+        return cast("EsmeraldTestClient", super().__enter__(*args, **kwargs))
 
 
 def create_client(
@@ -98,11 +98,11 @@ def create_client(
     scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
     enable_scheduler: bool = None,
     raise_server_exceptions: bool = True,
-    root_path: Optional[str] = "",
-    static_files_config: Optional[Union["StaticFilesConfig", List["StaticFilesConfig"]]] = None,
+    root_path: str = "",
+    static_files_config: Optional["StaticFilesConfig"] = None,
     template_config: Optional["TemplateConfig"] = None,
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
-    cookies: Optional[httpx._client.CookieTypes] = None,
+    cookies: Optional[CookieTypes] = None,
     redirect_slashes: Optional[bool] = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(

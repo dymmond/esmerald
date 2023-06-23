@@ -1,9 +1,13 @@
 import traceback
+from typing import TypeVar
 
 from starlette.middleware.errors import ServerErrorMiddleware as StarletteServerErrorMiddleware
+from starlette.requests import Request as StarletteRequest
 from starlette.responses import HTMLResponse, PlainTextResponse, Response
 
-from esmerald.requests import Request
+from esmerald.requests import Request as _Request
+
+Request = TypeVar("Request", _Request, StarletteRequest)
 
 
 class ServerErrorMiddleware(StarletteServerErrorMiddleware):
