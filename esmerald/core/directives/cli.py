@@ -3,6 +3,7 @@ import os
 import sys
 import typing
 from functools import wraps
+from typing import Callable, TypeVar
 
 import click
 
@@ -23,7 +24,8 @@ from esmerald.core.directives.operations import (
 )
 from esmerald.core.directives.operations._constants import ESMERALD_SETTINGS_MODULE
 from esmerald.core.terminal.print import Print
-from esmerald.exceptions import EnvironmentError
+
+T = TypeVar("T")
 
 printer = Print()
 
@@ -36,11 +38,11 @@ class DirectiveGroup(click.Group):
             cmd.callback = self.wrap_args(cmd.callback)
         return super().add_command(cmd, name)
 
-    def wrap_args(self, func: typing.Any) -> typing.Any:
+    def wrap_args(self, func: Callable[..., T]) -> Callable[..., T]:
         params = inspect.signature(func).parameters
 
         @wraps(func)
-        def wrapped(ctx: click.Context, /, *args: typing, **kwargs: typing) -> typing:
+        def wrapped(ctx: click.Context, /, *args: typing.Any, **kwargs: typing.Any) -> T:
             scaffold = ctx.ensure_object(DirectiveEnv)
             if "env" in params:
                 kwargs["env"] = scaffold
@@ -48,7 +50,7 @@ class DirectiveGroup(click.Group):
 
         return click.pass_context(wrapped)
 
-    def process_settings(self, ctx: click.Context):
+    def process_settings(self, ctx: click.Context) -> None:
         """
         Process the settings context" if any is passed.
 
@@ -57,7 +59,7 @@ class DirectiveGroup(click.Group):
         """
         args = [*ctx.protected_args, *ctx.args]
         cmd_name, cmd, args = self.resolve_command(ctx, args)
-        sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)
+        sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)  # type: ignore
 
         settings = sub_ctx.params.get("settings", None)
         if settings:
@@ -81,7 +83,7 @@ class DirectiveGroup(click.Group):
                 directive = DirectiveEnv()
                 app_env = directive.load_from_env(path=path)
                 ctx.obj = app_env
-            except EnvironmentError as e:
+            except OSError as e:
                 if not any(value in sys.argv for value in IGNORE_DIRECTIVES):
                     printer.write_error(str(e))
                     sys.exit(1)

@@ -1,4 +1,4 @@
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 from saffier.exceptions import DoesNotFound
 from starlette.types import ASGIApp
@@ -19,7 +19,7 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         self,
         app: "ASGIApp",
         config: "JWTConfig",
-        user_model: Generic[T],
+        user_model: T,
     ):
         super().__init__(app, config, user_model)
         """
@@ -56,7 +56,7 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         self.config = config
         self.user_model = user_model
 
-    async def retrieve_user(self, token_sub: Any) -> Generic[T]:
+    async def retrieve_user(self, token_sub: Any) -> T:
         """
         Retrieves a user from the database using the given token id.
         """
@@ -68,7 +68,7 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
 
         user_field = {self.config.user_id_field: token_sub}
         try:
-            return await self.user_model.query.get(**user_field)
+            return await self.user_model.query.get(**user_field)  # type: ignore
         except DoesNotFound:
             raise NotAuthorized() from None
         except Exception as e:
