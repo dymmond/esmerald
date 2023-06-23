@@ -200,13 +200,12 @@ ignore_errors = true
 [[tool.mypy.overrides]]
 module = [
     "sqlalchemy.*",
-    "asyncpg",
-    "alembic",
     "sqlalchemy_utils.*",
-    "slugify",
+    "slugify.*",
     "pytz",
-    "jose",
-    "tortoise",
+    "jose.*",
+    "tortoise.*",
+    "mako.*",
 ]
 ignore_missing_imports = true
 ignore_errors = true

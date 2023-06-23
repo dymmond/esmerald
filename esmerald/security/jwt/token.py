@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from jose import JWSError, JWTError, jwt
 from jose.exceptions import JWSAlgorithmError, JWSSignatureError
@@ -16,7 +16,7 @@ class Token(BaseModel):
 
     exp: datetime
     iat: datetime = Field(default_factory=lambda: convert_time(datetime.now(timezone.utc)))
-    sub: constr(min_length=1)
+    sub: constr(min_length=1)  # type: ignore
     iss: Optional[str] = None
     aud: Optional[str] = None
     jti: Optional[str] = None
@@ -39,7 +39,7 @@ class Token(BaseModel):
             return date
         raise ValueError("iat must be a current or past time")
 
-    def encode(self, key: str, algorithm: str) -> str:
+    def encode(self, key: str, algorithm: str) -> Union[str, Any]:
         """
         Encodes the token into a proper str formatted and allows passing kwargs.
         """
