@@ -1,8 +1,8 @@
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
-from pydantic import BaseConfig, BaseSettings
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
+from pydantic import AnyUrl, BaseConfig, BaseSettings
 from starlette.types import Lifespan
 
 from esmerald import __version__
@@ -21,7 +21,6 @@ from esmerald.types import (
     ResponseCookies,
     ResponseHeaders,
     ResponseType,
-    SchedulerType,
 )
 
 if TYPE_CHECKING:
@@ -34,12 +33,9 @@ class EsmeraldAPISettings(BaseSettings):
     app_name: str = "Esmerald"
     title: str = "My awesome Esmerald application"
     description: str = "Highly scalable, performant, easy to learn and for every application."
-    contact: Optional[Dict[str, Union[str, Any]]] = {
-        "name": "admin",
-        "email": "admin@myapp.com",
-    }
+    contact: Optional[Contact] = Contact(name="admin", email="admin@myapp.com")
     summary: str = "Esmerald application"
-    terms_of_service: Optional[str] = None
+    terms_of_service: Optional[AnyUrl] = None
     license: Optional[License] = None
     security: Optional[List[SecurityRequirement]] = None
     servers: List[Server] = [Server(url="/")]
@@ -51,7 +47,7 @@ class EsmeraldAPISettings(BaseSettings):
     response_cookies: Optional[ResponseCookies] = None
     response_headers: Optional[ResponseHeaders] = None
     include_in_schema: bool = True
-    tags: Optional[List[str]] = None
+    tags: Optional[List[Tag]] = None
     timezone: str = "UTC"
     use_tz: bool = False
     root_path: Optional[str] = ""
@@ -61,7 +57,7 @@ class EsmeraldAPISettings(BaseSettings):
     redirect_slashes: bool = True
 
     class Config(BaseConfig):
-        extra = "allow"
+        extra = "allow"  # type: ignore
         keep_untouched = (cached_property,)
 
     @property
@@ -96,7 +92,7 @@ class EsmeraldAPISettings(BaseSettings):
         return []
 
     @property
-    def csrf_config(self) -> CSRFConfig:
+    def csrf_config(self) -> Optional[CSRFConfig]:
         """
         Initial Default configuration for the CSRF.
         This can be overwritten in another setting or simply override `secret` or then override
@@ -141,7 +137,7 @@ class EsmeraldAPISettings(BaseSettings):
         return AsyncExitConfig()
 
     @property
-    def template_config(self) -> "TemplateConfig":
+    def template_config(self) -> Optional["TemplateConfig"]:
         """
         Initial Default configuration for the TemplateConfig.
         This can be overwritten in another setting or simply override `template_config` or then override
@@ -163,7 +159,7 @@ class EsmeraldAPISettings(BaseSettings):
         return None
 
     @property
-    def static_files_config(self) -> StaticFilesConfig:
+    def static_files_config(self) -> Optional[StaticFilesConfig]:
         """
         Simple configuration indicating where the statics will be placed in
         the application.
@@ -181,7 +177,7 @@ class EsmeraldAPISettings(BaseSettings):
         return None
 
     @property
-    def cors_config(self) -> CORSConfig:
+    def cors_config(self) -> Optional[CORSConfig]:
         """
         Initial Default configuration for the CORS.
         This can be overwritten in another setting or simply override `allow_origins` or then override
@@ -204,7 +200,7 @@ class EsmeraldAPISettings(BaseSettings):
         return CORSConfig(allow_origins=self.allow_origins)
 
     @property
-    def session_config(self) -> SessionConfig:
+    def session_config(self) -> Optional[SessionConfig]:
         """
         Initial Default configuration for the SessionConfig.
         This can be overwritten in another setting or simply override `session_config` or then override
@@ -272,7 +268,7 @@ class EsmeraldAPISettings(BaseSettings):
         return []
 
     @property
-    def scheduler_class(self) -> SchedulerType:
+    def scheduler_class(self) -> Any:
         """
         Scheduler class to be used within the application.
         """
@@ -391,7 +387,7 @@ class EsmeraldAPISettings(BaseSettings):
         return None
 
     @property
-    def lifespan(self) -> "Lifespan":
+    def lifespan(self) -> Optional["Lifespan"]:
         """
         Custom lifespan that can be passed instead of the default Starlette.
 
