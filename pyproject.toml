@@ -170,7 +170,6 @@ disable_error_code = "attr-defined"
 exclude = "esmerald/conf,esmerald/utils"
 warn_unused_ignores = true
 warn_redundant_casts = true
-ignore_missing_imports = true
 
 [tool.ruff]
 select = [
