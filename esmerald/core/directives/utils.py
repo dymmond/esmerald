@@ -9,7 +9,7 @@ import sys
 import typing
 from difflib import get_close_matches
 from importlib import import_module
-from typing import Any, Optional, TypeVar
+from typing import Any, Optional
 
 from esmerald.core.directives.base import BaseDirective
 from esmerald.core.directives.exceptions import DirectiveError
@@ -21,8 +21,6 @@ IGNORE_FOLDERS = ["__pycache__"]
 OPERATIONS = "operations"
 
 EXCUDED_DIRECTIVES = ["list", "run"]
-
-T = TypeVar("T")
 
 
 def find_directives(management_dir: str) -> typing.List[str]:

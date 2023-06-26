@@ -170,7 +170,7 @@ class BasePasswordHasher:
     algorithm_name: str
     digest: Any
     library = None
-    salt_entropy = 128
+    salt_entropy: int = 128
 
     def __init__(self, **kwargs: Any) -> None:
         if self.algorithm is None or self.algorithm_name is None:
