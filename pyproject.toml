@@ -209,6 +209,7 @@ module = [
     "jose.*",
     "mako.*",
     "passlib.*",
+    "esmerald.contrib.auth.saffier.*",
 ]
 ignore_missing_imports = true
 ignore_errors = true
