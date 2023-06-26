@@ -102,7 +102,7 @@ def get_hashers_by_algorithm() -> Dict[str, "BasePasswordHasher"]:
     return {hasher.algorithm_name: hasher for hasher in get_hashers()}
 
 
-def must_update_salt(salt: str, expected_entropy: int) -> Union[int, float]:
+def must_update_salt(salt: str, expected_entropy: int) -> bool:
     # Each character in the salt provides log_2(len(alphabet)) bits of entropy.
     return len(salt) * math.log2(len(RANDOM_STRING_CHARS)) < expected_entropy
 
@@ -165,24 +165,24 @@ def identify_hasher(encoded: str) -> "BasePasswordHasher":
 
 
 class BasePasswordHasher:
-    hasher = None
-    algorithm = None
-    algorithm_name: str = None
-    digest = None
+    hasher: CryptContext
+    algorithm: str
+    algorithm_name: str
+    digest: Any
     library = None
     salt_entropy = 128
 
-    def __init__(self) -> None:
-        if not self.algorithm or not self.algorithm_name:
+    def __init__(self, **kwargs: Any) -> None:
+        if self.algorithm is None or self.algorithm_name is None:
             raise NotImplementedError(
                 "subclasses of BasePasswordHasher must provide an algorithm and algorithm_name."
             )
         self.hasher = CryptContext(schemes=[self.algorithm], deprecated="auto")
 
-    def get_hashed_password(self, password: str) -> str:
+    def get_hashed_password(self, password: str) -> Union[str, Any]:
         return self.hasher.hash(password)
 
-    def salt(self):
+    def salt(self) -> str:
         """
         Generate a cryptographically secure nonce salt in ASCII with an entropy
         of at least `salt_entropy` bits.
@@ -192,7 +192,7 @@ class BasePasswordHasher:
         char_count = math.ceil(self.salt_entropy / math.log2(len(RANDOM_STRING_CHARS)))
         return get_random_string(char_count, allowed_chars=RANDOM_STRING_CHARS)
 
-    def decode(self, encoded: str) -> str:
+    def decode(self, encoded: str) -> Dict[str, Any]:
         """
         Return a decoded database value.
 
@@ -210,7 +210,7 @@ class BasePasswordHasher:
         if not salt or "$" in salt:
             raise ValueError("salt must be provided and cannot contain $.")
 
-    def must_update(self, encoded: Optional[str] = None) -> bool:
+    def must_update(self, encoded: str) -> bool:
         return False
 
 
@@ -224,7 +224,7 @@ class PBKDF2PasswordHasher(BasePasswordHasher):
     iterations = 390000
     digest = hashlib.sha256
 
-    def decode(self, encoded: str) -> str:
+    def decode(self, encoded: str) -> Dict[str, Any]:
         algorithm, iterations, salt, _hash = encoded.split("$", 3)
         assert algorithm == self.algorithm_name
         return {
@@ -234,7 +234,7 @@ class PBKDF2PasswordHasher(BasePasswordHasher):
             "salt": salt,
         }
 
-    def must_update(self, encoded: Optional[str]) -> bool:
+    def must_update(self, encoded: str) -> bool:
         decoded = self.decode(encoded)
         update_salt = must_update_salt(decoded["salt"], self.salt_entropy)
         return (decoded["iterations"] != self.iterations) or update_salt
