@@ -260,7 +260,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def handler(
+    def _handler(
         self,
         background: Optional[Union["BackgroundTask", "BackgroundTasks"]],
         cookies: "ResponseCookies",
@@ -407,7 +407,7 @@ class BaseResponseHandler:
                     headers=headers,
                 )
             else:
-                handler = self.handler(
+                handler = self._handler(
                     background=self.background,
                     cookies=cookies,
                     headers=headers,

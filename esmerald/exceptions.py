@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Type, Union
 from pydantic import BaseModel, create_model
 from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.exceptions import WebSocketException
+from starlette.exceptions import WebSocketException as StarletteWebSocketException
 
 RequestErrorModel: Type[BaseModel] = create_model("Request")
 WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
@@ -38,14 +38,14 @@ class HTTPException(StarletteHTTPException, EsmeraldAPIException):
         detail: Optional[str] = None,
         status_code: Optional[int] = None,
         headers: Optional[Dict[str, Any]] = None,
-        **extra,
-    ):
+        **extra: Any,
+    ) -> None:
         detail = detail or getattr(self, "detail", None)
         status_code = status_code or getattr(self, "status_code", None)
         if not detail:
             detail = args[0] if args else HTTPStatus(status_code or self.status_code).phrase
             args = args[1:]
-        super().__init__(status_code=status_code, detail=detail, headers=headers)
+        super().__init__(status_code=status_code, detail=detail, headers=headers)  # type: ignore
         self.detail = detail
         self.headers = headers
         self.args = (f"{self.status_code}: {self.detail}", *args)
@@ -121,7 +121,7 @@ class OpenAPIError(ValueError):
     ...
 
 
-class WebSocketException(WebSocketException):
+class WebSocketException(StarletteWebSocketException):
     ...
 
 

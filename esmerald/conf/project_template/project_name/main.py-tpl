@@ -13,7 +13,6 @@ def build_path():
     """
     Builds the path of the project and project root.
     """
-    Path(__file__).resolve().parent.parent
     SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
     if SITE_ROOT not in sys.path:

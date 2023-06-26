@@ -86,7 +86,7 @@ class OpenAPIConfig(BaseModel):
             ),
         )
 
-    def get_http_verb(self, path_item):
+    def get_http_verb(self, path_item: PathItem) -> str:
         if getattr(path_item, "get", None):
             return HttpMethod.GET.value.lower()
         elif getattr(path_item, "post", None):
@@ -100,13 +100,15 @@ class OpenAPIConfig(BaseModel):
         elif getattr(path_item, "header", None):
             return HttpMethod.HEAD.value.lower()
 
-    def create_openapi_schema_model(self, app: Type["Esmerald"]) -> "OpenAPI":
+        return HttpMethod.GET.value.lower()
+
+    def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
         from esmerald.applications import ChildEsmerald, Esmerald
 
         schema = self.to_openapi_schema()
         schema.paths = {}
 
-        def parse_route(app, prefix=""):
+        def parse_route(app, prefix=""):  # type: ignore
             if getattr(app, "routes", None) is None:
                 return
 
@@ -138,20 +140,20 @@ class OpenAPIConfig(BaseModel):
                             handler.include_in_schema
                             for handler, _ in route.handler.route_map.values()
                         )
-                        and (route.path_format or "/") not in schema.paths
+                        and (route.path_format or "/") not in schema.paths  # type: ignore
                     ):
                         path = clean_path(prefix + route.path)
                         path_item = create_path_item(
-                            route=route.handler,
+                            route=route.handler,  # type: ignore
                             create_examples=self.create_examples,
                             use_handler_docstrings=self.use_handler_docstrings,
                         )
                         verb = self.get_http_verb(path_item)
-                        if path not in schema.paths:
-                            schema.paths[path] = {}
-                        if verb not in schema.paths[path]:
-                            schema.paths[path][verb] = {}
-                        schema.paths[path][verb] = getattr(path_item, verb, None)
+                        if path not in schema.paths:  # type: ignore
+                            schema.paths[path] = {}  # type: ignore
+                        if verb not in schema.paths[path]:  # type: ignore
+                            schema.paths[path][verb] = {}  # type: ignore
+                        schema.paths[path][verb] = getattr(path_item, verb, None)  # type: ignore
                     continue
 
                 route_app = getattr(route, "app", None)
@@ -165,7 +167,7 @@ class OpenAPIConfig(BaseModel):
                         pass
 
                 path = clean_path(prefix + route.path)
-                parse_route(route, prefix=f"{path}")
+                parse_route(route, prefix=f"{path}")  # type: ignore
 
-        parse_route(app)
+        parse_route(app)  # type: ignore
         return construct_open_api_with_schema_class(schema)

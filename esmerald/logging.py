@@ -9,10 +9,11 @@ logger = logging.getLogger("esmerald")
 
 class InterceptHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
+        level: str
         try:
-            level: str = loguru_logger.level(record.levelname).name
+            level = loguru_logger.level(record.levelname).name
         except ValueError:
-            level: str = str(record.levelno)
+            level = str(record.levelno)
 
         frame, depth = logging.currentframe(), 2
         while frame.f_code.co_filename == logging.__file__:  # noqa: WPS609

@@ -65,6 +65,7 @@ class APIView:
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
         self.parent = parent
         self.interceptors = []
+        self.route_map = {}
 
     def get_filtered_handler(self) -> List[str]:
         """

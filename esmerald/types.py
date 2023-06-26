@@ -4,12 +4,13 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Coroutine,
     Dict,
     List,
+    Mapping,
     Type,
     TypeVar,
     Union,
+    get_args,
 )
 
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
@@ -18,19 +19,19 @@ from starlette.types import ASGIApp  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
-from esmerald.exceptions import HTTPException, MissingDependency, StarletteHTTPException
+from esmerald.exceptions import MissingDependency
 from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include
 
 try:
     from asyncz.schedulers import AsyncIOScheduler  # noqa
 except ImportError:
-    AsyncIOScheduler = Any
+    AsyncIOScheduler = Any  # type: ignore
 
 try:
     from esmerald.config.template import TemplateConfig as TemplateConfig  # noqa
 except MissingDependency:
-    TemplateConfig = Any
+    TemplateConfig = Any  # type: ignore
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -65,6 +66,7 @@ else:
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
+HTTPMethods = get_args(HTTPMethod)
 
 Middleware = Union[
     StarletteMiddleware,
@@ -76,15 +78,10 @@ ResponseType = Type[Response]
 
 Dependencies = Dict[str, Inject]
 
-CoroutineHandler = Coroutine[Any, Any, Response]
-ExceptionHandler = Union[
-    Callable[
-        [Request, Union[Exception, HTTPException, StarletteHTTPException]],
-        StarletteResponse,
-    ],
-    Callable[[Response, Any], CoroutineHandler],
-]
+ExceptionType = TypeVar("ExceptionType", bound=Exception)
+ExceptionHandler = Callable[[Request, ExceptionType], Response]
 ExceptionHandlers = Dict[Union[int, Type[Exception]], ExceptionHandler]
+ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
 ReservedKwargs = Literal[
     "request",
@@ -98,7 +95,7 @@ ReservedKwargs = Literal[
 
 ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
-AsyncAnyCallable = Callable[..., Awaitable[Any]]
+AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 
 
 SchedulerType = AsyncIOScheduler

@@ -1,12 +1,13 @@
 import copy
 import operator
-from typing import Any
+from typing import Any, Callable, TypeVar
 
 empty = object()
+RT = TypeVar("RT")  # return type
 
 
-def new_method_proxy(func):
-    def inner(self, *args):
+def new_method_proxy(func: Callable[..., RT]) -> Callable[..., RT]:
+    def inner(self, *args: Any) -> RT:  # type: ignore
         if self._wrapped is empty:
             self._setup()
         return func(self._wrapped, *args)
@@ -25,10 +26,10 @@ class LazyObject:
     # Avoid infinite recursion when tracing __init__ (#19456).
     _wrapped = None
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Note: if a subclass overrides __init__(), it will likely need to
         # override __copy__() and __deepcopy__() as well.
-        self._wrapped: Any = empty
+        self._wrapped = empty
 
     def __getattribute__(self, name: str) -> Any:
         if name == "_wrapped":
@@ -59,7 +60,7 @@ class LazyObject:
             self._setup()
         delattr(self._wrapped, name)
 
-    def _setup(self):
+    def _setup(self) -> Any:
         """
         Must be implemented by subclasses to initialize the wrapped object.
         """
@@ -93,7 +94,7 @@ class LazyObject:
             # If initialized, return a copy of the wrapped object.
             return copy.copy(self._wrapped)
 
-    def __deepcopy__(self, memo) -> Any:
+    def __deepcopy__(self, memo: Any) -> Any:
         if self._wrapped is empty:
             # We have to use type(self), not self.__class__, because the
             # latter is proxied.
@@ -111,7 +112,7 @@ class LazyObject:
 
     # Need to pretend to be the wrapped class, for the sake of objects that
     # care about this (especially in equality tests)
-    __class__ = property(new_method_proxy(operator.attrgetter("__class__")))
+    __class__ = property(new_method_proxy(operator.attrgetter("__class__")))  # type: ignore
     __eq__: Any = new_method_proxy(operator.eq)
     __lt__: Any = new_method_proxy(operator.lt)
     __gt__: Any = new_method_proxy(operator.gt)
@@ -142,7 +143,7 @@ class SimpleLazyObject(LazyObject):
     known type, use django.utils.functional.lazy.
     """
 
-    def __init__(self, func):
+    def __init__(self, func: Callable[..., RT]) -> None:
         """
         Pass in a callable that returns the object to be wrapped.
         If copies are made of the resulting SimpleLazyObject, which can happen
@@ -153,19 +154,19 @@ class SimpleLazyObject(LazyObject):
         self.__dict__["_setupfunc"] = func
         super().__init__()
 
-    def _setup(self):
+    def _setup(self) -> Any:
         self._wrapped = self._setupfunc()
 
     # Return a meaningful representation of the lazy object for debugging
     # without evaluating the wrapped object.
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self._wrapped is empty:
             repr_attr = self._setupfunc
         else:
             repr_attr = self._wrapped
-        return "<%s: %r>" % (type(self).__name__, repr_attr)
+        return "<{}: {!r}>".format(type(self).__name__, repr_attr)
 
-    def __copy__(self):
+    def __copy__(self) -> Any:
         if self._wrapped is empty:
             # If uninitialized, copy the wrapper. Use SimpleLazyObject, not
             # self.__class__, because the latter is proxied.
@@ -174,7 +175,7 @@ class SimpleLazyObject(LazyObject):
             # If initialized, return a copy of the wrapped object.
             return copy.copy(self._wrapped)
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: Any) -> Any:
         if self._wrapped is empty:
             # We have to use SimpleLazyObject, not self.__class__, because the
             # latter is proxied.
@@ -186,5 +187,5 @@ class SimpleLazyObject(LazyObject):
     __add__ = new_method_proxy(operator.add)
 
     @new_method_proxy
-    def __radd__(self, other):
+    def __radd__(self, other: Any) -> Any:
         return other + self

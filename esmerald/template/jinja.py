@@ -1,4 +1,5 @@
 from os import PathLike
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, List, Union
 
 from esmerald.exceptions import MissingDependency, TemplateNotFound
@@ -34,10 +35,10 @@ class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):
         self.env = self._create_environment(directory, **env_options)
 
     def _create_environment(
-        self, directory: Union[str, PathLike], **env_options: Any
-    ) -> "jinja2.Environment":
+        self, directory: Union[str, PathLike, List[Path]], **env_options: Any
+    ) -> "Environment":
         @pass_context
-        def url_for(context: dict, name: str, **path_params: Any) -> str:
+        def url_for(context: dict, name: str, **path_params: Any) -> Any:
             request = context["request"]
             return request.url_for(name, **path_params)
 

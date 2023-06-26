@@ -1,33 +1,9 @@
 import codecs
 import datetime
 import locale
-import typing
 from decimal import Decimal
+from typing import Any, Optional, Union
 from urllib.parse import quote
-
-
-class ExtraUnicodeDecodeError(UnicodeDecodeError):
-    def __init__(self, obj: typing.Any, *args):
-        self.obj = obj
-        super().__init__(*args)
-
-    def __str__(self):
-        return "%s. You passed in %r (%s)" % (
-            super().__str__(),
-            self.obj,
-            type(self.obj),
-        )
-
-
-def smart_str(
-    s, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
-) -> str:
-    """
-    Return a string representing 's'. Treat bytestrings using the 'encoding'
-    codec.
-    """
-    return force_str(s, encoding, strings_only, errors)
-
 
 _PROTECTED_TYPES = (
     type(None),
@@ -40,7 +16,30 @@ _PROTECTED_TYPES = (
 )
 
 
-def is_protected_type(obj: typing.Any) -> bool:
+class ExtraUnicodeDecodeError(UnicodeDecodeError):
+    def __init__(self, obj: Any, *args: Any) -> None:
+        self.obj = obj
+        super().__init__(*args)
+
+    def __str__(self) -> str:
+        return "{}. You passed in {!r} ({})".format(
+            super().__str__(),
+            self.obj,
+            type(self.obj),
+        )
+
+
+def smart_str(
+    s: Any, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
+) -> str:
+    """
+    Return a string representing 's'. Treat bytestrings using the 'encoding'
+    codec.
+    """
+    return force_str(s, encoding, strings_only, errors)
+
+
+def is_protected_type(obj: Any) -> bool:
     """Determine if the object instance is of a protected type.
 
     Objects of protected types are preserved as-is when passed to
@@ -50,8 +49,8 @@ def is_protected_type(obj: typing.Any) -> bool:
 
 
 def force_str(
-    s, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
-) -> str:
+    s: Any, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
+) -> Union[Any, str]:
     """
     Similar to smart_str(), except that lazy instances are resolved to
     strings, rather than kept as lazy objects.
@@ -74,7 +73,7 @@ def force_str(
 
 
 def smart_bytes(
-    s, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
+    s: Any, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
 ) -> bytes:
     """
     Return a bytestring version of 's', encoded as specified in 'encoding'.
@@ -83,8 +82,8 @@ def smart_bytes(
 
 
 def force_bytes(
-    s, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
-) -> bytes:
+    s: Any, encoding: str = "utf-8", strings_only: bool = False, errors: str = "strict"
+) -> Union[Any, bytes]:
     """
     Similar to smart_bytes, except that lazy instances are resolved to
     strings, rather than kept as lazy objects.
@@ -119,7 +118,7 @@ _hexdig = "0123456789ABCDEFabcdef"
 _hextobyte.update({(a + b).encode(): bytes.fromhex(a + b) for a in _hexdig[8:] for b in _hexdig})
 
 
-def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
+def uri_to_iri(uri: Optional[Union[str, bytes]] = None) -> Union[str, bytes, None]:
     """
     Convert a Uniform Resource Identifier(URI) into an Internationalized
     Resource Identifier(IRI).
@@ -137,7 +136,7 @@ def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
     # decode. The rest of the block is the part after '%AB', not containing
     # any '%'. Add that to the output without further processing.
     # deepcode ignore BadMixOfStrAndBytes: False positive
-    bits = uri.split(bytes("%"))
+    bits = uri.split(b"%")
     if len(bits) == 1:
         iri = uri
     else:
@@ -153,10 +152,10 @@ def uri_to_iri(uri: typing.Union[str, bytes]) -> typing.Union[str, bytes]:
                 append(b"%")
                 append(item)
         iri = b"".join(parts)
-    return repercent_broken_unicode(iri).decode()
+    return repercent_broken_unicode(iri).decode()  # type: ignore
 
 
-def escape_uri_path(path: str) -> typing.Union[str, bytes]:
+def escape_uri_path(path: str) -> Union[str, bytes]:
     """
     Escape the unsafe characters from the path portion of a Uniform Resource
     Identifier (URI).
@@ -173,9 +172,10 @@ def escape_uri_path(path: str) -> typing.Union[str, bytes]:
     return quote(path, safe="/:@&+$,-_.!~*'()")
 
 
-def punycode(domain: typing.Union[str, bytes]) -> str:
+def punycode(domain: bytes) -> str:
     """Return the Punycode of the given domain if it's non-ASCII."""
-    return domain.encode("idna").decode("ascii")
+    domain = domain.encode("idna")
+    return domain.decode("ascii")
 
 
 def repercent_broken_unicode(path: str) -> str:
@@ -190,13 +190,13 @@ def repercent_broken_unicode(path: str) -> str:
         except UnicodeDecodeError as e:
             # CVE-2019-14235: A recursion shouldn't be used since the exception
             # handling uses massive amounts of memory
-            repercent = quote(path[e.start : e.end], safe=b"/#%[]=:;$&()+,!?*@'~")  # noqa: E203
-            path = path[: e.start] + repercent.encode() + path[e.end :]  # noqa: E203
+            repercent = quote(path[e.start : e.end], safe=b"/#%[]=:;$&()+,!?*@'~")
+            path = path[: e.start] + repercent.encode() + path[e.end :]  # type: ignore
         else:
             return path
 
 
-def filepath_to_uri(path: str) -> str:
+def filepath_to_uri(path: Optional[str] = None) -> Union[str, None]:
     """Convert a file system path to a URI portion that is suitable for
     inclusion in a URL.
 

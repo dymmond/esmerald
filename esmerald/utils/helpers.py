@@ -23,7 +23,7 @@ def is_async_callable(value: Callable[P, T]) -> TypeGuard[Callable[P, Awaitable[
     while isinstance(value, functools.partial):
         value = value.func  # type: ignore[unreachable]
 
-    return asyncio.iscoroutinefunction(value) or asyncio.iscoroutinefunction(value.__call__)  # ty
+    return asyncio.iscoroutinefunction(value) or asyncio.iscoroutinefunction(value.__call__)  # type: ignore
 
 
 def is_class_and_subclass(value: typing.Any, _type: typing.Any) -> bool:
@@ -40,7 +40,7 @@ def is_class_and_subclass(value: typing.Any, _type: typing.Any) -> bool:
 
 
 def clean_string(value: str) -> str:
-    return slugify.slugify(value, separator="_")
+    return slugify.slugify(value, separator="_")  # type: ignore
 
 
 def is_optional_union(annotation: Any) -> bool:

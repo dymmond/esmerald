@@ -5,14 +5,13 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
-from esmerald import Esmerald
+from esmerald import ChildEsmerald, Esmerald
 from esmerald.core.directives.constants import (
     DISCOVERY_FILES,
     DISCOVERY_FUNCTIONS,
     ESMERALD_DISCOVER_APP,
 )
 from esmerald.core.terminal import Print
-from esmerald.exceptions import EnvironmentError
 
 printer = Print()
 
@@ -26,7 +25,7 @@ class Scaffold:
     """
 
     path: str
-    app: typing.Any
+    app: typing.Union[Esmerald, ChildEsmerald]
 
 
 @dataclass
@@ -37,7 +36,7 @@ class DirectiveEnv:
     """
 
     path: typing.Optional[str] = None
-    app: typing.Optional[typing.Any] = None
+    app: typing.Optional[typing.Union[Esmerald, ChildEsmerald]] = None
     command_path: typing.Optional[str] = None
 
     def load_from_env(self, path: typing.Optional[str] = None) -> "DirectiveEnv":
@@ -64,8 +63,8 @@ class DirectiveEnv:
 
     def import_app_from_string(cls, path: typing.Optional[str] = None) -> Scaffold:
         if path is None:
-            raise EnvironmentError(
-                detail="Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
+            raise OSError(
+                "Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
             )
         module_str_path, app_name = path.split(":")
         module = import_module(module_str_path)
@@ -78,9 +77,7 @@ class DirectiveEnv:
         """
         return [directory.path for directory in os.scandir(path) if directory.is_dir()]
 
-    def _find_app_in_folder(
-        self, path: Path, cwd: Path
-    ) -> typing.Union[typing.NoReturn, typing.Callable[..., typing.Any]]:
+    def _find_app_in_folder(self, path: Path, cwd: Path) -> typing.Union[Scaffold, None]:
         """
         Iterates inside the folder and looks up to the DISCOVERY_FILES.
         """
@@ -107,6 +104,7 @@ class DirectiveEnv:
                     app_path = f"{dotted_path}:{func}"
                     fn = getattr(module, func)
                     return Scaffold(app=fn(), path=app_path)
+        return None
 
     def find_app(self, path: typing.Optional[str], cwd: Path) -> Scaffold:
         """
@@ -118,7 +116,7 @@ class DirectiveEnv:
         if path:
             return self.import_app_from_string(path)
 
-        scaffold: Scaffold = None
+        scaffold: typing.Union[Scaffold, None] = None
 
         # Check current folder
         scaffold = self._find_app_in_folder(cwd, cwd)
@@ -137,6 +135,6 @@ class DirectiveEnv:
             break
 
         if not scaffold:
-            raise EnvironmentError(detail="Could not find an Esmerald application.")
+            raise OSError("Could not find an Esmerald application.")
 
         return scaffold

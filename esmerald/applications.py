@@ -10,10 +10,12 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
-from openapi_schemas_pydantic.v3_1_0 import License, SecurityRequirement, Server
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
+from pydantic import AnyUrl
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan
@@ -61,6 +63,7 @@ from esmerald.types import (
 from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
+    from esmerald.conf import EsmeraldLazySettings
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -127,8 +130,8 @@ class Esmerald(Starlette):
         version: Optional[str] = None,
         summary: Optional[str] = None,
         description: Optional[str] = None,
-        contact: Optional[Dict[str, Union[str, Any]]] = None,
-        terms_of_service: Optional[str] = None,
+        contact: Optional[Contact] = None,
+        terms_of_service: Optional[AnyUrl] = None,
         license: Optional[License] = None,
         security: Optional[List[SecurityRequirement]] = None,
         servers: Optional[List[Server]] = None,
@@ -152,20 +155,20 @@ class Esmerald(Starlette):
         scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
         enable_scheduler: Optional[bool] = None,
         timezone: Optional[Union[dtimezone, str]] = None,
-        routes: Optional[List["APIGateHandler"]] = None,
+        routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
         root_path: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
         lifespan: Optional[Lifespan[AppType]] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[List[Tag]] = None,
         include_in_schema: Optional[bool] = None,
         deprecated: Optional[bool] = None,
         enable_openapi: Optional[bool] = None,
         redirect_slashes: Optional[bool] = None,
         pluggables: Optional[Dict[str, Pluggable]] = None,
-        parent: Optional[Type["Esmerald"]] = None,
+        parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
     ) -> None:
         self.settings_config = None
 
@@ -177,7 +180,7 @@ class Esmerald(Starlette):
                     "settings_config must be a subclass of EsmeraldSettings"
                 )
             elif isinstance(settings_config, EsmeraldAPISettings):
-                self.settings_config = settings_config
+                self.settings_config = settings_config  # type: ignore
             elif is_class_and_subclass(settings_config, EsmeraldAPISettings):
                 self.settings_config = settings_config()
 
@@ -303,8 +306,8 @@ class Esmerald(Starlette):
             self.settings_config, esmerald_settings, "root_path"
         )
 
-        self.middleware = (
-            middleware
+        self.middleware = (  # type: ignore
+            middleware  # type: ignore
             or self.get_settings_value(self.settings_config, esmerald_settings, "middleware")
             or []
         )
@@ -355,7 +358,6 @@ class Esmerald(Starlette):
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
         self.async_exit_config = esmerald_settings.async_exit_config
-        self.parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None
 
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
@@ -389,7 +391,7 @@ class Esmerald(Starlette):
 
         self.activate_openapi()
 
-    def activate_scheduler(self):
+    def activate_scheduler(self) -> None:
         """
         Makes sure the scheduler is accessible.
         """
@@ -405,13 +407,13 @@ class Esmerald(Starlette):
             scheduler_class=self.scheduler_class,
             tasks=self.scheduler_tasks,
             timezone=self.timezone,
-            configurations=self.scheduler_configurations,
+            configurations=self.scheduler_configurations,  # type: ignore
         )
 
     def get_settings_value(
         self,
-        local_settings: Type["EsmeraldAPISettings"],
-        global_settings: Type["EsmeraldAPISettings"],
+        local_settings: Optional["EsmeraldAPISettings"],
+        global_settings: Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]],
         value: str,
     ) -> Any:
         """Obtains the value from a settings module or defaults to the global settings"""
@@ -426,7 +428,7 @@ class Esmerald(Starlette):
     def activate_openapi(self) -> None:
         if self.openapi_config and self.enable_openapi:
             self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
-            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
+            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)  # type: ignore
             self.add_apiview(value=gateway)
 
     def get_template_engine(
@@ -436,24 +438,24 @@ class Esmerald(Starlette):
         Returns the template engine for the application.
         """
         if not template_config:
-            return
+            return None
 
         engine = template_config.engine(template_config.directory)
         return engine
 
     def add_apiview(
         self,
-        value: Union[Type["gateways.Gateway"], Type["gateways.WebSocketGateway"]],
+        value: Union["gateways.Gateway", "gateways.WebSocketGateway"],
     ) -> None:
         """
         Adds an APIView via application instance.
         """
         self.router.add_apiview(value=value)
 
-    def add_route(
+    def add_route(  # type: ignore
         self,
         path: str,
-        handler: "HTTPHandler",
+        handler: Type["HTTPHandler"],
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
@@ -467,7 +469,7 @@ class Esmerald(Starlette):
         Adds a route into the router.
         """
         router = router or self.router
-        route = router.add_route(
+        router.add_route(
             path=path,
             handler=handler,
             dependencies=dependencies,
@@ -480,12 +482,11 @@ class Esmerald(Starlette):
         )
 
         self.activate_openapi()
-        return route
 
-    def add_websocket_route(
+    def add_websocket_route(  # type: ignore
         self,
         path: str,
-        handler: "HTTPHandler",
+        handler: Type["WebSocketHandler"],
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
@@ -524,7 +525,7 @@ class Esmerald(Starlette):
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
-    ):
+    ) -> None:
         """
         Adds a child esmerald into the application routers.
         """
@@ -549,7 +550,7 @@ class Esmerald(Starlette):
         )
         self.activate_openapi()
 
-    def add_router(self, router: "Router"):
+    def add_router(self, router: "Router") -> None:
         """
         Adds a router to the application.
         """
@@ -623,7 +624,7 @@ class Esmerald(Starlette):
 
     def build_routes_middleware(
         self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
-    ):
+    ) -> List["Middleware"]:
         """
         Builds the middleware stack from the top to the bottom of the routes.
 
@@ -648,8 +649,8 @@ class Esmerald(Starlette):
     def build_routes_exception_handlers(
         self,
         route: "RouteParent",
-        exception_handlers: Optional["ExceptionHandlers"] = None,
-    ):
+        exception_handlers: Optional[Dict[str, Callable[..., Any]]] = None,
+    ) -> Dict[str, Callable[..., Any]]:
         """
         Builds the exception handlers stack from the top to the bottom of the routes.
         """
@@ -657,7 +658,7 @@ class Esmerald(Starlette):
             exception_handlers = {}
 
         if isinstance(route, Include):
-            exception_handlers.update(route.exception_handlers)
+            exception_handlers.update(route.exception_handlers)  # type: ignore
             app = getattr(route, "app", None)
             if app and isinstance(app, (Esmerald, ChildEsmerald)):
                 return exception_handlers
@@ -668,9 +669,9 @@ class Esmerald(Starlette):
                 )
 
         if isinstance(route, (gateways.Gateway, gateways.WebSocketGateway)):
-            exception_handlers.update(route.exception_handlers)
+            exception_handlers.update(route.exception_handlers)  # type: ignore
             if route.handler.exception_handlers:
-                exception_handlers.update(route.handler.exception_handlers)
+                exception_handlers.update(route.handler.exception_handlers)  # type: ignore
 
         return exception_handlers
 
@@ -705,9 +706,9 @@ class Esmerald(Starlette):
         for route in self.routes or []:
             handlers_middleware.extend(self.build_routes_middleware(route))
 
-        self.middleware += handlers_middleware
+        self.middleware += handlers_middleware  # type: ignore
 
-        for middleware in self.middleware or []:
+        for middleware in self.middleware or []:  # type: ignore
             if isinstance(middleware, StarletteMiddleware):
                 user_middleware.append(middleware)
             else:
@@ -766,13 +767,13 @@ class Esmerald(Starlette):
             app = cls(app=app, **options)
         return app
 
-    def build_pluggable_stack(self) -> None:
+    def build_pluggable_stack(self) -> Optional["Esmerald"]:
         """
         Validates the pluggable types passed and builds the stack
         and triggers the plug
         """
         if not self.pluggables:
-            return
+            return None
 
         pluggables = {}
 
@@ -793,10 +794,10 @@ class Esmerald(Starlette):
         app: "ASGIApp" = self
         for name, pluggable in pluggables.items():
             for cls, options in [pluggable]:
-                app: "Extension" = cls(app=app, **options)
-                app.extend(**options)
+                ext: "Extension" = cls(app=app, **options)
+                ext.extend(**options)
                 self.pluggables[name] = cls
-        return app
+        return cast("Esmerald", app)
 
     def add_pluggable(self, name: str, extension: Any) -> None:
         """
@@ -809,10 +810,11 @@ class Esmerald(Starlette):
         """
         Returns the Esmerald settings object for easy access.
         """
-        return self.settings_config if self.settings_config else esmerald_settings
+        general_settings = self.settings_config if self.settings_config else esmerald_settings
+        return cast("Type[EsmeraldAPISettings]", general_settings)
 
     @property
-    def default_settings(self) -> Type["EsmeraldAPISettings"]:
+    def default_settings(self) -> Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]]:
         """
         Returns the default global settings.
         """

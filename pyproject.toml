@@ -99,7 +99,7 @@ test = [
     "isort>=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<24",
     "a2wsgi>=1.7.0,<2",
-    "asyncz>=0.3.0",
+    "asyncz>=0.3.1",
     "anyio[trio]>=3.6.2,<4.0.0",
     "asyncio[trio]>=3.4.3,<4.0.0",
     "brotli>=1.0.9,<2.0.0",
@@ -157,6 +157,7 @@ profile = "black"
 known_third_party = ["esmerald", "pydantic", "starlette"]
 
 [tool.mypy]
+
 warn_unused_configs = true
 warn_unreachable = true
 warn_return_any = true
@@ -170,6 +171,8 @@ disable_error_code = "attr-defined"
 exclude = "esmerald/conf,esmerald/utils"
 warn_unused_ignores = true
 warn_redundant_casts = true
+no_implicit_optional = false
+
 
 [tool.ruff]
 select = [
@@ -200,11 +203,13 @@ ignore_errors = true
 [[tool.mypy.overrides]]
 module = [
     "sqlalchemy.*",
-    "asyncpg",
-    "alembic",
     "sqlalchemy_utils.*",
-    "slugify",
+    "slugify.*",
     "pytz",
+    "jose.*",
+    "mako.*",
+    "passlib.*",
+    "esmerald.contrib.auth.saffier.*",
 ]
 ignore_missing_imports = true
 ignore_errors = true

@@ -1,18 +1,24 @@
 import inspect
 import os
 import sys
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import click
 from rich.console import Console
 from rich.table import Table
 
-from esmerald import Gateway
+from esmerald import APIView, Gateway
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
 from esmerald.enums import HttpMethod
 from esmerald.utils.url import clean_path
+
+if TYPE_CHECKING:
+    from starlette.routing import BaseRoute
+
+    from esmerald.applications import ChildEsmerald, Esmerald
+    from esmerald.routing.router import Router
 
 printer = Print()
 writer = Terminal()
@@ -41,6 +47,7 @@ def get_http_verb(mapping: Any) -> str:
         return HttpMethod.DELETE.value
     elif getattr(mapping, "header", None):
         return HttpMethod.HEAD.value
+    return HttpMethod.GET.value
 
 
 @click.command(name="show_urls")
@@ -60,40 +67,46 @@ def show_urls(env: DirectiveEnv) -> None:
         sys.exit(1)
 
     app = env.app
-    table = Table(title=app.app_name)
+    table = Table(title=app.app_name)  # type: ignore
     table = get_routes_table(app, table)
     printer.write(table)
 
 
-def get_routes_table(app, table: Table) -> None:
+def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: Table) -> Table:
     """Prints the routing system"""
-    table.add_column("Path", style=OutputColour.GREEN, vertical="center")
-    table.add_column("Path Parameters", style=OutputColour.BRIGHT_CYAN, vertical="center")
-    table.add_column("Name", style=OutputColour.CYAN, vertical="center")
-    table.add_column("Type", style=OutputColour.YELLOW, vertical="center")
-    table.add_column("HTTP Methods", style=OutputColour.RED, vertical="center")
+    table.add_column("Path", style=OutputColour.GREEN, vertical="middle")
+    table.add_column("Path Parameters", style=OutputColour.BRIGHT_CYAN, vertical="middle")
+    table.add_column("Name", style=OutputColour.CYAN, vertical="middle")
+    table.add_column("Type", style=OutputColour.YELLOW, vertical="middle")
+    table.add_column("HTTP Methods", style=OutputColour.RED, vertical="middle")
 
-    def parse_routes(app, table: table, route: Optional[Any] = None, prefix: Optional[str] = ""):
+    def parse_routes(
+        app: Optional[Union["Esmerald", "ChildEsmerald", "Router", "BaseRoute"]],
+        table: Table,
+        route: Optional[Any] = None,
+        prefix: Optional[str] = "",
+    ) -> None:
         if getattr(app, "routes", None) is None:
             return
 
-        for route in app.routes:
+        for route in app.routes:  # type: ignore
             if isinstance(route, Gateway):
                 # Path
-                path = clean_path(prefix + route.path)
+                path = clean_path(prefix + route.path)  # type: ignore
 
                 if any(element in path for element in DOCS_ELEMENTS):
                     continue
 
                 # Type
-                if inspect.iscoroutinefunction(route.handler.fn):
-                    fn_type = "async"
-                else:
-                    fn_type = "sync"
+                if not isinstance(route.handler, APIView):
+                    if inspect.iscoroutinefunction(route.handler.fn):
+                        fn_type = "async"
+                    else:
+                        fn_type = "sync"
 
                 # Http methods
-                http_methods = ", ".join(sorted(route.methods))
-                parameters = ", ".join(sorted(route.stringify_parameters))
+                http_methods = ", ".join(sorted(route.methods))  # type: ignore
+                parameters = ", ".join(sorted(route.stringify_parameters))  # type: ignore
                 table.add_row(path, parameters, route.name, fn_type, http_methods)
                 continue
 
@@ -101,7 +114,7 @@ def get_routes_table(app, table: Table) -> None:
             if not route_app:
                 continue
 
-            path = clean_path(prefix + route.path)
+            path = clean_path(prefix + route.path)  # type: ignore
             if any(element in path for element in DOCS_ELEMENTS):
                 continue
 

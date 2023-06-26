@@ -11,6 +11,7 @@ from typing import (
     List,
     NoReturn,
     Optional,
+    Sequence,
     Set,
     Tuple,
     Type,
@@ -30,6 +31,7 @@ from starlette.routing import Router as StarletteRouter
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
+from typing_extensions import Self
 
 from esmerald.conf import settings
 from esmerald.core.urls import include
@@ -70,11 +72,10 @@ if TYPE_CHECKING:
         APIGateHandler,
         AsyncAnyCallable,
         BackgroundTaskType,
-        CoroutineHandler,
         Dependencies,
         ExceptionHandler,
-        ExceptionHandlers,
-        HTTPMethod,
+        ExceptionHandlerMap,
+        HTTPMethods,
         LifeSpanHandler,
         Middleware,
         ParentType,
@@ -195,7 +196,7 @@ class Router(Parent, StarletteRouter):
         routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -283,10 +284,10 @@ class Router(Parent, StarletteRouter):
     def activate(self):
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: Type["APIView"]):
+    def add_apiview(self, value: Union["Gateway", "WebSocketGateway"]):
         routes = []
         if not value.handler.parent:
-            value(parent=self)
+            value.handler(parent=self)
 
         route_handlers = value.handler.get_route_handlers()
         for route_handler in route_handlers:
@@ -313,7 +314,7 @@ class Router(Parent, StarletteRouter):
         path: str,
         handler: Type["HTTPHandler"],
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -352,10 +353,10 @@ class Router(Parent, StarletteRouter):
         handler: Type["WebSocketHandler"],
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
     ) -> None:
         if not isinstance(handler, WebSocketHandler):
             raise ImproperlyConfigured(
@@ -459,9 +460,9 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
     def __init__(
         self,
         path: Optional[str] = None,
-        endpoint: Callable[..., "CoroutineHandler"] = None,
+        endpoint: Callable[..., Any] = None,
         *,
-        methods: Optional[List["HTTPMethod"]] = None,
+        methods: Optional[List["HTTPMethods"]] = None,
         status_code: Optional[int] = None,
         content_encoding: Optional[str] = None,
         content_media_type: Optional[str] = None,
@@ -470,7 +471,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
@@ -545,7 +546,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None
-        self.route_map: Dict["HTTPMethod" : Tuple["HTTPHandler", "TransformerModel"]] = {}
+        self.route_map: Dict["HTTPMethods" : Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
 
     @property
@@ -749,7 +750,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
         *,
-        endpoint: Callable[..., "CoroutineHandler"] = None,
+        endpoint: Callable[..., Any] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         permissions: Optional[List["Permission"]] = None,
@@ -772,6 +773,8 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.middleware = middleware
         self.signature_model: Optional[Type["SignatureModel"]] = None
         self.websocket_parameter_model: Optional["TransformerModel"] = None
+        self.include_in_schema = None
+        self.fn: Optional["AnyCallable"] = None
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
         self.fn = fn
@@ -883,12 +886,12 @@ class Include(Mount):
         routes: Optional[List[StarletteBaseRoute]] = None,
         namespace: Optional[str] = None,
         pattern: Optional[str] = None,
-        parent: Optional["Router"] = None,
+        parent: Optional[Union["Self", "Router"]] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
@@ -939,34 +942,39 @@ class Include(Mount):
 
         # Add the middleware to the include
         self.middleware += routes_middleware
-        include_middleware = []
+        include_middleware: Sequence["Middleware"] = []
 
-        if self.middleware:
-            for middleware in self.middleware:
-                if isinstance(middleware, StarletteMiddleware):
-                    include_middleware.append(middleware)
-                else:
-                    include_middleware.append(StarletteMiddleware(middleware))
+        for middleware in self.middleware:
+            if isinstance(middleware, StarletteMiddleware):
+                include_middleware.append(middleware)  # type: ignore
+            else:
+                include_middleware.append(
+                    StarletteMiddleware(cast("Type[StarletteMiddleware]", middleware))
+                )
 
         app = self.resolve_app_parent(app=app)
 
         super().__init__(
-            self.path, app=self.app, routes=routes, name=name, middleware=include_middleware
+            self.path,
+            app=self.app,
+            routes=routes,
+            name=name,
+            middleware=cast("Sequence[StarletteMiddleware]", include_middleware),
         )
 
-    def resolve_app_parent(self, app: Optional[Any]):
+    def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
         """
         Resolves the owner of ChildEsmerald or Esmerald iself.
         """
         from esmerald import ChildEsmerald, Esmerald
 
         if app is not None and isinstance(app, (Esmerald, ChildEsmerald)):
-            app.parent = self
+            app.parent = self  # type: ignore
         return app
 
     def build_routes_middleware(
-        self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
-    ):
+        self, route: "RouteParent", middlewares: Optional[Sequence["Middleware"]] = None
+    ) -> Sequence["Middleware"]:
         """
         Builds the middleware stack from the top to the bottom of the routes.
         """
@@ -987,7 +995,9 @@ class Include(Mount):
 
         return middlewares
 
-    def resolve_route_path_handler(self, routes: List[StarletteBaseRoute]):
+    def resolve_route_path_handler(
+        self, routes: List[StarletteBaseRoute]
+    ) -> List[Union["Gateway", "WebSocketGateway", "Include"]]:
         """
         Make sure the paths are properly configured from the handler endpoint.
         The handler can be a Starlette function, an APIView or a HTTPHandler.
@@ -1035,52 +1045,54 @@ class Include(Mount):
             ]
 
         """
-        routing = []
+        routing: List[Union[Gateway, WebSocketGateway, Include]] = []
 
         for route in routes:
-            if not isinstance(route, (Include, Gateway, WebSocketGateway, Mount)):
+            if not isinstance(route, (Include, Gateway, WebSocketGateway)):
                 raise ImproperlyConfigured("The route must be of type Gateway or Include")
 
             route.parent = self
             if isinstance(route, Include):
                 routing.append(route)
-            else:
-                if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                    route.handler.parent = route
-                    routing.append(route)
-                    continue
+                continue
 
-                if is_class_and_subclass(route.handler, APIView) or isinstance(
-                    route.handler, APIView
-                ):
-                    if not route.handler.parent:
-                        route.handler = route.handler(parent=self)
-                    route_handlers = route.handler.get_route_handlers()
+            if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
+                route.handler.parent = route  # type: ignore
+                routing.append(route)
+                continue
 
-                    for route_handler in route_handlers:
-                        gateway = (
-                            Gateway
-                            if not isinstance(route_handler, WebSocketHandler)
-                            else WebSocketGateway
+            if is_class_and_subclass(route.handler, APIView) or isinstance(route.handler, APIView):
+                if not route.handler.parent:
+                    route.handler = route.handler(parent=self)  # type: ignore
+
+                route_handlers: List[
+                    Union[HTTPHandler, WebSocketHandler]
+                ] = route.handler.get_route_handlers()  # type: ignore[union-attr]
+
+                for route_handler in route_handlers:
+                    gateway = (
+                        Gateway
+                        if not isinstance(route_handler, WebSocketHandler)
+                        else WebSocketGateway
+                    )
+
+                    gate = gateway(
+                        path=route.path,
+                        handler=route_handler,
+                        name=route_handler.fn.__name__,  # type: ignore[union-attr]
+                        middleware=route.middleware,
+                        interceptors=self.interceptors,
+                        permissions=route.permissions,
+                        exception_handlers=route.exception_handlers,
+                    )
+
+                    if isinstance(gate, Gateway):
+                        include_in_schema = (
+                            route.include_in_schema
+                            if route.include_in_schema is not None
+                            else route_handler.include_in_schema
                         )
+                        gate.include_in_schema = include_in_schema
 
-                        gate = gateway(
-                            path=route.path,
-                            handler=route_handler,
-                            name=route_handler.fn.__name__,
-                            middleware=route.middleware,
-                            interceptors=self.interceptors,
-                            permissions=route.permissions,
-                            exception_handlers=route.exception_handlers,
-                        )
-
-                        if isinstance(gate, Gateway):
-                            include_in_schema = (
-                                route.include_in_schema
-                                if route.include_in_schema is not None
-                                else route_handler.include_in_schema
-                            )
-                            gate.include_in_schema = include_in_schema
-
-                        routing.append(gate)
+                    routing.append(gate)
         return routing

@@ -1,11 +1,9 @@
-from typing import TYPE_CHECKING, Any, List, TypeVar
+from typing import TYPE_CHECKING, Any, List
 
 from typing_extensions import Protocol, runtime_checkable
 
 if TYPE_CHECKING:
     from esmerald.types import DictAny
-
-T = TypeVar("T")
 
 
 @runtime_checkable

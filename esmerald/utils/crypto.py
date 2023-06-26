@@ -5,7 +5,7 @@ import time
 from esmerald.conf import settings
 
 try:
-    random = random.SystemRandom()
+    _random = random.SystemRandom()
     using_sysrandom = True
 except NotImplementedError:
     import warnings
@@ -34,15 +34,17 @@ def get_random_string(
         # time a random string is required. This may change the
         # properties of the chosen random sequence slightly, but this
         # is better than absolute predictability.
-        random.seed(
+        _random.seed(
             hashlib.sha256(
-                ("%s%s%s" % (random.getstate(), time.time(), settings.secret_key)).encode("utf-8")
+                ("{}{}{}".format(random.getstate(), time.time(), settings.secret_key)).encode(
+                    "utf-8"
+                )
             ).digest()
         )
     return "".join(random.choice(allowed_chars) for _ in range(length))
 
 
-def get_random_secret_key():
+def get_random_secret_key() -> str:
     """
     Return a 50 character random string usable as a SECRET_KEY setting value.
     """

@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Callable, List, Optional, Type, Union
+from typing import TYPE_CHECKING, List, Optional, Sequence, Union
 
 from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
@@ -39,12 +39,12 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: Union[Type["HTTPHandler"], Type["APIView"], Type[Callable]],
+        handler: Union["HTTPHandler", APIView],
         name: Optional[str] = None,
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
-        middleware: Optional["Middleware"] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
         interceptors: Optional["Interceptor"] = None,
         permissions: Optional["Permission"] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
@@ -145,11 +145,11 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: Union[Type["WebSocketHandler"], Type["APIView"], Type[Callable]],
+        handler: Union["WebSocketHandler", APIView],
         name: Optional[str] = None,
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
@@ -183,6 +183,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
+        self.include_in_schema = False
         self.parent = parent
         (
             handler.path_regex,
