@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union, get_args
 
 from starlette import status
 
@@ -518,7 +518,7 @@ class route(HTTPHandler):
                     "An example would be: @route(methods=['GET', 'PUT'])."
                 )
 
-        methods = [method.upper() for method in methods]
+        methods = [method.upper() for method in get_args(methods)]
         if not status_code:
             status_code = status.HTTP_200_OK
 

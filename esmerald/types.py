@@ -11,6 +11,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    get_args,
 )
 
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
@@ -66,6 +67,7 @@ else:
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
+HTTPMethods = get_args(HTTPMethod)
 
 Middleware = Union[
     StarletteMiddleware,

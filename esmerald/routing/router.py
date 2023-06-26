@@ -74,8 +74,8 @@ if TYPE_CHECKING:
         CoroutineHandler,
         Dependencies,
         ExceptionHandler,
-        ExceptionHandlers,
-        HTTPMethod,
+        ExceptionHandlerMap,
+        HTTPMethods,
         LifeSpanHandler,
         Middleware,
         ParentType,
@@ -196,7 +196,7 @@ class Router(Parent, StarletteRouter):
         routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -314,7 +314,7 @@ class Router(Parent, StarletteRouter):
         path: str,
         handler: Type["HTTPHandler"],
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -353,7 +353,7 @@ class Router(Parent, StarletteRouter):
         handler: Type["WebSocketHandler"],
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
@@ -462,7 +462,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         path: Optional[str] = None,
         endpoint: Callable[..., "CoroutineHandler"] = None,
         *,
-        methods: Optional[List["HTTPMethod"]] = None,
+        methods: Optional[List["HTTPMethods"]] = None,
         status_code: Optional[int] = None,
         content_encoding: Optional[str] = None,
         content_media_type: Optional[str] = None,
@@ -471,7 +471,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         include_in_schema: bool = True,
         background: Optional["BackgroundTaskType"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
@@ -546,7 +546,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None
-        self.route_map: Dict["HTTPMethod" : Tuple["HTTPHandler", "TransformerModel"]] = {}
+        self.route_map: Dict["HTTPMethods" : Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
 
     @property
