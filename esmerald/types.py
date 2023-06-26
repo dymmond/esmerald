@@ -7,6 +7,7 @@ from typing import (
     Coroutine,
     Dict,
     List,
+    Mapping,
     Type,
     TypeVar,
     Union,
@@ -18,7 +19,7 @@ from starlette.types import ASGIApp  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
-from esmerald.exceptions import HTTPException, MissingDependency, StarletteHTTPException
+from esmerald.exceptions import MissingDependency
 from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include
 
@@ -77,14 +78,11 @@ ResponseType = Type[Response]
 Dependencies = Dict[str, Inject]
 
 CoroutineHandler = Coroutine[Any, Any, Response]
-ExceptionHandler = Union[
-    Callable[
-        [Request, Union[Exception, HTTPException, StarletteHTTPException]],
-        StarletteResponse,
-    ],
-    Callable[[Response, Any], CoroutineHandler],
-]
+
+ExceptionType = TypeVar("ExceptionType", bound=Exception)
+ExceptionHandler = Callable[[Request, ExceptionType], Response]
 ExceptionHandlers = Dict[Union[int, Type[Exception]], ExceptionHandler]
+ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
 ReservedKwargs = Literal[
     "request",

@@ -15,7 +15,7 @@ from esmerald.exceptions import HTTPException, WebSocketException
 from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
 from esmerald.requests import Request
 from esmerald.responses import Response
-from esmerald.types import ExceptionHandler, ExceptionHandlers
+from esmerald.types import ExceptionHandler, ExceptionHandlerMap
 from esmerald.websockets import WebSocket
 
 
@@ -40,7 +40,7 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
         }
         if handlers is not None:
             for key, value in handlers.items():
-                self.add_exception_handler(key, value)
+                self.add_exception_handler(key, value)  # type: ignore
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] not in ("http", "websocket"):
@@ -73,7 +73,7 @@ class EsmeraldAPIExceptionMiddleware:
         self,
         app: "ASGIApp",
         debug: bool,
-        exception_handlers: "ExceptionHandlers",
+        exception_handlers: "ExceptionHandlerMap",
         error_handler: Optional[Callable] = None,
     ) -> None:
         self.app = app
@@ -117,8 +117,8 @@ class EsmeraldAPIExceptionMiddleware:
             else status.HTTP_500_INTERNAL_SERVER_ERROR
         )
         if status_code == status.HTTP_500_INTERNAL_SERVER_ERROR and self.debug:
-            server_error = ServerErrorMiddleware(app=self.app, handler=self.error_handler)  # type: ignore[arg-type]
-            return server_error.debug_response(request=request, exc=exc)  # type: ignore[arg-type]
+            server_error = ServerErrorMiddleware(app=self.app, handler=self.error_handler)
+            return server_error.debug_response(request=request, exc=exc)
         return self.create_exception_response(exc)
 
     def create_exception_response(self, exc: Exception) -> Response:
@@ -141,9 +141,9 @@ class EsmeraldAPIExceptionMiddleware:
 
     def get_exception_handler(
         self,
-        exception_handlers: Dict[Union[int, Type[Exception]], "ExceptionHandlers"],
+        exception_handlers: ExceptionHandlerMap,
         exc: Exception,
-    ) -> Optional[ExceptionHandler]:
+    ) -> Union[ExceptionHandler, None]:
         if not exception_handlers:
             return None
 
