@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union, get_args
+from typing import TYPE_CHECKING, Dict, List, Optional, Type, Union
 
 from starlette import status
 
@@ -13,7 +13,6 @@ from esmerald.types import (
     Dependencies,
     ExceptionHandler,
     ExceptionHandlers,
-    HTTPMethod,
     Middleware,
     ResponseCookies,
     ResponseHeaders,
@@ -481,7 +480,7 @@ class route(HTTPHandler):
         self,
         path: Optional[str] = None,
         *,
-        methods: List["HTTPMethod"] = None,
+        methods: List[str] = None,
         summary: Optional[str] = None,
         description: Optional[str] = None,
         status_code: Optional[int] = status.HTTP_200_OK,
@@ -518,7 +517,7 @@ class route(HTTPHandler):
                     "An example would be: @route(methods=['GET', 'PUT'])."
                 )
 
-        methods = [method.upper() for method in get_args(methods)]
+        methods = [method.upper() for method in methods]
         if not status_code:
             status_code = status.HTTP_200_OK
 
