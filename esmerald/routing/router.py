@@ -942,14 +942,12 @@ class Include(Mount):
 
         # Add the middleware to the include
         self.middleware += routes_middleware
-        include_middleware: List[Sequence[StarletteMiddleware]] = []
+        include_middleware: Sequence["Middleware"] = []
 
-        if self.middleware:
-            for middleware in self.middleware:
-                if isinstance(middleware, StarletteMiddleware):
-                    include_middleware.append(middleware)
-                else:
-                    include_middleware.append(StarletteMiddleware(middleware))
+        for middleware in self.middleware:
+            include_middleware.append(
+                StarletteMiddleware(cast("Type[StarletteMiddleware]", middleware))
+            )
 
         app = self.resolve_app_parent(app=app)
 
@@ -958,7 +956,7 @@ class Include(Mount):
             app=self.app,
             routes=routes,
             name=name,
-            middleware=include_middleware,  # type: ignore
+            middleware=cast("Sequence[StarletteMiddleware]", include_middleware),
         )
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
