@@ -11,6 +11,7 @@ from typing import (
     List,
     NoReturn,
     Optional,
+    Self,
     Sequence,
     Set,
     Tuple,
@@ -885,7 +886,7 @@ class Include(Mount):
         routes: Optional[List[StarletteBaseRoute]] = None,
         namespace: Optional[str] = None,
         pattern: Optional[str] = None,
-        parent: Optional["Router"] = None,
+        parent: Optional[Union["Self", "Router"]] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         interceptors: Optional[List["Interceptor"]] = None,
@@ -1047,46 +1048,44 @@ class Include(Mount):
             if isinstance(route, Include):
                 routing.append(route)
                 continue
-            else:
-                if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                    route.handler.parent = route
-                    routing.append(route)
-                    continue
 
-                if is_class_and_subclass(route.handler, APIView) or isinstance(
-                    route.handler, APIView
-                ):
-                    if not route.handler.parent:
-                        route.handler = route.handler(parent=self)  # type: ignore
+            if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
+                route.handler.parent = route  # type: ignore
+                routing.append(route)
+                continue
 
-                    route_handlers: List[
-                        Union[HTTPHandler, WebSocketHandler]
-                    ] = route.handler.get_route_handlers()  # type: ignore[union-attr]
+            if is_class_and_subclass(route.handler, APIView) or isinstance(route.handler, APIView):
+                if not route.handler.parent:
+                    route.handler = route.handler(parent=self)  # type: ignore
 
-                    for route_handler in route_handlers:
-                        gateway = (
-                            Gateway
-                            if not isinstance(route_handler, WebSocketHandler)
-                            else WebSocketGateway
+                route_handlers: List[
+                    Union[HTTPHandler, WebSocketHandler]
+                ] = route.handler.get_route_handlers()  # type: ignore[union-attr]
+
+                for route_handler in route_handlers:
+                    gateway = (
+                        Gateway
+                        if not isinstance(route_handler, WebSocketHandler)
+                        else WebSocketGateway
+                    )
+
+                    gate = gateway(
+                        path=route.path,
+                        handler=route_handler,
+                        name=route_handler.fn.__name__,  # type: ignore[union-attr]
+                        middleware=route.middleware,
+                        interceptors=self.interceptors,
+                        permissions=route.permissions,
+                        exception_handlers=route.exception_handlers,
+                    )
+
+                    if isinstance(gate, Gateway):
+                        include_in_schema = (
+                            route.include_in_schema
+                            if route.include_in_schema is not None
+                            else route_handler.include_in_schema
                         )
+                        gate.include_in_schema = include_in_schema
 
-                        gate = gateway(
-                            path=route.path,
-                            handler=route_handler,
-                            name=route_handler.fn.__name__,  # type: ignore[union-attr]
-                            middleware=route.middleware,
-                            interceptors=self.interceptors,
-                            permissions=route.permissions,
-                            exception_handlers=route.exception_handlers,
-                        )
-
-                        if isinstance(gate, Gateway):
-                            include_in_schema = (
-                                route.include_in_schema
-                                if route.include_in_schema is not None
-                                else route_handler.include_in_schema
-                            )
-                            gate.include_in_schema = include_in_schema
-
-                        routing.append(gate)
+                    routing.append(gate)
         return routing
