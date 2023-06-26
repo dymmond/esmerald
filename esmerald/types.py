@@ -27,12 +27,12 @@ from esmerald.routing.router import Include
 try:
     from asyncz.schedulers import AsyncIOScheduler  # noqa
 except ImportError:
-    AsyncIOScheduler = Any
+    AsyncIOScheduler = Any  # type: ignore
 
 try:
     from esmerald.config.template import TemplateConfig as TemplateConfig  # noqa
 except MissingDependency:
-    TemplateConfig = Any
+    TemplateConfig = Any  # type: ignore
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
@@ -98,7 +98,7 @@ ReservedKwargs = Literal[
 
 ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
-AsyncAnyCallable = Callable[..., Awaitable[Any]]
+AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 
 
 SchedulerType = AsyncIOScheduler
