@@ -183,6 +183,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         self.permissions = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
+        self.include_in_schema = False
         self.parent = parent
         (
             handler.path_regex,

@@ -1039,7 +1039,7 @@ class Include(Mount):
         routing = []
 
         for route in routes:
-            if not isinstance(route, (Include, Gateway, WebSocketGateway, Mount)):
+            if not isinstance(route, (Include, Gateway, WebSocketGateway)):
                 raise ImproperlyConfigured("The route must be of type Gateway or Include")
 
             route.parent = self
