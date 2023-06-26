@@ -4,7 +4,6 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Coroutine,
     Dict,
     List,
     Mapping,
@@ -78,8 +77,6 @@ Middleware = Union[
 ResponseType = Type[Response]
 
 Dependencies = Dict[str, Inject]
-
-CoroutineHandler = Coroutine[Any, Any, Response]
 
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]

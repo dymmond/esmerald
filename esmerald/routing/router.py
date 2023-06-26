@@ -71,7 +71,6 @@ if TYPE_CHECKING:
         APIGateHandler,
         AsyncAnyCallable,
         BackgroundTaskType,
-        CoroutineHandler,
         Dependencies,
         ExceptionHandler,
         ExceptionHandlerMap,
@@ -460,7 +459,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
     def __init__(
         self,
         path: Optional[str] = None,
-        endpoint: Callable[..., "CoroutineHandler"] = None,
+        endpoint: Callable[..., Any] = None,
         *,
         methods: Optional[List["HTTPMethods"]] = None,
         status_code: Optional[int] = None,
@@ -750,7 +749,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
         *,
-        endpoint: Callable[..., "CoroutineHandler"] = None,
+        endpoint: Callable[..., Any] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
         permissions: Optional[List["Permission"]] = None,
@@ -773,6 +772,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.middleware = middleware
         self.signature_model: Optional[Type["SignatureModel"]] = None
         self.websocket_parameter_model: Optional["TransformerModel"] = None
+        self.include_in_schema = None
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
         self.fn = fn
@@ -1068,7 +1068,7 @@ class Include(Mount):
                         gate = gateway(
                             path=route.path,
                             handler=route_handler,
-                            name=route_handler.fn.__name__,
+                            name=route_handler.fn.__name__,  # type: ignore
                             middleware=route.middleware,
                             interceptors=self.interceptors,
                             permissions=route.permissions,
