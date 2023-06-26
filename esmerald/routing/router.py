@@ -945,9 +945,12 @@ class Include(Mount):
         include_middleware: Sequence["Middleware"] = []
 
         for middleware in self.middleware:
-            include_middleware.append(
-                StarletteMiddleware(cast("Type[StarletteMiddleware]", middleware))
-            )
+            if isinstance(middleware, StarletteMiddleware):
+                include_middleware.append(middleware)  # type: ignore
+            else:
+                include_middleware.append(
+                    StarletteMiddleware(cast("Type[StarletteMiddleware]", middleware))
+                )
 
         app = self.resolve_app_parent(app=app)
 
@@ -970,7 +973,7 @@ class Include(Mount):
         return app
 
     def build_routes_middleware(
-        self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
+        self, route: "RouteParent", middlewares: Optional[Sequence["Middleware"]] = None
     ) -> Sequence["Middleware"]:
         """
         Builds the middleware stack from the top to the bottom of the routes.
