@@ -773,6 +773,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.signature_model: Optional[Type["SignatureModel"]] = None
         self.websocket_parameter_model: Optional["TransformerModel"] = None
         self.include_in_schema = None
+        self.fn: Optional["AnyCallable"] = None
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
         self.fn = fn
@@ -1036,7 +1037,7 @@ class Include(Mount):
             ]
 
         """
-        routing = []
+        routing: List[Union[Gateway, WebSocketGateway, Include]] = []
 
         for route in routes:
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
@@ -1045,6 +1046,7 @@ class Include(Mount):
             route.parent = self
             if isinstance(route, Include):
                 routing.append(route)
+                continue
             else:
                 if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
                     route.handler.parent = route
@@ -1055,8 +1057,11 @@ class Include(Mount):
                     route.handler, APIView
                 ):
                     if not route.handler.parent:
-                        route.handler = route.handler(parent=self)
-                    route_handlers = route.handler.get_route_handlers()
+                        route.handler = route.handler(parent=self)  # type: ignore
+
+                    route_handlers: List[
+                        Union[HTTPHandler, WebSocketHandler]
+                    ] = route.handler.get_route_handlers()  # type: ignore[union-attr]
 
                     for route_handler in route_handlers:
                         gateway = (
@@ -1068,7 +1073,7 @@ class Include(Mount):
                         gate = gateway(
                             path=route.path,
                             handler=route_handler,
-                            name=route_handler.fn.__name__,  # type: ignore
+                            name=route_handler.fn.__name__,  # type: ignore[union-attr]
                             middleware=route.middleware,
                             interceptors=self.interceptors,
                             permissions=route.permissions,
