@@ -11,7 +11,6 @@ from typing import (
     List,
     NoReturn,
     Optional,
-    Self,
     Sequence,
     Set,
     Tuple,
@@ -32,6 +31,7 @@ from starlette.routing import Router as StarletteRouter
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
+from typing_extensions import Self
 
 from esmerald.conf import settings
 from esmerald.core.urls import include
@@ -942,7 +942,7 @@ class Include(Mount):
 
         # Add the middleware to the include
         self.middleware += routes_middleware
-        include_middleware = []
+        include_middleware: List[Sequence[StarletteMiddleware]] = []
 
         if self.middleware:
             for middleware in self.middleware:
@@ -954,22 +954,26 @@ class Include(Mount):
         app = self.resolve_app_parent(app=app)
 
         super().__init__(
-            self.path, app=self.app, routes=routes, name=name, middleware=include_middleware
+            self.path,
+            app=self.app,
+            routes=routes,
+            name=name,
+            middleware=include_middleware,  # type: ignore
         )
 
-    def resolve_app_parent(self, app: Optional[Any]):
+    def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
         """
         Resolves the owner of ChildEsmerald or Esmerald iself.
         """
         from esmerald import ChildEsmerald, Esmerald
 
         if app is not None and isinstance(app, (Esmerald, ChildEsmerald)):
-            app.parent = self
+            app.parent = self  # type: ignore
         return app
 
     def build_routes_middleware(
         self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
-    ):
+    ) -> Sequence["Middleware"]:
         """
         Builds the middleware stack from the top to the bottom of the routes.
         """
@@ -990,7 +994,9 @@ class Include(Mount):
 
         return middlewares
 
-    def resolve_route_path_handler(self, routes: List[StarletteBaseRoute]):
+    def resolve_route_path_handler(
+        self, routes: List[StarletteBaseRoute]
+    ) -> List[Union["Gateway", "WebSocketGateway", "Include"]]:
         """
         Make sure the paths are properly configured from the handler endpoint.
         The handler can be a Starlette function, an APIView or a HTTPHandler.
