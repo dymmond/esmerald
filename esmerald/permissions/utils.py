@@ -29,15 +29,15 @@ def continue_or_raise_permission_exception(
     request: "Request",
     apiview: "APIGateHandler",
     permission: "Permission",
-):
-    if not permission.has_permission(request, apiview):
+) -> None:
+    if not permission.has_permission(request=request, apiview=apiview):  # type: ignore[call-arg]
         permission_denied(
             request,
             message=getattr(permission, "message", None),
         )
 
 
-def permission_denied(request: "Request", message: Optional[str] = None) -> PermissionDenied:
+def permission_denied(request: "Request", message: Optional[str] = None) -> None:
     """
     If request is not permitted, determine what kind of exception to raise.
     """
