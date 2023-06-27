@@ -1,20 +1,19 @@
 from typing import Any
 
-from starlette.responses import JSONResponse as JSONResponse  # noqa
+from starlette.responses import JSONResponse as JSONResponse
 
 from esmerald.responses.json import BaseJSONResponse
 
 try:
     import orjson
-    from orjson import OPT_OMIT_MICROSECONDS  # noqa
-    from orjson import OPT_SERIALIZE_NUMPY
-except ImportError:  # pragma: nocover
-    orjson = None
+    from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY
+except ImportError:
+    orjson = None  # type: ignore[assignment]
 
 try:
     import ujson
-except ImportError:  # pragma: nocover
-    ujson = None
+except ImportError:
+    ujson = None  # type: ignore[assignment]
 
 
 class ORJSONResponse(BaseJSONResponse):
