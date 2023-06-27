@@ -50,7 +50,7 @@ class State(StarletteStateClass):
     def __copy__(self) -> "State":
         return self.__class__(copy(self._state))
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._state)
 
     def __getattr__(self, key: str) -> Any:
