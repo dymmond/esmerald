@@ -21,7 +21,7 @@ async def http_exception_handler(
     headers = getattr(exc, "headers", None)
 
     if exc.status_code in {204, 304}:
-        return JSONResponse(status_code=exc.status_code, headers=headers)
+        return JSONResponse(None, status_code=exc.status_code, headers=headers)
 
     if headers and not extra:
         return JSONResponse({"detail": exc.detail}, status_code=exc.status_code, headers=headers)
@@ -72,7 +72,7 @@ async def improperly_configured_exception_handler(
 
     content = {"detail": exc.detail}
     if exc.extra:
-        content.update({"extra": exc.extra})
+        content.update({"extra": exc.extra})  # type: ignore[dict-item]
     headers = exc.headers if isinstance(exc, (HTTPException, StarletteHTTPException)) else None
 
     return Response(
