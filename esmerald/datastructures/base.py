@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from copy import copy
 from http.cookies import SimpleCookie
-from typing import TYPE_CHECKING, Any, Dict, Generic, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from pydantic import BaseConfig, BaseModel, validator  # noqa
 from pydantic.generics import GenericModel  # noqa
@@ -104,7 +104,7 @@ class ResponseContainer(GenericModel, ABC, Generic[R]):
         headers: Dict[str, Any],
         media_type: Union["MediaType", str],
         status_code: int,
-        app: "Esmerald",
+        app: Type["Esmerald"],
     ) -> R:  # pragma: no cover
         raise NotImplementedError("not implemented")
 
