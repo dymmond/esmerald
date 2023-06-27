@@ -26,7 +26,7 @@ class Response(StarletteResponse, Generic[T]):
         self,
         content: T,
         *,
-        status_code: Optional[int] = status.HTTP_200_OK,
+        status_code: int = status.HTTP_200_OK,
         media_type: Optional[Union["MediaType", str]] = MediaType.JSON,
         background: Optional[Union["BackgroundTask", "BackgroundTasks"]] = None,
         headers: Optional[Dict[str, Any]] = None,
