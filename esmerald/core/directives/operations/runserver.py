@@ -96,17 +96,17 @@ def runserver(
         raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald.") from None
 
     app = env.app
-    settings = app.settings  # type: ignore
+    settings = app.settings
     message = terminal.write_info(
         f"Starting {settings.environment} server @ {host}", colour=OutputColour.BRIGHT_CYAN
     )
     terminal.rule(message, align="center")
 
     if debug:
-        app.debug = debug  # type: ignore
+        app.debug = debug
 
     uvicorn.run(
-        app=env.path,  # type: ignore
+        app=env.path,
         port=port,
         host=host,
         reload=reload,

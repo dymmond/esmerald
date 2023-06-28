@@ -438,6 +438,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         "methods",
         "status_code",
         "content_encoding",
+        "media_type",
         "content_media_type",
         "summary",
         "description",
@@ -1079,7 +1080,7 @@ class Include(Mount):
                     gate = gateway(
                         path=route.path,
                         handler=route_handler,
-                        name=route_handler.fn.__name__,  # type: ignore[union-attr]
+                        name=route_handler.fn.__name__,
                         middleware=route.middleware,
                         interceptors=self.interceptors,
                         permissions=route.permissions,

@@ -64,7 +64,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
         schema.contentEncoding = handler.content_encoding
         schema.contentMediaType = handler.content_media_type
         response = Response(
-            content={handler.media_type: OpenAPISchemaMediaType(media_type_schema=schema)},
+            content={handler.media_type: OpenAPISchemaMediaType(media_type_schema=schema)},  # type: ignore[call-arg]
             description=description,
         )
     elif signature.return_annotation is Redirect:
@@ -72,7 +72,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
             content=None,
             description=description,
             headers={
-                "location": Header(
+                "location": Header(  # type: ignore[call-arg]
                     param_schema=Schema(type=OpenAPIType.STRING),
                     description="target path for redirect",
                 )
@@ -81,7 +81,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
     elif signature.return_annotation in (File, Stream):
         response = Response(
             content={
-                handler.media_type: OpenAPISchemaMediaType(
+                handler.media_type: OpenAPISchemaMediaType(  # type: ignore[call-arg]
                     media_type_schema=Schema(
                         type=OpenAPIType.STRING,
                         contentEncoding=handler.content_encoding or "application/octet-stream",
@@ -91,17 +91,17 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
             },
             description=description,
             headers={
-                "content-length": Header(
+                "content-length": Header(  # type: ignore[call-arg]
                     param_schema=Schema(type=OpenAPIType.STRING),
                     description="File size in bytes",
                 ),
-                "last-modified": Header(
-                    param_schema=Schema(
+                "last-modified": Header(  # type: ignore[call-arg]
+                    param_schema=Schema(  # type: ignore[call-arg]
                         type=OpenAPIType.STRING, schema_format=OpenAPIFormat.DATE_TIME
                     ),
                     description="Last modified data-time in RFC 2822 format",
                 ),
-                "etag": Header(
+                "etag": Header(  # type: ignore[call-arg]
                     param_schema=Schema(type=OpenAPIType.STRING),
                     description="Entity tag",
                 ),
@@ -122,8 +122,8 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
         response.headers[key] = header
     cookies = handler.get_response_cookies()
     if cookies:
-        response.headers["Set-Cookie"] = Header(
-            param_schema=Schema(allOF=[create_cookie_schema(cookie=cookie) for cookie in cookies])
+        response.headers["Set-Cookie"] = Header(  # type: ignore[call-arg]
+            param_schema=Schema(allOf=[create_cookie_schema(cookie=cookie) for cookie in cookies])
         )
     return response
 
@@ -150,7 +150,7 @@ def create_error_responses(
                         additionalProperties=Schema(),
                     ),
                 },
-                description=pascal_case_to_text((get_name(exc))),
+                description=pascal_case_to_text(get_name(exc)),
                 examples=[
                     {
                         "status_code": status_code,

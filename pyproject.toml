@@ -211,6 +211,7 @@ module = [
     "mako.*",
     "passlib.*",
     "esmerald.contrib.auth.saffier.*",
+    "openapi_schemas_pydantic.*",
 ]
 ignore_missing_imports = true
 ignore_errors = true

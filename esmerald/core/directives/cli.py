@@ -59,7 +59,7 @@ class DirectiveGroup(click.Group):
         """
         args = [*ctx.protected_args, *ctx.args]
         cmd_name, cmd, args = self.resolve_command(ctx, args)
-        sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)  # type: ignore
+        sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)
 
         settings = sub_ctx.params.get("settings", None)
         if settings:
