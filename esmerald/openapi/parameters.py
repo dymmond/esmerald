@@ -82,7 +82,7 @@ def create_parameter(
     if not schema:
         schema = create_schema(field=model_field, create_examples=create_examples)
 
-    return Parameter(
+    return Parameter(  # type: ignore[call-arg]
         name=parameter_name,
         param_in=param_in,
         required=is_required,
@@ -98,7 +98,7 @@ def get_recursive_handler_parameters(
     handler: "HTTPHandler",
     path_parameters: Any,
     create_examples: bool,
-):
+) -> List[Parameter]:
     if field_name not in dependencies:
         return [
             create_parameter(
@@ -120,8 +120,8 @@ def create_parameter_for_handler(
     handler_fields: Dict[str, "ModelField"],
     path_parameters: Any,
     create_examples: bool,
-):
-    parameters = ParameterCollection(handler=handler)
+) -> List[Parameter]:
+    parameters = ParameterCollection(handler=cast("Type[HTTPHandler]", handler))
     dependencies = handler.get_dependencies()
 
     filtered = [

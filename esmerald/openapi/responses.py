@@ -1,10 +1,11 @@
 from http import HTTPStatus
 from inspect import Signature
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Tuple, Type, cast
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Tuple, Type, Union, cast
 
 from openapi_schemas_pydantic.v3_1_0 import Response
 from openapi_schemas_pydantic.v3_1_0.header import Header
 from openapi_schemas_pydantic.v3_1_0.media_type import MediaType as OpenAPISchemaMediaType
+from openapi_schemas_pydantic.v3_1_0.reference import Reference
 from openapi_schemas_pydantic.v3_1_0.schema import Schema
 from starlette.routing import get_name
 from typing_extensions import get_args, get_origin
@@ -138,7 +139,7 @@ def create_error_responses(
         grouped_exceptions[exc.status_code].append(exc)
 
     for status_code, exception_group in grouped_exceptions.items():
-        exception_schemas = [
+        exception_schemas: Optional[List[Union[Reference, Schema]]] = [
             Schema(
                 type=OpenAPIType.OBJECT,
                 required=["detail", "status_code"],
@@ -165,10 +166,10 @@ def create_error_responses(
         if len(exception_schemas) > 1:
             schema = Schema(oneOf=exception_schemas)
         else:
-            schema = exception_schemas[0]
+            schema = cast("Schema", exception_schemas[0])
         yield str(status_code), Response(
             description=HTTPStatus(status_code).description,
-            content={MediaType.JSON: OpenAPISchemaMediaType(media_type_schema=schema)},
+            content={MediaType.JSON: OpenAPISchemaMediaType(media_type_schema=schema)},  # type: ignore[call-arg]
         )
 
 
@@ -187,7 +188,7 @@ def create_additional_responses(
         yield str(status_code), Response(
             description=additional_response.description,
             content={
-                additional_response.media_type: OpenAPISchemaMediaType(media_type_schema=schema)
+                additional_response.media_type: OpenAPISchemaMediaType(media_type_schema=schema)  # type: ignore[call-arg]
             },
         )
 

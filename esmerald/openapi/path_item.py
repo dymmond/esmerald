@@ -1,7 +1,9 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union, cast
 
 from openapi_schemas_pydantic.v3_1_0.operation import Operation
+from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
 from openapi_schemas_pydantic.v3_1_0.path_item import PathItem
+from openapi_schemas_pydantic.v3_1_0.reference import Reference
 from starlette.routing import get_name
 
 from esmerald.enums import HttpMethod
@@ -12,9 +14,12 @@ from esmerald.openapi.responses import create_responses
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from pydantic import BaseModel
+    from pydantic.typing import AnyCallable
 
     from esmerald.routing.handlers import HTTPHandler
-    from esmerald.types import AnyCallable
+
+
+OptionalRef = Optional[List[Union[Parameter, Reference]]]
 
 
 def get_description_for_handler(
@@ -86,7 +91,7 @@ def create_path_item(
                     create_examples=create_examples,
                 ),
                 requestBody=request_body,
-                parameters=parameters,
+                parameters=cast("OptionalRef", parameters),
                 security=security,
             )
             setattr(path_item, http_method.lower(), operation)

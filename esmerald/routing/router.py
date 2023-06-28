@@ -1,6 +1,6 @@
 import inspect
 from copy import copy
-from enum import Enum, IntEnum
+from enum import IntEnum
 from inspect import Signature
 from typing import (
     TYPE_CHECKING,
@@ -204,7 +204,7 @@ class Router(Parent, StarletteRouter):
         response_cookies: Optional["ResponseCookies"] = None,
         response_headers: Optional["ResponseHeaders"] = None,
         lifespan: Optional[Lifespan[Any]] = None,
-        tags: Optional[List[Union[str, Enum]]] = None,
+        tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityRequirement"]] = None,
     ):
@@ -479,7 +479,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         response_class: Optional["ResponseType"] = None,
         response_cookies: Optional["ResponseCookies"] = None,
         response_headers: Optional["ResponseHeaders"] = None,
-        tags: Optional[List[Union[str, Enum]]] = None,
+        tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
         responses: Optional[Dict[int, ResponseSpecification]] = None,
