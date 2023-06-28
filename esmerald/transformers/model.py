@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Set, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
 
 from pydantic.fields import (
     SHAPE_DEQUE,
@@ -24,7 +24,6 @@ from esmerald.transformers.utils import (
     get_signature,
     merge_sets,
 )
-from esmerald.types import ReservedKwargs
 from esmerald.utils.constants import RESERVED_KWARGS
 from esmerald.utils.pydantic.schema import is_field_optional
 
@@ -34,6 +33,7 @@ if TYPE_CHECKING:
 
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
+MappingUnion = Mapping[Union[int, str], Any]
 
 
 class TransformerModel(BaseModelExtra):
@@ -48,8 +48,8 @@ class TransformerModel(BaseModelExtra):
         headers: Set[ParamSetting],
         path_params: Set[ParamSetting],
         query_params: Set[ParamSetting],
-        reserved_kwargs: Set[ReservedKwargs],
-        query_param_names: Set[str],
+        reserved_kwargs: Set[str],
+        query_param_names: Set[ParamSetting],
         is_optional: bool,
         **kwargs: Any,
     ):
@@ -263,16 +263,24 @@ class TransformerModel(BaseModelExtra):
                 connection_params[key] = value
 
         query_params = get_request_params(
-            params=connection.query_params, expected=self.query_params, url=connection.url
+            params=cast("MappingUnion", connection.query_params),
+            expected=self.query_params,
+            url=connection.url,
         )
         path_params = get_request_params(
-            params=connection.path_params, expected=self.path_params, url=connection.url
+            params=cast("MappingUnion", connection.path_params),
+            expected=self.path_params,
+            url=connection.url,
         )
         headers = get_request_params(
-            params=connection.headers, expected=self.headers, url=connection.url
+            params=cast("MappingUnion", connection.headers),
+            expected=self.headers,
+            url=connection.url,
         )
         cookies = get_request_params(
-            params=connection.cookies, expected=self.cookies, url=connection.url
+            params=cast("MappingUnion", connection.cookies),
+            expected=self.cookies,
+            url=connection.url,
         )
 
         if not self.reserved_kwargs:
@@ -298,7 +306,7 @@ class TransformerModel(BaseModelExtra):
     ) -> Any:
         reserved_kwargs: Any = {}
         if "data" in self.reserved_kwargs:
-            reserved_kwargs["data"] = self.get_request_data(request=connection)
+            reserved_kwargs["data"] = self.get_request_data(request=cast("Request", connection))
         if "request" in self.reserved_kwargs:
             reserved_kwargs["request"] = connection
         if "socket" in self.reserved_kwargs:

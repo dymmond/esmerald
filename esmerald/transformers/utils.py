@@ -10,11 +10,11 @@ from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
 
 if TYPE_CHECKING:
-    from pydantic.typing import DictAny, MappingIntStrAny
+    from pydantic.typing import MappingIntStrAny
 
     from esmerald.injector import Inject
     from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
-    from esmerald.typing import ConnectionType
+    from esmerald.types import ConnectionType
 
 
 class ParamSetting(NamedTuple):
@@ -29,7 +29,7 @@ class ParamSetting(NamedTuple):
 
 class Dependency(HashableBaseModel, BaseModelExtra):
     def __init__(
-        self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: "DictAny"
+        self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
         self.key = key
@@ -91,9 +91,7 @@ def create_parameter_setting(
     return param_settings
 
 
-def get_request_params(
-    params: "MappingIntStrAny", expected: Set[ParamSetting], url: URL
-) -> "DictAny":
+def get_request_params(params: "MappingIntStrAny", expected: Set[ParamSetting], url: URL) -> Any:
     """
     Gather the parameters from the request.
     """
