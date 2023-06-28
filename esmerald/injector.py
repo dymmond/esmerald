@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, cast
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type
 
 from esmerald.parsers import ArbitraryHashableBaseModel
 from esmerald.transformers.datastructures import Signature
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class Inject(ArbitraryHashableBaseModel):
     def __init__(self, dependency: "AnyCallable", use_cache: bool = False, **kwargs: "DictAny"):
         super().__init__(**kwargs)
-        self.dependency = cast("AnyCallable", dependency)
+        self.dependency = dependency
         self.signature_model: Optional["Type[Signature]"] = None
         self.use_cache = use_cache
         self.value: Any = Void
