@@ -9,12 +9,12 @@ if TYPE_CHECKING:
 try:
     from esmerald.responses.encoders import ORJSONResponse
 except ImportError:
-    ORJSONResponse = None
+    ORJSONResponse = None  # type: ignore
 
 try:
     from esmerald.responses.encoders import UJSONResponse
 except ImportError:
-    UJSONResponse = None
+    UJSONResponse = None  # type: ignore
 
 
 class OrJSON(ResponseContainer[ORJSONResponse]):
@@ -25,8 +25,8 @@ class OrJSON(ResponseContainer[ORJSONResponse]):
         self,
         content: Optional[Dict[str, Any]] = None,
         status_code: Optional[int] = None,
-        **kwargs: Dict[str, Any],
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.content = content
         self.status_code = status_code
@@ -60,8 +60,8 @@ class UJSON(ResponseContainer[UJSONResponse]):
         self,
         content: Optional[Dict[str, Any]] = None,
         status_code: Optional[int] = None,
-        **kwargs: Dict[str, Any],
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.content = content
         self.status_code = status_code
