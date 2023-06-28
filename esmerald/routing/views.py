@@ -1,13 +1,15 @@
 from copy import copy
-from typing import TYPE_CHECKING, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple, Union, cast
 
 from starlette.routing import compile_path
 
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
+    from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, Router, WebSocketHandler
+    from esmerald.transformers.model import TransformerModel
     from esmerald.types import (
         Dependencies,
         ExceptionHandlers,
@@ -41,6 +43,7 @@ class APIView:
         "param_convertors",
         "deprecated",
         "include_in_schema",
+        "route_map",
     )
 
     path: str
@@ -64,8 +67,8 @@ class APIView:
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
         self.parent = parent
-        self.interceptors = []
-        self.route_map = {}
+        self.interceptors: Sequence["Interceptor"] = []
+        self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
 
     def get_filtered_handler(self) -> List[str]:
         """
@@ -120,9 +123,7 @@ class APIView:
 
         return route_handlers
 
-    def get_route_middleware(
-        self, handler: Union["HTTPHandler", "WebSocketHandler"]
-    ) -> List["Middleware"]:
+    def get_route_middleware(self, handler: Union["HTTPHandler", "WebSocketHandler"]) -> None:
         """
         Gets the list of extended middlewares for the handler starting from the last
         to the first by reversing the list

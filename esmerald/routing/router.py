@@ -547,7 +547,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None
-        self.route_map: Dict["HTTPMethods" : Tuple["HTTPHandler", "TransformerModel"]] = {}
+        self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
 
     @property
@@ -776,6 +776,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.websocket_parameter_model: Optional["TransformerModel"] = None
         self.include_in_schema = None
         self.fn: Optional["AnyCallable"] = None
+        self.tags: Sequence[str] = []
 
     def __call__(self, fn: "AnyCallable") -> "ASGIApp":
         self.fn = fn
