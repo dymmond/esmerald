@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from esmerald.protocols.middleware import MiddlewareProtocol
     from esmerald.requests import Request  # noqa
     from esmerald.responses import Response  # noqa
-    from esmerald.routing.router import Gateway, HTTPHandler, Router  # noqa
+    from esmerald.routing.router import Gateway, HTTPHandler, Router, WebSocketHandler  # noqa
     from esmerald.routing.views import APIView  # noqa
     from esmerald.websockets import WebSocket  # noqa
 else:

@@ -8,7 +8,7 @@ from starlette.types import Receive, Scope, Send
 
 from esmerald.routing.base import BaseInterceptorMixin
 from esmerald.routing.views import APIView
-from esmerald.typing import Void
+from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string, is_class_and_subclass
 from esmerald.utils.url import clean_path
 
@@ -80,7 +80,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         Since the default Starlette Route endpoint does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
-        self._interceptors: Union[List["Interceptor"], "Void"] = Void
+        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
 
         self.handler = handler
         self.dependencies = dependencies or {}

@@ -1,11 +1,12 @@
-from typing import TYPE_CHECKING, List, Optional  # noqa
+from typing import TYPE_CHECKING, List, Optional
 
-from esmerald.exceptions import PermissionDenied  # noqa
+from esmerald.exceptions import PermissionDenied
 
 if TYPE_CHECKING:
-    from esmerald.permissions.types import Permission  # noqa
-    from esmerald.requests import Request  # noqa
-    from esmerald.types import APIGateHandler  # noqa
+    from esmerald.permissions import BasePermission
+    from esmerald.permissions.types import Permission
+    from esmerald.requests import Request
+    from esmerald.types import APIGateHandler
 
 
 def check_permissions(
@@ -28,9 +29,9 @@ def check_permissions(
 def continue_or_raise_permission_exception(
     request: "Request",
     apiview: "APIGateHandler",
-    permission: "Permission",
+    permission: "BasePermission",
 ) -> None:
-    if not permission.has_permission(request=request, apiview=apiview):  # type: ignore[call-arg]
+    if not permission.has_permission(request=request, apiview=apiview):
         permission_denied(
             request,
             message=getattr(permission, "message", None),

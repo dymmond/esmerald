@@ -106,7 +106,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
 
                 # Http methods
                 http_methods = ", ".join(sorted(route.methods))
-                parameters = ", ".join(sorted(route.stringify_parameters))  # type: ignore
+                parameters = ", ".join(sorted(route.stringify_parameters))
                 table.add_row(path, parameters, route.name, fn_type, http_methods)
                 continue
 
