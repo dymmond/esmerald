@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Callable, List, Optional, Sequence, Union, cast
 
 from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
@@ -45,8 +45,8 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
-        interceptors: Optional["Interceptor"] = None,
-        permissions: Optional["Permission"] = None,
+        interceptors: Optional[Sequence["Interceptor"]] = None,
+        permissions: Optional[Sequence["Permission"]] = None,
         exception_handlers: Optional["ExceptionHandlers"] = None,
         deprecated: Optional[bool] = None,
         is_from_router: bool = False,
@@ -54,12 +54,13 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         if not path:
             path = "/"
         if is_class_and_subclass(handler, APIView):
-            handler = handler(parent=self)
+            handler = handler(parent=self)  # type: ignore
 
         if not is_from_router:
             self.path = clean_path(path + handler.path)
         else:
             self.path = clean_path(path)
+
         self.methods = getattr(handler, "methods", None)
 
         if not name:
@@ -70,10 +71,10 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
 
         super().__init__(
             path=self.path,
-            endpoint=handler,
+            endpoint=cast("Callable", handler),
             include_in_schema=include_in_schema,
             name=name,
-            methods=self.methods,
+            methods=cast("List[str]", self.methods),
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -84,8 +85,8 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
 
         self.handler = handler
         self.dependencies = dependencies or {}
-        self.interceptors = interceptors or []
-        self.permissions = permissions or []
+        self.interceptors: Sequence["Interceptor"] = interceptors or []
+        self.permissions: Sequence["Permission"] = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
         self.response_class = None
@@ -116,7 +117,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
 
         await self.handler.handle(scope, receive, send)
 
-    def generate_operation_id(self):
+    def generate_operation_id(self) -> str:
         """
         Generates an unique operation if for the handler
         """
@@ -157,7 +158,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         if not path:
             path = "/"
         if is_class_and_subclass(handler, APIView):
-            handler = handler(parent=self)
+            handler = handler(parent=self)  # type: ignore
         self.path = clean_path(path + handler.path)
 
         if not name:
@@ -168,7 +169,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
 
         super().__init__(
             path=self.path,
-            endpoint=handler,
+            endpoint=cast("Callable", handler),
             name=name,
         )
         """
@@ -176,7 +177,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         Since the default Starlette Route endpoint does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
-        self._interceptors: Union[List["Interceptor"], "Void"] = Void
+        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.handler = handler
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []

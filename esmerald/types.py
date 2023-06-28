@@ -103,7 +103,7 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
-ParentType = Union[APIView, Router]
+ParentType = Union[APIView, Router, Gateway, WebSocketGateway, Type[Esmerald], Include]
 APIGateHandler = Union[
     Gateway,
     WebSocketGateway,

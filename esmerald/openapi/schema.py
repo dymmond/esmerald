@@ -231,7 +231,7 @@ def create_schema(
         openapi_type = get_openapi_type_for_complex_type(field)
         schema = Schema(type=openapi_type)
         if openapi_type == OpenAPIType.ARRAY:
-            items: List[Union[Reference, Schema]] = [
+            items: List[Union[Reference, Schema]] = [  # type: ignore
                 create_schema(field=sub_field, create_examples=False)
                 for sub_field in field.sub_fields
             ]

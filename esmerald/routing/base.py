@@ -40,7 +40,7 @@ from esmerald.routing.views import APIView
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
-from esmerald.typing import Void
+from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
@@ -505,7 +505,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         Returns all the permissions in the handler scope from the ownsership layers.
         """
         if self._permissions is Void:
-            self._permissions: List["Permission"] = []
+            self._permissions: Union[List["Permission"], "VoidType"] = []
             for layer in self.parent_levels:
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
@@ -608,7 +608,7 @@ class BaseInterceptorMixin(BaseHandlerMixin):
         Returns all the interceptors in the handler scope from the ownsership layers.
         """
         if self._interceptors is Void:
-            self._interceptors: List["Interceptor"] = []
+            self._interceptors: Union[List["Interceptor"], "VoidType"] = []
             for layer in self.parent_levels:
                 self._interceptors.extend(layer.interceptors or [])
             self._interceptors = cast(

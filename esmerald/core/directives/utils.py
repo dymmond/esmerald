@@ -111,7 +111,7 @@ def fetch_custom_directive(subdirective: Any, location: Optional[str]) -> Any:
     matches = []
     app_name = None
 
-    for directive in sorted(directives, key=lambda d: d["location"]):  # type: ignore
+    for directive in sorted(directives, key=lambda d: d["location"]):
         try:
             for key, _ in directive.items():
                 if key == subdirective:

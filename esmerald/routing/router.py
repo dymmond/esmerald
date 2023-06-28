@@ -197,9 +197,9 @@ class Router(Parent, StarletteRouter):
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        interceptors: Optional[Sequence["Interceptor"]] = None,
+        permissions: Optional[Sequence["Permission"]] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
         response_class: Optional["ResponseType"] = None,
         response_cookies: Optional["ResponseCookies"] = None,
         response_headers: Optional["ResponseHeaders"] = None,
@@ -253,8 +253,8 @@ class Router(Parent, StarletteRouter):
         self.parent: Optional["Router"] = parent or self.app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
-        self.interceptors = interceptors or []
-        self.permissions = permissions or []
+        self.interceptors: Sequence["Interceptor"] = interceptors or []
+        self.permissions: Sequence["Permission"] = permissions or []
         self.middleware = middleware or []
         self.routes = routes
         self.tags = tags or []
@@ -891,8 +891,8 @@ class Include(Mount):
         parent: Optional[Union["Self", "Router"]] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
+        interceptors: Optional[Sequence["Interceptor"]] = None,
+        permissions: Optional[Sequence["Permission"]] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
@@ -923,8 +923,8 @@ class Include(Mount):
         self.pattern = pattern
         self.include_in_schema = include_in_schema
         self.dependencies = dependencies or {}
-        self.interceptors = interceptors or []
-        self.permissions = permissions or []
+        self.interceptors: Sequence["Interceptor"] = interceptors or []
+        self.permissions: Sequence["Permission"] = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
         self.deprecated = deprecated
@@ -971,7 +971,7 @@ class Include(Mount):
         from esmerald import ChildEsmerald, Esmerald
 
         if app is not None and isinstance(app, (Esmerald, ChildEsmerald)):
-            app.parent = self  # type: ignore
+            app.parent = self
         return app
 
     def build_routes_middleware(
@@ -1059,7 +1059,7 @@ class Include(Mount):
                 continue
 
             if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                route.handler.parent = route  # type: ignore
+                route.handler.parent = route
                 routing.append(route)
                 continue
 
