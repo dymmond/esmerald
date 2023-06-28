@@ -1,6 +1,7 @@
 from dataclasses import is_dataclass
 from decimal import Decimal
 from enum import Enum, EnumMeta
+from re import Pattern
 from typing import Any, List, Optional, Type, Union
 
 from openapi_schemas_pydantic.utils.constants import (
@@ -10,6 +11,7 @@ from openapi_schemas_pydantic.utils.constants import (
 )
 from openapi_schemas_pydantic.utils.utils import OpenAPI310PydanticSchema
 from openapi_schemas_pydantic.v3_1_0.example import Example
+from openapi_schemas_pydantic.v3_1_0.reference import Reference
 from openapi_schemas_pydantic.v3_1_0.schema import Schema
 from pydantic import (
     BaseModel,
@@ -34,7 +36,7 @@ from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
 
 
-def clean_values_from_example(value: Any):
+def clean_values_from_example(value: Any) -> Any:
     if isinstance(value, (Decimal, float)):
         value = round(float(value), 3)
 
@@ -89,7 +91,7 @@ def create_string_constrained_field_schema(
         schema.minLength = field_type.min_length
     if field_type.max_length:
         schema.maxLength = field_type.max_length
-    if issubclass(field_type, ConstrainedStr) and field_type.regex is not None:
+    if hasattr(field_type, "regex") and isinstance(field_type.regex, Pattern):
         schema.pattern = field_type.regex.pattern
     if field_type.to_lower:
         schema.description = "must be in lower case"
@@ -109,9 +111,11 @@ def create_collection_constrained_field_schema(
     if issubclass(field_type, ConstrainedSet):
         schema.uniqueItems = True
     if sub_fields:
-        items = [create_schema(field=sub_field, create_examples=False) for sub_field in sub_fields]
+        items: List[Union[Reference, Schema]] = [
+            create_schema(field=sub_field, create_examples=False) for sub_field in sub_fields
+        ]
         if len(items) > 1:
-            schema.items = Schema(oneOf=items)  # type: ignore[arg-type]
+            schema.items = Schema(oneOf=items)
         else:
             schema.items = items[0]
     else:
@@ -192,7 +196,9 @@ def create_examples_for_field(field: ModelField) -> List[Example]:
         return []
 
 
-def create_schema(field: ModelField, create_examples: bool, ignore_optional: bool = False):
+def create_schema(
+    field: ModelField, create_examples: bool, ignore_optional: bool = False
+) -> Schema:
     if is_optional(field) and not ignore_optional:
         non_optional_schema = create_schema(
             field=field, create_examples=False, ignore_optional=True
@@ -219,13 +225,13 @@ def create_schema(field: ModelField, create_examples: bool, ignore_optional: boo
     elif ModelFactory.is_constrained_field(field.type_):
         field.outer_type_ = field.type_
         schema = create_constrained_field_schema(
-            field_type=field.outer_type_, sub_fields=field.sub_fields
+            field_type=field.outer_type_, sub_fields=field.sub_fields  # type: ignore
         )
     elif field.sub_fields:
         openapi_type = get_openapi_type_for_complex_type(field)
         schema = Schema(type=openapi_type)
         if openapi_type == OpenAPIType.ARRAY:
-            items = [
+            items: List[Union[Reference, Schema]] = [
                 create_schema(field=sub_field, create_examples=False)
                 for sub_field in field.sub_fields
             ]

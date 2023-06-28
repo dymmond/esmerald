@@ -157,11 +157,10 @@ profile = "black"
 known_third_party = ["esmerald", "pydantic", "starlette"]
 
 [tool.mypy]
-
+strict = true
 warn_unused_configs = true
 warn_unreachable = true
 warn_return_any = true
-strict = true
 disallow_untyped_decorators = true
 disallow_any_generics = false
 implicit_reexport = false
@@ -172,6 +171,8 @@ exclude = "esmerald/conf,esmerald/utils"
 warn_unused_ignores = true
 warn_redundant_casts = true
 no_implicit_optional = false
+strict_equality = false
+strict_optional = true
 
 
 [tool.ruff]
