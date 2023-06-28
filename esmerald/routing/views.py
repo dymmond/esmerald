@@ -149,3 +149,6 @@ class APIView:
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         raise NotImplementedError("APIView object does not implement handle()")
+
+    def create_signature_model(self, is_websocket: bool = False) -> None:
+        raise NotImplementedError("APIView object does not implement create_signature_model()")

@@ -87,7 +87,7 @@ if TYPE_CHECKING:
 
 
 class Parent:
-    def create_signature_models(self, route: "RouteParent"):
+    def create_signature_models(self, route: "RouteParent") -> None:
         """
         Creates the signature models for the given routes.
 
@@ -112,9 +112,9 @@ class Parent:
 
     def validate_root_route_parent(
         self,
-        value: Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway"],
+        value: Union["Router", "Include", "Gateway", "WebSocketGateway"],
         override: bool = False,
-    ):
+    ) -> None:
         """
         Handles everything parent from the root. When in the root, the parent must be setup.
         Appends the route path if exists.
@@ -123,7 +123,7 @@ class Parent:
         value.path = clean_path(self.path + getattr(value, "path", "/"))
         if isinstance(value, (Include, Gateway, WebSocketGateway)):
             if not value.parent and not override:
-                value.parent = self
+                value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
         if isinstance(value, (Gateway, WebSocketGateway)):
             if not is_class_and_subclass(value.handler, APIView) and not isinstance(
@@ -133,9 +133,10 @@ class Parent:
                     value.handler.parent = value
             else:
                 if not value.handler.parent:
-                    value(parent=self)
+                    value(parent=self)  # type: ignore
 
-                route_handlers = value.handler.get_route_handlers()
+                handler: APIView = cast("APIView", value.handler)
+                route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gateway = (
                         Gateway
