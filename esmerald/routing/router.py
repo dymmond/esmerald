@@ -189,12 +189,12 @@ class Router(Parent, StarletteRouter):
         self,
         path: Optional[str] = None,
         app: Optional["Esmerald"] = None,
-        parent: Optional["Router"] = None,
-        on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-        on_startup: Optional[List["LifeSpanHandler"]] = None,
+        parent: Optional["ParentType"] = None,
+        on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
+        on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
         redirect_slashes: bool = True,
         default: Optional["ASGIApp"] = None,
-        routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
+        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
@@ -207,7 +207,7 @@ class Router(Parent, StarletteRouter):
         lifespan: Optional[Lifespan[Any]] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[Sequence["SecurityRequirement"]] = None,
     ):
         self.app = app
         if not path:
@@ -232,7 +232,6 @@ class Router(Parent, StarletteRouter):
                 ),
             ):
                 raise ImproperlyConfigured(f"The route {route} must be of type Gateway or Include")
-        routes = routes or []
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -251,13 +250,13 @@ class Router(Parent, StarletteRouter):
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
         self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
-        self.parent: Optional["Router"] = parent or self.app
+        self.parent: Optional["ParentType"] = parent or self.app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
         self.permissions: Sequence["Permission"] = permissions or []
+        self.routes = routes or []
         self.middleware = middleware or []
-        self.routes = routes
         self.tags = tags or []
         self.name = name
         self.response_class = response_class
