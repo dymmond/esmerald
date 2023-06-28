@@ -20,8 +20,6 @@ if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
     from pydantic.typing import DictAny
 
-IntValError = Union[InternalServerError, ValidationError]
-
 
 class EsmeraldSignature(BaseModel):
     dependency_names: ClassVar[Set[str]]
@@ -46,7 +44,7 @@ class EsmeraldSignature(BaseModel):
     @classmethod
     def build_exception(
         cls, connection: Union[Request, WebSocket], exception: ValidationError
-    ) -> IntValError:
+    ) -> Union[InternalServerError, ValidationErrorException]:
         server_errors = []
         client_errors = []
 
