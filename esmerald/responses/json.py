@@ -1,14 +1,8 @@
 from typing import Any, Dict
 
-from orjson import OPT_OMIT_MICROSECONDS  # noqa
 from pydantic import BaseModel
 
 from esmerald.responses import JSONResponse as JSONResponse  # noqa
-
-try:
-    import orjson
-except ImportError:  # pragma: nocover
-    orjson = None  # type: ignore
 
 
 class BaseJSONResponse(JSONResponse):

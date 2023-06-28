@@ -8,12 +8,12 @@ try:
     import orjson
     from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY
 except ImportError:
-    orjson = None  # type: ignore[assignment]
+    orjson = None
 
 try:
     import ujson
 except ImportError:
-    ujson = None  # type: ignore[assignment]
+    ujson = None
 
 
 class ORJSONResponse(BaseJSONResponse):

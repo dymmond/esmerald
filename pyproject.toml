@@ -172,7 +172,7 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 no_implicit_optional = false
 strict_equality = false
-strict_optional = true
+strict_optional = false
 
 
 [tool.ruff]
