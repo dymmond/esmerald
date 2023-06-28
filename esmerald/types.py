@@ -83,7 +83,7 @@ ExceptionHandler = Callable[[Request, ExceptionType], Response]
 ExceptionHandlers = Dict[Union[int, Type[Exception]], ExceptionHandler]
 ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
-ReservedKwargs = Literal[
+_ReservedKwargs = Literal[
     "request",
     "socket",
     "headers",
@@ -92,6 +92,8 @@ ReservedKwargs = Literal[
     "state",
     "data",
 ]
+
+ReservedKwargs = get_args(_ReservedKwargs)
 
 ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
