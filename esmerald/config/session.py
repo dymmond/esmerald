@@ -15,7 +15,7 @@ class SessionConfig(BaseModel):
     secret_key: Union[str, Secret]
     path: str = "/"
     session_cookie: constr(min_length=1, max_length=256) = "session"  # type: ignore[valid-type]
-    max_age: int = SECONDS_IN_A_DAY * 180  # type: ignore[valid-type]
+    max_age: int = SECONDS_IN_A_DAY * 180
     https_only: bool = False
     same_site: Literal["lax", "strict", "none"] = "lax"
 

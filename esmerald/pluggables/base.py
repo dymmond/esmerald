@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, Any, Iterator, Optional
 from esmerald.protocols.extension import ExtensionProtocol
 
 if TYPE_CHECKING:
-    pass
-
     from esmerald.applications import Esmerald
     from esmerald.types import DictAny
 
@@ -18,7 +16,7 @@ class Pluggable:
     your an Esmerald application and is used as support for your application.
     """
 
-    def __init__(self, cls: type, **options: Any):
+    def __init__(self, cls: "Extension", **options: Any):
         self.cls = cls
         self.options = options
 
@@ -26,7 +24,7 @@ class Pluggable:
         iterator = (self.cls, self.options)
         return iter(iterator)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         name = self.__class__.__name__
         options = [f"{key}={value!r}" for key, value in self.options.items()]
         args = ", ".join([self.__class__.__name__] + options)

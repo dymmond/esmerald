@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from esmerald.protocols.middleware import MiddlewareProtocol
     from esmerald.requests import Request  # noqa
     from esmerald.responses import Response  # noqa
-    from esmerald.routing.router import Gateway, HTTPHandler, Router  # noqa
+    from esmerald.routing.router import Gateway, HTTPHandler, Router, WebSocketHandler  # noqa
     from esmerald.routing.views import APIView  # noqa
     from esmerald.websockets import WebSocket  # noqa
 else:
@@ -80,10 +80,9 @@ Dependencies = Dict[str, Inject]
 
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]
-ExceptionHandlers = Dict[Union[int, Type[Exception]], ExceptionHandler]
 ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
-ReservedKwargs = Literal[
+_ReservedKwargs = Literal[
     "request",
     "socket",
     "headers",
@@ -93,6 +92,8 @@ ReservedKwargs = Literal[
     "data",
 ]
 
+ReservedKwargs = get_args(_ReservedKwargs)
+
 ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
 AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
@@ -101,7 +102,7 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
-ParentType = Union[APIView, Router]
+ParentType = Union[APIView, Router, Gateway, WebSocketGateway, Esmerald, Include]
 APIGateHandler = Union[
     Gateway,
     WebSocketGateway,

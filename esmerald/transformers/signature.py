@@ -1,10 +1,5 @@
-"""
-Signature is widely used by Pydantic and comes from the inpect library.
-A lot of great work was done using the Signature and Esmerald is no exception.
-"""
-
 from inspect import Signature as InspectSignature
-from typing import TYPE_CHECKING, Any, Generator, Set, Type
+from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Set, Type
 
 from pydantic import create_model
 from pydantic.fields import Undefined
@@ -18,23 +13,25 @@ from esmerald.transformers.utils import get_field_definition_from_param
 from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable, DictAny
+    from pydantic.typing import AnyCallable
 
 
 class SignatureFactory(BaseModelExtra):
     class Config(BaseModelExtra.Config):
         arbitrary_types_allowed = True
 
-    def __init__(self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: "DictAny") -> None:
+    def __init__(
+        self, fn: Optional["AnyCallable"], dependency_names: Set[str], **kwargs: Any
+    ) -> None:
         super().__init__(**kwargs)
-        if not fn or fn is None:
+        if not fn:
             raise ImproperlyConfigured("Parameter 'fn' to SignatureFactory cannot be `None`.")
         self.fn = fn
         self.signature = InspectSignature.from_callable(self.fn)
         self.fn_name = fn.__name__ if hasattr(fn, "__name__") else "anonymous"
-        self.defaults = {}
+        self.defaults: Dict[str, Any] = {}
         self.dependency_names = dependency_names
-        self.field_definitions = {}
+        self.field_definitions: Dict[Any, Any] = {}
 
     def validate_missing_dependency(self, param: Any) -> None:
         if param.optional:

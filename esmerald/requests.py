@@ -1,21 +1,18 @@
 from json import loads
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, cast
 
-from starlette.datastructures import URL
+from starlette.datastructures import URL  # noqa
 from starlette.requests import ClientDisconnect as ClientDisconnect  # noqa
 from starlette.requests import HTTPConnection as HTTPConnection  # noqa: F401
 from starlette.requests import Request as StarletteRequest  # noqa: F401
 from starlette.requests import empty_receive, empty_send  # noqa
 
-from esmerald.exceptions import ImproperlyConfigured
 from esmerald.typing import Void
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
     from esmerald.conf.global_settings import EsmeraldAPISettings
     from esmerald.types import HTTPMethod, Receive, Scope, Send
-
-User = TypeVar("User")
 
 
 class Request(StarletteRequest):
@@ -31,14 +28,6 @@ class Request(StarletteRequest):
     @property
     def app(self) -> "Esmerald":
         return cast("Esmerald", self.scope["app"])
-
-    @property
-    def user(self) -> User:
-        if "user" not in self.scope:
-            raise ImproperlyConfigured(
-                "'user' is not defined in scope, install an AuthMiddleware to set it"
-            )
-        return cast("User", self.scope["user"])
 
     @property
     def method(self) -> "HTTPMethod":
@@ -58,17 +47,15 @@ class Request(StarletteRequest):
         ), "RequestSettingsMiddleware must be added to the middlewares"
         return cast("EsmeraldAPISettings", self.scope["app_settings"])
 
-    async def json(self):
+    async def json(self) -> Any:
         if self._json is Void:
             if "_body" in self.scope:
                 body = self.scope["_body"]
             else:
-                body = self.scope["_body"] = await self.body() or "null".encode("utf-8")
+                body = self.scope["_body"] = await self.body() or b"null"
             self._json = loads(body)
         return self._json
 
-    def url_for(self, __name: str, **path_params: Any) -> URL:
-        url = super().url_for(__name, **path_params)
-        if isinstance(url, URL):
-            return str(url)
-        return url
+    def url_for(self, __name: str, **path_params: Any) -> Any:
+        url: URL = super().url_for(__name, **path_params)
+        return str(url)

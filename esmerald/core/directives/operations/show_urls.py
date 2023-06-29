@@ -67,7 +67,7 @@ def show_urls(env: DirectiveEnv) -> None:
         sys.exit(1)
 
     app = env.app
-    table = Table(title=app.app_name)  # type: ignore
+    table = Table(title=app.app_name)
     table = get_routes_table(app, table)
     printer.write(table)
 
@@ -92,7 +92,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
         for route in app.routes:  # type: ignore
             if isinstance(route, Gateway):
                 # Path
-                path = clean_path(prefix + route.path)  # type: ignore
+                path = clean_path(prefix + route.path)
 
                 if any(element in path for element in DOCS_ELEMENTS):
                     continue
@@ -105,8 +105,8 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
                         fn_type = "sync"
 
                 # Http methods
-                http_methods = ", ".join(sorted(route.methods))  # type: ignore
-                parameters = ", ".join(sorted(route.stringify_parameters))  # type: ignore
+                http_methods = ", ".join(sorted(route.methods))
+                parameters = ", ".join(sorted(route.stringify_parameters))
                 table.add_row(path, parameters, route.name, fn_type, http_methods)
                 continue
 

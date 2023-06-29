@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, Sequence, TypeVar
 
 from starlette._utils import is_async_callable
 from starlette.types import Lifespan, Receive, Scope, Send
@@ -26,8 +26,8 @@ class AyncLifespanContextManager:
 
     def __init__(
         self,
-        on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-        on_startup: Optional[List["LifeSpanHandler"]] = None,
+        on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
+        on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
     ) -> None:
         self.on_startup = [] if on_startup is None else list(on_startup)
         self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
@@ -35,26 +35,28 @@ class AyncLifespanContextManager:
     def __call__(self: _T, app: object) -> _T:
         return self
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> None:
         """Runs the functions on startup"""
         for handler in self.on_startup:
             if is_async_callable(handler):
-                await handler()
+                await handler()  # type: ignore[call-arg]
             else:
-                handler()
+                handler()  # type: ignore[call-arg]
 
-    async def __aexit__(self, scope: Scope, receive: Receive, send: Send, **kwargs: "DictAny"):
+    async def __aexit__(
+        self, scope: Scope, receive: Receive, send: Send, **kwargs: "DictAny"
+    ) -> None:
         """Runs the functions on shutdown"""
         for handler in self.on_shutdown:
             if is_async_callable(handler):
-                await handler()
+                await handler()  # type: ignore[call-arg]
             else:
-                handler()
+                handler()  # type: ignore[call-arg]
 
 
 def handle_lifespan_events(
-    on_startup: Optional[Sequence[Callable]] = None,
-    on_shutdown: Optional[Sequence[Callable]] = None,
+    on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
+    on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
     lifespan: Optional[Lifespan[Any]] = None,
 ) -> Any:
     """Handles with the lifespan events in the new Starlette format of lifespan.
@@ -70,8 +72,8 @@ def handle_lifespan_events(
 
 
 def generate_lifespan_events(
-    on_startup: Optional[Sequence[Callable]] = None,
-    on_shutdown: Optional[Sequence[Callable]] = None,
+    on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
+    on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
     lifespan: Optional[Lifespan[Any]] = None,
 ) -> Any:
     if lifespan:

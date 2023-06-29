@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from esmerald.types import (
         APIGateHandler,
         Dependencies,
-        ExceptionHandlers,
+        ExceptionHandlerMap,
         LifeSpanHandler,
         Middleware,
         SchedulerType,
@@ -87,7 +87,7 @@ def create_client(
     dependencies: Optional["Dependencies"] = None,
     middleware: Optional[List["Middleware"]] = None,
     csrf_config: Optional["CSRFConfig"] = None,
-    exception_handlers: Optional["ExceptionHandlers"] = None,
+    exception_handlers: Optional["ExceptionHandlerMap"] = None,
     openapi_config: Optional["OpenAPIConfig"] = None,
     on_shutdown: Optional[List["LifeSpanHandler"]] = None,
     on_startup: Optional[List["LifeSpanHandler"]] = None,

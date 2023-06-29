@@ -2,20 +2,20 @@
 Functions to use with the Router.
 """
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Sequence, Union
 
 from esmerald.exceptions import ImproperlyConfigured
 
 if TYPE_CHECKING:
     from esmerald.routing.gateways import Gateway, WebSocketGateway
-    from esmerald.routing.router import Include, Router
+    from esmerald.routing.router import Include
 
 DEFAULT_PATTERN = "route_patterns"
 
 
 def include(
     arg: Any, pattern: Optional[str] = DEFAULT_PATTERN
-) -> List[Union["Gateway", "WebSocketGateway", "Router", "Include"]]:
+) -> Sequence[Union["Gateway", "WebSocketGateway", "Include"]]:
     """Simple retrieve functionality to make it easier to include
     routes in the urls. Example, nested routes.
 

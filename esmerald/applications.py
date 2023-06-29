@@ -18,7 +18,7 @@ from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-from starlette.types import Lifespan
+from starlette.types import Lifespan, Receive, Scope, Send
 
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -47,18 +47,15 @@ from esmerald.types import (
     APIGateHandler,
     ASGIApp,
     Dependencies,
-    ExceptionHandlers,
+    ExceptionHandlerMap,
     LifeSpanHandler,
     Middleware,
     ParentType,
-    Receive,
     ResponseCookies,
     ResponseHeaders,
     ResponseType,
     RouteParent,
     SchedulerType,
-    Scope,
-    Send,
 )
 from esmerald.utils.helpers import is_class_and_subclass
 
@@ -138,8 +135,8 @@ class Esmerald(Starlette):
         secret_key: Optional[str] = None,
         allowed_hosts: Optional[List[str]] = None,
         allow_origins: Optional[List[str]] = None,
-        permissions: Optional[List["Permission"]] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
+        permissions: Optional[Sequence["Permission"]] = None,
+        interceptors: Optional[Sequence["Interceptor"]] = None,
         dependencies: Optional["Dependencies"] = None,
         csrf_config: Optional["CSRFConfig"] = None,
         openapi_config: Optional["OpenAPIConfig"] = None,
@@ -155,10 +152,10 @@ class Esmerald(Starlette):
         scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
         enable_scheduler: Optional[bool] = None,
         timezone: Optional[Union[dtimezone, str]] = None,
-        routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
+        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
         root_path: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
         lifespan: Optional[Lifespan[AppType]] = None,
@@ -452,13 +449,13 @@ class Esmerald(Starlette):
         """
         self.router.add_apiview(value=value)
 
-    def add_route(  # type: ignore
+    def add_route(
         self,
         path: str,
-        handler: Type["HTTPHandler"],
+        handler: "HTTPHandler",
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -483,13 +480,13 @@ class Esmerald(Starlette):
 
         self.activate_openapi()
 
-    def add_websocket_route(  # type: ignore
+    def add_websocket_route(
         self,
         path: str,
-        handler: Type["WebSocketHandler"],
+        handler: "WebSocketHandler",
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -519,7 +516,7 @@ class Esmerald(Starlette):
         name: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         include_in_schema: Optional[bool] = True,
@@ -539,7 +536,7 @@ class Esmerald(Starlette):
                 app=child,
                 parent=self.router,
                 dependencies=dependencies,
-                middleware=middleware,
+                middleware=cast("List[Middleware]", middleware),
                 exception_handlers=exception_handlers,
                 interceptors=interceptors,
                 permissions=permissions,
@@ -566,7 +563,7 @@ class Esmerald(Starlette):
                         middleware=route.middleware,
                         interceptors=route.interceptors,
                         permissions=route.permissions,
-                        routes=route.routes,
+                        routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
                         parent=self.router,
                         security=route.security,
                     )
@@ -686,7 +683,7 @@ class Esmerald(Starlette):
         It evaluates the middleware passed into the routes from bottom up
         """
         user_middleware = []
-        handlers_middleware = []
+        handlers_middleware: List["Middleware"] = []
 
         if self.allowed_hosts:
             user_middleware.append(

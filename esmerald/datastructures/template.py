@@ -37,7 +37,7 @@ class Template(ResponseContainer[TemplateResponse]):
         if not app.template_engine:
             raise ImproperlyConfigured("Template engine is not configured")
 
-        data = {
+        data: Dict[str, Any] = {
             "background": self.background,
             "context": self.context,
             "headers": headers,

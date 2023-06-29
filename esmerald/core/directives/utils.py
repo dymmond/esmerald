@@ -75,7 +75,7 @@ def load_directive_class_by_filename(app_name: str, location: str) -> Any:
         printer.write_error(f"{app_name} not found")
         sys.exit(1)
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)  # type: ignore
+    spec.loader.exec_module(module)
     return module.Directive()
 
 
@@ -111,7 +111,7 @@ def fetch_custom_directive(subdirective: Any, location: Optional[str]) -> Any:
     matches = []
     app_name = None
 
-    for directive in sorted(directives, key=lambda d: d["location"]):  # type: ignore
+    for directive in sorted(directives, key=lambda d: d["location"]):
         try:
             for key, _ in directive.items():
                 if key == subdirective:

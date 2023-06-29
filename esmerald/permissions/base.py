@@ -1,7 +1,7 @@
 """Esmerald permission system"""
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -13,46 +13,46 @@ SAFE_METHODS = ("GET", "HEAD", "OPTIONS")
 
 
 class BaseOperationHolder:
-    def __and__(self, other):
+    def __and__(self, other: Any) -> "OperandHolder":
         return OperandHolder(AND, self, other)
 
-    def __or__(self, other):
+    def __or__(self, other: "Any") -> "OperandHolder":
         return OperandHolder(OR, self, other)
 
-    def __rand__(self, other):
+    def __rand__(self, other: Any) -> "OperandHolder":
         return OperandHolder(AND, other, self)
 
-    def __ror__(self, other):
+    def __ror__(self, other: "BasePermission") -> "OperandHolder":
         return OperandHolder(OR, other, self)
 
-    def __invert__(self):
+    def __invert__(self) -> "SingleOperand":
         return SingleOperand(NOT, self)
 
 
 class SingleOperand(BaseOperationHolder):
-    def __init__(self, operator_class, op1_class):
+    def __init__(self, operator_class: Any, op1_class: Any) -> None:
         self.operator_class = operator_class
         self.op1_class = op1_class
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         op1 = self.op1_class(*args, **kwargs)
         return self.operator_class(op1)
 
 
 class OperandHolder(BaseOperationHolder):
-    def __init__(self, operator_class, op1_class, op2_class):
+    def __init__(self, operator_class: Any, op1_class: Any, op2_class: Any) -> None:
         self.operator_class = operator_class
         self.op1_class = op1_class
         self.op2_class = op2_class
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         op1 = self.op1_class(*args, **kwargs)
         op2 = self.op2_class(*args, **kwargs)
         return self.operator_class(op1, op2)
 
 
 class AND:
-    def __init__(self, op1, op2):
+    def __init__(self, op1: "BasePermission", op2: "BasePermission") -> None:
         self.op1 = op1
         self.op2 = op2
 
@@ -67,7 +67,7 @@ class AND:
 
 
 class OR:
-    def __init__(self, op1, op2):
+    def __init__(self, op1: "BasePermission", op2: "BasePermission") -> None:
         self.op1 = op1
         self.op2 = op2
 
@@ -82,7 +82,7 @@ class OR:
 
 
 class NOT:
-    def __init__(self, op1):
+    def __init__(self, op1: "BasePermission") -> None:
         self.op1 = op1
 
     def has_permission(
@@ -93,7 +93,7 @@ class NOT:
         return not self.op1.has_permission(request, apiview)
 
 
-class BasePermissionMetaclass(BaseOperationHolder, type):
+class BasePermissionMetaclass(BaseOperationHolder, type):  # type: ignore[misc]
     ...
 
 
@@ -106,7 +106,7 @@ class BasePermission(metaclass=BasePermissionMetaclass):
         self,
         request: "Request",
         apiview: "APIGateHandler",
-    ):
+    ) -> bool:
         """
         Return `True` if permission is granted, `False` otherwise.
         """
@@ -124,7 +124,7 @@ class BaseAbstractUserPermission(ABC):
         apiview: "APIGateHandler",
     ) -> bool:
         try:
-            hasattr(request, "user")
+            return hasattr(request, "user")
         except ImproperlyConfigured:
             return False
 

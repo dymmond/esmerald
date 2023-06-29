@@ -18,5 +18,5 @@ def create_request_body(field: "ModelField", create_examples: bool) -> Optional[
     schema = create_schema(field=field, create_examples=create_examples)
     update_schema_field_info(schema=schema, field_info=field.field_info)
     return RequestBody(
-        required=True, content={media_type: OpenAPIMediaType(media_type_schema=schema)}
+        required=True, content={media_type: OpenAPIMediaType(media_type_schema=schema)}  # type: ignore[call-arg]
     )

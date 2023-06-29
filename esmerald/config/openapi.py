@@ -1,5 +1,5 @@
 from functools import partial
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union
 
 from openapi_schemas_pydantic import construct_open_api_with_schema_class
 from openapi_schemas_pydantic.v3_1_0 import (
@@ -71,7 +71,7 @@ class OpenAPIConfig(BaseModel):
         return OpenAPI(
             externalDocs=self.external_docs,
             security=self.security,
-            components=cast("Components", self.components),
+            components=self.components,
             servers=self.servers,
             tags=self.tags,
             webhooks=self.webhooks,
@@ -140,7 +140,7 @@ class OpenAPIConfig(BaseModel):
                             handler.include_in_schema
                             for handler, _ in route.handler.route_map.values()
                         )
-                        and (route.path_format or "/") not in schema.paths  # type: ignore
+                        and (route.path_format or "/") not in schema.paths
                     ):
                         path = clean_path(prefix + route.path)
                         path_item = create_path_item(
@@ -149,7 +149,7 @@ class OpenAPIConfig(BaseModel):
                             use_handler_docstrings=self.use_handler_docstrings,
                         )
                         verb = self.get_http_verb(path_item)
-                        if path not in schema.paths:  # type: ignore
+                        if path not in schema.paths:
                             schema.paths[path] = {}  # type: ignore
                         if verb not in schema.paths[path]:  # type: ignore
                             schema.paths[path][verb] = {}  # type: ignore

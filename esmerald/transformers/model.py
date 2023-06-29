@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Set, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
 
 from pydantic.fields import (
     SHAPE_DEQUE,
@@ -28,13 +28,12 @@ from esmerald.utils.constants import RESERVED_KWARGS
 from esmerald.utils.pydantic.schema import is_field_optional
 
 if TYPE_CHECKING:
-    from pydantic.typing import DictAny
-
-    from esmerald.types import Dependencies, ReservedKwargs
+    from esmerald.types import Dependencies
     from esmerald.websockets import WebSocket
 
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
+MappingUnion = Mapping[Union[int, str], Any]
 
 
 class TransformerModel(BaseModelExtra):
@@ -49,10 +48,10 @@ class TransformerModel(BaseModelExtra):
         headers: Set[ParamSetting],
         path_params: Set[ParamSetting],
         query_params: Set[ParamSetting],
-        reserved_kwargs: Set["ReservedKwargs"],
-        query_param_names: Set[str],
+        reserved_kwargs: Set[str],
+        query_param_names: Set[ParamSetting],
         is_optional: bool,
-        **kwargs: "DictAny",
+        **kwargs: Any,
     ):
         super().__init__(**kwargs)
         self.cookies = cookies
@@ -231,14 +230,14 @@ class TransformerModel(BaseModelExtra):
         cls,
         global_dependencies: "Dependencies",
         local_dependencies: Set["Dependency"],
-        path_params: "DictAny",
-        query_params: "DictAny",
-        cookies: "DictAny",
-        headers: "DictAny",
-        reserved_kwargs: "DictAny",
-        path_parameters: "DictAny",
-        form_data: "DictAny",
-    ) -> Tuple["DictAny", "DictAny", "DictAny", "DictAny", "DictAny"]:
+        path_params: Any,
+        query_params: Any,
+        cookies: Any,
+        headers: Any,
+        reserved_kwargs: Any,
+        path_parameters: Any,
+        form_data: Any,
+    ) -> Tuple[Any, Any, Any, Any, Any]:
         for dependency in local_dependencies:
             dependency_model = cls.create_signature(
                 signature_model=get_signature(dependency.inject),
@@ -256,7 +255,7 @@ class TransformerModel(BaseModelExtra):
 
         return path_params, query_params, cookies, headers, reserved_kwargs
 
-    def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> "DictAny":
+    def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> Any:
         connection_params = {}
         for key, value in connection.query_params.items():
             if key not in self.query_param_names and len(value) == 1:
@@ -264,16 +263,24 @@ class TransformerModel(BaseModelExtra):
                 connection_params[key] = value
 
         query_params = get_request_params(
-            params=connection.query_params, expected=self.query_params, url=connection.url
+            params=cast("MappingUnion", connection.query_params),
+            expected=self.query_params,
+            url=connection.url,
         )
         path_params = get_request_params(
-            params=connection.path_params, expected=self.path_params, url=connection.url
+            params=cast("MappingUnion", connection.path_params),
+            expected=self.path_params,
+            url=connection.url,
         )
         headers = get_request_params(
-            params=connection.headers, expected=self.headers, url=connection.url
+            params=cast("MappingUnion", connection.headers),
+            expected=self.headers,
+            url=connection.url,
         )
         cookies = get_request_params(
-            params=connection.cookies, expected=self.cookies, url=connection.url
+            params=cast("MappingUnion", connection.cookies),
+            expected=self.cookies,
+            url=connection.url,
         )
 
         if not self.reserved_kwargs:
@@ -291,15 +298,15 @@ class TransformerModel(BaseModelExtra):
     def handle_reserved_kwargs(
         self,
         connection: Union["WebSocket", "Request"],
-        connection_params: "DictAny",
-        path_params: "DictAny",
-        query_params: "DictAny",
-        headers: "DictAny",
-        cookies: "DictAny",
-    ) -> "DictAny":
-        reserved_kwargs: "DictAny" = {}
+        connection_params: Any,
+        path_params: Any,
+        query_params: Any,
+        headers: Any,
+        cookies: Any,
+    ) -> Any:
+        reserved_kwargs: Any = {}
         if "data" in self.reserved_kwargs:
-            reserved_kwargs["data"] = self.get_request_data(request=connection)
+            reserved_kwargs["data"] = self.get_request_data(request=cast("Request", connection))
         if "request" in self.reserved_kwargs:
             reserved_kwargs["request"] = connection
         if "socket" in self.reserved_kwargs:
@@ -388,7 +395,7 @@ class TransformerModel(BaseModelExtra):
         self,
         dependency: "Dependency",
         connection: Union["WebSocket", "Request"],
-        **kwargs: "DictAny",
+        **kwargs: Any,
     ) -> Any:
         signature_model = get_signature(dependency.inject)
         for _dependency in dependency.dependencies:

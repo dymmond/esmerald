@@ -13,7 +13,6 @@ from typing import (
     List,
     Optional,
     Set,
-    Tuple,
     Type,
     TypeVar,
     Union,
@@ -41,7 +40,7 @@ from esmerald.routing.views import APIView
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
-from esmerald.typing import Void
+from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
@@ -49,16 +48,18 @@ if TYPE_CHECKING:
     from pydantic.typing import AnyCallable
 
     from esmerald.applications import Esmerald
+    from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
+    from esmerald.permissions import BasePermission
     from esmerald.permissions.types import Permission
-    from esmerald.routing.router import HTTPHandler, WebSocketHandler
+    from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
+        APIGateHandler,
         AsyncAnyCallable,
-        ExceptionHandlers,
-        ParentType,
+        Dependencies,
+        ExceptionHandlerMap,
         ResponseCookies,
         ResponseHeaders,
-        ResponseType,
     )
 
 param_type_map = {
@@ -87,7 +88,7 @@ class PathParameterSchema(TypedDict):
 
 
 class OpenAPIDefinitionMixin:
-    def parse_path(self, path: str) -> Tuple[str, str, List[Union[str, PathParameterSchema]]]:
+    def parse_path(self, path: str) -> List[Union[str, PathParameterSchema]]:
         """
         Using the Starlette CONVERTORS and the application registered convertors,
         transforms the path into a PathParameterSchema used for the OpenAPI definition.
@@ -162,11 +163,11 @@ class BaseResponseHandler:
         """Creates a handler for ResponseContainer Types"""
 
         async def response_content(
-            data: ResponseContainer, app: "Esmerald", **kwargs: Dict[str, Any]
+            data: ResponseContainer, app: Type["Esmerald"], **kwargs: Dict[str, Any]
         ) -> StarletteResponse:
             _headers = {**self.get_headers(headers), **data.headers}
             _cookies = self.get_cookies(data.cookies, cookies)
-            response = data.to_response(
+            response: Response = data.to_response(
                 app=app,
                 headers=_headers,
                 status_code=status_code,
@@ -256,7 +257,7 @@ class BaseResponseHandler:
 
             for header, value in _headers.items():
                 data.headers[header] = value
-            return data  # type: ignore
+            return data
 
         return response_content
 
@@ -266,7 +267,7 @@ class BaseResponseHandler:
         cookies: "ResponseCookies",
         headers: Dict[str, Any],
         media_type: str,
-        response_class: "ResponseType",
+        response_class: Any,
         status_code: int,
     ) -> "AsyncAnyCallable":
         async def response_content(data: Any, **kwargs: Dict[str, Any]) -> StarletteResponse:
@@ -287,7 +288,7 @@ class BaseResponseHandler:
 
             for cookie in _cookies:
                 response.set_cookie(**cookie)
-            return response  # type: ignore
+            return response
 
         return response_content
 
@@ -295,7 +296,7 @@ class BaseResponseHandler:
         self,
         scope: "Scope",
         request: Request,
-        route: Union["HTTPHandler", "WebSocketHandler"],
+        route: "HTTPHandler",
         parameter_model: "TransformerModel",
     ) -> "StarletteResponse":
         response: Optional["StarletteResponse"] = None
@@ -313,9 +314,9 @@ class BaseResponseHandler:
         self,
         scope: "Scope",
         request: Request,
-        route: Union["HTTPHandler", "WebSocketHandler"],
+        route: "HTTPHandler",
         parameter_model: "TransformerModel",
-    ) -> "StarletteResponse":
+    ) -> Any:
         response_data = await self._get_response_data(
             route=route,
             parameter_model=parameter_model,
@@ -445,7 +446,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return parameters
 
     @property
-    def normalised_path_params(self) -> List[Dict[str, str]]:
+    def normalised_path_params(self) -> List[PathParameterSchema]:
         """
         Gets the path parameters in a PathParameterSchema format and it is
         only used for OpenAPI documentation purposes only.
@@ -455,18 +456,20 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return parameters
 
     @property
-    def stringify_parameters(self) -> List[Dict[str, str]]:
+    def stringify_parameters(self) -> List[str]:
         """
         Gets the param:type in string like list.
         """
         path_components = self.parse_path(self.path)
         parameters = [component for component in path_components if isinstance(component, dict)]
 
-        parameters = [f"{param['name']}:{param['type'].__name__}" for param in parameters]
-        return parameters
+        stringified_parameters = [
+            f"{param['name']}:{param['type'].__name__}" for param in parameters
+        ]
+        return stringified_parameters
 
     @property
-    def parent_levels(self) -> List[Union[T, "ParentType"]]:
+    def parent_levels(self) -> List[Any]:
         """
         Returns the handler from the app down to the route handler.
 
@@ -498,21 +501,21 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         level_dependencies = (level.dependencies or {} for level in self.parent_levels)
         return {name for level in level_dependencies for name in level.keys()}
 
-    def get_permissions(self) -> List["Permission"]:
+    def get_permissions(self) -> List["AsyncCallable"]:
         """
         Returns all the permissions in the handler scope from the ownsership layers.
         """
         if self._permissions is Void:
-            self._permissions = []
+            self._permissions: Union[List["Permission"], "VoidType"] = []
             for layer in self.parent_levels:
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
                 "List[Permission]",
                 [AsyncCallable(permissions) for permissions in self._permissions],
             )
-        return cast("List[Permission]", self._permissions)
+        return cast("List[AsyncCallable]", self._permissions)
 
-    def get_dependencies(self) -> Dict[str, Inject]:
+    def get_dependencies(self) -> "Dependencies":
         """
         Returns all dependencies of the handler function's starting from the parent levels.
         """
@@ -520,8 +523,9 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             raise RuntimeError(
                 "get_dependencies cannot be called before a signature model has been generated"
             )
-        if self._dependencies is Void:
-            self._dependencies = {}
+
+        if not self._dependencies or self._dependencies is Void:
+            self._dependencies: "Dependencies" = {}
             for level in self.parent_levels:
                 for key, value in (level.dependencies or {}).items():
                     self.is_unique_dependency(
@@ -530,10 +534,10 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                         injector=value,
                     )
                     self._dependencies[key] = value
-        return cast("Dict[str, Inject]", self._dependencies)
+        return self._dependencies
 
     @staticmethod
-    def is_unique_dependency(dependencies: Dict[str, Inject], key: str, injector: Inject) -> None:
+    def is_unique_dependency(dependencies: "Dependencies", key: str, injector: Inject) -> None:
         """
         Validates that a given inject has not been already defined under a
         different key in any of the levels.
@@ -545,12 +549,12 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                     f"If you wish to override a inject, it must have the same key."
                 )
 
-    def get_exception_handlers(self) -> "ExceptionHandlers":
+    def get_exception_handlers(self) -> "ExceptionHandlerMap":
         """
         Resolves the exception_handlers by starting from the route handler
         and moving up.
         """
-        resolved_exception_handlers = {}
+        resolved_exception_handlers: "ExceptionHandlerMap" = {}
         for level in self.parent_levels:
             resolved_exception_handlers.update(level.exception_handlers or {})
         return resolved_exception_handlers
@@ -593,25 +597,27 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         Raises a PermissionDenied exception if not allowed..
         """
         for permission in self.get_permissions():
-            permission = await permission()
-            permission.has_permission(connection, self)
-            continue_or_raise_permission_exception(connection, self, permission)
+            awaitable: "BasePermission" = cast("BasePermission", await permission())
+            request: "Request" = cast("Request", connection)
+            handler = cast("APIGateHandler", self)
+            awaitable.has_permission(request, handler)
+            continue_or_raise_permission_exception(request, handler, awaitable)
 
 
 class BaseInterceptorMixin(BaseHandlerMixin):
-    def get_interceptors(self) -> List["Interceptor"]:
+    def get_interceptors(self) -> List["AsyncCallable"]:
         """
         Returns all the interceptors in the handler scope from the ownsership layers.
         """
         if self._interceptors is Void:
-            self._interceptors = []
+            self._interceptors: Union[List["Interceptor"], "VoidType"] = []
             for layer in self.parent_levels:
                 self._interceptors.extend(layer.interceptors or [])
             self._interceptors = cast(
                 "List[Interceptor]",
                 [AsyncCallable(interceptors) for interceptors in self._interceptors],
             )
-        return cast("List[Interceptor]", self._interceptors)
+        return cast("List[AsyncCallable]", self._interceptors)
 
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
@@ -619,5 +625,5 @@ class BaseInterceptorMixin(BaseHandlerMixin):
         of the handlers.
         """
         for interceptor in self.get_interceptors():
-            interceptor = await interceptor()
-            await interceptor.intercept(scope, receive, send)
+            awaitable: "EsmeraldInterceptor" = await interceptor()
+            await awaitable.intercept(scope, receive, send)

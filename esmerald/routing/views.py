@@ -1,16 +1,20 @@
 from copy import copy
-from typing import TYPE_CHECKING, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple, Union, cast
 
 from starlette.routing import compile_path
+from starlette.types import Receive, Scope, Send
 
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
+    from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
-    from esmerald.routing.router import HTTPHandler, Router, WebSocketHandler
+    from esmerald.routing.gateways import Gateway, WebSocketGateway
+    from esmerald.routing.router import HTTPHandler, WebSocketHandler
+    from esmerald.transformers.model import TransformerModel
     from esmerald.types import (
         Dependencies,
-        ExceptionHandlers,
+        ExceptionHandlerMap,
         Middleware,
         ResponseCookies,
         ResponseHeaders,
@@ -41,14 +45,17 @@ class APIView:
         "param_convertors",
         "deprecated",
         "include_in_schema",
+        "route_map",
+        "operation_id",
+        "methods",
     )
 
     path: str
     dependencies: Optional["Dependencies"]
-    exception_handlers: Optional["ExceptionHandlers"]
+    exception_handlers: Optional["ExceptionHandlerMap"]
     permissions: Optional[List["Permission"]]
     middleware: Optional[List["Middleware"]]
-    parent: "Router"
+    parent: Union["Gateway", "WebSocketGateway"]
     response_class: Optional["ResponseType"]
     response_cookies: Optional["ResponseCookies"]
     response_headers: Optional["ResponseHeaders"]
@@ -56,7 +63,7 @@ class APIView:
     deprecated: Optional[bool]
     include_in_schema: Optional[bool]
 
-    def __init__(self, parent: "Router") -> None:
+    def __init__(self, parent: Union["Gateway", "WebSocketGateway"]) -> None:
         for key in self.__slots__:
             if not hasattr(self, key):
                 setattr(self, key, None)
@@ -64,8 +71,10 @@ class APIView:
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
         self.parent = parent
-        self.interceptors = []
-        self.route_map = {}
+        self.interceptors: Sequence["Interceptor"] = []
+        self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
+        self.operation_id: Optional[str] = None
+        self.methods: List[str] = []
 
     def get_filtered_handler(self) -> List[str]:
         """
@@ -120,9 +129,7 @@ class APIView:
 
         return route_handlers
 
-    def get_route_middleware(
-        self, handler: Union["HTTPHandler", "WebSocketHandler"]
-    ) -> List["Middleware"]:
+    def get_route_middleware(self, handler: Union["HTTPHandler", "WebSocketHandler"]) -> None:
         """
         Gets the list of extended middlewares for the handler starting from the last
         to the first by reversing the list
@@ -132,10 +139,16 @@ class APIView:
 
     def get_exception_handlers(
         self, handler: Union["HTTPHandler", "WebSocketHandler"]
-    ) -> "ExceptionHandlers":
+    ) -> "ExceptionHandlerMap":
         """
         Gets the dict of extended exception handlers for the handler starting from the last
         to the first by reversing the list
         """
         exception_handlers = {**self.exception_handlers, **handler.exception_handlers}
-        return exception_handlers
+        return cast("ExceptionHandlerMap", exception_handlers)
+
+    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        raise NotImplementedError("APIView object does not implement handle()")
+
+    def create_signature_model(self, is_websocket: bool = False) -> None:
+        raise NotImplementedError("APIView object does not implement create_signature_model()")

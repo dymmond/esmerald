@@ -1,6 +1,6 @@
 from contextlib import suppress
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Dict
 
 from pydantic import BaseConfig, BaseModel
 from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
@@ -23,8 +23,8 @@ class HashableBaseModel(BaseModel):
     HashableBaseModel handles those corner cases.
     """
 
-    def __hash__(self):
-        values = {}
+    def __hash__(self) -> int:
+        values: Dict[str, Any] = {}
         for key, value in self.__dict__.items():
             values[key] = None
             if isinstance(value, (list, set)):
@@ -39,7 +39,7 @@ class ArbitraryHashableBaseModel(HashableBaseModel):
     Same as HashableBaseModel but allowing arbitrary values
     """
 
-    class Config(HashableBaseModel.Config):
+    class Config:
         extra = "allow"
         arbitrary_types_allowed = True
 
@@ -62,13 +62,13 @@ class ArbitraryBaseModel(BaseModel):
         arbitrary_types_allowed = True
 
 
-def validate_media_type(field: "ModelField", values: "DictAny"):
+def validate_media_type(field: "ModelField", values: Any) -> Any:
     """
     Validates the media type against the available types.
     """
-    if field.shape in SHAPE_LIST:
+    if field.shape == SHAPE_LIST:
         return list(values.values())
-    if field.shape in SHAPE_SINGLETON and field.type_in[UploadFile] and values:
+    if field.shape == SHAPE_SINGLETON and field.type_in[UploadFile] and values:
         return list(values.values())[0]
 
 
@@ -80,9 +80,8 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "M
                 value = loads(value)
         if isinstance(value, UploadFile):
             value = UploadFile(
-                filename=value.filename,
                 file=value.file,
-                content_type=value.content_type,
+                filename=value.filename,
                 headers=value.headers,
             )
         if values.get(key):

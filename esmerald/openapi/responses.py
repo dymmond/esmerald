@@ -1,10 +1,11 @@
 from http import HTTPStatus
 from inspect import Signature
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Tuple, Type, cast
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Tuple, Type, Union, cast
 
 from openapi_schemas_pydantic.v3_1_0 import Response
 from openapi_schemas_pydantic.v3_1_0.header import Header
 from openapi_schemas_pydantic.v3_1_0.media_type import MediaType as OpenAPISchemaMediaType
+from openapi_schemas_pydantic.v3_1_0.reference import Reference
 from openapi_schemas_pydantic.v3_1_0.schema import Schema
 from starlette.routing import get_name
 from typing_extensions import get_args, get_origin
@@ -64,7 +65,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
         schema.contentEncoding = handler.content_encoding
         schema.contentMediaType = handler.content_media_type
         response = Response(
-            content={handler.media_type: OpenAPISchemaMediaType(media_type_schema=schema)},
+            content={handler.media_type: OpenAPISchemaMediaType(media_type_schema=schema)},  # type: ignore[call-arg]
             description=description,
         )
     elif signature.return_annotation is Redirect:
@@ -72,7 +73,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
             content=None,
             description=description,
             headers={
-                "location": Header(
+                "location": Header(  # type: ignore[call-arg]
                     param_schema=Schema(type=OpenAPIType.STRING),
                     description="target path for redirect",
                 )
@@ -81,7 +82,7 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
     elif signature.return_annotation in (File, Stream):
         response = Response(
             content={
-                handler.media_type: OpenAPISchemaMediaType(
+                handler.media_type: OpenAPISchemaMediaType(  # type: ignore[call-arg]
                     media_type_schema=Schema(
                         type=OpenAPIType.STRING,
                         contentEncoding=handler.content_encoding or "application/octet-stream",
@@ -91,17 +92,17 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
             },
             description=description,
             headers={
-                "content-length": Header(
+                "content-length": Header(  # type: ignore[call-arg]
                     param_schema=Schema(type=OpenAPIType.STRING),
                     description="File size in bytes",
                 ),
-                "last-modified": Header(
-                    param_schema=Schema(
+                "last-modified": Header(  # type: ignore[call-arg]
+                    param_schema=Schema(  # type: ignore[call-arg]
                         type=OpenAPIType.STRING, schema_format=OpenAPIFormat.DATE_TIME
                     ),
                     description="Last modified data-time in RFC 2822 format",
                 ),
-                "etag": Header(
+                "etag": Header(  # type: ignore[call-arg]
                     param_schema=Schema(type=OpenAPIType.STRING),
                     description="Entity tag",
                 ),
@@ -122,8 +123,8 @@ def create_success_response(handler: "HTTPHandler", create_examples: bool) -> Re
         response.headers[key] = header
     cookies = handler.get_response_cookies()
     if cookies:
-        response.headers["Set-Cookie"] = Header(
-            param_schema=Schema(allOF=[create_cookie_schema(cookie=cookie) for cookie in cookies])
+        response.headers["Set-Cookie"] = Header(  # type: ignore[call-arg]
+            param_schema=Schema(allOf=[create_cookie_schema(cookie=cookie) for cookie in cookies])
         )
     return response
 
@@ -138,7 +139,7 @@ def create_error_responses(
         grouped_exceptions[exc.status_code].append(exc)
 
     for status_code, exception_group in grouped_exceptions.items():
-        exception_schemas = [
+        exception_schemas: Optional[List[Union[Reference, Schema]]] = [
             Schema(
                 type=OpenAPIType.OBJECT,
                 required=["detail", "status_code"],
@@ -150,7 +151,7 @@ def create_error_responses(
                         additionalProperties=Schema(),
                     ),
                 },
-                description=pascal_case_to_text((get_name(exc))),
+                description=pascal_case_to_text(get_name(exc)),
                 examples=[
                     {
                         "status_code": status_code,
@@ -165,10 +166,10 @@ def create_error_responses(
         if len(exception_schemas) > 1:
             schema = Schema(oneOf=exception_schemas)
         else:
-            schema = exception_schemas[0]
+            schema = cast("Schema", exception_schemas[0])
         yield str(status_code), Response(
             description=HTTPStatus(status_code).description,
-            content={MediaType.JSON: OpenAPISchemaMediaType(media_type_schema=schema)},
+            content={MediaType.JSON: OpenAPISchemaMediaType(media_type_schema=schema)},  # type: ignore[call-arg]
         )
 
 
@@ -187,7 +188,7 @@ def create_additional_responses(
         yield str(status_code), Response(
             description=additional_response.description,
             content={
-                additional_response.media_type: OpenAPISchemaMediaType(media_type_schema=schema)
+                additional_response.media_type: OpenAPISchemaMediaType(media_type_schema=schema)  # type: ignore[call-arg]
             },
         )
 
