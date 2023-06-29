@@ -56,6 +56,7 @@ if TYPE_CHECKING:
     from esmerald.types import (
         APIGateHandler,
         AsyncAnyCallable,
+        Dependencies,
         ExceptionHandlerMap,
         ResponseCookies,
         ResponseHeaders,
@@ -514,7 +515,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             )
         return cast("List[AsyncCallable]", self._permissions)
 
-    def get_dependencies(self) -> Dict[str, Inject]:
+    def get_dependencies(self) -> "Dependencies":
         """
         Returns all dependencies of the handler function's starting from the parent levels.
         """
@@ -522,8 +523,9 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             raise RuntimeError(
                 "get_dependencies cannot be called before a signature model has been generated"
             )
-        if self._dependencies is Void:
-            self._dependencies: Dict[str, Inject] = {}
+
+        if not self._dependencies or self._dependencies is Void:
+            self._dependencies: "Dependencies" = {}
             for level in self.parent_levels:
                 for key, value in (level.dependencies or {}).items():
                     self.is_unique_dependency(
@@ -535,7 +537,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return self._dependencies
 
     @staticmethod
-    def is_unique_dependency(dependencies: Dict[str, Inject], key: str, injector: Inject) -> None:
+    def is_unique_dependency(dependencies: "Dependencies", key: str, injector: Inject) -> None:
         """
         Validates that a given inject has not been already defined under a
         different key in any of the levels.

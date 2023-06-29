@@ -35,7 +35,7 @@ from typing_extensions import Self
 
 from esmerald.conf import settings
 from esmerald.core.urls import include
-from esmerald.datastructures import File, Redirect, URLPath
+from esmerald.datastructures import File, Redirect
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import (
     ImproperlyConfigured,
@@ -75,7 +75,6 @@ if TYPE_CHECKING:
         Dependencies,
         ExceptionHandler,
         ExceptionHandlerMap,
-        HTTPMethods,
         LifeSpanHandler,
         Middleware,
         ParentType,
@@ -291,10 +290,11 @@ class Router(Parent, StarletteRouter):
         """
         routes = []
         if not value.handler.parent:
-            handler = cast("APIView", value.handler)
-            handler(parent=self)  # type: ignore
+            value.handler(parent=self)  # type: ignore
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = handler.get_route_handlers()
+        route_handlers: List[
+            Union[HTTPHandler, WebSocketHandler]
+        ] = value.handler.get_route_handlers()
         for route_handler in route_handlers:
             gateway = (
                 Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
@@ -352,10 +352,10 @@ class Router(Parent, StarletteRouter):
         self.create_signature_models(gateway)
         self.routes.append(gateway)
 
-    def add_websocket_route(
+    def add_websocket_route(  # type: ignore
         self,
         path: str,
-        handler: Type["WebSocketHandler"],
+        handler: "WebSocketHandler",
         name: Optional[str] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
@@ -402,18 +402,19 @@ class Router(Parent, StarletteRouter):
             response = JSONResponse({"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND)
         await response(scope, receive, send)
 
-    def url_path_for(self, name: str, **path_params: Any) -> URLPath:
+    def url_path_for(self, name: str, **path_params: Any) -> Any:  # type: ignore
         for route in self.routes or []:
             try:
                 return route.url_path_for(name, **path_params)
             except NoMatchFound:
-                pass
+                ...
 
             if isinstance(route, (Gateway, WebSocketGateway)):
+                handler = cast("Union[HTTPHandler, WebSocketHandler]", route.handler)
                 try:
-                    return route.handler.url_path_for(name, **path_params)
+                    return handler.url_path_for(name, **path_params)
                 except NoMatchFound:
-                    pass
+                    ...
 
         raise NoMatchFound(name, path_params)
 
@@ -468,7 +469,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         path: Optional[str] = None,
         endpoint: Callable[..., Any] = None,
         *,
-        methods: Optional[List["HTTPMethods"]] = None,
+        methods: Optional[Sequence[str]] = None,
         status_code: Optional[int] = None,
         content_encoding: Optional[str] = None,
         content_media_type: Optional[str] = None,
@@ -499,7 +500,8 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
         """
         self._permissions: Union[List["Permission"], "VoidType"] = Void
-        self._dependencies: Union[Dict[str, Inject], "VoidType"] = Void
+        self._dependencies: "Dependencies" = {}
+
         self._response_handler: Union[
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
@@ -532,7 +534,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.status_code = status_code
 
         self.exception_handlers = exception_handlers or {}
-        self.dependencies = dependencies or {}
+        self.dependencies: "Dependencies" = dependencies or {}
         self.description = description or inspect.cleandoc(self.endpoint.__doc__ or "")
         self.permissions = list(permissions) if permissions else []
         self.middleware = list(middleware) if middleware else []
