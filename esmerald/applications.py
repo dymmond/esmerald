@@ -449,10 +449,10 @@ class Esmerald(Starlette):
         """
         self.router.add_apiview(value=value)
 
-    def add_route(  # type: ignore
+    def add_route(
         self,
         path: str,
-        handler: Type["HTTPHandler"],
+        handler: "HTTPHandler",
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
@@ -480,10 +480,10 @@ class Esmerald(Starlette):
 
         self.activate_openapi()
 
-    def add_websocket_route(  # type: ignore
+    def add_websocket_route(
         self,
         path: str,
-        handler: Type["WebSocketHandler"],
+        handler: "WebSocketHandler",
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
@@ -536,7 +536,7 @@ class Esmerald(Starlette):
                 app=child,
                 parent=self.router,
                 dependencies=dependencies,
-                middleware=middleware,
+                middleware=cast("List[Middleware]", middleware),
                 exception_handlers=exception_handlers,
                 interceptors=interceptors,
                 permissions=permissions,
@@ -563,7 +563,7 @@ class Esmerald(Starlette):
                         middleware=route.middleware,
                         interceptors=route.interceptors,
                         permissions=route.permissions,
-                        routes=route.routes,
+                        routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
                         parent=self.router,
                         security=route.security,
                     )
@@ -683,7 +683,7 @@ class Esmerald(Starlette):
         It evaluates the middleware passed into the routes from bottom up
         """
         user_middleware = []
-        handlers_middleware = []
+        handlers_middleware: List["Middleware"] = []
 
         if self.allowed_hosts:
             user_middleware.append(

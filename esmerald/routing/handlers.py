@@ -10,7 +10,6 @@ from esmerald.routing.router import HTTPHandler, WebSocketHandler
 from esmerald.types import (
     BackgroundTaskType,
     Dependencies,
-    ExceptionHandler,
     ExceptionHandlerMap,
     Middleware,
     ResponseCookies,
@@ -551,10 +550,10 @@ class route(HTTPHandler):
 class websocket(WebSocketHandler):
     def __init__(
         self,
-        path: Union[Optional[str], Optional[List[str]]] = None,
+        path: Optional[str] = None,
         *,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):

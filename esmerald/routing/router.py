@@ -9,6 +9,7 @@ from typing import (
     Callable,
     Dict,
     List,
+    Mapping,
     NoReturn,
     Optional,
     Sequence,
@@ -20,6 +21,7 @@ from typing import (
 )
 
 from starlette import status
+from starlette.datastructures import URLPath
 from starlette.middleware import Middleware as StarletteMiddleware
 from starlette.requests import HTTPConnection
 from starlette.responses import JSONResponse
@@ -43,7 +45,6 @@ from esmerald.exceptions import (
     NotFound,
     ValidationErrorException,
 )
-from esmerald.injector import Inject
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
@@ -73,7 +74,6 @@ if TYPE_CHECKING:
         AsyncAnyCallable,
         BackgroundTaskType,
         Dependencies,
-        ExceptionHandler,
         ExceptionHandlerMap,
         LifeSpanHandler,
         Middleware,
@@ -292,9 +292,7 @@ class Router(Parent, StarletteRouter):
         if not value.handler.parent:
             value.handler(parent=self)  # type: ignore
 
-        route_handlers: List[
-            Union[HTTPHandler, WebSocketHandler]
-        ] = value.handler.get_route_handlers()
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
         for route_handler in route_handlers:
             gateway = (
                 Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
@@ -314,7 +312,7 @@ class Router(Parent, StarletteRouter):
             self.create_signature_models(route)
         self.activate()
 
-    def add_route(  # type: ignore
+    def add_route(
         self,
         path: str,
         handler: "HTTPHandler",
@@ -352,7 +350,7 @@ class Router(Parent, StarletteRouter):
         self.create_signature_models(gateway)
         self.routes.append(gateway)
 
-    def add_websocket_route(  # type: ignore
+    def add_websocket_route(
         self,
         path: str,
         handler: "WebSocketHandler",
@@ -402,10 +400,10 @@ class Router(Parent, StarletteRouter):
             response = JSONResponse({"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND)
         await response(scope, receive, send)
 
-    def url_path_for(self, name: str, **path_params: Any) -> Any:  # type: ignore
+    def url_path_for(self, name: str, **path_params: Any) -> URLPath:
         for route in self.routes or []:
             try:
-                return route.url_path_for(name, **path_params)
+                return cast("URLPath", route.url_path_for(name, **path_params))
             except NoMatchFound:
                 ...
 
@@ -576,7 +574,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
                 raise MethodNotAllowed(detail=f"Method {method.upper()} not allowed.")
 
     @property
-    def allow_header(self):
+    def allow_header(self) -> Mapping[str, str]:
         """
         Default allow header to be injected in the Response and Starlette Response type
         handlers.
@@ -584,7 +582,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         return {"allow": str(self.methods)}
 
     @property
-    def permission_names(self):
+    def permission_names(self) -> Sequence[str]:
         """
         List of permissions for the route. This is used for OpenAPI Spec purposes only.
         """
@@ -605,7 +603,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         """
         Returns all header parameters in the scope of the handler function.
         """
-        resolved_response_headers = {}
+        resolved_response_headers: "ResponseHeaders" = {}
         for layer in self.parent_levels:
             resolved_response_headers.update(layer.response_headers or {})
         return resolved_response_headers
@@ -646,7 +644,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         )
         await response(scope, receive, send)
 
-    def __call__(self, fn: "AnyCallable") -> "ASGIApp":
+    def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
         self.fn = fn
         self.endpoint = fn
         self.validate_handler()
@@ -687,7 +685,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
                     "Functions decorated with 'route, websocket, get, patch, put, post and delete' must be async functions"
                 )
 
-    def validate_annotations(self):
+    def validate_annotations(self) -> None:
         """
         Validate annotations of the handlers.
         """
@@ -720,7 +718,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         ]:
             self.media_type = MediaType.TEXT
 
-    def validate_reserved_kwargs(self):
+    def validate_reserved_kwargs(self) -> None:
         """
         Validates if special words are in the signature.
         """
@@ -730,14 +728,14 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         if SOCKET in self.signature.parameters:
             raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
 
-    def validate_handler(self):
+    def validate_handler(self) -> None:
         self.check_handler_function()
         self.validate_annotations()
         self.validate_reserved_kwargs()
 
     async def to_response(self, app: "Esmerald", data: Any) -> StarletteResponse:
         response_handler = self.get_response_handler()
-        return await response_handler(app=app, data=data)
+        return await response_handler(app=app, data=data)  # type: ignore[call-arg]
 
 
 class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
@@ -756,11 +754,11 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
     def __init__(
         self,
-        path: Union[Optional[str], Optional[List[str]]] = None,
+        path: Optional[str] = None,
         *,
         endpoint: Callable[..., Any] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
     ):
@@ -768,7 +766,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
             path = "/"
         super().__init__(path=path, endpoint=endpoint)
         self._permissions: Union[List["Permission"], "VoidType"] = Void
-        self._dependencies: Union[Dict[str, Inject], "VoidType"] = Void
+        self._dependencies: "Dependencies" = {}
         self._response_handler: Union[
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
@@ -785,13 +783,13 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.fn: Optional["AnyCallable"] = None
         self.tags: Sequence[str] = []
 
-    def __call__(self, fn: "AnyCallable") -> "ASGIApp":
+    def __call__(self, fn: "AnyCallable") -> "WebSocketHandler":
         self.fn = fn
         self.endpoint = fn
         self.validate_websocket_handler_function()
         return self
 
-    def validate_reserved_words(self, signature: "Signature"):
+    def validate_reserved_words(self, signature: "Signature") -> None:
         """
         Validates if special words are in the signature.
         """
@@ -892,18 +890,18 @@ class Include(Mount):
         path: Optional[str] = None,
         app: Optional["ASGIApp"] = None,
         name: Optional[str] = None,
-        routes: Optional[List[StarletteBaseRoute]] = None,
+        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
         namespace: Optional[str] = None,
         pattern: Optional[str] = None,
         parent: Optional[Union["Self", "Router"]] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional[Dict[Union[int, Type[Exception]], "ExceptionHandler"]] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[Sequence["Interceptor"]] = None,
         permissions: Optional[Sequence["Permission"]] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
+        middleware: Optional[List["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[Sequence["SecurityRequirement"]] = None,
     ) -> None:
         self.path = path
         if not path:
@@ -922,7 +920,7 @@ class Include(Mount):
             raise ImproperlyConfigured("Pattern must be used only with namespace.")
 
         if namespace:
-            routes: List["APIGateHandler"] = include(namespace, pattern)
+            routes = include(namespace, pattern)
 
         self.app = app
         self.name = name
@@ -945,20 +943,20 @@ class Include(Mount):
             routes = self.resolve_route_path_handler(routes)
 
         # Build the middleware from the routes
-        routes_middleware = []
+        routes_middleware: List["Middleware"] = []
         for route in routes or []:
-            routes_middleware = self.build_routes_middleware(route)
+            routes_middleware = cast("List[Middleware]", self.build_routes_middleware(route))
 
         # Add the middleware to the include
         self.middleware += routes_middleware
         include_middleware: Sequence["Middleware"] = []
 
-        for middleware in self.middleware:
-            if isinstance(middleware, StarletteMiddleware):
-                include_middleware.append(middleware)  # type: ignore
+        for _middleware in self.middleware:
+            if isinstance(_middleware, StarletteMiddleware):
+                include_middleware.append(_middleware)  # type: ignore
             else:
                 include_middleware.append(
-                    StarletteMiddleware(cast("Type[StarletteMiddleware]", middleware))
+                    StarletteMiddleware(cast("Type[StarletteMiddleware]", _middleware))
                 )
 
         app = self.resolve_app_parent(app=app)
@@ -1005,7 +1003,7 @@ class Include(Mount):
         return middlewares
 
     def resolve_route_path_handler(
-        self, routes: List[StarletteBaseRoute]
+        self, routes: Sequence[Union["APIGateHandler", "Include"]]
     ) -> List[Union["Gateway", "WebSocketGateway", "Include"]]:
         """
         Make sure the paths are properly configured from the handler endpoint.

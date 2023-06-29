@@ -22,7 +22,7 @@ from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
 if TYPE_CHECKING:
-    from esmerald.types import ExceptionHandler
+    from esmerald.types import ExceptionHandlerMap
 
 
 @pytest.mark.parametrize(
@@ -39,7 +39,7 @@ def test_exception_handling(exc_to_raise: Exception, expected_layer: str) -> Non
 
     def create_named_handler(
         caller_name: str, expected_exception: Type[Exception]
-    ) -> "ExceptionHandler":
+    ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
             assert isinstance(req, Request)
@@ -94,7 +94,7 @@ def test_exception_handling_with_include(exc_to_raise: Exception, expected_layer
 
     def create_named_handler(
         caller_name: str, expected_exception: Type[Exception]
-    ) -> "ExceptionHandler":
+    ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
             assert isinstance(req, Request)
@@ -151,7 +151,7 @@ def test_exception_handling_with_nested_include(
 
     def create_named_handler(
         caller_name: str, expected_exception: Type[Exception]
-    ) -> "ExceptionHandler":
+    ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
             assert isinstance(req, Request)
@@ -262,7 +262,7 @@ def test_exception_handling_with_include_exception_handler(
 
     def create_named_handler(
         caller_name: str, expected_exception: Type[Exception]
-    ) -> "ExceptionHandler":
+    ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
             assert isinstance(req, Request)
@@ -326,7 +326,7 @@ def test_exception_handling_with_gateway_exception_handler(
 
     def create_named_handler(
         caller_name: str, expected_exception: Type[Exception]
-    ) -> "ExceptionHandler":
+    ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
             assert isinstance(req, Request)
@@ -397,7 +397,7 @@ def test_exception_handling_with_child_esmerald(
 
     def create_named_handler(
         caller_name: str, expected_exception: Type[Exception]
-    ) -> "ExceptionHandler":
+    ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
             assert isinstance(req, Request)

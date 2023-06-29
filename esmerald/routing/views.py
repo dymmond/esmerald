@@ -145,7 +145,7 @@ class APIView:
         to the first by reversing the list
         """
         exception_handlers = {**self.exception_handlers, **handler.exception_handlers}
-        return exception_handlers
+        return cast("ExceptionHandlerMap", exception_handlers)
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         raise NotImplementedError("APIView object does not implement handle()")
