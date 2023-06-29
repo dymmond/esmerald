@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
-    from esmerald.types import Dependencies, ExceptionHandlers, Middleware, ParentType
+    from esmerald.types import Dependencies, ExceptionHandlerMap, Middleware, ParentType
 
 
 class Gateway(StarletteRoute, BaseInterceptorMixin):
@@ -47,7 +47,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         middleware: Optional[Sequence["Middleware"]] = None,
         interceptors: Optional[Sequence["Interceptor"]] = None,
         permissions: Optional[Sequence["Permission"]] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         deprecated: Optional[bool] = None,
         is_from_router: bool = False,
     ) -> None:
@@ -151,7 +151,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
     ) -> None:

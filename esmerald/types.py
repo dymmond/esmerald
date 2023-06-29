@@ -80,7 +80,6 @@ Dependencies = Dict[str, Inject]
 
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]
-ExceptionHandlers = Dict[Union[int, Type[Exception]], ExceptionHandler]
 ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
 _ReservedKwargs = Literal[

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from esmerald.transformers.model import TransformerModel
     from esmerald.types import (
         Dependencies,
-        ExceptionHandlers,
+        ExceptionHandlerMap,
         Middleware,
         ResponseCookies,
         ResponseHeaders,
@@ -52,7 +52,7 @@ class APIView:
 
     path: str
     dependencies: Optional["Dependencies"]
-    exception_handlers: Optional["ExceptionHandlers"]
+    exception_handlers: Optional["ExceptionHandlerMap"]
     permissions: Optional[List["Permission"]]
     middleware: Optional[List["Middleware"]]
     parent: Union["Gateway", "WebSocketGateway"]
@@ -139,7 +139,7 @@ class APIView:
 
     def get_exception_handlers(
         self, handler: Union["HTTPHandler", "WebSocketHandler"]
-    ) -> "ExceptionHandlers":
+    ) -> "ExceptionHandlerMap":
         """
         Gets the dict of extended exception handlers for the handler starting from the last
         to the first by reversing the list

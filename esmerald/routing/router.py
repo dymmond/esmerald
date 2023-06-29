@@ -247,6 +247,7 @@ class Router(Parent, StarletteRouter):
             default=default,
             lifespan=self.esmerald_lifespan,
         )
+
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
         self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
@@ -255,7 +256,7 @@ class Router(Parent, StarletteRouter):
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
         self.permissions: Sequence["Permission"] = permissions or []
-        self.routes = routes or []
+        self.routes: Any = routes or []
         self.middleware = middleware or []
         self.tags = tags or []
         self.name = name
@@ -274,22 +275,26 @@ class Router(Parent, StarletteRouter):
 
         self.activate()
 
-    def reorder_routes(self):
+    def reorder_routes(self) -> List[Sequence[Union["APIGateHandler", "Include"]]]:
         return sorted(
             self.routes,
             key=lambda router: router.path != "" and router.path != "/",
             reverse=True,
         )
 
-    def activate(self):
+    def activate(self) -> None:
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: Union["Gateway", "WebSocketGateway"]):
+    def add_apiview(self, value: Union["Gateway", "WebSocketGateway"]) -> None:
+        """Adds a Gateway/WebSocketGateway coming containing the handler of type APIView.
+        Generates the signature model for it and sorts the routing list.
+        """
         routes = []
         if not value.handler.parent:
-            value.handler(parent=self)
+            handler = cast("APIView", value.handler)
+            handler(parent=self)  # type: ignore
 
-        route_handlers = value.handler.get_route_handlers()
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = handler.get_route_handlers()
         for route_handler in route_handlers:
             gateway = (
                 Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
@@ -309,10 +314,10 @@ class Router(Parent, StarletteRouter):
             self.create_signature_models(route)
         self.activate()
 
-    def add_route(
+    def add_route(  # type: ignore
         self,
         path: str,
-        handler: Type["HTTPHandler"],
+        handler: "HTTPHandler",
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
@@ -337,7 +342,7 @@ class Router(Parent, StarletteRouter):
             name=name,
             include_in_schema=include_in_schema,
             dependencies=dependencies,
-            exception_handlers=exception_handlers,
+            exception_handlers=cast("ExceptionHandlerMap", exception_handlers),
             interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,

@@ -86,6 +86,6 @@ def test_multi_tasks_failure_avoids_next_execution(
         await response(scope, receive, send)
 
     with create_client(routes=[Include("/", app)]) as client:
-        with pytest.raises(Exception):
+        with pytest.raises(Exception):  # noqa
             client.get("/")
         assert TASK_COUNTER == 1

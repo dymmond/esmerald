@@ -37,7 +37,7 @@ def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory)
 
 
 def test_raises_error_for_missing_extend(test_client_factory):
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa
         Esmerald(
             routes=[],
             pluggables={"test": Pluggable(PluggableNoPlug)},

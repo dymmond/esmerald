@@ -18,7 +18,7 @@ from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-from starlette.types import Lifespan
+from starlette.types import Lifespan, Receive, Scope, Send
 
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -47,18 +47,15 @@ from esmerald.types import (
     APIGateHandler,
     ASGIApp,
     Dependencies,
-    ExceptionHandlers,
+    ExceptionHandlerMap,
     LifeSpanHandler,
     Middleware,
     ParentType,
-    Receive,
     ResponseCookies,
     ResponseHeaders,
     ResponseType,
     RouteParent,
     SchedulerType,
-    Scope,
-    Send,
 )
 from esmerald.utils.helpers import is_class_and_subclass
 
@@ -155,10 +152,10 @@ class Esmerald(Starlette):
         scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
         enable_scheduler: Optional[bool] = None,
         timezone: Optional[Union[dtimezone, str]] = None,
-        routes: Optional[List[Union["APIGateHandler", "Include"]]] = None,
+        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
         root_path: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
         lifespan: Optional[Lifespan[AppType]] = None,
@@ -458,7 +455,7 @@ class Esmerald(Starlette):
         handler: Type["HTTPHandler"],
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -489,7 +486,7 @@ class Esmerald(Starlette):
         handler: Type["WebSocketHandler"],
         router: Optional["Router"] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         middleware: Optional[List["Middleware"]] = None,
@@ -519,7 +516,7 @@ class Esmerald(Starlette):
         name: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
         dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlers"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         interceptors: Optional[List["Interceptor"]] = None,
         permissions: Optional[List["Permission"]] = None,
         include_in_schema: Optional[bool] = True,

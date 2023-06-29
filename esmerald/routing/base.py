@@ -56,7 +56,7 @@ if TYPE_CHECKING:
     from esmerald.types import (
         APIGateHandler,
         AsyncAnyCallable,
-        ExceptionHandlers,
+        ExceptionHandlerMap,
         ResponseCookies,
         ResponseHeaders,
     )
@@ -547,12 +547,12 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                     f"If you wish to override a inject, it must have the same key."
                 )
 
-    def get_exception_handlers(self) -> "ExceptionHandlers":
+    def get_exception_handlers(self) -> "ExceptionHandlerMap":
         """
         Resolves the exception_handlers by starting from the route handler
         and moving up.
         """
-        resolved_exception_handlers: "ExceptionHandlers" = {}
+        resolved_exception_handlers: "ExceptionHandlerMap" = {}
         for level in self.parent_levels:
             resolved_exception_handlers.update(level.exception_handlers or {})
         return resolved_exception_handlers

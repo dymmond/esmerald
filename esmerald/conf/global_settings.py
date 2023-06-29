@@ -15,7 +15,7 @@ from esmerald.pluggables import Pluggable
 from esmerald.types import (
     APIGateHandler,
     Dependencies,
-    ExceptionHandlers,
+    ExceptionHandlerMap,
     LifeSpanHandler,
     Middleware,
     ResponseCookies,
@@ -24,6 +24,7 @@ from esmerald.types import (
 )
 
 if TYPE_CHECKING:
+    from esmerald.routing.router import Include
     from esmerald.types import TemplateConfig
 
 
@@ -77,7 +78,7 @@ class EsmeraldAPISettings(BaseSettings):
         ]
 
     @property
-    def routes(self) -> List[APIGateHandler]:
+    def routes(self) -> List[Union[APIGateHandler, "Include"]]:
         """
         Property that can be used as an entrypoint for the base app routes and to start the application.
 
@@ -366,7 +367,7 @@ class EsmeraldAPISettings(BaseSettings):
         return {}
 
     @property
-    def exception_handlers(self) -> ExceptionHandlers:
+    def exception_handlers(self) -> ExceptionHandlerMap:
         """
         Default exception handlers to be loaded when the application starts
         """
