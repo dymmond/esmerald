@@ -8,8 +8,6 @@
 - Deprecate `pydantic_factories` in favour of `pyfactories`.
 - Dropped support for Tortoise ORM natively.
 
-### Added
-
 ### Fixed
 
 - Rename `scripts/format` to `scripts/lint` for consistency.
