@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.3.0
+
+### Changed
+
+- OpenAPI imports and removed unused dependencies.
+- Deprecate `pydantic_factories` in favour of `pyfactories`.
+- Dropped support for Tortoise ORM natively.
+
+### Added
+
+### Fixed
+
+- Rename `scripts/format` to `scripts/lint` for consistency.
+- `get_hasher` from contrib fixed with the return value of the algorithm.
+- Typing of the codebase updated.
+
 ## 1.2.5
 
 ### Fixed
