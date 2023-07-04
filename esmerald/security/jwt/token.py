@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from jose import JWSError, JWTError, jwt
 from jose.exceptions import JWSAlgorithmError, JWSSignatureError
-from pydantic import BaseModel, Field, constr, validator
+from pydantic import BaseModel, Field, constr, field_validator
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.security.utils import convert_time
@@ -21,7 +21,7 @@ class Token(BaseModel):
     aud: Optional[str] = None
     jti: Optional[str] = None
 
-    @validator("exp", always=True)
+    @field_validator("exp")
     def validate_expiration(cls, date: datetime) -> datetime:
         """
         When a token is issued, needs to be date in the future.
@@ -31,7 +31,7 @@ class Token(BaseModel):
             return date
         raise ValueError("The exp must be a date in the future.")
 
-    @validator("iat", always=True)
+    @field_validator("iat")
     def validate_iat(cls, date: datetime) -> datetime:  # pylint: disable=no-self-argument
         """Ensures that the `Issued At` it's nt bigger than the current time."""
         date = convert_time(date)

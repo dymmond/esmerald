@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic import BaseModel, ConfigDict, constr, validator
+from pydantic import BaseModel, ConfigDict, constr, field_validator
 from typing_extensions import Literal
 
 from esmerald.datastructures import Secret
@@ -18,7 +18,7 @@ class SessionConfig(BaseModel):
     https_only: bool = False
     same_site: Literal["lax", "strict", "none"] = "lax"
 
-    @validator("secret_key", always=True)
+    @field_validator("secret_key")
     def validate_secret(cls, value: Secret) -> Secret:  # pylint: disable=no-self-argument
         if len(value) not in [16, 24, 32]:
             raise ValueError("secret length must be 16 (128 bit), 24 (192 bit) or 32 (256 bit)")

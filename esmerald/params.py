@@ -1,9 +1,10 @@
 from typing import Any, Callable, Dict, Optional, Union
 
 from pydantic.dataclasses import dataclass
-from pydantic.fields import FieldInfo, Undefined
+from pydantic.fields import FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
+from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
 
 

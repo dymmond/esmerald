@@ -1,17 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    AsyncIterable,
-    AsyncIterator,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    Iterator,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, AsyncIterable, Dict, Iterable, Type, Union
 
 from starlette.responses import StreamingResponse  # noqa
 
@@ -23,16 +10,7 @@ if TYPE_CHECKING:
 
 
 class Stream(ResponseContainer[StreamingResponse]):
-    iterator: Union[
-        Iterator[Union[str, bytes]],
-        Generator[Union[str, bytes], Any, Any],
-        AsyncIterator[Union[str, bytes]],
-        AsyncGenerator[Union[str, bytes], Any],
-        Type[Iterator[Union[str, bytes]]],
-        Type[AsyncIterator[Union[str, bytes]]],
-        Callable[[], AsyncGenerator[Union[str, bytes], Any]],
-        Callable[[], Generator[Union[str, bytes], Any, Any]],
-    ]
+    iterator: Any
 
     def to_response(
         self,

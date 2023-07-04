@@ -1,12 +1,13 @@
 from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
 
-from pydantic.fields import FieldInfo, Undefined
+from pydantic.fields import FieldInfo
 from starlette.datastructures import URL
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
+from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 
 if TYPE_CHECKING:

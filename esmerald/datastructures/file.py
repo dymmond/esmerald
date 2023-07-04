@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union, cast
 
-from pydantic import FilePath, validator  # noqa
+from pydantic import FilePath, field_validator  # noqa
 from starlette.responses import FileResponse  # noqa
 
 from esmerald.datastructures.base import ResponseContainer
@@ -16,7 +16,7 @@ class File(ResponseContainer[FileResponse]):
     filename: str
     stat_result: Optional[os.stat_result] = None
 
-    @validator("stat_result", always=True)
+    @field_validator("stat_result")
     def validate_status_code(  # pylint: disable=no-self-argument
         cls, value: Optional[os.stat_result], values: Dict[str, Any]
     ) -> os.stat_result:
