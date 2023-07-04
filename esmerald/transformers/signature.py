@@ -5,7 +5,7 @@ from pydantic import create_model
 from pydantic.fields import Undefined
 
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.parsers import BaseModelExtra
+from esmerald.parsers import ArbitraryExtraBaseModel
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, VALIDATION_NAMES
 from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
 from esmerald.transformers.helpers import is_pydantic_constrained_field
@@ -16,10 +16,7 @@ if TYPE_CHECKING:
     from esmerald.typing import AnyCallable
 
 
-class SignatureFactory(BaseModelExtra):
-    class Config(BaseModelExtra.Config):
-        arbitrary_types_allowed = True
-
+class SignatureFactory(ArbitraryExtraBaseModel):
     def __init__(
         self, fn: Optional["AnyCallable"], dependency_names: Set[str], **kwargs: Any
     ) -> None:

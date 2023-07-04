@@ -2,8 +2,8 @@ from contextlib import suppress
 from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING, Any, Dict
 
-from pydantic import BaseConfig, BaseModel
-from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
+from pydantic import BaseModel, ConfigDict
+from pydantic.v1.fields import SHAPE_LIST, SHAPE_SINGLETON
 
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
@@ -39,9 +39,7 @@ class ArbitraryHashableBaseModel(HashableBaseModel):
     Same as HashableBaseModel but allowing arbitrary values
     """
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
 class BaseModelExtra(BaseModel):
@@ -49,8 +47,7 @@ class BaseModelExtra(BaseModel):
     BaseModel that allows extra to be passed.
     """
 
-    class Config:
-        extra = "allow"
+    model_config = ConfigDict(extra="allow")
 
 
 class ArbitraryBaseModel(BaseModel):
@@ -58,8 +55,11 @@ class ArbitraryBaseModel(BaseModel):
     ArbitratyBaseModel that allows arbitrary_types_allowed to be passed.
     """
 
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+class ArbitraryExtraBaseModel(BaseModel):
+    model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
 def validate_media_type(field: "ModelField", values: Any) -> Any:

@@ -5,7 +5,7 @@ from starlette.datastructures import URL
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.parsers import BaseModelExtra, HashableBaseModel
+from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.utils.constants import REQUIRED
 
@@ -27,7 +27,7 @@ class ParamSetting(NamedTuple):
     field_info: FieldInfo
 
 
-class Dependency(HashableBaseModel, BaseModelExtra):
+class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
     def __init__(
         self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: Any
     ) -> None:
@@ -35,9 +35,6 @@ class Dependency(HashableBaseModel, BaseModelExtra):
         self.key = key
         self.inject = inject
         self.dependencies = dependencies
-
-    class Config(BaseModelExtra.Config):
-        arbitrary_types_allowed = True
 
 
 def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:

@@ -4,18 +4,17 @@ import sys
 from abc import ABC, abstractmethod
 from typing import Any, Type
 
-from pydantic import BaseConfig, BaseModel
-
 import esmerald
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.parsers import DirectiveParser
 from esmerald.core.terminal.print import Print
+from esmerald.parsers import ArbitraryExtraBaseModel
 from esmerald.utils.helpers import is_async_callable
 
 printer = Print()
 
 
-class BaseDirective(BaseModel, ABC):
+class BaseDirective(ArbitraryExtraBaseModel, ABC):
     """The base class from which all directrives derive"""
 
     help: str = ""
@@ -74,7 +73,3 @@ class BaseDirective(BaseModel, ABC):
     def handle(self, *args: Any, **options: Any) -> Any:
         """The logic of the directive. Subclasses must implement this method"""
         raise NotImplementedError("subclasses of BaseDirective must provide a handle() method.")
-
-    class Config(BaseConfig):
-        extra = "allow"  # type: ignore
-        arbitrary_types_allowed = True

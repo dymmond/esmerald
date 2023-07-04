@@ -7,9 +7,10 @@ from inspect import Parameter as InspectParameter
 from inspect import Signature
 from typing import TYPE_CHECKING, Any, ClassVar, Optional, Set, Union
 
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 
 from esmerald.exceptions import ImproperlyConfigured, InternalServerError, ValidationErrorException
+from esmerald.parsers import ArbitraryBaseModel
 from esmerald.requests import Request
 from esmerald.transformers.constants import UNDEFINED
 from esmerald.transformers.utils import get_connection_info
@@ -21,12 +22,9 @@ if TYPE_CHECKING:
     from pydantic.typing import DictAny
 
 
-class EsmeraldSignature(BaseModel):
+class EsmeraldSignature(ArbitraryBaseModel):
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
-
-    class Config:
-        arbitrary_types_allowed = True
 
     @classmethod
     def parse_values_for_connection(
@@ -72,7 +70,7 @@ class EsmeraldSignature(BaseModel):
         return self.__getattribute__(key)
 
 
-class Parameter(BaseModel):
+class Parameter(ArbitraryBaseModel):
     annotation: Optional[Any]
     default: Optional[Any]
     name: Optional[str]
@@ -80,9 +78,6 @@ class Parameter(BaseModel):
     fn_name: Optional[str]
     param_name: Optional[str]
     parameter: Optional[InspectParameter]
-
-    class Config:
-        arbitrary_types_allowed = True
 
     def __init__(
         self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: "DictAny"

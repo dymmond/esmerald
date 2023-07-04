@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic import BaseConfig, BaseModel, constr, validator
+from pydantic import BaseModel, ConfigDict, constr, validator
 from typing_extensions import Literal
 
 from esmerald.datastructures import Secret
@@ -9,8 +9,7 @@ SECONDS_IN_A_DAY = 60 * 60 * 24
 
 
 class SessionConfig(BaseModel):
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     secret_key: Union[str, Secret]
     path: str = "/"

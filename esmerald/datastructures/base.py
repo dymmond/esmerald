@@ -18,6 +18,7 @@ from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+from esmerald.parsers import ArbitraryBaseModel
 
 R = TypeVar("R", bound=StarletteResponse)
 
@@ -90,10 +91,7 @@ class Cookie(BaseModel):
         return simple_cookie.output(**kwargs).strip()
 
 
-class ResponseContainer(GenericModel, ABC, Generic[R]):
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
-
+class ResponseContainer(ArbitraryBaseModel, GenericModel, ABC, Generic[R]):
     background: Optional[Union[BackgroundTask, BackgroundTasks]] = None
     headers: Dict[str, Any] = {}
     cookies: List[Cookie] = []

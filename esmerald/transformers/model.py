@@ -13,7 +13,7 @@ from pydantic.fields import (
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.parsers import BaseModelExtra, parse_form_data
+from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.utils import (
@@ -36,10 +36,7 @@ MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 MappingUnion = Mapping[Union[int, str], Any]
 
 
-class TransformerModel(BaseModelExtra):
-    class Config(BaseModelExtra.Config):
-        arbitrary_types_allowed = True
-
+class TransformerModel(ArbitraryExtraBaseModel):
     def __init__(
         self,
         cookies: Set[ParamSetting],
