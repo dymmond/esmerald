@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, create_model
 from pyfactories.utils import create_model_from_dataclass
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
+    from pydantic_core.core_schema import ModelField
 
 
 config = ConfigDict(arbitrary_types_allowed=True)

@@ -7,7 +7,7 @@ from esmerald.enums import EncodingType
 from esmerald.openapi.schema import create_schema, update_schema_field_info
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
+    from pydantic_core.core_schema import ModelField
 
 
 def create_request_body(field: "ModelField", create_examples: bool) -> Optional[RequestBody]:

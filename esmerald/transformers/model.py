@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
 
-from pydantic.fields import (
+from pydantic.v1.fields import (
     SHAPE_DEQUE,
     SHAPE_FROZENSET,
     SHAPE_LIST,
@@ -8,8 +8,8 @@ from pydantic.fields import (
     SHAPE_SET,
     SHAPE_TUPLE,
     SHAPE_TUPLE_ELLIPSIS,
-    ModelField,
 )
+from pydantic_core.core_schema import ModelField
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured

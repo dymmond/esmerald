@@ -9,8 +9,8 @@ from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
     from pydantic.typing import DictAny
+    from pydantic_core.core_schema import ModelField
     from starlette.datastructures import FormData
 
 

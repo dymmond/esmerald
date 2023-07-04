@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 T = TypeVar("T", int, float, Decimal)
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
+    from pydantic_core.core_schema import ModelField
 
 
 def is_field_optional(field: "ModelField") -> bool:

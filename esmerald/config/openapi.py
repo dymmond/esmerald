@@ -1,5 +1,5 @@
 from functools import partial
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Union
 
 from openapi_schemas_pydantic import construct_open_api_with_schema_class
 from openapi_schemas_pydantic.v3_1_0 import (
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
 class OpenAPIConfig(BaseModel):
     create_examples: bool = False
-    openapi_apiview: Type["OpenAPIView"]
+    openapi_apiview: "OpenAPIView"
     title: str
     version: str
     contact: Optional[Contact] = None

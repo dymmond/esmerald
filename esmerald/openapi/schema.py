@@ -13,7 +13,8 @@ from openapi_schemas_pydantic.utils.utils import OpenAPI310PydanticSchema
 from openapi_schemas_pydantic.v3_1_0.example import Example
 from openapi_schemas_pydantic.v3_1_0.reference import Reference
 from openapi_schemas_pydantic.v3_1_0.schema import Schema
-from pydantic import (
+from pydantic.fields import FieldInfo
+from pydantic.v1 import (
     BaseModel,
     ConstrainedBytes,
     ConstrainedDecimal,
@@ -23,7 +24,7 @@ from pydantic import (
     ConstrainedSet,
     ConstrainedStr,
 )
-from pydantic.fields import FieldInfo, ModelField
+from pydantic_core.core_schema import ModelField
 from pyfactories import ModelFactory
 from pyfactories.exceptions import ParameterError
 from pyfactories.utils import is_optional, is_pydantic_model, is_union
@@ -92,8 +93,8 @@ def create_string_constrained_field_schema(
         schema.minLength = field_type.min_length
     if field_type.max_length:
         schema.maxLength = field_type.max_length
-    if hasattr(field_type, "regex") and isinstance(field_type.regex, Pattern):
-        schema.pattern = field_type.regex.pattern
+    if hasattr(field_type, "pattern") and isinstance(field_type.pattern, Pattern):
+        schema.pattern = field_type.pattern.pattern
     if field_type.to_lower:
         schema.description = "must be in lower case"
     return schema

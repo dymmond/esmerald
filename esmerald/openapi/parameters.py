@@ -12,7 +12,7 @@ from esmerald.utils.dependency import is_dependency_field
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0.schema import Schema
     from pydantic import BaseModel
-    from pydantic.fields import ModelField
+    from pydantic_core.core_schema import ModelField
 
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import Dependencies
