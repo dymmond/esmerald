@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Any, Type
 
 
 class Void:
@@ -6,3 +6,4 @@ class Void:
 
 
 VoidType = Type[Void]
+AnyCallable = [..., Any]

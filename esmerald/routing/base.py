@@ -45,8 +45,6 @@ from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
-
     from esmerald.applications import Esmerald
     from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
@@ -61,6 +59,7 @@ if TYPE_CHECKING:
         ResponseCookies,
         ResponseHeaders,
     )
+    from esmerald.typing import AnyCallable
 
 param_type_map = {
     "str": str,

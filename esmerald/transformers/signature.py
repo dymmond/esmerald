@@ -13,7 +13,7 @@ from esmerald.transformers.utils import get_field_definition_from_param
 from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
+    from esmerald.typing import AnyCallable
 
 
 class SignatureFactory(BaseModelExtra):
