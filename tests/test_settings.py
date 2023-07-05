@@ -123,7 +123,7 @@ def test_inner_settings_config(test_client_factory):
     """
 
     class AppSettings(EsmeraldAPISettings):
-        app_name = "new app"
+        app_name: str = "new app"
         allowed_hosts: List[str] = ["*", "*.testserver.com"]
 
         @property
