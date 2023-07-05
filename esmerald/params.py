@@ -523,9 +523,11 @@ class DirectInject:
         dependency: Optional[Callable[..., Any]] = None,
         *,
         use_cache: bool = True,
+        allow_none: bool = True,
     ) -> None:
         self.dependency = dependency
         self.use_cache = use_cache
+        self.allow_none = allow_none
 
     def __hash__(self) -> int:
         values: Dict[str, Any] = {}

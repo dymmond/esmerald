@@ -5,7 +5,7 @@ A lot of great work was done using the Signature and Esmerald is no exception.
 
 from inspect import Parameter as InspectParameter
 from inspect import Signature
-from typing import TYPE_CHECKING, Any, ClassVar, Optional, Set, Union
+from typing import Any, ClassVar, Optional, Set, Union
 
 from pydantic import ValidationError
 
@@ -17,10 +17,6 @@ from esmerald.transformers.utils import get_connection_info
 from esmerald.utils.helpers import is_optional_union
 from esmerald.websockets import WebSocket
 
-if TYPE_CHECKING:
-    from pydantic.error_wrappers import ErrorDict
-    from pydantic.typing import DictAny
-
 
 class EsmeraldSignature(ArbitraryBaseModel):
     dependency_names: ClassVar[Set[str]]
@@ -28,8 +24,8 @@ class EsmeraldSignature(ArbitraryBaseModel):
 
     @classmethod
     def parse_values_for_connection(
-        cls, connection: Union[Request, WebSocket], **kwargs: "DictAny"
-    ) -> "DictAny":
+        cls, connection: Union[Request, WebSocket], **kwargs: Any
+    ) -> Any:
         try:
             signature = cls(**kwargs)
             values = {}
@@ -60,7 +56,7 @@ class EsmeraldSignature(ArbitraryBaseModel):
         return InternalServerError(detail=error_message, extra=server_errors)
 
     @classmethod
-    def is_server_error(cls, error: "ErrorDict") -> bool:
+    def is_server_error(cls, error: Any) -> bool:
         """
         Classic approach functionality used widely to check if is a server error or not.
         """
@@ -80,7 +76,7 @@ class Parameter(ArbitraryBaseModel):
     parameter: Optional[InspectParameter] = None
 
     def __init__(
-        self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: "DictAny"
+        self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
         if parameter.annotation is Signature.empty:

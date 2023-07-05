@@ -16,6 +16,9 @@ if TYPE_CHECKING:
     from esmerald.typing import AnyCallable
 
 
+object_setattr = object.__setattr__
+
+
 class SignatureFactory(ArbitraryExtraBaseModel):
     def __init__(
         self, fn: Optional["AnyCallable"], dependency_names: Set[str], **kwargs: Any

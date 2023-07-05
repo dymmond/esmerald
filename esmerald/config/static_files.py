@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, DirectoryPath, constr, field_validator
 from starlette.staticfiles import StaticFiles
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 
 class StaticFilesConfig(BaseModel):
     path: constr(min_length=1)  # type: ignore
-    directory: Optional[DirectoryPath] = None
+    directory: Optional[Union[DirectoryPath, str, Path, Any]] = None
     html: bool = False
     packages: Optional[List[Union[str, Tuple[str, str]]]] = None
     check_dir: bool = True

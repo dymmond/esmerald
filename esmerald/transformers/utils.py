@@ -11,8 +11,6 @@ from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 
 if TYPE_CHECKING:
-    from pydantic.typing import MappingIntStrAny
-
     from esmerald.injector import Inject
     from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
     from esmerald.types import ConnectionType
@@ -58,7 +56,7 @@ def create_parameter_setting(
     """
     Creates a setting definition for a parameter.
     """
-    extra = field_info.extra
+    extra = field_info.json_schema_extra or {}
     is_required = extra.get(REQUIRED, True)
     default_value = field_info.default if field_info.default is not Undefined else None
 
@@ -86,7 +84,7 @@ def create_parameter_setting(
     return param_settings
 
 
-def get_request_params(params: "MappingIntStrAny", expected: Set[ParamSetting], url: URL) -> Any:
+def get_request_params(params: Any, expected: Set[ParamSetting], url: URL) -> Any:
     """
     Gather the parameters from the request.
     """

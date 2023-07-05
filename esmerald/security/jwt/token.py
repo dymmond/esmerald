@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from jose import JWSError, JWTError, jwt
 from jose.exceptions import JWSAlgorithmError, JWSSignatureError
-from pydantic import BaseModel, Field, constr, field_validator
+from pydantic import BaseModel, Field, conint, constr, field_validator
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.security.utils import convert_time
@@ -16,7 +16,7 @@ class Token(BaseModel):
 
     exp: datetime
     iat: datetime = Field(default_factory=lambda: convert_time(datetime.now(timezone.utc)))
-    sub: constr(min_length=1)  # type: ignore
+    sub: Union[constr(min_length=1), conint(ge=1)]  # type: ignore
     iss: Optional[str] = None
     aud: Optional[str] = None
     jti: Optional[str] = None

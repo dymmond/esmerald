@@ -91,9 +91,10 @@ class TransformerModel(ArbitraryExtraBaseModel):
         parameter_definitions = set()
         for field_name, model_field in signature_fields.items():
             if field_name not in ignored_keys:
+                allow_none = getattr(model_field, "allow_none", True)
                 parameter_definitions.add(
                     create_parameter_setting(
-                        allow_none=model_field.allow_none,
+                        allow_none=allow_none,
                         field_name=field_name,
                         field_info=model_field,
                         path_parameters=path_parameters,
@@ -103,9 +104,10 @@ class TransformerModel(ArbitraryExtraBaseModel):
         filtered = [item for item in signature_fields.items() if item[0] not in ignored_keys]
         for field_name, model_field in filtered:
             signature_field = model_field
+            allow_none = getattr(signature_field, "allow_none", True)
             parameter_definitions.add(
                 create_parameter_setting(
-                    allow_none=model_field.allow_none,
+                    allow_none=allow_none,
                     field_name=field_name,
                     field_info=signature_field,
                     path_parameters=path_parameters,
@@ -166,7 +168,8 @@ class TransformerModel(ArbitraryExtraBaseModel):
         # For the reserved keyword data
         data_field = signature_model.__fields__.get("data")
         if data_field:
-            media_type = data_field.json_schema_extra.get("media_type")
+            extra = getattr(data_field, "json_schema_extra", None) or {}
+            media_type = extra.get("media_type")
             if media_type in MEDIA_TYPES:
                 form_data = (media_type, data_field)
 
