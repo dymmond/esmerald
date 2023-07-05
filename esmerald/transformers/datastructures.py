@@ -71,13 +71,13 @@ class EsmeraldSignature(ArbitraryBaseModel):
 
 
 class Parameter(ArbitraryBaseModel):
-    annotation: Optional[Any]
-    default: Optional[Any]
-    name: Optional[str]
-    optional: Optional[bool]
-    fn_name: Optional[str]
-    param_name: Optional[str]
-    parameter: Optional[InspectParameter]
+    annotation: Optional[Any] = None
+    default: Optional[Any] = None
+    name: Optional[str] = None
+    optional: Optional[bool] = None
+    fn_name: Optional[str] = None
+    param_name: Optional[str] = None
+    parameter: Optional[InspectParameter] = None
 
     def __init__(
         self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: "DictAny"

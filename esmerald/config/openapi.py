@@ -1,5 +1,5 @@
 from functools import partial
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
 from openapi_schemas_pydantic import construct_open_api_with_schema_class
 from openapi_schemas_pydantic.v3_1_0 import (
@@ -15,7 +15,7 @@ from openapi_schemas_pydantic.v3_1_0 import (
     Server,
     Tag,
 )
-from pydantic import AnyUrl, BaseModel
+from pydantic import AnyUrl, BaseModel, ConfigDict
 from typing_extensions import Literal
 
 from esmerald.enums import HttpMethod
@@ -27,12 +27,11 @@ from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
     from esmerald.applications import Esmerald
-    from esmerald.openapi.apiview import OpenAPIView
 
 
 class OpenAPIConfig(BaseModel):
     create_examples: bool = False
-    openapi_apiview: "OpenAPIView"
+    openapi_apiview: Any
     title: str
     version: str
     contact: Optional[Contact] = None
@@ -55,6 +54,8 @@ class OpenAPIConfig(BaseModel):
         "openapi.json",
         "openapi.yaml",
     }
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def to_openapi_schema(self) -> "OpenAPI":
         if isinstance(self.components, list):

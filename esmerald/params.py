@@ -15,7 +15,11 @@ class Param(FieldInfo):
         self,
         default: Any = Undefined,
         *,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
         alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
         value_type: Any = Undefined,
         header: Optional[str] = None,
         cookie: Optional[str] = None,
@@ -31,6 +35,7 @@ class Param(FieldInfo):
         lt: Optional[float] = None,
         le: Optional[float] = None,
         multiple_of: Optional[float] = None,
+        allow_inf_nan: Optional[bool] = None,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
@@ -43,6 +48,8 @@ class Param(FieldInfo):
         self.example = example
         self.examples = examples
         self.include_in_schema = include_in_schema
+        self.const = const
+        self.allow_none = allow_none
 
         extra: Dict[str, Any] = {}
         extra.update(header=header)
@@ -56,10 +63,15 @@ class Param(FieldInfo):
         extra.update(examples=self.examples)
         extra.update(deprecated=self.deprecated)
         extra.update(include_in_schema=self.include_in_schema)
+        extra.update(const=self.const)
+        extra.update(allow_none=self.allow_none)
 
         super().__init__(
+            annotation=annotation,
             default=default,
+            default_factory=default_factory,
             alias=alias,
+            alias_priority=alias_priority,
             title=title,
             description=description,
             const=const,
@@ -71,7 +83,9 @@ class Param(FieldInfo):
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
-            **extra,
+            examples=examples,
+            allow_inf_nan=allow_inf_nan,
+            json_schema_extra=extra,
         )
 
 
@@ -82,8 +96,12 @@ class Header(Param):
         self,
         *,
         default: Any = Undefined,
-        value: Optional[str] = None,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
         alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
+        value: Optional[str] = None,
         value_type: Any = Undefined,
         content_encoding: Optional[str] = None,
         required: bool = True,
@@ -95,6 +113,7 @@ class Header(Param):
         lt: Optional[float] = None,
         le: Optional[float] = None,
         multiple_of: Optional[float] = None,
+        allow_inf_nan: Optional[bool] = None,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
@@ -105,8 +124,12 @@ class Header(Param):
     ) -> None:
         super().__init__(
             default=default,
+            allow_none=allow_none,
+            default_factory=default_factory,
+            annotation=annotation,
             header=value,
             alias=alias,
+            alias_priority=alias_priority,
             title=title,
             description=description,
             const=const,
@@ -115,6 +138,7 @@ class Header(Param):
             lt=lt,
             le=le,
             multiple_of=multiple_of,
+            allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
@@ -135,9 +159,13 @@ class Cookie(Param):
         self,
         default: Any = Undefined,
         *,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
+        alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
         value_type: Any = Undefined,
         value: Optional[str] = None,
-        alias: Optional[str] = None,
         content_encoding: Optional[str] = None,
         required: bool = True,
         title: Optional[str] = None,
@@ -148,6 +176,7 @@ class Cookie(Param):
         lt: Optional[float] = None,
         le: Optional[float] = None,
         multiple_of: Optional[float] = None,
+        allow_inf_nan: Optional[bool] = None,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
@@ -158,8 +187,12 @@ class Cookie(Param):
     ) -> None:
         super().__init__(
             default=default,
+            allow_none=allow_none,
+            default_factory=default_factory,
+            annotation=annotation,
             cookie=value,
             alias=alias,
+            alias_priority=alias_priority,
             title=title,
             description=description,
             const=const,
@@ -168,6 +201,7 @@ class Cookie(Param):
             lt=lt,
             le=le,
             multiple_of=multiple_of,
+            allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
@@ -188,9 +222,13 @@ class Query(Param):
         self,
         default: Any = Undefined,
         *,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
+        alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
         value_type: Any = Undefined,
         value: Optional[str] = None,
-        alias: Optional[str] = None,
         content_encoding: Optional[str] = None,
         required: bool = True,
         title: Optional[str] = None,
@@ -201,6 +239,7 @@ class Query(Param):
         lt: Optional[float] = None,
         le: Optional[float] = None,
         multiple_of: Optional[float] = None,
+        allow_inf_nan: Optional[bool] = None,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
@@ -211,8 +250,12 @@ class Query(Param):
     ) -> None:
         super().__init__(
             default=default,
+            allow_none=allow_none,
+            default_factory=default_factory,
+            annotation=annotation,
             query=value,
             alias=alias,
+            alias_priority=alias_priority,
             title=title,
             description=description,
             const=const,
@@ -221,6 +264,7 @@ class Query(Param):
             lt=lt,
             le=le,
             multiple_of=multiple_of,
+            allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
@@ -241,6 +285,9 @@ class Path(Param):
         self,
         default: Any = Undefined,
         *,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
         value_type: Any = Undefined,
         content_encoding: Optional[str] = None,
         required: bool = True,
@@ -261,6 +308,9 @@ class Path(Param):
     ) -> None:
         super().__init__(
             default=default,
+            allow_none=allow_none,
+            default_factory=default_factory,
+            annotation=annotation,
             title=title,
             description=description,
             const=const,
@@ -286,10 +336,14 @@ class Body(FieldInfo):
         self,
         *,
         default: Any = Undefined,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
         media_type: Union[str, EncodingType] = EncodingType.JSON,
         content_encoding: Optional[str] = None,
         title: Optional[str] = None,
         alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
         description: Optional[str] = None,
         const: Optional[bool] = None,
         embed: Optional[bool] = None,
@@ -298,6 +352,7 @@ class Body(FieldInfo):
         lt: Optional[float] = None,
         le: Optional[float] = None,
         multiple_of: Optional[float] = None,
+        allow_inf_nan: Optional[bool] = None,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
@@ -309,13 +364,20 @@ class Body(FieldInfo):
         self.content_encoding = content_encoding
         self.example = example
         self.examples = examples
+        self.allow_none = allow_none
+
         extra.update(media_type=self.media_type)
         extra.update(content_encoding=self.content_encoding)
         extra.update(embed=embed)
+        extra.update(allow_none=allow_none)
+
         super().__init__(
             default=default,
+            default_factory=default_factory,
+            annotation=annotation,
             title=title,
             alias=alias,
+            alias_priority=alias_priority,
             description=description,
             const=const,
             gt=gt,
@@ -323,10 +385,11 @@ class Body(FieldInfo):
             lt=lt,
             le=le,
             multiple_of=multiple_of,
+            allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
-            **extra,
+            json_schema_extra=extra,
         )
 
 
@@ -335,9 +398,12 @@ class Form(Body):
         self,
         default: Any,
         *,
+        default_factory: Optional[Callable[..., Any]] = None,
+        allow_none: Optional[bool] = True,
         media_type: Union[str, EncodingType] = EncodingType.URL_ENCODED,
         content_encoding: Optional[str] = None,
         alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
         title: Optional[str] = None,
         description: Optional[str] = None,
         gt: Optional[float] = None,
@@ -353,10 +419,13 @@ class Form(Body):
     ) -> None:
         super().__init__(
             default=default,
+            allow_none=allow_none,
+            default_factory=default_factory,
             embed=True,
             media_type=media_type,
             content_encoding=content_encoding,
             alias=alias,
+            alias_priority=alias_priority,
             title=title,
             description=description,
             gt=gt,
@@ -377,9 +446,12 @@ class File(Form):
         self,
         default: Any,
         *,
+        allow_none: Optional[bool] = True,
+        default_factory: Optional[Callable[..., Any]] = None,
         media_type: Union[str, EncodingType] = EncodingType.MULTI_PART,
         content_encoding: Optional[str] = None,
         alias: Optional[str] = None,
+        alias_priority: Optional[int] = None,
         title: Optional[str] = None,
         description: Optional[str] = None,
         gt: Optional[float] = None,
@@ -395,10 +467,13 @@ class File(Form):
     ) -> None:
         super().__init__(
             default=default,
+            allow_none=allow_none,
+            default_factory=default_factory,
             embed=True,
             media_type=media_type,
             content_encoding=content_encoding,
             alias=alias,
+            alias_priority=alias_priority,
             title=title,
             description=description,
             gt=gt,
@@ -430,12 +505,15 @@ class Injects(FieldInfo):
         self,
         default: Any = Undefined,
         skip_validation: bool = False,
+        allow_none: bool = True,
     ) -> None:
-        extra: Dict[str, Any] = {
+        self.allow_none = allow_none
+        self.extra: Dict[str, Any] = {
             IS_DEPENDENCY: True,
             SKIP_VALIDATION: skip_validation,
+            "allow_none": self.allow_none,
         }
-        super().__init__(default, **extra)
+        super().__init__(default=default, json_schema_extra=self.extra)
 
 
 @dataclass

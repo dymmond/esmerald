@@ -23,7 +23,6 @@ class ParamSetting(NamedTuple):
     field_alias: str
     field_name: str
     is_required: bool
-    is_sequence: bool
     param_type: ParamType
     field_info: FieldInfo
 
@@ -55,7 +54,6 @@ def create_parameter_setting(
     field_info: FieldInfo,
     field_name: str,
     path_parameters: Set[str],
-    is_sequence: bool,
 ) -> ParamSetting:
     """
     Creates a setting definition for a parameter.
@@ -83,7 +81,6 @@ def create_parameter_setting(
         default_value=default_value,
         field_name=field_name,
         field_info=field_info,
-        is_sequence=is_sequence,
         is_required=is_required and (default_value is None and not allow_none),
     )
     return param_settings

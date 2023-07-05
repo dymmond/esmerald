@@ -1,14 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
 
-from pydantic.v1.fields import (
-    SHAPE_DEQUE,
-    SHAPE_FROZENSET,
-    SHAPE_LIST,
-    SHAPE_SEQUENCE,
-    SHAPE_SET,
-    SHAPE_TUPLE,
-    SHAPE_TUPLE_ELLIPSIS,
-)
 from pydantic_core.core_schema import ModelField
 
 from esmerald.enums import EncodingType, ParamType
@@ -89,16 +80,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
         dependencies: "Dependencies",
         signature_fields: Dict[str, ModelField],
     ) -> Tuple[Set[ParamSetting], set]:
-        shapes = {
-            SHAPE_LIST,
-            SHAPE_SET,
-            SHAPE_SEQUENCE,
-            SHAPE_TUPLE,
-            SHAPE_TUPLE_ELLIPSIS,
-            SHAPE_DEQUE,
-            SHAPE_FROZENSET,
-        }
-
         _dependencies = set()
 
         for key in dependencies:
@@ -114,22 +95,20 @@ class TransformerModel(ArbitraryExtraBaseModel):
                     create_parameter_setting(
                         allow_none=model_field.allow_none,
                         field_name=field_name,
-                        field_info=model_field.field_info,
+                        field_info=model_field,
                         path_parameters=path_parameters,
-                        is_sequence=model_field.shape in shapes,
                     )
                 )
 
         filtered = [item for item in signature_fields.items() if item[0] not in ignored_keys]
         for field_name, model_field in filtered:
-            signature_field = model_field.field_info
+            signature_field = model_field
             parameter_definitions.add(
                 create_parameter_setting(
                     allow_none=model_field.allow_none,
                     field_name=field_name,
                     field_info=signature_field,
                     path_parameters=path_parameters,
-                    is_sequence=model_field.shape in shapes,
                 )
             )
 
@@ -181,16 +160,13 @@ class TransformerModel(ArbitraryExtraBaseModel):
                 query_params.add(param)
 
         query_params_names = set()
-        for param in param_settings:
-            if param.param_type == ParamType.QUERY and param.is_sequence:
-                query_params_names.add(param)
 
         form_data = None
 
         # For the reserved keyword data
         data_field = signature_model.__fields__.get("data")
         if data_field:
-            media_type = data_field.field_info.extra.get("media_type")
+            media_type = data_field.json_schema_extra.get("media_type")
             if media_type in MEDIA_TYPES:
                 form_data = (media_type, data_field)
 
@@ -354,12 +330,13 @@ class TransformerModel(ArbitraryExtraBaseModel):
         names = set()
 
         for key, value in model_fields.items():
-            if (
-                value.field_info.extra.get(ParamType.QUERY)
-                or value.field_info.extra.get(ParamType.HEADER)
-                or value.field_info.extra.get(ParamType.COOKIE)
-            ):
-                names.add(key)
+            if value.json_schema_extra is not None:
+                if (
+                    value.json_schema_extra.get(ParamType.QUERY)
+                    or value.json_schema_extra.get(ParamType.HEADER)
+                    or value.json_schema_extra.get(ParamType.COOKIE)
+                ):
+                    names.add(key)
 
         for intersect in [
             path_parameters.intersection(keys)
