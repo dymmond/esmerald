@@ -16,7 +16,7 @@ class Token(BaseModel):
 
     exp: datetime
     iat: datetime = Field(default_factory=lambda: convert_time(datetime.now(timezone.utc)))
-    sub: Union[constr(min_length=1), conint(ge=1)]  # type: ignore
+    sub: Optional[Union[constr(min_length=1), conint(ge=1)]] = None  # type: ignore
     iss: Optional[str] = None
     aud: Optional[str] = None
     jti: Optional[str] = None
@@ -38,6 +38,13 @@ class Token(BaseModel):
         if date.timestamp() <= convert_time(datetime.now(timezone.utc)).timestamp():
             return date
         raise ValueError("iat must be a current or past time")
+
+    @field_validator("sub")
+    def validate_sub(cls, subject: Union[str, int]) -> str:  # pylint: disable=no-self-argument
+        try:
+            return str(subject)
+        except (TypeError, ValueError) as e:
+            raise ValueError(f"{subject} is not a valid string.") from e
 
     def encode(self, key: str, algorithm: str) -> Union[str, Any]:
         """

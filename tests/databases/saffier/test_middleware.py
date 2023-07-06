@@ -236,7 +236,6 @@ async def test_can_access_endpoint_with_valid_token(test_client_factory, async_c
     token = await get_user_and_token(time=time)
 
     response = await async_client.get("/", headers={jwt_config.api_key_header: f"Bearer {token}"})
-
     assert response.status_code == 200
     assert "hello" in response.json()["message"]
 
