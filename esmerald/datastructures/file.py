@@ -1,7 +1,7 @@
 import os
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union, cast
 
-from pydantic import FilePath, field_validator  # noqa
+from pydantic import FilePath, field_validator, model_validator  # noqa
 from starlette.responses import FileResponse  # noqa
 
 from esmerald.datastructures.base import ResponseContainer
@@ -16,12 +16,11 @@ class File(ResponseContainer[FileResponse]):
     filename: str
     stat_result: Optional[os.stat_result] = None
 
-    @field_validator("stat_result")  # type: ignore
-    def validate_status_code(
-        cls, value: Optional[os.stat_result], values: Dict[str, Any]
-    ) -> os.stat_result:
-        """Set the stat_result value for the given filepath."""
-        return value or os.stat(cast("str", values.get("path")))
+    @model_validator(mode="before")  # type: ignore
+    def validate_fields(cls, values: Dict[str, Any]) -> Any:
+        stat_result = values.get("stat_result")
+        values["stat_result"] = stat_result or os.stat(cast("str", values.get("path")))
+        return values
 
     def to_response(
         self,

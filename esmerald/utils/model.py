@@ -1,14 +1,31 @@
+from dataclasses import Field as DataclassField
+from dataclasses import fields as get_dataclass_fields
 from inspect import isclass
-from typing import TYPE_CHECKING, Any, Dict, Type, cast
+from typing import TYPE_CHECKING, Any, Dict, Tuple, Type, cast
 
 from pydantic import BaseModel, ConfigDict, create_model
-from pyfactories.utils import create_model_from_dataclass
 
 if TYPE_CHECKING:
     from pydantic.fields import FieldInfo
 
 
 config = ConfigDict(arbitrary_types_allowed=True)
+
+
+def create_model_from_dataclass(dataclass: Any) -> Type[BaseModel]:
+    """Creates a subclass of BaseModel from a given dataclass.
+
+    We are limited here because Pydantic does not perform proper field
+    parsing when going this route - which requires we set the fields as
+    required and not required independently. We currently do not handle
+    deeply nested Any and Optional.
+    """
+    dataclass_fields: Tuple[DataclassField, ...] = get_dataclass_fields(dataclass)  # type: ignore
+    model = create_model(dataclass.__name__, **{field.name: (field.type, ...) for field in dataclass_fields})  # type: ignore
+    for field_name, model_field in model.__fields__.items():
+        [field for field in dataclass_fields if field.name == field_name][0]
+        setattr(model, field_name, model_field)
+    return cast("Type[BaseModel]", model)
 
 
 def create_parsed_model_field(value: Type[Any]) -> "FieldInfo":
