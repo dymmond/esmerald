@@ -5,13 +5,13 @@ from pydantic import BaseModel, ConfigDict, create_model
 from pyfactories.utils import create_model_from_dataclass
 
 if TYPE_CHECKING:
-    from pydantic_core.core_schema import ModelField
+    from pydantic.fields import FieldInfo
 
 
 config = ConfigDict(arbitrary_types_allowed=True)
 
 
-def create_parsed_model_field(value: Type[Any]) -> "ModelField":
+def create_parsed_model_field(value: Type[Any]) -> "FieldInfo":
     """Create a pydantic model with the passed in value as its sole field, and
     return the parsed field."""
     model = create_model("temp", __config__=config, **{"value": (value, ... if not repr(value).startswith("typing.Optional") else None)})  # type: ignore

@@ -1,4 +1,4 @@
-from typing import Any, Type, TypeVar
+from typing import Any, Callable, Type, TypeVar
 
 from pydantic_core import PydanticUndefined
 
@@ -10,5 +10,5 @@ class Void:
 
 
 VoidType = Type[Void]
-AnyCallable = [..., Any]
+AnyCallable = Callable[..., Any]
 Undefined = PydanticUndefined

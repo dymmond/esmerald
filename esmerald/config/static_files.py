@@ -18,7 +18,7 @@ class StaticFilesConfig(BaseModel):
     check_dir: bool = True
 
     @field_validator("path")
-    def validate_path(cls, value: str) -> str:  # pylint: disable=no-self-argument
+    def validate_path(cls, value: str) -> str:
         if "{" in value:
             raise ValueError("path parameters are not supported for static files")
         return clean_path(value)

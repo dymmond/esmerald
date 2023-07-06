@@ -19,7 +19,7 @@ class SessionConfig(BaseModel):
     same_site: Literal["lax", "strict", "none"] = "lax"
 
     @field_validator("secret_key")
-    def validate_secret(cls, value: Secret) -> Secret:  # pylint: disable=no-self-argument
+    def validate_secret(cls, value: Secret) -> Secret:
         if len(value) not in [16, 24, 32]:
             raise ValueError("secret length must be 16 (128 bit), 24 (192 bit) or 32 (256 bit)")
         return value

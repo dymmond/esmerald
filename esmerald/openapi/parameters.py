@@ -12,6 +12,7 @@ from esmerald.utils.dependency import is_dependency_field
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0.schema import Schema
     from pydantic import BaseModel
+    from pydantic.fields import FieldInfo
     from pydantic_core.core_schema import ModelField
 
     from esmerald.routing.router import HTTPHandler
@@ -117,7 +118,7 @@ def get_recursive_handler_parameters(
 
 def create_parameter_for_handler(
     handler: "HTTPHandler",
-    handler_fields: Dict[str, "ModelField"],
+    handler_fields: Dict[str, "FieldInfo"],
     path_parameters: Any,
     create_examples: bool,
 ) -> List[Parameter]:

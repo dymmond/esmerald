@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from pydantic.dataclasses import dataclass
 from pydantic.fields import FieldInfo
@@ -40,7 +40,7 @@ class Param(FieldInfo):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> None:
@@ -118,7 +118,7 @@ class Header(Param):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> None:
@@ -181,7 +181,7 @@ class Cookie(Param):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> None:
@@ -244,7 +244,7 @@ class Query(Param):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> None:
@@ -302,7 +302,7 @@ class Path(Param):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
     ) -> None:
@@ -357,7 +357,7 @@ class Body(FieldInfo):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
     ) -> None:
         extra: Dict[str, Any] = {}
         self.media_type = media_type
@@ -414,7 +414,7 @@ class Form(Body):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         **extra: Any,
     ) -> None:
         super().__init__(
@@ -462,7 +462,7 @@ class File(Form):
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
         example: Any = Undefined,
-        examples: Optional[Dict[str, Any]] = None,
+        examples: Optional[List[Any]] = None,
         **extra: Any,
     ) -> None:
         super().__init__(

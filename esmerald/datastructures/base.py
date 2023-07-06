@@ -107,11 +107,9 @@ class ResponseContainer(BaseModel, ABC, Generic[R]):
 
 
 class ResponseHeader(BaseModel):
-    value: Any = None
+    value: Optional[Any] = None
 
-    @field_validator("value")
-    def validate_value(
-        cls, value: Any, values: Dict[str, Any]
-    ) -> Any:  # pylint: disable=no-self-argument
+    @field_validator("value")  # type: ignore
+    def validate_value(cls, value: Any, values: Dict[str, Any]) -> Any:
         if value is not None:
             return value

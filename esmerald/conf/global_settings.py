@@ -2,8 +2,8 @@ from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
-from pydantic import AnyUrl, ConfigDict
-from pydantic_settings import BaseSettings
+from pydantic import AnyUrl
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from starlette.types import Lifespan
 
 from esmerald import __version__
@@ -59,7 +59,7 @@ class EsmeraldAPISettings(BaseSettings):
     redirect_slashes: bool = True
 
     # Model configuration
-    model_config = ConfigDict(extra="allow", ignored_types=(cached_property,))
+    model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
 
     @property
     def reload(self) -> bool:

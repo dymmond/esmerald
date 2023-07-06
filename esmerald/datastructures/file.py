@@ -16,8 +16,8 @@ class File(ResponseContainer[FileResponse]):
     filename: str
     stat_result: Optional[os.stat_result] = None
 
-    @field_validator("stat_result")
-    def validate_status_code(  # pylint: disable=no-self-argument
+    @field_validator("stat_result")  # type: ignore
+    def validate_status_code(
         cls, value: Optional[os.stat_result], values: Dict[str, Any]
     ) -> os.stat_result:
         """Set the stat_result value for the given filepath."""

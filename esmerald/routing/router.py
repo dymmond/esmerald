@@ -836,7 +836,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         else:
             await fn(**kwargs)
 
-    async def get_kwargs(self, websocket: WebSocket[Any, Any]) -> Dict[str, Any]:
+    async def get_kwargs(self, websocket: WebSocket[Any, Any]) -> Any:
         """Resolves the required kwargs from the request data.
 
         Args:

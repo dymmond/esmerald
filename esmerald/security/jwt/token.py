@@ -32,7 +32,7 @@ class Token(BaseModel):
         raise ValueError("The exp must be a date in the future.")
 
     @field_validator("iat")
-    def validate_iat(cls, date: datetime) -> datetime:  # pylint: disable=no-self-argument
+    def validate_iat(cls, date: datetime) -> datetime:
         """Ensures that the `Issued At` it's nt bigger than the current time."""
         date = convert_time(date)
         if date.timestamp() <= convert_time(datetime.now(timezone.utc)).timestamp():
@@ -40,7 +40,7 @@ class Token(BaseModel):
         raise ValueError("iat must be a current or past time")
 
     @field_validator("sub")
-    def validate_sub(cls, subject: Union[str, int]) -> str:  # pylint: disable=no-self-argument
+    def validate_sub(cls, subject: Union[str, int]) -> str:
         try:
             return str(subject)
         except (TypeError, ValueError) as e:
