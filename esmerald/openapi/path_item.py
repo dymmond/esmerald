@@ -14,9 +14,9 @@ from esmerald.openapi.responses import create_responses
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from pydantic import BaseModel
+    from pydantic.typing import AnyCallable
 
     from esmerald.routing.handlers import HTTPHandler
-    from esmerald.typing import AnyCallable
 
 
 OptionalRef = Optional[List[Union[Parameter, Reference]]]

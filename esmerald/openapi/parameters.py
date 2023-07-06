@@ -1,26 +1,28 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Type, cast
 
 from openapi_schemas_pydantic.v3_1_0.parameter import Parameter
+from pydantic.fields import Undefined
 
 from esmerald.enums import ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.schema import create_schema
-from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED, RESERVED_KWARGS
 from esmerald.utils.dependency import is_dependency_field
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0.schema import Schema
     from pydantic import BaseModel
-    from pydantic.fields import FieldInfo
+    from pydantic.fields import ModelField
 
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import Dependencies
 
 
 def create_path_parameter_schema(
-    path_parameter: Any, field: "FieldInfo", create_examples: bool
+    path_parameter: Any, field: "ModelField", create_examples: bool
 ) -> "Schema":
+    field.sub_fields = None
+    field.outer_type_ = path_parameter["type"]
     return create_schema(field=field, create_examples=create_examples)
 
 
@@ -46,7 +48,7 @@ class ParameterCollection:
 
 
 def create_parameter(
-    model_field: "FieldInfo",
+    model_field: "ModelField",
     parameter_name: str,
     path_paramaters: Any,
     create_examples: bool,
@@ -91,7 +93,7 @@ def create_parameter(
 
 def get_recursive_handler_parameters(
     field_name: str,
-    model_field: "FieldInfo",
+    model_field: "ModelField",
     dependencies: "Dependencies",
     handler: "HTTPHandler",
     path_parameters: Any,
@@ -115,7 +117,7 @@ def get_recursive_handler_parameters(
 
 def create_parameter_for_handler(
     handler: "HTTPHandler",
-    handler_fields: Dict[str, "FieldInfo"],
+    handler_fields: Dict[str, "ModelField"],
     path_parameters: Any,
     create_examples: bool,
 ) -> List[Parameter]:

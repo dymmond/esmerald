@@ -7,7 +7,7 @@ from esmerald.exceptions import ImproperlyConfigured
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.utils.enums import OpenAPIType
-    from pydantic_core.core_schema import ModelField
+    from pydantic.fields import ModelField
 
 CAPITAL_LETTERS_PATTERN = re.compile(r"(?=[A-Z])")
 
