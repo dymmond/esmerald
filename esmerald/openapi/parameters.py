@@ -13,17 +13,14 @@ if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0.schema import Schema
     from pydantic import BaseModel
     from pydantic.fields import FieldInfo
-    from pydantic_core.core_schema import ModelField
 
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import Dependencies
 
 
 def create_path_parameter_schema(
-    path_parameter: Any, field: "ModelField", create_examples: bool
+    path_parameter: Any, field: "FieldInfo", create_examples: bool
 ) -> "Schema":
-    field.sub_fields = None
-    field.outer_type_ = path_parameter["type"]
     return create_schema(field=field, create_examples=create_examples)
 
 
@@ -49,7 +46,7 @@ class ParameterCollection:
 
 
 def create_parameter(
-    model_field: "ModelField",
+    model_field: "FieldInfo",
     parameter_name: str,
     path_paramaters: Any,
     create_examples: bool,
@@ -94,7 +91,7 @@ def create_parameter(
 
 def get_recursive_handler_parameters(
     field_name: str,
-    model_field: "ModelField",
+    model_field: "FieldInfo",
     dependencies: "Dependencies",
     handler: "HTTPHandler",
     path_parameters: Any,

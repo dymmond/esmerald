@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
 
-from pydantic_core.core_schema import ModelField
+from pydantic.fields import FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
@@ -32,7 +32,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         self,
         cookies: Set[ParamSetting],
         dependencies: Set[Dependency],
-        form_data: Optional[Tuple[EncodingType, ModelField]],
+        form_data: Optional[Tuple[EncodingType, FieldInfo]],
         headers: Set[ParamSetting],
         path_params: Set[ParamSetting],
         query_params: Set[ParamSetting],
@@ -78,7 +78,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cls,
         path_parameters: Set[str],
         dependencies: "Dependencies",
-        signature_fields: Dict[str, ModelField],
+        signature_fields: Dict[str, FieldInfo],
     ) -> Tuple[Set[ParamSetting], set]:
         _dependencies = set()
 
@@ -126,7 +126,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cls.validate_kwargs(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            model_fields=signature_model.__fields__,
+            model_fields=cast("Dict[str, FieldInfo]", signature_model.__fields__),
         )
 
         reserved_kwargs = set()
@@ -138,7 +138,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         param_settings, _dependencies = cls.get_parameter_settings(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            signature_fields=signature_model.__fields__,
+            signature_fields=cast("Dict[str, FieldInfo]", signature_model.__fields__),
         )
 
         path_params = set()
@@ -161,7 +161,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
             if param.param_type == ParamType.QUERY:
                 query_params.add(param)
 
-        query_params_names = set()
+        query_params_names: Set[ParamSetting] = set()
 
         form_data = None
 
@@ -187,7 +187,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         is_optional = False
         if "data" in reserved_kwargs:
-            is_optional = is_field_optional(signature_model.__fields__["data"])
+            is_optional = is_field_optional(signature_model.__fields__["data"])  # type: ignore
 
         return TransformerModel(
             form_data=form_data,
@@ -301,7 +301,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
     @classmethod
     def validate_data(
         cls,
-        form_data: Optional[Tuple[EncodingType, ModelField]],
+        form_data: Optional[Tuple[EncodingType, FieldInfo]],
         dependency_model: "TransformerModel",
     ) -> None:
         if form_data and dependency_model.form_data:
@@ -327,7 +327,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cls,
         path_parameters: Set[str],
         dependencies: "Dependencies",
-        model_fields: Dict[str, ModelField],
+        model_fields: Dict[str, FieldInfo],
     ) -> None:
         keys = set(dependencies.keys())
         names = set()

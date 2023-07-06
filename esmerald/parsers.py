@@ -9,8 +9,7 @@ from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
 
 if TYPE_CHECKING:
-    from pydantic.typing import DictAny
-    from pydantic_core.core_schema import ModelField
+    from pydantic.fields import FieldInfo
     from starlette.datastructures import FormData
 
 
@@ -62,7 +61,7 @@ class ArbitraryExtraBaseModel(BaseModel):
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
-def validate_media_type(field: "ModelField", values: Any) -> Any:
+def validate_media_type(field: "FieldInfo", values: Any) -> Any:
     """
     Validates the media type against the available types.
     """
@@ -72,8 +71,8 @@ def validate_media_type(field: "ModelField", values: Any) -> Any:
         return list(values.values())[0]
 
 
-def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "ModelField") -> Any:
-    values: "DictAny" = {}
+def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "FieldInfo") -> Any:
+    values: Any = {}
     for key, value in form_data.multi_items():
         if not isinstance(value, UploadFile):
             with suppress(JSONDecodeError):

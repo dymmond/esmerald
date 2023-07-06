@@ -16,7 +16,7 @@ class File(ResponseContainer[FileResponse]):
     filename: str
     stat_result: Optional[os.stat_result] = None
 
-    @model_validator(mode="before")  # type: ignore
+    @model_validator(mode="before")
     def validate_fields(cls, values: Dict[str, Any]) -> Any:
         stat_result = values.get("stat_result")
         values["stat_result"] = stat_result or os.stat(cast("str", values.get("path")))

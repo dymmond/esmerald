@@ -1,8 +1,3 @@
-"""
-Signature is widely used by Pydantic and comes from the inpect library.
-A lot of great work was done using the Signature and Esmerald is no exception.
-"""
-
 from inspect import Parameter as InspectParameter
 from inspect import Signature
 from typing import Any, ClassVar, Optional, Set, Union
