@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from openapi_schemas_pydantic.v3_1_0.components import Components as Components
 from openapi_schemas_pydantic.v3_1_0.contact import Contact as Contact
@@ -78,5 +78,21 @@ class Components(BaseModel):
     links: Optional[Dict[str, Union[Link, Reference]]] = None
     callbacks: Optional[Dict[str, Union[Dict[str, PathItem], Reference, Any]]] = None
     pathItems: Optional[Dict[str, Union[PathItem, Reference]]] = None
+
+    model_config = ConfigDict(extra="allow")
+
+
+class OpenAPI(BaseModel):
+    openapi: str
+    info: Info
+    jsonSchemaDialect: Optional[str] = None
+    servers: Optional[List[Server]] = None
+    # Using Any for Specification Extensions
+    paths: Optional[Dict[str, Union[PathItem, Any]]] = None
+    webhooks: Optional[Dict[str, Union[PathItem, Reference]]] = None
+    components: Optional[Components] = None
+    security: Optional[List[Dict[str, List[str]]]] = None
+    tags: Optional[List[Tag]] = None
+    externalDocs: Optional[ExternalDocumentation] = None
 
     model_config = ConfigDict(extra="allow")
