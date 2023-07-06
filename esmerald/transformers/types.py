@@ -1,6 +1,6 @@
 from typing import Type, Union
 
-from pydantic import (
+from pydantic.v1 import (
     ConstrainedBytes,
     ConstrainedDate,
     ConstrainedDecimal,

@@ -1,21 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseConfig, BaseModel
 from starlette.requests import HTTPConnection
 
 from esmerald.enums import ScopeType
+from esmerald.parsers import ArbitraryBaseModel
 from esmerald.protocols.middleware import MiddlewareProtocol
 
 if TYPE_CHECKING:
     from starlette.types import ASGIApp, Receive, Scope, Send
 
 
-class AuthResult(BaseModel):
+class AuthResult(ArbitraryBaseModel):
     user: Any
-
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
 
 
 class BaseAuthMiddleware(ABC, MiddlewareProtocol):

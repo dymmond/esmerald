@@ -64,7 +64,6 @@ from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
-    from pydantic.typing import AnyCallable
 
     from esmerald.applications import Esmerald
     from esmerald.exceptions import HTTPException
@@ -83,6 +82,7 @@ if TYPE_CHECKING:
         ResponseType,
         RouteParent,
     )
+    from esmerald.typing import AnyCallable
 
 
 class Parent:
@@ -836,7 +836,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         else:
             await fn(**kwargs)
 
-    async def get_kwargs(self, websocket: WebSocket[Any, Any]) -> Dict[str, Any]:
+    async def get_kwargs(self, websocket: WebSocket[Any, Any]) -> Any:
         """Resolves the required kwargs from the request data.
 
         Args:

@@ -425,7 +425,7 @@ class Esmerald(Starlette):
     def activate_openapi(self) -> None:
         if self.openapi_config and self.enable_openapi:
             self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
-            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)  # type: ignore
+            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
             self.add_apiview(value=gateway)
 
     def get_template_engine(
@@ -437,7 +437,7 @@ class Esmerald(Starlette):
         if not template_config:
             return None
 
-        engine = template_config.engine(template_config.directory)
+        engine: "TemplateEngineProtocol" = template_config.engine(template_config.directory)
         return engine
 
     def add_apiview(

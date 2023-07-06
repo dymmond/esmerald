@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
-from pydantic import DirectoryPath, validate_arguments
+from pydantic import DirectoryPath, validate_call
 from typing_extensions import Protocol, runtime_checkable
 
 
@@ -15,7 +15,7 @@ TP = TypeVar("TP", bound=TemplateProtocol, covariant=True)
 
 @runtime_checkable
 class TemplateEngineProtocol(Protocol[TP]):  # pragma: no cover
-    @validate_arguments
+    @validate_call
     def __init__(self, directory: Union[DirectoryPath, List[DirectoryPath]]) -> None:
         ...
 

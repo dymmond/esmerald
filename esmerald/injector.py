@@ -6,7 +6,7 @@ from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
+    from esmerald.typing import AnyCallable
 
 
 class Inject(ArbitraryHashableBaseModel):

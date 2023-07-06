@@ -1,3 +1,5 @@
+from typing import Union
+
 from pydantic import BaseModel
 
 from esmerald import Gateway, Header, Param, Response, post
@@ -38,7 +40,7 @@ def test_headers_missing_field(test_client_factory):
 
 
 class Item(BaseModel):
-    sku: str
+    sku: Union[str, int]
 
 
 @post(

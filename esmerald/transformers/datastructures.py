@@ -1,37 +1,26 @@
-"""
-Signature is widely used by Pydantic and comes from the inpect library.
-A lot of great work was done using the Signature and Esmerald is no exception.
-"""
-
 from inspect import Parameter as InspectParameter
 from inspect import Signature
-from typing import TYPE_CHECKING, Any, ClassVar, Optional, Set, Union
+from typing import Any, ClassVar, Optional, Set, Union
 
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 
 from esmerald.exceptions import ImproperlyConfigured, InternalServerError, ValidationErrorException
+from esmerald.parsers import ArbitraryBaseModel
 from esmerald.requests import Request
 from esmerald.transformers.constants import UNDEFINED
 from esmerald.transformers.utils import get_connection_info
 from esmerald.utils.helpers import is_optional_union
 from esmerald.websockets import WebSocket
 
-if TYPE_CHECKING:
-    from pydantic.error_wrappers import ErrorDict
-    from pydantic.typing import DictAny
 
-
-class EsmeraldSignature(BaseModel):
+class EsmeraldSignature(ArbitraryBaseModel):
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
 
-    class Config:
-        arbitrary_types_allowed = True
-
     @classmethod
     def parse_values_for_connection(
-        cls, connection: Union[Request, WebSocket], **kwargs: "DictAny"
-    ) -> "DictAny":
+        cls, connection: Union[Request, WebSocket], **kwargs: Any
+    ) -> Any:
         try:
             signature = cls(**kwargs)
             values = {}
@@ -62,7 +51,7 @@ class EsmeraldSignature(BaseModel):
         return InternalServerError(detail=error_message, extra=server_errors)
 
     @classmethod
-    def is_server_error(cls, error: "ErrorDict") -> bool:
+    def is_server_error(cls, error: Any) -> bool:
         """
         Classic approach functionality used widely to check if is a server error or not.
         """
@@ -72,20 +61,17 @@ class EsmeraldSignature(BaseModel):
         return self.__getattribute__(key)
 
 
-class Parameter(BaseModel):
-    annotation: Optional[Any]
-    default: Optional[Any]
-    name: Optional[str]
-    optional: Optional[bool]
-    fn_name: Optional[str]
-    param_name: Optional[str]
-    parameter: Optional[InspectParameter]
-
-    class Config:
-        arbitrary_types_allowed = True
+class Parameter(ArbitraryBaseModel):
+    annotation: Optional[Any] = None
+    default: Optional[Any] = None
+    name: Optional[str] = None
+    optional: Optional[bool] = None
+    fn_name: Optional[str] = None
+    param_name: Optional[str] = None
+    parameter: Optional[InspectParameter] = None
 
     def __init__(
-        self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: "DictAny"
+        self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
         if parameter.annotation is Signature.empty:

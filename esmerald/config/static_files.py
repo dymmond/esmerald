@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
-from pydantic import BaseModel, DirectoryPath, constr, validator
+from pydantic import BaseModel, DirectoryPath, constr, field_validator
 from starlette.staticfiles import StaticFiles
 
 from esmerald.utils.url import clean_path
@@ -11,13 +12,13 @@ if TYPE_CHECKING:
 
 class StaticFilesConfig(BaseModel):
     path: constr(min_length=1)  # type: ignore
-    directory: Optional[DirectoryPath] = None
+    directory: Optional[Union[DirectoryPath, str, Path, Any]] = None
     html: bool = False
     packages: Optional[List[Union[str, Tuple[str, str]]]] = None
     check_dir: bool = True
 
-    @validator("path")
-    def validate_path(cls, value: str) -> str:  # pylint: disable=no-self-argument
+    @field_validator("path")
+    def validate_path(cls, value: str) -> str:
         if "{" in value:
             raise ValueError("path parameters are not supported for static files")
         return clean_path(value)

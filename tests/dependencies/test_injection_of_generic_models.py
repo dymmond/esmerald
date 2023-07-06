@@ -1,7 +1,6 @@
 from typing import Generic, Optional, Type, TypeVar
 
 from pydantic import BaseModel
-from pydantic.generics import GenericModel
 from starlette.status import HTTP_200_OK
 
 from esmerald.injector import Inject
@@ -12,7 +11,7 @@ from esmerald.testclient import create_client
 T = TypeVar("T")
 
 
-class Store(GenericModel, Generic[T]):
+class Store(BaseModel, Generic[T]):
     """Abstract store."""
 
     model: Type[T]

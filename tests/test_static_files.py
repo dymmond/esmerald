@@ -13,7 +13,7 @@ from esmerald.routing.router import Include
 from esmerald.testclient import create_client
 
 
-def test_staticfiles(tmpdir: Any) -> None:
+def test_staticfiles(tmpdir: str) -> None:
     path = tmpdir.join("test.txt")
     path.write("content")
     static_files_config = StaticFilesConfig(path="/static", directory=tmpdir)

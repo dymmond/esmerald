@@ -85,6 +85,10 @@ async def _app_settings(request: Request) -> str:
     return request.app.settings.app_name
 
 
+class DisableOpenAPI(EsmeraldAPISettings):
+    enable_openapi: bool = False
+
+
 def test_settings_global(test_client_factory):
     """
     Tests settings are setup properly
@@ -122,8 +126,8 @@ def test_inner_settings_config(test_client_factory):
     Test passing a settings config and being used with teh ESMERALD_SETTINGS_MODULE
     """
 
-    class AppSettings(EsmeraldAPISettings):
-        app_name = "new app"
+    class AppSettings(DisableOpenAPI):
+        app_name: str = "new app"
         allowed_hosts: List[str] = ["*", "*.testserver.com"]
 
         @property
@@ -152,7 +156,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
     Tests that a ChildEsmerald can have indepedent settings module
     """
 
-    class ChildSettings(EsmeraldAPISettings):
+    class ChildSettings(DisableOpenAPI):
         app_name: str = "child app"
         secret_key: str = "child key"
 
@@ -184,7 +188,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
     cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
-    class ChildSettings(EsmeraldAPISettings):
+    class ChildSettings(DisableOpenAPI):
         app_name: str = "child app"
         secret_key: str = "child key"
 
@@ -220,11 +224,11 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
     Tests that a nested ChildEsmerald can have indepedent settings module
     """
 
-    class NestedChildSettings(EsmeraldAPISettings):
+    class NestedChildSettings(DisableOpenAPI):
         app_name: str = "nested child app"
         secret_key: str = "nested child key"
 
-    class ChildSettings(EsmeraldAPISettings):
+    class ChildSettings(DisableOpenAPI):
         app_name: str = "child app"
         secret_key: str = "child key"
 

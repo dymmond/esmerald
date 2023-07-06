@@ -2,15 +2,14 @@ from contextlib import suppress
 from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING, Any, Dict
 
-from pydantic import BaseConfig, BaseModel
-from pydantic.fields import SHAPE_LIST, SHAPE_SINGLETON
+from pydantic import BaseModel, ConfigDict
+from pydantic.v1.fields import SHAPE_LIST, SHAPE_SINGLETON
 
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-    from pydantic.typing import DictAny
+    from pydantic.fields import FieldInfo
     from starlette.datastructures import FormData
 
 
@@ -39,9 +38,7 @@ class ArbitraryHashableBaseModel(HashableBaseModel):
     Same as HashableBaseModel but allowing arbitrary values
     """
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
 class BaseModelExtra(BaseModel):
@@ -49,8 +46,7 @@ class BaseModelExtra(BaseModel):
     BaseModel that allows extra to be passed.
     """
 
-    class Config:
-        extra = "allow"
+    model_config = ConfigDict(extra="allow")
 
 
 class ArbitraryBaseModel(BaseModel):
@@ -58,11 +54,14 @@ class ArbitraryBaseModel(BaseModel):
     ArbitratyBaseModel that allows arbitrary_types_allowed to be passed.
     """
 
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-def validate_media_type(field: "ModelField", values: Any) -> Any:
+class ArbitraryExtraBaseModel(BaseModel):
+    model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
+
+
+def validate_media_type(field: "FieldInfo", values: Any) -> Any:
     """
     Validates the media type against the available types.
     """
@@ -72,8 +71,8 @@ def validate_media_type(field: "ModelField", values: Any) -> Any:
         return list(values.values())[0]
 
 
-def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "ModelField") -> Any:
-    values: "DictAny" = {}
+def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "FieldInfo") -> Any:
+    values: Any = {}
     for key, value in form_data.multi_items():
         if not isinstance(value, UploadFile):
             with suppress(JSONDecodeError):

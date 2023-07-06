@@ -1,19 +1,10 @@
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
 
-from pydantic.fields import (
-    SHAPE_DEQUE,
-    SHAPE_FROZENSET,
-    SHAPE_LIST,
-    SHAPE_SEQUENCE,
-    SHAPE_SET,
-    SHAPE_TUPLE,
-    SHAPE_TUPLE_ELLIPSIS,
-    ModelField,
-)
+from pydantic.fields import FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.parsers import BaseModelExtra, parse_form_data
+from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.utils import (
@@ -36,15 +27,12 @@ MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 MappingUnion = Mapping[Union[int, str], Any]
 
 
-class TransformerModel(BaseModelExtra):
-    class Config(BaseModelExtra.Config):
-        arbitrary_types_allowed = True
-
+class TransformerModel(ArbitraryExtraBaseModel):
     def __init__(
         self,
         cookies: Set[ParamSetting],
         dependencies: Set[Dependency],
-        form_data: Optional[Tuple[EncodingType, ModelField]],
+        form_data: Optional[Tuple[EncodingType, FieldInfo]],
         headers: Set[ParamSetting],
         path_params: Set[ParamSetting],
         query_params: Set[ParamSetting],
@@ -90,18 +78,8 @@ class TransformerModel(BaseModelExtra):
         cls,
         path_parameters: Set[str],
         dependencies: "Dependencies",
-        signature_fields: Dict[str, ModelField],
+        signature_fields: Dict[str, FieldInfo],
     ) -> Tuple[Set[ParamSetting], set]:
-        shapes = {
-            SHAPE_LIST,
-            SHAPE_SET,
-            SHAPE_SEQUENCE,
-            SHAPE_TUPLE,
-            SHAPE_TUPLE_ELLIPSIS,
-            SHAPE_DEQUE,
-            SHAPE_FROZENSET,
-        }
-
         _dependencies = set()
 
         for key in dependencies:
@@ -113,26 +91,26 @@ class TransformerModel(BaseModelExtra):
         parameter_definitions = set()
         for field_name, model_field in signature_fields.items():
             if field_name not in ignored_keys:
+                allow_none = getattr(model_field, "allow_none", True)
                 parameter_definitions.add(
                     create_parameter_setting(
-                        allow_none=model_field.allow_none,
+                        allow_none=allow_none,
                         field_name=field_name,
-                        field_info=model_field.field_info,
+                        field_info=model_field,
                         path_parameters=path_parameters,
-                        is_sequence=model_field.shape in shapes,
                     )
                 )
 
         filtered = [item for item in signature_fields.items() if item[0] not in ignored_keys]
         for field_name, model_field in filtered:
-            signature_field = model_field.field_info
+            signature_field = model_field
+            allow_none = getattr(signature_field, "allow_none", True)
             parameter_definitions.add(
                 create_parameter_setting(
-                    allow_none=model_field.allow_none,
+                    allow_none=allow_none,
                     field_name=field_name,
                     field_info=signature_field,
                     path_parameters=path_parameters,
-                    is_sequence=model_field.shape in shapes,
                 )
             )
 
@@ -148,7 +126,7 @@ class TransformerModel(BaseModelExtra):
         cls.validate_kwargs(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            model_fields=signature_model.__fields__,
+            model_fields=cast("Dict[str, FieldInfo]", signature_model.__fields__),
         )
 
         reserved_kwargs = set()
@@ -160,7 +138,7 @@ class TransformerModel(BaseModelExtra):
         param_settings, _dependencies = cls.get_parameter_settings(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            signature_fields=signature_model.__fields__,
+            signature_fields=cast("Dict[str, FieldInfo]", signature_model.__fields__),
         )
 
         path_params = set()
@@ -183,17 +161,15 @@ class TransformerModel(BaseModelExtra):
             if param.param_type == ParamType.QUERY:
                 query_params.add(param)
 
-        query_params_names = set()
-        for param in param_settings:
-            if param.param_type == ParamType.QUERY and param.is_sequence:
-                query_params_names.add(param)
+        query_params_names: Set[ParamSetting] = set()
 
         form_data = None
 
         # For the reserved keyword data
         data_field = signature_model.__fields__.get("data")
         if data_field:
-            media_type = data_field.field_info.extra.get("media_type")
+            extra = getattr(data_field, "json_schema_extra", None) or {}
+            media_type = extra.get("media_type")
             if media_type in MEDIA_TYPES:
                 form_data = (media_type, data_field)
 
@@ -211,7 +187,7 @@ class TransformerModel(BaseModelExtra):
 
         is_optional = False
         if "data" in reserved_kwargs:
-            is_optional = is_field_optional(signature_model.__fields__["data"])
+            is_optional = is_field_optional(signature_model.__fields__["data"])  # type: ignore
 
         return TransformerModel(
             form_data=form_data,
@@ -325,7 +301,7 @@ class TransformerModel(BaseModelExtra):
     @classmethod
     def validate_data(
         cls,
-        form_data: Optional[Tuple[EncodingType, ModelField]],
+        form_data: Optional[Tuple[EncodingType, FieldInfo]],
         dependency_model: "TransformerModel",
     ) -> None:
         if form_data and dependency_model.form_data:
@@ -351,18 +327,19 @@ class TransformerModel(BaseModelExtra):
         cls,
         path_parameters: Set[str],
         dependencies: "Dependencies",
-        model_fields: Dict[str, ModelField],
+        model_fields: Dict[str, FieldInfo],
     ) -> None:
         keys = set(dependencies.keys())
         names = set()
 
         for key, value in model_fields.items():
-            if (
-                value.field_info.extra.get(ParamType.QUERY)
-                or value.field_info.extra.get(ParamType.HEADER)
-                or value.field_info.extra.get(ParamType.COOKIE)
-            ):
-                names.add(key)
+            if value.json_schema_extra is not None:
+                if (
+                    value.json_schema_extra.get(ParamType.QUERY)
+                    or value.json_schema_extra.get(ParamType.HEADER)
+                    or value.json_schema_extra.get(ParamType.COOKIE)
+                ):
+                    names.add(key)
 
         for intersect in [
             path_parameters.intersection(keys)

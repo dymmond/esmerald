@@ -1,7 +1,7 @@
 import inspect
 from typing import Any
 
-from pydantic import (
+from pydantic.v1 import (
     ConstrainedBytes,
     ConstrainedDate,
     ConstrainedDecimal,

@@ -1,6 +1,6 @@
 from inspect import Signature as InspectSignature
 
-from pydantic.fields import Undefined
+from esmerald.typing import Undefined
 
 UNDEFINED = {Undefined, InspectSignature.empty}
 CLASS_SPECIAL_WORDS = {"self", "cls"}

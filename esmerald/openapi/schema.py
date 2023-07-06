@@ -13,8 +13,10 @@ from openapi_schemas_pydantic.utils.utils import OpenAPI310PydanticSchema
 from openapi_schemas_pydantic.v3_1_0.example import Example
 from openapi_schemas_pydantic.v3_1_0.reference import Reference
 from openapi_schemas_pydantic.v3_1_0.schema import Schema
-from pydantic import (
-    BaseModel,
+from polyfactory.factories.pydantic_factory import ModelFactory
+from pydantic import BaseModel
+from pydantic.fields import FieldInfo
+from pydantic.v1 import (
     ConstrainedBytes,
     ConstrainedDecimal,
     ConstrainedFloat,
@@ -23,8 +25,6 @@ from pydantic import (
     ConstrainedSet,
     ConstrainedStr,
 )
-from pydantic.fields import FieldInfo, ModelField, Undefined
-from pyfactories import ModelFactory
 from pyfactories.exceptions import ParameterError
 from pyfactories.utils import is_optional, is_pydantic_model, is_union
 
@@ -32,6 +32,7 @@ from esmerald.datastructures import UploadFile
 from esmerald.datastructures.types import EncoderType
 from esmerald.openapi.enums import OpenAPIType
 from esmerald.openapi.utils import get_openapi_type_for_complex_type
+from esmerald.typing import Undefined
 from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.model import convert_dataclass_to_model, create_parsed_model_field
 
@@ -61,7 +62,7 @@ def clean_values_from_example(value: Any) -> Any:
 
 class ExampleFactory(ModelFactory[BaseModel]):
     __model__ = BaseModel
-    __allow_none_optionals__: bool = False
+    __allow_none_optionals__: bool = False  # type: ignore
 
 
 def create_numerical_constrained_field_schema(
@@ -91,8 +92,8 @@ def create_string_constrained_field_schema(
         schema.minLength = field_type.min_length
     if field_type.max_length:
         schema.maxLength = field_type.max_length
-    if hasattr(field_type, "regex") and isinstance(field_type.regex, Pattern):
-        schema.pattern = field_type.regex.pattern
+    if hasattr(field_type, "pattern") and isinstance(field_type.pattern, Pattern):
+        schema.pattern = field_type.pattern.pattern
     if field_type.to_lower:
         schema.description = "must be in lower case"
     return schema
@@ -100,7 +101,7 @@ def create_string_constrained_field_schema(
 
 def create_collection_constrained_field_schema(
     field_type: Union[Type[ConstrainedList], Type[ConstrainedSet]],
-    sub_fields: Optional[List[ModelField]],
+    sub_fields: Optional[List[FieldInfo]],
 ) -> Schema:
     """Create Schema from Constrained List/Set field."""
     schema = Schema(type=OpenAPIType.ARRAY)
@@ -134,7 +135,7 @@ def create_constrained_field_schema(
         Type[ConstrainedInt],
         Type[ConstrainedDecimal],
     ],
-    sub_fields: Optional[List[ModelField]],
+    sub_fields: Optional[List[FieldInfo]],
 ) -> Schema:
     if issubclass(field_type, (ConstrainedFloat, ConstrainedInt, ConstrainedDecimal)):
         return create_numerical_constrained_field_schema(field_type=field_type)
@@ -143,7 +144,7 @@ def create_constrained_field_schema(
     return create_collection_constrained_field_schema(field_type=field_type, sub_fields=sub_fields)
 
 
-def update_schema_field_info(schema: Schema, field_info: FieldInfo) -> Schema:
+def update_schema_field_info(schema: Schema, field_info: "FieldInfo") -> Schema:
     if (
         field_info.const
         and field_info.default not in [None, ..., Undefined]
@@ -163,15 +164,15 @@ def update_schema_field_info(schema: Schema, field_info: FieldInfo) -> Schema:
     return schema
 
 
-def get_schema_for_field_type(field: ModelField) -> Schema:
+def get_schema_for_field_type(field: FieldInfo) -> Schema:
     field_type = field.outer_type_
     if is_class_and_subclass(field_type, EncoderType):
         return Schema()
 
     if field_type in TYPE_MAP:
-        return TYPE_MAP[field_type].copy()
+        return TYPE_MAP[field_type].model_copy()
     if is_pydantic_model(field_type):
-        return OpenAPI310PydanticSchema(schema_class=field_type)
+        return OpenAPI310PydanticSchema(schema_class=field_type)  # type: ignore
     if is_dataclass(field_type):
         return OpenAPI310PydanticSchema(schema_class=convert_dataclass_to_model(field_type))
     if isinstance(field_type, EnumMeta):
@@ -188,16 +189,16 @@ def get_schema_for_field_type(field: ModelField) -> Schema:
     return Schema()
 
 
-def create_examples_for_field(field: ModelField) -> List[Example]:
+def create_examples_for_field(field: FieldInfo) -> List[Example]:
     try:
-        value = clean_values_from_example(ExampleFactory.get_field_value(field))
+        value = clean_values_from_example(ExampleFactory.get_field_value(field))  # type: ignore
         return [Example(description=f"Example {field.name} value", value=value)]
     except ParameterError:
         return []
 
 
 def create_schema(
-    field: ModelField, create_examples: bool, ignore_optional: bool = False
+    field: FieldInfo, create_examples: bool, ignore_optional: bool = False
 ) -> Schema:
     if is_optional(field) and not ignore_optional:
         non_optional_schema = create_schema(
@@ -223,12 +224,11 @@ def create_schema(
         )
 
     elif ModelFactory.is_constrained_field(field.type_):
-        field.outer_type_ = field.type_
         schema = create_constrained_field_schema(
-            field_type=field.outer_type_, sub_fields=field.sub_fields  # type: ignore
+            field_type=field.annotation, sub_fields=field.sub_fields  # type: ignore
         )
     elif field.sub_fields:
-        openapi_type = get_openapi_type_for_complex_type(field)
+        openapi_type = get_openapi_type_for_complex_type(field)  # type: ignore
         schema = Schema(type=openapi_type)
         if openapi_type == OpenAPIType.ARRAY:
             items: List[Union[Reference, Schema]] = [  # type: ignore
@@ -242,7 +242,7 @@ def create_schema(
     else:
         schema = get_schema_for_field_type(field=field)
     if not ignore_optional:
-        schema = update_schema_field_info(schema=schema, field_info=field.field_info)
+        schema = update_schema_field_info(schema=schema, field_info=field)
     if not schema.examples and create_examples:
         schema.examples = create_examples_for_field(field=field)
     return schema

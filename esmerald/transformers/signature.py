@@ -2,24 +2,24 @@ from inspect import Signature as InspectSignature
 from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Set, Type
 
 from pydantic import create_model
-from pydantic.fields import Undefined
 
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.parsers import BaseModelExtra
+from esmerald.parsers import ArbitraryExtraBaseModel
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, VALIDATION_NAMES
 from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
 from esmerald.transformers.helpers import is_pydantic_constrained_field
 from esmerald.transformers.utils import get_field_definition_from_param
+from esmerald.typing import Undefined
 from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
 
 if TYPE_CHECKING:
-    from pydantic.typing import AnyCallable
+    from esmerald.typing import AnyCallable
 
 
-class SignatureFactory(BaseModelExtra):
-    class Config(BaseModelExtra.Config):
-        arbitrary_types_allowed = True
+object_setattr = object.__setattr__
 
+
+class SignatureFactory(ArbitraryExtraBaseModel):
     def __init__(
         self, fn: Optional["AnyCallable"], dependency_names: Set[str], **kwargs: Any
     ) -> None:

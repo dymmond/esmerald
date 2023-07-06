@@ -1,6 +1,7 @@
 from functools import cached_property
 from typing import Optional, Tuple
 
+from pydantic import ConfigDict
 from saffier import Database, Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -22,9 +23,8 @@ class TestSettings(EsmeraldAPISettings):
 
 
 class TestConfig(TestSettings):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     @property
     def scheduler_class(self) -> None:
         ...
-
-    class Config:
-        extra = "allow"

@@ -21,9 +21,7 @@ class TemplateDirective(BaseDirective):
     layout.
     """
 
-    url_schemes = ["http", "https", "ftp"]
-
-    rewrite_template_suffixes = (
+    rewrite_template_suffixes: Any = (
         (".py-tpl", ".py"),
         (".e-tpl", ""),
     )

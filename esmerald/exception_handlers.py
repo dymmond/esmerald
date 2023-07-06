@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic.error_wrappers import ValidationError
+from pydantic import ValidationError
 from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.requests import Request

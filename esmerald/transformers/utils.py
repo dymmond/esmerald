@@ -1,17 +1,16 @@
 from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
 
-from pydantic.fields import FieldInfo, Undefined
+from pydantic.fields import FieldInfo
 from starlette.datastructures import URL
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.parsers import BaseModelExtra, HashableBaseModel
+from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
+from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 
 if TYPE_CHECKING:
-    from pydantic.typing import MappingIntStrAny
-
     from esmerald.injector import Inject
     from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
     from esmerald.types import ConnectionType
@@ -22,12 +21,11 @@ class ParamSetting(NamedTuple):
     field_alias: str
     field_name: str
     is_required: bool
-    is_sequence: bool
     param_type: ParamType
     field_info: FieldInfo
 
 
-class Dependency(HashableBaseModel, BaseModelExtra):
+class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
     def __init__(
         self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: Any
     ) -> None:
@@ -35,9 +33,6 @@ class Dependency(HashableBaseModel, BaseModelExtra):
         self.key = key
         self.inject = inject
         self.dependencies = dependencies
-
-    class Config(BaseModelExtra.Config):
-        arbitrary_types_allowed = True
 
 
 def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
@@ -57,12 +52,11 @@ def create_parameter_setting(
     field_info: FieldInfo,
     field_name: str,
     path_parameters: Set[str],
-    is_sequence: bool,
 ) -> ParamSetting:
     """
     Creates a setting definition for a parameter.
     """
-    extra = field_info.extra
+    extra = field_info.json_schema_extra or {}
     is_required = extra.get(REQUIRED, True)
     default_value = field_info.default if field_info.default is not Undefined else None
 
@@ -85,13 +79,12 @@ def create_parameter_setting(
         default_value=default_value,
         field_name=field_name,
         field_info=field_info,
-        is_sequence=is_sequence,
         is_required=is_required and (default_value is None and not allow_none),
     )
     return param_settings
 
 
-def get_request_params(params: "MappingIntStrAny", expected: Set[ParamSetting], url: URL) -> Any:
+def get_request_params(params: Any, expected: Set[ParamSetting], url: URL) -> Any:
     """
     Gather the parameters from the request.
     """

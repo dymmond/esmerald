@@ -3,8 +3,7 @@ from copy import copy
 from http.cookies import SimpleCookie
 from typing import TYPE_CHECKING, Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
-from pydantic import BaseConfig, BaseModel, validator  # noqa
-from pydantic.generics import GenericModel  # noqa
+from pydantic import BaseModel, ConfigDict, field_validator  # noqa
 from starlette.datastructures import URL as URL  # noqa: F401
 from starlette.datastructures import Address as Address  # noqa: F401
 from starlette.datastructures import FormData as FormData  # noqa: F401
@@ -90,10 +89,8 @@ class Cookie(BaseModel):
         return simple_cookie.output(**kwargs).strip()
 
 
-class ResponseContainer(GenericModel, ABC, Generic[R]):
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
-
+class ResponseContainer(BaseModel, ABC, Generic[R]):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     background: Optional[Union[BackgroundTask, BackgroundTasks]] = None
     headers: Dict[str, Any] = {}
     cookies: List[Cookie] = []
@@ -110,11 +107,9 @@ class ResponseContainer(GenericModel, ABC, Generic[R]):
 
 
 class ResponseHeader(BaseModel):
-    value: Any = None
+    value: Optional[Any] = None
 
-    @validator("value", always=True)
-    def validate_value(
-        cls, value: Any, values: Dict[str, Any]
-    ) -> Any:  # pylint: disable=no-self-argument
+    @field_validator("value")  # type: ignore
+    def validate_value(cls, value: Any, values: Dict[str, Any]) -> Any:
         if value is not None:
             return value
