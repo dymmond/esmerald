@@ -61,6 +61,21 @@ class TransformerModel(ArbitraryExtraBaseModel):
         )
         self.is_optional = is_optional
 
+    def get_cookie_params(self) -> Set[ParamSetting]:
+        return self.cookies
+
+    def get_path_params(self) -> Set[ParamSetting]:
+        return self.path_params
+
+    def get_query_params(self) -> Set[ParamSetting]:
+        return self.query_params
+
+    def get_header_params(self) -> Set[ParamSetting]:
+        return self.headers
+
+    def is_kwargs(self) -> Set[ParamSetting]:
+        return self.has_kwargs
+
     @classmethod
     def dependency_tree(cls, key: str, dependencies: "Dependencies") -> Dependency:
         inject = dependencies[key]

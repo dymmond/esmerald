@@ -20,10 +20,12 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan, Receive, Scope, Send
 
+from esmerald._openapi.openapi import get_openapi
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
-from esmerald.config.openapi import OpenAPIConfig
+
+# from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
 from esmerald.exception_handlers import (
@@ -139,7 +141,9 @@ class Esmerald(Starlette):
         interceptors: Optional[Sequence["Interceptor"]] = None,
         dependencies: Optional["Dependencies"] = None,
         csrf_config: Optional["CSRFConfig"] = None,
-        openapi_config: Optional["OpenAPIConfig"] = None,
+        # openapi_config: Optional["OpenAPIConfig"] = None,
+        openapi_config: Optional[Dict[Any, Any]] = None,
+        openapi_version: Optional[str] = None,
         cors_config: Optional["CORSConfig"] = None,
         static_files_config: Optional["StaticFilesConfig"] = None,
         template_config: Optional["TemplateConfig"] = None,
@@ -207,6 +211,9 @@ class Esmerald(Starlette):
         )
         self.version = version or self.get_settings_value(
             self.settings_config, esmerald_settings, "version"
+        )
+        self.openapi_version = openapi_version or self.get_settings_value(
+            self.settings_config, esmerald_settings, "openapi_version"
         )
         self.summary = summary or self.get_settings_value(
             self.settings_config, esmerald_settings, "summary"
@@ -423,10 +430,23 @@ class Esmerald(Starlette):
         return setting_value
 
     def activate_openapi(self) -> None:
-        if self.openapi_config and self.enable_openapi:
-            self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
-            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
-            self.add_apiview(value=gateway)
+        if self.enable_openapi:
+            get_openapi(
+                title=self.title,
+                version=self.version,
+                openapi_version=self.openapi_version,
+                summary=self.summary,
+                description=self.description,
+                routes=self.routes,
+                tags=self.tags,
+                servers=self.servers,
+                terms_of_service=self.terms_of_service,
+                contact=self.contact,
+                license=self.license,
+            )
+            # self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
+            # gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
+            # self.add_apiview(value=gateway)
 
     def get_template_engine(
         self, template_config: "TemplateConfig"

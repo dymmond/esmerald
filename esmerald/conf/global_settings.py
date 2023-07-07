@@ -8,7 +8,9 @@ from starlette.types import Lifespan
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
-from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
+from esmerald.config import CORSConfig, CSRFConfig, SessionConfig, StaticFilesConfig
+
+# from esmerald.config import OpenAPIConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
@@ -43,6 +45,7 @@ class EsmeraldAPISettings(BaseSettings):
     servers: List[Server] = [Server(url="/")]
     secret_key: str = "my secret"
     version: str = __version__
+    openapi_version: str = "3.1.0"
     allowed_hosts: Optional[List[str]] = ["*"]
     allow_origins: Optional[List[str]] = None
     response_class: Optional[ResponseType] = None
@@ -219,8 +222,40 @@ class EsmeraldAPISettings(BaseSettings):
         """
         return None
 
+    # @property
+    # def openapi_config(self) -> OpenAPIConfig:
+    #     """
+    #     Initial Default configuration for the OpenAPI.
+    #     This can be overwritten in another setting or simply override `openapi_config` or then override the `def openapi_config()` property to change the behavior.
+
+    #     Default:
+    #         OpenAPIConfig
+
+    #     Example:
+
+    #         class MySettings(EsmeraldAPISettings):
+
+    #             @property
+    #             def openapi_config(self) -> OpenAPIConfig:
+    #                 ...
+    #     """
+    #     from esmerald.openapi.apiview import OpenAPIView
+
+    #     return OpenAPIConfig(
+    #         openapi_apiview=OpenAPIView,
+    #         title=self.title,
+    #         version=self.version,
+    #         contact=self.contact,
+    #         description=self.description,
+    #         terms_of_service=self.terms_of_service,
+    #         license=self.license,
+    #         servers=self.servers,
+    #         summary=self.summary,
+    #         security=self.security,
+    #         tags=self.tags,
+    #     )
     @property
-    def openapi_config(self) -> OpenAPIConfig:
+    def openapi_config(self) -> Dict[Any, Any]:
         """
         Initial Default configuration for the OpenAPI.
         This can be overwritten in another setting or simply override `openapi_config` or then override the `def openapi_config()` property to change the behavior.
@@ -236,21 +271,7 @@ class EsmeraldAPISettings(BaseSettings):
                 def openapi_config(self) -> OpenAPIConfig:
                     ...
         """
-        from esmerald.openapi.apiview import OpenAPIView
-
-        return OpenAPIConfig(
-            openapi_apiview=OpenAPIView,
-            title=self.title,
-            version=self.version,
-            contact=self.contact,
-            description=self.description,
-            terms_of_service=self.terms_of_service,
-            license=self.license,
-            servers=self.servers,
-            summary=self.summary,
-            security=self.security,
-            tags=self.tags,
-        )
+        return {}
 
     @property
     def middleware(self) -> Sequence[Middleware]:
