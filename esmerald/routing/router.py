@@ -35,6 +35,7 @@ from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
 from typing_extensions import Self
 
+from esmerald._openapi.datastructures import ResponseSpecification
 from esmerald.conf import settings
 from esmerald.core.urls import include
 from esmerald.datastructures import File, Redirect
@@ -46,7 +47,6 @@ from esmerald.exceptions import (
     ValidationErrorException,
 )
 from esmerald.interceptors.types import Interceptor
-from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.base import BaseHandlerMixin
@@ -64,6 +64,7 @@ from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:
     from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 
     from esmerald.applications import Esmerald
     from esmerald.exceptions import HTTPException
@@ -206,7 +207,7 @@ class Router(Parent, StarletteRouter):
         lifespan: Optional[Lifespan[Any]] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityRequirement"]] = None,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ):
         self.app = app
         if not path:
@@ -487,7 +488,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
         responses: Optional[Dict[int, ResponseSpecification]] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
@@ -587,6 +588,12 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         List of permissions for the route. This is used for OpenAPI Spec purposes only.
         """
         return [permission.__name__ for permission in self.permissions]
+
+    @property
+    def data_field(self) -> Any:
+        """The field used for the payload body"""
+        if DATA in self.signature_model.__fields__:
+            return self.signature_model.__fields__[DATA]
 
     def get_response_class(self) -> Type["Response"]:
         """

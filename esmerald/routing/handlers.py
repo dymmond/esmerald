@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Type, Union
 
 from starlette import status
 
+from esmerald._openapi.datastructures import ResponseSpecification
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import HTTPException, ImproperlyConfigured
-from esmerald.openapi.datastructures import ResponseSpecification
 from esmerald.permissions.types import Permission
 from esmerald.routing.router import HTTPHandler, WebSocketHandler
 from esmerald.types import (

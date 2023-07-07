@@ -1,30 +1,11 @@
-from dataclasses import dataclass
 from enum import Enum
-from typing import (
-    Any,
-    Callable,
-    Deque,
-    Dict,
-    FrozenSet,
-    List,
-    Mapping,
-    Sequence,
-    Set,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Any, Dict, List, Set, Tuple, Type, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
-from pydantic.v1.schema import (
-    field_schema,
-    get_flat_models_from_fields,
-    get_model_name_map,
-    model_process_schema,
-)
-from typing_extensions import Annotated, Literal, get_args, get_origin
+from pydantic.v1.schema import field_schema, model_process_schema
+from typing_extensions import Literal
 
 from esmerald._openapi.constants import REF_PREFIX
 from esmerald.typing import ModelMap
@@ -66,18 +47,6 @@ status_code_ranges: Dict[str, str] = {
 }
 
 
-def get_schema_from_model_field(
-    *,
-    field: FieldInfo,
-    schema_generator: GenerateJsonSchema,
-    model_name_map: ModelMap,
-    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> Dict[str, Any]:
-    return field_schema(  # type: ignore[no-any-return]
-        field, model_name_map=model_name_map, ref_prefix=REF_PREFIX
-    )[0]
-
-
 def get_definitions(
     *,
     fields: List[FieldInfo],
@@ -87,28 +56,50 @@ def get_definitions(
     Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
     Dict[str, Dict[str, Any]],
 ]:
-    models = get_flat_models_from_fields(fields, known_models=set())
-    return {}, get_model_definitions(flat_models=models, model_name_map=model_name_map)
+    inputs = [(field, "validation", TypeAdapter(field.annotation).core_schema) for field in fields]
+    field_mapping, definitions = schema_generator.generate_definitions(inputs=inputs)
+    return field_mapping, definitions  # type: ignore[return-value]
 
 
-def get_model_definitions(
+def get_schema_from_model_field(
     *,
-    flat_models: Set[Union[Type[BaseModel], Type[Enum]]],
-    model_name_map: Dict[Union[Type[BaseModel], Type[Enum]], str],
+    field: FieldInfo,
+    schema_generator: GenerateJsonSchema,
+    model_name_map: ModelMap,
+    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> Dict[str, Any]:
-    definitions: Dict[str, Dict[str, Any]] = {}
-    for model in flat_models:
-        m_schema, m_definitions, m_nested_models = model_process_schema(
-            model, model_name_map=model_name_map, ref_prefix=REF_PREFIX
-        )
-        definitions.update(m_definitions)
-        model_name = model_name_map[model]
-        if "description" in m_schema:
-            m_schema["description"] = m_schema["description"].split("\f")[0]
-        definitions[model_name] = m_schema
-    return definitions
+    json_schema = field_mapping[(field, "validation")]
+    if "$ref" not in json_schema:
+        json_schema["title"] = field.title or field.alias.title().replace("_", " ")
+    return json_schema
 
 
-@dataclass
-class JsonSchema:  # type: ignore[no-redef]
-    ref_template: str
+def is_body_allowed_for_status_code(status_code: Union[int, str, None]) -> bool:
+    if status_code is None:
+        return True
+    # Ref: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#patterned-fields-1
+    if status_code in {
+        "default",
+        "1XX",
+        "2XX",
+        "3XX",
+        "4XX",
+        "5XX",
+    }:
+        return True
+    current_status_code = int(status_code)
+    return not (current_status_code < 200 or current_status_code in {204, 304})
+
+
+def deep_dict_update(main_dict: Dict[Any, Any], update_dict: Dict[Any, Any]) -> None:
+    for key, value in update_dict.items():
+        if key in main_dict and isinstance(main_dict[key], dict) and isinstance(value, dict):
+            deep_dict_update(main_dict[key], value)
+        elif (
+            key in main_dict
+            and isinstance(main_dict[key], list)
+            and isinstance(update_dict[key], list)
+        ):
+            main_dict[key] = main_dict[key] + update_dict[key]
+        else:
+            main_dict[key] = value

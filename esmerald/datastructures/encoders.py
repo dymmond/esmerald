@@ -18,6 +18,7 @@ except ImportError:
 
 
 class OrJSON(ResponseContainer[ORJSONResponse]):
+    media_type: str = "application/json"
     content: Optional[Dict[str, Any]] = None
     status_code: Optional[int] = None
 
@@ -53,6 +54,7 @@ class OrJSON(ResponseContainer[ORJSONResponse]):
 
 
 class UJSON(ResponseContainer[UJSONResponse]):
+    media_type: str = "application/json"
     content: Optional[Dict[str, Any]] = None
     status_code: Optional[int] = None
 

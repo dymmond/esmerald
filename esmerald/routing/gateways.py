@@ -61,7 +61,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         else:
             self.path = clean_path(path)
 
-        self.methods = getattr(handler, "methods", None)
+        self.methods = getattr(handler, "http_methods", None)
 
         if not name:
             if not isinstance(handler, APIView):
