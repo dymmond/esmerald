@@ -344,6 +344,8 @@ def get_openapi(
     """
     Builds the whole OpenAPI route structure and object
     """
+    from esmerald import ChildEsmerald, Esmerald
+
     info: Dict[str, Any] = {"title": title, "version": version}
     if summary:
         info["summary"] = summary
@@ -381,9 +383,16 @@ def get_openapi(
     ):
         for route in routes:
             if isinstance(route, router.Include):
-                definitions, components = iterate_routes(
-                    route.routes, definitions, components, prefix=route.path
-                )
+                if hasattr(route, "app") and isinstance(route.app, (Esmerald, ChildEsmerald)):
+                    route_path = clean_path(prefix + route.path)
+                    definitions, components = iterate_routes(
+                        route.app.routes, definitions, components, prefix=route_path
+                    )
+                else:
+                    route_path = clean_path(prefix + route.path)
+                    definitions, components = iterate_routes(
+                        route.routes, definitions, components, prefix=route_path
+                    )
                 continue
 
             if isinstance(route, gateways.Gateway):

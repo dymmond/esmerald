@@ -20,12 +20,6 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan, Receive, Scope, Send
 
-from esmerald._openapi.docs import (
-    get_redoc_html,
-    get_swagger_ui_html,
-    get_swagger_ui_oauth2_redirect_html,
-)
-from esmerald._openapi.openapi import get_openapi
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
@@ -47,10 +41,7 @@ from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
-from esmerald.requests import Request
-from esmerald.responses import HTMLResponse, JSONResponse
 from esmerald.routing import gateways
-from esmerald.routing.handlers import get
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
 from esmerald.types import (
     APIGateHandler,
@@ -444,89 +435,9 @@ class Esmerald(Starlette):
             return getattr(global_settings, value, None)
         return setting_value
 
-    def openapi(self) -> Dict[str, Any]:
-        self.openapi_schema = get_openapi(
-            title=self.title or self.openapi_config.title,
-            version=self.version or self.openapi_config.version,
-            openapi_version=self.openapi_version or self.openapi_config.version,
-            summary=self.summary or self.openapi_config.summary,
-            description=self.description or self.openapi_config.description,
-            routes=self.routes,
-            tags=self.tags or self.openapi_config.tags,
-            servers=self.servers or self.openapi_config.servers,
-            terms_of_service=self.terms_of_service or self.openapi_config.terms_of_service,
-            contact=self.contact or self.openapi_config.contact,
-            license=self.license or self.openapi_config.license,
-        )
-        return self.openapi_schema
-
     def activate_openapi(self) -> None:
         if self.enable_openapi:
-            if self.openapi_config.openapi_url:
-                urls = {server.url for server in self.servers}
-
-                @get(path=self.openapi_config.openapi_url)
-                async def _openapi(request: Request) -> JSONResponse:
-                    root_path = request.scope.get("root_path", "").rstrip("/")
-                    if root_path not in urls:
-                        if root_path and self.root_path_in_servers:
-                            self.servers.insert(0, {"url": root_path})
-                            urls.add(root_path)
-                    return JSONResponse(self.openapi())
-
-                self.add_route(
-                    path="/", handler=_openapi, include_in_schema=False, activate_openapi=False
-                )
-
-            if self.openapi_config.openapi_url and self.openapi_config.docs_url:
-
-                @get(path=self.openapi_config.docs_url)
-                async def swagger_ui_html(request: Request) -> HTMLResponse:
-                    root_path = request.scope.get("root_path", "").rstrip("/")
-                    openapi_url = root_path + self.openapi_config.openapi_url
-                    oauth2_redirect_url = self.openapi_config.swagger_ui_oauth2_redirect_url
-                    if oauth2_redirect_url:
-                        oauth2_redirect_url = root_path + oauth2_redirect_url
-                    return get_swagger_ui_html(
-                        openapi_url=openapi_url,
-                        title=self.title + " - Swagger UI",
-                        oauth2_redirect_url=oauth2_redirect_url,
-                        init_oauth=self.openapi_config.swagger_ui_init_oauth,
-                        swagger_ui_parameters=self.openapi_config.swagger_ui_parameters,
-                    )
-
-                self.add_route(
-                    path="/",
-                    handler=swagger_ui_html,
-                    include_in_schema=False,
-                    activate_openapi=False,
-                )
-
-            if self.openapi_config.swagger_ui_oauth2_redirect_url:
-
-                @get(self.openapi_config.swagger_ui_oauth2_redirect_url)
-                async def swagger_ui_redirect(request: Request) -> HTMLResponse:
-                    return get_swagger_ui_oauth2_redirect_html()
-
-                self.add_route(
-                    path="/",
-                    handler=swagger_ui_redirect,
-                    include_in_schema=False,
-                    activate_openapi=False,
-                )
-
-            if self.openapi_config.openapi_url and self.openapi_config.redoc_url:
-
-                @get(self.openapi_config.redoc_url)
-                async def redoc_html(request: Request) -> HTMLResponse:
-                    root_path = request.scope.get("root_path", "").rstrip("/")
-                    openapi_url = root_path + self.openapi_config.openapi_url
-                    return get_redoc_html(openapi_url=openapi_url, title=self.title + " - ReDoc")
-
-                self.add_route(
-                    path="/", handler=redoc_html, include_in_schema=False, activate_openapi=False
-                )
-            self.router.activate()
+            self.openapi_config.enable(self)
 
     def get_template_engine(
         self, template_config: "TemplateConfig"
