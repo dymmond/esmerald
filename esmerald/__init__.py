@@ -9,9 +9,7 @@ from esmerald.injector import Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .backgound import BackgroundTask, BackgroundTasks
-from .config import CORSConfig, CSRFConfig, SessionConfig, StaticFilesConfig
-
-# from .config import OpenAPIConfig
+from .config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from .datastructures import JSON, Redirect, Stream, Template, UploadFile
 from .exceptions import (
     HTTPException,

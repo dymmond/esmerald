@@ -13,7 +13,7 @@ from typing import (
     cast,
 )
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Server, Tag
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl
 from starlette.applications import Starlette
@@ -29,8 +29,7 @@ from esmerald._openapi.openapi import get_openapi
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
-
-# from esmerald.config.openapi import OpenAPIConfig
+from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
 from esmerald.exception_handlers import (
@@ -140,7 +139,7 @@ class Esmerald(Starlette):
         contact: Optional[Contact] = None,
         terms_of_service: Optional[AnyUrl] = None,
         license: Optional[License] = None,
-        security: Optional[List[SecurityRequirement]] = None,
+        security: Optional[List[SecurityScheme]] = None,
         servers: Optional[List[Server]] = None,
         secret_key: Optional[str] = None,
         allowed_hosts: Optional[List[str]] = None,
@@ -149,8 +148,7 @@ class Esmerald(Starlette):
         interceptors: Optional[Sequence["Interceptor"]] = None,
         dependencies: Optional["Dependencies"] = None,
         csrf_config: Optional["CSRFConfig"] = None,
-        # openapi_config: Optional["OpenAPIConfig"] = None,
-        openapi_config: Optional[Dict[Any, Any]] = None,
+        openapi_config: Optional["OpenAPIConfig"] = None,
         openapi_version: Optional[str] = None,
         cors_config: Optional["CORSConfig"] = None,
         static_files_config: Optional["StaticFilesConfig"] = None,
@@ -178,13 +176,13 @@ class Esmerald(Starlette):
         redirect_slashes: Optional[bool] = None,
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
-        openapi_url: Optional[str] = "/openapi.json",
-        docs_url: Optional[str] = "/docs",
-        redoc_url: Optional[str] = "/redoc",
-        swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect",
         root_path_in_servers: bool = True,
-        swagger_ui_init_oauth: Optional[Dict[str, Any]] = None,
-        swagger_ui_parameters: Optional[Dict[str, Any]] = None,
+        # openapi_url: Optional[str] = "/openapi.json",
+        # docs_url: Optional[str] = "/docs",
+        # redoc_url: Optional[str] = "/redoc",
+        # swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect",
+        # swagger_ui_init_oauth: Optional[Dict[str, Any]] = None,
+        # swagger_ui_parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.settings_config = None
 
@@ -209,20 +207,14 @@ class Esmerald(Starlette):
 
         self.parent = parent
 
-        self.openapi_url = openapi_url
-        self.docs_url = docs_url
-        self.redoc_url = redoc_url
-        self.swagger_ui_oauth2_redirect_url = swagger_ui_oauth2_redirect_url
-        self.root_path_in_servers = root_path_in_servers
-        self.swagger_ui_init_oauth = swagger_ui_init_oauth
-        self.swagger_ui_parameters = swagger_ui_parameters
-
         self._debug = (
             debug
             if debug is not None
             else self.get_settings_value(self.settings_config, esmerald_settings, "debug")
         )
         self.debug = self._debug
+        self.root_path_in_servers = root_path_in_servers
+
         self.title = title or self.get_settings_value(
             self.settings_config, esmerald_settings, "title"
         )
@@ -454,26 +446,26 @@ class Esmerald(Starlette):
 
     def openapi(self) -> Dict[str, Any]:
         self.openapi_schema = get_openapi(
-            title=self.title,
-            version=self.version,
-            openapi_version=self.openapi_version,
-            summary=self.summary,
-            description=self.description,
+            title=self.title or self.openapi_config.title,
+            version=self.version or self.openapi_config.version,
+            openapi_version=self.openapi_version or self.openapi_config.version,
+            summary=self.summary or self.openapi_config.summary,
+            description=self.description or self.openapi_config.description,
             routes=self.routes,
-            tags=self.tags,
-            servers=self.servers,
-            terms_of_service=self.terms_of_service,
-            contact=self.contact,
-            license=self.license,
+            tags=self.tags or self.openapi_config.tags,
+            servers=self.servers or self.openapi_config.servers,
+            terms_of_service=self.terms_of_service or self.openapi_config.terms_of_service,
+            contact=self.contact or self.openapi_config.contact,
+            license=self.license or self.openapi_config.license,
         )
         return self.openapi_schema
 
     def activate_openapi(self) -> None:
         if self.enable_openapi:
-            if self.openapi_url:
+            if self.openapi_config.openapi_url:
                 urls = {server.url for server in self.servers}
 
-                @get(path=self.openapi_url)
+                @get(path=self.openapi_config.openapi_url)
                 async def _openapi(request: Request) -> JSONResponse:
                     root_path = request.scope.get("root_path", "").rstrip("/")
                     if root_path not in urls:
@@ -486,21 +478,21 @@ class Esmerald(Starlette):
                     path="/", handler=_openapi, include_in_schema=False, activate_openapi=False
                 )
 
-            if self.openapi_url and self.docs_url:
+            if self.openapi_config.openapi_url and self.openapi_config.docs_url:
 
-                @get(path=self.docs_url)
+                @get(path=self.openapi_config.docs_url)
                 async def swagger_ui_html(request: Request) -> HTMLResponse:
                     root_path = request.scope.get("root_path", "").rstrip("/")
-                    openapi_url = root_path + self.openapi_url
-                    oauth2_redirect_url = self.swagger_ui_oauth2_redirect_url
+                    openapi_url = root_path + self.openapi_config.openapi_url
+                    oauth2_redirect_url = self.openapi_config.swagger_ui_oauth2_redirect_url
                     if oauth2_redirect_url:
                         oauth2_redirect_url = root_path + oauth2_redirect_url
                     return get_swagger_ui_html(
                         openapi_url=openapi_url,
                         title=self.title + " - Swagger UI",
                         oauth2_redirect_url=oauth2_redirect_url,
-                        init_oauth=self.swagger_ui_init_oauth,
-                        swagger_ui_parameters=self.swagger_ui_parameters,
+                        init_oauth=self.openapi_config.swagger_ui_init_oauth,
+                        swagger_ui_parameters=self.openapi_config.swagger_ui_parameters,
                     )
 
                 self.add_route(
@@ -510,9 +502,9 @@ class Esmerald(Starlette):
                     activate_openapi=False,
                 )
 
-            if self.swagger_ui_oauth2_redirect_url:
+            if self.openapi_config.swagger_ui_oauth2_redirect_url:
 
-                @get(self.swagger_ui_oauth2_redirect_url)
+                @get(self.openapi_config.swagger_ui_oauth2_redirect_url)
                 async def swagger_ui_redirect(request: Request) -> HTMLResponse:
                     return get_swagger_ui_oauth2_redirect_html()
 
@@ -523,12 +515,12 @@ class Esmerald(Starlette):
                     activate_openapi=False,
                 )
 
-            if self.openapi_url and self.redoc_url:
+            if self.openapi_config.openapi_url and self.openapi_config.redoc_url:
 
-                @get(self.redoc_url)
+                @get(self.openapi_config.redoc_url)
                 async def redoc_html(request: Request) -> HTMLResponse:
                     root_path = request.scope.get("root_path", "").rstrip("/")
-                    openapi_url = root_path + self.openapi_url
+                    openapi_url = root_path + self.openapi_config.openapi_url
                     return get_redoc_html(openapi_url=openapi_url, title=self.title + " - ReDoc")
 
                 self.add_route(
@@ -631,7 +623,7 @@ class Esmerald(Starlette):
         permissions: Optional[List["Permission"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
     ) -> None:
         """
         Adds a child esmerald into the application routers.

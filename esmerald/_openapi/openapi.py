@@ -3,6 +3,7 @@ import json
 import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Tuple, cast
 
+from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from starlette.routing import BaseRoute
@@ -21,6 +22,7 @@ from esmerald._openapi._utils import (
 from esmerald._openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
 from esmerald._openapi.datastructures import ResponseSpecification
 from esmerald._openapi.models import Contact, License, OpenAPI, Server, Tag
+from esmerald.enums import MediaType
 from esmerald.params import Body, Param
 from esmerald.routing import gateways, router
 from esmerald.typing import ModelMap, Undefined
@@ -181,15 +183,18 @@ def get_openapi_path(
     assert route.methods is not None, "Methods must be a list"
 
     route_response_media_type: str = None
-    # response_class = route.handler.response_class
-    # if not response_class:
-    #     response_class = route.handler.signature.return_annotation
+    response_class = route.handler.response_class
+    if not response_class:
+        response_class = route.handler.signature.return_annotation
 
-    # if issubclass(response_class, BaseModel):
-    #     _response_class = response_class()
-    #     route_response_media_type = _response_class.media_type
-    # else:
-    #     route_response_media_type = _response_class.media_type
+    if not response_class:
+        route_response_media_type = MediaType.JSON.value
+    else:
+        if issubclass(response_class, BaseModel):
+            _response_class = response_class()
+            route_response_media_type = _response_class.media_type
+        else:
+            route_response_media_type = response_class.media_type
 
     handler = route.handler
 
@@ -251,9 +256,9 @@ def get_openapi_path(
             response_schema = {"type": "string"}
             response_schema = {}
 
-            operation.setdefault("responses", {}).setdefault(route_response_media_type, {})[
-                "schema"
-            ] = response_schema
+            operation.setdefault("responses", {}).setdefault(status_code, {}).setdefault(
+                "content", {}
+            ).setdefault(route_response_media_type, {})["schema"] = response_schema
 
         # Additional responses
         if handler.responses:
@@ -273,13 +278,13 @@ def get_openapi_path(
 
                 field = handler.responses.get(additional_status_code)
                 additional_field_schema: Optional[Dict[str, Any]] = None
+                model_schema = process_response.model.model_json_schema()
 
                 if field:
                     additional_field_schema = field.model.model_json_schema()
                     media_type = route_response_media_type or "application/json"
                     additional_schema = (
-                        process_response.model.model_json_schema()
-                        .setdefault("content", {})
+                        model_schema.setdefault("content", {})
                         .setdefault(media_type, {})
                         .setdefault("schema", {})
                     )
@@ -298,8 +303,9 @@ def get_openapi_path(
                     or "Additional Response"
                 )
 
-                deep_dict_update(openapi_response, process_response.model.model_json_schema())
+                deep_dict_update(openapi_response, model_schema)
                 openapi_response["description"] = description
+
         http422 = str(HTTP_422_UNPROCESSABLE_ENTITY)
         if (all_route_params or handler.data_field) and not any(
             status in operation["responses"] for status in {http422, "4XX", "default"}

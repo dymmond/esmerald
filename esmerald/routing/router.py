@@ -65,7 +65,6 @@ from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
     from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 
     from esmerald.applications import Esmerald
@@ -915,7 +914,7 @@ class Include(Mount):
         middleware: Optional[List["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityRequirement"]] = None,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ) -> None:
         self.path = path
         if not path:

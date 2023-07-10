@@ -12,7 +12,7 @@ from esmerald.openapi.request_body import create_request_body
 from esmerald.openapi.responses import create_responses
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0 import SecurityScheme
     from pydantic import BaseModel
     from pydantic.typing import AnyCallable
 
@@ -35,7 +35,7 @@ def extract_level_values(
     handler: "HTTPHandler",
 ) -> Tuple[Optional[List[str]], Optional[List[Dict[str, List[str]]]]]:
     tags: List[str] = []
-    security: List["SecurityRequirement"] = []
+    security: List["SecurityScheme"] = []
 
     for layer in handler.parent_levels:
         if hasattr(layer, "tags"):

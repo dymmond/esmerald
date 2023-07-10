@@ -19,7 +19,7 @@ from esmerald.types import (
 from esmerald.utils.constants import AVAILABLE_METHODS
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0 import SecurityScheme
 
 
 SUCCESSFUL_RESPONSE = "Successful response"
@@ -47,7 +47,7 @@ class get(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -103,7 +103,7 @@ class head(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -159,7 +159,7 @@ class options(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -215,7 +215,7 @@ class trace(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -271,7 +271,7 @@ class post(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -327,7 +327,7 @@ class put(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -383,7 +383,7 @@ class patch(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -439,7 +439,7 @@ class delete(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
@@ -496,7 +496,7 @@ class route(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
