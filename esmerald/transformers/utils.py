@@ -5,6 +5,7 @@ from starlette.datastructures import URL
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
+from esmerald.params import Cookie, Header, Path, Query
 from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.typing import Undefined
@@ -66,22 +67,31 @@ def create_parameter_setting(
     if field_name in path_parameters:
         field_alias = field_name
         param_type = param_type.PATH
+        param = Path()
     elif extra.get(ParamType.HEADER):
         field_alias = extra[ParamType.HEADER]
         param_type = ParamType.HEADER
+        param = Header()
+
     elif extra.get(ParamType.COOKIE):
         field_alias = extra[ParamType.COOKIE]
         param_type = ParamType.COOKIE
+        param = Cookie()
+    else:
+        param = Query()
 
     if not field_info.alias:
         field_info.alias = field_name
+
+    for key, _ in param._attributes_set.items():
+        setattr(param, key, getattr(field_info, key, None))
 
     param_settings = ParamSetting(
         param_type=param_type,
         field_alias=field_alias,
         default_value=default_value,
         field_name=field_name,
-        field_info=field_info,
+        field_info=param,
         is_required=is_required and (default_value is None and not allow_none),
     )
     return param_settings

@@ -3,7 +3,6 @@ import json
 import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Tuple, cast
 
-from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from starlette.routing import BaseRoute
@@ -55,8 +54,8 @@ def get_fields_from_routes(
             continue
 
         if getattr(route, "include_in_schema", None) and isinstance(route, gateways.Gateway):
-            if DATA in route.handler.signature_model.__fields__:
-                data_field = route.handler.signature_model.__fields__["data"]
+            if DATA in route.handler.signature_model.model_fields:
+                data_field = route.handler.data_field
                 body_fields.append(data_field)
             # if route.handler.responses:
             #     response_from_routes.append(route.handler.responses.values())
@@ -107,7 +106,7 @@ def get_openapi_operation_parameters(
 ) -> List[Dict[str, Any]]:
     parameters = []
     for param in all_route_params:
-        field_info = cast(Param, FieldInfo)
+        field_info = cast(Param, param)
         if not field_info.include_in_schema:
             continue
 
@@ -135,18 +134,25 @@ def get_openapi_operation_parameters(
 
 def get_openapi_operation_request_body(
     *,
-    data_field: Optional[BaseModel],
+    data_field: Optional[FieldInfo],
     schema_generator: GenerateJsonSchema,
     model_name_map: ModelMap,
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> Optional[Dict[str, Any]]:
     if not data_field:
         return None
-    assert isinstance(data_field, BaseModel), "The 'data' needs to be a Pydantic model"
-    schema = data_field.model_dump()
+
+    assert isinstance(data_field, FieldInfo), "The 'data' needs to be a FieldInfo"
+    # schema = data_field.model_dump()
+    schema = get_schema_from_model_field(
+        field=data_field,
+        schema_generator=schema_generator,
+        model_name_map=model_name_map,
+        field_mapping=field_mapping,
+    )
 
     field_info = cast(Body, data_field)
-    request_media_type = field_info.media_type
+    request_media_type = field_info.media_type.value
     required = field_info.is_required()
 
     request_data_oai: Dict[str, Any] = {}
@@ -292,7 +298,7 @@ def get_openapi_path(
                     or "Additional Response"
                 )
 
-                deep_dict_update(openapi_response, process_response.model.model_dump())
+                deep_dict_update(openapi_response, process_response.model.model_json_schema())
                 openapi_response["description"] = description
 
         http422 = str(HTTP_422_UNPROCESSABLE_ENTITY)
@@ -387,7 +393,9 @@ def get_openapi(
 
         return definitions, components
 
-    definitions, components = iterate_routes(routes=routes)
+    definitions, components = iterate_routes(
+        routes=routes, definitions=definitions, components=components
+    )
 
     if definitions:
         components["schemas"] = {k: definitions[k] for k in sorted(definitions)}
@@ -398,4 +406,5 @@ def get_openapi(
         output["tags"] = tags
 
     openapi = OpenAPI(**output)
-    return openapi.model_json_schema(by_alias=True)
+    model_dump = openapi.model_dump(by_alias=True, exclude_none=True)
+    return model_dump

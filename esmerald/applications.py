@@ -20,6 +20,11 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan, Receive, Scope, Send
 
+from esmerald._openapi.docs import (
+    get_redoc_html,
+    get_swagger_ui_html,
+    get_swagger_ui_oauth2_redirect_html,
+)
 from esmerald._openapi.openapi import get_openapi
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -43,7 +48,10 @@ from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
+from esmerald.requests import Request
+from esmerald.responses import HTMLResponse, JSONResponse
 from esmerald.routing import gateways
+from esmerald.routing.handlers import get
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
 from esmerald.types import (
     APIGateHandler,
@@ -170,6 +178,13 @@ class Esmerald(Starlette):
         redirect_slashes: Optional[bool] = None,
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
+        openapi_url: Optional[str] = "/openapi.json",
+        docs_url: Optional[str] = "/docs",
+        redoc_url: Optional[str] = "/redoc",
+        swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect",
+        root_path_in_servers: bool = True,
+        swagger_ui_init_oauth: Optional[Dict[str, Any]] = None,
+        swagger_ui_parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.settings_config = None
 
@@ -193,6 +208,14 @@ class Esmerald(Starlette):
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
         self.parent = parent
+
+        self.openapi_url = openapi_url
+        self.docs_url = docs_url
+        self.redoc_url = redoc_url
+        self.swagger_ui_oauth2_redirect_url = swagger_ui_oauth2_redirect_url
+        self.root_path_in_servers = root_path_in_servers
+        self.swagger_ui_init_oauth = swagger_ui_init_oauth
+        self.swagger_ui_parameters = swagger_ui_parameters
 
         self._debug = (
             debug
@@ -429,24 +452,89 @@ class Esmerald(Starlette):
             return getattr(global_settings, value, None)
         return setting_value
 
+    def openapi(self) -> Dict[str, Any]:
+        self.openapi_schema = get_openapi(
+            title=self.title,
+            version=self.version,
+            openapi_version=self.openapi_version,
+            summary=self.summary,
+            description=self.description,
+            routes=self.routes,
+            tags=self.tags,
+            servers=self.servers,
+            terms_of_service=self.terms_of_service,
+            contact=self.contact,
+            license=self.license,
+        )
+        return self.openapi_schema
+
     def activate_openapi(self) -> None:
         if self.enable_openapi:
-            get_openapi(
-                title=self.title,
-                version=self.version,
-                openapi_version=self.openapi_version,
-                summary=self.summary,
-                description=self.description,
-                routes=self.routes,
-                tags=self.tags,
-                servers=self.servers,
-                terms_of_service=self.terms_of_service,
-                contact=self.contact,
-                license=self.license,
-            )
-            # self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
-            # gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
-            # self.add_apiview(value=gateway)
+            if self.openapi_url:
+                urls = {server.url for server in self.servers}
+
+                @get(path=self.openapi_url)
+                async def _openapi(request: Request) -> JSONResponse:
+                    root_path = request.scope.get("root_path", "").rstrip("/")
+                    if root_path not in urls:
+                        if root_path and self.root_path_in_servers:
+                            self.servers.insert(0, {"url": root_path})
+                            urls.add(root_path)
+                    return JSONResponse(self.openapi())
+
+                self.add_route(
+                    path="/", handler=_openapi, include_in_schema=False, activate_openapi=False
+                )
+
+            if self.openapi_url and self.docs_url:
+
+                @get(path=self.docs_url)
+                async def swagger_ui_html(request: Request) -> HTMLResponse:
+                    root_path = request.scope.get("root_path", "").rstrip("/")
+                    openapi_url = root_path + self.openapi_url
+                    oauth2_redirect_url = self.swagger_ui_oauth2_redirect_url
+                    if oauth2_redirect_url:
+                        oauth2_redirect_url = root_path + oauth2_redirect_url
+                    return get_swagger_ui_html(
+                        openapi_url=openapi_url,
+                        title=self.title + " - Swagger UI",
+                        oauth2_redirect_url=oauth2_redirect_url,
+                        init_oauth=self.swagger_ui_init_oauth,
+                        swagger_ui_parameters=self.swagger_ui_parameters,
+                    )
+
+                self.add_route(
+                    path="/",
+                    handler=swagger_ui_html,
+                    include_in_schema=False,
+                    activate_openapi=False,
+                )
+
+            if self.swagger_ui_oauth2_redirect_url:
+
+                @get(self.swagger_ui_oauth2_redirect_url)
+                async def swagger_ui_redirect(request: Request) -> HTMLResponse:
+                    return get_swagger_ui_oauth2_redirect_html()
+
+                self.add_route(
+                    path="/",
+                    handler=swagger_ui_redirect,
+                    include_in_schema=False,
+                    activate_openapi=False,
+                )
+
+            if self.openapi_url and self.redoc_url:
+
+                @get(self.redoc_url)
+                async def redoc_html(request: Request) -> HTMLResponse:
+                    root_path = request.scope.get("root_path", "").rstrip("/")
+                    openapi_url = root_path + self.openapi_url
+                    return get_redoc_html(openapi_url=openapi_url, title=self.title + " - ReDoc")
+
+                self.add_route(
+                    path="/", handler=redoc_html, include_in_schema=False, activate_openapi=False
+                )
+            self.router.activate()
 
     def get_template_engine(
         self, template_config: "TemplateConfig"
@@ -481,6 +569,7 @@ class Esmerald(Starlette):
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
         include_in_schema: bool = True,
+        activate_openapi: bool = True,
     ) -> None:
         """
         Adds a route into the router.
@@ -498,7 +587,8 @@ class Esmerald(Starlette):
             include_in_schema=include_in_schema,
         )
 
-        self.activate_openapi()
+        if activate_openapi:
+            self.activate_openapi()
 
     def add_websocket_route(
         self,
