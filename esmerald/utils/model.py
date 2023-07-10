@@ -32,7 +32,7 @@ def create_parsed_model_field(value: Type[Any]) -> "FieldInfo":
     """Create a pydantic model with the passed in value as its sole field, and
     return the parsed field."""
     model = create_model("temp", __config__=config, **{"value": (value, ... if not repr(value).startswith("typing.Optional") else None)})  # type: ignore
-    return cast("BaseModel", model).__fields__["value"]
+    return cast("BaseModel", model).model_fields["value"]
 
 
 _dataclass_model_map: Dict[Any, Type[BaseModel]] = {}

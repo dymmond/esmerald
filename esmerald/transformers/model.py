@@ -79,7 +79,9 @@ class TransformerModel(ArbitraryExtraBaseModel):
     @classmethod
     def dependency_tree(cls, key: str, dependencies: "Dependencies") -> Dependency:
         inject = dependencies[key]
-        dependency_keys = [key for key in get_signature(inject).__fields__ if key in dependencies]
+        dependency_keys = [
+            key for key in get_signature(inject).model_fields if key in dependencies
+        ]
         return Dependency(
             key=key,
             inject=inject,
@@ -141,19 +143,19 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cls.validate_kwargs(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            model_fields=cast("Dict[str, FieldInfo]", signature_model.__fields__),
+            model_fields=cast("Dict[str, FieldInfo]", signature_model.model_fields),
         )
 
         reserved_kwargs = set()
 
-        for field_name in signature_model.__fields__:
+        for field_name in signature_model.model_fields:
             if field_name in RESERVED_KWARGS:
                 reserved_kwargs.add(field_name)
 
         param_settings, _dependencies = cls.get_parameter_settings(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            signature_fields=cast("Dict[str, FieldInfo]", signature_model.__fields__),
+            signature_fields=cast("Dict[str, FieldInfo]", signature_model.model_fields),
         )
 
         path_params = set()
@@ -181,7 +183,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         form_data = None
 
         # For the reserved keyword data
-        data_field = signature_model.__fields__.get("data")
+        data_field = signature_model.model_fields.get("data")
         if data_field:
             extra = getattr(data_field, "json_schema_extra", None) or {}
             media_type = extra.get("media_type")
@@ -202,7 +204,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         is_optional = False
         if "data" in reserved_kwargs:
-            is_optional = is_field_optional(signature_model.__fields__["data"])  # type: ignore
+            is_optional = is_field_optional(signature_model.model_fields["data"])  # type: ignore
 
         return TransformerModel(
             form_data=form_data,

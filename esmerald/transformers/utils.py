@@ -73,6 +73,9 @@ def create_parameter_setting(
         field_alias = extra[ParamType.COOKIE]
         param_type = ParamType.COOKIE
 
+    if not field_info.alias:
+        field_info.alias = field_name
+
     param_settings = ParamSetting(
         param_type=param_type,
         field_alias=field_alias,
