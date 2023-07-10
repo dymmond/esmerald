@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from pydantic.dataclasses import dataclass
-from pydantic.fields import FieldInfo
+from pydantic.fields import AliasChoices, AliasPath, FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
 from esmerald.typing import Undefined
@@ -43,6 +43,12 @@ class Param(FieldInfo):
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
     ) -> None:
         self.deprecated = deprecated
         self.example = example
@@ -86,6 +92,13 @@ class Param(FieldInfo):
             examples=examples,
             allow_inf_nan=allow_inf_nan,
             json_schema_extra=extra,
+            include=include_in_schema,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
         )
 
 
@@ -121,6 +134,12 @@ class Header(Param):
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
     ) -> None:
         super().__init__(
             default=default,
@@ -149,6 +168,12 @@ class Header(Param):
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
         )
 
 
@@ -184,6 +209,12 @@ class Cookie(Param):
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
     ) -> None:
         super().__init__(
             default=default,
@@ -212,6 +243,12 @@ class Cookie(Param):
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
         )
 
 
@@ -247,6 +284,12 @@ class Query(Param):
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
     ) -> None:
         super().__init__(
             default=default,
@@ -275,6 +318,12 @@ class Query(Param):
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
         )
 
 
@@ -305,6 +354,12 @@ class Path(Param):
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
     ) -> None:
         super().__init__(
             default=default,
@@ -328,6 +383,12 @@ class Path(Param):
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
         )
 
 
@@ -358,6 +419,13 @@ class Body(FieldInfo):
         pattern: Optional[str] = None,
         example: Any = Undefined,
         examples: Optional[List[Any]] = None,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
+        include_in_schema: bool = True,
     ) -> None:
         extra: Dict[str, Any] = {}
         self.media_type = media_type
@@ -365,6 +433,7 @@ class Body(FieldInfo):
         self.example = example
         self.examples = examples
         self.allow_none = allow_none
+        self.include_in_schema = include_in_schema
 
         extra.update(media_type=self.media_type)
         extra.update(content_encoding=self.content_encoding)
@@ -390,6 +459,12 @@ class Body(FieldInfo):
             max_length=max_length,
             pattern=pattern,
             json_schema_extra=extra,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
         )
 
 
@@ -415,7 +490,13 @@ class Form(Body):
         pattern: Optional[str] = None,
         example: Any = Undefined,
         examples: Optional[List[Any]] = None,
-        **extra: Any,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
+        include_in_schema: bool = True,
     ) -> None:
         super().__init__(
             default=default,
@@ -437,7 +518,13 @@ class Form(Body):
             pattern=pattern,
             example=example,
             examples=examples,
-            **extra,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
+            include_in_schema=include_in_schema,
         )
 
 
@@ -463,7 +550,13 @@ class File(Form):
         pattern: Optional[str] = None,
         example: Any = Undefined,
         examples: Optional[List[Any]] = None,
-        **extra: Any,
+        validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
+        discriminator: Optional[str] = None,
+        frozen: Optional[bool] = None,
+        validate_default: bool = True,
+        init_var: bool = True,
+        kw_only: bool = True,
+        include_in_schema: bool = True,
     ) -> None:
         super().__init__(
             default=default,
@@ -485,7 +578,13 @@ class File(Form):
             pattern=pattern,
             example=example,
             examples=examples,
-            **extra,
+            validate_default=validate_default,
+            validation_alias=validation_alias,
+            discriminator=discriminator,
+            frozen=frozen,
+            init_var=init_var,
+            kw_only=kw_only,
+            include_in_schema=include_in_schema,
         )
 
 
