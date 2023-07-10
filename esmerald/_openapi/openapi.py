@@ -25,6 +25,7 @@ from esmerald.params import Body, Param
 from esmerald.routing import gateways, router
 from esmerald.typing import ModelMap, Undefined
 from esmerald.utils.constants import DATA
+from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
     pass
@@ -143,7 +144,6 @@ def get_openapi_operation_request_body(
         return None
 
     assert isinstance(data_field, FieldInfo), "The 'data' needs to be a FieldInfo"
-    # schema = data_field.model_dump()
     schema = get_schema_from_model_field(
         field=data_field,
         schema_generator=schema_generator,
@@ -300,7 +300,6 @@ def get_openapi_path(
 
                 deep_dict_update(openapi_response, process_response.model.model_json_schema())
                 openapi_response["description"] = description
-
         http422 = str(HTTP_422_UNPROCESSABLE_ENTITY)
         if (all_route_params or handler.data_field) and not any(
             status in operation["responses"] for status in {http422, "4XX", "default"}
@@ -318,7 +317,7 @@ def get_openapi_path(
                         "HTTPValidationError": validation_error_response_definition,
                     }
                 )
-            path[method.lower()] = operation
+        path[method.lower()] = operation
     return path, security_schemes, definitions
 
 
@@ -368,10 +367,17 @@ def get_openapi(
     )
 
     # Iterate through the routes
-    def iterate_routes(routes: List[BaseRoute], definitions: Any = None, components: Any = None):
+    def iterate_routes(
+        routes: List[BaseRoute],
+        definitions: Any = None,
+        components: Any = None,
+        prefix: Optional[str] = "",
+    ):
         for route in routes:
             if isinstance(route, router.Include):
-                definitions, components = iterate_routes(route.routes, definitions, components)
+                definitions, components = iterate_routes(
+                    route.routes, definitions, components, prefix=route.path
+                )
                 continue
 
             if isinstance(route, gateways.Gateway):
@@ -385,7 +391,8 @@ def get_openapi(
                 if result:
                     path, security_schemes, path_definitions = result
                     if path:
-                        paths.setdefault(route.path_format, {}).update(path)
+                        route_path = clean_path(prefix + route.path_format)
+                        paths.setdefault(route_path, {}).update(path)
                     if security_schemes:
                         components.setdefault("securitySchemes", {}).update(security_schemes)
                     if path_definitions:
