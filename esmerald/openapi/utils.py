@@ -1,34 +1,106 @@
-import re
-from typing import TYPE_CHECKING
+from typing import Any, Dict, List, Tuple, Union
 
-from openapi_schemas_pydantic.utils.constants import PYDANTIC_FIELD_SHAPE_MAP
+from pydantic import TypeAdapter
+from pydantic.fields import FieldInfo
+from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
+from typing_extensions import Literal
 
-from esmerald.exceptions import ImproperlyConfigured
+from esmerald.openapi.constants import REF_PREFIX
 
-if TYPE_CHECKING:
-    from openapi_schemas_pydantic.utils.enums import OpenAPIType
-    from pydantic.fields import ModelField
+validation_error_definition = {
+    "title": "ValidationError",
+    "type": "object",
+    "properties": {
+        "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+        },
+        "msg": {"title": "Message", "type": "string"},
+        "type": {"title": "Error Type", "type": "string"},
+    },
+    "required": ["loc", "msg", "type"],
+}
 
-CAPITAL_LETTERS_PATTERN = re.compile(r"(?=[A-Z])")
+validation_error_response_definition = {
+    "title": "HTTPValidationError",
+    "type": "object",
+    "properties": {
+        "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {"$ref": REF_PREFIX + "ValidationError"},
+        }
+    },
+}
+
+status_code_ranges: Dict[str, str] = {
+    "1XX": "Information",
+    "2XX": "Success",
+    "3XX": "Redirection",
+    "4XX": "Client Error",
+    "5XX": "Server Error",
+    "DEFAULT": "Default Response",
+}
+
+ALLOWED_STATUS_CODE = {
+    "default",
+    "1XX",
+    "2XX",
+    "3XX",
+    "4XX",
+    "5XX",
+}
 
 
-def pascal_case_to_text(string: str) -> str:
-    """Given a 'PascalCased' string, return its split form- 'Pascal Cased'."""
-    return " ".join(re.split(CAPITAL_LETTERS_PATTERN, string)).strip()
+def get_definitions(
+    *,
+    fields: List[FieldInfo],
+    schema_generator: GenerateJsonSchema,
+) -> Tuple[
+    Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+    Dict[str, Dict[str, Any]],
+]:
+    inputs = [(field, "validation", TypeAdapter(field.annotation).core_schema) for field in fields]
+    field_mapping, definitions = schema_generator.generate_definitions(
+        inputs=inputs  # type: ignore
+    )
+    return field_mapping, definitions  # type: ignore[return-value]
 
 
-def get_openapi_type_for_complex_type(field: "ModelField") -> "OpenAPIType":
-    """We are dealing with complex types in this case.
+def get_schema_from_model_field(
+    *,
+    field: FieldInfo,
+    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+) -> Dict[str, Any]:
+    json_schema = field_mapping[(field, "validation")]
+    if "$ref" not in json_schema:
+        json_schema["title"] = field.title or field.alias.title().replace("_", " ")
+    return json_schema
 
-    The problem here is that the Python typing system is too crude to
-    define OpenAPI objects properly.
-    """
-    try:
-        return PYDANTIC_FIELD_SHAPE_MAP[field.shape]
-    except KeyError as e:
-        raise ImproperlyConfigured(
-            f"Parameter '{field.name}' with type '{field.outer_type_}' could not be mapped to an Open API type. "
-            f"This can occur if a user-defined generic type is resolved as a parameter. If '{field.name}' should "
-            "not be documented as a parameter, annotate it using the `Dependency` function, e.g., "
-            f"`{field.name}: ... = Dependency(...)`."
-        ) from e
+
+def is_status_code_allowed(status_code: Union[int, str, None]) -> bool:
+    if status_code is None:
+        return True
+    if status_code in ALLOWED_STATUS_CODE:
+        return True
+    current_status_code = int(status_code)
+    return not (current_status_code < 200 or current_status_code in {204, 304})
+
+
+def dict_update(original_dict: Dict[Any, Any], update_dict: Dict[Any, Any]) -> None:
+    for key, value in update_dict.items():
+        if (
+            key in original_dict
+            and isinstance(original_dict[key], dict)
+            and isinstance(value, dict)
+        ):
+            dict_update(original_dict[key], value)
+        elif (
+            key in original_dict
+            and isinstance(original_dict[key], list)
+            and isinstance(update_dict[key], list)
+        ):
+            original_dict[key] = original_dict[key] + update_dict[key]
+        else:
+            original_dict[key] = value

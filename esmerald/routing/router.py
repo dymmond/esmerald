@@ -36,7 +36,6 @@ from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
 from typing_extensions import Self
 
-from esmerald._openapi.datastructures import ResponseSpecification
 from esmerald.conf import settings
 from esmerald.core.urls import include
 from esmerald.datastructures import File, Redirect
@@ -48,6 +47,7 @@ from esmerald.exceptions import (
     ValidationErrorException,
 )
 from esmerald.interceptors.types import Interceptor
+from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.params import Body
 from esmerald.requests import Request
 from esmerald.responses import Response
@@ -488,7 +488,7 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,

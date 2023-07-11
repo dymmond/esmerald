@@ -13,7 +13,7 @@ from typing import (
     cast,
 )
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Server, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl
 from starlette.applications import Starlette
@@ -131,7 +131,7 @@ class Esmerald(Starlette):
         terms_of_service: Optional[AnyUrl] = None,
         license: Optional[License] = None,
         security: Optional[List[SecurityScheme]] = None,
-        servers: Optional[List[Server]] = None,
+        servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
         secret_key: Optional[str] = None,
         allowed_hosts: Optional[List[str]] = None,
         allow_origins: Optional[List[str]] = None,

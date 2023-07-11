@@ -124,6 +124,8 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         operation_id = self.name + self.handler.path_format
         operation_id = re.sub(r"\W", "_", operation_id)
         methods = list(self.handler.methods)
+
+        assert self.handler.methods
         operation_id = f"{operation_id}_{methods[0].lower()}"
         return operation_id
 

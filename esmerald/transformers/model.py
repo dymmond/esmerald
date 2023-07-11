@@ -15,7 +15,7 @@ from esmerald.transformers.utils import (
     get_signature,
     merge_sets,
 )
-from esmerald.utils.constants import RESERVED_KWARGS
+from esmerald.utils.constants import DATA, RESERVED_KWARGS
 from esmerald.utils.pydantic.schema import is_field_optional
 
 if TYPE_CHECKING:
@@ -73,7 +73,9 @@ class TransformerModel(ArbitraryExtraBaseModel):
     def get_header_params(self) -> Set[ParamSetting]:
         return self.headers
 
-    def is_kwargs(self) -> Set[ParamSetting]:
+    def is_kwargs(
+        self,
+    ) -> Union[Set[ParamSetting], Set[str], Tuple[EncodingType, FieldInfo], Set[Dependency]]:
         return self.has_kwargs
 
     @classmethod
@@ -143,7 +145,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cls.validate_kwargs(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            model_fields=cast("Dict[str, FieldInfo]", signature_model.model_fields),
+            model_fields=signature_model.model_fields,
         )
 
         reserved_kwargs = set()
@@ -155,7 +157,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         param_settings, _dependencies = cls.get_parameter_settings(
             path_parameters=path_parameters,
             dependencies=dependencies,
-            signature_fields=cast("Dict[str, FieldInfo]", signature_model.model_fields),
+            signature_fields=signature_model.model_fields,
         )
 
         path_params = set()
@@ -203,8 +205,8 @@ class TransformerModel(ArbitraryExtraBaseModel):
         )
 
         is_optional = False
-        if "data" in reserved_kwargs:
-            is_optional = is_field_optional(signature_model.model_fields["data"])  # type: ignore
+        if DATA in reserved_kwargs:
+            is_optional = is_field_optional(signature_model.model_fields["data"])
 
         return TransformerModel(
             form_data=form_data,

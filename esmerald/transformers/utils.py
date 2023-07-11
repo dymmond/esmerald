@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, cast
+from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, Union, cast
 
 from pydantic.fields import FieldInfo
 from starlette.datastructures import URL
@@ -63,6 +63,7 @@ def create_parameter_setting(
 
     field_alias = extra.get(ParamType.QUERY) or field_name
     param_type = getattr(field_info, "in_", ParamType.QUERY)
+    param: Union[Path, Header, Cookie, Query]
 
     if field_name in path_parameters:
         field_alias = field_name

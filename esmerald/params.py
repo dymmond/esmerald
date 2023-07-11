@@ -562,7 +562,6 @@ class File(Form):
             default=default,
             allow_none=allow_none,
             default_factory=default_factory,
-            embed=True,
             media_type=media_type,
             content_encoding=content_encoding,
             alias=alias,

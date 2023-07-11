@@ -1,48 +1,40 @@
 import http.client
 import json
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Tuple, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
-from pydantic import BaseModel
+from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from starlette.routing import BaseRoute
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
 
-from esmerald._openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
-from esmerald._openapi.datastructures import ResponseSpecification
-from esmerald._openapi.models import (
-    Contact,
-    Info,
-    License,
-    OpenAPI,
-    Operation,
-    Parameter,
-    Server,
-    Tag,
-)
-from esmerald._openapi.utils import (
-    deep_dict_update,
+from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
+from esmerald.openapi.datastructures import OpenAPIResponse
+from esmerald.openapi.models import Contact, Info, License, OpenAPI, Operation, Parameter, Tag
+from esmerald.openapi.responses import create_internal_response
+from esmerald.openapi.utils import (
+    dict_update,
     get_definitions,
     get_schema_from_model_field,
-    is_body_allowed_for_status_code,
+    is_status_code_allowed,
     status_code_ranges,
     validation_error_definition,
     validation_error_response_definition,
 )
-from esmerald.enums import MediaType
 from esmerald.params import Body, Param
 from esmerald.routing import gateways, router
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA
+from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
     pass
 
 
-def get_flat_params(route: BaseRoute) -> List[Any]:
+def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
     """Gets all the neded params of the request and route"""
     path_params = [param.field_info for param in route.transformer.get_path_params()]
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
@@ -58,7 +50,9 @@ def get_fields_from_routes(
     """Extracts the fields from the given routes of Esmerald"""
     body_fields: List[FieldInfo] = []
     response_from_routes: List[FieldInfo] = []
-    request_fields: List[FieldInfo] = []
+
+    if not request_fields:
+        request_fields = []
 
     for route in routes:
         if getattr(route, "include_in_schema", None) and isinstance(route, router.Include):
@@ -67,8 +61,8 @@ def get_fields_from_routes(
 
         if getattr(route, "include_in_schema", None) and isinstance(route, gateways.Gateway):
             # Get the data_field
-            if DATA in route.handler.signature_model.model_fields:
-                data_field = route.handler.data_field
+            if DATA in route.handler.signature_model.model_fields:  # type: ignore
+                data_field = route.handler.data_field  # type: ignore
                 body_fields.append(data_field)
 
             # Get the params from the transformer
@@ -80,13 +74,13 @@ def get_fields_from_routes(
 
 
 def get_openapi_operation(
-    *, route: router.HTTPHandler, method: str, operation_ids: Set[str]
+    *, route: Union[router.HTTPHandler, Any], method: str, operation_ids: Set[str]
 ) -> Dict[str, Any]:
     # operation: Dict[str, Any] = {}
     operation = Operation()
 
     if route.tags:
-        operation.tags = route.tags
+        operation.tags = cast("List[str]", route.tags)
     operation.summary = route.summary or route.name.replace("_", " ").title()
 
     if route.description:
@@ -126,11 +120,11 @@ def get_openapi_operation_parameters(
             field=param,
             field_mapping=field_mapping,
         )
-        parameter = Parameter(
+        parameter = Parameter(  # type: ignore
             name=param.alias,
             param_in=field_info.in_.value,
             required=param.is_required(),
-            schema=param_schema,
+            schema=param_schema,  # type: ignore
         )
 
         if field_info.description:
@@ -159,7 +153,7 @@ def get_openapi_operation_request_body(
     )
 
     field_info = cast(Body, data_field)
-    request_media_type = field_info.media_type.value
+    request_media_type = field_info.media_type.value  # type: ignore
     required = field_info.is_required()
 
     request_data_oai: Dict[str, Any] = {}
@@ -179,34 +173,29 @@ def get_openapi_path(
     operation_ids: Set[str],
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
-    path = {}
+    path: Dict[str, Any] = {}
     security_schemes: Dict[str, Any] = {}
     definitions: Dict[str, Any] = {}
 
-    assert route.methods is not None, "Methods must be a list"
-
+    assert route.handler.methods is not None, "Methods must be a list"
     route_response_media_type: str = None
-    response_class = route.handler.response_class
-    if not response_class:
-        response_class = route.handler.signature.return_annotation
+    handler: router.HTTPHandler = cast("router.HTTPHandler", route.handler)
 
-    if not response_class:
-        route_response_media_type = MediaType.JSON.value
+    if not route.response_class:
+        internal_response = create_internal_response(handler)
+        route_response_media_type = internal_response.media_type
     else:
-        if issubclass(response_class, BaseModel):
-            _response_class = response_class()
-            route_response_media_type = _response_class.media_type
-        else:
-            route_response_media_type = response_class.media_type
-
-    handler = route.handler
+        assert (
+            route.response_class.media_type is not None
+        ), "`media_type` is required in the response class."
+        route_response_media_type = route.response_class.media_type
 
     # If routes do not want to be included in the schema generation
     if not route.include_in_schema or not handler.include_in_schema:
         return path, security_schemes, definitions
 
     # For each method
-    for method in route.methods:
+    for method in route.handler.methods:
         operation = get_openapi_operation(
             route=handler, method=method, operation_ids=operation_ids
         )
@@ -251,7 +240,7 @@ def get_openapi_path(
         ] = handler.response_description
 
         # Media type
-        if route_response_media_type and is_body_allowed_for_status_code(handler.status_code):
+        if route_response_media_type and is_status_code_allowed(handler.status_code):
             response_schema = {"type": "string"}
             response_schema = {}
 
@@ -272,8 +261,8 @@ def get_openapi_path(
                 openapi_response = operation_responses.setdefault(status_code_key, {})
 
                 assert isinstance(
-                    process_response, ResponseSpecification
-                ), "An additional response must be an instance of ResponseSpecification"
+                    process_response, OpenAPIResponse
+                ), "An additional response must be an instance of OpenAPIResponse"
 
                 field = handler.responses.get(additional_status_code)
                 additional_field_schema: Optional[Dict[str, Any]] = None
@@ -287,7 +276,7 @@ def get_openapi_path(
                         .setdefault(media_type, {})
                         .setdefault("schema", {})
                     )
-                    deep_dict_update(additional_schema, additional_field_schema)
+                    dict_update(additional_schema, additional_field_schema)
 
                 # status
                 status_text = (
@@ -302,7 +291,7 @@ def get_openapi_path(
                     or "Additional Response"
                 )
 
-                deep_dict_update(openapi_response, model_schema)
+                dict_update(openapi_response, model_schema)
                 openapi_response["description"] = description
 
         http422 = str(HTTP_422_UNPROCESSABLE_ENTITY)
@@ -326,6 +315,35 @@ def get_openapi_path(
     return path, security_schemes, definitions
 
 
+def should_include_in_schema(route: router.Include) -> bool:
+    """
+    Checks if a specifc object should be included in the schema
+    """
+    from esmerald import ChildEsmerald, Esmerald
+
+    if not route.include_in_schema:
+        return False
+
+    if (
+        isinstance(route.app, (Esmerald, ChildEsmerald))
+        or (
+            is_class_and_subclass(route.app, Esmerald)
+            or is_class_and_subclass(route.app, ChildEsmerald)
+        )
+    ) and not getattr(route.app, "enable_openapi", False):
+        return False
+    elif (
+        isinstance(route.app, (Esmerald, ChildEsmerald))
+        or (
+            is_class_and_subclass(route.app, Esmerald)
+            or is_class_and_subclass(route.app, ChildEsmerald)
+        )
+    ) and not getattr(route.app, "include_in_schema", False):
+        return False
+
+    return True
+
+
 def get_openapi(
     *,
     title: str,
@@ -335,8 +353,8 @@ def get_openapi(
     description: Optional[str] = None,
     routes: Sequence[BaseRoute],
     tags: Optional[List[Tag]] = None,
-    servers: Optional[List[Server]] = None,
-    terms_of_service: Optional[str] = None,
+    servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
+    terms_of_service: Optional[Union[str, AnyUrl]] = None,
     contact: Optional[Contact] = None,
     license: Optional[License] = None,
 ) -> Dict[str, Any]:
@@ -351,7 +369,7 @@ def get_openapi(
     if description:
         info.description = description
     if terms_of_service:
-        info.termsOfService = terms_of_service
+        info.termsOfService = terms_of_service  # type: ignore
     if contact:
         info.contact = contact
     if license:
@@ -377,13 +395,21 @@ def get_openapi(
 
     # Iterate through the routes
     def iterate_routes(
-        routes: List[BaseRoute],
+        routes: Sequence[BaseRoute],
         definitions: Any = None,
         components: Any = None,
         prefix: Optional[str] = "",
-    ):
+    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         for route in routes:
             if isinstance(route, router.Include):
+                if hasattr(route, "app"):
+                    if not should_include_in_schema(route):
+                        continue
+
+                # For external middlewares
+                if getattr(route.app, "routes", None) is None:
+                    continue
+
                 if hasattr(route, "app") and isinstance(route.app, (Esmerald, ChildEsmerald)):
                     route_path = clean_path(prefix + route.path)
                     definitions, components = iterate_routes(

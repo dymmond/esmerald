@@ -1,6 +1,26 @@
 from enum import Enum
 
 
+class SecuritySchemeType(str, Enum):
+    apiKey = "apiKey"
+    http = "http"
+    oauth2 = "oauth2"
+    openIdConnect = "openIdConnect"
+
+
+class ParameterInType(str, Enum):
+    query = "query"
+    header = "header"
+    path = "path"
+    cookie = "cookie"
+
+
+class APIKeyIn(str, Enum):
+    query = "query"
+    header = "header"
+    cookie = "cookie"
+
+
 class OpenAPIFormat(str, Enum):
     """Formats extracted from:
 

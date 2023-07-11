@@ -1,15 +1,15 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 from pydantic import AnyUrl, BaseModel
 
-from esmerald._openapi.docs import (
+from esmerald.openapi.docs import (
     get_redoc_html,
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
-from esmerald._openapi.models import Contact, License, Server, Tag
-from esmerald._openapi.openapi import get_openapi
+from esmerald.openapi.models import Contact, License, Tag
+from esmerald.openapi.openapi import get_openapi
 from esmerald.requests import Request
 from esmerald.responses import HTMLResponse, JSONResponse
 from esmerald.routing.handlers import get
@@ -24,7 +24,7 @@ class OpenAPIConfig(BaseModel):
     terms_of_service: Optional[AnyUrl] = None
     license: Optional[License] = None
     security: Optional[List[SecurityScheme]] = None
-    servers: Optional[List[Server]] = None
+    servers: Optional[List[Dict[str, Union[str, Any]]]] = None
     tags: Optional[List[Tag]] = None
     openapi_version: Optional[str] = "3.1.0"
     openapi_url: Optional[str] = "/openapi.json"
@@ -61,7 +61,7 @@ class OpenAPIConfig(BaseModel):
     def enable(self, app: Any) -> None:
         """Enables the OpenAPI documentation"""
         if self.openapi_url:
-            urls = {server.url for server in self.servers}
+            urls = {server.get("url") for server in self.servers}
 
             @get(path=self.openapi_url)
             async def _openapi(request: Request) -> JSONResponse:

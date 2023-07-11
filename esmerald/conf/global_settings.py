@@ -1,7 +1,7 @@
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Server, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
 from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from starlette.types import Lifespan
@@ -40,7 +40,7 @@ class EsmeraldAPISettings(BaseSettings):
     terms_of_service: Optional[AnyUrl] = None
     license: Optional[License] = None
     security: Optional[List[SecurityScheme]] = None
-    servers: List[Server] = [Server(url="/")]
+    servers: List[Dict[str, Union[str, Any]]] = [{"url": "/"}]
     secret_key: str = "my secret"
     version: str = __version__
     openapi_version: str = "3.1.0"
