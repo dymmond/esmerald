@@ -437,6 +437,27 @@ class Esmerald(Starlette):
 
     def activate_openapi(self) -> None:
         if self.enable_openapi:
+            if self.title or not self.openapi_config.title:
+                self.openapi_config.title = self.title
+            if self.version or not self.openapi_config.version:
+                self.openapi_config.version = self.version
+            if self.openapi_version or not self.openapi_config.openapi_version:
+                self.openapi_config.openapi_version = self.openapi_version
+            if self.summary or not self.openapi_config.summary:
+                self.openapi_config.summary = self.summary
+            if self.description or not self.openapi_config.description:
+                self.openapi_config.description = self.description
+            if self.tags or not self.openapi_config.tags:
+                self.openapi_config.tags = self.tags
+            if self.servers or not self.openapi_config.servers:
+                self.openapi_config.servers = self.servers
+            if self.terms_of_service or not self.openapi_config.terms_of_service:
+                self.openapi_config.terms_of_service = self.terms_of_service
+            if self.contact or not self.openapi_config.contact:
+                self.openapi_config.contact = self.contact
+            if self.license or not self.openapi_config.license:
+                self.openapi_config.license = self.license
+
             self.openapi_config.enable(self)
 
     def get_template_engine(

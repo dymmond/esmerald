@@ -33,7 +33,7 @@ class EsmeraldAPISettings(BaseSettings):
     debug: bool = False
     environment: Optional[str] = EnvironmentType.PRODUCTION
     app_name: str = "Esmerald"
-    title: str = "My awesome Esmerald application"
+    title: str = "Esmerald"
     description: str = "Highly scalable, performant, easy to learn and for every application."
     contact: Optional[Contact] = Contact(name="admin", email="admin@myapp.com")
     summary: str = "Esmerald application"

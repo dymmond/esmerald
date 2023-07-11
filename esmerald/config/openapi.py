@@ -43,17 +43,17 @@ class OpenAPIConfig(BaseModel):
     def openapi(self, app: Any) -> Dict[str, Any]:
         """Loads the OpenAPI routing schema"""
         openapi_schema = get_openapi(
-            title=self.title or self.title,
-            version=self.version or self.version,
-            openapi_version=self.openapi_version or self.version,
-            summary=self.summary or self.summary,
-            description=self.description or self.description,
+            title=self.title,
+            version=self.version,
+            openapi_version=self.openapi_version,
+            summary=self.summary,
+            description=self.description,
             routes=app.routes,
-            tags=self.tags or self.tags,
-            servers=self.servers or self.servers,
-            terms_of_service=self.terms_of_service or self.terms_of_service,
-            contact=self.contact or self.contact,
-            license=self.license or self.license,
+            tags=self.tags,
+            servers=self.servers,
+            terms_of_service=self.terms_of_service,
+            contact=self.contact,
+            license=self.license,
         )
         app.openapi_schema = openapi_schema
         return openapi_schema
