@@ -19,6 +19,7 @@ from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI as OpenAPI
 from openapi_schemas_pydantic.v3_1_0.operation import Operation as Operation
 from openapi_schemas_pydantic.v3_1_0.parameter import Parameter as Parameter
 from openapi_schemas_pydantic.v3_1_0.path_item import PathItem as PathItem
+from openapi_schemas_pydantic.v3_1_0.paths import Paths as Paths
 from openapi_schemas_pydantic.v3_1_0.reference import Reference as Reference
 from openapi_schemas_pydantic.v3_1_0.request_body import RequestBody as RequestBody
 from openapi_schemas_pydantic.v3_1_0.response import Response as Response

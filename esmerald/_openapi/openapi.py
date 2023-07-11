@@ -10,7 +10,19 @@ from starlette.routing import BaseRoute
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
 
-from esmerald._openapi._utils import (
+from esmerald._openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
+from esmerald._openapi.datastructures import ResponseSpecification
+from esmerald._openapi.models import (
+    Contact,
+    Info,
+    License,
+    OpenAPI,
+    Operation,
+    Parameter,
+    Server,
+    Tag,
+)
+from esmerald._openapi.utils import (
     deep_dict_update,
     get_definitions,
     get_schema_from_model_field,
@@ -19,9 +31,6 @@ from esmerald._openapi._utils import (
     validation_error_definition,
     validation_error_response_definition,
 )
-from esmerald._openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
-from esmerald._openapi.datastructures import ResponseSpecification
-from esmerald._openapi.models import Contact, License, OpenAPI, Server, Tag
 from esmerald.enums import MediaType
 from esmerald.params import Body, Param
 from esmerald.routing import gateways, router
@@ -57,11 +66,12 @@ def get_fields_from_routes(
             continue
 
         if getattr(route, "include_in_schema", None) and isinstance(route, gateways.Gateway):
+            # Get the data_field
             if DATA in route.handler.signature_model.model_fields:
                 data_field = route.handler.data_field
                 body_fields.append(data_field)
-            # if route.handler.responses:
-            #     response_from_routes.append(route.handler.responses.values())
+
+            # Get the params from the transformer
             params = get_flat_params(route.handler)
             if params:
                 request_fields.extend(params)
@@ -72,13 +82,15 @@ def get_fields_from_routes(
 def get_openapi_operation(
     *, route: router.HTTPHandler, method: str, operation_ids: Set[str]
 ) -> Dict[str, Any]:
-    operation: Dict[str, Any] = {}
+    # operation: Dict[str, Any] = {}
+    operation = Operation()
+
     if route.tags:
-        operation["tags"] = route.tags
-    operation["summary"] = route.summary or route.name.replace("_", " ").title()
+        operation.tags = route.tags
+    operation.summary = route.summary or route.name.replace("_", " ").title()
 
     if route.description:
-        operation["description"] = route.description
+        operation.description = route.description
 
     operation_id = route.operation_id
     if operation_id in operation_ids:
@@ -90,10 +102,13 @@ def get_openapi_operation(
             message += f" at {file_name}"
         warnings.warn(message, stacklevel=1)
     operation_ids.add(operation_id)
-    operation["operationId"] = operation_id
+
+    operation.operationId = operation_id
     if route.deprecated:
-        operation["deprecated"] = route.deprecated
-    return operation
+        operation.deprecated = route.deprecated
+
+    operation_schema = operation.model_dump(exclude_none=True, by_alias=True)
+    return operation_schema
 
 
 def get_openapi_operation_parameters(
@@ -111,19 +126,21 @@ def get_openapi_operation_parameters(
             field=param,
             field_mapping=field_mapping,
         )
-        parameter = {
-            "name": param.alias,
-            "in": field_info.in_.value,
-            "required": param.is_required(),
-            "schema": param_schema,
-        }
+        parameter = Parameter(
+            name=param.alias,
+            param_in=field_info.in_.value,
+            required=param.is_required(),
+            schema=param_schema,
+        )
+
         if field_info.description:
-            parameter["description"] = field_info.description
+            parameter.description = field_info.description
         if field_info.example != Undefined:
-            parameter["example"] = json.dumps(field_info.example)
+            parameter.example = json.dumps(field_info.example)
         if field_info.deprecated:
-            parameter["deprecated"] = field_info.deprecated
-        parameters.append(parameter)
+            parameter.deprecated = field_info.deprecated
+
+        parameters.append(parameter.model_dump(by_alias=True))
     return parameters
 
 
@@ -328,18 +345,22 @@ def get_openapi(
     """
     from esmerald import ChildEsmerald, Esmerald
 
-    info: Dict[str, Any] = {"title": title, "version": version}
+    info = Info(title=title, version=version)
     if summary:
-        info["summary"] = summary
+        info.summary = summary
     if description:
-        info["description"] = description
+        info.description = description
     if terms_of_service:
-        info["termsOfService"] = terms_of_service
+        info.termsOfService = terms_of_service
     if contact:
-        info["contact"] = contact
+        info.contact = contact
     if license:
-        info["license"] = license
-    output: Dict[str, Any] = {"openapi": openapi_version, "info": info}
+        info.license = license
+
+    output: Dict[str, Any] = {
+        "openapi": openapi_version,
+        "info": info.model_dump(exclude_none=True, by_alias=True),
+    }
 
     if servers:
         output["servers"] = servers
