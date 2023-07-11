@@ -31,9 +31,14 @@ class OpenAPIConfig(BaseModel):
     docs_url: Optional[str] = "/docs/swagger"
     redoc_url: Optional[str] = "/docs/redoc"
     swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect"
-    root_path_in_servers: bool = (True,)
+    root_path_in_servers: bool = True
+    redoc_js_url: str = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+    redoc_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
     swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
     swagger_ui_parameters: Optional[Dict[str, Any]] = None
+    swagger_js_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"
+    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css"
+    swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
 
     def openapi(self, app: Any) -> Dict[str, Any]:
         """Loads the OpenAPI routing schema"""
@@ -86,6 +91,9 @@ class OpenAPIConfig(BaseModel):
                     oauth2_redirect_url=oauth2_redirect_url,
                     init_oauth=self.swagger_ui_init_oauth,
                     swagger_ui_parameters=self.swagger_ui_parameters,
+                    swagger_js_url=self.swagger_js_url,
+                    swagger_favicon_url=self.swagger_favicon_url,
+                    swagger_css_url=self.swagger_css_url,
                 )
 
             app.add_route(
@@ -114,7 +122,12 @@ class OpenAPIConfig(BaseModel):
             async def redoc_html(request: Request) -> HTMLResponse:
                 root_path = request.scope.get("root_path", "").rstrip("/")
                 openapi_url = root_path + self.openapi_url
-                return get_redoc_html(openapi_url=openapi_url, title=self.title + " - ReDoc")
+                return get_redoc_html(
+                    openapi_url=openapi_url,
+                    title=self.title + " - ReDoc",
+                    redoc_js_url=self.redoc_js_url,
+                    redoc_favicon_url=self.redoc_favicon_url,
+                )
 
             app.add_route(
                 path="/", handler=redoc_html, include_in_schema=False, activate_openapi=False

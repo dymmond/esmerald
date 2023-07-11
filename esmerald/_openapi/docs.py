@@ -16,9 +16,9 @@ def get_swagger_ui_html(
     *,
     openapi_url: str,
     title: str,
-    swagger_js_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
-    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
-    swagger_favicon_url: str = "https://fastapi.tiangolo.com/img/favicon.png",
+    swagger_js_url: str,
+    swagger_css_url: str,
+    swagger_favicon_url: str,
     oauth2_redirect_url: Optional[str] = None,
     init_oauth: Optional[Dict[str, Any]] = None,
     swagger_ui_parameters: Optional[Dict[str, Any]] = None,
@@ -75,8 +75,8 @@ def get_redoc_html(
     *,
     openapi_url: str,
     title: str,
-    redoc_js_url: str = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js",
-    redoc_favicon_url: str = "https://fastapi.tiangolo.com/img/favicon.png",
+    redoc_js_url: str,
+    redoc_favicon_url: str,
     with_google_fonts: bool = True,
 ) -> HTMLResponse:
     html = f"""
