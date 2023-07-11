@@ -25,7 +25,7 @@ from esmerald._openapi.models import Contact, License, OpenAPI, Server, Tag
 from esmerald.enums import MediaType
 from esmerald.params import Body, Param
 from esmerald.routing import gateways, router
-from esmerald.typing import ModelMap, Undefined
+from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA
 from esmerald.utils.url import clean_path
 
@@ -69,10 +69,6 @@ def get_fields_from_routes(
     return list(body_fields + response_from_routes + request_fields)
 
 
-def get_compat_model_name_map(all_fields: List[FieldInfo]) -> ModelMap:
-    return {}
-
-
 def get_openapi_operation(
     *, route: router.HTTPHandler, method: str, operation_ids: Set[str]
 ) -> Dict[str, Any]:
@@ -103,8 +99,6 @@ def get_openapi_operation(
 def get_openapi_operation_parameters(
     *,
     all_route_params: Sequence[FieldInfo],
-    schema_generator: GenerateJsonSchema,
-    model_name_map: ModelMap,
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> List[Dict[str, Any]]:
     parameters = []
@@ -115,8 +109,6 @@ def get_openapi_operation_parameters(
 
         param_schema = get_schema_from_model_field(
             field=param,
-            schema_generator=schema_generator,
-            model_name_map=model_name_map,
             field_mapping=field_mapping,
         )
         parameter = {
@@ -138,8 +130,6 @@ def get_openapi_operation_parameters(
 def get_openapi_operation_request_body(
     *,
     data_field: Optional[FieldInfo],
-    schema_generator: GenerateJsonSchema,
-    model_name_map: ModelMap,
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> Optional[Dict[str, Any]]:
     if not data_field:
@@ -148,8 +138,6 @@ def get_openapi_operation_request_body(
     assert isinstance(data_field, FieldInfo), "The 'data' needs to be a FieldInfo"
     schema = get_schema_from_model_field(
         field=data_field,
-        schema_generator=schema_generator,
-        model_name_map=model_name_map,
         field_mapping=field_mapping,
     )
 
@@ -172,8 +160,6 @@ def get_openapi_path(
     *,
     route: gateways.Gateway,
     operation_ids: Set[str],
-    schema_generator: GenerateJsonSchema,
-    model_name_map: ModelMap,
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
     path = {}
@@ -220,8 +206,6 @@ def get_openapi_path(
         all_route_params = get_flat_params(handler)
         operation_parameters = get_openapi_operation_parameters(
             all_route_params=all_route_params,
-            schema_generator=schema_generator,
-            model_name_map=model_name_map,
             field_mapping=field_mapping,
         )
         parameters.extend(operation_parameters)
@@ -239,8 +223,6 @@ def get_openapi_path(
         if method in METHODS_WITH_BODY:
             request_data_oai = get_openapi_operation_request_body(
                 data_field=handler.data_field,
-                schema_generator=schema_generator,
-                model_name_map=model_name_map,
                 field_mapping=field_mapping,
             )
             if request_data_oai:
@@ -366,12 +348,10 @@ def get_openapi(
     paths: Dict[str, Dict[str, Any]] = {}
     operation_ids: Set[str] = set()
     all_fields = get_fields_from_routes(list(routes or []))
-    model_name_map = get_compat_model_name_map(all_fields)
     schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
     field_mapping, definitions = get_definitions(
         fields=all_fields,
         schema_generator=schema_generator,
-        model_name_map=model_name_map,
     )
 
     # Iterate through the routes
@@ -399,8 +379,6 @@ def get_openapi(
                 result = get_openapi_path(
                     route=route,
                     operation_ids=operation_ids,
-                    schema_generator=schema_generator,
-                    model_name_map=model_name_map,
                     field_mapping=field_mapping,
                 )
                 if result:

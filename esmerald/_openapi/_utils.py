@@ -1,14 +1,11 @@
-from enum import Enum
-from typing import Any, Dict, List, Set, Tuple, Type, Union
+from typing import Any, Dict, List, Tuple, Union
 
-from pydantic import BaseModel, TypeAdapter
+from pydantic import TypeAdapter
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
-from pydantic.v1.schema import field_schema, model_process_schema
 from typing_extensions import Literal
 
 from esmerald._openapi.constants import REF_PREFIX
-from esmerald.typing import ModelMap
 
 validation_error_definition = {
     "title": "ValidationError",
@@ -51,7 +48,6 @@ def get_definitions(
     *,
     fields: List[FieldInfo],
     schema_generator: GenerateJsonSchema,
-    model_name_map: ModelMap,
 ) -> Tuple[
     Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
     Dict[str, Dict[str, Any]],
@@ -64,8 +60,6 @@ def get_definitions(
 def get_schema_from_model_field(
     *,
     field: FieldInfo,
-    schema_generator: GenerateJsonSchema,
-    model_name_map: ModelMap,
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
 ) -> Dict[str, Any]:
     json_schema = field_mapping[(field, "validation")]
