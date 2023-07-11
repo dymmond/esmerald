@@ -81,7 +81,11 @@ def get_openapi_operation(
 
     if route.tags:
         operation.tags = cast("List[str]", route.tags)
-    operation.summary = route.summary or route.name.replace("_", " ").title()
+
+    if route.summary:
+        operation.summary = route.summary
+    else:
+        operation.summary = route.name.replace("_", " ").replace("-", " ").title()
 
     if route.description:
         operation.description = route.description

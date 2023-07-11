@@ -82,7 +82,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
-
+        self.name = name
         self.handler = handler
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
@@ -103,6 +103,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         if not is_class_and_subclass(self.handler, APIView) and not isinstance(
             self.handler, APIView
         ):
+            self.handler.name = self.name
             self.handler.get_response_handler()
 
             if not handler.operation_id:
