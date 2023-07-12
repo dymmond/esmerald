@@ -167,7 +167,7 @@ class Esmerald(Starlette):
         redirect_slashes: Optional[bool] = None,
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
-        root_path_in_servers: bool = True,
+        root_path_in_servers: bool = None,
     ) -> None:
         self.settings_config = None
 
@@ -198,7 +198,6 @@ class Esmerald(Starlette):
             else self.get_settings_value(self.settings_config, esmerald_settings, "debug")
         )
         self.debug = self._debug
-        self.root_path_in_servers = root_path_in_servers
 
         self.title = title or self.get_settings_value(
             self.settings_config, esmerald_settings, "title"
@@ -346,6 +345,13 @@ class Esmerald(Starlette):
             if enable_openapi is not None
             else self.get_settings_value(self.settings_config, esmerald_settings, "enable_openapi")
         )
+        self.root_path_in_servers = (
+            root_path_in_servers
+            if root_path_in_servers is not None
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "root_path_in_servers"
+            )
+        )
         self.redirect_slashes = (
             redirect_slashes
             if redirect_slashes is not None
@@ -358,6 +364,9 @@ class Esmerald(Starlette):
             if pluggables
             else self.get_settings_value(self.settings_config, esmerald_settings, "pluggables")
         )
+
+        if not self.include_in_schema or not self.enable_openapi:
+            self.root_path_in_servers = False
 
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
@@ -451,6 +460,8 @@ class Esmerald(Starlette):
                 self.openapi_config.contact = self.contact
             if self.license or not self.openapi_config.license:
                 self.openapi_config.license = self.license
+            if self.root_path_in_servers or not self.root_path_in_servers:
+                self.openapi_config.root_path_in_servers = self.root_path_in_servers
 
             self.openapi_config.enable(self)
 

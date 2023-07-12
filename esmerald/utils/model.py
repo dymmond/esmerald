@@ -22,7 +22,7 @@ def create_model_from_dataclass(dataclass: Any) -> Type[BaseModel]:
     """
     dataclass_fields: Tuple[DataclassField, ...] = get_dataclass_fields(dataclass)
     model = create_model(dataclass.__name__, **{field.name: (field.type, ...) for field in dataclass_fields})  # type: ignore
-    for field_name, model_field in model.__fields__.items():
+    for field_name, model_field in model.model_fields.items():
         [field for field in dataclass_fields if field.name == field_name][0]
         setattr(model, field_name, model_field)
     return cast("Type[BaseModel]", model)

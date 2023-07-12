@@ -331,7 +331,7 @@ def should_include_in_schema(route: router.Include) -> bool:
         )
     ) and not getattr(route.app, "enable_openapi", False):
         return False
-    elif (
+    if (
         isinstance(route.app, (Esmerald, ChildEsmerald))
         or (
             is_class_and_subclass(route.app, Esmerald)
@@ -419,7 +419,7 @@ def get_openapi(
                     definitions, components = iterate_routes(
                         route.routes, definitions, components, prefix=route_path
                     )
-                    continue
+                continue
 
             if isinstance(route, gateways.Gateway):
                 result = get_openapi_path(

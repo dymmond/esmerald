@@ -58,6 +58,7 @@ class EsmeraldAPISettings(BaseSettings):
     enable_scheduler: bool = False
     enable_openapi: bool = True
     redirect_slashes: bool = True
+    root_path_in_servers: bool = True
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))

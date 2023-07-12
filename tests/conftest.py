@@ -3,6 +3,7 @@ import pathlib
 
 import pytest
 
+from esmerald import ChildEsmerald
 from esmerald.testclient import EsmeraldTestClient
 
 
@@ -32,6 +33,13 @@ def test_app_client_factory(anyio_backend_name, anyio_backend_options):
         backend=anyio_backend_name,
         backend_options=anyio_backend_options,
     )
+
+
+@pytest.fixture
+def child_esmerald_factory(anyio_backend_name, anyio_backend_options):
+    # anyio_backend_name defined by:
+    # https://anyio.readthedocs.io/en/stable/testing.html#specifying-the-backends-to-run-on
+    return ChildEsmerald
 
 
 @pytest.fixture()

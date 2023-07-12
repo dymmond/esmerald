@@ -62,14 +62,15 @@ class OpenAPIConfig(BaseModel):
         """Enables the OpenAPI documentation"""
         if self.openapi_url:
             urls = {server.get("url") for server in self.servers}
+            server_urls = set(urls)
 
             @get(path=self.openapi_url)
             async def _openapi(request: Request) -> JSONResponse:
                 root_path = request.scope.get("root_path", "").rstrip("/")
-                if root_path not in urls:
+                if root_path not in server_urls:
                     if root_path and self.root_path_in_servers:
                         self.servers.insert(0, {"url": root_path})
-                        urls.add(root_path)
+                        server_urls.add(root_path)
                 return JSONResponse(self.openapi(app))
 
             app.add_route(
