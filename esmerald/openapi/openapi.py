@@ -54,13 +54,13 @@ def get_fields_from_routes(
         request_fields = []
 
     for route in routes:
-        handler = cast(router.HTTPHandler, route.handler)
-
         if getattr(route, "include_in_schema", None) and isinstance(route, router.Include):
             request_fields.extend(get_fields_from_routes(route.routes, request_fields))
             continue
 
         if getattr(route, "include_in_schema", None) and isinstance(route, gateways.Gateway):
+            handler = cast(router.HTTPHandler, route.handler)
+
             # Get the data_field
             if DATA in handler.signature_model.model_fields:
                 data_field = handler.data_field
