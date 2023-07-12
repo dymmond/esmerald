@@ -1,7 +1,7 @@
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
 from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from starlette.types import Lifespan
@@ -33,16 +33,17 @@ class EsmeraldAPISettings(BaseSettings):
     debug: bool = False
     environment: Optional[str] = EnvironmentType.PRODUCTION
     app_name: str = "Esmerald"
-    title: str = "My awesome Esmerald application"
+    title: str = "Esmerald"
     description: str = "Highly scalable, performant, easy to learn and for every application."
     contact: Optional[Contact] = Contact(name="admin", email="admin@myapp.com")
     summary: str = "Esmerald application"
     terms_of_service: Optional[AnyUrl] = None
     license: Optional[License] = None
-    security: Optional[List[SecurityRequirement]] = None
-    servers: List[Server] = [Server(url="/")]
+    security: Optional[List[SecurityScheme]] = None
+    servers: List[Dict[str, Union[str, Any]]] = [{"url": "/"}]
     secret_key: str = "my secret"
     version: str = __version__
+    openapi_version: str = "3.1.0"
     allowed_hosts: Optional[List[str]] = ["*"]
     allow_origins: Optional[List[str]] = None
     response_class: Optional[ResponseType] = None
@@ -57,6 +58,7 @@ class EsmeraldAPISettings(BaseSettings):
     enable_scheduler: bool = False
     enable_openapi: bool = True
     redirect_slashes: bool = True
+    root_path_in_servers: bool = True
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
@@ -236,10 +238,7 @@ class EsmeraldAPISettings(BaseSettings):
                 def openapi_config(self) -> OpenAPIConfig:
                     ...
         """
-        from esmerald.openapi.apiview import OpenAPIView
-
         return OpenAPIConfig(
-            openapi_apiview=OpenAPIView,
             title=self.title,
             version=self.version,
             contact=self.contact,

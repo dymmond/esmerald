@@ -61,7 +61,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         else:
             self.path = clean_path(path)
 
-        self.methods = getattr(handler, "methods", None)
+        self.methods = getattr(handler, "http_methods", None)
 
         if not name:
             if not isinstance(handler, APIView):
@@ -82,7 +82,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
-
+        self.name = name
         self.handler = handler
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
@@ -103,6 +103,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         if not is_class_and_subclass(self.handler, APIView) and not isinstance(
             self.handler, APIView
         ):
+            self.handler.name = self.name
             self.handler.get_response_handler()
 
             if not handler.operation_id:
@@ -124,6 +125,8 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         operation_id = self.name + self.handler.path_format
         operation_id = re.sub(r"\W", "_", operation_id)
         methods = list(self.handler.methods)
+
+        assert self.handler.methods
         operation_id = f"{operation_id}_{methods[0].lower()}"
         return operation_id
 

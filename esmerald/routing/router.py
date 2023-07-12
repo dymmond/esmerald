@@ -43,12 +43,15 @@ from esmerald.exceptions import (
     ImproperlyConfigured,
     MethodNotAllowed,
     NotFound,
+    OpenAPIException,
     ValidationErrorException,
 )
 from esmerald.interceptors.types import Interceptor
-from esmerald.openapi.datastructures import ResponseSpecification
+from esmerald.openapi.datastructures import OpenAPIResponse
+from esmerald.openapi.utils import is_status_code_allowed
 from esmerald.requests import Request
 from esmerald.responses import Response
+from esmerald.routing._internal import FieldInfoMixin
 from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -63,7 +66,7 @@ from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 
     from esmerald.applications import Esmerald
     from esmerald.exceptions import HTTPException
@@ -206,7 +209,7 @@ class Router(Parent, StarletteRouter):
         lifespan: Optional[Lifespan[Any]] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityRequirement"]] = None,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ):
         self.app = app
         if not path:
@@ -433,7 +436,7 @@ class Router(Parent, StarletteRouter):
         return decorator
 
 
-class HTTPHandler(BaseHandlerMixin, StarletteRoute):
+class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
     __slots__ = (
         "path",
         "_permissions",
@@ -486,8 +489,8 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
@@ -554,6 +557,22 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.app: Optional["ASGIApp"] = None
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
+
+        if self.responses:
+            self.validate_responses(responses=self.responses)
+
+    def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
+        """
+        Checks if the responses are valid or raises an exception otherwise.
+        """
+        for status_code, response in responses.items():
+            if not isinstance(response, OpenAPIResponse):
+                raise OpenAPIException(
+                    detail="An additional response must be an instance of OpenAPIResponse."
+                )
+
+            if not is_status_code_allowed(status_code):
+                raise OpenAPIException(detail="The status is not a valid OpenAPI status response.")
 
     @property
     def http_methods(self) -> List[str]:
@@ -901,7 +920,7 @@ class Include(Mount):
         middleware: Optional[List["Middleware"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityRequirement"]] = None,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ) -> None:
         self.path = path
         if not path:

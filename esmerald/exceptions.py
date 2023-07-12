@@ -117,7 +117,7 @@ class MissingDependency(EsmeraldAPIException, ImportError):
     ...
 
 
-class OpenAPIError(ValueError):
+class OpenAPIException(ImproperlyConfigured):
     ...
 
 

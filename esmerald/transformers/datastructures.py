@@ -24,7 +24,7 @@ class EsmeraldSignature(ArbitraryBaseModel):
         try:
             signature = cls(**kwargs)
             values = {}
-            for key in cls.__fields__:
+            for key in cls.model_fields:
                 values[key] = signature.field_value(key)
             return values
         except ValidationError as e:

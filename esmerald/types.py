@@ -111,7 +111,7 @@ APIGateHandler = Union[
 RouteParent = Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway"]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
-SecurityRequirement = Dict[str, List[str]]
+SecurityScheme = Dict[str, List[str]]
 
 ConnectionType = Union["Request", "WebSocket"]
 DictStr = Dict[str, str]

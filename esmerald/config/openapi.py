@@ -1,174 +1,137 @@
-from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Union
 
-from openapi_schemas_pydantic import construct_open_api_with_schema_class
-from openapi_schemas_pydantic.v3_1_0 import (
-    Components,
-    Contact,
-    ExternalDocumentation,
-    Info,
-    License,
-    OpenAPI,
-    PathItem,
-    Reference,
-    SecurityRequirement,
-    Server,
-    Tag,
+from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
+from pydantic import AnyUrl, BaseModel
+
+from esmerald.openapi.docs import (
+    get_redoc_html,
+    get_swagger_ui_html,
+    get_swagger_ui_oauth2_redirect_html,
 )
-from pydantic import AnyUrl, BaseModel, ConfigDict
-from typing_extensions import Literal
-
-from esmerald.enums import HttpMethod
-from esmerald.openapi.path_item import create_path_item
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.router import Include
-from esmerald.utils.helpers import is_class_and_subclass
-from esmerald.utils.url import clean_path
-
-if TYPE_CHECKING:
-    from esmerald.applications import Esmerald
+from esmerald.openapi.models import Contact, License, Tag
+from esmerald.openapi.openapi import get_openapi
+from esmerald.requests import Request
+from esmerald.responses import HTMLResponse, JSONResponse
+from esmerald.routing.handlers import get
 
 
 class OpenAPIConfig(BaseModel):
-    create_examples: bool = False
-    openapi_apiview: Any
-    title: str
-    version: str
-    contact: Optional[Contact] = None
-    description: Optional[str] = None
-    external_docs: Optional[ExternalDocumentation] = None
-    license: Optional[License] = None
-    security: Optional[List[SecurityRequirement]] = None
-    components: Optional[Union[Components, List[Components]]] = None
-    servers: List[Server] = [Server(url="/")]
+    title: Optional[str] = None
+    version: Optional[str] = None
     summary: Optional[str] = None
-    tags: Optional[List[Tag]] = None
+    description: Optional[str] = None
+    contact: Optional[Contact] = None
     terms_of_service: Optional[AnyUrl] = None
-    use_handler_docstrings: bool = False
-    webhooks: Optional[Dict[str, Union[PathItem, Reference]]] = None
-    root_schema_site: Literal["redoc", "swagger", "elements"] = "redoc"
-    enabled_endpoints: Set[str] = {
-        "redoc",
-        "swagger",
-        "elements",
-        "openapi.json",
-        "openapi.yaml",
-    }
+    license: Optional[License] = None
+    security: Optional[List[SecurityScheme]] = None
+    servers: Optional[List[Dict[str, Union[str, Any]]]] = None
+    tags: Optional[List[Tag]] = None
+    openapi_version: Optional[str] = "3.1.0"
+    openapi_url: Optional[str] = "/openapi.json"
+    docs_url: Optional[str] = "/docs/swagger"
+    redoc_url: Optional[str] = "/docs/redoc"
+    swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect"
+    root_path_in_servers: bool = True
+    redoc_js_url: str = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+    redoc_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
+    swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
+    swagger_ui_parameters: Optional[Dict[str, Any]] = None
+    swagger_js_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"
+    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css"
+    swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    def to_openapi_schema(self) -> "OpenAPI":
-        if isinstance(self.components, list):
-            merged_components = Components()
-            for components in self.components:
-                for key in components.__fields__.keys():
-                    value = getattr(components, key, None)
-                    if value:
-                        merged_value_dict = getattr(merged_components, key, {}) or {}
-                        merged_value_dict.update(value)
-                        setattr(merged_components, key, merged_value_dict)
-            self.components = merged_components
-
-        return OpenAPI(
-            externalDocs=self.external_docs,
-            security=self.security,
-            components=self.components,
-            servers=self.servers,
+    def openapi(self, app: Any) -> Dict[str, Any]:
+        """Loads the OpenAPI routing schema"""
+        openapi_schema = get_openapi(
+            title=self.title,
+            version=self.version,
+            openapi_version=self.openapi_version,
+            summary=self.summary,
+            description=self.description,
+            routes=app.routes,
             tags=self.tags,
-            webhooks=self.webhooks,
-            info=Info(
-                title=self.title,
-                version=self.version,
-                description=self.description,
-                contact=self.contact,
-                license=self.license,
-                summary=self.summary,
-                termsOfService=self.terms_of_service,
-            ),
+            servers=self.servers,
+            terms_of_service=self.terms_of_service,
+            contact=self.contact,
+            license=self.license,
         )
+        app.openapi_schema = openapi_schema
+        return openapi_schema
 
-    def get_http_verb(self, path_item: PathItem) -> str:
-        if getattr(path_item, "get", None):
-            return HttpMethod.GET.value.lower()
-        elif getattr(path_item, "post", None):
-            return HttpMethod.POST.value.lower()
-        elif getattr(path_item, "put", None):
-            return HttpMethod.PUT.value.lower()
-        elif getattr(path_item, "patch", None):
-            return HttpMethod.PATCH.value.lower()
-        elif getattr(path_item, "delete", None):
-            return HttpMethod.DELETE.value.lower()
-        elif getattr(path_item, "header", None):
-            return HttpMethod.HEAD.value.lower()
+    def enable(self, app: Any) -> None:
+        """Enables the OpenAPI documentation"""
+        if self.openapi_url:
+            urls = {server.get("url") for server in self.servers}
+            server_urls = set(urls)
 
-        return HttpMethod.GET.value.lower()
+            @get(path=self.openapi_url)
+            async def _openapi(request: Request) -> JSONResponse:
+                root_path = request.scope.get("root_path", "").rstrip("/")
+                if root_path not in server_urls:
+                    if root_path and self.root_path_in_servers:
+                        self.servers.insert(0, {"url": root_path})
+                        server_urls.add(root_path)
+                return JSONResponse(self.openapi(app))
 
-    def create_openapi_schema_model(self, app: "Esmerald") -> "OpenAPI":
-        from esmerald.applications import ChildEsmerald, Esmerald
+            app.add_route(
+                path="/", handler=_openapi, include_in_schema=False, activate_openapi=False
+            )
 
-        schema = self.to_openapi_schema()
-        schema.paths = {}
+        if self.openapi_url and self.docs_url:
 
-        def parse_route(app, prefix=""):  # type: ignore
-            if getattr(app, "routes", None) is None:
-                return
+            @get(path=self.docs_url)
+            async def swagger_ui_html(request: Request) -> HTMLResponse:
+                root_path = request.scope.get("root_path", "").rstrip("/")
+                openapi_url = root_path + self.openapi_url
+                oauth2_redirect_url = self.swagger_ui_oauth2_redirect_url
+                if oauth2_redirect_url:
+                    oauth2_redirect_url = root_path + oauth2_redirect_url
+                return get_swagger_ui_html(
+                    openapi_url=openapi_url,
+                    title=self.title + " - Swagger UI",
+                    oauth2_redirect_url=oauth2_redirect_url,
+                    init_oauth=self.swagger_ui_init_oauth,
+                    swagger_ui_parameters=self.swagger_ui_parameters,
+                    swagger_js_url=self.swagger_js_url,
+                    swagger_favicon_url=self.swagger_favicon_url,
+                    swagger_css_url=self.swagger_css_url,
+                )
 
-            # Making sure that ChildEsmerald or esmerald
-            if hasattr(app, "app"):
-                if (
-                    isinstance(app.app, (Esmerald, ChildEsmerald))
-                    or (
-                        is_class_and_subclass(app.app, Esmerald)
-                        or is_class_and_subclass(app.app, ChildEsmerald)
-                    )
-                ) and not getattr(app.app, "enable_openapi", False):
-                    return
+            app.add_route(
+                path="/",
+                handler=swagger_ui_html,
+                include_in_schema=False,
+                activate_openapi=False,
+            )
 
-            for route in app.routes:
-                if isinstance(route, Include) and not route.include_in_schema:
-                    continue
+        if self.swagger_ui_oauth2_redirect_url:
 
-                if isinstance(route, WebSocketGateway):
-                    continue
+            @get(self.swagger_ui_oauth2_redirect_url)
+            async def swagger_ui_redirect(request: Request) -> HTMLResponse:
+                return get_swagger_ui_oauth2_redirect_html()
 
-                if isinstance(route, Gateway):
-                    if route.include_in_schema is False:
-                        continue
+            app.add_route(
+                path="/",
+                handler=swagger_ui_redirect,
+                include_in_schema=False,
+                activate_openapi=False,
+            )
 
-                    if (
-                        isinstance(route, Gateway)
-                        and any(
-                            handler.include_in_schema
-                            for handler, _ in route.handler.route_map.values()
-                        )
-                        and (route.path_format or "/") not in schema.paths
-                    ):
-                        path = clean_path(prefix + route.path)
-                        path_item = create_path_item(
-                            route=route.handler,  # type: ignore
-                            create_examples=self.create_examples,
-                            use_handler_docstrings=self.use_handler_docstrings,
-                        )
-                        verb = self.get_http_verb(path_item)
-                        if path not in schema.paths:
-                            schema.paths[path] = {}  # type: ignore
-                        if verb not in schema.paths[path]:  # type: ignore
-                            schema.paths[path][verb] = {}  # type: ignore
-                        schema.paths[path][verb] = getattr(path_item, verb, None)  # type: ignore
-                    continue
+        if self.openapi_url and self.redoc_url:
 
-                route_app = getattr(route, "app", None)
-                if not route_app:
-                    continue
+            @get(self.redoc_url)
+            async def redoc_html(request: Request) -> HTMLResponse:
+                root_path = request.scope.get("root_path", "").rstrip("/")
+                openapi_url = root_path + self.openapi_url
+                return get_redoc_html(
+                    openapi_url=openapi_url,
+                    title=self.title + " - ReDoc",
+                    redoc_js_url=self.redoc_js_url,
+                    redoc_favicon_url=self.redoc_favicon_url,
+                )
 
-                if isinstance(route_app, partial):
-                    try:
-                        route_app = route_app.__wrapped__
-                    except AttributeError:
-                        pass
+            app.add_route(
+                path="/", handler=redoc_html, include_in_schema=False, activate_openapi=False
+            )
 
-                path = clean_path(prefix + route.path)
-                parse_route(route, prefix=f"{path}")  # type: ignore
-
-        parse_route(app)  # type: ignore
-        return construct_open_api_with_schema_class(schema)
+        app.router.activate()

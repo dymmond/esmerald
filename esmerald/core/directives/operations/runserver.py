@@ -14,7 +14,7 @@ printer = Print()
 terminal = Terminal()
 
 
-@click.option(
+@click.option(  # type: ignore
     "-p",
     "--port",
     type=int,

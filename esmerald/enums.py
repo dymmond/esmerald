@@ -18,6 +18,7 @@ class MediaType(str, Enum):
     TEXT = "text/plain"
     TEXT_CHARSET = "text/plain; charset=utf-8"
     PNG = "image/png"
+    OCTET = "application/octet-stream"
 
 
 class OpenAPIMediaType(str, Enum):

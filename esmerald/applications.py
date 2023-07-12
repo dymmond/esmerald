@@ -13,7 +13,7 @@ from typing import (
     cast,
 )
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityRequirement, Server, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl
 from starlette.applications import Starlette
@@ -130,8 +130,8 @@ class Esmerald(Starlette):
         contact: Optional[Contact] = None,
         terms_of_service: Optional[AnyUrl] = None,
         license: Optional[License] = None,
-        security: Optional[List[SecurityRequirement]] = None,
-        servers: Optional[List[Server]] = None,
+        security: Optional[List[SecurityScheme]] = None,
+        servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
         secret_key: Optional[str] = None,
         allowed_hosts: Optional[List[str]] = None,
         allow_origins: Optional[List[str]] = None,
@@ -140,6 +140,7 @@ class Esmerald(Starlette):
         dependencies: Optional["Dependencies"] = None,
         csrf_config: Optional["CSRFConfig"] = None,
         openapi_config: Optional["OpenAPIConfig"] = None,
+        openapi_version: Optional[str] = None,
         cors_config: Optional["CORSConfig"] = None,
         static_files_config: Optional["StaticFilesConfig"] = None,
         template_config: Optional["TemplateConfig"] = None,
@@ -166,6 +167,7 @@ class Esmerald(Starlette):
         redirect_slashes: Optional[bool] = None,
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
+        root_path_in_servers: bool = None,
     ) -> None:
         self.settings_config = None
 
@@ -196,6 +198,7 @@ class Esmerald(Starlette):
             else self.get_settings_value(self.settings_config, esmerald_settings, "debug")
         )
         self.debug = self._debug
+
         self.title = title or self.get_settings_value(
             self.settings_config, esmerald_settings, "title"
         )
@@ -207,6 +210,9 @@ class Esmerald(Starlette):
         )
         self.version = version or self.get_settings_value(
             self.settings_config, esmerald_settings, "version"
+        )
+        self.openapi_version = openapi_version or self.get_settings_value(
+            self.settings_config, esmerald_settings, "openapi_version"
         )
         self.summary = summary or self.get_settings_value(
             self.settings_config, esmerald_settings, "summary"
@@ -339,6 +345,13 @@ class Esmerald(Starlette):
             if enable_openapi is not None
             else self.get_settings_value(self.settings_config, esmerald_settings, "enable_openapi")
         )
+        self.root_path_in_servers = (
+            root_path_in_servers
+            if root_path_in_servers is not None
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "root_path_in_servers"
+            )
+        )
         self.redirect_slashes = (
             redirect_slashes
             if redirect_slashes is not None
@@ -351,6 +364,9 @@ class Esmerald(Starlette):
             if pluggables
             else self.get_settings_value(self.settings_config, esmerald_settings, "pluggables")
         )
+
+        if not self.include_in_schema or not self.enable_openapi:
+            self.root_path_in_servers = False
 
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
@@ -423,10 +439,31 @@ class Esmerald(Starlette):
         return setting_value
 
     def activate_openapi(self) -> None:
-        if self.openapi_config and self.enable_openapi:
-            self.openapi_schema = self.openapi_config.create_openapi_schema_model(self)
-            gateway = gateways.Gateway(handler=self.openapi_config.openapi_apiview)
-            self.add_apiview(value=gateway)
+        if self.enable_openapi:
+            if self.title or not self.openapi_config.title:
+                self.openapi_config.title = self.title
+            if self.version or not self.openapi_config.version:
+                self.openapi_config.version = self.version
+            if self.openapi_version or not self.openapi_config.openapi_version:
+                self.openapi_config.openapi_version = self.openapi_version
+            if self.summary or not self.openapi_config.summary:
+                self.openapi_config.summary = self.summary
+            if self.description or not self.openapi_config.description:
+                self.openapi_config.description = self.description
+            if self.tags or not self.openapi_config.tags:
+                self.openapi_config.tags = self.tags
+            if self.servers or not self.openapi_config.servers:
+                self.openapi_config.servers = self.servers
+            if self.terms_of_service or not self.openapi_config.terms_of_service:
+                self.openapi_config.terms_of_service = self.terms_of_service
+            if self.contact or not self.openapi_config.contact:
+                self.openapi_config.contact = self.contact
+            if self.license or not self.openapi_config.license:
+                self.openapi_config.license = self.license
+            if self.root_path_in_servers or not self.root_path_in_servers:
+                self.openapi_config.root_path_in_servers = self.root_path_in_servers
+
+            self.openapi_config.enable(self)
 
     def get_template_engine(
         self, template_config: "TemplateConfig"
@@ -461,6 +498,7 @@ class Esmerald(Starlette):
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
         include_in_schema: bool = True,
+        activate_openapi: bool = True,
     ) -> None:
         """
         Adds a route into the router.
@@ -478,7 +516,8 @@ class Esmerald(Starlette):
             include_in_schema=include_in_schema,
         )
 
-        self.activate_openapi()
+        if activate_openapi:
+            self.activate_openapi()
 
     def add_websocket_route(
         self,
@@ -521,7 +560,7 @@ class Esmerald(Starlette):
         permissions: Optional[List["Permission"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
     ) -> None:
         """
         Adds a child esmerald into the application routers.

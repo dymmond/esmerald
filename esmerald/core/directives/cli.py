@@ -90,7 +90,7 @@ class DirectiveGroup(click.Group):
         return super().invoke(ctx)
 
 
-@click.group(
+@click.group(  # type: ignore
     cls=DirectiveGroup,
 )
 @click.option(

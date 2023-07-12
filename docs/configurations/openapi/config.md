@@ -23,7 +23,7 @@ Currently, by default, it is using the Esmerald OpenAPIView pointing to:
 ## Parameters
 
 * **create_examples** - Generates doc examples.
-    
+
     <sup>Default: `False`</sup>
 
 * **openapi_apiview** - The [OpenAPIView](./apiview.md) serving the docs.
@@ -60,8 +60,8 @@ in a dictionary format compatible with OpenAPI or an instance of
     <sup>Default: `None`</sup>
 
 * **security** - API Security requirements information. This is an OpenAPI schema security, meaning,
-in a dictionary format compatible with OpenAPI or an instance of 
-`openapi_schemas_pydantic.v3_1_0.security_requirement.SecurityRequirement`
+in a dictionary format compatible with OpenAPI or an instance of
+`openapi_schemas_pydantic.v3_1_0.security_requirement.SecurityScheme`
 
     <sup>Default: `None`</sup>
 

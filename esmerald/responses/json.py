@@ -17,5 +17,5 @@ class BaseJSONResponse(JSONResponse):
         a dict().
         """
         if isinstance(value, BaseModel):
-            return value.dict()
+            return value.model_dump()
         raise TypeError("unsupported type")

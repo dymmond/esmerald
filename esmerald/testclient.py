@@ -12,6 +12,8 @@ from typing import (
 
 import httpx  # noqa
 from httpx._client import CookieTypes
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
+from pydantic import AnyUrl
 from starlette.testclient import TestClient  # noqa
 
 from esmerald.applications import Esmerald
@@ -76,6 +78,15 @@ def create_client(
     settings_config: Optional["SettingsType"] = None,
     debug: Optional[bool] = None,
     app_name: Optional[str] = None,
+    title: Optional[str] = None,
+    version: Optional[str] = None,
+    summary: Optional[str] = None,
+    description: Optional[str] = None,
+    contact: Optional[Contact] = None,
+    terms_of_service: Optional[AnyUrl] = None,
+    license: Optional[License] = None,
+    security: Optional[List[SecurityScheme]] = None,
+    servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
     secret_key: Optional[str] = get_random_secret_key(),
     allowed_hosts: Optional[List[str]] = None,
     allow_origins: Optional[List[str]] = None,
@@ -97,6 +108,9 @@ def create_client(
     scheduler_tasks: Optional[Dict[str, str]] = None,
     scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
     enable_scheduler: bool = None,
+    enable_openapi: bool = True,
+    include_in_schema: bool = True,
+    openapi_version: Optional[str] = "3.1.0",
     raise_server_exceptions: bool = True,
     root_path: str = "",
     static_files_config: Optional["StaticFilesConfig"] = None,
@@ -104,11 +118,21 @@ def create_client(
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
     cookies: Optional[CookieTypes] = None,
     redirect_slashes: Optional[bool] = None,
+    tags: Optional[List[Tag]] = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
         app=Esmerald(
             settings_config=settings_config,
             debug=debug,
+            title=title,
+            version=version,
+            summary=summary,
+            description=description,
+            contact=contact,
+            terms_of_service=terms_of_service,
+            license=license,
+            security=security,
+            servers=servers,
             routes=cast("Any", routes if isinstance(routes, list) else [routes]),
             app_name=app_name,
             secret_key=secret_key,
@@ -133,6 +157,10 @@ def create_client(
             session_config=session_config,
             lifespan=lifespan,
             redirect_slashes=redirect_slashes,
+            enable_openapi=enable_openapi,
+            openapi_version=openapi_version,
+            include_in_schema=include_in_schema,
+            tags=tags,
         ),
         base_url=base_url,
         backend=backend,

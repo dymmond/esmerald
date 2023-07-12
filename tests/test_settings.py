@@ -86,7 +86,7 @@ async def _app_settings(request: Request) -> str:
 
 
 class DisableOpenAPI(EsmeraldAPISettings):
-    enable_openapi: bool = False
+    enable_openapi: bool = True
 
 
 def test_settings_global(test_client_factory):

@@ -15,6 +15,7 @@ class JSON(ResponseContainer[JSONResponse]):
 
     content: Optional[Dict[str, Any]] = None
     status_code: Optional[int] = None
+    media_type: str = "application/json"
 
     def __init__(
         self,
@@ -25,6 +26,7 @@ class JSON(ResponseContainer[JSONResponse]):
         super().__init__(**kwargs)
         self.content = content
         self.status_code = status_code
+        self._media_type = self.media_type
 
     def to_response(
         self,

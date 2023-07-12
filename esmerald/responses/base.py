@@ -44,7 +44,7 @@ class Response(StarletteResponse, Generic[T]):
     @staticmethod
     def transform(value: Any) -> Dict[str, Any]:
         if isinstance(value, BaseModel):
-            return value.dict()
+            return value.model_dump()
         raise TypeError("unsupported type")  # pragma: no cover
 
     def render(self, content: Any) -> bytes:

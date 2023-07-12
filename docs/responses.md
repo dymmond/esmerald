@@ -227,7 +227,7 @@ This is a special attribute that is used for OpenAPI spec purposes and can be cr
 from typing import Union
 
 from esmerald import post
-from esmerald.openapi.datastructures import ResponseSpecification
+from esmerald.openapi.datastructures import OpenAPIResponse
 from pydantic import BaseModel
 
 
@@ -236,7 +236,7 @@ class ItemOut(BaseModel):
     description: str
 
 
-@post(path='/create', summary="Creates an item", responses={200: ResponseSpecification(model=TaskIn, description=...)})
+@post(path='/create', summary="Creates an item", responses={200: OpenAPIResponse(model=TaskIn, description=...)})
 async def create() -> Union[None, ItemOut]:
     ...
 ```

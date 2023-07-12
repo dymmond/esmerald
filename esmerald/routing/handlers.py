@@ -4,7 +4,7 @@ from starlette import status
 
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import HTTPException, ImproperlyConfigured
-from esmerald.openapi.datastructures import ResponseSpecification
+from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.permissions.types import Permission
 from esmerald.routing.router import HTTPHandler, WebSocketHandler
 from esmerald.types import (
@@ -19,7 +19,7 @@ from esmerald.types import (
 from esmerald.utils.constants import AVAILABLE_METHODS
 
 if TYPE_CHECKING:
-    from openapi_schemas_pydantic.v3_1_0 import SecurityRequirement
+    from openapi_schemas_pydantic.v3_1_0 import SecurityScheme
 
 
 SUCCESSFUL_RESPONSE = "Successful response"
@@ -47,11 +47,11 @@ class get(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -103,11 +103,11 @@ class head(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -159,11 +159,11 @@ class options(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -215,11 +215,11 @@ class trace(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -271,11 +271,11 @@ class post(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -327,11 +327,11 @@ class put(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -383,11 +383,11 @@ class patch(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -439,11 +439,11 @@ class delete(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         super().__init__(
             path=path,
@@ -496,11 +496,11 @@ class route(HTTPHandler):
         response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityRequirement"]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
-        responses: Optional[Dict[int, ResponseSpecification]] = None,
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
         if not methods or not isinstance(methods, list):
             raise ImproperlyConfigured(
