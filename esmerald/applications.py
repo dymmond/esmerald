@@ -168,12 +168,6 @@ class Esmerald(Starlette):
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
         root_path_in_servers: bool = True,
-        # openapi_url: Optional[str] = "/openapi.json",
-        # docs_url: Optional[str] = "/docs",
-        # redoc_url: Optional[str] = "/redoc",
-        # swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect",
-        # swagger_ui_init_oauth: Optional[Dict[str, Any]] = None,
-        # swagger_ui_parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.settings_config = None
 

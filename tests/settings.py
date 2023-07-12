@@ -11,10 +11,10 @@ class TestSettings(EsmeraldAPISettings):
     app_name: str = "test_client"
     debug: bool = True
     enable_sync_handlers: bool = True
-    enable_openapi: bool = False
+    enable_openapi: bool = True
     environment: Optional[str] = "testing"
     redirect_slashes: bool = True
-    include_in_schema: bool = False
+    include_in_schema: bool = True
 
     @cached_property
     def registry(self) -> Tuple[Database, Registry]:

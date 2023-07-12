@@ -40,7 +40,7 @@ def test_openapi_schema():
             "summary": "Summary",
             "description": "Description",
             "contact": {"name": "admin", "email": "admin@myapp.com"},
-            "version": "2.0.0",
+            "version": app.version,
         },
         "servers": [{"url": "/"}],
         "paths": {
@@ -78,7 +78,7 @@ def test_openapi_schema_default():
             "summary": "Esmerald application",
             "description": "test_client",
             "contact": {"name": "admin", "email": "admin@myapp.com"},
-            "version": "1.3.0",
+            "version": another_app.version,
         },
         "servers": [{"url": "/"}],
         "paths": {
