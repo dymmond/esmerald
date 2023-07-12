@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 from pydantic import BaseModel
 
@@ -7,9 +7,15 @@ from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
 
 
+class Error(BaseModel):
+    status: int
+    detail: str
+
+
 class CustomResponse(BaseModel):
     status: str
     title: str
+    errors: List[Error]
 
 
 class JsonResponse(JSONResponse):
@@ -90,11 +96,25 @@ def test_open_api_schema(test_client_factory):
                         "properties": {
                             "status": {"type": "string", "title": "Status"},
                             "title": {"type": "string", "title": "Title"},
+                            "errors": {
+                                "items": {"$ref": "#/components/schemas/Error"},
+                                "type": "array",
+                                "title": "Errors",
+                            },
                         },
                         "type": "object",
-                        "required": ["status", "title"],
+                        "required": ["status", "title", "errors"],
                         "title": "CustomResponse",
-                    }
+                    },
+                    "Error": {
+                        "properties": {
+                            "status": {"type": "integer", "title": "Status"},
+                            "detail": {"type": "string", "title": "Detail"},
+                        },
+                        "type": "object",
+                        "required": ["status", "detail"],
+                        "title": "Error",
+                    },
                 }
             },
         }

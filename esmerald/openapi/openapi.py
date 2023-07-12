@@ -54,22 +54,24 @@ def get_fields_from_routes(
         request_fields = []
 
     for route in routes:
+        handler = cast(router.HTTPHandler, route.handler)
+
         if getattr(route, "include_in_schema", None) and isinstance(route, router.Include):
             request_fields.extend(get_fields_from_routes(route.routes, request_fields))
             continue
 
         if getattr(route, "include_in_schema", None) and isinstance(route, gateways.Gateway):
             # Get the data_field
-            if DATA in route.handler.signature_model.model_fields:  # type: ignore
-                data_field = route.handler.data_field  # type: ignore
+            if DATA in handler.signature_model.model_fields:
+                data_field = handler.data_field
                 body_fields.append(data_field)
 
-            if route.handler.response_models:
-                for _, response in route.handler.response_models.items():
+            if handler.response_models:
+                for _, response in handler.response_models.items():
                     response_from_routes.append(response)
 
             # Get the params from the transformer
-            params = get_flat_params(route.handler)
+            params = get_flat_params(handler)
             if params:
                 request_fields.extend(params)
 

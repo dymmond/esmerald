@@ -1,7 +1,6 @@
 import inspect
 from copy import copy
 from enum import IntEnum
-from functools import cached_property
 from inspect import Signature
 from typing import (
     TYPE_CHECKING,
@@ -49,11 +48,10 @@ from esmerald.exceptions import (
 )
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.openapi.params import ResponseParam
 from esmerald.openapi.utils import is_status_code_allowed
-from esmerald.params import Body
 from esmerald.requests import Request
 from esmerald.responses import Response
+from esmerald.routing._internal import FieldInfoMixin
 from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -438,7 +436,7 @@ class Router(Parent, StarletteRouter):
         return decorator
 
 
-class HTTPHandler(BaseHandlerMixin, StarletteRoute):
+class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
     __slots__ = (
         "path",
         "_permissions",
@@ -608,32 +606,6 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         List of permissions for the route. This is used for OpenAPI Spec purposes only.
         """
         return [permission.__name__ for permission in self.permissions]
-
-    @cached_property
-    def data_field(self) -> Any:
-        """The field used for the payload body"""
-        if DATA in self.signature_model.model_fields:
-            data = self.signature_model.model_fields[DATA]
-
-            body = Body(alias="body")
-            for key, _ in data._attributes_set.items():
-                setattr(body, key, getattr(data, key, None))
-            return body
-
-    @cached_property
-    def response_models(self) -> Dict[int, Any]:
-        """
-        The models converted into pydantic fields with the model used for OpenAPI.
-        """
-        responses: Dict[int, OpenAPIResponse] = {}
-        if self.responses:
-            for status_code, response in self.responses.items():
-                responses[status_code] = ResponseParam(
-                    annotation=response.model,
-                    description=response.description,
-                    alias=response.model.__name__,
-                )
-        return responses
 
     def get_response_class(self) -> Type["Response"]:
         """
