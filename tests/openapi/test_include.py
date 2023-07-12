@@ -56,20 +56,7 @@ def test_add_include_to_openapi(test_client_factory):
                                 "description": "The SKU information of an item",
                                 "content": {
                                     "application/json": {
-                                        "schema": {
-                                            "properties": {
-                                                "sku": {
-                                                    "anyOf": [
-                                                        {"type": "integer"},
-                                                        {"type": "string"},
-                                                    ],
-                                                    "title": "Sku",
-                                                }
-                                            },
-                                            "type": "object",
-                                            "required": ["sku"],
-                                            "title": "Item",
-                                        }
+                                        "schema": {"$ref": "#/components/schemas/Item"}
                                     }
                                 },
                             }
@@ -90,6 +77,21 @@ def test_add_include_to_openapi(test_client_factory):
                         "deprecated": False,
                     }
                 },
+            },
+            "components": {
+                "schemas": {
+                    "Item": {
+                        "properties": {
+                            "sku": {
+                                "anyOf": [{"type": "integer"}, {"type": "string"}],
+                                "title": "Sku",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["sku"],
+                        "title": "Item",
+                    }
+                }
             },
         }
 

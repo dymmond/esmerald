@@ -76,7 +76,22 @@ def test_child_nested_esmerald_disabled_openapi():
                         },
                         "deprecated": False,
                     }
-                },
+                }
+            },
+            "components": {
+                "schemas": {
+                    "Item": {
+                        "properties": {
+                            "sku": {
+                                "anyOf": [{"type": "integer"}, {"type": "string"}],
+                                "title": "Sku",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["sku"],
+                        "title": "Item",
+                    }
+                }
             },
         }
 
@@ -131,7 +146,22 @@ def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
                         },
                         "deprecated": False,
                     }
-                },
+                }
+            },
+            "components": {
+                "schemas": {
+                    "Item": {
+                        "properties": {
+                            "sku": {
+                                "anyOf": [{"type": "integer"}, {"type": "string"}],
+                                "title": "Sku",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["sku"],
+                        "title": "Item",
+                    }
+                }
             },
         }
 
@@ -170,7 +200,7 @@ def test_access_nested_child_esmerald_openapi_only(test_client_factory):
                 "summary": "Esmerald application",
                 "description": "test_client",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
-                "version": "1.3.0",
+                "version": client.app.version,
             },
             "servers": [{"url": "/child/another-child"}, {"url": "/"}],
             "paths": {
@@ -184,25 +214,27 @@ def test_access_nested_child_esmerald_openapi_only(test_client_factory):
                                 "description": "The SKU information of an item",
                                 "content": {
                                     "application/json": {
-                                        "schema": {
-                                            "properties": {
-                                                "sku": {
-                                                    "anyOf": [
-                                                        {"type": "integer"},
-                                                        {"type": "string"},
-                                                    ],
-                                                    "title": "Sku",
-                                                }
-                                            },
-                                            "type": "object",
-                                            "required": ["sku"],
-                                            "title": "Item",
-                                        }
+                                        "schema": {"$ref": "#/components/schemas/Item"}
                                     }
                                 },
                             }
                         },
                         "deprecated": False,
+                    }
+                }
+            },
+            "components": {
+                "schemas": {
+                    "Item": {
+                        "properties": {
+                            "sku": {
+                                "anyOf": [{"type": "integer"}, {"type": "string"}],
+                                "title": "Sku",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["sku"],
+                        "title": "Item",
                     }
                 }
             },
@@ -259,25 +291,27 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
                                 "description": "The SKU information of an item",
                                 "content": {
                                     "application/json": {
-                                        "schema": {
-                                            "properties": {
-                                                "sku": {
-                                                    "anyOf": [
-                                                        {"type": "integer"},
-                                                        {"type": "string"},
-                                                    ],
-                                                    "title": "Sku",
-                                                }
-                                            },
-                                            "type": "object",
-                                            "required": ["sku"],
-                                            "title": "Item",
-                                        }
+                                        "schema": {"$ref": "#/components/schemas/Item"}
                                     }
                                 },
                             }
                         },
                         "deprecated": False,
+                    }
+                }
+            },
+            "components": {
+                "schemas": {
+                    "Item": {
+                        "properties": {
+                            "sku": {
+                                "anyOf": [{"type": "integer"}, {"type": "string"}],
+                                "title": "Sku",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["sku"],
+                        "title": "Item",
                     }
                 }
             },
@@ -334,25 +368,27 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_include_openapi_
                                 "description": "The SKU information of an item",
                                 "content": {
                                     "application/json": {
-                                        "schema": {
-                                            "properties": {
-                                                "sku": {
-                                                    "anyOf": [
-                                                        {"type": "integer"},
-                                                        {"type": "string"},
-                                                    ],
-                                                    "title": "Sku",
-                                                }
-                                            },
-                                            "type": "object",
-                                            "required": ["sku"],
-                                            "title": "Item",
-                                        }
+                                        "schema": {"$ref": "#/components/schemas/Item"}
                                     }
                                 },
                             }
                         },
                         "deprecated": False,
+                    }
+                }
+            },
+            "components": {
+                "schemas": {
+                    "Item": {
+                        "properties": {
+                            "sku": {
+                                "anyOf": [{"type": "integer"}, {"type": "string"}],
+                                "title": "Sku",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["sku"],
+                        "title": "Item",
                     }
                 }
             },

@@ -64,6 +64,10 @@ def get_fields_from_routes(
                 data_field = route.handler.data_field  # type: ignore
                 body_fields.append(data_field)
 
+            if route.handler.response_models:
+                for _, response in route.handler.response_models.items():
+                    response_from_routes.append(response)
+
             # Get the params from the transformer
             params = get_flat_params(route.handler)
             if params:
@@ -184,14 +188,14 @@ def get_openapi_path(
     route_response_media_type: str = None
     handler: router.HTTPHandler = cast("router.HTTPHandler", route.handler)
 
-    if not route.response_class:
+    if not handler.response_class:
         internal_response = create_internal_response(handler)
         route_response_media_type = internal_response.media_type
     else:
         assert (
-            route.response_class.media_type is not None
+            handler.response_class.media_type is not None
         ), "`media_type` is required in the response class."
-        route_response_media_type = route.response_class.media_type
+        route_response_media_type = handler.response_class.media_type
 
     # If routes do not want to be included in the schema generation
     if not route.include_in_schema or not handler.include_in_schema:
@@ -252,10 +256,10 @@ def get_openapi_path(
             ).setdefault(route_response_media_type, {})["schema"] = response_schema
 
         # Additional responses
-        if handler.responses:
+        if handler.response_models:
             operation_responses = operation.setdefault("responses", {})
-            for additional_status_code, additional_response in handler.responses.items():
-                process_response = additional_response.model_copy()
+            for additional_status_code, _additional_response in handler.response_models.items():
+                process_response = handler.responses[additional_status_code].model_copy()
                 status_code_key = str(additional_status_code).upper()
 
                 if status_code_key == "DEFAULT":
@@ -263,12 +267,14 @@ def get_openapi_path(
 
                 openapi_response = operation_responses.setdefault(status_code_key, {})
 
-                field = handler.responses.get(additional_status_code)
+                field = handler.response_models.get(additional_status_code)
                 additional_field_schema: Optional[Dict[str, Any]] = None
-                model_schema = process_response.model.model_json_schema()
+                model_schema = process_response.model_json_schema()
 
                 if field:
-                    additional_field_schema = field.model.model_json_schema()
+                    additional_field_schema = get_schema_from_model_field(
+                        field=field, field_mapping=field_mapping
+                    )
                     media_type = route_response_media_type or "application/json"
                     additional_schema = (
                         model_schema.setdefault("content", {})

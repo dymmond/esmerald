@@ -49,6 +49,7 @@ from esmerald.exceptions import (
 )
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import OpenAPIResponse
+from esmerald.openapi.params import ResponseParam
 from esmerald.openapi.utils import is_status_code_allowed
 from esmerald.params import Body
 from esmerald.requests import Request
@@ -618,6 +619,21 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
             for key, _ in data._attributes_set.items():
                 setattr(body, key, getattr(data, key, None))
             return body
+
+    @cached_property
+    def response_models(self) -> Dict[int, Any]:
+        """
+        The models converted into pydantic fields with the model used for OpenAPI.
+        """
+        responses: Dict[int, OpenAPIResponse] = {}
+        if self.responses:
+            for status_code, response in self.responses.items():
+                responses[status_code] = ResponseParam(
+                    annotation=response.model,
+                    description=response.description,
+                    alias=response.model.__name__,
+                )
+        return responses
 
     def get_response_class(self) -> Type["Response"]:
         """
