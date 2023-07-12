@@ -42,6 +42,7 @@ dependencies = [
     "aiofiles>=0.8.0,<24",
     "anyio>=3.6.2,<4.0.0",
     "awesome-slugify>=1.6.5,<2",
+    "click>=8.1.4,<9.0.0",
     "httpx>=0.24.0,<0.30.0",
     "itsdangerous>=2.1.2,<3.0.0",
     "jinja2>=3.1.2,<4.0.0",

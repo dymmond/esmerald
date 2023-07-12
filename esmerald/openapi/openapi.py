@@ -11,7 +11,6 @@ from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
 
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
-from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.openapi.models import Contact, Info, License, OpenAPI, Operation, Parameter, Tag
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
@@ -264,10 +263,6 @@ def get_openapi_path(
 
                 openapi_response = operation_responses.setdefault(status_code_key, {})
 
-                assert isinstance(
-                    process_response, OpenAPIResponse
-                ), "An additional response must be an instance of OpenAPIResponse"
-
                 field = handler.responses.get(additional_status_code)
                 additional_field_schema: Optional[Dict[str, Any]] = None
                 model_schema = process_response.model.model_json_schema()
@@ -424,7 +419,7 @@ def get_openapi(
                     definitions, components = iterate_routes(
                         route.routes, definitions, components, prefix=route_path
                     )
-                continue
+                    continue
 
             if isinstance(route, gateways.Gateway):
                 result = get_openapi_path(

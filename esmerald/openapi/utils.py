@@ -84,7 +84,12 @@ def is_status_code_allowed(status_code: Union[int, str, None]) -> bool:
         return True
     if status_code in ALLOWED_STATUS_CODE:
         return True
-    current_status_code = int(status_code)
+
+    try:
+        current_status_code = int(status_code)
+    except ValueError:
+        return False
+
     return not (current_status_code < 200 or current_status_code in {204, 304})
 
 

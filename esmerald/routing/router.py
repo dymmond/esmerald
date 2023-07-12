@@ -44,10 +44,12 @@ from esmerald.exceptions import (
     ImproperlyConfigured,
     MethodNotAllowed,
     NotFound,
+    OpenAPIException,
     ValidationErrorException,
 )
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import OpenAPIResponse
+from esmerald.openapi.utils import is_status_code_allowed
 from esmerald.params import Body
 from esmerald.requests import Request
 from esmerald.responses import Response
@@ -556,6 +558,22 @@ class HTTPHandler(BaseHandlerMixin, StarletteRoute):
         self.app: Optional["ASGIApp"] = None
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
+
+        if self.responses:
+            self.validate_responses(responses=self.responses)
+
+    def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
+        """
+        Checks if the responses are valid or raises an exception otherwise.
+        """
+        for status_code, response in responses.items():
+            if not isinstance(response, OpenAPIResponse):
+                raise OpenAPIException(
+                    detail="An additional response must be an instance of OpenAPIResponse."
+                )
+
+            if not is_status_code_allowed(status_code):
+                raise OpenAPIException(detail="The status is not a valid OpenAPI status response.")
 
     @property
     def http_methods(self) -> List[str]:
