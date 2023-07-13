@@ -1,5 +1,7 @@
-from esmerald.openapi.apiview import OpenAPIView
+from esmerald import Esmerald
 
-
-class MyOpenAPIView(OpenAPIView):
-    path = "/another-url"
+app = Esmerald(
+    routes=[...],
+    docs_url="/another-url/swagger",
+    redoc_url="/another-url/redoc",
+)
