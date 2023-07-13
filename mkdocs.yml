@@ -52,9 +52,7 @@ nav:
       - StaticFilesConfig: "configurations/staticfiles.md"
       - TemplateConfig: "configurations/template.md"
       - JWTConfig: "configurations/jwt.md"
-      - OpenAPI:
-          - OpenAPIConfig: "configurations/openapi/config.md"
-          - OpenAPIView: "configurations/openapi/apiview.md"
+      - OpenAPIConfig: "configurations/openapi/config.md"
   - Routing:
       - Router: "routing/router.md"
       - Routes: "routing/routes.md"

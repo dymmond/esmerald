@@ -116,7 +116,7 @@ assigning the result object into a `AuthResult` and make it available on every r
 3. Implement the `authenticate` and assign the `user` result to the `AuthResult`.
 
 !!! Info
-    We use [Tortoise-ORM](./../databases/tortoise/motivation.md) for this example because Esmerald supports tortoise
+    We use [Saffier](./../databases/saffier/motivation.md) for this example because Esmerald supports S
     and contains functionalities linked with that support (like the User table) but **Esmerald**
     **is not dependent of ANY specific ORM** which means that you are free to use whatever you prefer.
 

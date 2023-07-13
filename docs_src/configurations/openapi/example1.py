@@ -1,11 +1,11 @@
 from esmerald import Esmerald, OpenAPIConfig
+from esmerald.openapi.models import Contact
 
+openapi_config = OpenAPIConfig(
+    title="My Application",
+    docs_url="/mydocs/swagger",
+    redoc_url="/mydocs/redoc",
+    contact=Contact(name="User", email="email@example.com"),
+)
 
-class MyOpenAPIConfig(OpenAPIConfig):
-    # Do you want to generate examples?
-    create_examples: bool = True
-    title: str = ...
-    version: str = ...
-
-
-app = Esmerald(routes=[...], openapi_config=MyOpenAPIConfig)
+app = Esmerald(routes=[...], openapi_config=openapi_config)

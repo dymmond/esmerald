@@ -168,6 +168,17 @@ class Esmerald(Starlette):
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
         root_path_in_servers: bool = None,
+        openapi_url: Optional[str] = None,
+        docs_url: Optional[str] = None,
+        redoc_url: Optional[str] = None,
+        swagger_ui_oauth2_redirect_url: Optional[str] = None,
+        redoc_js_url: Optional[str] = None,
+        redoc_favicon_url: Optional[str] = None,
+        swagger_ui_init_oauth: Optional[Dict[str, Any]] = None,
+        swagger_ui_parameters: Optional[Dict[str, Any]] = None,
+        swagger_js_url: Optional[str] = None,
+        swagger_css_url: Optional[str] = None,
+        swagger_favicon_url: Optional[str] = None,
     ) -> None:
         self.settings_config = None
 
@@ -345,13 +356,6 @@ class Esmerald(Starlette):
             if enable_openapi is not None
             else self.get_settings_value(self.settings_config, esmerald_settings, "enable_openapi")
         )
-        self.root_path_in_servers = (
-            root_path_in_servers
-            if root_path_in_servers is not None
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "root_path_in_servers"
-            )
-        )
         self.redirect_slashes = (
             redirect_slashes
             if redirect_slashes is not None
@@ -365,8 +369,94 @@ class Esmerald(Starlette):
             else self.get_settings_value(self.settings_config, esmerald_settings, "pluggables")
         )
 
+        # OpenAPI Related
+        self.root_path_in_servers = (
+            root_path_in_servers
+            if root_path_in_servers is not None
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "root_path_in_servers"
+            )
+        )
         if not self.include_in_schema or not self.enable_openapi:
             self.root_path_in_servers = False
+
+        self.openapi_url = (
+            openapi_url
+            if openapi_url
+            else self.get_settings_value(self.settings_config, esmerald_settings, "openapi_url")
+        )
+
+        self.docs_url = (
+            docs_url
+            if docs_url
+            else self.get_settings_value(self.settings_config, esmerald_settings, "docs_url")
+        )
+
+        self.redoc_url = (
+            redoc_url
+            if redoc_url
+            else self.get_settings_value(self.settings_config, esmerald_settings, "redoc_url")
+        )
+
+        self.swagger_ui_oauth2_redirect_url = (
+            swagger_ui_oauth2_redirect_url
+            if swagger_ui_oauth2_redirect_url
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "swagger_ui_oauth2_redirect_url"
+            )
+        )
+
+        self.redoc_js_url = (
+            redoc_js_url
+            if redoc_js_url
+            else self.get_settings_value(self.settings_config, esmerald_settings, "redoc_js_url")
+        )
+
+        self.redoc_favicon_url = (
+            redoc_favicon_url
+            if redoc_favicon_url
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "redoc_favicon_url"
+            )
+        )
+
+        self.swagger_ui_init_oauth = (
+            swagger_ui_init_oauth
+            if swagger_ui_init_oauth
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "swagger_ui_init_oauth"
+            )
+        )
+
+        self.swagger_ui_parameters = (
+            swagger_ui_parameters
+            if swagger_ui_parameters
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "swagger_ui_parameters"
+            )
+        )
+
+        self.swagger_js_url = (
+            swagger_js_url
+            if swagger_js_url
+            else self.get_settings_value(self.settings_config, esmerald_settings, "swagger_js_url")
+        )
+
+        self.swagger_css_url = (
+            swagger_css_url
+            if swagger_css_url
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "swagger_css_url"
+            )
+        )
+
+        self.swagger_favicon_url = (
+            swagger_favicon_url
+            if swagger_favicon_url
+            else self.get_settings_value(
+                self.settings_config, esmerald_settings, "swagger_favicon_url"
+            )
+        )
 
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
@@ -460,8 +550,35 @@ class Esmerald(Starlette):
                 self.openapi_config.contact = self.contact
             if self.license or not self.openapi_config.license:
                 self.openapi_config.license = self.license
-            if self.root_path_in_servers or not self.root_path_in_servers:
+            if self.root_path_in_servers or not self.openapi_config.root_path_in_servers:
                 self.openapi_config.root_path_in_servers = self.root_path_in_servers
+            if self.docs_url or not self.openapi_config.docs_url:
+                self.openapi_config.docs_url = self.docs_url
+            if self.redoc_url or not self.openapi_config.redoc_url:
+                self.openapi_config.redoc_url = self.redoc_url
+            if (
+                self.swagger_ui_oauth2_redirect_url
+                or not self.openapi_config.swagger_ui_oauth2_redirect_url
+            ):
+                self.openapi_config.swagger_ui_oauth2_redirect_url = (
+                    self.swagger_ui_oauth2_redirect_url
+                )
+            if self.redoc_js_url or not self.openapi_config.redoc_js_url:
+                self.openapi_config.redoc_js_url = self.redoc_js_url
+            if self.redoc_favicon_url or not self.openapi_config.redoc_favicon_url:
+                self.openapi_config.redoc_favicon_url = self.redoc_favicon_url
+            if self.swagger_ui_init_oauth or not self.openapi_config.swagger_ui_init_oauth:
+                self.openapi_config.swagger_ui_init_oauth = self.swagger_ui_init_oauth
+            if self.swagger_ui_parameters or not self.openapi_config.swagger_ui_parameters:
+                self.openapi_config.swagger_ui_parameters = self.swagger_ui_parameters
+            if self.swagger_js_url or not self.openapi_config.swagger_js_url:
+                self.openapi_config.swagger_js_url = self.swagger_js_url
+            if self.swagger_css_url or not self.openapi_config.swagger_css_url:
+                self.openapi_config.swagger_css_url = self.swagger_css_url
+            if self.swagger_favicon_url or not self.openapi_config.swagger_favicon_url:
+                self.openapi_config.swagger_favicon_url = self.swagger_favicon_url
+            if self.openapi_url or not self.openapi_config.openapi_url:
+                self.openapi_config.openapi_url = self.openapi_url
 
             self.openapi_config.enable(self)
 

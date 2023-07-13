@@ -2,33 +2,36 @@
 
 OpenAPIConfig is a simple configuration with basic fields for the auto-genmerated documentation from Esmerald.
 
-There are two pieces for the documentation.
+Prior to version 2, there were two pieces for the documentation but now it is simplified with a simple
+one.
 
 * [OpenAPIConfig](#openapiconfig)
-* [OpenAPIView](./apiview.md)
 
 !!! Tip
-    More information about OpenAPI
-    <a href="https://swagger.io/" target='_blank'>here</a>.
+    More information about
+    <a href="https://swagger.io/" target='_blank'>OpenAPI</a>.
+
+You can create your own OpenAPIConfig and populate all the variables needed or you can simply
+override the settings attributes and allow Esmerald to handle the configuration on its own. It
+is up to you.
+
+!!! Warning
+    When passing OpenAPI attributes via instantiation, `Esmerald(docs_url='/docs/swagger',...)`,
+    those will always be used over the settings or custom configuration.
 
 ## OpenAPIConfig and application
 
-The `OpenAPIConfig` **needs** an [OpenAPIView] to make sure it serves the documentation properly.
+The `OpenAPIConfig` contains a bunch of simple fields that are needed to to serve the documentation
+and those can be easily overwritten.
 
-Currently, by default, it is using the Esmerald OpenAPIView pointing to:
+Currently, by default, the URL for the documentation are:
 
 * **Swagger** - `/docs/swagger`.
-* **Redoc** - '/docs/redoc`.
+* **Redoc** - `/docs/redoc`.
 
 ## Parameters
 
-* **create_examples** - Generates doc examples.
-
-    <sup>Default: `False`</sup>
-
-* **openapi_apiview** - The [OpenAPIView](./apiview.md) serving the docs.
-
-    <sup>Default: `OpenAPIView`</sup>
+This are the parameters needed for the OpenAPIConfig if you want to create your own configuration.
 
 * **title** - Title of the API documentation.
 
@@ -47,9 +50,7 @@ with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.contact.Contact`
 
     <sup>Default: `Esmerald description`</sup>
 
-* **external_docs** - Links to external documentation. This is an OpenAPI schema external documentation, meaning,
-in a dictionary format compatible with OpenAPI or an instance of
-`openapi_schemas_pydantic.v3_1_0.external_documentation.ExternalDocumentation`.
+* **terms_of_service** - URL to a page that contains terms of service.
 
     <sup>Default: `None`</sup>
 
@@ -59,48 +60,74 @@ in a dictionary format compatible with OpenAPI or an instance of
 
     <sup>Default: `None`</sup>
 
+* **servers** - A python list with dictionary compatible with OpenAPI specification.
+
+    <sup>Default: `[{"url": "/"}]`</sup>
+
+* **summary** - Simple summary text.
+
+    <sup>Default: `Esmerald summary`</sup>
+
 * **security** - API Security requirements information. This is an OpenAPI schema security, meaning,
 in a dictionary format compatible with OpenAPI or an instance of
 `openapi_schemas_pydantic.v3_1_0.security_requirement.SecurityScheme`
 
     <sup>Default: `None`</sup>
 
-* **components** - A list of OpenAPI compatible `Server` information. OpenAPI specific dictionary or an instance of
-`openapi_schemas_pydantic.v3_10_0.components.Components`
-
-    <sup>Default: `None`</sup>
-
-* **summary** - Simple summary text.
-
-    <sup>Default: `Esmerald summary`</sup>
-
 * **tags** - A list of OpenAPI compatible `Tag` information. This is an OpenAPI schema tags, meaning,
 in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.server.Server`.
 
     <sup>Default: `None`</sup>
 
-* **terms_of_service** - URL to a page that contains terms of service.
+* **root_path_in_servers** - A Flag indicating if the root path should be included in the servers.
+
+    <sup>Default: `True`</sup>
+
+* **openapi_url** - URL of the openapi.json.
+
+    <sup>Default: `/openapi.json`</sup>
+
+    !!! Danger
+        Be careful when changing this one.
+
+* **redoc_url** - URL where the redoc should be served.
+
+    <sup>Default: `/docs/redoc`</sup>
+
+* **swagger_ui_oauth2_redirect_url** - URL to serve the UI oauth2 redirect.
+
+    <sup>Default: `/docs/oauth2-redirect`</sup>
+
+* **redoc_js_url** - URL of the redoc JS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js`</sup>
+
+* **redoc_favicon_url** - URL for the redoc favicon.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
+* **swagger_ui_init_oauth** - Python dictionary format with OpenAPI specification for the swagger
+init oauth.
 
     <sup>Default: `None`</sup>
 
-* **use_handler_docstrings** - Flag enabling to read the information from a [handler](../../routing/handlers.md)
-docstring if no description is provided.
+* **swagger_ui_parameters** - Python dictionary format with OpenAPI specification for the swagger ui
+parameters.
 
-    <sup>Default: `False`</sup>
+    <sup>Default: `None`</sup>
 
-* **webhooks** - A mapping of key to either an OpenAPI `PathItem` or an OpenAPI `Reference` instance. Both PathItem and
-Reference are in a dictionary format compatible with OpenAPI or an instance of
-`openapi_schemas_pydantic.v3_1_0.path_item.PathItem` or `openapi_schemas_pydantic.v3_1_0.reference.Reference`.
+* **swagger_js_url** - URL of the swagger JS.
 
-    <sup>Default: `False`</sup>
+    <sup>Default: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js`</sup>
 
-* **root_schema_site** - Static schema generator to use for the "root" path of `/schema/`.
+* **swagger_css_url** - URL of the swagger CSS.
 
-    <sup>Default: `redoc`</sup>
+    <sup>Default: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css`</sup>
 
-* **enabled_endpoints** - A set of the enabled documentation sites and schema download endpoints.
+* **swagger_favicon_url** - URL of the favicon for the swagger.
 
-    <sup>Default: `{"redoc", "swagger", "elements", "openapi.json", "openapi.yaml"}`</sup>
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
 
 ### How to use or create an OpenAPIConfig
 
@@ -113,18 +140,10 @@ It is very simple actually.
 This will create your own `OpenAPIConfig` and pass it to the Esmerald application but what about changing the current
 default `/docs` path?
 
-You will need an [OpenAPIView](./apiview.md) to make it work.
-
 Let's use a an example for clarification.
 
-```python title='myapp/openapi/views.py'
+```python
 {!> ../docs_src/configurations/openapi/apiview.py!}
-```
-
-Then you need to add the new APIView to your OpenAPIConfig.
-
-```python title='src/app.py'
-{!> ../docs_src/configurations/openapi/example2.py!}
 ```
 
 From now on the url to access the `swagger` and `redoc` will be:

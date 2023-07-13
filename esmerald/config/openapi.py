@@ -26,19 +26,19 @@ class OpenAPIConfig(BaseModel):
     security: Optional[List[SecurityScheme]] = None
     servers: Optional[List[Dict[str, Union[str, Any]]]] = None
     tags: Optional[List[Tag]] = None
-    openapi_version: Optional[str] = "3.1.0"
-    openapi_url: Optional[str] = "/openapi.json"
-    docs_url: Optional[str] = "/docs/swagger"
-    redoc_url: Optional[str] = "/docs/redoc"
-    swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect"
+    openapi_version: Optional[str] = None
+    openapi_url: Optional[str] = None
     root_path_in_servers: bool = True
-    redoc_js_url: str = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
-    redoc_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
+    docs_url: Optional[str] = None
+    redoc_url: Optional[str] = None
+    swagger_ui_oauth2_redirect_url: Optional[str] = None
+    redoc_js_url: str = None
+    redoc_favicon_url: str = None
     swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
     swagger_ui_parameters: Optional[Dict[str, Any]] = None
-    swagger_js_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"
-    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css"
-    swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
+    swagger_js_url: Optional[str] = None
+    swagger_css_url: Optional[str] = None
+    swagger_favicon_url: Optional[str] = None
 
     def openapi(self, app: Any) -> Dict[str, Any]:
         """Loads the OpenAPI routing schema"""

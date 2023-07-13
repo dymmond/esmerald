@@ -84,9 +84,6 @@ What just happened?
 3. Imported specific database settings per environment and added the events `on_startup` and `on_shutdown` specific
 to each.
 
-!!! note
-    Esmerald supports [Tortoise-ORM](https://tortoise.github.io/) for async SQL databases and therefore has the
-    `init_database` and `stop_database` functionality ready to be used.
 
 ## Esmerald Settings Module
 
@@ -268,7 +265,7 @@ very useful for development.
     <sup>Default: Same as the Esmerald.</sup>
 
 * **contact** - The contact of an admin. Used for OpenAPI.
-    
+
     <sup>Default: `{"name": "admin", "email": "admin@myapp.com"}`.</sup>
 
 * **terms_of_service** - The terms of service of the application. Used for OpenAPI.
@@ -284,7 +281,7 @@ very useful for development.
     <sup>Default: `None`.</sup>
 
 * **secret_key** - The secret key used for internal encryption (for example, user passwords). We strongly advise to
-update this particular setting, mostly if the application uses the native [Tortoise](../databases/tortoise/motivation.md)
+update this particular setting, mostly if the application uses the native [Saffier](../databases/saffier/motivation.md)
 support.
 
     <sup>Default: `my secret`</sup>
@@ -363,8 +360,57 @@ application and not only for specific endpoints.
 
 * **reload** - Boolean flag indicating if reload should happen (by default) on development and testing enviroment.
 The default environment is `production`.
-  
+
     <sup>Default: `False`</sup>
+
+* **root_path_in_servers** - A Flag indicating if the root path should be included in the servers.
+
+    <sup>Default: `True`</sup>
+
+* **openapi_url** - URL of the openapi.json.
+
+    <sup>Default: `/openapi.json`</sup>
+
+    !!! Danger
+        Be careful when changing this one.
+
+* **redoc_url** - URL where the redoc should be served.
+
+    <sup>Default: `/docs/redoc`</sup>
+
+* **swagger_ui_oauth2_redirect_url** - URL to serve the UI oauth2 redirect.
+
+    <sup>Default: `/docs/oauth2-redirect`</sup>
+
+* **redoc_js_url** - URL of the redoc JS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js`</sup>
+
+* **redoc_favicon_url** - URL for the redoc favicon.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
+* **swagger_ui_init_oauth** - Python dictionary format with OpenAPI specification for the swagger
+init oauth.
+
+    <sup>Default: `None`</sup>
+
+* **swagger_ui_parameters** - Python dictionary format with OpenAPI specification for the swagger ui
+parameters.
+
+    <sup>Default: `None`</sup>
+
+* **swagger_js_url** - URL of the swagger JS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js`</sup>
+
+* **swagger_css_url** - URL of the swagger CSS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css`</sup>
+
+* **swagger_favicon_url** - URL of the favicon for the swagger.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
 
 * **password_hashers** - A list of [password hashers](../password-hashers.md) used for encryption of the passwords.
 
@@ -373,11 +419,11 @@ The default environment is `production`.
     </sup>
 
     !!! warning
-        The password hashers are linked to [Tortoise](../databases/tortoise/motivation.md) support and are used
+        The password hashers are linked to [Saffier](../databases/saffier/motivation.md) support and are used
         with the models provided by default with Esmerald.
 
 * **routes** - A list of routes to serve incoming HTTP and WebSocket requests.
-  
+
     <sup>Default: `[]`</sup>
 
     !!! tip

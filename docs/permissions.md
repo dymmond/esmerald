@@ -28,14 +28,14 @@ All the permission classes **must derive** from `BasePermission`.
 
 ## Esmerald and permissions
 
-Esmerald giving support to [Tortoise ORM](./databases/tortoise/motivation.md) also provides some default permissions
+Esmerald giving support to [Saffier ORM](./databases/saffier/motivation.md) also provides some default permissions
 that can be linked to the models also provided by **Esmerald**.
 
 ### IsAdminUser and example of provided permissions
 
 This is a simple permission that extends the `BaseAbstractUserPermission` and checks if a user is authenticated or not.
 The functionality of verifying if a user might be or not authenticated was separated from the
-[Tortoise](./databases/tortoise/motivation.md) and instead you must implement the `is_user_authenticated()`
+[Saffier](./databases/saffier/motivation.md) and instead you must implement the `is_user_authenticated()`
 function when inheriting from `BaseAbstractUserPermission` or `IsAdminUser`.
 
 ## Esmerald and provided permissions
@@ -63,12 +63,12 @@ To use the `IsAdminUser`, `IsAuthenticated` and `IsAuthenticatedOrReadOnly` is a
 1. The main app `Esmerald` has an `AllowAny` permission for the top level
 2. The `UserAPIView` object has a `IsUserAuthenticated` allowing only authenticated users to access any
 of the endpoints under the class (endpoints under `/users`).
-3. The `/users/admin` has a permission `IsAdmin` allowing only admin users to access the specific endpoint 
+3. The `/users/admin` has a permission `IsAdmin` allowing only admin users to access the specific endpoint
 
 ## Permissions summary
 
 1. All permissions must inherit from `BasePermission`.
 2. `BasePermission` has the `has_permission(request Request, apiview: "APIGateHandler").
 3. The [handlers](./routing/handlers.md), [Gateway](./routing/routes.md#gateway),
-[WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes#include) 
+[WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes#include)
 and [Esmerald](./application/applications.md) can have as many permissions as you want.
