@@ -11,6 +11,7 @@
 ### Changed
 
 - **Major update of the core of Esmerald from Pydantic v1 to Pydantic v2.**
+- `ResponseSpecification` renamed to `OpenAPIResponse`, `from esmerald.openapi.datastructures import OpenAPIResponse`.
 - Changed deprecated functions such as `validator` and `root_validator` to `field_validator` and `model_validator`.
 - Transformers no longer support custom fields. Pydantic natively handles that.
 - EsmeraldSignature updated for the new version of the FieldInfo.
