@@ -47,7 +47,7 @@ Let's use:
 
 * All of configrations will be places in a folder called `/deployment`.
 * The application will have a simple folder structure
-    
+
     ```txt
     .
     ├── app
@@ -213,7 +213,6 @@ and you can acess via:
 * [http://127.0.0.1/swagger](http://127.0.0.1/docs/swagger)
 * [http://127.0.0.1/redoc](http://127.0.0.1/docs/redoc)
 
-Or via your own custom [OpenAPIView](../configurations/openapi/apiview.md).
 
 ### Documentation in production
 

@@ -346,7 +346,7 @@ class World(APIView):
     @post(path='/{url}', status_code=status.HTTP_201_CREATED)
     async def mars(request: Request, url: str) -> JSONResponse:
         ...
-    
+
     @websocket(path="/{path_param:str}")
     async def pluto(self, socket: Websocket) -> None:
         await socket.accept()
@@ -493,6 +493,22 @@ INFO:     Started server process [28722]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
+
+## OpenAPI documentation
+
+Esmerald also comes with OpenAPI docs integrated. For those used to that, this is roughly the same and to make it
+happen, there were inspirations that helped Esmerald getting there fast.
+
+Esmerald starts automatically the OpenAPI documentation by injecting the OpenAPIConfig default from
+the settings and makes Swagger and ReDoc available to you out of the box.
+
+To access the OpenAPI, simply start your local development and access:
+
+* **Swagger** - `/docs/swagger`.
+* **Redoc** - `/docs/redoc`.
+
+There are more details about [how to configure the OpenAPIConfig](https://esmerald.dev/configurations/openapi/config.md)
+within the documentation.
 
 ## Notes
 

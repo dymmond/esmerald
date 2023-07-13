@@ -413,13 +413,16 @@ INFO:     Application startup complete.
 Esmerald also comes with OpenAPI docs integrated. For those used to that, this is roughly the same and to make it
 happen, there were inspirations that helped Esmerald getting there fast.
 
+Esmerald starts automatically the OpenAPI documentation by injecting the OpenAPIConfig default from
+the settings and makes Swagger and ReDoc available to you out of the box.
+
 To access the OpenAPI, simply start your local development and access:
 
 * **Swagger** - `/docs/swagger`.
 * **Redoc** - `/docs/redoc`.
 
-There are more details about [how to configure the OpenAPIConfig](./configurations/openapi/config.md) and
-[create your own OpenAPIView](./configurations/openapi/apiview.md) within this documentation.
+There are more details about [how to configure the OpenAPIConfig](./configurations/openapi/config.md)
+within this documentation.
 
 ## Notes
 

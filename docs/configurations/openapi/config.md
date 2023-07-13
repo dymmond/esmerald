@@ -2,23 +2,26 @@
 
 OpenAPIConfig is a simple configuration with basic fields for the auto-genmerated documentation from Esmerald.
 
-There are two pieces for the documentation.
+Prior to version 2, there were two pieces for the documentation but now it is simplified with a simple
+one.
 
 * [OpenAPIConfig](#openapiconfig)
-* [OpenAPIView](./apiview.md)
 
 !!! Tip
-    More information about OpenAPI
-    <a href="https://swagger.io/" target='_blank'>here</a>.
+    More information about
+    <a href="https://swagger.io/" target='_blank'>OpenAPI</a>.
+
+You can create your own OpenAPIConfig or simply
 
 ## OpenAPIConfig and application
 
-The `OpenAPIConfig` **needs** an [OpenAPIView] to make sure it serves the documentation properly.
+The `OpenAPIConfig` contains a bunch of simple fields that are needed to to serve the documentation
+and those can be easily overwritten.
 
-Currently, by default, it is using the Esmerald OpenAPIView pointing to:
+Currently, by default, the URL for the documentation are:
 
 * **Swagger** - `/docs/swagger`.
-* **Redoc** - '/docs/redoc`.
+* **Redoc** - `/docs/redoc`.
 
 ## Parameters
 
