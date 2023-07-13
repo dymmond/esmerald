@@ -160,11 +160,6 @@ settings.
 {!> ../docs_src/configurations/openapi/settings.py!}
 ```
 
-!!! Warning
-    We did import the `MyOpenAPIView` inside the property itself and the reason for it is to avoid import errors
-    or any `mro` issues. Since the app once starts runs the settings once, there is no problem since it will not
-    reconfigure on every single request.
-
 Start the server with your custom settings.
 
 ```shell

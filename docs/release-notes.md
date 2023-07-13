@@ -1,5 +1,38 @@
 # Release Notes
 
+## 2.0.0
+
+!!! Warning
+	When upgrading Esmerald to version 2, this also means the use of Pydantic 2.0 at its core as well as corresponsing technologies
+	already updated to version 2 of Pydantic (Saffier, Asyncz...).
+	If you still wish to continue to use Pydantic 1 with Esmerald, it is recommended to use Esmerald prior to version 2.0 which it will
+	be maintained for a shor period but we **strongly recommend to always use the latest version**.
+
+### Changed
+
+- **Major update of the core of Esmerald from Pydantic v1 to Pydantic v2.**
+- Changed deprecated functions such as `validator` and `root_validator` to `field_validator` and `model_validator`.
+- Transformers no longer support custom fields. Pydantic natively handles that.
+- EsmeraldSignature updated for the new version of the FieldInfo.
+- `params` reflect the new Pydantic FieldInfo.
+- Deprecated OpenAPIView in favour of the new OpenAPI documentation generator.
+- Changed OpenAPI config to reflect the new generation of OpenAPI documentation.
+- Internal data field is now returning Body type parameter making it easier to integrate with Pydantic 2.0.
+- General codebase cleanup.
+- Removed old OpenAPI document generator in favour to the newest, fastest, simplest and more effective approach in v2.
+- Remove the support of pydantic 1.0. Esmerald 2+ will only support pydantic 2+.
+
+### Added
+
+- OpenAPI support for OAuth2.
+
+### Fixed
+
+- FileResponse `stat_result` and Stream `iterator` typing.
+- Fix typing across the whole codebase.
+- Transformers are now generating Param fields directly.
+- Updated __fields__ in favour of the new pydantic model_fields approach.
+
 ## 1.3.0
 
 ### Changed
