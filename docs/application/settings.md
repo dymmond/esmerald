@@ -363,6 +363,55 @@ The default environment is `production`.
 
     <sup>Default: `False`</sup>
 
+* **root_path_in_servers** - A Flag indicating if the root path should be included in the servers.
+
+    <sup>Default: `True`</sup>
+
+* **openapi_url** - URL of the openapi.json.
+
+    <sup>Default: `/openapi.json`</sup>
+
+    !!! Danger
+        Be careful when changing this one.
+
+* **redoc_url** - URL where the redoc should be served.
+
+    <sup>Default: `/docs/redoc`</sup>
+
+* **swagger_ui_oauth2_redirect_url** - URL to serve the UI oauth2 redirect.
+
+    <sup>Default: `/docs/oauth2-redirect`</sup>
+
+* **redoc_js_url** - URL of the redoc JS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js`</sup>
+
+* **redoc_favicon_url** - URL for the redoc favicon.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
+* **swagger_ui_init_oauth** - Python dictionary format with OpenAPI specification for the swagger
+init oauth.
+
+    <sup>Default: `None`</sup>
+
+* **swagger_ui_parameters** - Python dictionary format with OpenAPI specification for the swagger ui
+parameters.
+
+    <sup>Default: `None`</sup>
+
+* **swagger_js_url** - URL of the swagger JS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js`</sup>
+
+* **swagger_css_url** - URL of the swagger CSS.
+
+    <sup>Default: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css`</sup>
+
+* **swagger_favicon_url** - URL of the favicon for the swagger.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
 * **password_hashers** - A list of [password hashers](../password-hashers.md) used for encryption of the passwords.
 
     <sup>Default: `["esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
