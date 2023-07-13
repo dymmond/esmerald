@@ -24,8 +24,8 @@ To use the JWTConfig with a middleware.
 ```
 
 !!! info
-    The example uses a supported [JWTAuthMiddleware](../databases/tortoise/middleware.md#jwtauthmiddleware)
-    from Esmerald with Tortoise ORM.
+    The example uses a supported [JWTAuthMiddleware](../databases/saffier/middleware.md#jwtauthmiddleware)
+    from Esmerald with Saffier ORM.
 
 ## Parameters
 

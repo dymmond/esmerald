@@ -16,7 +16,7 @@ The dependencies are read from top-down in a python dictionary format, which mea
 
 ## How to use
 
-Assuming we have a `User` model using [Tortoise](./databases/tortoise/models.md).
+Assuming we have a `User` model using [Saffier](./databases/saffier/models.md).
 
 ```python hl_lines="14-15 19"
 {!> ../docs_src/dependencies/precedent.py !}

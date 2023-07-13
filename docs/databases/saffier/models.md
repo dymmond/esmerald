@@ -13,7 +13,7 @@ initial configuration.
 
 ## User
 
-Extenting the existing `User` model is as simple as this: 
+Extenting the existing `User` model is as simple as this:
 
 ```python hl_lines="17 32"
 {!> ../docs_src/databases/saffier/models.py !}
@@ -145,12 +145,12 @@ You can always override the property `password_hashers` in your
 [custom settings](../../application/settings.md#custom-settings) and use your own.
 
 ```python
-{!> ../docs_src/databases/tortoise/hashers.py !}
+{!> ../docs_src/databases/saffier/hashers.py !}
 ```
 
 ## Migrations
 
-You can use any migration tool as you see fit. It is recommended 
+You can use any migration tool as you see fit. It is recommended
 <a href='https://alembic.sqlalchemy.org/en/latest/' target='_blank'>Alembic</a>.
 
 Saffier also provides some insights in

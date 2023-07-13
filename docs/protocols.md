@@ -33,7 +33,7 @@ It is better to explain by using an example.
 
 Let's imagine you need one handler that manages the creation of a user. Your application will have:
 
-* `Database connections`. Let's use the current supported [tortoise](./databases/tortoise/motivation.md).
+* `Database connections`. Let's use the current supported [Saffier](./databases/saffier/motivation.md).
 * `Database models`. What is used to map python classes and database obbjects.
 * `The handler`. What you will be calling.
 
@@ -42,7 +42,7 @@ Let's imagine you need one handler that manages the creation of a user. Your app
 ```
 
 !!! Check
-    Since we are using tortoise, all the database connections and configurations are handled by our settings.
+    Since we are using saffier, all the database connections and configurations are handled by our settings.
 
 In this example, the handler manages to check if there is a user already with these details and creates if not but all
 of this is managed in the handler itself. Sometimes is ok when is this simple but sometimes you might want to extend
@@ -85,7 +85,7 @@ object should be also doing.
 
 In the example, simple CRUD was used but from there you can extend the functionality to, for instance, send emails,
 call external services... With a big difference. From now one, all of your `User` operations will be managed by
-that same `DAO` and not by the view. 
+that same `DAO` and not by the view.
 
 Advantage? You have **one single source of truth** and not too many handlers
 across the codebase doing similar `User` operations and increasing the probability of getting more errors and
@@ -104,7 +104,7 @@ This is a special protocol used to implement [interceptors](./interceptors.md) f
 ## Notes
 
 Implementing the DAO/AsyncDAO protocol is as simple as subclassing it and implement the methods but this does not mean
-that you are only allowed to use those methods. No! 
+that you are only allowed to use those methods. No!
 
 In fact, that only means that when extending the DAO/AsyncDAO
 you need **at least** to have those methods but you can have whatever you need for your business objects to operate.
