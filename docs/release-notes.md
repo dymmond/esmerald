@@ -7,7 +7,7 @@ This is a small fix into the parser of lists for the OpenAPI specification.
 ### Fixed
 
 - [OpenAPIResponse](https://esmerald.dev/responses#openapi-responses) now allows proper parse of
-lists as definition. [More details](http://esmerald.dev/responses/#lists).
+lists as definition. [More details](https://esmerald.dev/responses/#lists).
 
 ## 2.0.0
 
