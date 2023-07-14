@@ -221,7 +221,8 @@ This **will return 202 Accepted** and not `201 Created` and the reason for that 
 
 ## OpenAPI Responses
 
-This is a special attribute that is used for OpenAPI spec purposes and can be created and added to a specific handler.
+This is a special attribute that is used for OpenAPI specification purposes and can be created and added to a specific handler.
+You can add one or multiple different responses into your specification.
 
 ```python
 from typing import Union
@@ -236,12 +237,109 @@ class ItemOut(BaseModel):
     description: str
 
 
-@post(path='/create', summary="Creates an item", responses={200: OpenAPIResponse(model=TaskIn, description=...)})
+@post(path='/create', summary="Creates an item", responses={200: OpenAPIResponse(model=ItemOut, description=...)})
 async def create() -> Union[None, ItemOut]:
     ...
 ```
 
 This will add an extra response description and details to your OpenAPI spec handler definition.
+
+### Important
+
+When adding an `OpenAPIResponse` you can also vary and override the defaults of each handler. For
+example, the `@post` defaults to 201 but you might want to add a different response.
+
+```python hl_lines="13"
+from typing import Union
+
+from esmerald import post
+from esmerald.openapi.datastructures import OpenAPIResponse
+from pydantic import BaseModel
+
+
+class ItemOut(BaseModel):
+    sku: str
+    description: str
+
+
+@post(path='/create', summary="Creates an item", responses={201: OpenAPIResponse(model=ItemOut, description=...)})
+async def create() -> Union[None, ItemOut]:
+    ...
+```
+
+You also might want to add more than just one response to the handler, for instance, a `401` or any
+other.
+
+```python hl_lines="19-20"
+from typing import Union
+
+from esmerald import post
+from esmerald.openapi.datastructures import OpenAPIResponse
+from pydantic import BaseModel
+
+
+class ItemOut(BaseModel):
+    sku: str
+    description: str
+
+
+class Error(BaseModel):
+    detail: str
+    line_number: int
+
+
+@post(path='/create', summary="Creates an item", responses={
+        201: OpenAPIResponse(model=ItemOut, description=...),
+        401: OpenAPIResponse(model=Error, description=...),
+    }
+)
+async def create() -> Union[None, ItemOut]:
+    ...
+```
+
+### Lists
+
+What if you want to specify in the response that you would like to have a list (array) of
+returned objects?
+
+Let us imagine we want to return a list of an item in one endpoint and a list of users in another.
+
+
+```python hl_lines="19 26"
+from typing import Union
+
+from esmerald import post
+from esmerald.openapi.datastructures import OpenAPIResponse
+from pydantic import BaseModel, EmailStr
+
+
+class ItemOut(BaseModel):
+    sku: str
+    description: str
+
+
+class UserOut(BaseModel):
+    name: str
+    email: EmailStr
+
+
+@get(path='/items', summary="Get all the items", responses={
+        201: OpenAPIResponse(model=[ItemOut], description=...),
+    }
+)
+async def get_items() -> Union[None, ItemOut]:
+    ...
+
+@get(path='/users', summary="Get all the users", responses={
+        201: OpenAPIResponse(model=[UserOut], description=...),
+    }
+)
+async def get_items() -> Union[None, UserOut]:
+    ...
+```
+
+As you could notice, we simply added `[]` in the model to reflect a list in the OpenAPI
+specification. That simple.
 
 ## Other responses
 

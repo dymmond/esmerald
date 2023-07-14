@@ -1,8 +1,6 @@
 from functools import cached_property
 from typing import Any, Dict, List
 
-from pydantic import BaseModel
-
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
 from esmerald.utils.constants import DATA
@@ -25,15 +23,6 @@ class FieldInfoMixin:
         responses: Dict[int, ResponseParam] = {}
         if self.responses:
             for status_code, response in self.responses.items():
-                assert isinstance(response.model, list) or issubclass(
-                    response.model, BaseModel
-                ), "The model must be a list or a single model."
-
-                if isinstance(response.model, list) and len(response.model) > 1:
-                    raise AssertionError(
-                        "The representation of a list of models in OpenAPI can only be one."
-                    )
-
                 annotation = (
                     List[response.model[0]]  # type: ignore
                     if isinstance(response.model, list)
