@@ -35,7 +35,9 @@ class FieldInfoMixin:
                     )
 
                 annotation = (
-                    List[response.model[0]] if isinstance(response.model, list) else response.model
+                    List[response.model[0]]  # type: ignore
+                    if isinstance(response.model, list)
+                    else response.model
                 )
 
                 name = (
