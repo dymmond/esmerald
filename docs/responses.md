@@ -341,6 +341,19 @@ async def get_items() -> Union[None, UserOut]:
 As you could notice, we simply added `[]` in the model to reflect a list in the OpenAPI
 specification. That simple.
 
+#### Errors
+
+A `ValueError` is raised in the following scenarios:
+
+* You try to pass a model than one pydantic model into a list. The OpenAPIResponse is a mere
+representation of a response, so be compliant.
+* You try to pass a model that is not a subclass of a Pydantic `BaseModel`.
+* You try to pass a list of non Pydantic `BaseModels`.
+
+When one of these scenarios occur, the following error will be raised.
+
+> The representation of a list of models in OpenAPI can only be a total of one. Example: OpenAPIResponse(model=[MyModel])
+
 ## Other responses
 
 There are other responses you can have that does not necessessarily have to be the ones provided here. Every case is

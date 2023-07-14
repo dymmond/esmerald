@@ -424,6 +424,9 @@ To access the OpenAPI, simply start your local development and access:
 There are more details about [how to configure the OpenAPIConfig](./configurations/openapi/config.md)
 within this documentation.
 
+There is also a good explanation on how to use the [OpenAPIResponse](./responses.md#openapi-responses)
+as well.
+
 ## Notes
 
 This is just a very high-level demonstration of how to start quickly and what Esmerald can do.

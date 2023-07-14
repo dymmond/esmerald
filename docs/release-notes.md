@@ -1,5 +1,14 @@
 # Release Notes
 
+## 2.0.1
+
+This is a small fix into the parser of lists for the OpenAPI specification.
+
+### Fixed
+
+- [OpenAPIResponse](https://esmerald.dev/responses#openapi-responses) now allows proper parse of
+lists as definition. [More details](http://esmerald.dev/responses/#lists).
+
 ## 2.0.0
 
 !!! Warning
@@ -166,7 +175,7 @@ across main application and children.
 - Brand new support for [Saffier](https://saffier.tarsild.io). A brand new ORM running
 on the top of SQLAlchemy in an async fashion.
 - New `base_user` and `middleware` support for Saffier with Esmerald.
-- New docs regarding the [Saffier](https://esmerald.dymmond.com/databases/saffier/motivation/) integration.
+- New docs regarding the [Saffier](https://esmerald.dev/databases/saffier/motivation/) integration.
 Those include also an example how to use it.
 
 ### Changed
