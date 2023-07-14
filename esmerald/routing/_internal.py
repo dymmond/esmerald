@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
@@ -16,14 +16,29 @@ class FieldInfoMixin:
     def response_models(self) -> Dict[int, Any]:
         """
         The models converted into pydantic fields with the model used for OpenAPI.
+
+        The response models can be a list representation or a single object representation.
+        If another type of object is passed through the `model`, an Assertation error is raised.
         """
         responses: Dict[int, ResponseParam] = {}
         if self.responses:
             for status_code, response in self.responses.items():
+                annotation = (
+                    List[response.model[0]]  # type: ignore
+                    if isinstance(response.model, list)
+                    else response.model
+                )
+
+                name = (
+                    response.model[0].__name__
+                    if isinstance(response.model, list)
+                    else response.model.__name__
+                )
+
                 responses[status_code] = ResponseParam(
-                    annotation=response.model,
+                    annotation=annotation,
                     description=response.description,
-                    alias=response.model.__name__,
+                    alias=name,
                 )
         return responses
 

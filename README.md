@@ -507,8 +507,11 @@ To access the OpenAPI, simply start your local development and access:
 * **Swagger** - `/docs/swagger`.
 * **Redoc** - `/docs/redoc`.
 
-There are more details about [how to configure the OpenAPIConfig](https://esmerald.dev/configurations/openapi/config.md)
+There are more details about [how to configure the OpenAPIConfig](https://esmerald.dev/configurations/openapi/config)
 within the documentation.
+
+There is also a good explanation on how to use the [OpenAPIResponse](https://esmerald.dev/responses#openapi-responses)
+as well.
 
 ## Notes
 
