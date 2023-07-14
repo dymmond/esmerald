@@ -54,7 +54,7 @@ dependencies = [
     "python-multipart>=0.0.5,<0.0.7",
     "openapi-schemas-pydantic>=2.0.0",
     "rich>=13.3.1,<14.0.0",
-    "starlette>=0.29.0,<1.0",
+    "starlette>=0.30.0,<1.0",
 ]
 keywords = [
     "api",
