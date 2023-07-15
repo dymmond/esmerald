@@ -3,7 +3,7 @@ from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING, Any, Dict
 
 from pydantic import BaseModel, ConfigDict
-from pydantic.v1.fields import SHAPE_LIST, SHAPE_SINGLETON
+from starlette.datastructures import UploadFile as StarletteUploadFile
 
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
@@ -61,35 +61,25 @@ class ArbitraryExtraBaseModel(BaseModel):
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
-def validate_media_type(field: "FieldInfo", values: Any) -> Any:
-    """
-    Validates the media type against the available types.
-    """
-    if field.shape == SHAPE_LIST:
-        return list(values.values())
-    if field.shape == SHAPE_SINGLETON and field.type_in[UploadFile] and values:
-        return list(values.values())[0]
-
-
 def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "FieldInfo") -> Any:
-    values: Any = {}
+    """
+    Converts, parses and transforms a multidict into a dict and tries to load them all into
+    json.
+    """
+    values: Dict[str, Any] = {}
     for key, value in form_data.multi_items():
-        if not isinstance(value, UploadFile):
+        if not isinstance(value, StarletteUploadFile):
             with suppress(JSONDecodeError):
                 value = loads(value)
-        if isinstance(value, UploadFile):
-            value = UploadFile(
-                file=value.file,
-                filename=value.filename,
-                headers=value.headers,
-            )
-        if values.get(key):
-            if isinstance(values[key], list):
-                values[key].append(value)
-            else:
-                values[key] = [values[key], value]
+        value_in_dict = values.get(key)
+        if isinstance(value_in_dict, list):
+            values[key].append(value)
+        elif value_in_dict:
+            values[key] = [value_in_dict, value]
         else:
             values[key] = value
-    if media_type == EncodingType.MULTI_PART:
-        return validate_media_type(field=field, values=values)
-    return values
+
+        if media_type == EncodingType.MULTI_PART:
+            if field.annotation in (StarletteUploadFile, UploadFile) and values:
+                return list(values.values())[0]
+        return values

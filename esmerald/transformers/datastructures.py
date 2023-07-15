@@ -22,6 +22,7 @@ class EsmeraldSignature(ArbitraryBaseModel):
         cls, connection: Union[Request, WebSocket], **kwargs: Any
     ) -> Any:
         try:
+            breakpoint()
             signature = cls(**kwargs)
             values = {}
             for key in cls.model_fields:

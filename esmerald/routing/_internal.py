@@ -51,4 +51,7 @@ class FieldInfoMixin:
             body = Body(alias="body")
             for key, _ in data._attributes_set.items():
                 setattr(body, key, getattr(data, key, None))
+
+            if not body.title:
+                body.title = data.annotation.__name__.title()
             return body
