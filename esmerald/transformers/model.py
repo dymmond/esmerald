@@ -384,7 +384,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         media_type, field = self.form_data
         form_data = await request.form()
         parsed_form = parse_form_data(media_type, form_data, field)
-        return parsed_form
+        return parsed_form if parsed_form or not self.is_optional else None
 
     async def get_dependencies(
         self,

@@ -46,7 +46,6 @@ class MultipartFormDataParser:
         field_name = ""
         data = bytearray()
         upload_file: Optional[UploadFile] = None
-        breakpoint()
         while True:
             event = self.decoder.next_event()
             if event is None or isinstance(event, EpilogueEvent):
