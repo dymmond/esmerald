@@ -57,17 +57,13 @@ class UploadFile(StarletteUploadFile):
 
     @classmethod
     def validate(cls: Type["UploadFile"], v: Any) -> Any:
-        from esmerald.datastructures.multidict import FormMultiDict  # noqa
-
-        if not isinstance(v, (StarletteUploadFile, FormMultiDict)):
+        if not isinstance(v, StarletteUploadFile):
             raise ValueError(f"Expected UploadFile, got: {type(v)}")
         return v
 
     @classmethod
     def _validate(cls, __input_value: Any, _: Any) -> "UploadFile":
-        from esmerald.datastructures.multidict import FormMultiDict  # noqa
-
-        if not isinstance(__input_value, (StarletteUploadFile, FormMultiDict)):
+        if not isinstance(__input_value, StarletteUploadFile):
             raise ValueError(f"Expected UploadFile, got: {type(__input_value)}")
         return cast(UploadFile, __input_value)
 
