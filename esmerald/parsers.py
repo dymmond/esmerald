@@ -1,6 +1,6 @@
 from contextlib import suppress
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, get_origin
 
 from pydantic import BaseModel, ConfigDict
 from starlette.datastructures import UploadFile as StarletteUploadFile
@@ -66,20 +66,22 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
     Converts, parses and transforms a multidict into a dict and tries to load them all into
     json.
     """
-    values: Dict[str, Any] = {}
+    values_dict: Dict[str, Any] = {}
     for key, value in form_data.multi_items():
         if not isinstance(value, StarletteUploadFile):
             with suppress(JSONDecodeError):
                 value = loads(value)
-        value_in_dict = values.get(key)
+        value_in_dict = values_dict.get(key)
         if isinstance(value_in_dict, list):
-            values[key].append(value)
+            values_dict[key].append(value)
         elif value_in_dict:
-            values[key] = [value_in_dict, value]
+            values_dict[key] = [value_in_dict, value]
         else:
-            values[key] = value
+            values_dict[key] = value
 
         if media_type == EncodingType.MULTI_PART:
-            if field.annotation in (StarletteUploadFile, UploadFile) and values:
-                return list(values.values())[0]
-        return values
+            if get_origin(field.annotation) is list:
+                return list(values_dict.values())
+            if isinstance(value, (StarletteUploadFile, UploadFile)) and values_dict:
+                return list(values_dict.values())[0]
+        return values_dict
