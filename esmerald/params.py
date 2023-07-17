@@ -104,6 +104,9 @@ class Param(FieldInfo):
             kw_only=kw_only,
         )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(annotation={self.annotation}, default={self.default})"
+
 
 class Header(Param):
     in_ = ParamType.HEADER
@@ -480,12 +483,16 @@ class Body(FieldInfo):
             kw_only=kw_only,
         )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(annotation={self.annotation}, default={self.default})"
+
 
 class Form(Body):
     def __init__(
         self,
         default: Any = _PyUndefined,
         *,
+        annotation: Optional[Any] = None,
         default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         allow_none: Optional[bool] = True,
         media_type: Union[str, EncodingType] = EncodingType.URL_ENCODED,
@@ -514,6 +521,7 @@ class Form(Body):
     ) -> None:
         super().__init__(
             default=default,
+            annotation=annotation,
             allow_none=allow_none,
             default_factory=default_factory,
             embed=True,
@@ -548,6 +556,7 @@ class File(Form):
         self,
         default: Any = _PyUndefined,
         *,
+        annotation: Optional[Any] = None,
         allow_none: Optional[bool] = True,
         default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         media_type: Union[str, EncodingType] = EncodingType.MULTI_PART,
@@ -576,6 +585,7 @@ class File(Form):
     ) -> None:
         super().__init__(
             default=default,
+            annotation=annotation,
             allow_none=allow_none,
             default_factory=default_factory,
             media_type=media_type,

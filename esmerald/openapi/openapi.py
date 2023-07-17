@@ -1,7 +1,7 @@
 import http.client
 import json
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
@@ -22,15 +22,12 @@ from esmerald.openapi.utils import (
     validation_error_definition,
     validation_error_response_definition,
 )
-from esmerald.params import Body, Param
+from esmerald.params import Param
 from esmerald.routing import gateways, router
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA
 from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
-
-if TYPE_CHECKING:
-    pass
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
@@ -138,8 +135,8 @@ def get_openapi_operation_parameters(
 
         if field_info.description:
             parameter.description = field_info.description
-        if field_info.example != Undefined:
-            parameter.example = json.dumps(field_info.example)
+        if field_info.examples != Undefined:
+            parameter.example = json.dumps(field_info.examples)
         if field_info.deprecated:
             parameter.deprecated = field_info.deprecated
 
@@ -156,11 +153,8 @@ def get_openapi_operation_request_body(
         return None
 
     assert isinstance(data_field, FieldInfo), "The 'data' needs to be a FieldInfo"
-    schema = get_schema_from_model_field(
-        field=data_field,
-        field_mapping=field_mapping,
-    )
-    field_info = cast(Body, data_field)
+    schema = get_schema_from_model_field(field=data_field, field_mapping=field_mapping)
+    field_info = data_field
     request_media_type = data_field.json_schema_extra.get("media_type").value
     required = field_info.is_required()
 
@@ -169,8 +163,8 @@ def get_openapi_operation_request_body(
         request_data_oai["required"] = required
 
     request_media_content: Dict[str, Any] = {"schema": schema}
-    if field_info.example != Undefined:
-        request_media_content["example"] = json.dumps(field_info.example)
+    if field_info.examples != Undefined:
+        request_media_content["example"] = json.dumps(field_info.examples)
     request_data_oai["content"] = {request_media_type: request_media_content}
     return request_data_oai
 
