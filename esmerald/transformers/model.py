@@ -381,7 +381,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
         if not self.form_data:
             return await request.json()
 
-        breakpoint()
         media_type, field = self.form_data
         form_data = await request.form()
         parsed_form = parse_form_data(media_type, form_data, field)

@@ -67,7 +67,6 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
     json.
     """
     values_dict: Dict[str, Any] = {}
-    breakpoint()
     for key, value in form_data.multi_items():
         if not isinstance(value, StarletteUploadFile):
             with suppress(JSONDecodeError):
