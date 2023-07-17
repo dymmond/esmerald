@@ -161,7 +161,7 @@ def get_openapi_operation_request_body(
         field_mapping=field_mapping,
     )
     field_info = cast(Body, data_field)
-    request_media_type = data_field.json_schema_extra.get("media_type").value  # type: ignore
+    request_media_type = data_field.json_schema_extra.get("media_type").value
     required = field_info.is_required()
 
     request_data_oai: Dict[str, Any] = {}

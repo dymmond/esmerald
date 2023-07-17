@@ -18,7 +18,7 @@ from typing import (
 
 from pydantic import BaseModel, ConfigDict, field_validator  # noqa
 from pydantic._internal._schema_generation_shared import (
-    GetJsonSchemaHandler as GetJsonSchemaHandler,  # type: ignore[attr-defined]
+    GetJsonSchemaHandler as GetJsonSchemaHandler,
 )
 from pydantic.json_schema import JsonSchemaValue as JsonSchemaValue
 from pydantic_core.core_schema import CoreSchema

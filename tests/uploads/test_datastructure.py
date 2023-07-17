@@ -1,43 +1,9 @@
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
-
-import pytest
-from pydantic import BaseModel
+from typing import Any, Dict, List
 
 from esmerald import Body, Esmerald, Gateway, UploadFile, post
 from esmerald.enums import EncodingType
-from esmerald.testclient import EsmeraldTestClient, create_client
-
-
-class FormData(BaseModel):
-    name: UploadFile
-    age: UploadFile
-    programmer: UploadFile
-
-    model_config = {"arbitrary_types_allowed": True}
-
-
-class Form(BaseModel):
-    name: str
-    age: Optional[int] = None
-    programmer: bool
-
-
-@pytest.mark.parametrize("t_type", [Dict[str, UploadFile], List[UploadFile], UploadFile])
-def xtest_request_body_multi_part(t_type: Type[Any]) -> None:
-    body = Body(media_type=EncodingType.MULTI_PART)
-
-    test_path = "/test"
-    data = Form(name="Moishe Zuchmir", programmer=True).model_dump()
-
-    @post(path=test_path)
-    def test_method(data: t_type = body) -> None:  # type: ignore
-        assert data
-
-    with create_client(routes=[Gateway(handler=test_method)]) as client:
-        breakpoint()
-        response = client.post(test_path, files=data)
-        assert response.status_code == 201
+from esmerald.testclient import EsmeraldTestClient
 
 
 def test_upload_file_is_closed(tmp_path: Path):

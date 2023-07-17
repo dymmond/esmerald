@@ -67,6 +67,7 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
     json.
     """
     values_dict: Dict[str, Any] = {}
+    breakpoint()
     for key, value in form_data.multi_items():
         if not isinstance(value, StarletteUploadFile):
             with suppress(JSONDecodeError):
@@ -79,9 +80,9 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
         else:
             values_dict[key] = value
 
-        if media_type == EncodingType.MULTI_PART:
-            if get_origin(field.annotation) is list:
-                return list(values_dict.values())
-            if isinstance(value, (StarletteUploadFile, UploadFile)) and values_dict:
-                return list(values_dict.values())[0]
-        return values_dict
+    if media_type == EncodingType.MULTI_PART:
+        if get_origin(field.annotation) is list:
+            return list(values_dict.values())
+        if isinstance(value, (StarletteUploadFile, UploadFile)) and values_dict:
+            return list(values_dict.values())[0]
+    return values_dict
