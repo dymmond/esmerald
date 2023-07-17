@@ -135,7 +135,7 @@ def get_openapi_operation_parameters(
 
         if field_info.description:
             parameter.description = field_info.description
-        if field_info.examples != Undefined:
+        if field_info.examples != None:
             parameter.example = json.dumps(field_info.examples)
         if field_info.deprecated:
             parameter.deprecated = field_info.deprecated
@@ -163,7 +163,7 @@ def get_openapi_operation_request_body(
         request_data_oai["required"] = required
 
     request_media_content: Dict[str, Any] = {"schema": schema}
-    if field_info.examples != Undefined:
+    if field_info.examples != None:
         request_media_content["example"] = json.dumps(field_info.examples)
     request_data_oai["content"] = {request_media_type: request_media_content}
     return request_data_oai
