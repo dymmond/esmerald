@@ -24,7 +24,7 @@ from esmerald import UploadFile
 The [body](./body-fields.md) parameter plays a great role when it comes to use the
 [UploadFile](#uploadfile). The reason for that is because of the parameter `media_type`.
 
-The `media_type` allows to pass different encoding types for your uploads. 
+The `media_type` allows to pass different encoding types for your uploads.
 
 Esmerald `EncodingType` can be accessed via:
 
@@ -55,27 +55,9 @@ Uploading a single file, you need to type the `data` as [UploadFile](#uploadfile
 {!> ../docs_src/extras/upload/single_file.py !}
 ```
 
-## Multiple files upload
-
-What if you need to upload multiple files? Well, that is also very much possible. Since Esmerald
-uses pydantic, the way of doing it is by using that same power.
-
-```python
-{!> ../docs_src/extras/upload/multiple_files.py !}
-```
-
-## Dictionary files upload
-
-You can also upload files as a dictionary if parsing and validation is not a concern.
-
-```python
-{!> ../docs_src/extras/upload/as_dict.py !}
-```
-
 ## List files upload
 
-In a similar way as the [dictionary](#dictionary-files-upload), you can also access the files
-as a list.
+In a similar way, you can also access the files as a list.
 
 ```python
 {!> ../docs_src/extras/upload/as_list.py !}

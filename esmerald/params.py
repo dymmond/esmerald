@@ -7,20 +7,22 @@ from esmerald.enums import EncodingType, ParamType
 from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
 
+_PyUndefined: Any = Undefined
+
 
 class Param(FieldInfo):
     in_: ParamType
 
     def __init__(
         self,
-        default: Any = Undefined,
+        default: Any = _PyUndefined,
         *,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         annotation: Optional[Any] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
-        value_type: Any = Undefined,
+        alias_priority: Optional[int] = _PyUndefined,
+        value_type: Any = _PyUndefined,
         header: Optional[str] = None,
         cookie: Optional[str] = None,
         query: Optional[str] = None,
@@ -34,12 +36,13 @@ class Param(FieldInfo):
         ge: Optional[float] = None,
         lt: Optional[float] = None,
         le: Optional[float] = None,
-        multiple_of: Optional[float] = None,
-        allow_inf_nan: Optional[bool] = None,
+        multiple_of: Optional[float] = _PyUndefined,
+        allow_inf_nan: Optional[bool] = _PyUndefined,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
@@ -51,7 +54,6 @@ class Param(FieldInfo):
         kw_only: bool = True,
     ) -> None:
         self.deprecated = deprecated
-        self.example = example
         self.examples = examples
         self.include_in_schema = include_in_schema
         self.const = const
@@ -65,7 +67,6 @@ class Param(FieldInfo):
         extra.update(required=required)
         extra.update(content_encoding=content_encoding)
         extra.update(value_type=value_type)
-        extra.update(example=self.example)
         extra.update(examples=self.examples)
         extra.update(deprecated=self.deprecated)
         extra.update(include_in_schema=self.include_in_schema)
@@ -96,10 +97,15 @@ class Param(FieldInfo):
             validate_default=validate_default,
             validation_alias=validation_alias,
             discriminator=discriminator,
+            max_digits=max_digits,
+            strict=strict,
             frozen=frozen,
             init_var=init_var,
             kw_only=kw_only,
         )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(annotation={self.annotation}, default={self.default})"
 
 
 class Header(Param):
@@ -108,14 +114,14 @@ class Header(Param):
     def __init__(
         self,
         *,
-        default: Any = Undefined,
+        default: Any = _PyUndefined,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         annotation: Optional[Any] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
+        alias_priority: Optional[int] = _PyUndefined,
         value: Optional[str] = None,
-        value_type: Any = Undefined,
+        value_type: Any = _PyUndefined,
         content_encoding: Optional[str] = None,
         required: bool = True,
         title: Optional[str] = None,
@@ -125,12 +131,13 @@ class Header(Param):
         ge: Optional[float] = None,
         lt: Optional[float] = None,
         le: Optional[float] = None,
-        multiple_of: Optional[float] = None,
-        allow_inf_nan: Optional[bool] = None,
+        multiple_of: Optional[float] = _PyUndefined,
+        allow_inf_nan: Optional[bool] = _PyUndefined,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
@@ -160,11 +167,12 @@ class Header(Param):
             allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
+            max_digits=max_digits,
+            strict=strict,
             pattern=pattern,
             required=required,
             content_encoding=content_encoding,
             value_type=value_type,
-            example=example,
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
@@ -182,14 +190,14 @@ class Cookie(Param):
 
     def __init__(
         self,
-        default: Any = Undefined,
+        default: Any = _PyUndefined,
         *,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         annotation: Optional[Any] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
-        value_type: Any = Undefined,
+        alias_priority: Optional[int] = _PyUndefined,
+        value_type: Any = _PyUndefined,
         value: Optional[str] = None,
         content_encoding: Optional[str] = None,
         required: bool = True,
@@ -200,12 +208,13 @@ class Cookie(Param):
         ge: Optional[float] = None,
         lt: Optional[float] = None,
         le: Optional[float] = None,
-        multiple_of: Optional[float] = None,
-        allow_inf_nan: Optional[bool] = None,
+        multiple_of: Optional[float] = _PyUndefined,
+        allow_inf_nan: Optional[bool] = _PyUndefined,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
@@ -235,11 +244,12 @@ class Cookie(Param):
             allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
+            max_digits=max_digits,
+            strict=strict,
             pattern=pattern,
             required=required,
             content_encoding=content_encoding,
             value_type=value_type,
-            example=example,
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
@@ -257,14 +267,14 @@ class Query(Param):
 
     def __init__(
         self,
-        default: Any = Undefined,
+        default: Any = _PyUndefined,
         *,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         annotation: Optional[Any] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
-        value_type: Any = Undefined,
+        alias_priority: Optional[int] = _PyUndefined,
+        value_type: Any = _PyUndefined,
         value: Optional[str] = None,
         content_encoding: Optional[str] = None,
         required: bool = True,
@@ -275,12 +285,13 @@ class Query(Param):
         ge: Optional[float] = None,
         lt: Optional[float] = None,
         le: Optional[float] = None,
-        multiple_of: Optional[float] = None,
-        allow_inf_nan: Optional[bool] = None,
+        multiple_of: Optional[float] = _PyUndefined,
+        allow_inf_nan: Optional[bool] = _PyUndefined,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
@@ -310,11 +321,12 @@ class Query(Param):
             allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
+            max_digits=max_digits,
+            strict=strict,
             pattern=pattern,
             required=required,
             content_encoding=content_encoding,
             value_type=value_type,
-            example=example,
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
@@ -332,12 +344,12 @@ class Path(Param):
 
     def __init__(
         self,
-        default: Any = Undefined,
+        default: Any = _PyUndefined,
         *,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         annotation: Optional[Any] = None,
-        value_type: Any = Undefined,
+        value_type: Any = _PyUndefined,
         content_encoding: Optional[str] = None,
         required: bool = True,
         title: Optional[str] = None,
@@ -349,8 +361,9 @@ class Path(Param):
         le: Optional[float] = None,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
@@ -375,11 +388,12 @@ class Path(Param):
             le=le,
             min_length=min_length,
             max_length=max_length,
+            max_digits=max_digits,
+            strict=strict,
             pattern=pattern,
             required=required,
             content_encoding=content_encoding,
             value_type=value_type,
-            example=example,
             examples=examples,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
@@ -395,16 +409,16 @@ class Path(Param):
 class Body(FieldInfo):
     def __init__(
         self,
+        default: Any = _PyUndefined,
         *,
-        default: Any = Undefined,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         annotation: Optional[Any] = None,
         media_type: Union[str, EncodingType] = EncodingType.JSON,
         content_encoding: Optional[str] = None,
         title: Optional[str] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
+        alias_priority: Optional[int] = _PyUndefined,
         description: Optional[str] = None,
         const: Optional[bool] = None,
         embed: Optional[bool] = None,
@@ -412,12 +426,13 @@ class Body(FieldInfo):
         ge: Optional[float] = None,
         lt: Optional[float] = None,
         le: Optional[float] = None,
-        multiple_of: Optional[float] = None,
-        allow_inf_nan: Optional[bool] = None,
+        multiple_of: Optional[float] = _PyUndefined,
+        allow_inf_nan: Optional[bool] = _PyUndefined,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
         discriminator: Optional[str] = None,
@@ -430,7 +445,6 @@ class Body(FieldInfo):
         extra: Dict[str, Any] = {}
         self.media_type = media_type
         self.content_encoding = content_encoding
-        self.example = example
         self.examples = examples
         self.allow_none = allow_none
         self.include_in_schema = include_in_schema
@@ -454,6 +468,7 @@ class Body(FieldInfo):
             lt=lt,
             le=le,
             multiple_of=multiple_of,
+            max_digits=max_digits,
             allow_inf_nan=allow_inf_nan,
             min_length=min_length,
             max_length=max_length,
@@ -464,21 +479,26 @@ class Body(FieldInfo):
             discriminator=discriminator,
             frozen=frozen,
             init_var=init_var,
+            strict=strict,
             kw_only=kw_only,
         )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(annotation={self.annotation}, default={self.default})"
 
 
 class Form(Body):
     def __init__(
         self,
-        default: Any,
+        default: Any = _PyUndefined,
         *,
-        default_factory: Optional[Callable[..., Any]] = None,
+        annotation: Optional[Any] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         allow_none: Optional[bool] = True,
         media_type: Union[str, EncodingType] = EncodingType.URL_ENCODED,
         content_encoding: Optional[str] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
+        alias_priority: Optional[int] = _PyUndefined,
         title: Optional[str] = None,
         description: Optional[str] = None,
         gt: Optional[float] = None,
@@ -488,10 +508,11 @@ class Form(Body):
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
         discriminator: Optional[str] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         frozen: Optional[bool] = None,
         validate_default: bool = True,
         init_var: bool = True,
@@ -500,6 +521,7 @@ class Form(Body):
     ) -> None:
         super().__init__(
             default=default,
+            annotation=annotation,
             allow_none=allow_none,
             default_factory=default_factory,
             embed=True,
@@ -516,7 +538,6 @@ class Form(Body):
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
-            example=example,
             examples=examples,
             validate_default=validate_default,
             validation_alias=validation_alias,
@@ -525,20 +546,23 @@ class Form(Body):
             init_var=init_var,
             kw_only=kw_only,
             include_in_schema=include_in_schema,
+            max_digits=max_digits,
+            strict=strict,
         )
 
 
 class File(Form):
     def __init__(
         self,
-        default: Any,
+        default: Any = _PyUndefined,
         *,
+        annotation: Optional[Any] = None,
         allow_none: Optional[bool] = True,
-        default_factory: Optional[Callable[..., Any]] = None,
+        default_factory: Optional[Callable[..., Any]] = _PyUndefined,
         media_type: Union[str, EncodingType] = EncodingType.MULTI_PART,
         content_encoding: Optional[str] = None,
         alias: Optional[str] = None,
-        alias_priority: Optional[int] = None,
+        alias_priority: Optional[int] = _PyUndefined,
         title: Optional[str] = None,
         description: Optional[str] = None,
         gt: Optional[float] = None,
@@ -548,10 +572,11 @@ class File(Form):
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
-        example: Any = Undefined,
         examples: Optional[List[Any]] = None,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
         discriminator: Optional[str] = None,
+        max_digits: Optional[int] = _PyUndefined,
+        strict: Optional[bool] = _PyUndefined,
         frozen: Optional[bool] = None,
         validate_default: bool = True,
         init_var: bool = True,
@@ -560,6 +585,7 @@ class File(Form):
     ) -> None:
         super().__init__(
             default=default,
+            annotation=annotation,
             allow_none=allow_none,
             default_factory=default_factory,
             media_type=media_type,
@@ -575,11 +601,12 @@ class File(Form):
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
-            example=example,
             examples=examples,
             validate_default=validate_default,
             validation_alias=validation_alias,
             discriminator=discriminator,
+            max_digits=max_digits,
+            strict=strict,
             frozen=frozen,
             init_var=init_var,
             kw_only=kw_only,

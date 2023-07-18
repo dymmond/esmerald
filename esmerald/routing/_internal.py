@@ -48,7 +48,13 @@ class FieldInfoMixin:
         if DATA in self.signature_model.model_fields:
             data = self.signature_model.model_fields[DATA]
 
-            body = Body(alias="body")
-            for key, _ in data._attributes_set.items():
-                setattr(body, key, getattr(data, key, None))
+            if not isinstance(data, Body):
+                body = Body(alias="body")
+                for key, _ in data._attributes_set.items():
+                    setattr(body, key, getattr(data, key, None))
+            else:
+                body = data
+
+            if not body.title:
+                body.title = data.annotation.__name__.title()
             return body
