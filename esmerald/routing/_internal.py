@@ -63,7 +63,7 @@ class FieldInfoMixin:
                 body = data
 
             if not body.title:
-                body.title = data.annotation.__name__.title()
+                body.title = f"Body_{self.operation_id}"
 
             # For everything else that is not MULTI_PART
             extra = body.json_schema_extra or {}

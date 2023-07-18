@@ -68,7 +68,9 @@ def test_openapi_schema(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "multipart/form-data": {
-                                    "schema": {"$ref": "#/components/schemas/Uploadfile"}
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Body_create_file_files_post"
+                                    }
                                 }
                             },
                             "required": True,
@@ -99,7 +101,9 @@ def test_openapi_schema(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "multipart/form-data": {
-                                    "schema": {"$ref": "#/components/schemas/Uploadfile"}
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Body_upload_file_upload_post"
+                                    }
                                 }
                             },
                             "required": True,
@@ -126,6 +130,30 @@ def test_openapi_schema(test_client_factory):
             },
             "components": {
                 "schemas": {
+                    "Body_create_file_files_post": {
+                        "properties": {
+                            "file": {
+                                "type": "string",
+                                "format": "binary",
+                                "title": "Body_create_file_files_post",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["file"],
+                        "title": "Body_create_file_files_post",
+                    },
+                    "Body_upload_file_upload_post": {
+                        "properties": {
+                            "file": {
+                                "type": "string",
+                                "format": "binary",
+                                "title": "Body_upload_file_upload_post",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["file"],
+                        "title": "Body_upload_file_upload_post",
+                    },
                     "HTTPValidationError": {
                         "properties": {
                             "detail": {
@@ -136,14 +164,6 @@ def test_openapi_schema(test_client_factory):
                         },
                         "type": "object",
                         "title": "HTTPValidationError",
-                    },
-                    "Uploadfile": {
-                        "properties": {
-                            "file": {"type": "string", "format": "binary", "title": "Uploadfile"}
-                        },
-                        "type": "object",
-                        "required": ["file"],
-                        "title": "Uploadfile",
                     },
                     "ValidationError": {
                         "properties": {

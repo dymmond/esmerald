@@ -101,7 +101,9 @@ def test_openapi_schema(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "multipart/form-data": {
-                                    "schema": {"$ref": "#/components/schemas/List"}
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Body_upload_file_upload_post"
+                                    }
                                 }
                             },
                             "required": True,
@@ -132,7 +134,9 @@ def test_openapi_schema(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "multipart/form-data": {
-                                    "schema": {"$ref": "#/components/schemas/List"}
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Body_upload_list_multiple_file_upload_multiple_post"
+                                    }
                                 }
                             },
                             "required": True,
@@ -159,6 +163,40 @@ def test_openapi_schema(test_client_factory):
             },
             "components": {
                 "schemas": {
+                    "Body_upload_file_upload_post": {
+                        "properties": {
+                            "files": {
+                                "items": {
+                                    "anyOf": [
+                                        {"type": "string", "format": "binary"},
+                                        {"type": "null"},
+                                    ]
+                                },
+                                "type": "array",
+                                "title": "Body_upload_file_upload_post",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["files"],
+                        "title": "Body_upload_file_upload_post",
+                    },
+                    "Body_upload_list_multiple_file_upload_multiple_post": {
+                        "properties": {
+                            "files": {
+                                "items": {
+                                    "anyOf": [
+                                        {"type": "string", "format": "binary"},
+                                        {"type": "null"},
+                                    ]
+                                },
+                                "type": "array",
+                                "title": "Body_upload_list_multiple_file_upload_multiple_post",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["files"],
+                        "title": "Body_upload_list_multiple_file_upload_multiple_post",
+                    },
                     "HTTPValidationError": {
                         "properties": {
                             "detail": {
@@ -169,23 +207,6 @@ def test_openapi_schema(test_client_factory):
                         },
                         "type": "object",
                         "title": "HTTPValidationError",
-                    },
-                    "List": {
-                        "properties": {
-                            "files": {
-                                "items": {
-                                    "anyOf": [
-                                        {"type": "string", "format": "binary"},
-                                        {"type": "null"},
-                                    ]
-                                },
-                                "type": "array",
-                                "title": "List",
-                            }
-                        },
-                        "type": "object",
-                        "required": ["files"],
-                        "title": "List",
                     },
                     "ValidationError": {
                         "properties": {
