@@ -51,7 +51,7 @@ def test_openapi_schema():
                     "responses": {
                         "200": {
                             "description": "Successful response",
-                            "content": {"application/json": {"schema": {}}},
+                            "content": {"application/json": {"schema": {"type": "string"}}},
                         }
                     },
                     "deprecated": False,
@@ -71,6 +71,7 @@ another_client = EsmeraldTestClient(another_app)
 def test_openapi_schema_default():
     response = another_client.get("/openapi.json")
     assert response.status_code == 200, response.text
+
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
@@ -89,7 +90,7 @@ def test_openapi_schema_default():
                     "responses": {
                         "200": {
                             "description": "Successful response",
-                            "content": {"application/json": {"schema": {}}},
+                            "content": {"application/json": {"schema": {"type": "string"}}},
                         }
                     },
                     "deprecated": False,

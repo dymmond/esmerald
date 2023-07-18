@@ -71,7 +71,7 @@ def test_child_nested_esmerald_disabled_openapi():
                         "responses": {
                             "200": {
                                 "description": "Successful response",
-                                "content": {"application/json": {"schema": {}}},
+                                "content": {"application/json": {"schema": {"type": "string"}}},
                             }
                         },
                         "deprecated": False,
@@ -141,7 +141,7 @@ def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
                         "responses": {
                             "200": {
                                 "description": "Successful response",
-                                "content": {"application/json": {"schema": {}}},
+                                "content": {"application/json": {"schema": {"type": "string"}}},
                             }
                         },
                         "deprecated": False,

@@ -64,7 +64,7 @@ def test_external_app_not_include_in_schema(test_client_factory):
                         "responses": {
                             "200": {
                                 "description": "Successful response",
-                                "content": {"application/json": {"schema": {}}},
+                                "content": {"application/json": {"schema": {"type": "string"}}},
                             }
                         },
                         "deprecated": False,

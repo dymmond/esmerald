@@ -10,17 +10,18 @@ from starlette.routing import BaseRoute
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
 
+from esmerald.enums import MediaType
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
 from esmerald.openapi.models import Contact, Info, License, OpenAPI, Operation, Parameter, Tag
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
+    STATUS_CODE_RANGES,
+    VALIDATION_ERROR_DEFINITION,
+    VALIDATION_ERROR_RESPONSE_DEFINITION,
     dict_update,
     get_definitions,
     get_schema_from_model_field,
     is_status_code_allowed,
-    status_code_ranges,
-    validation_error_definition,
-    validation_error_response_definition,
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
@@ -243,7 +244,6 @@ def get_openapi_path(
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):
             response_schema = {"type": "string"}
-            response_schema = {}
 
             operation.setdefault("responses", {}).setdefault(status_code, {}).setdefault(
                 "content", {}
@@ -252,7 +252,7 @@ def get_openapi_path(
         # Additional responses
         if handler.response_models:
             operation_responses = operation.setdefault("responses", {})
-            for additional_status_code, _additional_response in handler.response_models.items():
+            for additional_status_code, _ in handler.response_models.items():
                 process_response = handler.responses[additional_status_code].model_copy()
                 status_code_key = str(additional_status_code).upper()
 
@@ -269,7 +269,7 @@ def get_openapi_path(
                     additional_field_schema = get_schema_from_model_field(
                         field=field, field_mapping=field_mapping
                     )
-                    media_type = route_response_media_type or "application/json"
+                    media_type = route_response_media_type or MediaType.JSON.value
                     additional_schema = (
                         model_schema.setdefault("content", {})
                         .setdefault(media_type, {})
@@ -280,7 +280,7 @@ def get_openapi_path(
                 # status
                 status_text = (
                     process_response.status_text
-                    or status_code_ranges.get(str(additional_status_code).upper())
+                    or STATUS_CODE_RANGES.get(str(additional_status_code).upper())
                     or http.client.responses.get(int(additional_status_code))
                 )
                 description = (
@@ -306,8 +306,8 @@ def get_openapi_path(
             if "ValidationError" not in definitions:
                 definitions.update(
                     {
-                        "ValidationError": validation_error_definition,
-                        "HTTPValidationError": validation_error_response_definition,
+                        "ValidationError": VALIDATION_ERROR_DEFINITION,
+                        "HTTPValidationError": VALIDATION_ERROR_RESPONSE_DEFINITION,
                     }
                 )
         path[method.lower()] = operation

@@ -1,6 +1,6 @@
 from contextlib import suppress
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, Any, Dict, get_args, get_origin
+from typing import TYPE_CHECKING, Any, Dict, List, get_args, get_origin
 
 from pydantic import BaseModel, ConfigDict
 from starlette.datastructures import UploadFile as StarletteUploadFile
@@ -61,6 +61,20 @@ class ArbitraryExtraBaseModel(BaseModel):
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
+def flatten(values: List[Any]) -> List[Any]:
+    """
+    Flattens a list
+    """
+    flattened = []
+
+    for value in values:
+        if isinstance(value, list):
+            flattened.extend(flatten(value))
+        else:
+            flattened.append(value)
+    return flattened
+
+
 def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "FieldInfo") -> Any:
     """
     Converts, parses and transforms a multidict into a dict and tries to load them all into
@@ -81,7 +95,8 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
 
     if media_type == EncodingType.MULTI_PART:
         if get_origin(field.annotation) is list:
-            return list(values_dict.values())
+            values = list(values_dict.values())
+            return flatten(values=values)
         if field.annotation in (StarletteUploadFile, UploadFile) and values_dict:
             return list(values_dict.values())[0]
 
