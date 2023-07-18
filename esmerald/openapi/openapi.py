@@ -24,7 +24,6 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
-from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA
 from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
@@ -135,7 +134,7 @@ def get_openapi_operation_parameters(
 
         if field_info.description:
             parameter.description = field_info.description
-        if field_info.examples != None:
+        if field_info.examples is not None:
             parameter.example = json.dumps(field_info.examples)
         if field_info.deprecated:
             parameter.deprecated = field_info.deprecated
@@ -163,7 +162,7 @@ def get_openapi_operation_request_body(
         request_data_oai["required"] = required
 
     request_media_content: Dict[str, Any] = {"schema": schema}
-    if field_info.examples != None:
+    if field_info.examples is not None:
         request_media_content["example"] = json.dumps(field_info.examples)
     request_data_oai["content"] = {request_media_type: request_media_content}
     return request_data_oai

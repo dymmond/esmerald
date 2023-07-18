@@ -1,6 +1,6 @@
 from contextlib import suppress
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, Any, Dict, get_origin
+from typing import TYPE_CHECKING, Any, Dict, get_args, get_origin
 
 from pydantic import BaseModel, ConfigDict
 from starlette.datastructures import UploadFile as StarletteUploadFile
@@ -84,4 +84,11 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
             return list(values_dict.values())
         if field.annotation in (StarletteUploadFile, UploadFile) and values_dict:
             return list(values_dict.values())[0]
-    return values_dict
+
+        # Check the arguments if there is any MULTI_PART in a possible Union with UploadFile
+        # and a None (Optional).
+        for arg in get_args(field.annotation):
+            if issubclass(arg, (StarletteUploadFile, UploadFile)) and values_dict:
+                return list(values_dict.values())[0]
+
+    return values_dict if values_dict else None
