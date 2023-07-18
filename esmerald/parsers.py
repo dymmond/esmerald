@@ -82,6 +82,6 @@ def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "F
     if media_type == EncodingType.MULTI_PART:
         if get_origin(field.annotation) is list:
             return list(values_dict.values())
-        if isinstance(value, (StarletteUploadFile, UploadFile)) and values_dict:
+        if field.annotation in (StarletteUploadFile, UploadFile) and values_dict:
             return list(values_dict.values())[0]
     return values_dict
