@@ -71,7 +71,7 @@ def test_add_include_to_openapi(test_client_factory):
                         "responses": {
                             "200": {
                                 "description": "Successful response",
-                                "content": {"application/json": {"schema": {}}},
+                                "content": {"application/json": {"schema": {"type": "string"}}},
                             }
                         },
                         "deprecated": False,
@@ -124,7 +124,7 @@ def test_include_no_include_in_schema(test_client_factory):
                         "responses": {
                             "200": {
                                 "description": "Successful response",
-                                "content": {"application/json": {"schema": {}}},
+                                "content": {"application/json": {"schema": {"type": "string"}}},
                             }
                         },
                         "deprecated": False,

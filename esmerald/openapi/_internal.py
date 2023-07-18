@@ -18,3 +18,6 @@ class InternalResponse(BaseModel):
     encoding: Optional[str] = None
 
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(annotation={self.media_type}, default={self.encoding})"
