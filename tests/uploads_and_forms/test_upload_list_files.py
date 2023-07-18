@@ -83,7 +83,7 @@ def test_openapi_schema(test_client_factory):
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
 
-        {
+        assert response.json() == {
             "openapi": "3.1.0",
             "info": {
                 "title": "Esmerald",

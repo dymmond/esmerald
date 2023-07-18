@@ -1,5 +1,6 @@
-from typing import Union
+from typing import Any, List, Union
 
+from orjson import loads
 from pydantic import ValidationError
 from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -37,6 +38,24 @@ async def http_exception_handler(
         return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
+def parse_non_serializable_objects_from_validation_error(values: List[Any]) -> List[Any]:
+    """
+    Parses non serializable objects from the validation error extras.
+    """
+    details = []
+    for detail in values:
+        detail_inputs = detail["input"]
+
+        inputs = []
+        for input in detail_inputs:
+            if isinstance(input, object):
+                inputs.append(str(input.__class__.__name__))
+        detail["input"] = inputs
+        details.append(detail)
+
+    return details
+
+
 async def validation_error_exception_handler(
     request: Request, exc: ValidationError
 ) -> JSONResponse:
@@ -44,8 +63,14 @@ async def validation_error_exception_handler(
     status_code = status.HTTP_400_BAD_REQUEST
 
     if extra:
+        try:
+            details = loads(exc.extra.get("extra", {}))
+        except TypeError:
+            extra_details = exc.extra.get("extra", {})
+            details = parse_non_serializable_objects_from_validation_error(extra_details)
+
         return JSONResponse(
-            {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
+            {"detail": exc.detail, "errors": details},
             status_code=status_code,
         )
     else:
