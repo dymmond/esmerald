@@ -67,8 +67,10 @@ class EsmeraldAPISettings(BaseSettings):
     redoc_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
     swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
     swagger_ui_parameters: Optional[Dict[str, Any]] = None
-    swagger_js_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"
-    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css"
+    swagger_js_url: str = (
+        "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui-bundle.min.js"
+    )
+    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui.min.css"
     swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
 
     # Model configuration

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from esmerald import Esmerald, Gateway, UploadFile, post, status
 from esmerald.params import File
-from esmerald.testclient import EsmeraldTestClient
+from esmerald.testclient import EsmeraldTestClient, create_client
 
 
 class MultipleFile(BaseModel):
@@ -48,7 +48,7 @@ app = Esmerald(
 client = EsmeraldTestClient(app)
 
 
-def test_post_upload_file(tmp_path):
+def test_post_upload_file(test_client_factory, tmp_path):
     path = tmp_path / "test.txt"
     path.write_bytes(b"<file content>")
 
@@ -60,7 +60,7 @@ def test_post_upload_file(tmp_path):
     assert response.json() == {"names": ["test.txt"]}
 
 
-def test_post_upload_list_multiple_file(tmp_path):
+def test_post_upload_list_multiple_file(test_client_factory, tmp_path):
     path = tmp_path / "test.txt"
     path.write_bytes(b"<file content>")
 
@@ -70,3 +70,137 @@ def test_post_upload_list_multiple_file(tmp_path):
 
     assert response.status_code == 200, response.text
     assert response.json() == {"names": ["test.txt", "test.txt"], "total": 2}
+
+
+def test_openapi_schema(test_client_factory):
+    with create_client(
+        routes=[
+            Gateway(handler=upload_file),
+            Gateway(handler=upload_list_multiple_file),
+        ],
+        enable_openapi=True,
+    ) as client:
+        response = client.get("/openapi.json")
+        assert response.status_code == 200, response.text
+
+        {
+            "openapi": "3.1.0",
+            "info": {
+                "title": "Esmerald",
+                "summary": "Esmerald application",
+                "description": "test_client",
+                "contact": {"name": "admin", "email": "admin@myapp.com"},
+                "version": client.app.version,
+            },
+            "servers": [{"url": "/"}],
+            "paths": {
+                "/upload": {
+                    "post": {
+                        "summary": "Upload File",
+                        "operationId": "upload_file_upload_post",
+                        "requestBody": {
+                            "content": {
+                                "multipart/form-data": {
+                                    "schema": {"$ref": "#/components/schemas/List"}
+                                }
+                            },
+                            "required": True,
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Successful response",
+                                "content": {"application/json": {"schema": {"type": "string"}}},
+                            },
+                            "422": {
+                                "description": "Validation Error",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "$ref": "#/components/schemas/HTTPValidationError"
+                                        }
+                                    }
+                                },
+                            },
+                        },
+                        "deprecated": False,
+                    }
+                },
+                "/upload-multiple": {
+                    "post": {
+                        "summary": "Upload List Multiple File",
+                        "operationId": "upload_list_multiple_file_upload_multiple_post",
+                        "requestBody": {
+                            "content": {
+                                "multipart/form-data": {
+                                    "schema": {"$ref": "#/components/schemas/List"}
+                                }
+                            },
+                            "required": True,
+                        },
+                        "responses": {
+                            "200": {
+                                "description": "Successful response",
+                                "content": {"application/json": {"schema": {"type": "string"}}},
+                            },
+                            "422": {
+                                "description": "Validation Error",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "$ref": "#/components/schemas/HTTPValidationError"
+                                        }
+                                    }
+                                },
+                            },
+                        },
+                        "deprecated": False,
+                    }
+                },
+            },
+            "components": {
+                "schemas": {
+                    "HTTPValidationError": {
+                        "properties": {
+                            "detail": {
+                                "items": {"$ref": "#/components/schemas/ValidationError"},
+                                "type": "array",
+                                "title": "Detail",
+                            }
+                        },
+                        "type": "object",
+                        "title": "HTTPValidationError",
+                    },
+                    "List": {
+                        "properties": {
+                            "files": {
+                                "items": {
+                                    "anyOf": [
+                                        {"type": "string", "format": "binary"},
+                                        {"type": "null"},
+                                    ]
+                                },
+                                "type": "array",
+                                "title": "List",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["files"],
+                        "title": "List",
+                    },
+                    "ValidationError": {
+                        "properties": {
+                            "loc": {
+                                "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+                                "type": "array",
+                                "title": "Location",
+                            },
+                            "msg": {"type": "string", "title": "Message"},
+                            "type": {"type": "string", "title": "Error Type"},
+                        },
+                        "type": "object",
+                        "required": ["loc", "msg", "type"],
+                        "title": "ValidationError",
+                    },
+                }
+            },
+        }
