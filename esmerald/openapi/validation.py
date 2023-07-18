@@ -55,30 +55,3 @@ validation_error_response_definition = ValidationErrorModel(
         detail=Detail(title="Detail", type="array", items={"$ref": REF_PREFIX + "ValidationError"})
     ),
 )
-
-# VALIDATION_ERROR_DEFINITION = {
-#     "title": "ValidationError",
-#     "type": "object",
-#     "properties": {
-#         "loc": {
-#             "title": "Location",
-#             "type": "array",
-#             "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
-#         },
-#         "msg": {"title": "Message", "type": "string"},
-#         "type": {"title": "Error Type", "type": "string"},
-#     },
-#     "required": ["loc", "msg", "type"],
-# }
-
-# VALIDATION_ERROR_RESPONSE_DEFINITION = {
-#     "title": "HTTPValidationError",
-#     "type": "object",
-#     "properties": {
-#         "detail": {
-#             "title": "Detail",
-#             "type": "array",
-#             "items": {"$ref": REF_PREFIX + "ValidationError"},
-#         }
-#     },
-# }
