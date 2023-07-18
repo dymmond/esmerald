@@ -79,7 +79,7 @@ def test_openapi_response_value_for_class_as_list_multiple_models(test_client_fa
             ...
 
 
-def xtest_openapi_response_value_for_class_as_list_multiple(test_client_factory):
+def test_openapi_response_value_for_class_as_list_multiple(test_client_factory):
     with pytest.raises(ValueError):
 
         @get(

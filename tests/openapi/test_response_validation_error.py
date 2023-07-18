@@ -75,7 +75,9 @@ def test_open_api_schema(test_client_factory):
                         "responses": {
                             "200": {
                                 "description": "Successful response",
-                                "content": {"application/vnd.api+json": {"schema": {}}},
+                                "content": {
+                                    "application/vnd.api+json": {"schema": {"type": "string"}}
+                                },
                             },
                             "422": {
                                 "description": "Error",

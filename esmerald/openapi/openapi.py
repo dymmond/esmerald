@@ -1,7 +1,7 @@
 import http.client
 import json
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
@@ -10,27 +10,24 @@ from starlette.routing import BaseRoute
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
 
+from esmerald.enums import MediaType
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
 from esmerald.openapi.models import Contact, Info, License, OpenAPI, Operation, Parameter, Tag
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
+    STATUS_CODE_RANGES,
+    VALIDATION_ERROR_DEFINITION,
+    VALIDATION_ERROR_RESPONSE_DEFINITION,
     dict_update,
     get_definitions,
     get_schema_from_model_field,
     is_status_code_allowed,
-    status_code_ranges,
-    validation_error_definition,
-    validation_error_response_definition,
 )
-from esmerald.params import Body, Param
+from esmerald.params import Param
 from esmerald.routing import gateways, router
-from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA
 from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
-
-if TYPE_CHECKING:
-    pass
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
@@ -138,8 +135,8 @@ def get_openapi_operation_parameters(
 
         if field_info.description:
             parameter.description = field_info.description
-        if field_info.example != Undefined:
-            parameter.example = json.dumps(field_info.example)
+        if field_info.examples is not None:
+            parameter.example = json.dumps(field_info.examples)
         if field_info.deprecated:
             parameter.deprecated = field_info.deprecated
 
@@ -156,13 +153,9 @@ def get_openapi_operation_request_body(
         return None
 
     assert isinstance(data_field, FieldInfo), "The 'data' needs to be a FieldInfo"
-    schema = get_schema_from_model_field(
-        field=data_field,
-        field_mapping=field_mapping,
-    )
-
-    field_info = cast(Body, data_field)
-    request_media_type = field_info.media_type.value  # type: ignore
+    schema = get_schema_from_model_field(field=data_field, field_mapping=field_mapping)
+    field_info = data_field
+    request_media_type = data_field.json_schema_extra.get("media_type").value
     required = field_info.is_required()
 
     request_data_oai: Dict[str, Any] = {}
@@ -170,8 +163,8 @@ def get_openapi_operation_request_body(
         request_data_oai["required"] = required
 
     request_media_content: Dict[str, Any] = {"schema": schema}
-    if field_info.example != Undefined:
-        request_media_content["example"] = json.dumps(field_info.example)
+    if field_info.examples is not None:
+        request_media_content["example"] = json.dumps(field_info.examples)
     request_data_oai["content"] = {request_media_type: request_media_content}
     return request_data_oai
 
@@ -251,7 +244,6 @@ def get_openapi_path(
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):
             response_schema = {"type": "string"}
-            response_schema = {}
 
             operation.setdefault("responses", {}).setdefault(status_code, {}).setdefault(
                 "content", {}
@@ -260,7 +252,7 @@ def get_openapi_path(
         # Additional responses
         if handler.response_models:
             operation_responses = operation.setdefault("responses", {})
-            for additional_status_code, _additional_response in handler.response_models.items():
+            for additional_status_code, _ in handler.response_models.items():
                 process_response = handler.responses[additional_status_code].model_copy()
                 status_code_key = str(additional_status_code).upper()
 
@@ -277,7 +269,7 @@ def get_openapi_path(
                     additional_field_schema = get_schema_from_model_field(
                         field=field, field_mapping=field_mapping
                     )
-                    media_type = route_response_media_type or "application/json"
+                    media_type = route_response_media_type or MediaType.JSON.value
                     additional_schema = (
                         model_schema.setdefault("content", {})
                         .setdefault(media_type, {})
@@ -288,7 +280,7 @@ def get_openapi_path(
                 # status
                 status_text = (
                     process_response.status_text
-                    or status_code_ranges.get(str(additional_status_code).upper())
+                    or STATUS_CODE_RANGES.get(str(additional_status_code).upper())
                     or http.client.responses.get(int(additional_status_code))
                 )
                 description = (
@@ -314,8 +306,8 @@ def get_openapi_path(
             if "ValidationError" not in definitions:
                 definitions.update(
                     {
-                        "ValidationError": validation_error_definition,
-                        "HTTPValidationError": validation_error_response_definition,
+                        "ValidationError": VALIDATION_ERROR_DEFINITION,
+                        "HTTPValidationError": VALIDATION_ERROR_RESPONSE_DEFINITION,
                     }
                 )
         path[method.lower()] = operation

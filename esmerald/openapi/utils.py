@@ -5,36 +5,17 @@ from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from typing_extensions import Literal
 
-from esmerald.openapi.constants import REF_PREFIX
+from esmerald.openapi.validation import (
+    validation_error_definition,
+    validation_error_response_definition,
+)
 
-validation_error_definition = {
-    "title": "ValidationError",
-    "type": "object",
-    "properties": {
-        "loc": {
-            "title": "Location",
-            "type": "array",
-            "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
-        },
-        "msg": {"title": "Message", "type": "string"},
-        "type": {"title": "Error Type", "type": "string"},
-    },
-    "required": ["loc", "msg", "type"],
-}
+VALIDATION_ERROR_DEFINITION = validation_error_definition.model_dump(exclude_none=True)
+VALIDATION_ERROR_RESPONSE_DEFINITION = validation_error_response_definition.model_dump(
+    exclude_none=True
+)
 
-validation_error_response_definition = {
-    "title": "HTTPValidationError",
-    "type": "object",
-    "properties": {
-        "detail": {
-            "title": "Detail",
-            "type": "array",
-            "items": {"$ref": REF_PREFIX + "ValidationError"},
-        }
-    },
-}
-
-status_code_ranges: Dict[str, str] = {
+STATUS_CODE_RANGES: Dict[str, str] = {
     "1XX": "Information",
     "2XX": "Success",
     "3XX": "Redirection",

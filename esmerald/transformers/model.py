@@ -183,7 +183,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
         query_params_names: Set[ParamSetting] = set()
 
         form_data = None
-
         # For the reserved keyword data
         data_field = signature_model.model_fields.get("data")
         if data_field:
