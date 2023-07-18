@@ -1,5 +1,25 @@
 # Release Notes
 
+## 2.0.2
+
+### Changed
+
+- Updated Field, Form and Body from `esmerald.params` with current defaults.
+- Removed redundant cast from `File` to `Body` as it is a subclass.
+
+### Added
+
+- Added `strict` and `max_digits` esmerald params `esmerald.params`.
+- Deprecate `example` as OpenAPI 3.10 supports `examples`. Use examples instead of `example`.
+
+### Fixed
+
+- [UploadFile](./extras/upload-files/?h=upload#uploadfile) sending as a list and as normal.
+This got broken when the migration to pydantic 2.0 happened.
+- `File` and `Form` from `esmerald.params` now accept `annotation`.
+- OpenAPI for `UploadFile` as single and list now being parsed as a model.
+
+
 ## 2.0.1
 
 This is a small fix into the parser of lists for the OpenAPI specification.
