@@ -7,7 +7,6 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import ArbitraryExtraBaseModel
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, VALIDATION_NAMES
 from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
-from esmerald.transformers.helpers import is_pydantic_constrained_field
 from esmerald.transformers.utils import get_field_definition_from_param
 from esmerald.typing import Undefined
 from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
@@ -74,9 +73,6 @@ class SignatureFactory(ArbitraryExtraBaseModel):
 
                 if self.skip_parameter_validation(param):
                     self.field_definitions[param.name] = (Any, ...)
-                    continue
-                if is_pydantic_constrained_field(param.default):
-                    self.field_definitions[param.name] = (param.default, ...)
                     continue
                 self.field_definitions[param.name] = get_field_definition_from_param(param)
 
