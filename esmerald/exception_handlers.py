@@ -45,7 +45,6 @@ async def validation_error_exception_handler(
     status_code = status.HTTP_400_BAD_REQUEST
 
     if extra:
-        breakpoint()
         errors_extra = exc.extra.get("extra", {})
         return JSONResponse(
             {"detail": exc.detail, "errors": errors_extra},
