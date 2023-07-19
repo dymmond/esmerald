@@ -1,5 +1,19 @@
 # Release Notes
 
+## 2.0.3
+
+!!! Note
+    This addition was supposed to go in the release [2.0.2](#202) but somehow it was missed in the merge of
+    the pull requests. It is not a bug fix but instead is a simple new
+    [directive](./directives/shell.md) that can be useful for those who like using the command-line.
+
+    It is important to understand that this support **won't be available on releases** of Esmerald
+    1.X.
+
+### Added
+
+- Interactive shell support directive for any Esmerald application.
+
 ## 2.0.2
 
 ### Changed
