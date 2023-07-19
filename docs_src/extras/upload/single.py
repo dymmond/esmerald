@@ -1,10 +1,9 @@
-from esmerald import Body, Esmerald, Gateway, JSONResponse, UploadFile, post
-from esmerald.enums import EncodingType, MediaType
+from esmerald import Esmerald, File, Gateway, JSONResponse, UploadFile, post
 
 
 @post("/upload")
 async def upload_file(
-    data: UploadFile = Body(media_type=EncodingType.MULTI_PART),
+    data: UploadFile = File(),
 ) -> JSONResponse:
     """
     Uploads a file into the system

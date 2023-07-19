@@ -1,5 +1,19 @@
 # Release Notes
 
+## 2.0.3
+
+!!! Note
+    This addition was supposed to go in the release [2.0.2](#202) but somehow it was missed in the merge of
+    the pull requests. It is not a bug fix but instead is a simple new
+    [directive](./directives/shell.md) that can be useful for those who like using the command-line.
+
+    It is important to understand that this support **won't be available on releases** of Esmerald
+    1.X.
+
+### Added
+
+- [Interactive shell](./directives/shell.md) support directive for any Esmerald application.
+
 ## 2.0.2
 
 ### Changed
@@ -14,7 +28,7 @@
 
 ### Fixed
 
-- [UploadFile](./extras/upload-files/?h=upload#uploadfile) sending as a list and as normal.
+- [UploadFile](./extras/upload-files.md) sending as a list and as normal.
 This got broken when the migration to pydantic 2.0 happened.
 - `File` and `Form` from `esmerald.params` now accept `annotation`.
 - OpenAPI for `UploadFile` as single and list now being parsed as a model.

@@ -8,7 +8,7 @@ development team has its own way of testing it but just in case, it is provided.
 This section requires the esmerald testing suite to be installed. You can do it so by running:
 
 ```shell
-pip install esmerald[test]
+$ pip install esmerald[test]
 ```
 
 ## The test client

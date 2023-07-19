@@ -24,8 +24,8 @@ The available responses from `Esmerald` are:
 Some responses use extra dependencies, such as [UJSON](#ujson) and [OrJSON](#orjson). To use these
 responses, you need to install:
 
-```
-pip install esmerald[encoders]
+```shell
+$ pip install esmerald[encoders]
 ```
 
 This will allow you to use the [OrJSON](#orjson) and [UJSON](#ujson) as well as the
