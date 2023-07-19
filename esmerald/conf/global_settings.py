@@ -76,6 +76,10 @@ class EsmeraldAPISettings(BaseSettings):
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
 
+    # Shell configuration
+    ipython_args: List[str] = ["--no-banner"]
+    ptpython_config_file: str = "~/.config/ptpython/config.py"
+
     @property
     def reload(self) -> bool:
         """

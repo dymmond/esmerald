@@ -14,7 +14,7 @@
 
 ### Fixed
 
-- [UploadFile](./extras/upload-files/?h=upload#uploadfile) sending as a list and as normal.
+- [UploadFile](./extras/upload-files.md) sending as a list and as normal.
 This got broken when the migration to pydantic 2.0 happened.
 - `File` and `Form` from `esmerald.params` now accept `annotation`.
 - OpenAPI for `UploadFile` as single and list now being parsed as a model.

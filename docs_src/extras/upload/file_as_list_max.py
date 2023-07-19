@@ -1,12 +1,11 @@
 from typing import Dict, List
 
-from esmerald import Body, Esmerald, Gateway, UploadFile, post
-from esmerald.enums import EncodingType, MediaType
+from esmerald import Esmerald, File, Gateway, UploadFile, post
 
 
 @post("/upload")
 async def upload_file(
-    data: List[UploadFile] = Body(media_type=EncodingType.MULTI_PART),
+    data: List[UploadFile] = File(max_length=3),
 ) -> Dict[str, str]:
     """
     Uploads a file into the system

@@ -20,6 +20,7 @@ from esmerald.core.directives.operations import (
     list,
     run,
     runserver,
+    shell,
     show_urls,
 )
 from esmerald.core.directives.operations._constants import ESMERALD_SETTINGS_MODULE
@@ -128,3 +129,4 @@ esmerald_cli.add_command(run)
 esmerald_cli.add_command(create_project)
 esmerald_cli.add_command(create_app)
 esmerald_cli.add_command(runserver)
+esmerald_cli.add_command(shell)

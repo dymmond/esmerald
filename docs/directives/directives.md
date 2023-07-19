@@ -23,6 +23,7 @@ Currently there are two built-in directives.
 * [createproject](#create-project) - Used to generate a scaffold for a project.
 * [createapp](#create-app) - Used to generate a scaffold for an application.
 * [show_urls](#show-urls) - Shows the information about the your esmerald application.
+* [shell](./shell.md) - Starts the python interactive shell for your Esmerald application.
 
 ### Help
 
@@ -290,7 +291,7 @@ You can also access the application OpenAPI documentation and validate what was 
 The test files generated are using the EsmeraldTestClient, so make sure you run:
 
 ```shell
-pip install esmerald[test]
+$ pip install esmerald[test]
 ```
 
 Or you can jump this step if you don't want to use the EsmeraldTestClient at all.

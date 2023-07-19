@@ -64,14 +64,14 @@ Esmerald wouldn't be possible without two colossals:
 ## Installation
 
 ```shell
-pip install esmerald
+$ pip install esmerald
 ```
 
 An ASGI server is also needed to run in production, we recommend [Uvicorn](https://www.uvicorn.org) but it is entirely
 up to you.
 
 ```shell
-pip install uvicorn
+$ pip install uvicorn
 
 ```
 
@@ -80,31 +80,40 @@ If you want install esmerald with specifics:
 **Support for template system such as jinja2 and mako**:
 
 ```shell
-pip install esmerald[templates]
+$ pip install esmerald[templates]
 ```
 
 **Support for the internal scheduler**:
 
 ```shell
-pip install esmerald[schedulers]
+$ pip install esmerald[schedulers]
 ```
 
 **Support for the jwt used internally by Esmerald**:
 
 ```shell
-pip install esmerald[jwt]
+$ pip install esmerald[jwt]
 ```
 
 **Support for ORJSON and UJSON**:
 
 ```shell
-pip install esmerald[encoders]
+$ pip install esmerald[encoders]
 ```
 
 **If you want to use the esmerald testing client**:
 
 ```shell
-pip install esmerald[test]
+$ pip install esmerald[test]
+```
+
+**If you want to use the esmerald shell**:
+
+More [details](https://esmerald.dev/directives/shell) about this topic [in the docs](https://esmerald.dev/directives/shell)
+
+```shell
+$ pip install esmerald[ipython] # default shell
+$ pip install esmerald[ptpython] # ptpython shell
 ```
 
 ### Start a project using directives
@@ -119,7 +128,7 @@ This will generate a scaffold for your project with some pre-defined files in a 
 This will also generate a file for the tests using the EsmeraldTestClient, so make sure you run:
 
 ```shell
-pip install esmerald[test]
+$ pip install esmerald[test]
 ```
 
 Or you can jump this step if you don't want to use the EsmeraldTestClient.

@@ -33,3 +33,11 @@ All of those are standards in most of the frameworks out there.
 ```python
 {!> ../docs_src/extras/body/multipart.py !}
 ```
+
+### Important
+
+Since `Body` is Pydantic field (sort of), that also means you can specify for instance,
+the other parameters to be evaluated.
+
+You can check [the list of available parameters default](https://docs.pydantic.dev/latest/api/fields/#pydantic.fields.FieldInfo)
+as well.
