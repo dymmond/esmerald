@@ -177,7 +177,6 @@ no_implicit_optional = false
 strict_equality = false
 strict_optional = false
 
-
 [tool.ruff]
 select = [
     "E", # pycodestyle errors
