@@ -12,7 +12,7 @@
 
 ### Added
 
-- Interactive shell support directive for any Esmerald application.
+- [Interactive shell](./directives/shell.md) support directive for any Esmerald application.
 
 ## 2.0.2
 
