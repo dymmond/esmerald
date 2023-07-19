@@ -10,7 +10,7 @@ TemplateConfig is simple set of configurations that when passed enables the temp
 This section requires `jinja` or `mako` to be installed. You can do it so by running:
 
 ```shell
-pip install esmerald[templates]
+$ pip install esmerald[templates]
 ```
 
 ## TemplateConfig and application

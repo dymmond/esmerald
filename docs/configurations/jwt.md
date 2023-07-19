@@ -12,7 +12,7 @@ JWT extends for JSON Web Token and it can be used with any middleware at your de
 Esmerald uses `python-jose` and `passlib` for this JWT integration. You can install by running:
 
 ```shell
-pip install esmerald[jwt]
+$ pip install esmerald[jwt]
 ```
 
 ## JWTConfig and application

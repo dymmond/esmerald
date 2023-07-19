@@ -10,7 +10,7 @@ scheduler, saving you tons of headaches and simplifying the process of creating 
 Esmerald uses `asyncz` for this integration. You can install by running:
 
 ```shell
-pip install esmerald[schedulers]
+$ pip install esmerald[schedulers]
 ```
 
 ## EsmeraldScheduler
@@ -64,7 +64,7 @@ application is created and the parameters are automatically provided.
 ### Enabling the scheduler
 
 In order to make sure it does not always start, Esmerald is expecting a flag `enable_scheduler` to be True. Without
-the `enable_scheduler = True`, the scheduler will not start. 
+the `enable_scheduler = True`, the scheduler will not start.
 
 The default behaviour is `enable_scheduler = False`.
 

@@ -92,6 +92,7 @@ nav:
       - Application Discovery: "directives/discovery.md"
       - Directives: "directives/directives.md"
       - Custom Directives: "directives/custom-directives.md"
+      - Shell: "directives/shell.md"
   - WSGI Frameworks: "wsgi.md"
   - Test Client: "testclient.md"
   - Deployment:
