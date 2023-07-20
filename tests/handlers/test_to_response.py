@@ -102,7 +102,7 @@ async def test_to_response_async_await() -> None:
     response = await test_function.to_response(
         data=test_function.fn(data=person_instance), app=None  # type: ignore
     )
-    assert loads(response.body) == person_instance.dict()
+    assert loads(response.body) == person_instance.model_dump()
 
 
 @pytest.mark.asyncio()
@@ -120,7 +120,7 @@ async def test_to_response_async_await_with_post_handler() -> None:
     response = await test_function.to_response(
         data=test_function.fn(data=person_instance), app=None  # type: ignore
     )
-    assert loads(response.body) == person_instance.dict()
+    assert loads(response.body) == person_instance.model_dump()
 
 
 @pytest.mark.asyncio()
