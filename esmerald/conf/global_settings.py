@@ -25,8 +25,8 @@ from esmerald.types import (
 )
 
 if TYPE_CHECKING:
-    from esmerald.routing.router import Include
-    from esmerald.types import TemplateConfig
+    from esmerald.routing.router import Include  # pragma: no cover
+    from esmerald.types import TemplateConfig  # pragma: no cover
 
 
 class EsmeraldAPISettings(BaseSettings):

@@ -526,7 +526,7 @@ class Esmerald(Starlette):
 
         if local_settings:
             setting_value = getattr(local_settings, value, None)
-        if not setting_value:
+        if setting_value is None:
             return getattr(global_settings, value, None)
         return setting_value
 
