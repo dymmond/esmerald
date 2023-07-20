@@ -196,6 +196,7 @@ exclude = ["docs_src/*"]
 [tool.coverage.run]
 parallel = true
 source = ["tests", "esmerald"]
+omit = ["esmerald/conf/__init__.py", "esmerald/core/terminal/__init__.py"]
 
 [[tool.mypy.overrides]]
 module = "esmerald.tests.*"
