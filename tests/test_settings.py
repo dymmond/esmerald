@@ -103,8 +103,8 @@ def test_settings_global(test_client_factory):
 
         assert client.app.app_name == "my app"
         assert settings.app_name == "test_client"
-        assert request_settings.model_dump_json()["global_settings"] == "test_client"
-        assert app_settings.model_dump_json() == "test_client"
+        assert request_settings.json()["global_settings"] == "test_client"
+        assert app_settings.json() == "test_client"
 
 
 def test_settings_global_without_parameters(test_client_factory):
@@ -117,8 +117,8 @@ def test_settings_global_without_parameters(test_client_factory):
 
         assert settings.app_name == "test_client"
         assert client.app.app_name == "test_client"
-        assert request_settings.model_dump_json()["global_settings"] == "test_client"
-        assert app_settings.model_dump_json() == "test_client"
+        assert request_settings.json()["global_settings"] == "test_client"
+        assert app_settings.json() == "test_client"
 
 
 def test_inner_settings_config(test_client_factory):
