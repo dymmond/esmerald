@@ -57,7 +57,7 @@ def test_controller_http_method(
         assert response.status_code == expected_status_code
         if return_value:
             assert (
-                response.json() == return_value.dict()
+                response.json() == return_value.model_dump()
                 if isinstance(return_value, BaseModel)
                 else return_value
             )
@@ -107,7 +107,7 @@ def test_controller_http_method_with_include(
         assert response.status_code == expected_status_code
         if return_value:
             assert (
-                response.json() == return_value.dict()
+                response.json() == return_value.model_dump()
                 if isinstance(return_value, BaseModel)
                 else return_value
             )
@@ -162,7 +162,7 @@ def test_controller_http_method_with_nested_include(
         assert response.status_code == expected_status_code
         if return_value:
             assert (
-                response.json() == return_value.dict()
+                response.json() == return_value.model_dump()
                 if isinstance(return_value, BaseModel)
                 else return_value
             )
@@ -272,7 +272,7 @@ def test_controller_http_method_with_super_nested_include(
         assert response.status_code == expected_status_code
         if return_value:
             assert (
-                response.json() == return_value.dict()
+                response.json() == return_value.model_dump()
                 if isinstance(return_value, BaseModel)
                 else return_value
             )

@@ -849,13 +849,15 @@ class Esmerald(Starlette):
                 StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
             )
         if self.cors_config:
-            user_middleware.append(StarletteMiddleware(CORSMiddleware, **self.cors_config.dict()))
+            user_middleware.append(
+                StarletteMiddleware(CORSMiddleware, **self.cors_config.model_dump())
+            )
         if self.csrf_config:
             user_middleware.append(StarletteMiddleware(CSRFMiddleware, config=self.csrf_config))
 
         if self.session_config:
             user_middleware.append(
-                StarletteMiddleware(SessionMiddleware, **self.session_config.dict())
+                StarletteMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
 
         handlers_middleware += self.router.middleware

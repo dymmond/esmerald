@@ -570,7 +570,9 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                 filtered_cookies.append(cookie)
         normalized_cookies: List[Dict[str, Any]] = []
         for cookie in filtered_cookies:
-            normalized_cookies.append(cookie.dict(exclude_none=True, exclude={"description"}))
+            normalized_cookies.append(
+                cookie.model_dump(exclude_none=True, exclude={"description"})
+            )
         return normalized_cookies
 
     def get_headers(self, headers: "ResponseHeaders") -> Dict[str, Any]:
