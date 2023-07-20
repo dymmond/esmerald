@@ -35,7 +35,7 @@ async def test_request_valid_body_to_json() -> None:
 def test_request_resolve_url() -> None:
     @get(path="/proxy")
     def proxy() -> None:
-        pass
+        ...  # pragma: no cover
 
     @get(path="/test")
     def root(request: Request) -> dict:

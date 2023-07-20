@@ -1,15 +1,13 @@
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import pytest
 from starlette.datastructures import Headers
+from typing_extensions import Literal
 
 from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.handlers import websocket
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
-
-if TYPE_CHECKING:
-    from typing_extensions import Literal
 
 
 @pytest.mark.parametrize("mode", ["text", "binary"])

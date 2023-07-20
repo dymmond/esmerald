@@ -90,7 +90,7 @@ def test_permissions_with_websocket_handler() -> None:
     client = create_client(routes=WebSocketGateway(handler=my_websocket_route_handler))
 
     with pytest.raises(WebSocketDisconnect), client.websocket_connect("/") as ws:
-        ws.send_json({"data": "123"})
+        ws.send_json({"data": "123"})  # pragma: no cover
 
     with client.websocket_connect("/", headers={"allow_all": "true"}) as ws:
         ws.send_json({"data": "123"})

@@ -34,7 +34,7 @@ class JsonResponse(JSONResponse):
     responses={500: OpenAPIResponse(model=CustomResponse, description="Error")},
 )
 def read_people() -> Dict[str, str]:
-    return {"id": "foo"}
+    ...  # pragma: no cover
 
 
 @get(
@@ -45,7 +45,7 @@ def read_people() -> Dict[str, str]:
     },
 )
 async def read_item(id: str) -> None:
-    ...
+    ...  # pragma: no cover
 
 
 def test_open_api_schema(test_client_factory):

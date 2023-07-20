@@ -17,15 +17,15 @@ async def test_invalid_response(test_client_factory):
     with pytest.raises(OpenAPIException) as raised:
 
         @get("/test", responses={"hello": {"description": "Not a valid response"}})
-        def read_people() -> Dict[str, str]:
-            return {"id": "foo"}
+        def read_people() -> Dict[str, str]:  # pragma: no cover
+            ...
 
-        with create_client(
+        with create_client(  # pragma: no cover
             routes=[
                 Gateway(handler=read_people),
             ]
-        ) as client:
-            client.get("/openapi.json")
+        ):
+            ...  # pragma: no cover
 
     assert raised.value.detail == "An additional response must be an instance of OpenAPIResponse."
 
@@ -34,14 +34,14 @@ async def test_invalid_response_status(test_client_factory):
     with pytest.raises(OpenAPIException) as raised:
 
         @get("/test", responses={"hello": OpenAPIResponse(model=Item)})
-        def read_people() -> Dict[str, str]:
-            return {"id": "foo"}
+        def read_people() -> Dict[str, str]:  # pragma: no cover
+            ...
 
-        with create_client(
+        with create_client(  # pragma: no cover
             routes=[
                 Gateway(handler=read_people),
             ]
-        ) as client:
-            client.get("/openapi.json")
+        ):
+            ...  # pragma: no cover
 
     assert raised.value.detail == "The status is not a valid OpenAPI status response."

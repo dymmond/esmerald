@@ -4,7 +4,7 @@ from esmerald.testclient import create_client
 
 @get("/item/{id}")
 async def read_item(id: str) -> None:
-    ...
+    ...  # pragma: no cover
 
 
 def test_open_api_schema(test_client_factory):

@@ -13,7 +13,7 @@ flask_app = Flask(__name__)
 
 
 @flask_app.route("/")
-def flask_main():
+def flask_main():  # pragma: no cover
     name = request.args.get("name", "Esmerald")
     return f"Hello, {escape(name)} from Flask!"
 
@@ -24,7 +24,7 @@ class Item(BaseModel):
 
 @get()
 def read_people() -> Dict[str, str]:
-    return {"id": "foo"}
+    ...  # pragma: no cover
 
 
 @get(
@@ -33,7 +33,7 @@ def read_people() -> Dict[str, str]:
     responses={200: OpenAPIResponse(model=Item, description="The SKU information of an item")},
 )
 async def read_item() -> JSON:
-    return JSON(content={"id": 1})
+    ...  # pragma: no cover
 
 
 def test_external_app_not_include_in_schema(test_client_factory):
