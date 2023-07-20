@@ -51,7 +51,7 @@ async def create(data: Item, name: str) -> JSONResponse:
 async def cookie_test(
     data: Item, name: str, cookie: str = Cookie(value="csrftoken")
 ) -> JSONResponse:
-    return JSONResponse({"name": name, "cookie": cookie})
+    ...  # pragma: no cover
 
 
 @post("/logging/{name}")
