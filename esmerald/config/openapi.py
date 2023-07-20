@@ -80,7 +80,7 @@ class OpenAPIConfig(BaseModel):
         if self.openapi_url and self.docs_url:
 
             @get(path=self.docs_url)
-            async def swagger_ui_html(request: Request) -> HTMLResponse:
+            async def swagger_ui_html(request: Request) -> HTMLResponse:  # pragma: no cover
                 root_path = request.scope.get("root_path", "").rstrip("/")
                 openapi_url = root_path + self.openapi_url
                 oauth2_redirect_url = self.swagger_ui_oauth2_redirect_url
@@ -107,7 +107,7 @@ class OpenAPIConfig(BaseModel):
         if self.swagger_ui_oauth2_redirect_url:
 
             @get(self.swagger_ui_oauth2_redirect_url)
-            async def swagger_ui_redirect(request: Request) -> HTMLResponse:
+            async def swagger_ui_redirect(request: Request) -> HTMLResponse:  # pragma: no cover
                 return get_swagger_ui_oauth2_redirect_html()
 
             app.add_route(
@@ -120,7 +120,7 @@ class OpenAPIConfig(BaseModel):
         if self.openapi_url and self.redoc_url:
 
             @get(self.redoc_url)
-            async def redoc_html(request: Request) -> HTMLResponse:
+            async def redoc_html(request: Request) -> HTMLResponse:  # pragma: no cover
                 root_path = request.scope.get("root_path", "").rstrip("/")
                 openapi_url = root_path + self.openapi_url
                 return get_redoc_html(

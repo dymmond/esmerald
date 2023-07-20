@@ -6,10 +6,9 @@ from starlette import status
 from esmerald import ChildEsmerald
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get, websocket
+from esmerald.routing.handlers import get
 from esmerald.routing.router import Include, Router
 from esmerald.testclient import create_client
-from esmerald.websockets import WebSocket
 
 
 @get(status_code=status.HTTP_202_ACCEPTED)
@@ -20,31 +19,6 @@ def route_one() -> dict:
 @get(status_code=status.HTTP_206_PARTIAL_CONTENT)
 def route_two() -> dict:
     return {"test": 2}
-
-
-@get(status_code=status.HTTP_200_OK)
-def route_three() -> dict:
-    return {"test": 3}
-
-
-@websocket(path="/")
-async def simple_websocket_handler(socket: WebSocket) -> None:
-    await socket.accept()
-    data = await socket.receive_json()
-
-    assert data
-    await socket.send_json({"data": "esmerald"})
-    await socket.close()
-
-
-@websocket(path="/websocket")
-async def simple_websocket_handler_two(socket: WebSocket) -> None:
-    await socket.accept()
-    data = await socket.receive_json()
-
-    assert data
-    await socket.send_json({"data": "esmerald"})
-    await socket.close()
 
 
 def test_add_router(test_client_factory) -> None:
