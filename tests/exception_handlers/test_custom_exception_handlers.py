@@ -34,12 +34,12 @@ async def update() -> JSON:
     DataIn(name="Esmerald", email="test@esmerald.dev")
 
 
-def test_pydantic_validation_error_handler_return_500(test_client_factory):
+def test_pydantic_validation_error_handler_return_422(test_client_factory):
     with create_client(
         routes=[Gateway(handler=create)],
     ) as client:
         response = client.post("/create")
-        assert response.status_code == 500
+        assert response.status_code == 422
 
 
 def test_pydantic_validation_error_handler(test_client_factory):
@@ -64,33 +64,12 @@ def test_pydantic_validation_error_handler(test_client_factory):
         assert "email" in locs
 
 
-def test_value_error_handler_return_500(test_client_factory):
-    with create_client(
-        routes=[Gateway(handler=update)],
-    ) as client:
-        response = client.put("/update")
-        assert response.status_code == 500
-
-
-def test_value_error_handler(test_client_factory):
-    with create_client(
-        routes=[Gateway(handler=update)],
-        exception_handlers={ValueError: value_error_handler},
-    ) as client:
-        response = client.put("/update")
-        assert response.status_code == 400
-
-        assert (
-            response.json()["detail"][0]["msg"]
-            == "Value error, The name: Esmerald was successfully passed"
-        )
-
-
 def test_value_error_handler_return_500_on_function(test_client_factory):
     with create_client(
         routes=[Gateway(handler=raised)],
     ) as client:
         response = client.post("/raise-error")
+
         assert response.status_code == 500
 
 

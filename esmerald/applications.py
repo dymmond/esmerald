@@ -15,7 +15,7 @@ from typing import (
 
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
-from pydantic import AnyUrl
+from pydantic import AnyUrl, ValidationError
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan, Receive, Scope, Send
@@ -28,6 +28,7 @@ from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
+    pydantic_validation_error_handler,
     validation_error_exception_handler,
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
@@ -774,6 +775,8 @@ class Esmerald(Starlette):
         self.exception_handlers.setdefault(
             ValidationErrorException, validation_error_exception_handler
         )
+
+        self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
 
     def build_routes_middleware(
         self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
