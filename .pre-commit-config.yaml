@@ -4,7 +4,7 @@ default_language_version:
   python: python3.10
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
       - id: check-toml
@@ -12,6 +12,7 @@ repos:
         args:
           - --unsafe
       - id: end-of-file-fixer
+      - id: debug-statements
       - id: trailing-whitespace
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.37.3
