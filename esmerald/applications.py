@@ -1,4 +1,5 @@
 from datetime import timezone as dtimezone
+from functools import cached_property
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -61,8 +62,8 @@ from esmerald.types import (
 from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
-    from esmerald.conf import EsmeraldLazySettings
-    from esmerald.types import SettingsType, TemplateConfig
+    from esmerald.conf import EsmeraldLazySettings  # pragma: no cover
+    from esmerald.types import SettingsType, TemplateConfig  # pragma: no cover
 
 AppType = TypeVar("AppType", bound="Esmerald")
 
@@ -662,8 +663,15 @@ class Esmerald(Starlette):
         )
 
     def add_include(self, include: Include) -> None:
-        """Adds an include directly to the active application router"""
+        """
+        Adds an include directly to the active application router
+        and creates the proper signature models.
+        """
         self.router.routes.append(include)
+
+        for route in include.routes:
+            self.router.create_signature_models(route)
+
         self.activate_openapi()
 
     def add_child_esmerald(
@@ -946,8 +954,6 @@ class Esmerald(Starlette):
                     "An extension must subclass from esmerald.pluggables.Extension and added to "
                     "a Pluggable object"
                 )
-            else:
-                pluggables[name] = Pluggable(extension)
 
         app: "ASGIApp" = self
         for name, pluggable in pluggables.items():
@@ -971,7 +977,7 @@ class Esmerald(Starlette):
         general_settings = self.settings_config if self.settings_config else esmerald_settings
         return cast("Type[EsmeraldAPISettings]", general_settings)
 
-    @property
+    @cached_property
     def default_settings(self) -> Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]]:
         """
         Returns the default global settings.

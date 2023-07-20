@@ -193,6 +193,10 @@ ignore = [
 
 exclude = ["docs_src/*"]
 
+[tool.coverage.run]
+parallel = true
+source = ["tests", "esmerald"]
+
 [[tool.mypy.overrides]]
 module = "esmerald.tests.*"
 ignore_missing_imports = true
