@@ -132,7 +132,7 @@ class EsmeraldAPIExceptionMiddleware:
             content = ResponseContent(detail=repr(exc))
         return Response(
             media_type=MediaType.JSON,
-            content=content.dict(exclude_none=True),
+            content=content.model_dump(exclude_none=True),
             status_code=content.status_code,
             headers=exc.headers
             if isinstance(exc, (HTTPException, StarletteHTTPException))

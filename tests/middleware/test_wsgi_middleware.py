@@ -1,4 +1,5 @@
-from flask import Flask, escape, request
+from flask import Flask, request
+from markupsafe import escape
 
 from esmerald import Esmerald, Gateway, Include, Request, get
 from esmerald.middleware import WSGIMiddleware

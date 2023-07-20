@@ -2,6 +2,7 @@ from inspect import Parameter as InspectParameter
 from inspect import Signature
 from typing import Any, ClassVar, Optional, Set, Union
 
+from orjson import loads
 from pydantic import ValidationError
 
 from esmerald.exceptions import ImproperlyConfigured, InternalServerError, ValidationErrorException
@@ -37,7 +38,7 @@ class EsmeraldSignature(ArbitraryBaseModel):
         server_errors = []
         client_errors = []
 
-        for err in exception.errors():
+        for err in loads(exception.json()):
             if not cls.is_server_error(err):
                 client_errors.append(err)
             else:

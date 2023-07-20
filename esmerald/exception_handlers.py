@@ -1,6 +1,6 @@
-from typing import Any, List, Union
+from typing import Union
 
-from orjson import JSONDecodeError, loads
+from orjson import loads
 from pydantic import ValidationError
 from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -38,27 +38,6 @@ async def http_exception_handler(
         return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
-def parse_non_serializable_objects_from_validation_error(values: List[Any]) -> List[Any]:
-    """
-    Parses non serializable objects from the validation error extras.
-    """
-    details = []
-    for detail in values:
-        detail_inputs = detail.get("input", None)
-        if not isinstance(detail_inputs, list):
-            details.append(detail)
-            continue
-
-        inputs = []
-        for input in detail_inputs:
-            if isinstance(input, object):
-                inputs.append(str(input.__class__.__name__))
-        detail["input"] = inputs
-        details.append(detail)
-
-    return details
-
-
 async def validation_error_exception_handler(
     request: Request, exc: ValidationError
 ) -> JSONResponse:
@@ -67,13 +46,8 @@ async def validation_error_exception_handler(
 
     if extra:
         errors_extra = exc.extra.get("extra", {})
-        try:
-            details = loads(errors_extra)
-        except (TypeError, JSONDecodeError):
-            details = parse_non_serializable_objects_from_validation_error(errors_extra)
-
         return JSONResponse(
-            {"detail": exc.detail, "errors": details},
+            {"detail": exc.detail, "errors": errors_extra},
             status_code=status_code,
         )
     else:
@@ -90,6 +64,9 @@ async def http_error_handler(_: Request, exc: ExceptionErrorMap) -> JSONResponse
 async def improperly_configured_exception_handler(
     request: Request, exc: ImproperlyConfigured
 ) -> StarletteResponse:
+    """
+    When an ImproperlyConfiguredException is raised.
+    """
     status_code = (
         exc.status_code
         if isinstance(exc, StarletteHTTPException)
@@ -109,3 +86,26 @@ async def improperly_configured_exception_handler(
         status_code=status_code,
         headers=headers,
     )
+
+
+async def pydantic_validation_error_handler(
+    request: Request, exc: ValidationError
+) -> JSONResponse:
+    """
+    This handler is to be used when a pydantic validation error is triggered during the logic
+    of a code block and not the definition of a handler.
+
+    This is different from validation_error_exception_handler
+    """
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    return JSONResponse({"detail": loads(exc.json())}, status_code=status_code)
+
+
+async def value_error_handler(request: Request, exc: ValueError) -> JSONResponse:
+    """
+    Simple handler that manages all the ValueError exceptions thrown to the user properly
+    formatted.
+    """
+    status_code = status.HTTP_400_BAD_REQUEST
+    details = loads(exc.json()) if hasattr(exc, "json") else exc.args[0]
+    return JSONResponse({"detail": details}, status_code=status_code)

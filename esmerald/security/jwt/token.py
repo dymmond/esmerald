@@ -52,7 +52,7 @@ class Token(BaseModel):
         """
         try:
             return jwt.encode(
-                claims=self.dict(exclude_none=True),
+                claims=self.model_dump(exclude_none=True),
                 key=key,
                 algorithm=algorithm,
             )

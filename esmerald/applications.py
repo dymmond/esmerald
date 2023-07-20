@@ -15,7 +15,7 @@ from typing import (
 
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
-from pydantic import AnyUrl
+from pydantic import AnyUrl, ValidationError
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan, Receive, Scope, Send
@@ -28,6 +28,7 @@ from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
+    pydantic_validation_error_handler,
     validation_error_exception_handler,
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
@@ -775,6 +776,8 @@ class Esmerald(Starlette):
             ValidationErrorException, validation_error_exception_handler
         )
 
+        self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
+
     def build_routes_middleware(
         self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
     ) -> List["Middleware"]:
@@ -846,13 +849,15 @@ class Esmerald(Starlette):
                 StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
             )
         if self.cors_config:
-            user_middleware.append(StarletteMiddleware(CORSMiddleware, **self.cors_config.dict()))
+            user_middleware.append(
+                StarletteMiddleware(CORSMiddleware, **self.cors_config.model_dump())
+            )
         if self.csrf_config:
             user_middleware.append(StarletteMiddleware(CSRFMiddleware, config=self.csrf_config))
 
         if self.session_config:
             user_middleware.append(
-                StarletteMiddleware(SessionMiddleware, **self.session_config.dict())
+                StarletteMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
 
         handlers_middleware += self.router.middleware

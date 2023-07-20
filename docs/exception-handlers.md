@@ -30,3 +30,48 @@ endpoint is called and the exception is raised.
 {! ../docs_src/_shared/exceptions.md !}
 
 The same is applied also to [dependencies](./dependencies.md).
+
+
+### Custom exception handlers
+
+We all know that Esmerald handles really well the exceptions by design but sometimes we might also
+want to throw an error while doing some code logic that is not directly related with a `data` of
+an handler.
+
+For example.
+
+```python
+{!> ../docs_src/exception_handlers/example.py !}
+```
+
+This example is a not usual at all but it serves to show where an exception is raised.
+
+Esmerald offers **one** out of the box **custom exception handlers**:
+
+* **value_error_handler** - When you want the `ValueError` exception to be automatically parsed
+into a JSON.
+
+```python
+from esmerald.exception_handlers import value_error_handler
+```
+
+How it would look like the previous example using this custom exception handler?
+
+```python hl_lines="21-23"
+{!> ../docs_src/exception_handlers/example_use.py !}
+```
+
+Or if you prefer to place it on a Gateway level.
+
+```python hl_lines="22-25"
+{!> ../docs_src/exception_handlers/example_use_gateway.py !}
+```
+
+Or even specific only to the handler itself.
+
+```python hl_lines="14-16"
+{!> ../docs_src/exception_handlers/example_use_handler.py !}
+```
+
+As you can see, you can use this exception handler directly or as usual, you can create one of
+your own and apply on every [application level](./application/levels.md).
