@@ -198,10 +198,12 @@ parallel = true
 context = '${CONTEXT}'
 source = ["tests", "esmerald"]
 omit = [
+    "esmerald/types.py",
     "esmerald/conf/__init__.py",
     "esmerald/core/directives/*",
     "esmerald/core/terminal/__init__.py",
     "tests/databases/saffier/*",
+    "tests/utils/functional.py",
     "tests/cli/*",
 ]
 

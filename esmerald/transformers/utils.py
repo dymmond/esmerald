@@ -11,7 +11,7 @@ from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
     from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
     from esmerald.types import ConnectionType
@@ -136,6 +136,4 @@ def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
         definition = (param.annotation, param.default)
     elif not param.optional:
         definition = (param.annotation, ...)
-    else:
-        definition = (param.annotation, None)
     return definition

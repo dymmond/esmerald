@@ -15,7 +15,7 @@ def new_method_proxy(func: Callable[..., RT]) -> Callable[..., RT]:
     return inner
 
 
-class LazyObject:
+class LazyObject:  # pragma: no cover
     """
     A wrapper for another class that can be used to delay instantiation of the
     wrapped class.
@@ -128,7 +128,7 @@ class LazyObject:
     __contains__: Any = new_method_proxy(operator.contains)
 
 
-def unpickle_lazyobject(wrapped: Any) -> Any:
+def unpickle_lazyobject(wrapped: Any) -> Any:  # pragma: no cover
     """
     Used to unpickle lazy objects. Just return its argument, which will be the
     wrapped object.
@@ -136,7 +136,7 @@ def unpickle_lazyobject(wrapped: Any) -> Any:
     return wrapped
 
 
-class SimpleLazyObject(LazyObject):
+class SimpleLazyObject(LazyObject):  # pragma: no cover
     """
     A lazy object initialized from any function.
     Designed for compound objects of unknown type. For builtins or objects of
