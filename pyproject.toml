@@ -142,7 +142,7 @@ doc = [
     "pyyaml>=6.0,<7.0.0",
 ]
 
-templates = ["mako==1.2.4"]
+templates = ["mako>=1.2.4,<2.0.0"]
 jwt = ["passlib==1.7.4", "python-jose>=3.3.0,<4"]
 encoders = ["orjson>=3.8.5,<4.0.0", "ujson>=5.7.0,<6"]
 schedulers = ["asyncz>=0.4.0"]

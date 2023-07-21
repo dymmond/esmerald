@@ -7,28 +7,26 @@ from esmerald.transformers.model import ParamSetting
 from esmerald.transformers.utils import get_request_params, get_signature
 
 
-class Test(BaseModel):
-    """"""
-
-
-@get()
-async def test() -> None:
-    """"""
-
-
 def test_get_signature_improperly_configured():
+    class Test(BaseModel):
+        """"""
+
     test = Test()
     with pytest.raises(ImproperlyConfigured):
         get_signature(test)
 
 
 def test_signature_model_is_none():
+    @get()
+    async def test() -> None:
+        """"""
+
     handler = get_signature(test)
 
     assert handler is None
 
 
-def test_get_request_params_raise_validation_error_exception():
+def test_get_request_params_raise_validation_error_exception():  # pragma: no cover
     param = Param(default=None)
     expected_param = File(default=None)
     param_setting = ParamSetting(

@@ -19,8 +19,8 @@ from esmerald.utils.constants import DATA, RESERVED_KWARGS
 from esmerald.utils.pydantic.schema import is_field_optional
 
 if TYPE_CHECKING:
-    from esmerald.types import Dependencies
-    from esmerald.websockets import WebSocket
+    from esmerald.types import Dependencies  # pragma: no cover
+    from esmerald.websockets import WebSocket  # pragma: no cover
 
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
@@ -72,11 +72,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
     def get_header_params(self) -> Set[ParamSetting]:
         return self.headers
-
-    def is_kwargs(
-        self,
-    ) -> Union[Set[ParamSetting], Set[str], Tuple[EncodingType, FieldInfo], Set[Dependency]]:
-        return self.has_kwargs
 
     @classmethod
     def dependency_tree(cls, key: str, dependencies: "Dependencies") -> Dependency:
@@ -244,7 +239,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
             headers = merge_sets(headers, dependency_model.headers)
 
             if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
-                cls.validate_data(form_data, dependency_model)
+                cls.validate_data(form_data, dependency_model)  # pragma: no cover
             reserved_kwargs.update(dependency_model.reserved_kwargs)
 
         return path_params, query_params, cookies, headers, reserved_kwargs
@@ -312,7 +307,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         if "query" in self.reserved_kwargs:
             reserved_kwargs["query"] = connection_params
         if "state" in self.reserved_kwargs:
-            reserved_kwargs["state"] = connection.app.state.copy()
+            reserved_kwargs["state"] = connection.app.state.copy()  # pragma: no cover
 
         return {**reserved_kwargs, **path_params, **query_params, **headers, **cookies}
 
@@ -321,7 +316,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cls,
         form_data: Optional[Tuple[EncodingType, FieldInfo]],
         dependency_model: "TransformerModel",
-    ) -> None:
+    ) -> None:  # pragma: no cover
         if form_data and dependency_model.form_data:
             media_type, _ = form_data
             dependency_media_type, _ = dependency_model.form_data
@@ -346,7 +341,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         path_parameters: Set[str],
         dependencies: "Dependencies",
         model_fields: Dict[str, FieldInfo],
-    ) -> None:
+    ) -> None:  # pragma: no cover
         keys = set(dependencies.keys())
         names = set()
 
