@@ -968,7 +968,7 @@ class Include(Mount):
         include_middleware: Sequence["Middleware"] = []
 
         for _middleware in self.middleware:
-            if isinstance(_middleware, StarletteMiddleware):
+            if isinstance(_middleware, StarletteMiddleware):  # pragma: no cover
                 include_middleware.append(_middleware)  # type: ignore
             else:
                 include_middleware.append(
@@ -1070,7 +1070,7 @@ class Include(Mount):
         """
         routing: List[Union[Gateway, WebSocketGateway, Include]] = []
 
-        for route in routes:
+        for route in routes:  # pragma: no cover
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
                 raise ImproperlyConfigured("The route must be of type Gateway or Include")
 
