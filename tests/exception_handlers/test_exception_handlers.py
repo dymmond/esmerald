@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Type
+from typing import Type
 
 import pytest
 from starlette.status import HTTP_400_BAD_REQUEST
@@ -20,9 +20,7 @@ from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
-
-if TYPE_CHECKING:
-    from esmerald.types import ExceptionHandlerMap
+from esmerald.types import ExceptionHandlerMap
 
 
 @pytest.mark.parametrize(

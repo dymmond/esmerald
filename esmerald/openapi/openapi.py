@@ -78,7 +78,6 @@ def get_fields_from_routes(
 def get_openapi_operation(
     *, route: Union[router.HTTPHandler, Any], method: str, operation_ids: Set[str]
 ) -> Dict[str, Any]:
-    # operation: Dict[str, Any] = {}
     operation = Operation()
 
     if route.tags:

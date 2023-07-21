@@ -16,7 +16,7 @@ class Store(BaseModel, Generic[T]):
 
     model: Type[T]
 
-    def get(self, value_id: str) -> Optional[T]:
+    def get(self, value_id: str) -> Optional[T]:  # pragma: no cover
         raise NotImplementedError
 
 

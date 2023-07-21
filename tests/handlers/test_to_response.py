@@ -2,7 +2,7 @@ from asyncio import sleep as async_sleep
 from json import loads
 from pathlib import Path
 from time import sleep
-from typing import TYPE_CHECKING, Any, AsyncIterator, Generator, Iterator
+from typing import Any, AsyncGenerator, AsyncIterator, Generator, Iterator
 
 import pytest
 from pydantic import ValidationError
@@ -31,25 +31,22 @@ from esmerald.testclient import create_client
 from esmerald.transformers.signature import SignatureFactory
 from tests.models import Individual, IndividualFactory
 
-if TYPE_CHECKING:
-    from typing import AsyncGenerator
 
-
-def my_generator() -> Generator[str, None, None]:
+def my_generator() -> Generator[str, None, None]:  # pragma: no cover
     count = 0
     while True:
         count += 1
         yield str(count)
 
 
-async def my_async_generator() -> "AsyncGenerator[str, None]":
+async def my_async_generator() -> "AsyncGenerator[str, None]":  # pragma: no cover
     count = 0
     while True:
         count += 1
         yield str(count)
 
 
-class MySyncIterator:
+class MySyncIterator:  # pragma: no cover
     def __init__(self) -> None:
         self.delay = 0.01
         self.i = 0
@@ -68,7 +65,7 @@ class MySyncIterator:
         return str(i)
 
 
-class MyAsyncIterator:
+class MyAsyncIterator:  # pragma: no cover
     def __init__(self) -> None:
         self.delay = 0.01
         self.i = 0
@@ -319,7 +316,7 @@ async def test_to_response_streaming_response(iterator: Any, should_raise: bool)
 
 
 @pytest.mark.asyncio()
-async def func_to_response_template_response() -> None:
+async def func_to_response_template_response() -> None:  # pragma: no cover
     background_task = BackgroundTask(lambda: "")
 
     @get(

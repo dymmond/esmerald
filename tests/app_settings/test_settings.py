@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import Any, Dict, List
 
 import pytest
 from pydantic import BaseModel
@@ -20,10 +20,8 @@ from esmerald.config import CORSConfig, CSRFConfig
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
+from esmerald.types import Middleware
 from esmerald.utils.crypto import get_random_secret_key
-
-if TYPE_CHECKING:
-    from esmerald.types import Middleware
 
 
 def test_main_settings():
@@ -230,7 +228,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
-        return request.app_settings.model_dump_json()
+        return request.app_settings.model_dump_json()  # pragma: no cover
 
     secret = get_random_secret_key()
     child = ChildEsmerald(
@@ -300,7 +298,7 @@ def test_raises_exception_on_wrong_settings(settings_config, test_client_factory
     """If a settings_config is thrown but not type EsmeraldAPISettings"""
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[], settings_config=settings_config):
-            ...
+            ...  # pragma: no cover
 
 
 def test_basic_settings(test_client_factory):

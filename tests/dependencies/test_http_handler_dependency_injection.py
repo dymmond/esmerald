@@ -1,22 +1,20 @@
 from asyncio import sleep
-from typing import TYPE_CHECKING, Any, Dict
+from typing import Any, Dict
 
 from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from esmerald.applications import ChildEsmerald
 from esmerald.injector import Inject
+from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
-if TYPE_CHECKING:
-    from esmerald.requests import Request
-
 
 def router_first_dependency() -> bool:
-    return True
+    return True  # pragma: no cover
 
 
 async def router_second_dependency() -> bool:
@@ -24,7 +22,7 @@ async def router_second_dependency() -> bool:
     return False
 
 
-def controller_first_dependency(headers: Dict[str, Any]) -> dict:
+def controller_first_dependency(headers: Dict[str, Any]) -> dict:  # pragma: no cover
     assert headers
     return {}
 
@@ -109,7 +107,7 @@ def test_dependency_isolation() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            pass
+            ...  # pragma: no cover
 
     with create_client(
         routes=[
@@ -127,7 +125,7 @@ def test_dependency_isolation_with_include() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            pass
+            ...  # pragma: no cover
 
     with create_client(
         routes=[
@@ -149,7 +147,7 @@ def test_dependency_isolation_with_nested_include() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            pass
+            ...  # pragma: no cover
 
     with create_client(
         routes=[
@@ -197,7 +195,7 @@ def test_dependency_isolation_with_child_esmerald() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            pass
+            ...  # pragma: no cover
 
     child_esmerald = ChildEsmerald(
         routes=[

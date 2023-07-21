@@ -19,7 +19,7 @@ from esmerald.staticfiles import StaticFiles
 from esmerald.websockets import WebSocket
 
 
-async def error_500(request, exc):
+async def error_500(request, exc):  # pragma: no cover
     return JSONResponse({"detail": "Server Error"}, status_code=500)
 
 
@@ -59,7 +59,7 @@ def custom_subdomain(request: Request) -> PlainTextResponse:
 
 @get()
 def runtime_error(request: Request) -> None:
-    raise RuntimeError()
+    raise RuntimeError()  # pragma: no cover
 
 
 @head()

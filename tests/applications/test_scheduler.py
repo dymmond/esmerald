@@ -33,4 +33,4 @@ def test_raises_import_error_on_missing_module(monkeypatch):
 
     with pytest.raises(ImportError):
         with create_client([], enable_scheduler=True, scheduler_class=AsyncIOScheduler):
-            ...
+            ...  # pragma: no cover
