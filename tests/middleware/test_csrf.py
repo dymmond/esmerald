@@ -24,17 +24,17 @@ def post_handler() -> None:
 
 @put(path="/")
 def put_handler() -> None:
-    ...  # pragma: no cover
+    """ """
 
 
 @delete(path="/")
 def delete_handler() -> None:
-    ...  # pragma: no cover
+    """ """
 
 
 @patch(path="/")
 def patch_handler() -> None:
-    ...  # pragma: no cover
+    """ """
 
 
 def test_csrf_successful_flow() -> None:

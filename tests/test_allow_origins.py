@@ -10,7 +10,7 @@ def test_raise_error_on_allow_origins(test_client_factory):
 
     with pytest.raises(ImproperlyConfigured):
         with create_client([], allow_origins=["*"], cors_config=cors_config):
-            ...  # pragma: no cover
+            """ """
 
 
 def test_raise_error_on_allow_origins_esmerald_object(test_client_factory):

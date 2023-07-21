@@ -13,7 +13,7 @@ class Item(BaseModel):
 
 @get()
 def read_people() -> Dict[str, str]:
-    ...  # pragma: no cover
+    """ """
 
 
 @get(
@@ -22,7 +22,7 @@ def read_people() -> Dict[str, str]:
     responses={200: OpenAPIResponse(model=Item, description="The SKU information of an item")},
 )
 async def read_item() -> JSON:
-    ...  # pragma: no cover
+    """ """
 
 
 def test_add_child_esmerald_to_openapi(test_client_factory):

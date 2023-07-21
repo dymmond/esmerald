@@ -27,4 +27,4 @@ class TestConfig(TestSettings):
 
     @property
     def scheduler_class(self) -> None:
-        ...  # pragma: no cover
+        """"""

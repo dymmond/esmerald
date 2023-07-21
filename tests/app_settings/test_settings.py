@@ -298,7 +298,7 @@ def test_raises_exception_on_wrong_settings(settings_config, test_client_factory
     """If a settings_config is thrown but not type EsmeraldAPISettings"""
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[], settings_config=settings_config):
-            ...  # pragma: no cover
+            """ """
 
 
 def test_basic_settings(test_client_factory):

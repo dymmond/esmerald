@@ -130,7 +130,7 @@ def test_no_default_dependency_Injected() -> None:
 def test_dependency_not_Injected_and_no_default() -> None:
     @get()
     def test(value: int = Injects()) -> Dict[str, int]:
-        ...  # pragma: no cover
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(routes=[Gateway(handler=test)])
@@ -153,7 +153,7 @@ def test_dependency_Injected_on_APIView() -> None:
 def test_dependency_skip_validation() -> None:
     @get("/validated")
     def validated(value: int = Injects()) -> Dict[str, int]:
-        ...  # pragma: no cover
+        """ """
 
     @get("/skipped")
     def skipped(value: int = Injects(skip_validation=True)) -> Dict[str, int]:

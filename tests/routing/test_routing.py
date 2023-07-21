@@ -22,7 +22,7 @@ from esmerald.testclient import create_client
 
 @get(path="/", permissions=[DenyAll])
 async def deny_access(request: Request) -> JSONResponse:
-    ...  # pragma: no cover
+    """ """
 
 
 @get(path="/", permissions=[AllowAny])
@@ -961,7 +961,7 @@ def test_duplicated_param_names():
 
 def test_exception_on_mounted_apps(test_app_client_factory):
     class CustomException(Exception):
-        ...  # pragma: no cover
+        """ """
 
     @get(path="/")
     def exc(request: Request) -> CustomException:

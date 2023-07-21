@@ -107,7 +107,7 @@ def test_dependency_isolation() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -125,7 +125,7 @@ def test_dependency_isolation_with_include() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -147,7 +147,7 @@ def test_dependency_isolation_with_nested_include() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -195,7 +195,7 @@ def test_dependency_isolation_with_child_esmerald() -> None:
 
         @get(path="/")
         def test_method(self, first: dict) -> None:
-            ...  # pragma: no cover
+            """ """
 
     child_esmerald = ChildEsmerald(
         routes=[

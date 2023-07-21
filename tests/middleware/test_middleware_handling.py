@@ -56,7 +56,7 @@ class MiddlewareWithArgsAndKwargs(BaseHTTPMiddleware):  # pragma: no cover
 
 @get(path="/")
 def handler() -> None:
-    ...  # pragma: no cover
+    """ """
 
 
 class JSONRequest(BaseModel):
@@ -156,7 +156,7 @@ def test_middleware_call_order() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -201,7 +201,7 @@ def test_middleware_call_order_with_include() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -246,7 +246,7 @@ def test_middleware_call_order_with_nested_include() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -299,7 +299,7 @@ def test_middleware_call_order_with_heavy_nested_include() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            ...  # pragma: no cover
+            """ """
 
     with create_client(
         routes=[
@@ -401,7 +401,7 @@ def test_middleware_call_order_with_child_esmerald() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            ...  # pragma: no cover
+            """ """
 
     child_esmerald = ChildEsmerald(routes=[Gateway(path="/", handler=MyController)])
 
@@ -453,7 +453,7 @@ def test_middleware_call_order_with_child_esmerald_as_parent() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            ...  # pragma: no cover
+            """ """
 
     child_esmerald = ChildEsmerald(routes=[Gateway(path="/", handler=MyController)])
 

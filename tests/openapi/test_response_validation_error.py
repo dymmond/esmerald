@@ -28,7 +28,7 @@ class Item(BaseModel):
 
 @get()
 def read_people() -> Dict[str, str]:
-    ...  # pragma: no cover
+    """ """
 
 
 @get(
@@ -37,7 +37,7 @@ def read_people() -> Dict[str, str]:
     responses={422: OpenAPIResponse(model=CustomResponse, description="Error")},
 )
 async def read_item(id: str) -> None:
-    ...  # pragma: no cover
+    """ """
 
 
 def test_open_api_schema(test_client_factory):

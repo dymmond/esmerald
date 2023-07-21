@@ -25,7 +25,7 @@ async def test_invalid_response(test_client_factory):
                 Gateway(handler=read_people),
             ]
         ):
-            ...  # pragma: no cover
+            """ """
 
     assert raised.value.detail == "An additional response must be an instance of OpenAPIResponse."
 
@@ -42,6 +42,6 @@ async def test_invalid_response_status(test_client_factory):
                 Gateway(handler=read_people),
             ]
         ):
-            ...  # pragma: no cover
+            """ """
 
     assert raised.value.detail == "The status is not a valid OpenAPI status response."

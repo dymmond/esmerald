@@ -26,7 +26,7 @@ def test_dependency_validation() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        ...  # pragma: no cover
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -45,7 +45,7 @@ def test_dependency_validation_with_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        ...  # pragma: no cover
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -64,7 +64,7 @@ def test_dependency_validation_with_nested_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        ...  # pragma: no cover
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -88,7 +88,7 @@ def test_dependency_validation_with_two_nested_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        ...  # pragma: no cover
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -122,7 +122,7 @@ def test_dependency_validation_with_three_nested_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        ...  # pragma: no cover
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(

@@ -147,7 +147,7 @@ def test_permissions_with_child_esmerald_two() -> None:
 def test_permissions_with_child_esmerald_three() -> None:
     @route(methods=["GET"], path="/secret")
     async def my_asgi_handler() -> None:
-        ...  # pragma: no cover
+        """ """
 
     child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)], permissions=[AllowAny])
 
