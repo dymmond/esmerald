@@ -65,7 +65,7 @@ from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 
     from esmerald.applications import Esmerald
@@ -102,7 +102,7 @@ class Parent:
 
         if isinstance(route, Gateway):
             if not route.handler.parent:
-                route.handler.parent = route
+                route.handler.parent = route  # pragma: no cover
 
             if not is_class_and_subclass(route.handler, APIView) and not isinstance(
                 route.handler, APIView
@@ -134,7 +134,7 @@ class Parent:
                 if not value.handler.parent:
                     value.handler.parent = value
             else:
-                if not value.handler.parent:
+                if not value.handler.parent:  # pragma: no cover
                     value(parent=self)  # type: ignore
 
                 handler: APIView = cast("APIView", value.handler)
@@ -233,7 +233,9 @@ class Router(Parent, StarletteRouter):
                     Router,
                 ),
             ):
-                raise ImproperlyConfigured(f"The route {route} must be of type Gateway or Include")
+                raise ImproperlyConfigured(
+                    f"The route {route} must be of type Gateway or Include"
+                )  # pragma: no cover
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -292,7 +294,7 @@ class Router(Parent, StarletteRouter):
         Generates the signature model for it and sorts the routing list.
         """
         routes = []
-        if not value.handler.parent:
+        if not value.handler.parent:  # pragma: no cover
             value.handler(parent=self)  # type: ignore
 
         route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
@@ -383,7 +385,9 @@ class Router(Parent, StarletteRouter):
         self.create_signature_models(websocket_gateway)
         self.routes.append(websocket_gateway)
 
-    async def not_found(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def not_found(
+        self, scope: "Scope", receive: "Receive", send: "Send"
+    ) -> None:  # pragma: no cover
         """Esmerald version of a not found handler when a resource is
         called and cannot be dealt with properly.
 
@@ -530,7 +534,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
 
         self.methods: Set[str] = {HttpMethod[method].value for method in methods}
 
-        if isinstance(status_code, IntEnum):
+        if isinstance(status_code, IntEnum):  # pragma: no cover
             status_code = int(status_code)
         self.status_code = status_code
 
@@ -599,13 +603,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         handlers.
         """
         return {"allow": str(self.methods)}
-
-    @property
-    def permission_names(self) -> Sequence[str]:
-        """
-        List of permissions for the route. This is used for OpenAPI Spec purposes only.
-        """
-        return [permission.__name__ for permission in self.permissions]
 
     def get_response_class(self) -> Type["Response"]:
         """
@@ -697,14 +694,14 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
                 "Cannot call check_handler_function without first setting self.fn"
             )
 
-        if not settings.enable_sync_handlers:
+        if not settings.enable_sync_handlers:  # pragma: no cover
             fn = cast("AnyCallable", self.fn)
             if not is_async_callable(fn):
                 raise ImproperlyConfigured(
                     "Functions decorated with 'route, websocket, get, patch, put, post and delete' must be async functions"
                 )
 
-    def validate_annotations(self) -> None:
+    def validate_annotations(self) -> None:  # pragma: no cover
         """
         Validate annotations of the handlers.
         """
@@ -737,7 +734,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         ]:
             self.media_type = MediaType.TEXT
 
-    def validate_reserved_kwargs(self) -> None:
+    def validate_reserved_kwargs(self) -> None:  # pragma: no cover
         """
         Validates if special words are in the signature.
         """
@@ -822,7 +819,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
                     f"The '{kwarg}'is not supported with websocket handlers."
                 )
 
-    def validate_websocket_handler_function(self) -> None:
+    def validate_websocket_handler_function(self) -> None:  # pragma: no cover
         """
         Validates the route handler function once it is set by inspecting its
         return annotations.

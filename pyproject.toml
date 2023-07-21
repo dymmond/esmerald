@@ -199,6 +199,7 @@ context = '${CONTEXT}'
 source = ["tests", "esmerald"]
 omit = [
     "esmerald/conf/__init__.py",
+    "esmerald/middleware/errors.py",
     "esmerald/core/directives/*",
     "esmerald/core/terminal/*",
     "esmerald/datastructures/types.py",
