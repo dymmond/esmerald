@@ -42,6 +42,7 @@ cov: ## Run tests and coverage only for specific ones
 	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage report --show-missing
 	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage html
 
+
 .PHONY: requirements
 requirements: ## Install requirements for development
 	pip install -e .[dev,test,doc,templates,jwt,encoders,schedulers,ipython,ptpython]
