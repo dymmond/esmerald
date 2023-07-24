@@ -14,27 +14,27 @@ from esmerald.websockets import WebSocket
 
 @get(path="/")
 def get_handler() -> None:
-    return None
+    ...
 
 
 @post(path="/")
 def post_handler() -> None:
-    return None
+    ...
 
 
 @put(path="/")
 def put_handler() -> None:
-    return None
+    """ """
 
 
 @delete(path="/")
 def delete_handler() -> None:
-    return None
+    """ """
 
 
 @patch(path="/")
 def patch_handler() -> None:
-    return None
+    """ """
 
 
 def test_csrf_successful_flow() -> None:

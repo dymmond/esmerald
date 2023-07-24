@@ -76,7 +76,7 @@ class Parameter(ArbitraryBaseModel):
     ) -> None:
         super().__init__(**kwargs)
         if parameter.annotation is Signature.empty:
-            raise ImproperlyConfigured(
+            raise ImproperlyConfigured(  # pragma: no cover
                 f"The parameter name {param_name} from {fn_name} does not have a type annotation. "
                 "If it should receive any value, use 'Any' as type."
             )

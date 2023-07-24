@@ -34,11 +34,6 @@ async def upload_list_multiple_file(
     return {"names": names, "total": total}
 
 
-@post("/upload-dict-multiple", status_code=status.HTTP_200_OK)
-async def upload_dict_multiple_file(data: MultipleFile = File()) -> Dict[str, str]:
-    return {"names": [], "total": 2}
-
-
 app = Esmerald(
     routes=[
         Gateway(handler=upload_file),

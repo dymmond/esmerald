@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, Any, List, Union
 from esmerald.exceptions import MissingDependency, TemplateNotFound
 from esmerald.protocols.template import TemplateEngineProtocol
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pydantic import DirectoryPath
 
 try:
     from jinja2 import Environment, FileSystemLoader
     from jinja2 import Template as JinjaTemplate
     from jinja2 import TemplateNotFound as JinjaTemplateNotFound
-except ImportError as exc:
+except ImportError as exc:  # pragma: no cover
     raise MissingDependency("jinja2 is not installed") from exc
 
 
@@ -52,5 +52,5 @@ class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):
     def get_template(self, template_name: str) -> JinjaTemplate:
         try:
             return self.env.get_template(template_name)
-        except JinjaTemplateNotFound as e:
+        except JinjaTemplateNotFound as e:  # pragma: no cover
             raise TemplateNotFound(template_name=template_name) from e

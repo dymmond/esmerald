@@ -286,7 +286,7 @@ def test_controller_with_websocket_handler() -> None:
 
         @get(path="/")
         def get_person(self) -> Individual:
-            ...
+            """ """
 
         @websocket(path="/socket")
         async def ws(self, socket: WebSocket) -> None:
@@ -310,7 +310,7 @@ def test_controller_with_include_websocket_handler() -> None:
 
         @get(path="/")
         def get_person(self) -> Individual:
-            ...
+            """ """
 
         @websocket(path="/socket")
         async def ws(self, socket: WebSocket) -> None:
@@ -336,7 +336,7 @@ def test_controller_with_nested_include_websocket_handler() -> None:
 
         @get(path="/")
         def get_person(self) -> Individual:
-            ...
+            """ """
 
         @websocket(path="/socket")
         async def ws(self, socket: WebSocket) -> None:
@@ -367,7 +367,7 @@ def test_controller_with_super_nested_include_websocket_handler() -> None:
 
         @get(path="/")
         def get_person(self) -> Individual:
-            ...
+            """ """
 
         @websocket(path="/socket")
         async def ws(self, socket: WebSocket) -> None:

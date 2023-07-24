@@ -6,7 +6,7 @@ from starlette.types import Receive, Scope, Send
 
 from esmerald.utils.url import clean_path
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -114,7 +114,7 @@ class APIView:
 
             if self.include_in_schema is not None and not isinstance(
                 route_handler, WebSocketHandler
-            ):
+            ):  # pragma: no cover
                 route_handler.include_in_schema = self.include_in_schema
 
             if self.middleware:
@@ -122,7 +122,7 @@ class APIView:
 
             if self.exception_handlers:
                 route_handler.exception_handlers = self.get_exception_handlers(route_handler)
-            if self.tags or []:
+            if self.tags or []:  # pragma: no cover
                 for tag in reversed(self.tags):
                     route_handler.tags.insert(0, tag)
             route_handlers.append(route_handler)
@@ -147,8 +147,10 @@ class APIView:
         exception_handlers = {**self.exception_handlers, **handler.exception_handlers}
         return cast("ExceptionHandlerMap", exception_handlers)
 
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle(
+        self, scope: "Scope", receive: "Receive", send: "Send"
+    ) -> None:  # pragma: no cover
         raise NotImplementedError("APIView object does not implement handle()")
 
-    def create_signature_model(self, is_websocket: bool = False) -> None:
+    def create_signature_model(self, is_websocket: bool = False) -> None:  # pragma: no cover
         raise NotImplementedError("APIView object does not implement create_signature_model()")

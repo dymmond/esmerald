@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from esmerald.protocols.interceptor import InterceptorProtocol
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from starlette.types import Receive, Scope, Send
 
 

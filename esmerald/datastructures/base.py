@@ -31,6 +31,7 @@ from starlette.datastructures import FormData as FormData  # noqa: F401
 from starlette.datastructures import Headers as Headers  # noqa: F401
 from starlette.datastructures import MutableHeaders as MutableHeaders  # noqa
 from starlette.datastructures import QueryParams as QueryParams  # noqa: F401
+from starlette.datastructures import Secret as StarletteSecret  # noqa
 from starlette.datastructures import State as StarletteStateClass  # noqa: F401
 from starlette.datastructures import UploadFile as StarletteUploadFile  # noqa
 from starlette.datastructures import URLPath as URLPath  # noqa: F401
@@ -38,15 +39,15 @@ from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+from esmerald.enums import MediaType
 
 R = TypeVar("R", bound=StarletteResponse)
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.enums import MediaType
 
 
-class UploadFile(StarletteUploadFile):
+class UploadFile(StarletteUploadFile):  # pragma: no cover
     """
     Adding pydantic specific functionalitty for parsing.
     """
@@ -80,25 +81,12 @@ class UploadFile(StarletteUploadFile):
         return general_plain_validator_function(cls._validate)
 
 
-class Secret:
-    def __init__(self, value: str):
-        self._value = value
-
-    def __repr__(self) -> str:
-        class_name = self.__class__.__name__
-        return f"{class_name}('**********')"
-
-    def __str__(self) -> str:
-        return self._value
-
-    def __bool__(self) -> bool:
-        return bool(self._value)
-
+class Secret(StarletteSecret):  # pragma: no cover
     def __len__(self) -> int:
         return len(self._value)
 
 
-class State(StarletteStateClass):
+class State(StarletteStateClass):  # pragma: no cover
     state: Dict[str, Any]
 
     def __copy__(self) -> "State":

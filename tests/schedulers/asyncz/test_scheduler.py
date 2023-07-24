@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
+from unittest.mock import MagicMock
 
 import pytest
 from asyncz.contrib.esmerald.decorator import scheduler
@@ -11,13 +12,12 @@ from asyncz.tasks.types import TaskType
 from asyncz.triggers import IntervalTrigger
 from asyncz.triggers.base import BaseTrigger
 from loguru import logger
-from mock import MagicMock
 
 from esmerald import Esmerald
 from esmerald.exceptions import ImproperlyConfigured
 
 
-class DummyScheduler(BaseScheduler):
+class DummyScheduler(BaseScheduler):  # pragma: no cover
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.wakeup = MagicMock()
@@ -29,7 +29,7 @@ class DummyScheduler(BaseScheduler):
         ...
 
 
-class DummyTrigger(BaseTrigger):
+class DummyTrigger(BaseTrigger):  # pragma: no cover
     def __init__(self, **args):
         super().__init__(**args)
         self.args = args
@@ -40,7 +40,7 @@ class DummyTrigger(BaseTrigger):
         ...
 
 
-class DummyExecutor(BaseExecutor):
+class DummyExecutor(BaseExecutor):  # pragma: no cover
     def __init__(self, **args):
         super().__init__(**args)
         self.args = args
@@ -52,7 +52,7 @@ class DummyExecutor(BaseExecutor):
         return super().do_send_task(task, run_times)
 
 
-class DummyStore(BaseStore):
+class DummyStore(BaseStore):  # pragma: no cover
     def __init__(self, **args):
         super().__init__(**args)
         self.args = args
@@ -92,14 +92,14 @@ def scheduler_tasks() -> Dict[str, str]:
 
 
 @scheduler(name="task1", trigger=IntervalTrigger(seconds=1), max_intances=3, is_enabled=True)
-def task_one():
+def task_one():  # pragma: no cover
     value = 3
     logger.info(value)
     return 3
 
 
 @scheduler(name="task2", trigger=IntervalTrigger(seconds=3), max_intances=3, is_enabled=True)
-def task_two():
+def task_two():  # pragma: no cover
     value = 8
     logger.info(value)
     return 8

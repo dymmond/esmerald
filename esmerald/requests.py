@@ -11,7 +11,7 @@ from starlette.types import Receive, Scope, Send
 
 from esmerald.typing import Void
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
     from esmerald.conf.global_settings import EsmeraldAPISettings
     from esmerald.types import HTTPMethod

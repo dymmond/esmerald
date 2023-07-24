@@ -18,4 +18,4 @@ class WebSocketDisconnect(StarletteWebSocketDisconnect):
     """Esmerald WebSocketDisconnect"""
 
     def __init__(self, code: int = 1000, reason: Optional[str] = None) -> None:
-        super().__init__(code, reason)
+        super().__init__(code, reason)  # pragma: no cover

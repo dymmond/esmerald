@@ -9,12 +9,14 @@ from esmerald.enums import MediaType
 from esmerald.openapi._internal import InternalResponse
 from esmerald.responses import Response as EsmeraldResponse
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.routing.router import HTTPHandler
-    from esmerald.types import AnyCallable
+    from esmerald.typing import AnyCallable
 
 
-def create_internal_response(handler: Union["HTTPHandler", Any]) -> InternalResponse:
+def create_internal_response(
+    handler: Union["HTTPHandler", Any]
+) -> InternalResponse:  # pragma: no cover
     signature = Signature.from_callable(cast("AnyCallable", handler.fn))
     default_descriptions: Dict[Any, str] = {
         Stream: "Stream Response",

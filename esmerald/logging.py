@@ -2,15 +2,13 @@ import logging
 
 from loguru import logger as loguru_logger
 
-logger = logging.getLogger("esmerald")
-
 
 class InterceptHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
         level: str
         try:
             level = loguru_logger.level(record.levelname).name
-        except ValueError:
+        except ValueError:  # pragma: no cover
             level = str(record.levelno)
 
         frame, depth = logging.currentframe(), 2

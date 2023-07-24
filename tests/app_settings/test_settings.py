@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import Any, Dict, List
 
 import pytest
 from pydantic import BaseModel
@@ -20,13 +20,11 @@ from esmerald.config import CORSConfig, CSRFConfig
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.middleware import RequestSettingsMiddleware
 from esmerald.testclient import create_client
+from esmerald.types import Middleware
 from esmerald.utils.crypto import get_random_secret_key
 
-if TYPE_CHECKING:
-    from esmerald.types import Middleware
 
-
-def test_default_settings():
+def test_main_settings():
     with create_client([]) as client:
         assert client.app.settings.app_name == settings.app_name
         assert client.app.settings.environment == "testing"
@@ -149,6 +147,38 @@ def test_inner_settings_config(test_client_factory):
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
+        assert isinstance(client.app.settings_config, EsmeraldAPISettings)
+
+
+def test_inner_settings_config_as_instance(test_client_factory):
+    """
+    Test passing a settings config and being used with teh ESMERALD_SETTINGS_MODULE
+    """
+
+    class AppSettings(DisableOpenAPI):
+        app_name: str = "new app"
+        allowed_hosts: List[str] = ["*", "*.testserver.com"]
+
+        @property
+        def middleware(self) -> List["Middleware"]:
+            return [RequestSettingsMiddleware]
+
+    @get("/app-settings")
+    async def _app_settings(request: Request) -> str:
+        return JSONResponse(
+            {"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]}
+        )
+
+    with create_client(
+        routes=[Gateway(handler=_app_settings)], settings_config=AppSettings()
+    ) as client:
+        response = client.get("/app-settings")
+
+        assert client.app.settings.app_name == "new app"
+        assert client.app.app_name == "new app"
+        assert settings.app_name == "test_client"
+        assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
+        assert isinstance(client.app.settings_config, EsmeraldAPISettings)
 
 
 def test_child_esmerald_independent_settings(test_client_factory):
@@ -198,7 +228,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
-        return request.app_settings.model_dump_json()
+        return request.app_settings.model_dump_json()  # pragma: no cover
 
     secret = get_random_secret_key()
     child = ChildEsmerald(
@@ -268,7 +298,7 @@ def test_raises_exception_on_wrong_settings(settings_config, test_client_factory
     """If a settings_config is thrown but not type EsmeraldAPISettings"""
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[], settings_config=settings_config):
-            ...
+            """ """
 
 
 def test_basic_settings(test_client_factory):
@@ -285,3 +315,15 @@ def test_basic_settings(test_client_factory):
     assert app.include_in_schema is False
     assert app.enable_openapi is False
     assert app.redirect_slashes is False
+
+
+def test_default_settings():
+    app = Esmerald(
+        debug=False,
+        enable_scheduler=False,
+        include_in_schema=False,
+        enable_openapi=False,
+        redirect_slashes=False,
+    )
+
+    assert id(app.default_settings) == id(settings)

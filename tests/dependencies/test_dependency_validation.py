@@ -8,12 +8,12 @@ from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 
 
-def first_method(query_param: int) -> int:
+def first_method(query_param: int) -> int:  # pragma: no cover
     assert isinstance(query_param, int)
     return query_param
 
 
-def second_method(path_param: str) -> str:
+def second_method(path_param: str) -> str:  # pragma: no cover
     assert isinstance(path_param, str)
     return path_param
 
@@ -26,7 +26,7 @@ def test_dependency_validation() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        pass
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -45,7 +45,7 @@ def test_dependency_validation_with_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        pass
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -64,7 +64,7 @@ def test_dependency_validation_with_nested_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        pass
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -88,7 +88,7 @@ def test_dependency_validation_with_two_nested_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        pass
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(
@@ -122,7 +122,7 @@ def test_dependency_validation_with_three_nested_include() -> None:
         dependencies=dependencies,
     )
     def test_function(first: int, second: str, third: int) -> None:
-        pass
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(

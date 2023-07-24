@@ -7,7 +7,7 @@ from starlette.types import Receive, Scope, Send
 from esmerald.enums import MediaType
 from esmerald.responses.base import Response
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.backgound import BackgroundTask, BackgroundTasks
     from esmerald.protocols.template import TemplateEngineProtocol
     from esmerald.types import ResponseCookies
@@ -33,7 +33,7 @@ class TemplateResponse(Response):
                     media_type = _type
                     break
             else:
-                media_type = MediaType.TEXT
+                media_type = MediaType.TEXT  # pragma: no cover
 
         self.template = template_engine.get_template(template_name)
         self.context = context or {}
@@ -47,7 +47,9 @@ class TemplateResponse(Response):
             cookies=cookies,
         )
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+    async def __call__(
+        self, scope: Scope, receive: Receive, send: Send
+    ) -> None:  # pragma: no cover
         request = self.context.get("request", {})
         extensions = request.get("extensions", {})
         if "http.response.template" in extensions:

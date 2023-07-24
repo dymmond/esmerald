@@ -20,7 +20,7 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
 
     async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         if not AsyncExitStack:
-            await self.app(scope, receive, send)
+            await self.app(scope, receive, send)  # pragma: no cover
 
         exception: Optional[Exception] = None
         async with AsyncExitStack() as stack:

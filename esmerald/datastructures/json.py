@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
+from esmerald.enums import MediaType
 from esmerald.responses import JSONResponse  # noqa
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.enums import MediaType
 
 
 class JSON(ResponseContainer[JSONResponse]):

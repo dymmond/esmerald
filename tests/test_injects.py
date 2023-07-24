@@ -130,7 +130,7 @@ def test_no_default_dependency_Injected() -> None:
 def test_dependency_not_Injected_and_no_default() -> None:
     @get()
     def test(value: int = Injects()) -> Dict[str, int]:
-        return {"value": value}
+        """ """
 
     with pytest.raises(ImproperlyConfigured):
         Esmerald(routes=[Gateway(handler=test)])
@@ -153,7 +153,7 @@ def test_dependency_Injected_on_APIView() -> None:
 def test_dependency_skip_validation() -> None:
     @get("/validated")
     def validated(value: int = Injects()) -> Dict[str, int]:
-        return {"value": value}
+        """ """
 
     @get("/skipped")
     def skipped(value: int = Injects(skip_validation=True)) -> Dict[str, int]:
@@ -168,6 +168,7 @@ def test_dependency_skip_validation() -> None:
     ) as client:
         validated_resp = client.get("/validated")
         assert validated_resp.status_code == HTTP_500_INTERNAL_SERVER_ERROR
+
         skipped_resp = client.get("/skipped")
         assert skipped_resp.status_code == HTTP_200_OK
         assert skipped_resp.json() == {"value": "str"}

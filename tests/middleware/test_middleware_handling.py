@@ -1,10 +1,12 @@
 import logging
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, List, cast
+from typing import Any, Awaitable, Callable, List, Type, cast
 
+from _pytest.logging import LogCaptureFixture
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.applications import ChildEsmerald
 from esmerald.config import CORSConfig
@@ -17,13 +19,6 @@ from esmerald.routing.handlers import get, post
 from esmerald.routing.router import Include
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
-
-if TYPE_CHECKING:
-    from typing import Type
-
-    from _pytest.logging import LogCaptureFixture
-
-    from esmerald.types import ASGIApp, Receive, Scope, Send
 
 logger = logging.getLogger(__name__)
 
@@ -41,13 +36,13 @@ class MiddlewareProtocolRequestLoggingMiddleware(MiddlewareProtocol):
         await self.app(scope, receive, send)
 
 
-class BaseMiddlewareRequestLoggingMiddleware(BaseHTTPMiddleware):
+class BaseMiddlewareRequestLoggingMiddleware(BaseHTTPMiddleware):  # pragma: no cover
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:  # type: ignore
         logging.getLogger(__name__).info("%s - %s", request.method, request.url)
         return await call_next(request)  # type: ignore
 
 
-class MiddlewareWithArgsAndKwargs(BaseHTTPMiddleware):
+class MiddlewareWithArgsAndKwargs(BaseHTTPMiddleware):  # pragma: no cover
     def __init__(self, arg: int = 0, *, app: Any, kwarg: str) -> None:
         super().__init__(app)
         self.arg = arg
@@ -61,7 +56,7 @@ class MiddlewareWithArgsAndKwargs(BaseHTTPMiddleware):
 
 @get(path="/")
 def handler() -> None:
-    ...
+    """ """
 
 
 class JSONRequest(BaseModel):
@@ -96,9 +91,6 @@ def test_setting_cors_middleware() -> None:
             unpacked_middleware.extend(cur.app.user_middleware)
             _ids.append(id(cur.app.user_middleware))
             cur = cast("Any", cur.app)  # type: ignore
-        else:
-            if id(cur.user_middleware) not in _ids:
-                unpacked_middleware.extend(cur.user_middleware)
 
         assert len(unpacked_middleware) == 2
         cors_middleware = cast("Any", unpacked_middleware[1])
@@ -121,9 +113,6 @@ def test_trusted_hosts_middleware() -> None:
         unpacked_middleware.extend(cur.app.user_middleware)
         _ids.append(id(cur.app.user_middleware))
         cur = cast("Any", cur.app)  # type: ignore
-    else:
-        if id(cur.user_middleware) not in _ids:
-            unpacked_middleware.extend(cur.user_middleware)
 
     assert len(unpacked_middleware) == 1
     trusted_hosts_middleware = cast("Any", unpacked_middleware[0])
@@ -167,7 +156,7 @@ def test_middleware_call_order() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            return None
+            """ """
 
     with create_client(
         routes=[
@@ -212,7 +201,7 @@ def test_middleware_call_order_with_include() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            return None
+            """ """
 
     with create_client(
         routes=[
@@ -257,7 +246,7 @@ def test_middleware_call_order_with_nested_include() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            return None
+            """ """
 
     with create_client(
         routes=[
@@ -310,7 +299,7 @@ def test_middleware_call_order_with_heavy_nested_include() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            return None
+            """ """
 
     with create_client(
         routes=[
@@ -412,7 +401,7 @@ def test_middleware_call_order_with_child_esmerald() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            return None
+            """ """
 
     child_esmerald = ChildEsmerald(routes=[Gateway(path="/", handler=MyController)])
 
@@ -464,7 +453,7 @@ def test_middleware_call_order_with_child_esmerald_as_parent() -> None:
             middleware=[create_test_middleware(6), create_test_middleware(7)],
         )
         def my_handler(self) -> None:
-            return None
+            """ """
 
     child_esmerald = ChildEsmerald(routes=[Gateway(path="/", handler=MyController)])
 

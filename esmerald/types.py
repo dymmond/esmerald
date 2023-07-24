@@ -118,9 +118,4 @@ DictStr = Dict[str, str]
 DictAny = Dict[str, Any]
 SettingsType = Type["EsmeraldAPISettings"]
 
-LifeSpanHandler = Union[
-    Callable[[], Any],
-    Callable[[State], Any],
-    Callable[[], Awaitable[Any]],
-    Callable[[State], Awaitable[Any]],
-]
+LifeSpanHandler = Callable[[], Response]

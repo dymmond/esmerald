@@ -74,7 +74,7 @@ async def create_user_with_param(
 
 def test_cookies_param_field(test_client_factory):
     user = {"name": "Esmerald", "email": "test@esmerald.com"}
-    with create_client(routes=[Gateway(handler=create_user)]) as client:
+    with create_client(routes=[Gateway(handler=create_user_with_param)]) as client:
         response = client.post("/create", json=user, cookies={"csrftoken": "my-cookie"})
 
         assert response.status_code == 201
@@ -83,7 +83,7 @@ def test_cookies_param_field(test_client_factory):
 
 def test_param_cookie_missing_field(test_client_factory):
     user = {"name": "Esmerald", "email": "test@esmerald.com"}
-    with create_client(routes=[Gateway(handler=create_user)]) as client:
+    with create_client(routes=[Gateway(handler=create_user_with_param)]) as client:
         response = client.post("/create", json=user, cookies={"csrftoke": "my-cookie"})
 
         assert response.status_code == 400

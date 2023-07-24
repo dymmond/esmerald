@@ -1,13 +1,11 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, DirectoryPath, constr, field_validator
 from starlette.staticfiles import StaticFiles
+from starlette.types import ASGIApp
 
 from esmerald.utils.url import clean_path
-
-if TYPE_CHECKING:
-    from starlette.types import ASGIApp
 
 
 class StaticFilesConfig(BaseModel):
@@ -36,7 +34,7 @@ class StaticFilesConfig(BaseModel):
             kwargs.update({"directory": str(self.directory)})  # type: ignore
         return kwargs  # type: ignore
 
-    def to_app(self) -> "ASGIApp":
+    def to_app(self) -> ASGIApp:
         """
         It can be three scenarios
         """

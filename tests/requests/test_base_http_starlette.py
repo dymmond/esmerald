@@ -3,21 +3,19 @@
 https://github.com/encode/starlette/blob/master/tests/test_requests.py.
 """
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 
 import anyio
 import pytest
 from starlette.datastructures import Address, State
 from starlette.status import HTTP_200_OK
+from starlette.types import Receive, Send
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import InternalServerError
 from esmerald.requests import ClientDisconnect, Request, empty_send
 from esmerald.responses import JSONResponse, PlainTextResponse, Response
 from esmerald.testclient import EsmeraldTestClient
-
-if TYPE_CHECKING:
-    from starlette.types import Receive, Send
 
 
 def test_request_url(test_client_factory) -> None:
@@ -254,7 +252,7 @@ def test_request_without_setting_receive() -> None:
     assert response.json() == {"json": "Receive channel not available"}
 
 
-async def test_request_disconnect() -> None:
+async def test_request_disconnect() -> None:  # pragma: no cover
     """If a client disconnect occurs while reading request body then
     InternalServerError should be raised."""
 

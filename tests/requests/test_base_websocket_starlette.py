@@ -61,7 +61,7 @@ def test_websocket_query_params(test_client_factory):
     any(module in sys.modules for module in ("brotli", "brotlicffi")),
     reason='urllib3 includes "br" to the "accept-encoding" headers.',
 )
-def test_websocket_headers(test_client_factory):
+def test_websocket_headers(test_client_factory):  # pragma: no cover
     async def app(scope: Scope, receive: Receive, send: Send) -> None:
         websocket = WebSocket(scope, receive=receive, send=send)
         headers = dict(websocket.headers)

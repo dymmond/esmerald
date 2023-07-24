@@ -13,7 +13,7 @@ class Item(BaseModel):
 
 @get()
 def read_people() -> Dict[str, str]:
-    return {"id": "foo"}
+    """ """
 
 
 @get(
@@ -22,7 +22,7 @@ def read_people() -> Dict[str, str]:
     responses={200: OpenAPIResponse(model=Item, description="The SKU information of an item")},
 )
 async def read_item() -> JSON:
-    return JSON(content={"id": 1})
+    """ """
 
 
 def test_add_include_to_openapi(test_client_factory):

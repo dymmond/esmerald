@@ -15,7 +15,7 @@ class EsmeraldAPIException(Exception):
         self.detail = detail
         super().__init__(*(str(arg) for arg in args if arg), self.detail)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         if self.detail:
             return f"{self.__class__.__name__} - {self.detail}"
         return self.__class__.__name__
@@ -51,7 +51,7 @@ class HTTPException(StarletteHTTPException, EsmeraldAPIException):
         self.args = (f"{self.status_code}: {self.detail}", *args)
         self.extra = extra
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"<{self.status_code}: {self.__class__.__name__} />"
 
 

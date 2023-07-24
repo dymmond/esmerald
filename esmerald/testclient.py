@@ -19,7 +19,7 @@ from starlette.testclient import TestClient  # noqa
 from esmerald.applications import Esmerald
 from esmerald.utils.crypto import get_random_secret_key
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import Literal
 
     from esmerald.config import (

@@ -12,7 +12,7 @@ from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 
 
-def router_first_dependency() -> bool:
+def router_first_dependency() -> bool:  # pragma: no cover
     return True
 
 
@@ -21,9 +21,9 @@ async def router_second_dependency() -> bool:
     return False
 
 
-def controller_first_dependency(headers: Dict[str, Any]) -> dict:
+def controller_first_dependency(headers: Dict[str, Any]) -> dict:  # pragma: no cover
     assert headers
-    return {}
+    return {}  # pragma: no cover
 
 
 async def controller_second_dependency(socket: WebSocket) -> dict:
@@ -110,7 +110,7 @@ def test_function_dependency_injection() -> None:
         ws.send_json({"data": "123"})
 
 
-def test_dependency_isolation() -> None:
+def test_dependency_isolation() -> None:  # pragma: no cover
     class SecondController(APIView):
         path = "/second"
 

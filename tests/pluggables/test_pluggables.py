@@ -13,7 +13,7 @@ class MyNewPluggable:
     ...
 
 
-class PluggableNoPlug(Extension):
+class PluggableNoPlug(Extension):  # pragma: no cover
     def __init__(self, app: "Esmerald"):
         super().__init__(app)
         self.app = app
