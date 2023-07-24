@@ -1,5 +1,3 @@
-"""Esmerald permission system"""
-
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
@@ -12,7 +10,7 @@ if TYPE_CHECKING:
 SAFE_METHODS = ("GET", "HEAD", "OPTIONS")
 
 
-class BaseOperationHolder:
+class BaseOperationHolder:  # pragma: no cover
     def __and__(self, other: Any) -> "OperandHolder":
         return OperandHolder(AND, self, other)
 

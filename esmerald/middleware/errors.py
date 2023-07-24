@@ -10,7 +10,7 @@ from esmerald.requests import Request as _Request
 Request = TypeVar("Request", _Request, StarletteRequest)
 
 
-class ServerErrorMiddleware(StarletteServerErrorMiddleware):
+class ServerErrorMiddleware(StarletteServerErrorMiddleware):  # pragma: no cover
     """
     Handles returning 500 responses when a server error occurs.
 

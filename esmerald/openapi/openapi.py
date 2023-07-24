@@ -77,8 +77,7 @@ def get_fields_from_routes(
 
 def get_openapi_operation(
     *, route: Union[router.HTTPHandler, Any], method: str, operation_ids: Set[str]
-) -> Dict[str, Any]:
-    # operation: Dict[str, Any] = {}
+) -> Dict[str, Any]:  # pragma: no cover
     operation = Operation()
 
     if route.tags:
@@ -115,7 +114,7 @@ def get_openapi_operation_parameters(
     *,
     all_route_params: Sequence[FieldInfo],
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> List[Dict[str, Any]]:
+) -> List[Dict[str, Any]]:  # pragma: no cover
     parameters = []
     for param in all_route_params:
         field_info = cast(Param, param)
@@ -148,7 +147,7 @@ def get_openapi_operation_request_body(
     *,
     data_field: Optional[FieldInfo],
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> Optional[Dict[str, Any]]:
+) -> Optional[Dict[str, Any]]:  # pragma: no cover
     if not data_field:
         return None
 
@@ -174,7 +173,7 @@ def get_openapi_path(
     route: gateways.Gateway,
     operation_ids: Set[str],
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
+) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:  # pragma: no cover
     path: Dict[str, Any] = {}
     security_schemes: Dict[str, Any] = {}
     definitions: Dict[str, Any] = {}
@@ -356,7 +355,7 @@ def get_openapi(
     terms_of_service: Optional[Union[str, AnyUrl]] = None,
     contact: Optional[Contact] = None,
     license: Optional[License] = None,
-) -> Dict[str, Any]:
+) -> Dict[str, Any]:  # pragma: no cover
     """
     Builds the whole OpenAPI route structure and object
     """

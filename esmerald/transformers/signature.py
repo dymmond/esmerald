@@ -1,5 +1,5 @@
 from inspect import Signature as InspectSignature
-from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Set, Type
+from typing import TYPE_CHECKING, Any, Dict, Generator, Set, Type
 
 from pydantic import create_model
 
@@ -12,19 +12,15 @@ from esmerald.typing import Undefined
 from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
 
 if TYPE_CHECKING:
-    from esmerald.typing import AnyCallable
+    from esmerald.typing import AnyCallable  # pragma: no cover
 
 
 object_setattr = object.__setattr__
 
 
 class SignatureFactory(ArbitraryExtraBaseModel):
-    def __init__(
-        self, fn: Optional["AnyCallable"], dependency_names: Set[str], **kwargs: Any
-    ) -> None:
+    def __init__(self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        if not fn:
-            raise ImproperlyConfigured("Parameter 'fn' to SignatureFactory cannot be `None`.")
         self.fn = fn
         self.signature = InspectSignature.from_callable(self.fn)
         self.fn_name = fn.__name__ if hasattr(fn, "__name__") else "anonymous"
@@ -85,6 +81,6 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             model.dependency_names = self.dependency_names
             return model
         except TypeError as e:
-            raise ImproperlyConfigured(
+            raise ImproperlyConfigured(  # pragma: no cover
                 f"Error creating signature for '{self.fn_name}': '{e}'."
             ) from e

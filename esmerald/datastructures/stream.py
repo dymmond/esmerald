@@ -16,10 +16,10 @@ from typing import (
 from starlette.responses import StreamingResponse  # noqa
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
+from esmerald.enums import MediaType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.enums import MediaType
 
 
 class Stream(ResponseContainer[StreamingResponse]):

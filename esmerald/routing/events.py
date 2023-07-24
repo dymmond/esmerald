@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING, Any, Optional, Sequence, TypeVar
 from starlette._utils import is_async_callable
 from starlette.types import Lifespan, Receive, Scope, Send
 
-if TYPE_CHECKING:
-    from esmerald.types import DictAny, LifeSpanHandler
+if TYPE_CHECKING:  # pragma: no cover
+    from esmerald.types import LifeSpanHandler
 
 
 _T = TypeVar("_T")
 
 
-class AyncLifespanContextManager:
+class AyncLifespanContextManager:  # pragma: no cover
     """
     Manages and handles the on_startup and on_shutdown events
     in an Esmerald way.
@@ -39,26 +39,24 @@ class AyncLifespanContextManager:
         """Runs the functions on startup"""
         for handler in self.on_startup:
             if is_async_callable(handler):
-                await handler()  # type: ignore[call-arg]
+                await handler()
             else:
-                handler()  # type: ignore[call-arg]
+                handler()
 
-    async def __aexit__(
-        self, scope: Scope, receive: Receive, send: Send, **kwargs: "DictAny"
-    ) -> None:
+    async def __aexit__(self, scope: Scope, receive: Receive, send: Send, **kwargs: "Any") -> None:
         """Runs the functions on shutdown"""
         for handler in self.on_shutdown:
             if is_async_callable(handler):
-                await handler()  # type: ignore[call-arg]
+                await handler()
             else:
-                handler()  # type: ignore[call-arg]
+                handler()
 
 
 def handle_lifespan_events(
     on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
     on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
     lifespan: Optional[Lifespan[Any]] = None,
-) -> Any:
+) -> Any:  # pragma: no cover
     """Handles with the lifespan events in the new Starlette format of lifespan.
     This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable
     declaration for legacy and comprehension purposes and build the async context manager
@@ -75,7 +73,7 @@ def generate_lifespan_events(
     on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
     on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
     lifespan: Optional[Lifespan[Any]] = None,
-) -> Any:
+) -> Any:  # pragma: no cover
     if lifespan:
         return lifespan
     return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)

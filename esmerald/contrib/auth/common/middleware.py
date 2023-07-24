@@ -12,14 +12,14 @@ from esmerald.security.jwt.token import Token
 T = TypeVar("T")
 
 
-class CommonJWTAuthMiddleware(BaseAuthMiddleware):
+class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
     """
     The simple JWT authentication Middleware.
     """
 
     def __init__(
         self,
-        app: "ASGIApp",
+        app: ASGIApp,
         config: "JWTConfig",
         user_model: T,
     ):

@@ -23,6 +23,7 @@ target/
 *.iml
 .DS_Store
 .coverage
+.coverage.*
 .python-version
 coverage.*
 example.sqlite

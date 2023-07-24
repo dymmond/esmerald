@@ -7,12 +7,12 @@ from esmerald.responses.json import BaseJSONResponse
 try:
     import orjson
     from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY
-except ImportError:
+except ImportError:  # pragma: no cover
     orjson = None
 
 try:
     import ujson
-except ImportError:
+except ImportError:  # pragma: no cover
     ujson = None
 
 

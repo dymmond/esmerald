@@ -3,9 +3,8 @@ from typing import TYPE_CHECKING, Any, Iterator, Optional
 
 from esmerald.protocols.extension import ExtensionProtocol
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.types import DictAny
 
 
 class Pluggable:
@@ -24,14 +23,14 @@ class Pluggable:
         iterator = (self.cls, self.options)
         return iter(iterator)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         name = self.__class__.__name__
         options = [f"{key}={value!r}" for key, value in self.options.items()]
         args = ", ".join([self.__class__.__name__] + options)
         return f"{name}({args})"
 
 
-class BaseExtension(ABC, ExtensionProtocol):
+class BaseExtension(ABC, ExtensionProtocol):  # pragma: no cover
     """
     The base for any Esmerald plugglable.
     """
@@ -41,7 +40,7 @@ class BaseExtension(ABC, ExtensionProtocol):
         self.app = app
 
     @abstractmethod
-    def extend(self, **kwargs: "DictAny") -> None:
+    def extend(self, **kwargs: "Any") -> None:
         raise NotImplementedError("plug must be implemented by the subclasses.")
 
 

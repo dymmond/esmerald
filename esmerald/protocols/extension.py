@@ -1,9 +1,7 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import Any, Dict, Optional
 
+from starlette.types import ASGIApp
 from typing_extensions import Protocol, runtime_checkable
-
-if TYPE_CHECKING:
-    from esmerald.types import ASGIApp
 
 
 @runtime_checkable

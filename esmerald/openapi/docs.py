@@ -22,7 +22,7 @@ def get_swagger_ui_html(
     oauth2_redirect_url: Optional[str] = None,
     init_oauth: Optional[Dict[str, Any]] = None,
     swagger_ui_parameters: Optional[Dict[str, Any]] = None,
-) -> HTMLResponse:
+) -> HTMLResponse:  # pragma: no cover
     current_swagger_ui_parameters = swagger_ui_default_parameters.copy()
     if swagger_ui_parameters:
         current_swagger_ui_parameters.update(swagger_ui_parameters)

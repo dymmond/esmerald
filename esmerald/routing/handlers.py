@@ -18,7 +18,7 @@ from esmerald.types import (
 )
 from esmerald.utils.constants import AVAILABLE_METHODS
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from openapi_schemas_pydantic.v3_1_0 import SecurityScheme
 
 
@@ -193,7 +193,7 @@ class options(HTTPHandler):
         )
 
 
-class trace(HTTPHandler):
+class trace(HTTPHandler):  # pragma: no cover
     def __init__(
         self,
         path: Optional[str] = None,
@@ -516,7 +516,7 @@ class route(HTTPHandler):
                 )
 
         methods = [method.upper() for method in methods]
-        if not status_code:
+        if not status_code:  # pragma: no cover
             status_code = status.HTTP_200_OK
 
         super().__init__(

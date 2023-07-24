@@ -1,10 +1,9 @@
 from decimal import Decimal
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import Any, TypeVar, cast
+
+from pydantic.fields import FieldInfo
 
 T = TypeVar("T", int, float, Decimal)
-
-if TYPE_CHECKING:
-    from pydantic.fields import FieldInfo
 
 
 def is_field_optional(field: "FieldInfo") -> bool:

@@ -20,7 +20,7 @@ def wrap_app_handling_exceptions(app: ASGIApp, conn: typing.Union[Request, WebSo
     status_handlers: StatusHandlers
     try:
         exception_handlers, status_handlers = conn.scope["starlette.exception_handlers"]
-    except KeyError:
+    except KeyError:  # pragma: no cover
         exception_handlers, status_handlers = {}, {}
 
     async def wrapped_app(scope: Scope, receive: Receive, send: Send) -> None:
@@ -47,7 +47,7 @@ def wrap_app_handling_exceptions(app: ASGIApp, conn: typing.Union[Request, WebSo
             if handler is None:
                 raise exc
 
-            if response_started:
+            if response_started:  # pragma: no cover
                 msg = "Caught handled exception, but response already started."
                 raise RuntimeError(msg) from exc
 
@@ -56,7 +56,9 @@ def wrap_app_handling_exceptions(app: ASGIApp, conn: typing.Union[Request, WebSo
                 if is_async_callable(handler):
                     response = await handler(conn, exc)
                 else:
-                    response = await run_in_threadpool(handler, conn, exc)
+                    response = await run_in_threadpool(
+                        typing.cast("typing.Callable[..., Response]", handler), conn, exc
+                    )
                 await response(scope, receive, sender)
             elif scope["type"] == "websocket":
                 if is_async_callable(handler):

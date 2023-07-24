@@ -1,7 +1,5 @@
 import os
 import re
-import secrets
-from typing import Dict
 
 import pytest
 from pydantic import ValidationError
@@ -34,10 +32,6 @@ def test_config_validation(secret: bytes, should_raise: bool) -> None:
             SessionConfig(secret_key=Secret(secret))
     else:
         SessionConfig(secret_key=Secret(secret))
-
-
-def create_session(size: int = 16) -> Dict[str, str]:
-    return {"key": secrets.token_hex(size)}
 
 
 @get(path="/")

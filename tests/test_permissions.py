@@ -14,7 +14,7 @@ from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 
 if TYPE_CHECKING:
-    from esmerald.types import APIGateHandler
+    from esmerald.types import APIGateHandler  # pragma: no cover
 
 
 class LocalPermission(BasePermission):
@@ -90,7 +90,7 @@ def test_permissions_with_websocket_handler() -> None:
     client = create_client(routes=WebSocketGateway(handler=my_websocket_route_handler))
 
     with pytest.raises(WebSocketDisconnect), client.websocket_connect("/") as ws:
-        ws.send_json({"data": "123"})
+        ws.send_json({"data": "123"})  # pragma: no cover
 
     with client.websocket_connect("/", headers={"allow_all": "true"}) as ws:
         ws.send_json({"data": "123"})
@@ -147,7 +147,7 @@ def test_permissions_with_child_esmerald_two() -> None:
 def test_permissions_with_child_esmerald_three() -> None:
     @route(methods=["GET"], path="/secret")
     async def my_asgi_handler() -> None:
-        ...
+        """ """
 
     child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)], permissions=[AllowAny])
 

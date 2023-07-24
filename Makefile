@@ -31,6 +31,18 @@ test: ## Runs the tests
 coverage: ## Run tests and coverage
 	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests
 
+# .PHONY: cov
+# cov: ## Run tests and coverage only for specific ones
+# 	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=${ONLY} --cov-report=term-missing:skip-covered --cov-report=html ${ONLY}
+
+.PHONY: cov
+cov: ## Run tests and coverage only for specific ones
+	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage run -m pytest tests
+	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage combine
+	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage report --show-missing
+	ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage html
+
+
 .PHONY: requirements
 requirements: ## Install requirements for development
 	pip install -e .[dev,test,doc,templates,jwt,encoders,schedulers,ipython,ptpython]

@@ -27,6 +27,7 @@ import secrets
 from typing import TYPE_CHECKING, Optional
 
 from starlette.datastructures import MutableHeaders
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from esmerald.datastructures import Cookie
 from esmerald.enums import ScopeType
@@ -34,9 +35,7 @@ from esmerald.exceptions import PermissionDenied
 from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.requests import Request
 
-if TYPE_CHECKING:
-    from starlette.types import ASGIApp, Message, Receive, Scope, Send
-
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.config import CSRFConfig
 
 CSRF_SECRET_BYTES = 32

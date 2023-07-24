@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
+from esmerald.enums import MediaType
 from esmerald.exceptions import TemplateNotFound  # noqa
 from esmerald.responses import TemplateResponse  # noqa
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.enums import MediaType
 
 
 class Template(ResponseContainer[TemplateResponse]):
@@ -47,7 +47,10 @@ class Template(ResponseContainer[TemplateResponse]):
         }
         try:
             return TemplateResponse(template_name=self.name, **data)
-        except TemplateNotFound as e:
+        except TemplateNotFound as e:  # pragma: no cover
             if self.alternative_template:
-                return TemplateResponse(template_name=self.alternative_template, **data)
+                try:
+                    return TemplateResponse(template_name=self.alternative_template, **data)
+                except TemplateNotFound as ex:  # pragma: no cover
+                    raise ex
             raise e

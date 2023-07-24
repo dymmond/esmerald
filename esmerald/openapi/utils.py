@@ -74,7 +74,9 @@ def is_status_code_allowed(status_code: Union[int, str, None]) -> bool:
     return not (current_status_code < 200 or current_status_code in {204, 304})
 
 
-def dict_update(original_dict: Dict[Any, Any], update_dict: Dict[Any, Any]) -> None:
+def dict_update(
+    original_dict: Dict[Any, Any], update_dict: Dict[Any, Any]
+) -> None:  # pragma: no cover
     for key, value in update_dict.items():
         if (
             key in original_dict

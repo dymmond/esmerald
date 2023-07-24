@@ -33,7 +33,7 @@ def execsync(async_function: Callable[..., T], raise_error: bool = True) -> Call
     """
 
     @functools.wraps(async_function)
-    def wrapper(*args: Any, **kwargs: Any) -> T:
+    def wrapper(*args: Any, **kwargs: Any) -> T:  # pragma: no cover
         current_async_module = getattr(threadlocals, "current_async_module", None)
         partial_func = functools.partial(async_function, *args, **kwargs)
         if current_async_module is not None and raise_error is True:

@@ -1,3 +1,5 @@
+import dataclasses
+from dataclasses import is_dataclass
 from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
 
@@ -14,7 +16,7 @@ from starlette.responses import StreamingResponse as StreamingResponse  # noqa
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.backgound import BackgroundTask, BackgroundTasks
     from esmerald.types import ResponseCookies
 
@@ -45,6 +47,8 @@ class Response(StarletteResponse, Generic[T]):
     def transform(value: Any) -> Dict[str, Any]:
         if isinstance(value, BaseModel):
             return value.model_dump()
+        if is_dataclass(value):
+            return dataclasses.asdict(value)
         raise TypeError("unsupported type")  # pragma: no cover
 
     def render(self, content: Any) -> bytes:
@@ -62,5 +66,5 @@ class Response(StarletteResponse, Generic[T]):
             if self.media_type == MediaType.JSON:
                 return dumps(content, default=self.transform, ensure_ascii=False).encode("utf-8")
             return super().render(content)
-        except (AttributeError, ValueError, TypeError) as e:
+        except (AttributeError, ValueError, TypeError) as e:  # pragma: no cover
             raise ImproperlyConfigured("Unable to serialize response content") from e

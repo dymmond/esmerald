@@ -9,7 +9,7 @@ from starlette.routing import Host
 
 from esmerald import Request
 from esmerald.applications import Esmerald
-from esmerald.exceptions import HTTPException, WebSocketException
+from esmerald.exceptions import HTTPException, ImproperlyConfigured, WebSocketException
 from esmerald.middleware import TrustedHostMiddleware
 from esmerald.responses import JSONResponse, PlainTextResponse
 from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -19,7 +19,7 @@ from esmerald.staticfiles import StaticFiles
 from esmerald.websockets import WebSocket
 
 
-async def error_500(request, exc):
+async def error_500(request, exc):  # pragma: no cover
     return JSONResponse({"detail": "Server Error"}, status_code=500)
 
 
@@ -59,7 +59,7 @@ def custom_subdomain(request: Request) -> PlainTextResponse:
 
 @get()
 def runtime_error(request: Request) -> None:
-    raise RuntimeError()
+    raise RuntimeError()  # pragma: no cover
 
 
 @head()
@@ -304,6 +304,24 @@ def test_app_add_route(test_client_factory):
     assert response.text == "Hello, World!"
 
 
+def test_app_add_route_with_root_path(test_client_factory):
+    @get()
+    async def homepage(request: Request) -> PlainTextResponse:
+        return PlainTextResponse("Hello, World!")
+
+    app = Esmerald(
+        routes=[
+            Gateway("/", handler=homepage),
+        ],
+        root_path="/",
+    )
+
+    client = test_client_factory(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.text == "Hello, World!"
+
+
 def test_app_add_websocket_route(test_client_factory):
     @websocket()
     async def websocket_endpoint(socket: WebSocket) -> None:
@@ -422,3 +440,15 @@ def test_app_sync_gen_lifespan(test_client_factory):
         assert not cleanup_complete
     assert startup_complete
     assert cleanup_complete
+
+
+def test_raise_improperly_configured_on_route_function(test_client_factory):
+    with pytest.raises(ImproperlyConfigured):
+        app = Esmerald(routes=[])
+        app.route(path="/")
+
+
+def test_raise_improperly_configured_on_websocket_route_function(test_client_factory):
+    with pytest.raises(ImproperlyConfigured):
+        app = Esmerald(routes=[])
+        app.websocket_route(path="/")

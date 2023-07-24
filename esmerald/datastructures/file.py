@@ -5,10 +5,10 @@ from pydantic import FilePath, field_validator, model_validator  # noqa
 from starlette.responses import FileResponse  # noqa
 
 from esmerald.datastructures.base import ResponseContainer
+from esmerald.enums import MediaType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.enums import MediaType
 
 
 class File(ResponseContainer[FileResponse]):

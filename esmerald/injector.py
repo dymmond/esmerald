@@ -5,7 +5,7 @@ from esmerald.transformers.datastructures import Signature
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.typing import AnyCallable
 
 

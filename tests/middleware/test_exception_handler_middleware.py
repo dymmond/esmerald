@@ -10,7 +10,7 @@ from esmerald.requests import Request
 
 
 async def dummy_app(scope: Any, receive: Any, send: Any) -> None:
-    return None
+    """ """
 
 
 middleware = EsmeraldAPIExceptionMiddleware(dummy_app, False, {})

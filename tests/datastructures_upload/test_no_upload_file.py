@@ -16,8 +16,6 @@ async def create_file(data: Union[UploadFile, None] = File()) -> Dict[str, str]:
 
 @post("/upload", status_code=status.HTTP_200_OK)
 async def upload_file(data: Union[UploadFile, None] = File()) -> Dict[str, str]:
-    if not data:
-        return {"details": "No file sent"}
     return {"size": data.filename}
 
 

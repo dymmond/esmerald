@@ -7,27 +7,27 @@ from esmerald.param_functions import DirectInjects
 from esmerald.testclient import EsmeraldTestClient
 
 
-class CallableDependency:
+class CallableDependency:  # pragma: no cover
     def __call__(self, value: str) -> str:
         return value
 
 
-class CallableGenDependency:
+class CallableGenDependency:  # pragma: no cover
     def __call__(self, value: str) -> Generator[str, None, None]:
         yield value
 
 
-class AsyncCallableDependency:
+class AsyncCallableDependency:  # pragma: no cover
     async def __call__(self, value: str) -> str:
         return value
 
 
-class AsyncCallableGenDependency:
+class AsyncCallableGenDependency:  # pragma: no cover
     async def __call__(self, value: str) -> AsyncGenerator[str, None]:
         yield value
 
 
-class MethodsDependency:
+class MethodsDependency:  # pragma: no cover
     def synchronous(self, value: str) -> str:
         return value
 

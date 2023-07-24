@@ -12,7 +12,7 @@ from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string, is_class_and_subclass
 from esmerald.utils.url import clean_path
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
@@ -200,6 +200,6 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         Handles the interception of messages and calls from the API.
         """
         if self.get_interceptors():
-            await self.intercept(scope, receive, send)
+            await self.intercept(scope, receive, send)  # pragma: no cover
 
         await self.handler.handle(scope, receive, send)

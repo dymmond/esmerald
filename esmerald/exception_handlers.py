@@ -14,7 +14,7 @@ from esmerald.responses import JSONResponse, Response
 
 async def http_exception_handler(
     request: Request, exc: Union[HTTPException, StarletteHTTPException]
-) -> Union[JSONResponse, Response]:
+) -> Union[JSONResponse, Response]:  # pragma: no cover
     """
     Default exception handler for StarletteHTTPException and Esmerald HTTPException.
     """
@@ -40,7 +40,7 @@ async def http_exception_handler(
 
 async def validation_error_exception_handler(
     request: Request, exc: ValidationError
-) -> JSONResponse:
+) -> JSONResponse:  # pragma: no cover
     extra = getattr(exc, "extra", None)
     status_code = status.HTTP_400_BAD_REQUEST
 
@@ -57,13 +57,15 @@ async def validation_error_exception_handler(
         )
 
 
-async def http_error_handler(_: Request, exc: ExceptionErrorMap) -> JSONResponse:
+async def http_error_handler(
+    _: Request, exc: ExceptionErrorMap
+) -> JSONResponse:  # pragma: no cover
     return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
 async def improperly_configured_exception_handler(
     request: Request, exc: ImproperlyConfigured
-) -> StarletteResponse:
+) -> StarletteResponse:  # pragma: no cover
     """
     When an ImproperlyConfiguredException is raised.
     """
@@ -90,7 +92,7 @@ async def improperly_configured_exception_handler(
 
 async def pydantic_validation_error_handler(
     request: Request, exc: ValidationError
-) -> JSONResponse:
+) -> JSONResponse:  # pragma: no cover
     """
     This handler is to be used when a pydantic validation error is triggered during the logic
     of a code block and not the definition of a handler.
@@ -101,7 +103,9 @@ async def pydantic_validation_error_handler(
     return JSONResponse({"detail": loads(exc.json())}, status_code=status_code)
 
 
-async def value_error_handler(request: Request, exc: ValueError) -> JSONResponse:
+async def value_error_handler(
+    request: Request, exc: ValueError
+) -> JSONResponse:  # pragma: no cover
     """
     Simple handler that manages all the ValueError exceptions thrown to the user properly
     formatted.

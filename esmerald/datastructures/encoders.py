@@ -1,19 +1,19 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from esmerald.datastructures.base import ResponseContainer
+from esmerald.enums import MediaType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.enums import MediaType
 
 try:
     from esmerald.responses.encoders import ORJSONResponse
-except ImportError:
+except ImportError:  # pragma: no cover
     ORJSONResponse = None  # type: ignore
 
 try:
     from esmerald.responses.encoders import UJSONResponse
-except ImportError:
+except ImportError:  # pragma: no cover
     UJSONResponse = None  # type: ignore
 
 

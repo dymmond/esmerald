@@ -1,5 +1,4 @@
 import contextlib
-import typing
 import uuid
 
 import pytest
@@ -23,7 +22,7 @@ from esmerald.testclient import create_client
 
 @get(path="/", permissions=[DenyAll])
 async def deny_access(request: Request) -> JSONResponse:
-    return JSONResponse("Hello, world")
+    """ """
 
 
 @get(path="/", permissions=[AllowAny])
@@ -63,18 +62,6 @@ async def disable_user(request: Request) -> StarletteResponse:
 async def user_no_match(request: Request) -> StarletteResponse:  # pragma: no cover
     content = "User fixed no match"
     return StarletteResponse(content)
-
-
-@get(path="/", status_code=200)
-async def partial_endpoint(arg: typing.Any, request: Request) -> JSONResponse:
-    return JSONResponse({"arg": arg})
-
-
-@get(path="/")
-async def partial_ws_endpoint(websocket: WebSocket) -> None:
-    await websocket.accept()
-    await websocket.send_json({"url": str(websocket.url)})
-    await websocket.close()
 
 
 @get(path="/", media_type=MediaType.TEXT, status_code=200)
@@ -590,7 +577,7 @@ ok = PlainTextResponse("OK")
 
 @get(path="/")
 async def get_ok() -> PlainTextResponse:
-    return PlainTextResponse("OK")
+    return PlainTextResponse("OK")  # pragma: no cover
 
 
 def test_include_urls(test_client_factory):
@@ -974,7 +961,7 @@ def test_duplicated_param_names():
 
 def test_exception_on_mounted_apps(test_app_client_factory):
     class CustomException(Exception):
-        ...
+        """ """
 
     @get(path="/")
     def exc(request: Request) -> CustomException:

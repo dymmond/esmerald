@@ -5,7 +5,7 @@ from esmerald.exception_handlers import pydantic_validation_error_handler, value
 from esmerald.testclient import create_client
 
 
-class DataIn(BaseModel):
+class DataIn(BaseModel):  # pragma: no cover
     """
     Model example with DataIn for custom cases
     and testing purposes.
@@ -30,7 +30,7 @@ async def raised() -> JSON:
 
 
 @put("/update")
-async def update() -> JSON:
+async def update() -> DataIn:  # pragma: no cover
     DataIn(name="Esmerald", email="test@esmerald.dev")
 
 
