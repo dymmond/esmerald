@@ -72,7 +72,6 @@ def include(
     router_conf_module = import_module(arg)
     pattern = pattern or DEFAULT_PATTERN
     patterns = getattr(router_conf_module, pattern, None)
-
     if not patterns:
         raise ImproperlyConfigured(
             f"There is no pattern {pattern} found in {arg}. "

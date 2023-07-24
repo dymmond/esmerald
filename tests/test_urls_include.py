@@ -27,6 +27,19 @@ def test_pattern_include():
     assert len(include_routes) == 1
 
 
-def test_raises_improperly_configured():
+def test_raises_improperly_configured_for_arg():
     with pytest.raises(ImproperlyConfigured):
         include(1, pattern="my_urls")
+
+
+def test_raises_improperly_configured_for_patterns():
+    with pytest.raises(ImproperlyConfigured):
+        include("tests.test_urls_include", pattern="my_url_routes")
+
+
+my_url_routes_tuple = Gateway(handler=home)
+
+
+def test_raises_improperly_configured_for_patterns_not_list():
+    with pytest.raises(ImproperlyConfigured):
+        include("tests.test_urls_include", pattern="my_url_routes_tuple")
