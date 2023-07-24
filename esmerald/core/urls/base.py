@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional, Sequence, Union
 
 from esmerald.exceptions import ImproperlyConfigured
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.routing.gateways import Gateway, WebSocketGateway
     from esmerald.routing.router import Include
 
@@ -66,7 +66,6 @@ def include(
         pattern (Optional[str], optional): The name of the list to be read from the
         module. Defaults to `router_patterns`.
     """
-
     if not isinstance(arg, str):
         raise ImproperlyConfigured("The value should be a string with the format <module>.<file>")
 
