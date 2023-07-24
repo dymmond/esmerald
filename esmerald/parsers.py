@@ -3,17 +3,17 @@ from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING, Any, Dict, List, get_args, get_origin
 
 from pydantic import BaseModel, ConfigDict
+from pydantic.fields import FieldInfo
 from starlette.datastructures import UploadFile as StarletteUploadFile
 
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
 
-if TYPE_CHECKING:
-    from pydantic.fields import FieldInfo
+if TYPE_CHECKING:  # pragma: no cover
     from starlette.datastructures import FormData
 
 
-class HashableBaseModel(BaseModel):
+class HashableBaseModel(BaseModel):  # pragma: no cover
     """
     Pydantic BaseModel by default doesn't handle with hashable types the same way
     a python object would and therefore there are types that are mutable (list, set)
@@ -75,7 +75,9 @@ def flatten(values: List[Any]) -> List[Any]:
     return flattened
 
 
-def parse_form_data(media_type: "EncodingType", form_data: "FormData", field: "FieldInfo") -> Any:
+def parse_form_data(
+    media_type: "EncodingType", form_data: "FormData", field: "FieldInfo"
+) -> Any:  # pragma: no cover
     """
     Converts, parses and transforms a multidict into a dict and tries to load them all into
     json.

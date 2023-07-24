@@ -9,6 +9,10 @@ from esmerald.params import Cookie
 from esmerald.testclient import create_client
 
 
+class ErrorInterceptor(EsmeraldInterceptor):
+    """"""
+
+
 class TestInterceptor(EsmeraldInterceptor):
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         request = Request(scope=scope, receive=receive, send=send)
@@ -59,8 +63,20 @@ async def logging_view(data: Item, name: str) -> JSONResponse:
     return JSONResponse({"name": name})
 
 
+@post("/error")
+async def error() -> None:
+    """"""
+
+
 def test_issubclassing_EsmeraldInterceptor(test_client_factory):
     assert issubclass(TestInterceptor, EsmeraldInterceptor)
+
+
+def test_interceptor_not_implemented(test_client_factory):
+    with create_client(routes=[Gateway(handler=error)], interceptors=[ErrorInterceptor]) as client:
+        response = client.get("/error")
+
+        assert response.status_code == 500
 
 
 def test_interceptor_on_application_instance(test_client_factory):

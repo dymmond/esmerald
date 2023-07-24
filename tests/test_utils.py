@@ -3,6 +3,7 @@ from datetime import datetime
 import pytz
 from freezegun import freeze_time
 
+from esmerald.parsers import flatten
 from esmerald.security.utils import convert_time
 
 
@@ -26,3 +27,11 @@ def test_convert_time_tz_info():
     assert time is not None
     assert isinstance(time, datetime)
     assert str(time.tzinfo) == "Europe/Rome"
+
+
+def test_flatten():
+    data = [1, [2], [3, [4, [5]], [[[[[6]]]]]]]
+
+    flatten_data = flatten(data)
+
+    assert flatten_data == [1, 2, 3, 4, 5, 6]

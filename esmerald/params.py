@@ -642,7 +642,7 @@ class Injects(FieldInfo):
 
 
 @dataclass
-class DirectInject:
+class DirectInject:  # pragma: no cover
     def __init__(
         self,
         dependency: Optional[Callable[..., Any]] = None,

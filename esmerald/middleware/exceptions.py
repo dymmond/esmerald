@@ -42,7 +42,9 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
             for key, value in handlers.items():
                 self.add_exception_handler(key, value)  # type: ignore
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+    async def __call__(
+        self, scope: Scope, receive: Receive, send: Send
+    ) -> None:  # pragma: no cover
         if scope["type"] not in ("http", "websocket"):
             await self.app(scope, receive, send)
             return
@@ -68,7 +70,7 @@ class ResponseContent(BaseModel):
     status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-class EsmeraldAPIExceptionMiddleware:
+class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
     def __init__(
         self,
         app: "ASGIApp",

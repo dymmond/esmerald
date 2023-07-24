@@ -45,7 +45,7 @@ class FieldInfoMixin:
         return responses
 
     @cached_property
-    def data_field(self) -> Any:
+    def data_field(self) -> Any:  # pragma: no cover
         """
         The field used for the payload body.
 

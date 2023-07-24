@@ -39,6 +39,7 @@ class OpenAPIConfig(BaseModel):
     swagger_js_url: Optional[str] = None
     swagger_css_url: Optional[str] = None
     swagger_favicon_url: Optional[str] = None
+    with_google_fonts: bool = True
 
     def openapi(self, app: Any) -> Dict[str, Any]:
         """Loads the OpenAPI routing schema"""
@@ -128,6 +129,7 @@ class OpenAPIConfig(BaseModel):
                     title=self.title + " - ReDoc",
                     redoc_js_url=self.redoc_js_url,
                     redoc_favicon_url=self.redoc_favicon_url,
+                    with_google_fonts=True,
                 )
 
             app.add_route(

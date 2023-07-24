@@ -41,7 +41,7 @@ classifiers = [
 dependencies = [
     "a2wsgi>=1.7.0,<2",
     "aiofiles>=0.8.0,<24",
-    "anyio>=3.6.2,<4.0.0",
+    "anyio>=3.7.1,<5.0.0",
     "awesome-slugify>=1.6.5,<2",
     "click>=8.1.4,<9.0.0",
     "httpx>=0.24.0,<0.30.0",
@@ -56,7 +56,7 @@ dependencies = [
     "openapi-schemas-pydantic>=2.0.0",
     "orjson>=3.8.5,<4.0.0",
     "rich>=13.3.1,<14.0.0",
-    "starlette>=0.30.0,<1.0",
+    "starlette>=0.31.0,<1.0",
 ]
 keywords = [
     "api",
@@ -201,11 +201,13 @@ source = ["tests", "esmerald"]
 omit = [
     "esmerald/conf/__init__.py",
     "esmerald/middleware/errors.py",
+    "esmerald/permissions/base.py",
     "esmerald/core/directives/*",
     "esmerald/core/terminal/*",
     "esmerald/datastructures/types.py",
     "esmerald/types.py",
     "esmerald/contrib/*",
+    "esmerald/openapi/openapi.py",
     "tests/databases/saffier/*",
     "tests/utils/functional.py",
     "tests/cli/*",

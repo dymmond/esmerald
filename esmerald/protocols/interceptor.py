@@ -1,9 +1,7 @@
-from typing import TYPE_CHECKING, TypeVar
+from typing import TypeVar
 
+from starlette.types import Receive, Scope, Send
 from typing_extensions import Protocol, runtime_checkable
-
-if TYPE_CHECKING:
-    from starlette.types import Receive, Scope, Send
 
 T = TypeVar("T")
 

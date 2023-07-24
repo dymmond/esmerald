@@ -61,3 +61,27 @@ def test_templates_starlette(template_dir, test_client_factory):
     client = EsmeraldTestClient(app)
     response = client.get("/")
     assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>"
+
+
+def test_alternative_template(template_dir, test_client_factory):
+    path = os.path.join(template_dir, "index.html")
+    with open(path, "w") as file:
+        file.write("<html>Hello, <a href='{{ url_for('homepage') }}'>world</a></html>")
+
+    @get()
+    async def homepage(request: Request) -> Template:
+        return Template(
+            name="indx.html", context={"request": request}, alternative_template="index.html"
+        )
+
+    app = Esmerald(
+        debug=True,
+        routes=[Gateway("/", handler=homepage)],
+        template_config=TemplateConfig(
+            directory=template_dir,
+            engine=JinjaTemplateEngine,
+        ),
+    )
+    client = EsmeraldTestClient(app)
+    response = client.get("/")
+    assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>"

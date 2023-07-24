@@ -72,6 +72,7 @@ class EsmeraldAPISettings(BaseSettings):
     )
     swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui.min.css"
     swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
+    with_google_fonts: bool = True
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
@@ -279,6 +280,7 @@ class EsmeraldAPISettings(BaseSettings):
             root_path_in_servers=self.root_path_in_servers,
             openapi_version=self.openapi_version,
             openapi_url=self.openapi_url,
+            with_google_fonts=self.with_google_fonts,
         )
 
     @property

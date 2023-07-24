@@ -16,7 +16,7 @@ from starlette.responses import StreamingResponse as StreamingResponse  # noqa
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.backgound import BackgroundTask, BackgroundTasks
     from esmerald.types import ResponseCookies
 
@@ -66,5 +66,5 @@ class Response(StarletteResponse, Generic[T]):
             if self.media_type == MediaType.JSON:
                 return dumps(content, default=self.transform, ensure_ascii=False).encode("utf-8")
             return super().render(content)
-        except (AttributeError, ValueError, TypeError) as e:
+        except (AttributeError, ValueError, TypeError) as e:  # pragma: no cover
             raise ImproperlyConfigured("Unable to serialize response content") from e

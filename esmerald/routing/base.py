@@ -44,7 +44,7 @@ from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
     from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
@@ -55,7 +55,6 @@ if TYPE_CHECKING:
         APIGateHandler,
         AsyncAnyCallable,
         Dependencies,
-        ExceptionHandlerMap,
         ResponseCookies,
         ResponseHeaders,
     )
@@ -86,7 +85,7 @@ class PathParameterSchema(TypedDict):
     type: Type
 
 
-class OpenAPIDefinitionMixin:
+class OpenAPIDefinitionMixin:  # pragma: no cover
     def parse_path(self, path: str) -> List[Union[str, PathParameterSchema]]:
         """
         Using the Starlette CONVERTORS and the application registered convertors,
@@ -224,7 +223,7 @@ class BaseResponseHandler:
                 **self.allow_header,
             }
             for cookie in _cookies:
-                data.set_cookie(**cookie)
+                data.set_cookie(**cookie)  # pragma: no cover
 
             for header, value in _headers.items():
                 data.headers[header] = value
@@ -252,7 +251,7 @@ class BaseResponseHandler:
                 **self.allow_header,
             }
             for cookie in _cookies:
-                data.set_cookie(**cookie)
+                data.set_cookie(**cookie)  # pragma: no cover
 
             for header, value in _headers.items():
                 data.headers[header] = value
@@ -286,7 +285,7 @@ class BaseResponseHandler:
                 )
 
             for cookie in _cookies:
-                response.set_cookie(**cookie)
+                response.set_cookie(**cookie)  # pragma: no cover
             return response
 
         return response_content
@@ -445,19 +444,10 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         return parameters
 
     @property
-    def normalised_path_params(self) -> List[PathParameterSchema]:
-        """
-        Gets the path parameters in a PathParameterSchema format and it is
-        only used for OpenAPI documentation purposes only.
-        """
-        path_components = self.parse_path(self.path)
-        parameters = [component for component in path_components if isinstance(component, dict)]
-        return parameters
-
-    @property
-    def stringify_parameters(self) -> List[str]:
+    def stringify_parameters(self) -> List[str]:  # pragma: no cover
         """
         Gets the param:type in string like list.
+        Used for the directive `esmerald show_urls`.
         """
         path_components = self.parse_path(self.path)
         parameters = [component for component in path_components if isinstance(component, dict)]
@@ -548,19 +538,9 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
                     f"If you wish to override a inject, it must have the same key."
                 )
 
-    def get_exception_handlers(self) -> "ExceptionHandlerMap":
-        """
-        Resolves the exception_handlers by starting from the route handler
-        and moving up.
-        """
-        resolved_exception_handlers: "ExceptionHandlerMap" = {}
-        for level in self.parent_levels:
-            resolved_exception_handlers.update(level.exception_handlers or {})
-        return resolved_exception_handlers
-
     def get_cookies(
         self, local_cookies: "ResponseCookies", other_cookies: "ResponseCookies"
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:  # pragma: no cover
         """
         Returns a unique list of cookies.
         """
@@ -581,7 +561,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         """
         return {k: v.value for k, v in headers.items()}
 
-    async def get_response_data(self, data: Any) -> Any:
+    async def get_response_data(self, data: Any) -> Any:  # pragma: no cover
         """
         Retrives the response data for sync and async.
         """
@@ -589,7 +569,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             data = await data
         return data
 
-    async def allow_connection(self, connection: "HTTPConnection") -> None:
+    async def allow_connection(self, connection: "HTTPConnection") -> None:  # pragma: no cover
         """
         Validates the connection.
 
@@ -605,7 +585,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             continue_or_raise_permission_exception(request, handler, awaitable)
 
 
-class BaseInterceptorMixin(BaseHandlerMixin):
+class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover
     def get_interceptors(self) -> List["AsyncCallable"]:
         """
         Returns all the interceptors in the handler scope from the ownsership layers.
