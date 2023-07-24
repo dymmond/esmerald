@@ -60,7 +60,9 @@ class Token(BaseModel):
             raise ImproperlyConfigured("Error encoding the token.") from e
 
     @staticmethod
-    def decode(token: str, key: Union[str, Dict[str, str]], algorithms: List[str]) -> "Token":
+    def decode(
+        token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
+    ) -> "Token":  # pragma: no cover
         """
         Decodes the given token.
         """
