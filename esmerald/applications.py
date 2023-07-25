@@ -380,56 +380,32 @@ class Esmerald(Starlette):
         return setting_value
 
     def activate_openapi(self) -> None:
+        def set_value(value: Any, name: str) -> Any:
+            """Sets the value to be passed into the openapi configuration"""
+            if value or not getattr(self.openapi_config, name, None):
+                setattr(self.openapi_config, name, value)
+
         if self.enable_openapi:
-            if self.title or not self.openapi_config.title:
-                self.openapi_config.title = self.title
-            if self.version or not self.openapi_config.version:
-                self.openapi_config.version = self.version
-            if self.openapi_version or not self.openapi_config.openapi_version:
-                self.openapi_config.openapi_version = self.openapi_version
-            if self.summary or not self.openapi_config.summary:
-                self.openapi_config.summary = self.summary
-            if self.description or not self.openapi_config.description:
-                self.openapi_config.description = self.description
-            if self.tags or not self.openapi_config.tags:
-                self.openapi_config.tags = self.tags
-            if self.servers or not self.openapi_config.servers:
-                self.openapi_config.servers = self.servers
-            if self.terms_of_service or not self.openapi_config.terms_of_service:
-                self.openapi_config.terms_of_service = self.terms_of_service
-            if self.contact or not self.openapi_config.contact:
-                self.openapi_config.contact = self.contact
-            if self.license or not self.openapi_config.license:
-                self.openapi_config.license = self.license
-            if self.root_path_in_servers or not self.openapi_config.root_path_in_servers:
-                self.openapi_config.root_path_in_servers = self.root_path_in_servers
-            if self.docs_url or not self.openapi_config.docs_url:
-                self.openapi_config.docs_url = self.docs_url
-            if self.redoc_url or not self.openapi_config.redoc_url:
-                self.openapi_config.redoc_url = self.redoc_url
-            if (
-                self.swagger_ui_oauth2_redirect_url
-                or not self.openapi_config.swagger_ui_oauth2_redirect_url
-            ):
-                self.openapi_config.swagger_ui_oauth2_redirect_url = (
-                    self.swagger_ui_oauth2_redirect_url
-                )
-            if self.redoc_js_url or not self.openapi_config.redoc_js_url:
-                self.openapi_config.redoc_js_url = self.redoc_js_url
-            if self.redoc_favicon_url or not self.openapi_config.redoc_favicon_url:
-                self.openapi_config.redoc_favicon_url = self.redoc_favicon_url
-            if self.swagger_ui_init_oauth or not self.openapi_config.swagger_ui_init_oauth:
-                self.openapi_config.swagger_ui_init_oauth = self.swagger_ui_init_oauth
-            if self.swagger_ui_parameters or not self.openapi_config.swagger_ui_parameters:
-                self.openapi_config.swagger_ui_parameters = self.swagger_ui_parameters
-            if self.swagger_js_url or not self.openapi_config.swagger_js_url:
-                self.openapi_config.swagger_js_url = self.swagger_js_url
-            if self.swagger_css_url or not self.openapi_config.swagger_css_url:
-                self.openapi_config.swagger_css_url = self.swagger_css_url
-            if self.swagger_favicon_url or not self.openapi_config.swagger_favicon_url:
-                self.openapi_config.swagger_favicon_url = self.swagger_favicon_url
-            if self.openapi_url or not self.openapi_config.openapi_url:
-                self.openapi_config.openapi_url = self.openapi_url
+            set_value(self.title, "title")
+            set_value(self.version, "version")
+            set_value(self.openapi_version, "openapi_version")
+            set_value(self.summary, "summary")
+            set_value(self.description, "description")
+            set_value(self.tags, "tags")
+            set_value(self.servers, "servers")
+            set_value(self.terms_of_service, "terms_of_service")
+            set_value(self.root_path_in_servers, "root_path_in_servers")
+            set_value(self.docs_url, "docs_url")
+            set_value(self.redoc_url, "redoc_url")
+            set_value(self.swagger_ui_oauth2_redirect_url, "swagger_ui_oauth2_redirect_url")
+            set_value(self.redoc_js_url, "redoc_js_url")
+            set_value(self.redoc_favicon_url, "redoc_favicon_url")
+            set_value(self.swagger_ui_init_oauth, "swagger_ui_init_oauth")
+            set_value(self.swagger_ui_parameters, "swagger_ui_parameters")
+            set_value(self.swagger_js_url, "swagger_js_url")
+            set_value(self.swagger_css_url, "swagger_css_url")
+            set_value(self.swagger_favicon_url, "swagger_favicon_url")
+            set_value(self.openapi_url, "openapi_url")
 
             self.openapi_config.enable(self)
 
