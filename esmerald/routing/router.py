@@ -819,7 +819,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
     ) -> None:
         _path: str = None
         if not path:
-            _path = "/"  # pragma: no covergit add
+            _path = "/"  # pragma: no cover
         super().__init__(
             path=_path,
             endpoint=endpoint,

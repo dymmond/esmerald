@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Callable, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
 
 from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
@@ -247,11 +247,11 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
         self.handler = handler
-        self.dependencies = {}
+        self.dependencies: Any = {}
         self.interceptors: Sequence["Interceptor"] = []
         self.permissions: Sequence["Permission"] = []
-        self.middleware = []
-        self.exception_handlers = {}
+        self.middleware: Any = []
+        self.exception_handlers: Any = {}
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None

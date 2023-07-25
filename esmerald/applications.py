@@ -44,7 +44,7 @@ from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways, views
-from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
+from esmerald.routing.router import HTTPHandler, Include, Router, WebhookHandler, WebSocketHandler
 from esmerald.types import (
     APIGateHandler,
     ASGIApp,
@@ -61,9 +61,9 @@ from esmerald.types import (
 )
 from esmerald.utils.helpers import is_class_and_subclass
 
-if TYPE_CHECKING:
-    from esmerald.conf import EsmeraldLazySettings  # pragma: no cover
-    from esmerald.types import SettingsType, TemplateConfig  # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
+    from esmerald.conf import EsmeraldLazySettings
+    from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
 
@@ -379,7 +379,7 @@ class Esmerald(Starlette):
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gate = gateways.WebhookGateway(
-                        handler=route_handler,
+                        handler=cast("WebhookHandler", route_handler),
                         name=route_handler.fn.__name__,
                     )
 
