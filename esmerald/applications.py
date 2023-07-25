@@ -205,259 +205,93 @@ class Esmerald(Starlette):
 
         self.parent = parent
 
-        self._debug = (
-            debug
-            if debug is not None
-            else self.get_settings_value(self.settings_config, esmerald_settings, "debug")
-        )
+        self._debug = self.load_settings_value("debug", debug, is_boolean=True)
         self.debug = self._debug
 
-        self.title = title or self.get_settings_value(
-            self.settings_config, esmerald_settings, "title"
+        self.title = self.load_settings_value("title", title)
+        self.app_name = self.load_settings_value("app_name", app_name)
+        self.description = self.load_settings_value("description", description)
+        self.version = self.load_settings_value("version", version)
+        self.openapi_version = self.load_settings_value("openapi_version", openapi_version)
+        self.summary = self.load_settings_value("summary", summary)
+        self.contact = self.load_settings_value("contact", contact)
+        self.terms_of_service = self.load_settings_value("terms_of_service", terms_of_service)
+        self.license = self.load_settings_value("license", license)
+        self.servers = self.load_settings_value("servers", servers)
+        self.secret_key = self.load_settings_value("secret_key", secret_key)
+        self.allowed_hosts = self.load_settings_value("allowed_hosts", allowed_hosts)
+        self.allow_origins = self.load_settings_value("allow_origins", allow_origins)
+        self.permissions = self.load_settings_value("permissions", permissions) or []
+        self.interceptors = self.load_settings_value("interceptors", interceptors) or []
+        self.dependencies = self.load_settings_value("dependencies", dependencies) or {}
+        self.csrf_config = self.load_settings_value("csrf_config", csrf_config)
+        self.cors_config = self.load_settings_value("cors_config", cors_config)
+        self.openapi_config = self.load_settings_value("openapi_config", openapi_config)
+        self.template_config = self.load_settings_value("template_config", template_config)
+        self.static_files_config = self.load_settings_value(
+            "static_files_config", static_files_config
         )
-        self.app_name = app_name or self.get_settings_value(
-            self.settings_config, esmerald_settings, "app_name"
-        )
-        self.description = description or self.get_settings_value(
-            self.settings_config, esmerald_settings, "app_name"
-        )
-        self.version = version or self.get_settings_value(
-            self.settings_config, esmerald_settings, "version"
-        )
-        self.openapi_version = openapi_version or self.get_settings_value(
-            self.settings_config, esmerald_settings, "openapi_version"
-        )
-        self.summary = summary or self.get_settings_value(
-            self.settings_config, esmerald_settings, "summary"
-        )
-        self.contact = contact or self.get_settings_value(
-            self.settings_config, esmerald_settings, "contact"
-        )
-        self.terms_of_service = terms_of_service or self.get_settings_value(
-            self.settings_config, esmerald_settings, "terms_of_service"
-        )
-        self.license = license or self.get_settings_value(
-            self.settings_config, esmerald_settings, "license"
-        )
-        self.servers = servers or self.get_settings_value(
-            self.settings_config, esmerald_settings, "servers"
-        )
-        self.secret_key = secret_key or self.get_settings_value(
-            self.settings_config, esmerald_settings, "secret_key"
-        )
-        self.allowed_hosts = allowed_hosts or self.get_settings_value(
-            self.settings_config, esmerald_settings, "allowed_hosts"
-        )
-        self.allow_origins = allow_origins or self.get_settings_value(
-            self.settings_config, esmerald_settings, "allow_origins"
-        )
-        self.permissions = (
-            permissions
-            or self.get_settings_value(self.settings_config, esmerald_settings, "permissions")
-            or []
-        )
-        self.interceptors = (
-            interceptors
-            or self.get_settings_value(self.settings_config, esmerald_settings, "interceptors")
-            or []
-        )
-        self.dependencies = (
-            dependencies
-            or self.get_settings_value(self.settings_config, esmerald_settings, "dependencies")
-            or {}
-        )
-        self.csrf_config = csrf_config or self.get_settings_value(
-            self.settings_config, esmerald_settings, "csrf_config"
-        )
-        self.cors_config = cors_config or self.get_settings_value(
-            self.settings_config, esmerald_settings, "cors_config"
-        )
-        self.openapi_config = openapi_config or self.get_settings_value(
-            self.settings_config, esmerald_settings, "openapi_config"
-        )
-        self.template_config = template_config or self.get_settings_value(
-            self.settings_config, esmerald_settings, "template_config"
-        )
-        self.static_files_config = static_files_config or self.get_settings_value(
-            self.settings_config, esmerald_settings, "static_files_config"
-        )
-        self.session_config = session_config or self.get_settings_value(
-            self.settings_config, esmerald_settings, "session_config"
-        )
-        self.response_class = response_class or self.get_settings_value(
-            self.settings_config, esmerald_settings, "response_class"
-        )
-        self.response_cookies = response_cookies or self.get_settings_value(
-            self.settings_config, esmerald_settings, "response_cookies"
-        )
-        self.response_headers = response_headers or self.get_settings_value(
-            self.settings_config, esmerald_settings, "response_headers"
-        )
-        self.scheduler_class = scheduler_class or self.get_settings_value(
-            self.settings_config, esmerald_settings, "scheduler_class"
-        )
-        self.scheduler_tasks = (
-            scheduler_tasks
-            or self.get_settings_value(self.settings_config, esmerald_settings, "scheduler_tasks")
-            or {}
-        )
+        self.session_config = self.load_settings_value("session_config", session_config)
+        self.response_class = self.load_settings_value("response_class", response_class)
+        self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
+        self.response_headers = self.load_settings_value("response_headers", response_headers)
+        self.scheduler_class = self.load_settings_value("scheduler_class", scheduler_class)
+        self.scheduler_tasks = self.load_settings_value("scheduler_tasks", scheduler_tasks) or {}
         self.scheduler_configurations = (
-            scheduler_configurations
-            or self.get_settings_value(
-                self.settings_config, esmerald_settings, "scheduler_configurations"
-            )
-            or {}
+            self.load_settings_value("scheduler_configurations", scheduler_configurations) or {}
         )
-        self.enable_scheduler = (
-            enable_scheduler
-            if enable_scheduler is not None
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "enable_scheduler"
-            )
+        self.enable_scheduler = self.load_settings_value(
+            "enable_scheduler", enable_scheduler, is_boolean=True
         )
-        self.timezone = timezone or self.get_settings_value(
-            self.settings_config, esmerald_settings, "timezone"
-        )
-        self.root_path = root_path or self.get_settings_value(
-            self.settings_config, esmerald_settings, "root_path"
-        )
-
-        self.middleware = (  # type: ignore
-            middleware  # type: ignore
-            or self.get_settings_value(self.settings_config, esmerald_settings, "middleware")
-            or []
-        )
-        _exception_handlers = exception_handlers or self.get_settings_value(
-            self.settings_config, esmerald_settings, "exception_handlers"
-        )
+        self.timezone = self.load_settings_value("timezone", timezone)
+        self.root_path = self.load_settings_value("root_path", root_path)
+        self.middleware = self.load_settings_value("middleware", middleware) or []
+        _exception_handlers = self.load_settings_value("exception_handlers", exception_handlers)
         self.exception_handlers = {} if _exception_handlers is None else dict(_exception_handlers)
-        self.on_startup = on_startup or self.get_settings_value(
-            self.settings_config, esmerald_settings, "on_startup"
+        self.on_startup = self.load_settings_value("on_startup", on_startup)
+        self.on_shutdown = self.load_settings_value("on_shutdown", on_shutdown)
+        self.lifespan = self.load_settings_value("lifespan", lifespan)
+        self.tags = self.load_settings_value("tags", security)
+        self.include_in_schema = self.load_settings_value(
+            "include_in_schema", include_in_schema, is_boolean=True
         )
-        self.on_shutdown = on_shutdown or self.get_settings_value(
-            self.settings_config, esmerald_settings, "on_shutdown"
+        self.security = self.load_settings_value("security", security)
+        self.enable_openapi = self.load_settings_value(
+            "enable_openapi", enable_openapi, is_boolean=True
         )
-        self.lifespan = lifespan or self.get_settings_value(
-            self.settings_config, esmerald_settings, "lifespan"
+        self.redirect_slashes = self.load_settings_value(
+            "redirect_slashes", redirect_slashes, is_boolean=True
         )
-        self.tags = tags or self.get_settings_value(
-            self.settings_config, esmerald_settings, "tags"
-        )
-        self.include_in_schema = (
-            include_in_schema
-            if include_in_schema is not None
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "include_in_schema"
-            )
-        )
-        self.security = security or self.get_settings_value(
-            self.settings_config, esmerald_settings, "security"
-        )
-        self.enable_openapi = (
-            enable_openapi
-            if enable_openapi is not None
-            else self.get_settings_value(self.settings_config, esmerald_settings, "enable_openapi")
-        )
-        self.redirect_slashes = (
-            redirect_slashes
-            if redirect_slashes is not None
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "redirect_slashes"
-            )
-        )
-        self.pluggables = (
-            pluggables
-            if pluggables
-            else self.get_settings_value(self.settings_config, esmerald_settings, "pluggables")
-        )
+        self.pluggables = self.load_settings_value("pluggables", pluggables)
 
         # OpenAPI Related
-        self.root_path_in_servers = (
-            root_path_in_servers
-            if root_path_in_servers is not None
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "root_path_in_servers"
-            )
+        self.root_path_in_servers = self.load_settings_value(
+            "root_path_in_servers", root_path_in_servers, is_boolean=True
         )
+
         if not self.include_in_schema or not self.enable_openapi:
             self.root_path_in_servers = False
 
-        self.openapi_url = (
-            openapi_url
-            if openapi_url
-            else self.get_settings_value(self.settings_config, esmerald_settings, "openapi_url")
+        self.openapi_url = self.load_settings_value("openapi_url", openapi_url)
+        self.tags = self.load_settings_value("tags", tags)
+        self.docs_url = self.load_settings_value("docs_url", docs_url)
+        self.redoc_url = self.load_settings_value("redoc_url", redoc_url)
+        self.swagger_ui_oauth2_redirect_url = self.load_settings_value(
+            "swagger_ui_oauth2_redirect_url", swagger_ui_oauth2_redirect_url
         )
-
-        self.docs_url = (
-            docs_url
-            if docs_url
-            else self.get_settings_value(self.settings_config, esmerald_settings, "docs_url")
+        self.redoc_js_url = self.load_settings_value("redoc_js_url", redoc_js_url)
+        self.redoc_favicon_url = self.load_settings_value("redoc_favicon_url", redoc_favicon_url)
+        self.swagger_ui_init_oauth = self.load_settings_value(
+            "swagger_ui_init_oauth", swagger_ui_init_oauth
         )
-
-        self.redoc_url = (
-            redoc_url
-            if redoc_url
-            else self.get_settings_value(self.settings_config, esmerald_settings, "redoc_url")
+        self.swagger_ui_parameters = self.load_settings_value(
+            "swagger_ui_parameters", swagger_ui_parameters
         )
+        self.swagger_js_url = self.load_settings_value("swagger_js_url", swagger_js_url)
+        self.swagger_css_url = self.load_settings_value("swagger_css_url", swagger_css_url)
 
-        self.swagger_ui_oauth2_redirect_url = (
-            swagger_ui_oauth2_redirect_url
-            if swagger_ui_oauth2_redirect_url
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "swagger_ui_oauth2_redirect_url"
-            )
-        )
-
-        self.redoc_js_url = (
-            redoc_js_url
-            if redoc_js_url
-            else self.get_settings_value(self.settings_config, esmerald_settings, "redoc_js_url")
-        )
-
-        self.redoc_favicon_url = (
-            redoc_favicon_url
-            if redoc_favicon_url
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "redoc_favicon_url"
-            )
-        )
-
-        self.swagger_ui_init_oauth = (
-            swagger_ui_init_oauth
-            if swagger_ui_init_oauth
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "swagger_ui_init_oauth"
-            )
-        )
-
-        self.swagger_ui_parameters = (
-            swagger_ui_parameters
-            if swagger_ui_parameters
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "swagger_ui_parameters"
-            )
-        )
-
-        self.swagger_js_url = (
-            swagger_js_url
-            if swagger_js_url
-            else self.get_settings_value(self.settings_config, esmerald_settings, "swagger_js_url")
-        )
-
-        self.swagger_css_url = (
-            swagger_css_url
-            if swagger_css_url
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "swagger_css_url"
-            )
-        )
-
-        self.swagger_favicon_url = (
-            swagger_favicon_url
-            if swagger_favicon_url
-            else self.get_settings_value(
-                self.settings_config, esmerald_settings, "swagger_favicon_url"
-            )
+        self.swagger_favicon_url = self.load_settings_value(
+            "swagger_favicon_url", swagger_favicon_url
         )
 
         self.openapi_schema: Optional["OpenAPI"] = None
@@ -496,6 +330,21 @@ class Esmerald(Starlette):
 
         self.activate_openapi()
 
+    def load_settings_value(
+        self, name: Any, value: Optional[Any] = None, is_boolean: bool = False
+    ) -> Any:
+        """
+        Loads the value from the settings or returns the value passed.
+        """
+        if not is_boolean:
+            if not value:
+                return self.get_settings_value(self.settings_config, esmerald_settings, name)
+            return value
+
+        if value is not None:
+            return value
+        return self.get_settings_value(self.settings_config, esmerald_settings, name)
+
     def activate_scheduler(self) -> None:
         """
         Makes sure the scheduler is accessible.
@@ -531,56 +380,32 @@ class Esmerald(Starlette):
         return setting_value
 
     def activate_openapi(self) -> None:
+        def set_value(value: Any, name: str) -> Any:
+            """Sets the value to be passed into the openapi configuration"""
+            if value or not getattr(self.openapi_config, name, None):
+                setattr(self.openapi_config, name, value)
+
         if self.enable_openapi:
-            if self.title or not self.openapi_config.title:
-                self.openapi_config.title = self.title
-            if self.version or not self.openapi_config.version:
-                self.openapi_config.version = self.version
-            if self.openapi_version or not self.openapi_config.openapi_version:
-                self.openapi_config.openapi_version = self.openapi_version
-            if self.summary or not self.openapi_config.summary:
-                self.openapi_config.summary = self.summary
-            if self.description or not self.openapi_config.description:
-                self.openapi_config.description = self.description
-            if self.tags or not self.openapi_config.tags:
-                self.openapi_config.tags = self.tags
-            if self.servers or not self.openapi_config.servers:
-                self.openapi_config.servers = self.servers
-            if self.terms_of_service or not self.openapi_config.terms_of_service:
-                self.openapi_config.terms_of_service = self.terms_of_service
-            if self.contact or not self.openapi_config.contact:
-                self.openapi_config.contact = self.contact
-            if self.license or not self.openapi_config.license:
-                self.openapi_config.license = self.license
-            if self.root_path_in_servers or not self.openapi_config.root_path_in_servers:
-                self.openapi_config.root_path_in_servers = self.root_path_in_servers
-            if self.docs_url or not self.openapi_config.docs_url:
-                self.openapi_config.docs_url = self.docs_url
-            if self.redoc_url or not self.openapi_config.redoc_url:
-                self.openapi_config.redoc_url = self.redoc_url
-            if (
-                self.swagger_ui_oauth2_redirect_url
-                or not self.openapi_config.swagger_ui_oauth2_redirect_url
-            ):
-                self.openapi_config.swagger_ui_oauth2_redirect_url = (
-                    self.swagger_ui_oauth2_redirect_url
-                )
-            if self.redoc_js_url or not self.openapi_config.redoc_js_url:
-                self.openapi_config.redoc_js_url = self.redoc_js_url
-            if self.redoc_favicon_url or not self.openapi_config.redoc_favicon_url:
-                self.openapi_config.redoc_favicon_url = self.redoc_favicon_url
-            if self.swagger_ui_init_oauth or not self.openapi_config.swagger_ui_init_oauth:
-                self.openapi_config.swagger_ui_init_oauth = self.swagger_ui_init_oauth
-            if self.swagger_ui_parameters or not self.openapi_config.swagger_ui_parameters:
-                self.openapi_config.swagger_ui_parameters = self.swagger_ui_parameters
-            if self.swagger_js_url or not self.openapi_config.swagger_js_url:
-                self.openapi_config.swagger_js_url = self.swagger_js_url
-            if self.swagger_css_url or not self.openapi_config.swagger_css_url:
-                self.openapi_config.swagger_css_url = self.swagger_css_url
-            if self.swagger_favicon_url or not self.openapi_config.swagger_favicon_url:
-                self.openapi_config.swagger_favicon_url = self.swagger_favicon_url
-            if self.openapi_url or not self.openapi_config.openapi_url:
-                self.openapi_config.openapi_url = self.openapi_url
+            set_value(self.title, "title")
+            set_value(self.version, "version")
+            set_value(self.openapi_version, "openapi_version")
+            set_value(self.summary, "summary")
+            set_value(self.description, "description")
+            set_value(self.tags, "tags")
+            set_value(self.servers, "servers")
+            set_value(self.terms_of_service, "terms_of_service")
+            set_value(self.root_path_in_servers, "root_path_in_servers")
+            set_value(self.docs_url, "docs_url")
+            set_value(self.redoc_url, "redoc_url")
+            set_value(self.swagger_ui_oauth2_redirect_url, "swagger_ui_oauth2_redirect_url")
+            set_value(self.redoc_js_url, "redoc_js_url")
+            set_value(self.redoc_favicon_url, "redoc_favicon_url")
+            set_value(self.swagger_ui_init_oauth, "swagger_ui_init_oauth")
+            set_value(self.swagger_ui_parameters, "swagger_ui_parameters")
+            set_value(self.swagger_js_url, "swagger_js_url")
+            set_value(self.swagger_css_url, "swagger_css_url")
+            set_value(self.swagger_favicon_url, "swagger_favicon_url")
+            set_value(self.openapi_url, "openapi_url")
 
             self.openapi_config.enable(self)
 

@@ -58,7 +58,7 @@ def test_child_nested_esmerald_disabled_openapi():
             "info": {
                 "title": "Esmerald",
                 "summary": "Esmerald application",
-                "description": "test_client",
+                "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },
@@ -128,7 +128,7 @@ def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
             "info": {
                 "title": "Esmerald",
                 "summary": "Esmerald application",
-                "description": "test_client",
+                "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },
@@ -198,7 +198,7 @@ def test_access_nested_child_esmerald_openapi_only(test_client_factory):
             "info": {
                 "title": "Esmerald",
                 "summary": "Esmerald application",
-                "description": "test_client",
+                "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },
@@ -258,6 +258,8 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
                                 routes=[Gateway(handler=read_item)],
                                 enable_openapi=True,
                                 include_in_schema=True,
+                                description="Test description",
+                                summary="A summary",
                             ),
                         ),
                     ],
@@ -265,7 +267,7 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
                     include_in_schema=False,
                 ),
             ),
-        ]
+        ],
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text
@@ -274,8 +276,8 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
             "openapi": "3.1.0",
             "info": {
                 "title": "Esmerald",
-                "summary": "Esmerald application",
-                "description": "test_client",
+                "summary": "A summary",
+                "description": "Test description",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },
@@ -352,7 +354,7 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_include_openapi_
             "info": {
                 "title": "Esmerald",
                 "summary": "Esmerald application",
-                "description": "test_client",
+                "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },

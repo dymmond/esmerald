@@ -77,7 +77,7 @@ def test_openapi_schema_default():
         "info": {
             "title": "Esmerald",
             "summary": "Esmerald application",
-            "description": "test_client",
+            "description": "Highly scalable, performant, easy to learn and for every application.",
             "contact": {"name": "admin", "email": "admin@myapp.com"},
             "version": another_app.version,
         },

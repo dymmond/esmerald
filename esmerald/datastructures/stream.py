@@ -37,7 +37,7 @@ class Stream(ResponseContainer[StreamingResponse]):
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],
-    ) -> StreamingResponse:
+    ) -> StreamingResponse:  # pragma: no cover
         return StreamingResponse(
             background=self.background,
             content=self.iterator
