@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 SUCCESSFUL_RESPONSE = "Successful response"
 
 
-class wget(WebhookHandler):
+class whget(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -137,7 +137,7 @@ class whead(WebhookHandler):
         )
 
 
-class woptions(WebhookHandler):
+class whoptions(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -193,7 +193,7 @@ class woptions(WebhookHandler):
         )
 
 
-class wtrace(WebhookHandler):  # pragma: no cover
+class whtrace(WebhookHandler):  # pragma: no cover
     def __init__(
         self,
         path: Optional[str] = None,
@@ -249,7 +249,7 @@ class wtrace(WebhookHandler):  # pragma: no cover
         )
 
 
-class wpost(WebhookHandler):
+class whpost(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -305,7 +305,7 @@ class wpost(WebhookHandler):
         )
 
 
-class wput(WebhookHandler):
+class whput(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -361,7 +361,7 @@ class wput(WebhookHandler):
         )
 
 
-class wpatch(WebhookHandler):
+class whpatch(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -417,7 +417,7 @@ class wpatch(WebhookHandler):
         )
 
 
-class wdelete(WebhookHandler):
+class whdelete(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -473,7 +473,7 @@ class wdelete(WebhookHandler):
         )
 
 
-class wroute(WebhookHandler):
+class whroute(WebhookHandler):
     def __init__(
         self,
         path: Optional[str] = None,
@@ -502,14 +502,14 @@ class wroute(WebhookHandler):
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
-        if not methods or not isinstance(methods, list):
+        if not methods or not isinstance(methods, list):  # pragma: no cover
             raise ImproperlyConfigured(
                 "http handler demands `methods` to be declared. "
                 "An example would be: @route(methods=['GET', 'PUT'])."
             )
 
         for method in methods:
-            if method.upper() not in AVAILABLE_METHODS:
+            if method.upper() not in AVAILABLE_METHODS:  # pragma: no cover
                 raise ImproperlyConfigured(
                     f"Invalid method {method}. "
                     "An example would be: @route(methods=['GET', 'PUT'])."

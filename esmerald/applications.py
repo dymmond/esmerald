@@ -43,7 +43,7 @@ from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
-from esmerald.routing import gateways
+from esmerald.routing import gateways, views
 from esmerald.routing.router import HTTPHandler, Include, Router, WebSocketHandler
 from esmerald.types import (
     APIGateHandler,
@@ -358,8 +358,44 @@ class Esmerald(Starlette):
         """
         Creates the signature model for the webhooks.
         """
+        webhooks = []
         for route in self.webhooks:
+            if not isinstance(route, gateways.WebhookGateway):
+                raise ImproperlyConfigured(
+                    f"The webhooks should be an instances of 'WebhookGateway', got '{route.__class__.__name__}' instead."
+                )
+
+            if not is_class_and_subclass(route.handler, views.APIView) and not isinstance(
+                route.handler, views.APIView
+            ):
+                if not route.handler.parent:
+                    route.handler.parent = route  # type: ignore
+                    webhooks.append(route)
+            else:
+                if not route.handler.parent:  # pragma: no cover
+                    route(parent=self)  # type: ignore
+
+                handler: views.APIView = cast("views.APIView", route.handler)
+                route_handlers = handler.get_route_handlers()
+                for route_handler in route_handlers:
+                    gate = gateways.WebhookGateway(
+                        handler=route_handler,
+                        name=route_handler.fn.__name__,
+                    )
+
+                    include_in_schema = (
+                        route.include_in_schema
+                        if route.include_in_schema is not None
+                        else route_handler.include_in_schema
+                    )
+                    gate.include_in_schema = include_in_schema
+
+                    webhooks.append(gate)
+                self.webhooks.pop(self.webhooks.index(route))
+
+        for route in webhooks:
             self.router.create_signature_models(route)
+        self.webhooks = webhooks
 
     def activate_scheduler(self) -> None:
         """

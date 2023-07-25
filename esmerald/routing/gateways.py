@@ -227,11 +227,6 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         name: Optional[str] = None,
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-        interceptors: Optional[Sequence["Interceptor"]] = None,
-        permissions: Optional[Sequence["Permission"]] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
         deprecated: Optional[bool] = None,
     ) -> None:
         if is_class_and_subclass(handler, APIView):
@@ -252,11 +247,11 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
         self.handler = handler
-        self.dependencies = dependencies or {}
-        self.interceptors: Sequence["Interceptor"] = interceptors or []
-        self.permissions: Sequence["Permission"] = permissions or []
-        self.middleware = middleware or []
-        self.exception_handlers = exception_handlers or {}
+        self.dependencies = {}
+        self.interceptors: Sequence["Interceptor"] = []
+        self.permissions: Sequence["Permission"] = []
+        self.middleware = []
+        self.exception_handlers = {}
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -276,15 +271,6 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
 
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
-
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        """
-        Handles the interception of messages and calls from the API.
-        """
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
-
-        await self.handler.handle(scope, receive, send)
 
     def generate_operation_id(self) -> str:
         """

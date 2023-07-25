@@ -15,6 +15,21 @@ from esmerald.websockets import WebSocket
 from tests.models import Individual, IndividualFactory
 
 
+class MyView(APIView):
+    @get("/event")
+    async def event(self) -> None:
+        """"""
+
+    @get("/events")
+    async def events(self) -> None:
+        """"""
+
+
+def test_can_generate_views(test_client_factory):
+    with create_client(routes=[Gateway(handler=MyView)], enable_openapi=False) as client:
+        assert len(client.app.routes) == 2
+
+
 @pytest.mark.parametrize(
     "http_verb, http_method, expected_status_code, return_value, return_annotation",
     [

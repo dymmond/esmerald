@@ -101,7 +101,7 @@ class Parent:
                 self.create_signature_models(_route)
 
         if isinstance(route, (Gateway, WebhookGateway)):
-            if not route.handler.parent:
+            if not route.handler.parent:  # pragma: no cover
                 route.handler.parent = route  # type: ignore
 
             if not is_class_and_subclass(route.handler, APIView) and not isinstance(
@@ -232,10 +232,10 @@ class Router(Parent, StarletteRouter):
                     Host,
                     Router,
                 ),
-            ):
+            ) or isinstance(route, WebhookGateway):
                 raise ImproperlyConfigured(
-                    f"The route {route} must be of type Gateway or Include"
-                )  # pragma: no cover
+                    f"The route {route} must be of type Gateway, WebSocketGateway or Include"
+                )
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -760,6 +760,34 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
     Base for a webhook handler.
     """
 
+    _slots__ = (
+        "path",
+        "_permissions",
+        "_dependencies",
+        "_response_handler",
+        "methods",
+        "status_code",
+        "content_encoding",
+        "media_type",
+        "content_media_type",
+        "summary",
+        "description",
+        "include_in_schema",
+        "dependencies",
+        "exception_handlers",
+        "permissions",
+        "middleware",
+        "response_class",
+        "response_cookies",
+        "response_headers",
+        "parent",
+        "tags",
+        "deprecated",
+        "security",
+        "operation_id",
+        "raise_exceptions",
+    )
+
     def __init__(
         self,
         path: Optional[str] = None,
@@ -791,7 +819,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
     ) -> None:
         _path: str = None
         if not path:
-            _path = "/"
+            _path = "/"  # pragma: no covergit add
         super().__init__(
             path=_path,
             endpoint=endpoint,
