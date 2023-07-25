@@ -41,7 +41,8 @@ if TYPE_CHECKING:
     from esmerald.protocols.middleware import MiddlewareProtocol
     from esmerald.requests import Request  # noqa
     from esmerald.responses import Response  # noqa
-    from esmerald.routing.router import Gateway, HTTPHandler, Router, WebSocketHandler  # noqa
+    from esmerald.routing.gateways import Gateway, WebhookGateway  # noqa
+    from esmerald.routing.router import HTTPHandler, Router, WebSocketHandler  # noqa
     from esmerald.routing.views import APIView  # noqa
     from esmerald.websockets import WebSocket  # noqa
 else:
@@ -62,6 +63,7 @@ else:
     MiddlewareProtocol = Any
     APIView = Any
     Gateway = Any
+    WebhookGateway = Any
     Esmerald = Any
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
@@ -108,7 +110,9 @@ APIGateHandler = Union[
     WebSocketGateway,
 ]
 
-RouteParent = Union["Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway"]
+RouteParent = Union[
+    "Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway", "WebhookGateway"
+]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
 SecurityScheme = Dict[str, List[str]]

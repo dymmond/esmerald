@@ -13,6 +13,7 @@ from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Pluggable
+from esmerald.routing import gateways
 from esmerald.types import (
     APIGateHandler,
     Dependencies,
@@ -59,6 +60,7 @@ class EsmeraldAPISettings(BaseSettings):
     enable_openapi: bool = True
     redirect_slashes: bool = True
     root_path_in_servers: bool = True
+    webhooks: Optional[Sequence[gateways.WebhookGateway]] = None
     openapi_url: Optional[str] = "/openapi.json"
     docs_url: Optional[str] = "/docs/swagger"
     redoc_url: Optional[str] = "/docs/redoc"
@@ -281,6 +283,7 @@ class EsmeraldAPISettings(BaseSettings):
             openapi_version=self.openapi_version,
             openapi_url=self.openapi_url,
             with_google_fonts=self.with_google_fonts,
+            webhooks=self.webhooks,
         )
 
     @property

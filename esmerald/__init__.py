@@ -29,10 +29,21 @@ from .pluggables import Extension, Pluggable
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
-from .routing.gateways import Gateway, WebSocketGateway
+from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
 from .routing.router import Include, Router
 from .routing.views import APIView
+from .routing.webhooks import (
+    whdelete,
+    whead,
+    whget,
+    whoptions,
+    whpatch,
+    whpost,
+    whput,
+    whroute,
+    whtrace,
+)
 from .websockets import WebSocket, WebSocketDisconnect
 
 __all__ = [
@@ -87,6 +98,7 @@ __all__ = [
     "TemplateResponse",
     "UploadFile",
     "ValidationErrorException",
+    "WebhookGateway",
     "WebSocket",
     "WebSocketDisconnect",
     "WebSocketGateway",
@@ -102,4 +114,13 @@ __all__ = [
     "status",
     "trace",
     "websocket",
+    "whdelete",
+    "whead",
+    "whget",
+    "whoptions",
+    "whpatch",
+    "whpost",
+    "whput",
+    "whroute",
+    "whtrace",
 ]

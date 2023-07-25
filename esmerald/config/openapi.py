@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 from pydantic import AnyUrl, BaseModel
@@ -40,10 +40,12 @@ class OpenAPIConfig(BaseModel):
     swagger_css_url: Optional[str] = None
     swagger_favicon_url: Optional[str] = None
     with_google_fonts: bool = True
+    webhooks: Optional[Sequence[Any]] = None
 
     def openapi(self, app: Any) -> Dict[str, Any]:
         """Loads the OpenAPI routing schema"""
         openapi_schema = get_openapi(
+            app=app,
             title=self.title,
             version=self.version,
             openapi_version=self.openapi_version,
@@ -55,6 +57,7 @@ class OpenAPIConfig(BaseModel):
             terms_of_service=self.terms_of_service,
             contact=self.contact,
             license=self.license,
+            webhooks=self.webhooks,
         )
         app.openapi_schema = openapi_schema
         return openapi_schema

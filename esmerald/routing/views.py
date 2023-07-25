@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
-    from esmerald.routing.router import HTTPHandler, WebSocketHandler
+    from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
     from esmerald.transformers.model import TransformerModel
     from esmerald.types import (
         Dependencies,
@@ -80,7 +80,7 @@ class APIView:
         """
         Filters out the names of the functions that are not part of the handler itself.
         """
-        from esmerald.routing.router import HTTPHandler, WebSocketHandler
+        from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
         filtered_handlers = [
             attr for attr in dir(self) if not attr.startswith("__") and not attr.endswith("__")
@@ -89,20 +89,22 @@ class APIView:
 
         for handler_name in filtered_handlers:
             if handler_name not in dir(APIView) and isinstance(
-                getattr(self, handler_name), (HTTPHandler, WebSocketHandler)
+                getattr(self, handler_name), (HTTPHandler, WebSocketHandler, WebhookHandler)
             ):
                 route_handlers.append(handler_name)
         return route_handlers
 
-    def get_route_handlers(self) -> List[Union["HTTPHandler", "WebSocketHandler"]]:
+    def get_route_handlers(
+        self,
+    ) -> List[Union["HTTPHandler", "WebSocketHandler", "WebhookHandler"]]:
         """A getter for the apiview's route handlers that sets their parent.
 
         Returns:
             A list containing a copy of the route handlers defined inside the APIView.
         """
-        from esmerald.routing.router import HTTPHandler, WebSocketHandler
+        from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = []
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = []
         filtered_handlers = self.get_filtered_handler()
 
         for handler in filtered_handlers:
@@ -129,7 +131,9 @@ class APIView:
 
         return route_handlers
 
-    def get_route_middleware(self, handler: Union["HTTPHandler", "WebSocketHandler"]) -> None:
+    def get_route_middleware(
+        self, handler: Union["HTTPHandler", "WebSocketHandler", "WebhookHandler"]
+    ) -> None:
         """
         Gets the list of extended middlewares for the handler starting from the last
         to the first by reversing the list
@@ -138,7 +142,7 @@ class APIView:
             handler.middleware.insert(0, middleware)
 
     def get_exception_handlers(
-        self, handler: Union["HTTPHandler", "WebSocketHandler"]
+        self, handler: Union["HTTPHandler", "WebSocketHandler", "WebhookHandler"]
     ) -> "ExceptionHandlerMap":
         """
         Gets the dict of extended exception handlers for the handler starting from the last

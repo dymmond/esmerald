@@ -6,6 +6,7 @@ from typing import (
     Dict,
     List,
     Optional,
+    Sequence,
     Union,
     cast,
 )
@@ -31,6 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     )
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
+    from esmerald.routing.gateways import WebhookGateway
     from esmerald.types import (
         APIGateHandler,
         Dependencies,
@@ -119,6 +121,7 @@ def create_client(
     cookies: Optional[CookieTypes] = None,
     redirect_slashes: Optional[bool] = None,
     tags: Optional[List[Tag]] = None,
+    webhooks: Optional[Sequence["WebhookGateway"]] = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
         app=Esmerald(
@@ -161,6 +164,7 @@ def create_client(
             openapi_version=openapi_version,
             include_in_schema=include_in_schema,
             tags=tags,
+            webhooks=webhooks,
         ),
         base_url=base_url,
         backend=backend,
