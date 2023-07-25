@@ -245,7 +245,7 @@ class Esmerald(Starlette):
         )
         self.timezone = self.load_settings_value("timezone", timezone)
         self.root_path = self.load_settings_value("root_path", root_path)
-        self.middleware = self.load_settings_value("middleware", middleware) or []
+        self._middleware = self.load_settings_value("middleware", middleware) or []
         _exception_handlers = self.load_settings_value("exception_handlers", exception_handlers)
         self.exception_handlers = {} if _exception_handlers is None else dict(_exception_handlers)
         self.on_startup = self.load_settings_value("on_startup", on_startup)
@@ -361,7 +361,7 @@ class Esmerald(Starlette):
             scheduler_class=self.scheduler_class,
             tasks=self.scheduler_tasks,
             timezone=self.timezone,
-            configurations=self.scheduler_configurations,  # type: ignore
+            configurations=self.scheduler_configurations,
         )
 
     def get_settings_value(
@@ -697,9 +697,9 @@ class Esmerald(Starlette):
         for route in self.routes or []:
             handlers_middleware.extend(self.build_routes_middleware(route))
 
-        self.middleware += handlers_middleware  # type: ignore
+        self._middleware += handlers_middleware
 
-        for middleware in self.middleware or []:  # type: ignore
+        for middleware in self._middleware or []:
             if isinstance(middleware, StarletteMiddleware):
                 user_middleware.append(middleware)
             else:

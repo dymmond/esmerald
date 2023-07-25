@@ -1,7 +1,9 @@
 import contextlib
 import uuid
+from dataclasses import dataclass
 
 import pytest
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 from starlette.responses import JSONResponse, PlainTextResponse
 from starlette.responses import Response as StarletteResponse
 from starlette.routing import Host, NoMatchFound
@@ -976,3 +978,45 @@ def test_exception_on_mounted_apps(test_app_client_factory):
     assert "Exception: Exc" in response.text
     assert response.status_code == 500
     assert response.reason_phrase == "Internal Server Error"
+
+
+@dataclass
+class UserIn:
+    name: str
+    email: str
+
+
+@pydantic_dataclass
+class UserOut:
+    name: str
+    email: str
+
+
+def test_response_dataclass(test_app_client_factory):
+    @post(path="/user", status_code=200)
+    def user(data: UserIn) -> UserIn:
+        return data
+
+    data = {"name": "test", "email": "esmerald@esmerald.dev"}
+    app = Esmerald(routes=[Gateway(handler=user)])
+
+    client = test_app_client_factory(app)
+    response = client.post("/user", json=data)
+
+    assert response.status_code == 200
+    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+
+
+def test_response_pydantic_dataclass(test_app_client_factory):
+    @post(path="/another-user", status_code=200)
+    def another_user(data: UserOut) -> UserOut:
+        return data
+
+    data = {"name": "test", "email": "esmerald@esmerald.dev"}
+    app = Esmerald(routes=[Gateway(handler=another_user)])
+
+    client = test_app_client_factory(app)
+    response = client.post("/another-user", json=data)
+
+    assert response.status_code == 200
+    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
