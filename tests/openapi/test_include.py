@@ -40,7 +40,7 @@ def test_add_include_to_openapi(test_client_factory):
             "info": {
                 "title": "Esmerald",
                 "summary": "Esmerald application",
-                "description": "test_client",
+                "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },
@@ -111,7 +111,7 @@ def test_include_no_include_in_schema(test_client_factory):
             "info": {
                 "title": "Esmerald",
                 "summary": "Esmerald application",
-                "description": "test_client",
+                "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
             },
