@@ -54,7 +54,7 @@ from esmerald.responses import Response
 from esmerald.routing._internal import FieldInfoMixin
 from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.events import handle_lifespan_events
-from esmerald.routing.gateways import Gateway, WebSocketGateway
+from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.routing.views import APIView
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.model import TransformerModel
@@ -100,9 +100,9 @@ class Parent:
             for _route in route.routes:
                 self.create_signature_models(_route)
 
-        if isinstance(route, Gateway):
+        if isinstance(route, (Gateway, WebhookGateway)):
             if not route.handler.parent:
-                route.handler.parent = route  # pragma: no cover
+                route.handler.parent = route  # type: ignore
 
             if not is_class_and_subclass(route.handler, APIView) and not isinstance(
                 route.handler, APIView
@@ -114,7 +114,7 @@ class Parent:
 
     def validate_root_route_parent(
         self,
-        value: Union["Router", "Include", "Gateway", "WebSocketGateway"],
+        value: Union["Router", "Include", "Gateway", "WebSocketGateway", "WebhookGateway"],
         override: bool = False,
     ) -> None:
         """
@@ -123,16 +123,16 @@ class Parent:
         """
         # Getting the value of the router for the path
         value.path = clean_path(self.path + getattr(value, "path", "/"))
-        if isinstance(value, (Include, Gateway, WebSocketGateway)):
+        if isinstance(value, (Include, Gateway, WebSocketGateway, WebSocketGateway)):
             if not value.parent and not override:
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
-        if isinstance(value, (Gateway, WebSocketGateway)):
+        if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
             if not is_class_and_subclass(value.handler, APIView) and not isinstance(
                 value.handler, APIView
             ):
                 if not value.handler.parent:
-                    value.handler.parent = value
+                    value.handler.parent = value  # type: ignore
             else:
                 if not value.handler.parent:  # pragma: no cover
                     value(parent=self)  # type: ignore
@@ -156,7 +156,7 @@ class Parent:
                         exception_handlers=value.exception_handlers,
                     )
 
-                    if isinstance(gate, Gateway):
+                    if isinstance(gate, (Gateway, WebhookGateway)):
                         include_in_schema = (
                             value.include_in_schema
                             if value.include_in_schema is not None
@@ -498,12 +498,13 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         operation_id: Optional[str] = None,
         raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
-        if not path:
-            path = "/"
-        super().__init__(path=path, endpoint=endpoint, include_in_schema=include_in_schema)
         """
         Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
         """
+        if not path:
+            path = "/"
+        super().__init__(path=path, endpoint=endpoint, include_in_schema=include_in_schema)
+
         self._permissions: Union[List["Permission"], "VoidType"] = Void
         self._dependencies: "Dependencies" = {}
 
@@ -752,6 +753,73 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
     async def to_response(self, app: "Esmerald", data: Any) -> StarletteResponse:
         response_handler = self.get_response_handler()
         return await response_handler(app=app, data=data)  # type: ignore[call-arg]
+
+
+class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
+    """
+    Base for a webhook handler.
+    """
+
+    def __init__(
+        self,
+        path: Optional[str] = None,
+        endpoint: Callable[..., Any] = None,
+        *,
+        methods: Optional[Sequence[str]] = None,
+        status_code: Optional[int] = None,
+        content_encoding: Optional[str] = None,
+        content_media_type: Optional[str] = None,
+        summary: Optional[str] = None,
+        description: Optional[str] = None,
+        include_in_schema: bool = True,
+        background: Optional["BackgroundTaskType"] = None,
+        dependencies: Optional["Dependencies"] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
+        permissions: Optional[List["Permission"]] = None,
+        middleware: Optional[List["Middleware"]] = None,
+        media_type: Union[MediaType, str] = MediaType.JSON,
+        response_class: Optional["ResponseType"] = None,
+        response_cookies: Optional["ResponseCookies"] = None,
+        response_headers: Optional["ResponseHeaders"] = None,
+        tags: Optional[Sequence[str]] = None,
+        deprecated: Optional[bool] = None,
+        response_description: Optional[str] = "Successful Response",
+        responses: Optional[Dict[int, OpenAPIResponse]] = None,
+        security: Optional[List["SecurityScheme"]] = None,
+        operation_id: Optional[str] = None,
+        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
+    ) -> None:
+        _path: str = None
+        if not path:
+            _path = "/"
+        super().__init__(
+            path=_path,
+            endpoint=endpoint,
+            methods=methods,
+            summary=summary,
+            description=description,
+            status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
+            include_in_schema=include_in_schema,
+            background=background,
+            dependencies=dependencies,
+            exception_handlers=exception_handlers,
+            permissions=permissions,
+            middleware=middleware,
+            media_type=media_type,
+            response_class=response_class,
+            response_cookies=response_cookies,
+            response_headers=response_headers,
+            tags=tags,
+            deprecated=deprecated,
+            security=security,
+            operation_id=operation_id,
+            raise_exceptions=raise_exceptions,
+            response_description=response_description,
+            responses=responses,
+        )
+        self.path = path
 
 
 class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):

@@ -55,7 +55,9 @@ def get_fields_from_routes(
             request_fields.extend(get_fields_from_routes(route.routes, request_fields))
             continue
 
-        if getattr(route, "include_in_schema", None) and isinstance(route, gateways.Gateway):
+        if getattr(route, "include_in_schema", None) and isinstance(
+            route, (gateways.Gateway, gateways.WebhookGateway)
+        ):
             handler = cast(router.HTTPHandler, route.handler)
 
             # Get the data_field
@@ -170,9 +172,10 @@ def get_openapi_operation_request_body(
 
 def get_openapi_path(
     *,
-    route: gateways.Gateway,
+    route: Union[gateways.Gateway, gateways.WebhookGateway],
     operation_ids: Set[str],
     field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+    is_deprecated: bool = False,
 ) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:  # pragma: no cover
     path: Dict[str, Any] = {}
     security_schemes: Dict[str, Any] = {}
@@ -200,6 +203,10 @@ def get_openapi_path(
         operation = get_openapi_operation(
             route=handler, method=method, operation_ids=operation_ids
         )
+        # If the parent if marked as deprecated, it takes precedence
+        if is_deprecated or route.deprecated:
+            operation["deprecated"] = is_deprecated if is_deprecated else route.deprecated
+
         parameters: List[Dict[str, Any]] = []
         security_definitions = {}
         for security in handler.security:
@@ -344,6 +351,7 @@ def should_include_in_schema(route: router.Include) -> bool:
 
 def get_openapi(
     *,
+    app: Any,
     title: str,
     version: str,
     openapi_version: str = "3.1.0",
@@ -355,6 +363,7 @@ def get_openapi(
     terms_of_service: Optional[Union[str, AnyUrl]] = None,
     contact: Optional[Contact] = None,
     license: Optional[License] = None,
+    webhooks: Optional[Sequence[BaseRoute]] = None,
 ) -> Dict[str, Any]:  # pragma: no cover
     """
     Builds the whole OpenAPI route structure and object
@@ -383,8 +392,9 @@ def get_openapi(
 
     components: Dict[str, Dict[str, Any]] = {}
     paths: Dict[str, Dict[str, Any]] = {}
+    webhooks_paths: Dict[str, Dict[str, Any]] = {}
     operation_ids: Set[str] = set()
-    all_fields = get_fields_from_routes(list(routes or []))
+    all_fields = get_fields_from_routes(list(routes or []) + list(webhooks or []))
     schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
     field_mapping, definitions = get_definitions(
         fields=all_fields,
@@ -393,12 +403,18 @@ def get_openapi(
 
     # Iterate through the routes
     def iterate_routes(
+        app: Any,
         routes: Sequence[BaseRoute],
         definitions: Any = None,
         components: Any = None,
         prefix: Optional[str] = "",
+        is_webhook: bool = False,
+        is_deprecated: bool = False,
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         for route in routes:
+            if app.router.deprecated:
+                is_deprecated = True
+
             if isinstance(route, router.Include):
                 if hasattr(route, "app"):
                     if not should_include_in_schema(route):
@@ -410,27 +426,42 @@ def get_openapi(
 
                 if hasattr(route, "app") and isinstance(route.app, (Esmerald, ChildEsmerald)):
                     route_path = clean_path(prefix + route.path)
+
                     definitions, components = iterate_routes(
-                        route.app.routes, definitions, components, prefix=route_path
+                        app,
+                        route.app.routes,
+                        definitions,
+                        components,
+                        prefix=route_path,
+                        is_deprecated=is_deprecated if is_deprecated else route.deprecated,
                     )
                 else:
                     route_path = clean_path(prefix + route.path)
                     definitions, components = iterate_routes(
-                        route.routes, definitions, components, prefix=route_path
+                        app,
+                        route.routes,
+                        definitions,
+                        components,
+                        prefix=route_path,
+                        is_deprecated=is_deprecated if is_deprecated else route.deprecated,
                     )
                 continue
 
-            if isinstance(route, gateways.Gateway):
+            if isinstance(route, (gateways.Gateway, gateways.WebhookGateway)):
                 result = get_openapi_path(
                     route=route,
                     operation_ids=operation_ids,
                     field_mapping=field_mapping,
+                    is_deprecated=is_deprecated,
                 )
                 if result:
                     path, security_schemes, path_definitions = result
                     if path:
-                        route_path = clean_path(prefix + route.path_format)
-                        paths.setdefault(route_path, {}).update(path)
+                        if is_webhook:
+                            webhooks_paths.setdefault(route.path, {}).update(path)
+                        else:
+                            route_path = clean_path(prefix + route.path_format)
+                            paths.setdefault(route_path, {}).update(path)
                     if security_schemes:
                         components.setdefault("securitySchemes", {}).update(security_schemes)
                     if path_definitions:
@@ -439,14 +470,25 @@ def get_openapi(
         return definitions, components
 
     definitions, components = iterate_routes(
-        routes=routes, definitions=definitions, components=components
+        app=app, routes=routes, definitions=definitions, components=components
     )
+
+    if webhooks:
+        definitions, components = iterate_routes(
+            app=app,
+            routes=webhooks,
+            definitions=definitions,
+            components=components,
+            is_webhook=True,
+        )
 
     if definitions:
         components["schemas"] = {k: definitions[k] for k in sorted(definitions)}
     if components:
         output["components"] = components
     output["paths"] = paths
+    if webhooks_paths:
+        output["webhooks"] = webhooks_paths
     if tags:
         output["tags"] = tags
 

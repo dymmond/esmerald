@@ -170,6 +170,7 @@ class Esmerald(Starlette):
         pluggables: Optional[Dict[str, Pluggable]] = None,
         parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
         root_path_in_servers: bool = None,
+        webhooks: Optional[Sequence["gateways.WebhookGateway"]] = None,
         openapi_url: Optional[str] = None,
         docs_url: Optional[str] = None,
         redoc_url: Optional[str] = None,
@@ -272,6 +273,7 @@ class Esmerald(Starlette):
         if not self.include_in_schema or not self.enable_openapi:
             self.root_path_in_servers = False
 
+        self.webhooks = self.load_settings_value("webhooks", webhooks) or []
         self.openapi_url = self.load_settings_value("openapi_url", openapi_url)
         self.tags = self.load_settings_value("tags", tags)
         self.docs_url = self.load_settings_value("docs_url", docs_url)
@@ -315,6 +317,12 @@ class Esmerald(Starlette):
         self.pluggable_stack = self.build_pluggable_stack()
         self.template_engine = self.get_template_engine(self.template_config)
 
+        self._configure()
+
+    def _configure(self) -> None:
+        """
+        Starts the Esmerald configurations.
+        """
         if self.static_files_config:
             for config in (
                 self.static_files_config
@@ -328,6 +336,7 @@ class Esmerald(Starlette):
         if self.enable_scheduler:
             self.activate_scheduler()
 
+        self.create_webhooks_signature_model(self.webhooks)
         self.activate_openapi()
 
     def load_settings_value(
@@ -344,6 +353,13 @@ class Esmerald(Starlette):
         if value is not None:
             return value
         return self.get_settings_value(self.settings_config, esmerald_settings, name)
+
+    def create_webhooks_signature_model(self, webhooks: Sequence[gateways.WebhookGateway]) -> None:
+        """
+        Creates the signature model for the webhooks.
+        """
+        for route in self.webhooks:
+            self.router.create_signature_models(route)
 
     def activate_scheduler(self) -> None:
         """
@@ -406,6 +422,9 @@ class Esmerald(Starlette):
             set_value(self.swagger_css_url, "swagger_css_url")
             set_value(self.swagger_favicon_url, "swagger_favicon_url")
             set_value(self.openapi_url, "openapi_url")
+
+            if self.webhooks or not self.openapi_config.webhooks:
+                self.openapi_config.webhooks = self.webhooks
 
             self.openapi_config.enable(self)
 

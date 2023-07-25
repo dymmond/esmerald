@@ -15,7 +15,7 @@ from esmerald.utils.url import clean_path
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
-    from esmerald.routing.router import HTTPHandler, WebSocketHandler
+    from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
     from esmerald.types import Dependencies, ExceptionHandlerMap, Middleware, ParentType
 
 
@@ -203,3 +203,97 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
             await self.intercept(scope, receive, send)  # pragma: no cover
 
         await self.handler.handle(scope, receive, send)
+
+
+class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
+    __slots__ = (
+        "_interceptors",
+        "path",
+        "handler",
+        "name",
+        "include_in_schema",
+        "parent",
+        "dependencies",
+        "middleware",
+        "exception_handlers",
+        "interceptors",
+        "permissions",
+    )
+
+    def __init__(
+        self,
+        *,
+        handler: Union["WebhookHandler", APIView],
+        name: Optional[str] = None,
+        include_in_schema: bool = True,
+        parent: Optional["ParentType"] = None,
+        dependencies: Optional["Dependencies"] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
+        interceptors: Optional[Sequence["Interceptor"]] = None,
+        permissions: Optional[Sequence["Permission"]] = None,
+        exception_handlers: Optional["ExceptionHandlerMap"] = None,
+        deprecated: Optional[bool] = None,
+    ) -> None:
+        if is_class_and_subclass(handler, APIView):
+            handler = handler(parent=self)  # type: ignore
+
+        self.path = handler.path
+        self.methods = getattr(handler, "http_methods", None)
+
+        if not name:
+            if not isinstance(handler, APIView):
+                name = clean_string(handler.fn.__name__)
+            else:
+                name = clean_string(handler.__class__.__name__)
+
+        self.endpoint = cast("Callable", handler)
+        self.include_in_schema = include_in_schema
+
+        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
+        self.name = name
+        self.handler = handler
+        self.dependencies = dependencies or {}
+        self.interceptors: Sequence["Interceptor"] = interceptors or []
+        self.permissions: Sequence["Permission"] = permissions or []
+        self.middleware = middleware or []
+        self.exception_handlers = exception_handlers or {}
+        self.response_class = None
+        self.response_cookies = None
+        self.response_headers = None
+        self.deprecated = deprecated
+        self.parent = parent
+        (
+            handler.path_regex,
+            handler.path_format,
+            handler.param_convertors,
+        ) = compile_path(self.path)
+
+        if not is_class_and_subclass(self.handler, APIView) and not isinstance(
+            self.handler, APIView
+        ):
+            self.handler.name = self.name
+            self.handler.get_response_handler()
+
+            if not handler.operation_id:
+                handler.operation_id = self.generate_operation_id()
+
+    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interception of messages and calls from the API.
+        """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
+        await self.handler.handle(scope, receive, send)
+
+    def generate_operation_id(self) -> str:
+        """
+        Generates an unique operation if for the handler
+        """
+        operation_id = self.name + self.handler.path_format
+        operation_id = re.sub(r"\W", "_", operation_id)
+        methods = list(self.handler.methods)
+
+        assert self.handler.methods
+        operation_id = f"{operation_id}_{methods[0].lower()}"
+        return operation_id
