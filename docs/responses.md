@@ -6,6 +6,12 @@ Esmerald having `Starlette` under the hood also means that all available respons
 
 You simply just need to decide which type of response your function will have and let `Esmerald` take care of the rest.
 
+!!! Tip
+
+    Esmerald automatically understands if you are typing/returning a **dataclass**,
+    a **Pydantic dataclass** or a **Pydantic model** and converts
+    them automatically into a [JSON response](#jsonresponse).
+
 ## Esmerald responses and the application
 
 The available responses from `Esmerald` are:
@@ -130,6 +136,9 @@ This response returns a `TemplateResponse`.
 
 * **name** - Template name/location. E.g.: `accounts/list.html`.
 * **context** - The dict context to be sent to the template.
+* **alternative_template** - Template name/location of an alternative template if the **name** of
+the original is not found.
+E.g.: If `accounts/list.html` is not found `alternative_template="base/list.html"`.
 
 ### Redirect
 
@@ -361,4 +370,25 @@ unique and you might want to return directly a `string`, a `dict`, an `integer`,
 
 ```python
 {!> ../docs_src/responses/others.py !}
+```
+### Example
+
+Below we have a few examples of possible responses recognised by Esmerald automatically.
+
+**Pydantic model**
+
+```python hl_lines="13 24 27"
+{!> ../docs_src/extras/form/model.py !}
+```
+
+**Pydantic dataclass**
+
+```python hl_lines="14 25 28"
+{!> ../docs_src/extras/form/pydantic_dc.py !}
+```
+
+**Python dataclass**
+
+```python hl_lines="15 26 29"
+{!> ../docs_src/extras/form/dataclass.py !}
 ```

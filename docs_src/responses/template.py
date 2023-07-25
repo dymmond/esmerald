@@ -14,6 +14,7 @@ def home() -> Template:
     return Template(
         name="my-tem",
         context={"user": "me"},
+        alternative_template=...,
     )
 
 

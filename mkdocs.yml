@@ -58,6 +58,8 @@ nav:
       - Routes: "routing/routes.md"
       - Handlers: "routing/handlers.md"
       - APIView: "routing/apiview.md"
+      - OpenAPI Specific:
+          - Webhooks: "routing/webhooks.md"
   - Databases:
       - Saffier:
           - Motivation: "databases/saffier/motivation.md"
@@ -85,6 +87,7 @@ nav:
   - Extra, Advanced & Useful:
       - Request Data: "extras/request-data.md"
       - Upload Files: "extras/upload-files.md"
+      - Form: "extras/forms.md"
       - Body: "extras/body-fields.md"
       - Headers: "extras/header-fields.md"
       - Cookies: "extras/cookie-fields.md"
