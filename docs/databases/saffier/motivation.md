@@ -19,7 +19,7 @@ be used
 
 ## Motivation
 
-Saffier was heavily inspired by [Encode ORM](https://www.encode.io/orm) wioth a great familiar interface.
+Saffier was heavily inspired by [Encode ORM](https://www.encode.io/orm) with a great familiar interface.
 
 * Declaring tables
 * Querying models
