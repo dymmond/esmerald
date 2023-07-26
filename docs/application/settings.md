@@ -412,6 +412,22 @@ parameters.
 
     <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
 
+* **stoplight_url** - URL where the Stoplight elements should be served.
+
+    <sup>Default: `/docs/elements`</sup>
+
+* **stoplight_css_url** - URL of the Stoplight elements JS.
+
+    <sup>Default: `https://unpkg.com/@stoplight/elements/styles.min.css`</sup>
+
+* **stoplight_js_url** - URL of the Stoplight elements CSS.
+
+    <sup>Default: `https://unpkg.com/@stoplight/elements/web-components.min.js`</sup>
+
+* **stoplight_favicon_url** - URL where the Stoplight elements favicon should be served.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
 * **password_hashers** - A list of [password hashers](../password-hashers.md) used for encryption of the passwords.
 
     <sup>Default: `["esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",

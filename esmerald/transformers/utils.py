@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, NamedTuple, Set, Tuple, Type, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, NamedTuple, Set, Tuple, Type, Union, cast
 
 from pydantic.fields import FieldInfo
 from starlette.datastructures import URL
@@ -57,7 +57,7 @@ def create_parameter_setting(
     """
     Creates a setting definition for a parameter.
     """
-    extra = field_info.json_schema_extra or {}
+    extra = cast("Dict[str, Any]", field_info.json_schema_extra) or {}
     is_required = extra.get(REQUIRED, True)
     default_value = field_info.default if field_info.default is not Undefined else None
 
