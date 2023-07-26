@@ -116,6 +116,43 @@ def get_redoc_html(
     return HTMLResponse(html)
 
 
+def get_stoplight_html(
+    openapi_url: str,
+    title: str,
+    stoplight_css: str,
+    stoplight_js: str,
+    stoplight_favicon_url: str,
+    style: str = "body { margin: 0; padding: 0 }",
+) -> HTMLResponse:
+    """Renders the new stoplight openapi docs"""
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>{title}</title>
+            <!-- needed for adaptive design -->
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <link rel="shortcut icon" href="{stoplight_favicon_url}">
+            <link rel="stylesheet" href="{stoplight_css}">
+            <script src="{stoplight_js}" crossorigin></script>
+            <style>{style}</style>
+    """
+    html += f"""
+        <body>
+            <noscript>
+                Stoplight requires Javascript to function. Please enable it to browse the documentation.
+            </noscript>
+            <elements-api
+                apiDescriptionUrl="{openapi_url}"
+                router="hash"
+                layout="sidebar"
+            />
+        </body>
+    </html>
+    """
+    return HTMLResponse(html)
+
+
 def get_swagger_ui_oauth2_redirect_html() -> HTMLResponse:
     # copied from https://github.com/swagger-api/swagger-ui/blob/v4.14.0/dist/oauth2-redirect.html
     html = """

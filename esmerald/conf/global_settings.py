@@ -75,6 +75,12 @@ class EsmeraldAPISettings(BaseSettings):
     swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui.min.css"
     swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
     with_google_fonts: bool = True
+    stoplight_js_url: Optional[str] = "https://unpkg.com/@stoplight/elements/web-components.min.js"
+    stoplight_css_url: Optional[str] = "https://unpkg.com/@stoplight/elements/styles.min.css"
+    stoplight_url: Optional[str] = "/docs/elements"
+    stoplight_favicon_url: str = (
+        "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+    )
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
@@ -284,6 +290,10 @@ class EsmeraldAPISettings(BaseSettings):
             openapi_url=self.openapi_url,
             with_google_fonts=self.with_google_fonts,
             webhooks=self.webhooks,
+            stoplight_css_url=self.stoplight_css_url,
+            stoplight_js_url=self.stoplight_js_url,
+            stoplight_url=self.stoplight_url,
+            stoplight_favicon_url=self.stoplight_favicon_url,
         )
 
     @property
