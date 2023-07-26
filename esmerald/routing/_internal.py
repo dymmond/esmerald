@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import Any, Dict, List, get_args
+from typing import Any, Dict, List, cast, get_args
 
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
@@ -66,7 +66,7 @@ class FieldInfoMixin:
                 body.title = f"Body_{self.operation_id}"
 
             # For everything else that is not MULTI_PART
-            extra = body.json_schema_extra or {}
+            extra = cast("Dict[str, Any]", body.json_schema_extra) or {}
             if extra.get("media_type", EncodingType.JSON) != EncodingType.MULTI_PART:
                 return body
 

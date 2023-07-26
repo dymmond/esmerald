@@ -182,6 +182,10 @@ class Esmerald(Starlette):
         swagger_js_url: Optional[str] = None,
         swagger_css_url: Optional[str] = None,
         swagger_favicon_url: Optional[str] = None,
+        stoplight_js_url: Optional[str] = None,
+        stoplight_css_url: Optional[str] = None,
+        stoplight_url: Optional[str] = None,
+        stoplight_favicon_url: Optional[str] = None,
     ) -> None:
         self.settings_config = None
 
@@ -294,6 +298,12 @@ class Esmerald(Starlette):
 
         self.swagger_favicon_url = self.load_settings_value(
             "swagger_favicon_url", swagger_favicon_url
+        )
+        self.stoplight_js_url = self.load_settings_value("stoplight_js_url", stoplight_js_url)
+        self.stoplight_css_url = self.load_settings_value("stoplight_css_url", stoplight_css_url)
+        self.stoplight_url = self.load_settings_value("stoplight_url", stoplight_url)
+        self.stoplight_favicon_url = self.load_settings_value(
+            "stoplight_favicon_url", stoplight_favicon_url
         )
 
         self.openapi_schema: Optional["OpenAPI"] = None
@@ -457,6 +467,10 @@ class Esmerald(Starlette):
             set_value(self.swagger_js_url, "swagger_js_url")
             set_value(self.swagger_css_url, "swagger_css_url")
             set_value(self.swagger_favicon_url, "swagger_favicon_url")
+            set_value(self.stoplight_js_url, "stoplight_js_url")
+            set_value(self.stoplight_css_url, "stoplight_css_url")
+            set_value(self.stoplight_url, "stoplight_url")
+            set_value(self.stoplight_favicon_url, "stoplight_favicon_url")
             set_value(self.openapi_url, "openapi_url")
 
             if self.webhooks or not self.openapi_config.webhooks:

@@ -5,6 +5,7 @@ from pydantic import AnyUrl, BaseModel
 
 from esmerald.openapi.docs import (
     get_redoc_html,
+    get_stoplight_html,
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
@@ -32,14 +33,18 @@ class OpenAPIConfig(BaseModel):
     docs_url: Optional[str] = None
     redoc_url: Optional[str] = None
     swagger_ui_oauth2_redirect_url: Optional[str] = None
-    redoc_js_url: str = None
-    redoc_favicon_url: str = None
+    redoc_js_url: Optional[str] = None
+    redoc_favicon_url: Optional[str] = None
     swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
     swagger_ui_parameters: Optional[Dict[str, Any]] = None
     swagger_js_url: Optional[str] = None
     swagger_css_url: Optional[str] = None
     swagger_favicon_url: Optional[str] = None
     with_google_fonts: bool = True
+    stoplight_js_url: Optional[str] = None
+    stoplight_css_url: Optional[str] = None
+    stoplight_url: Optional[str] = None
+    stoplight_favicon_url: Optional[str] = None
     webhooks: Optional[Sequence[Any]] = None
 
     def openapi(self, app: Any) -> Dict[str, Any]:
@@ -137,6 +142,24 @@ class OpenAPIConfig(BaseModel):
 
             app.add_route(
                 path="/", handler=redoc_html, include_in_schema=False, activate_openapi=False
+            )
+
+        if self.openapi_url and self.stoplight_url:
+
+            @get(self.stoplight_url)
+            async def stoplight_html(request: Request) -> HTMLResponse:  # pragma: no cover
+                root_path = request.scope.get("root_path", "").rstrip("/")
+                openapi_url = root_path + self.openapi_url
+                return get_stoplight_html(
+                    openapi_url=openapi_url,
+                    title=self.title + " - Stoplight Elements",
+                    stoplight_js=self.stoplight_js_url,
+                    stoplight_css=self.stoplight_css_url,
+                    stoplight_favicon_url=self.stoplight_favicon_url,
+                )
+
+            app.add_route(
+                path="/", handler=stoplight_html, include_in_schema=False, activate_openapi=False
             )
 
         app.router.activate()
