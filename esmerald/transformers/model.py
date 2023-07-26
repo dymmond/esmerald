@@ -347,10 +347,11 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         for key, value in model_fields.items():
             if value.json_schema_extra is not None:
+                extra = cast("Dict[str, Any]", value.json_schema_extra)
                 if (
-                    value.json_schema_extra.get(ParamType.QUERY)
-                    or value.json_schema_extra.get(ParamType.HEADER)
-                    or value.json_schema_extra.get(ParamType.COOKIE)
+                    extra.get(ParamType.QUERY)
+                    or extra.get(ParamType.HEADER)
+                    or extra.get(ParamType.COOKIE)
                 ):
                     names.add(key)
 

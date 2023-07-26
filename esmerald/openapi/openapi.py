@@ -155,8 +155,10 @@ def get_openapi_operation_request_body(
 
     assert isinstance(data_field, FieldInfo), "The 'data' needs to be a FieldInfo"
     schema = get_schema_from_model_field(field=data_field, field_mapping=field_mapping)
+
     field_info = data_field
-    request_media_type = data_field.json_schema_extra.get("media_type").value
+    extra = cast("Dict[str, Any]", data_field.json_schema_extra)
+    request_media_type = extra.get("media_type").value
     required = field_info.is_required()
 
     request_data_oai: Dict[str, Any] = {}
