@@ -110,7 +110,7 @@ test = [
     "jinja2>=3.1.2,<4.0.0",
     "flask>=1.1.2,<3.0.0",
     "freezegun>=1.2.2,<2.0.0",
-    "mock==5.0.1",
+    "mock==5.1.0",
     "passlib==1.7.4",
     "polyfactory>=2.5.0,<3.0.0",
     "python-jose>=3.3.0,<4",
@@ -120,7 +120,7 @@ test = [
     "ujson>=5.7.0,<6",
 
     # types
-    "types-ujson==5.8.0.0",
+    "types-ujson==5.8.0.1",
     "types-orjson==3.6.2",
 ]
 
