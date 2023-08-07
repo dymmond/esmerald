@@ -1,6 +1,8 @@
 from functools import cached_property
 from typing import Optional, Tuple
 
+from edgy import Database as EdgyDatabase
+from edgy import Registry as EdgyRegistry
 from pydantic import ConfigDict
 from saffier import Database, Registry
 
@@ -20,6 +22,11 @@ class TestSettings(EsmeraldAPISettings):
     def registry(self) -> Tuple[Database, Registry]:
         database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
         return database, Registry(database=database)
+
+    @cached_property
+    def edgy_registry(self) -> Tuple[Database, Registry]:
+        database = EdgyDatabase("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
+        return database, EdgyRegistry(database=database)
 
 
 class TestConfig(TestSettings):
