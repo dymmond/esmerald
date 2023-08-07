@@ -1,5 +1,29 @@
 # Release Notes
 
+## 2.0.4
+
+### Changed
+
+- Updated functional internal crypto to only use the system random.
+- Cleaner codebase for the application settings.
+- Updated version of Asyncz to be at least 0.5.0.
+
+### Added
+
+- Custom exception handlers, `from esmerald.exception_handlers import value_error_handler`.
+- New native exception handler for pydantic v2 Validation errors in general.
+- Dataclasses (normal and Pydantic dataclases) are now supported as Esmerald Responses.
+- Support for [OpenAPI Webhooks](./routing/webhooks.md).
+- Improved [Responses](./responses.md) documentation with examples using Pydantic BaseModel and dataclasses.
+- OpenAPI Spotlight Elements documentation. When starting the application, accesing the default `/docs/elements`.
+- Support for [Edgy](https://edgy.tarsild.io) ORM. [Docs here](https://esmerald.dev/databases/edgy/motivation/).
+
+### Fixed
+
+- Removed old pydantic v1 syntax from tests and applications.
+- `add_include()` that wasn't generating signature models upon import.
+- OpenAPI query params with defaults weren't loading properly.
+
 ## 2.0.3
 
 !!! Note
