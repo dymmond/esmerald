@@ -153,7 +153,8 @@ use it.
 * **Pluggables**: Create plugins for Esmerald and hook them into any application and/or
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
-* **Saffier ORM**: Native support for [Saffier ORM](./databases/saffier/motivation.md).
+* **Saffier ORM**: Native support for [Saffier ORM](https://esmerald.dev/databases/saffier/motivation.md).
+* **Edgy**: Native support for [Edgy](https://esmerald.dev/databases/edgy/motivation.md).
 * **APIView**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJON support.
 * **Lifespan**: Support for the newly lifespan and on_start/on_shutdown events.
