@@ -68,18 +68,18 @@ def create_parameter_setting(
     if field_name in path_parameters:
         field_alias = field_name
         param_type = param_type.PATH
-        param = Path()
+        param = Path(default=default_value)
     elif extra.get(ParamType.HEADER):
         field_alias = extra[ParamType.HEADER]
         param_type = ParamType.HEADER
-        param = Header()
+        param = Header(default=default_value)
 
     elif extra.get(ParamType.COOKIE):
         field_alias = extra[ParamType.COOKIE]
         param_type = ParamType.COOKIE
-        param = Cookie()
+        param = Cookie(default=default_value)
     else:
-        param = Query()
+        param = Query(default=default_value)
 
     if not field_info.alias:
         field_info.alias = field_name
