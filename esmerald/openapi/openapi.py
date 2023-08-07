@@ -25,6 +25,7 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
+from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA
 from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
@@ -127,6 +128,9 @@ def get_openapi_operation_parameters(
             field=param,
             field_mapping=field_mapping,
         )
+        if field_info.default is not None and field_info.default is not Undefined:
+            param_schema["default"] = field_info.default
+
         parameter = Parameter(  # type: ignore
             name=param.alias,
             param_in=field_info.in_.value,
