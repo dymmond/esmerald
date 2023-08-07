@@ -156,6 +156,7 @@ example.
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
 * **Saffier ORM**: Native support for [Saffier ORM](./databases/saffier/motivation.md).
+* **Edgy**: Native support for [Edgy](./databases/edgy/motivation.md).
 * **APIView**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJON support.
 * **Lifespan**: Support for the newly Starlette lifespan.
