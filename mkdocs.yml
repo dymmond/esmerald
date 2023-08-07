@@ -67,6 +67,12 @@ nav:
           - Middleware:
               - JWT: "databases/saffier/middleware.md"
               - Example: "databases/saffier/example.md"
+      - Edgy:
+          - Motivation: "databases/edgy/motivation.md"
+          - Models: "databases/edgy/models.md"
+          - Middleware:
+              - JWT: "databases/edgy/middleware.md"
+              - Example: "databases/edgy/example.md"
   - Interceptors: "interceptors.md"
   - Permissions: "permissions.md"
   - Middleware: "middleware/middleware.md"
