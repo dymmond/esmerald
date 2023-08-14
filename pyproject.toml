@@ -155,7 +155,7 @@ ipython = ["ipython>=8.10.0,<9.0.0"]
 path = "esmerald/__init__.py"
 
 [project.scripts]
-esmerald = "esmerald.core.directives.cli:esmerald_cli"
+esmerald = "esmerald.__main__:run_cli"
 
 [tool.isort]
 profile = "black"
