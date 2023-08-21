@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
+from starlette.middleware import Middleware
 from starlette.routing import BaseRoute
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
@@ -335,6 +336,9 @@ def should_include_in_schema(route: router.Include) -> bool:
     if not route.include_in_schema:
         return False
 
+    if not is_middleware_app(route):
+        return True
+
     if (
         isinstance(route.app, (Esmerald, ChildEsmerald))
         or (
@@ -353,6 +357,15 @@ def should_include_in_schema(route: router.Include) -> bool:
         return False
 
     return True
+
+
+def is_middleware_app(route: router.Include) -> bool:
+    """
+    Checks if the app is a middleware or a router
+    """
+    from esmerald import MiddlewareProtocol
+
+    return bool(isinstance(route.app, (Middleware, MiddlewareProtocol)))
 
 
 def get_openapi(
@@ -427,7 +440,7 @@ def get_openapi(
                         continue
 
                 # For external middlewares
-                if getattr(route.app, "routes", None) is None:
+                if getattr(route.app, "routes", None) is None and not is_middleware_app(route):
                     continue
 
                 if hasattr(route, "app") and isinstance(route.app, (Esmerald, ChildEsmerald)):

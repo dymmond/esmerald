@@ -1075,7 +1075,7 @@ class Include(Mount):
 
         super().__init__(
             self.path,
-            app=self.app,
+            app=app,
             routes=routes,
             name=name,
             middleware=cast("Sequence[StarletteMiddleware]", include_middleware),
