@@ -1,5 +1,18 @@
 # Release Notes
 
+## 2.0.5
+
+### Changed
+
+- Updated the way `esmerald` client operates internally.
+- Updated internal minimum requirements.
+
+### Fix
+
+- Regression in OpenAPI when adding middleware to `Gateway` or `HTTPHandler`. When a middleware
+was added, the OpenAPI would not generate the docs for it. The API would still work but not OpenAPI
+docs.
+
 ## 2.0.4
 
 ### Changed
