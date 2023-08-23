@@ -26,7 +26,7 @@ class Position(int, Enum):
     BACK = 3
 
 
-@click.option(  # type: ignore
+@click.option(
     "--directive",
     "directive",
     required=True,
