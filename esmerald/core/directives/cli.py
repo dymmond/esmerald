@@ -91,9 +91,7 @@ class DirectiveGroup(click.Group):
         return super().invoke(ctx)
 
 
-@click.group(  # type: ignore
-    cls=DirectiveGroup,
-)
+@click.group(cls=DirectiveGroup)
 @click.option(
     APP_PARAMETER,
     "path",

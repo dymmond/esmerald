@@ -1,7 +1,8 @@
+from starlette.types import Receive, Scope, Send
+
 from esmerald import EsmeraldInterceptor
 from esmerald.exceptions import NotAuthorized
 from esmerald.requests import Request
-from esmerald.types import Receive, Scope, Send
 
 
 class CookieInterceptor(EsmeraldInterceptor):

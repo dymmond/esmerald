@@ -9,7 +9,7 @@ from esmerald.utils.crypto import get_random_secret_key
 printer = Print()
 
 
-@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")  # type: ignore
+@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
 @click.argument("name", type=str)
 @click.command(name="createproject")
 def create_project(name: str, verbosity: int) -> None:

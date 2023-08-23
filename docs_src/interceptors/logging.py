@@ -1,7 +1,7 @@
 from loguru import logger
+from starlette.types import Receive, Scope, Send
 
 from esmerald import EsmeraldInterceptor
-from esmerald.types import Receive, Scope, Send
 
 
 class LoggingInterceptor(EsmeraldInterceptor):
