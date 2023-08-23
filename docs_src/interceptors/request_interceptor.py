@@ -1,6 +1,7 @@
+from starlette.types import Receive, Scope, Send
+
 from esmerald import EsmeraldInterceptor
 from esmerald.requests import Request
-from esmerald.types import Receive, Scope, Send
 
 
 class RequestParamInterceptor(EsmeraldInterceptor):

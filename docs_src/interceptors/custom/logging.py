@@ -1,6 +1,5 @@
 from loguru import logger
-
-from esmerald.types import Receive, Scope, Send
+from starlette.types import Receive, Scope, Send
 
 
 class LoggingInterceptor:
