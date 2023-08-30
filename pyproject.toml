@@ -47,13 +47,12 @@ dependencies = [
     "httpx>=0.24.0,<0.30.0",
     "itsdangerous>=2.1.2,<3.0.0",
     "jinja2>=3.1.2,<4.0.0",
-    "jsonschema_rs>=0.16.2,<0.20.0",
     "loguru>=0.7.0,<0.8.0",
     "pydantic>=2.3.0,<3.0.0",
     "pydantic-settings>=2.0.0,<3.0.0",
     "pyfactories>=2.0.0",
     "python-multipart>=0.0.5,<0.0.7",
-    "openapi-schemas-pydantic>=2.0.0",
+    "openapi-schemas-pydantic>=3.0.0",
     "orjson>=3.8.5,<4.0.0",
     "rich>=13.3.1,<14.0.0",
     "starlette>=0.31.1,<1.0",
@@ -114,8 +113,8 @@ test = [
     "passlib==1.7.4",
     "polyfactory>=2.5.0,<3.0.0",
     "python-jose>=3.3.0,<4",
-    "saffier[postgres]>=0.15.0",
-    "edgy[postgres]>=0.1.0",
+    "saffier[postgres]>=0.18.0",
+    "edgy[postgres]>=0.4.0",
     "requests>=2.28.2,<3.0.0",
     "ruff>=0.0.256,<1.0.0",
     "ujson>=5.7.0,<6",
@@ -200,6 +199,7 @@ parallel = true
 context = '${CONTEXT}'
 source = ["tests", "esmerald"]
 omit = [
+    "esmerald/__main__.py",
     "esmerald/conf/__init__.py",
     "esmerald/middleware/errors.py",
     "esmerald/permissions/base.py",
