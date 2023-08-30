@@ -3,12 +3,12 @@ import logging
 from loguru import logger as loguru_logger
 
 
-class InterceptHandler(logging.Handler):
+class InterceptHandler(logging.Handler):  # pragma: no cover
     def emit(self, record: logging.LogRecord) -> None:
         level: str
         try:
             level = loguru_logger.level(record.levelname).name
-        except ValueError:  # pragma: no cover
+        except ValueError:
             level = str(record.levelno)
 
         frame, depth = logging.currentframe(), 2
