@@ -581,8 +581,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             awaitable: "BasePermission" = cast("BasePermission", await permission())
             request: "Request" = cast("Request", connection)
             handler = cast("APIGateHandler", self)
-            awaitable.has_permission(request, handler)
-            continue_or_raise_permission_exception(request, handler, awaitable)
+            await continue_or_raise_permission_exception(request, handler, awaitable)
 
 
 class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover
