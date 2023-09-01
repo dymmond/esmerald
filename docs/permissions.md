@@ -97,5 +97,5 @@ thing you need to make sure is to **implement the `has_permission`** on any deri
 2. `BasePermission` has the `has_permission(request Request, apiview: "APIGateHandler") and it can
 be `async` or not.
 3. The [handlers](./routing/handlers.md), [Gateway](./routing/routes.md#gateway),
-[WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes#include)
+[WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes.md#include)
 and [Esmerald](./application/applications.md) can have as many permissions as you want.

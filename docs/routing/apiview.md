@@ -39,7 +39,7 @@ class.
 ## APIView routing
 
 The routing is the same as declaring the routing for the handler with a simple particularity that you don't
-need to declare handler by handler. Since everything is inside an [APIView](#apiview) 
+need to declare handler by handler. Since everything is inside an [APIView](#apiview)
 objects the handlers will be automatically routed by **Esmerald** with the joint [path](#apiview-path) given to class.
 
 ```python title='views.py'
@@ -71,7 +71,7 @@ APIView is no different from the handlers, really. The same rules for the routin
 ## Websockets and handlers
 
 The APIView also allows the mix of both [HTTP handlers](./handlers.md#http-handlers) and
-[WebSocket handlers](./handlers#websocket-handler)
+[WebSocket handlers](./handlers.md#websocket-handler)
 
 ```python title='app.py' hl_lines="15 19 26"
 {!> ../docs_src/routing/handlers/apiviews/mix.py !}
