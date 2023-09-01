@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.2.6
+## 2.0.6
 
 ### Changed
 
@@ -15,7 +15,6 @@
 ### Fixed
 
 - `email-validator` error being thrown from `openapi-schemas-pydantic` requirement.
-
 
 ## 2.0.5
 
