@@ -1,5 +1,22 @@
 # Release Notes
 
+## 0.2.6
+
+### Changed
+
+- Updated requirements for Pydantic and Starlette.
+- Removed unnecessary dependencies.
+
+### Added
+
+- Support for async `has_permission` on Permissions.
+- Add new landing page.
+
+### Fixed
+
+- `email-validator` error being thrown from `openapi-schemas-pydantic` requirement.
+
+
 ## 2.0.5
 
 ### Changed

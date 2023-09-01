@@ -37,7 +37,8 @@ plugins:
       data: data
 
 nav:
-  - Esmerald: "index.md"
+  - Home: "index.md"
+  - Esmerald: "esmerald.md"
   - Languages:
       - en: /
       # - pt: /pt/

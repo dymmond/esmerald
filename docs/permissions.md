@@ -14,10 +14,20 @@ all the huge community of developer in mind to make a transition almost immediat
 
 All the permission classes **must derive** from `BasePermission`.
 
+The permissions **must** implement the `has_permission` and return `True` or `False`.
+
+The permissions can also be `async` in case you need to run awaitables.
+
 **An example of a permission for an user admin**.
 
 ```python
 {!> ../docs_src/permissions/permissions.py !}
+```
+
+**An example of a permission for an user admin with async**.
+
+```python hl_lines="25"
+{!> ../docs_src/permissions/async/permissions.py !}
 ```
 
 **An example of a permission for a project**
@@ -26,9 +36,15 @@ All the permission classes **must derive** from `BasePermission`.
 {!> ../docs_src/permissions/simple_permissions.py !}
 ```
 
+**An example of a permission for a project with async**
+
+```python hl_lines="10"
+{!> ../docs_src/permissions/async/simple_permissions.py !}
+```
+
 ## Esmerald and permissions
 
-Esmerald giving support to [Saffier ORM](./databases/saffier/motivation.md) also provides some default permissions
+Esmerald giving support to [Saffier ORM](./databases/saffier/motivation.md) and [Edgy](./databases/edgy/motivation.md) also provides some default permissions
 that can be linked to the models also provided by **Esmerald**.
 
 ### IsAdminUser and example of provided permissions
@@ -65,10 +81,21 @@ To use the `IsAdminUser`, `IsAuthenticated` and `IsAuthenticatedOrReadOnly` is a
 of the endpoints under the class (endpoints under `/users`).
 3. The `/users/admin` has a permission `IsAdmin` allowing only admin users to access the specific endpoint
 
+### More on permissions
+
+The permissions internally are checked from top down which means you can place permissios at any
+given part of the [level](./application/levels.md) making it more dynamic and allowing to narrow
+it down to a granular level that is managenable.
+
+Internally, Esmerald runs all the validations and checks and on an application level, the only
+thing you need to make sure is to **implement the `has_permission`** on any derived class of
+[BasePermission](#basepermission-and-custom-permissions).
+
 ## Permissions summary
 
 1. All permissions must inherit from `BasePermission`.
-2. `BasePermission` has the `has_permission(request Request, apiview: "APIGateHandler").
+2. `BasePermission` has the `has_permission(request Request, apiview: "APIGateHandler") and it can
+be `async` or not.
 3. The [handlers](./routing/handlers.md), [Gateway](./routing/routes.md#gateway),
-[WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes#include)
+[WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes.md#include)
 and [Esmerald](./application/applications.md) can have as many permissions as you want.

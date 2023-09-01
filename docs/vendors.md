@@ -17,8 +17,7 @@ transformers.
 
 Up to the version 0.2.X, we had some common ground but Starlite has evolved and so has Esmerald and from the version
 0.3.X we will be deploying a reestructure of the way we have implemented starting from the deployment of the
-transformers and Signature unique to Esmerald and continuing to update our OpenAPI integration as well which is still
-common to Starlite (they did a great job here).
+transformers and Signature unique to Esmerald.
 
 We thank Starlite for all the support given to us and all the great tech that allow us to imagine, create and deploy
 Esmerald in its own unique way and we also wish Starlite all the success that they deserve.
