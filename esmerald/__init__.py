@@ -5,7 +5,7 @@ from starlette import status
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.injector import Inject, Factory
+from esmerald.injector import Factory, Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .backgound import BackgroundTask, BackgroundTasks
