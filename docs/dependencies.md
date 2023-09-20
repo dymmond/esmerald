@@ -4,7 +4,7 @@ Dependencies are a piece of great functionality now common in a lot of the frame
 of dependency injection to take place.
 
 Esmerald uses the `Inject` object to manage those dependencies in every
-[application level](./exception-handlers.md)
+[application level](./application/levels.md)
 
 ## Dependencies and the application levels
 
