@@ -294,7 +294,7 @@ The test files generated are using the EsmeraldTestClient, so make sure you run:
 $ pip install esmerald[test]
 ```
 
-Or you can jump this step if you don't want to use the EsmeraldTestClient at all.
+Or you can skip this step if you don't want to use the EsmeraldTestClient at all.
 
 ## Show URLs
 
