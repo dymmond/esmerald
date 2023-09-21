@@ -4,7 +4,7 @@ Did you know becausde of the awesome work from [a2wsgi](https://github.com/abers
 amazing jobs from Starlette added to the simplicity of Esmerald you can integrate any wsgi
 framework (Flask, Django...)?
 
-Yes, that's right, you can now smoothly move to Esmerald without rewritting your old applications from the scratch,
+Yes, that's right, you can now smoothly move to Esmerald without rewriting your old applications from the scratch,
 actually, you can reuse them directly within Esmerald, even another Esmerald running inside another Esmerald,
 an *Esmeraldception*.
 

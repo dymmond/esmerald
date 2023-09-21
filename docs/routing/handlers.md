@@ -66,7 +66,7 @@ and special one for special circumstances.
 `@route` is a special handler because it is designed to allow more than one `HTTP` handler in one go.
 
 Sometimes you might want to have one [Gateway](./routes.md#gateway) that allows more than one HTTP operation but
-writting two different functions with roughly the same logic can be avoided by using this special handler.
+writing two different functions with roughly the same logic can be avoided by using this special handler.
 
 Example:
 
