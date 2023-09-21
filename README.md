@@ -131,7 +131,7 @@ This will also generate a file for the tests using the EsmeraldTestClient, so ma
 $ pip install esmerald[test]
 ```
 
-Or you can jump this step if you don't want to use the EsmeraldTestClient.
+Or you can skip this step if you don't want to use the EsmeraldTestClient.
 
 You can find [more information](https://esmerald.dymmond.com/management/directives) about this directive and how to
 use it.
