@@ -6,7 +6,7 @@ project.
 * Try Esmerald and [report bugs and issues](https://github.com/dymmond/esmerald/issues/new) you find.
 * [Implement new features](https://github.com/dymmond/esmerald/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 * Help othes by [reviewing pull requests](https://github.com/dymmond/esmerald/pulls)
-* Help writting documentation
+* Help writing documentation
 * Use the discussions and actively participate on them.
 * Become an contributor by helping Esmerald growing and spread the words across small, medium, large or any company
 size.

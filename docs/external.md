@@ -23,7 +23,7 @@ The documentation can be found <a href="https://ariadnegraphql.org/docs/intro" t
 ### Ariadne version 0.16.1
 
 !!! Warning
-    By the time of this writting, `Starlette` was in the version `0.21.0`.
+    By the time of this writing, `Starlette` was in the version `0.21.0`.
     Due to the nature of `Esmerald`, when installing `Ariadne` it will install a lower version and this will
     conflict with **Esmerald**. After you install `ariadne` make sure you reinstall `Starlette>=0.21.0`.
     Until a new version of the package comes out supporting the latest from Starlette, this is the workaround.
