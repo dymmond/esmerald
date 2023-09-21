@@ -49,7 +49,7 @@ the `__init__` and the `async def __call__`.
 In the case of Esmerald configurations, a `config` parameter is declared and passed
 in the `__init__` but this is not enforced on a protocol level but on a subclass level, the middleware itself.
 
-Enforcing this protocol also aligns with writting
+Enforcing this protocol also aligns with writing
 <a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>pure asgi middlewares</a>.
 
 !!! Note
@@ -91,7 +91,7 @@ To add middlewares to the application is very simple.
     and [route](./../routing/handlers.md#route) as well as [websocket](./../routing/handlers.md#websocket).
     We simply choose `Gateway` as it looks simpler to read and understand.
 
-## <a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>Writting ASGI middlewares</a>
+## <a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>Writing ASGI middlewares</a>
 
 **Esmerald** since follows the ASGI practices and uses Starlette underneath a good way of understand what can be
 done with middleware and how to write some of them, Starlette also goes through with a lot of
