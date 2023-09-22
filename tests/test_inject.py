@@ -1,21 +1,10 @@
 from functools import partial
-from typing import Any, List
+from typing import Any
 
 import pytest
 
-from esmerald import AsyncDAOProtocol
 from esmerald.injector import Factory, Inject
 from esmerald.typing import Void
-
-
-class FakeDAO(AsyncDAOProtocol):
-    model = "Awesome"
-
-    def __init__(self, conn: str = "awesome_conn"):
-        self.conn = conn
-
-    async def get_all(self, **kwargs: Any) -> List[Any]:
-        return ["awesome_data"]
 
 
 class Test:
@@ -149,7 +138,7 @@ async def test_Inject_for_callable(fn: Any, exp: Any) -> None:
 
 
 @pytest.mark.asyncio()
-async def test_if_DAO_is_injectable() -> None:
+async def test_if_DAO_is_injectable(get_fake_dao) -> None:
     """
     Current:
     dependencies={
@@ -168,13 +157,13 @@ async def test_if_DAO_is_injectable() -> None:
             "fake_dao": Inject(Factory(FakeDAO, "nice_conn")),
         },
     """
-    injectable1 = Inject(Factory(FakeDAO))
+    injectable1 = Inject(Factory(get_fake_dao))
     obj = await injectable1()
     assert await obj.get_all() == ["awesome_data"]
     assert obj.model == "Awesome"
     assert obj.conn == "awesome_conn"
 
-    injectable2 = Inject(Factory(FakeDAO, "nice_conn"))
+    injectable2 = Inject(Factory(get_fake_dao, "nice_conn"))
     obj = await injectable2()
     assert await obj.get_all() == ["awesome_data"]
     assert obj.model == "Awesome"
