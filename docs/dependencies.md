@@ -39,7 +39,7 @@ complexity you desire.
 {!> ../docs_src/dependencies/more_complex.py !}
 ```
 
-#### What is happenening
+#### What is happening
 
 The `number` is obtained from the `first_dependency` and passed to the `second_dependency` as a result and validates
 and checks if the value is bigger or equal than 5 and that result `is_valid` is than passed to the main handler
@@ -48,3 +48,30 @@ and checks if the value is bigger or equal than 5 and that result `is_valid` is 
 {! ../docs_src/_shared/exceptions.md !}
 
 The same is applied also to [exception handlers](./exception-handlers.md).
+
+## More Real World example
+
+Now let's imagine that we have some web application with one of the `views.py` as:
+
+```python hl_lines="16"
+{!> ../docs_src/dependencies/views.py !}
+```
+
+As you can notice the `user_dao` is injected automatically using appropriate level of dependency injection.
+
+Let's see the `urls.py` and understand from where we got the `user_dao`:
+
+```python hl_lines="14-16 32-34"
+{!> ../docs_src/dependencies/urls.py !}
+```
+
+Here we use lambdas to create a callable from DAO instance.
+> Read more about DAOs here: [Protocols](./protocols.md)
+
+But we have cleaner version of this, we call it `Factory` method.
+
+The Factory is a clean wrapper around any callable(yes classes usually are callables as well).
+> No need to explicitly instantiate the class, just pass the name of the class to the Factory.
+
+In conclusion, if your views/routes expects dependencies, 
+define them in upper level as described and they will appear automatically.
