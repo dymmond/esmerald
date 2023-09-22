@@ -53,7 +53,7 @@ The same is applied also to [exception handlers](./exception-handlers.md).
 
 Now let's imagine that we have some web application with one of the `views.py` as:
 
-```python hl_lines="16"
+```python hl_lines="17"
 {!> ../docs_src/dependencies/views.py !}
 ```
 
@@ -61,12 +61,12 @@ As you can notice the `user_dao` is injected automatically using appropriate lev
 
 Let's see the `urls.py` and understand from where we got the `user_dao`:
 
-```python hl_lines="14-16 32-34"
+```python hl_lines="13-15 31-33"
 {!> ../docs_src/dependencies/urls.py !}
 ```
 
 Here we use lambdas to create a callable from DAO instance.
-> Read more about DAOs here: [Protocols](./protocols.md)
+> Read more about [DAOs](./protocols.md) 
 
 But we have cleaner version of this, we call it `Factory` method.
 
