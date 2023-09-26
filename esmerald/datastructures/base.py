@@ -21,9 +21,9 @@ from pydantic._internal._schema_generation_shared import (
     GetJsonSchemaHandler as GetJsonSchemaHandler,
 )
 from pydantic.json_schema import JsonSchemaValue as JsonSchemaValue
-from pydantic_core.core_schema import CoreSchema
+from pydantic_core.core_schema import CoreSchema, PlainValidatorFunctionSchema
 from pydantic_core.core_schema import (
-    general_plain_validator_function as general_plain_validator_function,
+    with_info_plain_validator_function as general_plain_validator_function,
 )
 from starlette.datastructures import URL as URL  # noqa: F401
 from starlette.datastructures import Address as Address  # noqa: F401
@@ -78,7 +78,7 @@ class UploadFile(StarletteUploadFile):  # pragma: no cover
     def __get_pydantic_core_schema__(
         cls, source: Type[Any], handler: Callable[[Any], CoreSchema]
     ) -> CoreSchema:
-        return general_plain_validator_function(cls._validate)
+        return cast(PlainValidatorFunctionSchema, general_plain_validator_function(cls._validate))
 
 
 class Secret(StarletteSecret):  # pragma: no cover
