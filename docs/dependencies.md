@@ -39,7 +39,7 @@ complexity you desire.
 {!> ../docs_src/dependencies/more_complex.py !}
 ```
 
-#### What is happenening
+#### What is happening
 
 The `number` is obtained from the `first_dependency` and passed to the `second_dependency` as a result and validates
 and checks if the value is bigger or equal than 5 and that result `is_valid` is than passed to the main handler
@@ -48,3 +48,39 @@ and checks if the value is bigger or equal than 5 and that result `is_valid` is 
 {! ../docs_src/_shared/exceptions.md !}
 
 The same is applied also to [exception handlers](./exception-handlers.md).
+
+## More Real World example
+
+Now let us imagine that we have a web application with one of the views. Something like this:
+
+```python hl_lines="17"
+{!> ../docs_src/dependencies/views.py !}
+```
+
+As you can notice, the user_dao is injected automatically using the appropriate level of dependency injection..
+
+Let's see the `urls.py` and understand from where we got the `user_dao`:
+
+```python hl_lines="13-15 31-33"
+{!> ../docs_src/dependencies/urls.py !}
+```
+
+Here we use lambdas to create a callable from DAO instance.
+
+!!! note
+
+    You can see the Python lambdas as the equivalent of the anonymous functions in JavaScript. You can always [see more details](https://www.w3schools.com/python/python_lambda.asp) about it.
+
+!!! note 
+    
+    Learn more about [DAOs](./protocols.md) 
+
+We do have a cleaner version of this though, in the Esmerald world we call it Factory.
+
+The Factory is a clean wrapper around any callable (classes usually are callables as well, even without instantiating the object itself).
+
+!!! note
+
+    No need to explicitly instantiate the class, just pass the name of the class to the Factory.
+
+In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described and they will automatically appear
