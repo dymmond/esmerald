@@ -51,13 +51,13 @@ The same is applied also to [exception handlers](./exception-handlers.md).
 
 ## More Real World example
 
-Now let's imagine that we have some web application with one of the `views.py` as:
+Now let us imagine that we have a web application with one of the views. Something like this:
 
 ```python hl_lines="17"
 {!> ../docs_src/dependencies/views.py !}
 ```
 
-As you can notice the `user_dao` is injected automatically using appropriate level of dependency injection.
+As you can notice, the user_dao is injected automatically using the appropriate level of dependency injection..
 
 Let's see the `urls.py` and understand from where we got the `user_dao`:
 
@@ -66,12 +66,21 @@ Let's see the `urls.py` and understand from where we got the `user_dao`:
 ```
 
 Here we use lambdas to create a callable from DAO instance.
-> Read more about [DAOs](./protocols.md) 
 
-But we have cleaner version of this, we call it `Factory` method.
+!!! note
 
-The Factory is a clean wrapper around any callable(yes classes usually are callables as well).
-> No need to explicitly instantiate the class, just pass the name of the class to the Factory.
+    You can see the Python lambdas as the equivalent of the anonymous functions in JavaScript. You can always [see more details](https://www.w3schools.com/python/python_lambda.asp) about it.
 
-In conclusion, if your views/routes expects dependencies, 
-define them in upper level as described and they will appear automatically.
+!!! note 
+    
+    Learn more about [DAOs](./protocols.md) 
+
+We do have a cleaner version of this though, in the Esmerald world we call it Factory.
+
+The Factory is a clean wrapper around any callable (classes usually are callables as well, even without instantiating the object itself).
+
+!!! note
+
+    No need to explicitly instantiate the class, just pass the name of the class to the Factory.
+
+In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described and they will automatically appear
