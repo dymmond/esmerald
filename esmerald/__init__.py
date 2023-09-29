@@ -5,7 +5,7 @@ from starlette import status
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.injector import Inject
+from esmerald.injector import Factory, Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .backgound import BackgroundTask, BackgroundTasks
@@ -72,6 +72,7 @@ __all__ = [
     "HTTPException",
     "Include",
     "Inject",
+    "Factory",
     "Injects",
     "ImproperlyConfigured",
     "JSON",
