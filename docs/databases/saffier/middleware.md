@@ -25,7 +25,7 @@ There are different ways of calling this middleware in any Esmerald application.
 ### Via settings
 
 ```python
-{!> ../docs_src/configurations/jwt/settings.py!}
+{!> ../docs_src/databases/saffier/jwt/settings.py!}
 ```
 
 ### Via application instantiation
@@ -48,13 +48,4 @@ There are different ways of calling this middleware in any Esmerald application.
     {!> ../docs_src/databases/saffier/middleware/example3.py !}
     ```
 
-### Important note
-
-In the examples you could see sometimes the `StarletteMiddleware` being used and in other you didn't. The reason behind
-is very simple and also explained in the [middleware section](../../middleware/middleware.md#important).
-
-If you need to specify parameters in your middleware then you will need to wrap it in a `starlette.middleware.Middleware`
-object to do it so.
-
-If no parameters are needed, then you can simply pass the middleware class directly and Esmerald will take care of the
-rest.
+{!> ../docs_src/_shared/databases_important_note.md !}

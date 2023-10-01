@@ -62,4 +62,4 @@ $ pip install edgy[mssql]
 ## Documentation and more details
 
 Since Esmerald supports Edgy, the best place to understand how to use all the powerful features given by it you can simply
-use their [documentation](https://edgy.tarsild.io/) and learn more how to leverage it.
+use its [documentation](https://edgy.tarsild.io/) and learn more how to leverage it.

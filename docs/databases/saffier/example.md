@@ -2,7 +2,7 @@
 
 Since [Saffier](https://saffier.tarsild.io) if from the same author of Esmerald, it gives some
 extra motivation for its use and therefore an example in how to use the
-[JWTAuthMiddleware](./middleware.md), even if in a very simplistic, within your Esmerald application.
+[JWTAuthMiddleware](./middleware.md), even if in a very simplistic way, within your Esmerald application.
 
 
 Let us build a simple integration and application where we will be creating:
@@ -22,7 +22,7 @@ We will also be assuming the following:
 - The main application is inside an `app.py`
 - The [jwt_config](../../configurations/jwt.md#jwtconfig-and-application-settings)
 is inside your global [settings](../../application/settings.md).
-  
+
 **Lets go!**
 
 ## Create user model
@@ -36,10 +36,10 @@ defaulting to the one model provided by Esmerald out-of-the-box.
 
 ## Create user API
 
-Now that the [user model](#create-user-model) is defined and created, time to create an api
+Now that the [user model](#create-user-model) is defined and created, it is time to create an api
 that allows the creation of users in the system.
 
-This example won't cover corner cases like integrity in ase of duplicates and so on as this is
+This example won't cover corner cases like integrity in case of duplicates and so on as this is
 something that you can easily manage.
 
 ```python title="accounts/views.py"
@@ -51,7 +51,7 @@ something that you can easily manage.
 Now the [create user](#create-user-api) is available to us to be used later on, we need a view
 that also allow us to login and return the JWT access token.
 
-For this API to work, we need to garantee the data being sent is valid, authenticate and then
+For this API to work, we need to guarantee the data being sent is valid, authenticate and then
 return the JWT token.
 
 ```python title="accounts/views.py"
@@ -98,7 +98,7 @@ you **don't want to be logged-in** and for that reason, the `JWTAuthMiddleware` 
 endpoints that **require authentication**.
 
 Now this assembling is actually very clean, right? Yes and the reason for that is because Esmerald
-itself promotes clean design. 
+itself promotes clean design.
 
 We have imported all the APIs directly in the `app.py` but this **is not mandatory**. You can
 take advantage of the [Include](../../routing/routes.md#include) and clean your application
@@ -121,6 +121,14 @@ For this will be using `httpx` but you are free to use whatever client you prefe
 ```python
 {!> ../docs_src/databases/saffier/example/access.py !}
 ```
+
+Did you notice the `X_API_TOKEN` in the `headers`? Well that is because the default `api_key_header`
+from the [JWTConfig](../../configurations/jwt.md#parameters) is called `X_API_TOKEN` and the
+contrib middleware from Esmerald to provide integration with Saffier uses it to validate if is passed
+in the header or not.
+
+Like everything in Esmerald, that is also configurable. If you change the `header` to something else
+in that config, it will automatically reflect across the contib middlewares.
 
 ## Conclusions
 
