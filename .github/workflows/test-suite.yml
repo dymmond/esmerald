@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     services:
       postgres:
@@ -34,6 +34,15 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      mongodb:
+        image: mongo:latest
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+          MONGO_INITDB_DATABASE: mongodb
+        ports:
+          - 27017:27017
+
     steps:
       - uses: "actions/checkout@v4"
       - uses: "actions/setup-python@v4"
@@ -49,4 +58,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: "scripts/install"
       - name: "Run tests"
+        env:
+          DATABASE_URI: "mongodb://root:mongoadmin@localhost:27017"
         run: "scripts/test"

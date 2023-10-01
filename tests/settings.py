@@ -1,3 +1,4 @@
+import os
 from functools import cached_property
 from typing import Optional, Tuple
 
@@ -7,6 +8,8 @@ from pydantic import ConfigDict
 from saffier import Database, Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
+
+TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@localhost:27017")
 
 
 class TestSettings(EsmeraldAPISettings):
