@@ -61,26 +61,29 @@ As you can notice, the user_dao is injected automatically using the appropriate 
 
 Let's see the `urls.py` and understand from where we got the `user_dao`:
 
-```python hl_lines="13-15 31-33"
+```python hl_lines="14-16 32-34"
 {!> ../docs_src/dependencies/urls.py !}
 ```
 
-Here we use lambdas to create a callable from DAO instance.
+In the previous example we use lambdas to create a callable from DAO instances and we refactor it
+to use the `Factory` object instead. It is cleaner and more pleasant to work with.
 
-!!! note
+The cleaner version of lambdas using Esmerald it is called `Factory`.
 
-    You can see the Python lambdas as the equivalent of the anonymous functions in JavaScript. You can always [see more details](https://www.w3schools.com/python/python_lambda.asp) about it.
+!!! Note
+    You can see the Python lambdas as the equivalent of the anonymous functions in JavaScript.
+    If you are still not sure, [see more details](https://www.w3schools.com/python/python_lambda.asp) about it.
 
-!!! note 
-    
-    Learn more about [DAOs](./protocols.md) 
 
-We do have a cleaner version of this though, in the Esmerald world we call it Factory.
+!!! Tip
+    Learn more about Esmerald [DAOs](./protocols.md) and how to take advantage of those.
+
 
 The Factory is a clean wrapper around any callable (classes usually are callables as well, even without instantiating the object itself).
 
-!!! note
+!!! Tip
+    No need to explicitly instantiate the class, just pass the class definition to the `Factory`
+    and Esmerald takes care of the rest for you.
 
-    No need to explicitly instantiate the class, just pass the name of the class to the Factory.
-
-In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described and they will automatically appear
+In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described
+and Esmerald will make sure that they will be automatically injected.
