@@ -1,5 +1,23 @@
 # Release Notes
 
+## 2.1.0
+
+### Changed
+
+- Update base requirements and pydantic to 2.4.
+
+### Added
+
+- New Factory added for dependency injection allowing to pass any time via Factory instantiation. [PR #163](https://github.com/dymmond/esmerald/pull/163) by [@ShahriyarR](https://github.com/ShahriyarR).
+- Support for [Mongoz](https://mongoz.tarsild.io) showcasing how to integrate Esmerald with an ODM (MongoDB).
+- Documentation about how to use Esmerald contrib with [Mongoz](./databases/mongoz/motivation.md)
+
+### Fixed
+
+- Typos in the documentation.
+- Pydantic 2.4 compatibility and updating to new names for the functions.
+
+
 ## 2.0.6
 
 ### Changed

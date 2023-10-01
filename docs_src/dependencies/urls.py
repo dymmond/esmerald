@@ -1,5 +1,6 @@
 from esmerald import Factory, Include, Inject
 
+# Using lambdas
 route_patterns = [
     Include(
         "/api/v1",
@@ -17,7 +18,7 @@ route_patterns = [
     )
 ]
 
-
+# Using the Factory
 route_patterns = [
     Include(
         "/api/v1",
