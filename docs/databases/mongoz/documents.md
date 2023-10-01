@@ -1,11 +1,11 @@
-# Models
+# Documents
 
-In simple terms, models are a representation of a database table in the format of an object declared by the language
+In simple terms, documents are a representation of a database table in the format of an object declared by the language
 implementing.
 
-## User models
+## User documents
 
-Integrating with Edgy, Esmerald already provides some of the models that helps you with the
+Integrating with Mongoz, Esmerald already provides some of the documents that helps you with the
 initial configuration.
 
 1. `AbstractUser` - The base user class containing all the fields required a user.
@@ -13,47 +13,47 @@ initial configuration.
 
 ## User
 
-Extenting the existing `User` model is as simple as this:
+Extenting the existing `User` document is as simple as this:
 
-```python hl_lines="17 32"
-{!> ../docs_src/databases/edgy/models.py !}
+```python
+{!> ../docs_src/databases/mongoz/models.py !}
 ```
 
-This is a clean way of declaring the models and using the Edgy docs, you can easily understand
+This is a clean way of declaring the documents and using the Mongoz docs, you can easily understand
 why this is like the way it is.
 
 ### Meta class
 
-There are way of making the models and the registry cleaner, after all, you might want to use the
-same registry in different models across multiple applications in your codebase.
+There are way of making the documents and the registry cleaner, after all, you might want to use the
+same registry in different documents across multiple applications in your codebase.
 
 One way and a way Esmerald always recommend, is by leveraging the [settings](../../application/settings.md).
 
-### Leveraging the settings for your models
+### Leveraging the settings for your documents
 
 Let us use the same example but this time, we will be using the settings.
 Since **you can access the settings anywhere in the codebase**.
 
 Check it out the example below and how by using the settings, you can literally leverage Esmerald
-with Edgy.
+with Mongoz.
 
 === "settings.py"
 
     ```python hl_lines="10-12"
-    {!> ../docs_src/databases/edgy/settings/settings.py !}
+    {!> ../docs_src/databases/mongoz/settings/settings.py !}
     ```
 
-=== "models.py"
+=== "documents.py"
 
-    ```python hl_lines="17 32"
-    {!> ../docs_src/databases/edgy/settings/models.py !}
+    ```python hl_lines="9 32"
+    {!> ../docs_src/databases/mongoz/settings/models.py !}
     ```
 
 You simply isolated your common database connection and registry inside the globally accessible
 settings and with that you can import in any Esmerald application, ChildEsmerald or whatever you
 prefer without the need of repeating yourself.
 
-### User model fields
+### User document fields
 
 If you are familiar with Django then you are also aware of the way they have their users table and the way they
 have the fields declared. Esmerald has a similar approach and provides the following.
@@ -70,29 +70,29 @@ have the fields declared. Esmerald has a similar approach and provides the follo
 
 ### The functions available
 
-Using simply this model it does not bring too much benefits as it is something you can do easily and fast but the
+Using simply this document it does not bring too much benefits as it is something you can do easily and fast but the
 functionality applied to it is already something that would require some extra time to assemble.
 
 !!! Warning
     The following examples assume that you are taking advantage of the settings as
-    [decribed before](#leveraging-the-settings-for-your-models).
+    [decribed before](#leveraging-the-settings-for-your-documents).
 
 **create_user**
 
 ```python
-{!> ../docs_src/databases/edgy/create_user.py !}
+{!> ../docs_src/databases/mongoz/create_user.py !}
 ```
 
 **create_superuser**
 
 ```python
-{!> ../docs_src/databases/edgy/create_superuser.py !}
+{!> ../docs_src/databases/mongoz/create_superuser.py !}
 ```
 
 **check_password**
 
 ```python hl_lines="28"
-{!> ../docs_src/databases/edgy/check_password.py !}
+{!> ../docs_src/databases/mongoz/check_password.py !}
 ```
 
 Because you are using the `User` provided by Esmerald, the same object is also prepared to validate
@@ -102,7 +102,7 @@ same principle.
 **set_password**
 
 ```python hl_lines="28"
-{!> ../docs_src/databases/edgy/set_password.py !}
+{!> ../docs_src/databases/mongoz/set_password.py !}
 ```
 
 The same for setting passwords. The `User` already contains the functionality to set a password of
@@ -144,18 +144,10 @@ You can always override the property `password_hashers` in your
 [custom settings](../../application/settings.md#custom-settings) and use your own.
 
 ```python
-{!> ../docs_src/databases/edgy/hashers.py !}
+{!> ../docs_src/databases/mongoz/hashers.py !}
 ```
-
-## Migrations
-
-You can use any migration tool as you see fit. It is recommended
-<a href='https://alembic.sqlalchemy.org/en/latest/' target='_blank'>Alembic</a>.
-
-Edgy also provides some insights in
-[how to migrate using alembic](https://edgy.tarsild.io/migrations/migrations).
 
 ## General example
 
-More examples and more thorough explanations how to use [Edgy](https://edgy.tarsild.io)
-can be consulted in its own [documentation](https://edgy.tarsild.io).
+More examples and more thorough explanations how to use [Mongoz](https://mongoz.tarsild.io)
+can be consulted in its own [documentation](https://mongoz.tarsild.io).

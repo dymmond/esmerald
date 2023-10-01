@@ -24,10 +24,10 @@ why this is like the way it is.
 
 ### Meta class
 
-There are wayf of making the models and the registry cleaner, after all, you might want to use the
+There are way of making the models and the registry cleaner, after all, you might want to use the
 same registry in different models across multiple applications in your codebase.
 
-One way and a way Esmerald always recommend, is by leveraging the [settings](../../application/settings.md)
+One way and a way Esmerald always recommend, is by leveraging the [settings](../../application/settings.md).
 
 ### Leveraging the settings for your models
 
@@ -70,9 +70,8 @@ have the fields declared. Esmerald has a similar approach and provides the follo
 
 ### The functions available
 
-Using simply this model it does not bring too much benefits as it si something you can do easily and fast but the
-functionality applied to this model is already something that can be something that requires some extra time to
-assemble.
+Using simply this model it does not bring too much benefits as it is something you can do easily and fast but the
+functionality applied to it is already something that would require some extra time to assemble.
 
 !!! Warning
     The following examples assume that you are taking advantage of the settings as
@@ -116,7 +115,7 @@ on behind the scenes.
 
 When using the `create_user` and `create_superuser` behind the scenes it is not only creating that same record and
 storing in the database but is also <a href='https://nordpass.com/blog/password-hash/' target='_blank'>hashing</a>
-the password for you using the built-in Esmerald [password hashers](#password-hashers) and this is a life saving
+the password for you, using the built-in Esmerald [password hashers](#password-hashers) and this is a life saving
 time and implementation.
 
 Esmerald also provides the `set_password` and `check_password` functions to make it easier to
@@ -159,4 +158,4 @@ Saffier also provides some insights in
 ## General example
 
 More examples and more thorough explanations how to use [Saffier](https://saffier.tarsild.io)
-can be consulted in their [documentation](https://saffier.tarsild.io).
+can be consulted in its own [documentation](https://saffier.tarsild.io).

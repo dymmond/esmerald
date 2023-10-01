@@ -12,18 +12,23 @@ user_data = {
 
 # Create a user
 # This returns a 201
-httpx.post("/create", json=user_data)
+async with httpx.AsyncClient() as client:
+    client.post("/create", json=user_data)
 
 # Login the user
 # Returns the response with the JWT token
 user_login = {"email": user_data["email"], "password": user_data["password"]}
-response = httpx.post("/login", json=user_login)
+
+async with httpx.AsyncClient() as client:
+    response = client.post("/login", json=user_login)
 
 # Access the home '/' endpoint
 # The default header for the JWTConfig used is `X_API_TOKEN``
 # The default auth_header_types of the JWTConfig is ["Bearer"]
 access_token = response.json()["access_token"]
-response = httpx.get("/", headers={"X_API_TOKEN": f"Bearer {access_token}"})
+
+async with httpx.AsyncClient() as client:
+    response = client.get("/", headers={"X_API_TOKEN": f"Bearer {access_token}"})
 
 print(response.json()["message"])
 # hello john@doe.com

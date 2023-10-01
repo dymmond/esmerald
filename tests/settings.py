@@ -1,12 +1,17 @@
+import asyncio
+import os
 from functools import cached_property
 from typing import Optional, Tuple
 
+import mongoz
 from edgy import Database as EdgyDatabase
 from edgy import Registry as EdgyRegistry
 from pydantic import ConfigDict
 from saffier import Database, Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
+
+TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@localhost:27017")
 
 
 class TestSettings(EsmeraldAPISettings):
@@ -27,6 +32,10 @@ class TestSettings(EsmeraldAPISettings):
     def edgy_registry(self) -> Tuple[Database, Registry]:
         database = EdgyDatabase("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
         return database, EdgyRegistry(database=database)
+
+    @cached_property
+    def mongoz_registry(self) -> mongoz.Registry:
+        return mongoz.Registry(TEST_DATABASE_URL, event_loop=asyncio.get_running_loop)
 
 
 class TestConfig(TestSettings):

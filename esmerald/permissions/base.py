@@ -91,7 +91,7 @@ class NOT:
         return not self.op1.has_permission(request, apiview)
 
 
-class BasePermissionMetaclass(BaseOperationHolder, type):  # type: ignore[misc]
+class BasePermissionMetaclass(BaseOperationHolder, type):  # type: ignore[misc,unused-ignore]
     ...
 
 

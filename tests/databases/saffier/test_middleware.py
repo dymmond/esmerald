@@ -226,8 +226,10 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, as
         routes=[Gateway(handler=home)],
         middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
         raise_server_exceptions=False,
-    ) as client:
-        response = client.get("/", headers={jwt_config.api_key_header: f"Bearer {token}"})
+    ):
+        response = await async_client.get(
+            "/", headers={jwt_config.api_key_header: f"X_API {token}"}
+        )
         assert response.status_code == 401
 
 

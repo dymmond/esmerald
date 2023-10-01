@@ -10,7 +10,7 @@ SQL Alchemy is another one widely used and loved by the majority of the python c
 
 [Saffier](https://saffier.tarsild.io) is from the same autor of Esmerald so is expected to be
 supported (not natively) by the framework by providing some out-of-the-box built-in that can simply
-be used 
+be used
 
 !!! Tip
     Although Esmerald supports out of the box some integrations with Saffier it does not necessarily mean the framework
@@ -57,4 +57,4 @@ $ pip install saffier[sqlite]
 ## Documentation and more details
 
 Since Esmerald supports Saffier, the best place to understand how to use all the powerful features given by it you can simply
-use their [documentation](https://saffier.tarsild.io/) and learn more how to leverage it.
+use its [documentation](https://saffier.tarsild.io/) and learn more how to leverage it.

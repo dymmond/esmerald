@@ -74,6 +74,12 @@ nav:
           - Middleware:
               - JWT: "databases/edgy/middleware.md"
               - Example: "databases/edgy/example.md"
+      - Mongoz:
+          - Motivation: "databases/mongoz/motivation.md"
+          - Documents: "databases/mongoz/documents.md"
+          - Middleware:
+              - JWT: "databases/mongoz/middleware.md"
+              - Example: "databases/mongoz/example.md"
   - Interceptors: "interceptors.md"
   - Permissions: "permissions.md"
   - Middleware: "middleware/middleware.md"
