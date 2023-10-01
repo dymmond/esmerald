@@ -1,23 +1,27 @@
 # Example
 
-Since [Edgy](https://edgy.tarsild.io) if from the same author of Esmerald, it gives some
+Since [Mongoz](https://mongoz.tarsild.io) if from the same author of Esmerald, it gives some
 extra motivation for its use and therefore an example in how to use the
 [JWTAuthMiddleware](./middleware.md), even if in a very simplistic way, within your Esmerald application.
 
 
 Let us build a simple integration and application where we will be creating:
 
-- [Create user model](#create-user-model) by using the provided default from Esmerald.
+- [Create user document](#create-user-document) by using the provided default from Esmerald.
 - [Create user API](#create-user-api) to create a user in the system.
 - [Login API](#login-api) to authenticate the user.
 - [Home API](#home-api) to authenticate the user and return the logged-in user email.
 - [Assemble the apis](#assemble-the-apis) where we wrap the application.
 
-We will be using SQLite for this example but feel free to integrate with your database.
+We will be using a local MongoDB database for this example but feel free to integrate with your database.
+
+!!! Tip
+    For local development you can always use docker as it provides a clean way of using MongoDB
+    without going throught the hassle of installing everything locally.
 
 We will also be assuming the following:
 
-- Models are inside an `accounts/models.py`
+- Documents are inside an `accounts/documents.py`
 - Views/APIs are inside an `accounts/views.py`
 - The main application is inside an `app.py`
 - The [jwt_config](../../configurations/jwt.md#jwtconfig-and-application-settings)
@@ -25,25 +29,25 @@ is inside your global [settings](../../application/settings.md).
 
 **Lets go!**
 
-## Create user model
+## Create user document
 
-First, we need to create a model that will be storing the users in the system. We will be
-defaulting to the one model provided by Esmerald out-of-the-box.
+First, we need to create a document that will be storing the users in the system. We will be
+defaulting to the one document provided by Esmerald out-of-the-box.
 
-```python title="accounts/models.py"
-{!> ../docs_src/databases/edgy/example/create_model.py !}
+```python title="accounts/documents.py"
+{!> ../docs_src/databases/mongoz/example/create_model.py !}
 ```
 
 ## Create user API
 
-Now that the [user model](#create-user-model) is defined and created, it is time to create an api
+Now that the [user document](#create-user-document) is defined and created, it is time to create an api
 that allows the creation of users in the system.
 
 This example won't cover corner cases like integrity in case of duplicates and so on as this is
 something that you can easily manage.
 
 ```python title="accounts/views.py"
-{!> ../docs_src/databases/edgy/example/create_user.py !}
+{!> ../docs_src/databases/mongoz/example/create_user.py !}
 ```
 
 ## Login API
@@ -55,7 +59,7 @@ For this API to work, we need to guarantee the data being sent is valid, authent
 return the JWT token.
 
 ```python title="accounts/views.py"
-{!> ../docs_src/databases/edgy/example/login.py !}
+{!> ../docs_src/databases/mongoz/example/login.py !}
 ```
 
 Ooof! There is a lot going on here right? Well, yes but this is also intentional. The `login`
@@ -79,7 +83,7 @@ Now it is time to create the api that will be returning the email of the logged 
 The API is pretty much simple and clean.
 
 ```python title="accounts/views.py"
-{!> ../docs_src/databases/edgy/example/home.py !}
+{!> ../docs_src/databases/mongoz/example/home.py !}
 ```
 
 ## Assemble the APIs
@@ -87,7 +91,7 @@ The API is pretty much simple and clean.
 Now it the time where we assemble everything in one place and create our Esmerald application.
 
 ```python title="app.py"
-{!> ../docs_src/databases/edgy/example/assemble.py !}
+{!> ../docs_src/databases/mongoz/example/assemble.py !}
 ```
 
 Did you notice the import of the `JWTAuthMiddleware` is inside the
@@ -112,6 +116,7 @@ Let us see how we could access `/` using the current setup.
 
 For this will be using `httpx` but you are free to use whatever client you prefer.
 
+
 ### Steps
 
 1. Create a user.
@@ -119,12 +124,12 @@ For this will be using `httpx` but you are free to use whatever client you prefe
 3. Access the home `/`.
 
 ```python
-{!> ../docs_src/databases/edgy/example/access.py !}
+{!> ../docs_src/databases/mongoz/example/access.py !}
 ```
 
 Did you notice the `X_API_TOKEN` in the `headers`? Well that is because the default `api_key_header`
 from the [JWTConfig](../../configurations/jwt.md#parameters) is called `X_API_TOKEN` and the
-contrib middleware from Esmerald to provide integration with Edgy uses it to validate if is passed
+contrib middleware from Esmerald to provide integration with Mongoz uses it to validate if is passed
 in the header or not.
 
 Like everything in Esmerald, that is also configurable. If you change the `header` to something else
@@ -132,5 +137,5 @@ in that config, it will automatically reflect across the contib middlewares.
 
 ## Conclusions
 
-This is just a simple example how you could use Edgy with the provided `JWTAuthMiddleware`
+This is just a simple example how you could use Mongoz with the provided `JWTAuthMiddleware`
 from **Esmerald** and build a quick, yet robust, login system and access protected APIs.

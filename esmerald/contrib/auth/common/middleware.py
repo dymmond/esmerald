@@ -64,9 +64,9 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
 
         Raises Authentication error if invalid.
         """
-        token = request.headers.get(self.config.api_key_header.lower())
+        token = request.headers.get(self.config.api_key_header.lower(), None)
 
-        if not token:
+        if not token or token is None:
             raise NotAuthorized(detail="Token not found in the request header")
 
         token_partition = token.partition(" ")

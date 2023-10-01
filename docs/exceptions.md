@@ -13,7 +13,7 @@ from esmerald.exceptions import HTTPException
 
 ### ImproperlyConfigured
 
-The name might be familiar for some of the developers out there and it is intentional as it si also self explanatory.
+The name might be familiar for some of the developers out there and it is intentional as it is also self explanatory.
 Inherits from the base [HTTPException](#httpexception) and it is raised when a misconfiguration occurs.
 
 ```python

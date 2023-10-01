@@ -155,8 +155,8 @@ example.
 * **Pluggables**: Create plugins for Esmerald and hook them into any application and/or
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
-* **Saffier ORM**: Native support for [Saffier ORM](./databases/saffier/motivation.md).
-* **Edgy**: Native support for [Edgy](./databases/edgy/motivation.md).
+* **ORM Support**: Native support for [Saffier][saffier_orm] and [Edgy][edgy_orm].
+* **ODM Support**: Native support for [Mongoz][mongoz_odm].
 * **APIView**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJON support.
 * **Lifespan**: Support for the newly Starlette lifespan.
@@ -447,3 +447,7 @@ There are plenty more things you can do with Esmerald. Enjoy! 😊
 
 Currently there are no sponsors of Esmerald but you can financially help and support the author though
 [GitHub sponsors](https://github.com/sponsors/tarsil) and become a **Special one** or a **Legend**.
+
+[saffier_orm]: ./databases/saffier/motivation.md
+[edgy_orm]: ./databases/edgy/motivation.md
+[mongoz_odm]: ./databases/mongoz/motivation.md
