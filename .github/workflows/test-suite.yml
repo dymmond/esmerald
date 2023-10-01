@@ -57,6 +57,8 @@ jobs:
       - name: "Install dependencies"
         if: steps.cache.outputs.cache-hit != 'true'
         run: "scripts/install"
+      - name: "Run linting"
+        run: "scripts/lint"
       - name: "Run tests"
         env:
           DATABASE_URI: "mongodb://root:mongoadmin@localhost:27017"

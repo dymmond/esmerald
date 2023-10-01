@@ -6,20 +6,20 @@ from uuid import uuid4
 
 import pytest
 from anyio import from_thread, sleep, to_thread
-from edgy import ObjectNotFound
 from httpx import AsyncClient
+from mongoz import DocumentNotFound
 from pydantic import BaseModel
 from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald import Esmerald, Gateway, Include, JSONResponse, Request, get, post, status
 from esmerald.conf import settings
 from esmerald.config.jwt import JWTConfig
-from esmerald.contrib.auth.edgy.base_user import AbstractUser
-from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
+from esmerald.contrib.auth.mongoz.base_user import AbstractUser
+from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 
-database, models = settings.edgy_registry
+registry = settings.mongoz_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -40,27 +40,11 @@ class User(AbstractUser):
     """
 
     class Meta:
-        registry = models
+        registry = registry
+        database = "test_db"
 
 
 jwt_config = JWTConfig(signing_key=settings.secret_key)
-
-
-@pytest.fixture(autouse=True, scope="module")
-async def create_test_database():
-    try:
-        await models.create_all()
-        yield
-        await models.drop_all()
-    except Exception:
-        pytest.skip("No database available")
-
-
-@pytest.fixture(autouse=True)
-async def rollback_transactions():
-    with database.force_rollback():
-        async with database:
-            yield
 
 
 def generate_user_token(user: User, time=None):
@@ -72,20 +56,19 @@ def generate_user_token(user: User, time=None):
     else:
         later = time
 
-    token = Token(sub=user.id, exp=later)
+    token = Token(sub=str(user.id), exp=later)
     return token.encode(key=jwt_config.signing_key, algorithm=jwt_config.algorithm)
 
 
 async def get_user_and_token(time=None):
     uuid = str(uuid4())[:6]
-    user = await User.query.create_user(
+    user = await User.create_user(
         first_name="Test",
         last_name="test",
         email=f"{uuid}-foo@bar.com",
         password=get_random_string(),
         username=f"{uuid}-test",
     )
-
     token = generate_user_token(user, time=time)
     return token
 
@@ -97,8 +80,8 @@ class BackendAuthentication(BaseModel):
     async def authenticate(self) -> str:
         """Authenticates a user and returns a JWT string"""
         try:
-            user: User = await User.query.get(email=self.email)
-        except ObjectNotFound:
+            user: User = await User.objects.get(email=self.email)
+        except DocumentNotFound:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user.
             await User().set_password(self.password)
@@ -125,7 +108,7 @@ class BackendAuthentication(BaseModel):
         else:
             later = time
 
-        token = Token(sub=user.id, exp=later)
+        token = Token(sub=str(user.id), exp=later)
         return token.encode(key=jwt_config.signing_key, algorithm=jwt_config.algorithm)
 
 
@@ -162,7 +145,7 @@ _string_pass = get_random_string()
 
 @post()
 async def create_user(data: CreateUser) -> None:
-    await User.query.create_user(
+    await User.create_user(
         first_name="Test",
         last_name="test",
         email="foo@bar.com",
