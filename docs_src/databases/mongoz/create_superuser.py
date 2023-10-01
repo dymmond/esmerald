@@ -13,6 +13,7 @@ class User(BaseUser):
 
     class Meta:
         registry = registry
+        database = "my_db"
 
     def __str__(self):
         return f"{self.email} - {self.last_login}"
