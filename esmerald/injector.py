@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 
+from esmerald.core.di.provider import load_provider
 from esmerald.parsers import ArbitraryHashableBaseModel
 from esmerald.transformers.datastructures import Signature
 from esmerald.typing import Void
@@ -10,10 +11,19 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Factory:
-    def __init__(self, provides: "AnyCallable", *args: Any) -> None:
-        self.provides = provides
+    def __init__(self, provides: Union["AnyCallable", str], *args: Any) -> None:
+        """
+        The provider can be passed in separate ways. Via direct callable
+        or via string value where it will be automatically imported by the application.
+        """
         self.__args: Tuple[Any, ...] = ()
         self.set_args(*args)
+        self.is_nested: bool = False
+
+        if isinstance(provides, str):
+            self.provides, self.is_nested = load_provider(provides)
+        else:
+            self.provides = provides
 
     def set_args(self, *args: Any) -> None:
         self.__args = args
@@ -24,6 +34,17 @@ class Factory:
         return self.provides
 
     async def __call__(self) -> Any:
+        """
+        This handles with normal and nested imports.
+
+        Example:
+
+            1. MyClass.func
+            2. MyClass.AnotherClass.func
+        """
+        if self.is_nested:
+            self.provides = self.provides()
+
         if is_async_callable(self.provides):
             value = await self.provides(*self.__args)
         else:
