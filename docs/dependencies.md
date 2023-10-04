@@ -49,7 +49,7 @@ and checks if the value is bigger or equal than 5 and that result `is_valid` is 
 
 The same is applied also to [exception handlers](./exception-handlers.md).
 
-## More Real World example
+## More real world examples
 
 Now let us imagine that we have a web application with one of the views. Something like this:
 
@@ -57,9 +57,9 @@ Now let us imagine that we have a web application with one of the views. Somethi
 {!> ../docs_src/dependencies/views.py !}
 ```
 
-As you can notice, the user_dao is injected automatically using the appropriate level of dependency injection..
+As you can notice, the `user_dao`` is injected automatically using the appropriate level of dependency injection.
 
-Let's see the `urls.py` and understand from where we got the `user_dao`:
+Let us see the `urls.py` and understand from where we got the `user_dao`:
 
 ```python hl_lines="14-16 32-34"
 {!> ../docs_src/dependencies/urls.py !}
@@ -84,6 +84,42 @@ The Factory is a clean wrapper around any callable (classes usually are callable
 !!! Tip
     No need to explicitly instantiate the class, just pass the class definition to the `Factory`
     and Esmerald takes care of the rest for you.
+
+### Importing using strings
+
+Like everything is Esmerald, there are different ways of achieving the same results and the `Factory`
+is no exception.
+
+In the previous examples we were passing the `UserDAO`, `ArticleDAO` and `PostDAO` classes directly
+into the `Factory` object and that also means that **you will need to import the objects to then be passed**.
+
+What can happen with this process? Majority of the times nothing **but** you can also have the classic
+`partially imported ...` annoying error, right?
+
+Well, the good news is that Esmerald got you covered, as usual.
+
+The `Factory` **also allows import via string** without the need of importing directly the object
+to the place where it is needed.
+
+Let us then see how it would look like and let us then assume:
+
+1. The `UserDAO` is located somewhere in the codebase like `myapp.accounts.daos`.
+2. The `ArticleDAO` is located somewhere in the codebase like `myapp.articles.daos`.
+3. The `PostDAO` is located somewhere in the codebase like `myapp.posts.daos`.
+
+Ok, now that we know this, let us see how it would look like in the codebase importing it inside the
+`Factory`.
+
+```python hl_lines="13-15"
+{!> ../docs_src/dependencies/urls_factory_import.py !}
+```
+
+Now, this is a beauty is it not? This way, the codebase is cleaner and without all of those imported
+objects from the top.
+
+!!! Tip
+    Both cases work well within Esmerald, this is simply an alternative in case the complexity of
+    the codebase increases and you would like to tidy it up a bit more.
 
 In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described
 and Esmerald will make sure that they will be automatically injected.

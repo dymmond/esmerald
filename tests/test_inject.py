@@ -19,6 +19,20 @@ class Test:
     async def async_class(cls) -> int:
         return cls.val
 
+    class InsideTest:
+        val = 56
+
+        @classmethod
+        async def async_class(cls) -> int:
+            return cls.val
+
+        class NestedInsideTest:
+            val = 92
+
+            @classmethod
+            async def async_class(cls) -> int:
+                return cls.val
+
     @classmethod
     def sync_class(cls) -> int:
         return cls.val
@@ -59,6 +73,7 @@ test_factory = Factory(Test)
     [
         (async_fn, "three-one"),
         (Factory(async_fn), "three-one"),
+        (Factory("tests.test_inject.async_fn"), "three-one"),
     ],
 )
 @pytest.mark.asyncio()
@@ -73,6 +88,7 @@ async def test_Inject_default(_callable, exp) -> None:
     [
         (async_fn, "three-one"),
         (Factory(async_fn), "three-one"),
+        (Factory("tests.test_inject.async_fn"), "three-one"),
     ],
 )
 @pytest.mark.asyncio()
@@ -130,6 +146,13 @@ def test_Injectr_equality_check_Factory() -> None:
         (Factory(Test.sync_static), "one-three"),
         (Factory(Test().async_instance), 13),
         (Factory(Test().sync_instance), 13),
+        (Factory("tests.test_inject.async_fn"), "three-one"),
+        (Factory("tests.test_inject.Test.async_class"), 31),
+        (Factory("tests.test_inject.Test.sync_class"), 31),
+        (Factory("tests.test_inject.Test.async_static"), "one-three"),
+        (Factory("tests.test_inject.Test.sync_static"), "one-three"),
+        (Factory("tests.test_inject.Test.InsideTest.async_class"), 56),
+        (Factory("tests.test_inject.Test.InsideTest.NestedInsideTest.async_class"), 92),
     ],
 )
 @pytest.mark.asyncio()

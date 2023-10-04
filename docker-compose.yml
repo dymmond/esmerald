@@ -34,7 +34,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: mongoadmin
       MONGO_INITDB_DATABASE: mongodb
     volumes:
-        - "mongo_db_data:/data/db"
+        - "mongo_esmerald_db_data:/data/db"
     expose:
       - 27017
     ports:
@@ -56,5 +56,5 @@ services:
 volumes:
   esmerald:
     external: true
-  mongo_db_data:
+  mongo_esmerald_db_data:
       external: true
