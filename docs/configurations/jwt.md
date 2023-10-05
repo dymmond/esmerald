@@ -36,6 +36,10 @@ settings would be recommended as it would be the source of truth for any configu
 
     <sup>Default: `X_API_TOKEN`</sup>
 
+* **authorization_header** - Authorization header name.
+
+    <sup>Default: `Authorization`</sup>
+
 * **algorithm** - Algorithm used for the jwt token encoding/decoding.
 
     <sup>Default: `HS256`</sup>

@@ -22,6 +22,9 @@ from openapi_schemas_pydantic.v3_1_0.reference import Reference as Reference
 from openapi_schemas_pydantic.v3_1_0.request_body import RequestBody as RequestBody
 from openapi_schemas_pydantic.v3_1_0.response import Response as Response
 from openapi_schemas_pydantic.v3_1_0.schema import Schema as Schema
+from openapi_schemas_pydantic.v3_1_0.security_requirement import (
+    SecurityRequirement as SecurityRequirement,
+)
 from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme as SecurityScheme
 from openapi_schemas_pydantic.v3_1_0.server import Server as Server
 from openapi_schemas_pydantic.v3_1_0.server_variable import ServerVariable as ServerVariable
@@ -71,6 +74,13 @@ class OpenIdConnect(SecurityScheme):
         default=SecuritySchemeType.openIdConnect, alias="type"
     )
     openIdConnectUrl: str
+
+
+class SecurityBase(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    type: SecuritySchemeType = Field(alias="type")
+    description: Optional[str] = None
 
 
 SecuritySchemeUnion = Union[APIKey, HTTPBase, OAuth2, OpenIdConnect, HTTPBearer]
