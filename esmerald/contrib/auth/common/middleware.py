@@ -74,7 +74,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
         auth_token = token_partition[-1]
 
         if token_type not in self.config.auth_header_types:
-            raise NotAuthorized(detail=f"{token_type} is not an authorized header type")
+            raise NotAuthorized(detail=f"'{token_type}' is not an authorized header.")
 
         try:
             token = Token.decode(

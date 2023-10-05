@@ -54,7 +54,7 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
 def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
     """
-    Builds the security schemes.di
+    Builds the security schemas for OpenAPI.
     """
     security_definitions = {}
     operation_security = []
@@ -71,6 +71,7 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
         security_name = security_requirement.scheme_name
         security_definitions[security_name] = security_definition
         operation_security.append({security_name: security_requirement})
+
     return security_definitions, operation_security
 
 

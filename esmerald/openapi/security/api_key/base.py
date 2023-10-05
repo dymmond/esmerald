@@ -1,85 +1,73 @@
 from typing import Any, Literal, Optional
 
-from esmerald.openapi.enums import APIKeyIn, Header, SecuritySchemeType
+from esmerald.openapi.enums import APIKeyIn, SecuritySchemeType
 from esmerald.openapi.security.base import HTTPBase
 
 
-class Basic(HTTPBase):
+class APIKeyInQuery(HTTPBase):
     def __init__(
         self,
         *,
         type_: Literal[
             "apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"
-        ] = SecuritySchemeType.http.value,
-        bearerFormat: Optional[str] = None,
+        ] = SecuritySchemeType.apiKey.value,
         scheme_name: Optional[str] = None,
         description: Optional[str] = None,
-        in_: Optional[Literal["query", "header", "cookie"]] = APIKeyIn.header.value,
+        in_: Optional[Literal["query", "header", "cookie"]] = APIKeyIn.query.value,
         name: Optional[str] = None,
-        scheme: Optional[str] = None,
         **kwargs: Any,
     ):
         super().__init__(
             type_=type_,
-            bearerFormat=bearerFormat,
             description=description,
-            name=name or "Basic",
+            name=name,
             in_=in_,
-            scheme=scheme or "basic",
             scheme_name=scheme_name or self.__class__.__name__,
             **kwargs,
         )
 
 
-class Bearer(HTTPBase):
+class APIKeyInHeader(HTTPBase):
     def __init__(
         self,
         *,
         type_: Literal[
             "apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"
-        ] = SecuritySchemeType.http.value,
-        bearerFormat: Optional[str] = None,
+        ] = SecuritySchemeType.apiKey.value,
         scheme_name: Optional[str] = None,
         description: Optional[str] = None,
         in_: Optional[Literal["query", "header", "cookie"]] = APIKeyIn.header.value,
         name: Optional[str] = None,
-        scheme: Optional[str] = None,
         **kwargs: Any,
     ):
         super().__init__(
             type_=type_,
-            bearerFormat=bearerFormat,
             description=description,
-            name=name or Header.authorization,
+            name=name,
             in_=in_,
-            scheme=scheme or "bearer",
             scheme_name=scheme_name or self.__class__.__name__,
             **kwargs,
         )
 
 
-class Digest(HTTPBase):
+class APIKeyInCookie(HTTPBase):
     def __init__(
         self,
         *,
         type_: Literal[
             "apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"
-        ] = SecuritySchemeType.http.value,
-        bearerFormat: Optional[str] = None,
+        ] = SecuritySchemeType.apiKey.value,
         scheme_name: Optional[str] = None,
         description: Optional[str] = None,
-        in_: Optional[Literal["query", "header", "cookie"]] = APIKeyIn.header.value,
+        in_: Optional[Literal["query", "header", "cookie"]] = APIKeyIn.cookie.value,
         name: Optional[str] = None,
-        scheme: Optional[str] = None,
         **kwargs: Any,
     ):
         super().__init__(
             type_=type_,
-            bearerFormat=bearerFormat,
             description=description,
-            name=name or Header.authorization,
+            name=name,
             in_=in_,
-            scheme=scheme or "digest",
             scheme_name=scheme_name or self.__class__.__name__,
             **kwargs,
         )
