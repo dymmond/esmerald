@@ -55,7 +55,7 @@ from esmerald.routing._internal import FieldInfoMixin
 from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from esmerald.routing.views import APIView
+from esmerald.routing.generics.views import APIView
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.utils import get_signature

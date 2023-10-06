@@ -7,6 +7,8 @@ from starlette.types import Receive, Scope, Send
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:  # pragma: no cover
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
+
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -48,6 +50,8 @@ class APIView:
         "route_map",
         "operation_id",
         "methods",
+        "interceptors",
+        "security",
     )
 
     path: str
@@ -62,6 +66,8 @@ class APIView:
     tags: Optional[List[str]]
     deprecated: Optional[bool]
     include_in_schema: Optional[bool]
+    interceptors: Optional[Sequence["Interceptor"]]
+    security: Optional[List["SecurityScheme"]]
 
     def __init__(self, parent: Union["Gateway", "WebSocketGateway"]) -> None:
         for key in self.__slots__:
@@ -71,7 +77,6 @@ class APIView:
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
         self.parent = parent
-        self.interceptors: Sequence["Interceptor"] = []
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.operation_id: Optional[str] = None
         self.methods: List[str] = []

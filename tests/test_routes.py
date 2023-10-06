@@ -3,8 +3,8 @@ from starlette import status
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.gateways import Gateway, WebSocketGateway
+from esmerald.routing.generics.views import APIView
 from esmerald.routing.handlers import delete, get, post, put, route, websocket
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 

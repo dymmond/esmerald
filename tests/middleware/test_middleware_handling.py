@@ -15,9 +15,9 @@ from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.gateways import Gateway
+from esmerald.routing.generics.views import APIView
 from esmerald.routing.handlers import get, post
 from esmerald.routing.router import Include
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
 logger = logging.getLogger(__name__)

@@ -43,7 +43,8 @@ from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
-from esmerald.routing import gateways, views
+from esmerald.routing import gateways
+from esmerald.routing.generics import views
 from esmerald.routing.router import HTTPHandler, Include, Router, WebhookHandler, WebSocketHandler
 from esmerald.types import (
     APIGateHandler,

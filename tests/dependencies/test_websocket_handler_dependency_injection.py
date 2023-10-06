@@ -6,8 +6,8 @@ from starlette.websockets import WebSocketDisconnect
 
 from esmerald.injector import Inject
 from esmerald.routing.gateways import WebSocketGateway
+from esmerald.routing.generics.views import APIView
 from esmerald.routing.handlers import websocket
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 

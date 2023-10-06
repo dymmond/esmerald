@@ -16,9 +16,9 @@ from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.responses.encoders import UJSONResponse
 from esmerald.routing.gateways import Gateway, WebSocketGateway
+from esmerald.routing.generics.views import APIView
 from esmerald.routing.handlers import get, post, put, websocket
 from esmerald.routing.router import Include, Router
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
 

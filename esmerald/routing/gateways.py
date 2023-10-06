@@ -7,7 +7,7 @@ from starlette.routing import compile_path
 from starlette.types import Receive, Scope, Send
 
 from esmerald.routing.base import BaseInterceptorMixin
-from esmerald.routing.views import APIView
+from esmerald.routing.generics.views import APIView
 from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string, is_class_and_subclass
 from esmerald.utils.url import clean_path

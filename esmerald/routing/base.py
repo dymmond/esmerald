@@ -36,7 +36,7 @@ from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import JSONResponse, Response
-from esmerald.routing.views import APIView
+from esmerald.routing.generics.views import APIView
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
