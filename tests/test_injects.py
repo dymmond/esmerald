@@ -7,8 +7,8 @@ from esmerald.applications import Esmerald
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Factory, Inject
 from esmerald.params import Injects
+from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
-from esmerald.routing.generics.views import APIView
 from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 from esmerald.testclient import create_client

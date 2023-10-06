@@ -6,8 +6,8 @@ from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import Receive, Scope, Send
 
+from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseInterceptorMixin
-from esmerald.routing.generics.base import View
 from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string, is_class_and_subclass
 from esmerald.utils.url import clean_path
@@ -145,6 +145,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         "interceptors",
         "permissions",
         "parent",
+        "security",
     )
 
     def __init__(
@@ -230,6 +231,7 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
         deprecated: Optional[bool] = None,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ) -> None:
         if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore
@@ -259,6 +261,7 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         self.response_headers = None
         self.deprecated = deprecated
         self.parent = parent
+        self.security = security
         (
             handler.path_regex,
             handler.path_format,

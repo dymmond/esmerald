@@ -17,7 +17,7 @@ app = Esmerald(routes=[Gateway(handler=home)])
 client = EsmeraldTestClient(app)
 
 
-def test_get_swager_ui(test_client_factory):
+def test_get_swagger_ui(test_client_factory):
     response = get_swagger_ui_html(
         openapi_url=app.openapi_config.openapi_url,
         title=app.openapi_config.title,
@@ -74,5 +74,5 @@ def test_get_spotlight_ui(test_client_factory):
     assert response.status_code == 200
     assert (
         response.body
-        == b'\n    <!DOCTYPE html>\n    <html>\n        <head>\n            <title>Esmerald</title>\n            <!-- needed for adaptive design -->\n            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n            <link rel="shortcut icon" href="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js">\n            <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">\n            <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js" crossorigin></script>\n            <style>body { margin: 0; padding: 0 }</style>\n    \n        <body>\n            <noscript>\n                Stoplight requires Javascript to function. Please enable it to browse the documentation.\n            </noscript>\n            <elements-api\n                apiDescriptionUrl="/openapi.json"\n                router="hash"\n                layout="sidebar"\n            />\n        </body>\n    </html>\n    '
+        == b'\n    <!DOCTYPE html>\n    <html>\n        <head>\n            <title>Esmerald</title>\n            <!-- needed for adaptive design -->\n            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n            <link rel="shortcut icon" href="https://esmerald.dev/statics/images/favicon.ico">\n            <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">\n            <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js" crossorigin></script>\n            <style>body { margin: 0; padding: 0 }</style>\n    \n        <body>\n            <noscript>\n                Stoplight requires Javascript to function. Please enable it to browse the documentation.\n            </noscript>\n            <elements-api\n                apiDescriptionUrl="/openapi.json"\n                router="hash"\n                layout="sidebar"\n            />\n        </body>\n    </html>\n    '
     )

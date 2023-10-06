@@ -4,8 +4,8 @@ from starlette.status import HTTP_200_OK
 
 from esmerald.enums import MediaType
 from esmerald.injector import Inject
+from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
-from esmerald.routing.generics.views import APIView
 from esmerald.routing.handlers import get
 from esmerald.testclient import create_client
 

@@ -1,7 +1,7 @@
 from esmerald.permissions import DenyAll, IsAuthenticated
 from esmerald.requests import Request
 from esmerald.responses import JSONResponse
-from esmerald.routing.generics.views import APIView
+from esmerald.routing.apis.views import APIView
 from esmerald.routing.handlers import delete, get, post
 
 

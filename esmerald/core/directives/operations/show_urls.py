@@ -12,7 +12,7 @@ from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
 from esmerald.enums import HttpMethod
-from esmerald.routing.generics.base import View
+from esmerald.routing.apis.base import View
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
