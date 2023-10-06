@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 
 import esmerald
@@ -134,3 +136,22 @@ def test_all_api_view(test_client_factory, value):
     with create_client(routes=[Gateway(handler=GenericAPIView)]) as client:
         response = getattr(client, value)("/")
         assert response.status_code == handler().status_code
+
+
+@pytest.mark.parametrize("value,method", [("create_user", "post"), ("read_item", "get")])
+def test_all_api_view_custom(test_client_factory, value, method):
+    class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+        http_allowed_methods: List[str] = ["create_user", "read_item"]
+
+        @post(status_code=200)
+        async def create_user(self) -> str:
+            return f"home {value}"
+
+        @get()
+        async def read_item(self) -> str:
+            return f"home {value}"
+
+    with create_client(routes=[Gateway(handler=GenericAPIView)]) as client:
+        response = getattr(client, method)("/")
+        assert response.status_code == 200
+        assert response.json() == f"home {value}"
