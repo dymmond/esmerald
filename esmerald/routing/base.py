@@ -45,6 +45,8 @@ from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
+
     from esmerald.applications import Esmerald
     from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
@@ -583,11 +585,11 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             handler = cast("APIGateHandler", self)
             await continue_or_raise_permission_exception(request, handler, awaitable)
 
-    def get_security_schemes(self) -> List[Any]:
+    def get_security_schemes(self) -> List["SecurityScheme"]:
         """
         Returns all security schemes from every level.
         """
-        security_schemes = []
+        security_schemes: List["SecurityScheme"] = []
         for layer in self.parent_levels:
             security_schemes.extend(layer.security or [])
         return security_schemes
