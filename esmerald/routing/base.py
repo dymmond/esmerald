@@ -36,7 +36,7 @@ from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import JSONResponse, Response
-from esmerald.routing.generics.views import APIView
+from esmerald.routing.generics.base import View
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
@@ -354,7 +354,7 @@ class BaseResponseHandler:
             )
         else:
             parsed_kwargs = {}
-        if isinstance(route.parent, APIView):
+        if isinstance(route.parent, View):
             fn = partial(
                 cast("AnyCallable", route.fn),
                 route.parent,

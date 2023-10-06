@@ -30,7 +30,7 @@ from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
 from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from .routing.generics.views import APIView
+from .routing.generics import APIView, SimpleAPIView
 from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
 from .routing.router import Include, Router
 from .routing.webhooks import (
@@ -93,6 +93,7 @@ __all__ = [
     "Router",
     "ServiceUnavailable",
     "SessionConfig",
+    "SimpleAPIView",
     "StaticFilesConfig",
     "Stream",
     "Template",

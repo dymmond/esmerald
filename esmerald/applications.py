@@ -44,7 +44,7 @@ from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
-from esmerald.routing.generics import views
+from esmerald.routing.generics import base
 from esmerald.routing.router import HTTPHandler, Include, Router, WebhookHandler, WebSocketHandler
 from esmerald.types import (
     APIGateHandler,
@@ -376,8 +376,8 @@ class Esmerald(Starlette):
                     f"The webhooks should be an instances of 'WebhookGateway', got '{route.__class__.__name__}' instead."
                 )
 
-            if not is_class_and_subclass(route.handler, views.APIView) and not isinstance(
-                route.handler, views.APIView
+            if not is_class_and_subclass(route.handler, base.View) and not isinstance(
+                route.handler, base.View
             ):
                 if not route.handler.parent:
                     route.handler.parent = route  # type: ignore
@@ -386,7 +386,7 @@ class Esmerald(Starlette):
                 if not route.handler.parent:  # pragma: no cover
                     route(parent=self)  # type: ignore
 
-                handler: views.APIView = cast("views.APIView", route.handler)
+                handler: base.View = cast("base.View", route.handler)
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gate = gateways.WebhookGateway(
@@ -496,7 +496,7 @@ class Esmerald(Starlette):
         value: Union["gateways.Gateway", "gateways.WebSocketGateway"],
     ) -> None:
         """
-        Adds an APIView via application instance.
+        Adds a View via application instance.
         """
         self.router.add_apiview(value=value)
 
