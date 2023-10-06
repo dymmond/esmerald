@@ -64,7 +64,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
 
         Raises Authentication error if invalid.
         """
-        token = request.headers.get(self.config.api_key_header.lower(), None)
+        token = request.headers.get(self.config.authorization_header, None)
 
         if not token or token is None:
             raise NotAuthorized(detail="Token not found in the request header")
@@ -74,11 +74,13 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
         auth_token = token_partition[-1]
 
         if token_type not in self.config.auth_header_types:
-            raise NotAuthorized(detail=f"{token_type} is not an authorized header type")
+            raise NotAuthorized(detail=f"'{token_type}' is not an authorized header.")
 
         try:
             token = Token.decode(
-                token=auth_token, key=self.config.signing_key, algorithms=[self.config.algorithm]
+                token=auth_token,
+                key=self.config.signing_key,
+                algorithms=[self.config.algorithm],
             )  # type: ignore
         except (JWSError, JWTError) as e:
             raise AuthenticationError(str(e)) from e

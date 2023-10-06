@@ -31,4 +31,9 @@ class AppSettings(EsmeraldAPISettings):
             root_path_in_servers=self.root_path_in_servers,
             openapi_version=self.openapi_version,
             openapi_url=self.openapi_url,
+            webhooks=self.webhooks,
+            stoplight_css_url=self.stoplight_css_url,
+            stoplight_js_url=self.stoplight_js_url,
+            stoplight_url=self.stoplight_url,
+            stoplight_favicon_url=self.stoplight_favicon_url,
         )

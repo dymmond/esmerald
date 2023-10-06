@@ -13,6 +13,8 @@ from esmerald.utils.helpers import clean_string, is_class_and_subclass
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:  # pragma: no cover
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
+
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
@@ -50,6 +52,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
         deprecated: Optional[bool] = None,
         is_from_router: bool = False,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ) -> None:
         if not path:
             path = "/"
@@ -94,6 +97,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self.response_headers = None
         self.deprecated = deprecated
         self.parent = parent
+        self.security = security
         (
             handler.path_regex,
             handler.path_format,

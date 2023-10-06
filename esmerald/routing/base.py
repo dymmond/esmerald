@@ -583,6 +583,15 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             handler = cast("APIGateHandler", self)
             await continue_or_raise_permission_exception(request, handler, awaitable)
 
+    def get_security_schemes(self) -> List[Any]:
+        """
+        Returns all security schemes from every level.
+        """
+        security_schemes = []
+        for layer in self.parent_levels:
+            security_schemes.extend(layer.security or [])
+        return security_schemes
+
 
 class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover
     def get_interceptors(self) -> List["AsyncCallable"]:
