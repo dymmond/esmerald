@@ -109,6 +109,7 @@ nav:
       - Directives: "directives/directives.md"
       - Custom Directives: "directives/custom-directives.md"
       - Shell: "directives/shell.md"
+  - OpenAPI: "openapi.md"
   - WSGI Frameworks: "wsgi.md"
   - Test Client: "testclient.md"
   - Deployment:
