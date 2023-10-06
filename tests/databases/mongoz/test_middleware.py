@@ -196,7 +196,7 @@ async def test_cannot_access_endpoint_with_invalid_header(test_client_factory, a
         routes=[Gateway(handler=home)],
         middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
     ) as client:
-        response = client.get("/", headers={jwt_config.api_key_header: token})
+        response = client.get("/", headers={jwt_config.authorization_header: token})
 
         assert response.status_code == 401
 
@@ -211,7 +211,7 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, as
         raise_server_exceptions=False,
     ):
         response = await async_client.get(
-            "/", headers={jwt_config.api_key_header: f"X_API {token}"}
+            "/", headers={jwt_config.authorization_header: f"X_API {token}"}
         )
         assert response.status_code == 401
 
@@ -220,7 +220,9 @@ async def test_can_access_endpoint_with_valid_token(test_client_factory, async_c
     time = datetime.now() + timedelta(minutes=20)
     token = await get_user_and_token(time=time)
 
-    response = await async_client.get("/", headers={jwt_config.api_key_header: f"Bearer {token}"})
+    response = await async_client.get(
+        "/", headers={jwt_config.authorization_header: f"Bearer {token}"}
+    )
     assert response.status_code == 200
     assert "hello" in response.json()["message"]
 
@@ -253,7 +255,7 @@ async def test_can_access_endpoint_with_valid_token_after_login_failed(
 
     # Access the home and return the logged in user email
     response = await async_client.get(
-        "/", headers={jwt_config.api_key_header: f"Bearer {access_token}"}
+        "/", headers={jwt_config.authorization_header: f"Bearer {access_token}"}
     )
 
     assert response.status_code == 200

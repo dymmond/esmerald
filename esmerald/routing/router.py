@@ -52,10 +52,10 @@ from esmerald.openapi.utils import is_status_code_allowed
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing._internal import FieldInfoMixin
+from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseHandlerMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from esmerald.routing.views import APIView
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.utils import get_signature
@@ -104,8 +104,8 @@ class Parent:
             if not route.handler.parent:  # pragma: no cover
                 route.handler.parent = route  # type: ignore
 
-            if not is_class_and_subclass(route.handler, APIView) and not isinstance(
-                route.handler, APIView
+            if not is_class_and_subclass(route.handler, View) and not isinstance(
+                route.handler, View
             ):
                 route.handler.create_signature_model()
 
@@ -128,8 +128,8 @@ class Parent:
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
         if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
-            if not is_class_and_subclass(value.handler, APIView) and not isinstance(
-                value.handler, APIView
+            if not is_class_and_subclass(value.handler, View) and not isinstance(
+                value.handler, View
             ):
                 if not value.handler.parent:
                     value.handler.parent = value  # type: ignore
@@ -137,7 +137,7 @@ class Parent:
                 if not value.handler.parent:  # pragma: no cover
                     value(parent=self)  # type: ignore
 
-                handler: APIView = cast("APIView", value.handler)
+                handler: View = cast("View", value.handler)
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gateway = (
@@ -290,7 +290,7 @@ class Router(Parent, StarletteRouter):
         self.routes = self.reorder_routes()
 
     def add_apiview(self, value: Union["Gateway", "WebSocketGateway"]) -> None:
-        """Adds a Gateway/WebSocketGateway coming containing the handler of type APIView.
+        """Adds a Gateway/WebSocketGateway coming containing the handler of type View.
         Generates the signature model for it and sorts the routing list.
         """
         routes = []
@@ -943,7 +943,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         kwargs = await self.get_kwargs(websocket=websocket)
 
         fn = cast("AsyncAnyCallable", self.fn)
-        if isinstance(self.parent, APIView):
+        if isinstance(self.parent, View):
             await fn(self.parent, **kwargs)
         else:
             await fn(**kwargs)
@@ -1119,7 +1119,7 @@ class Include(Mount):
     ) -> List[Union["Gateway", "WebSocketGateway", "Include"]]:
         """
         Make sure the paths are properly configured from the handler endpoint.
-        The handler can be a Starlette function, an APIView or a HTTPHandler.
+        The handler can be a Starlette function, an View or a HTTPHandler.
 
         Mount() has a limitation of not allowing nested Mount().
 
@@ -1180,7 +1180,7 @@ class Include(Mount):
                 routing.append(route)
                 continue
 
-            if is_class_and_subclass(route.handler, APIView) or isinstance(route.handler, APIView):
+            if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)  # type: ignore
 

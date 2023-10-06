@@ -78,9 +78,7 @@ class EsmeraldAPISettings(BaseSettings):
     stoplight_js_url: Optional[str] = "https://unpkg.com/@stoplight/elements/web-components.min.js"
     stoplight_css_url: Optional[str] = "https://unpkg.com/@stoplight/elements/styles.min.css"
     stoplight_url: Optional[str] = "/docs/elements"
-    stoplight_favicon_url: str = (
-        "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
-    )
+    stoplight_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))

@@ -1,4 +1,5 @@
 import http.client
+import inspect
 import json
 import warnings
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
@@ -13,7 +14,16 @@ from typing_extensions import Literal
 
 from esmerald.enums import MediaType
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
-from esmerald.openapi.models import Contact, Info, License, OpenAPI, Operation, Parameter, Tag
+from esmerald.openapi.models import (
+    Contact,
+    Info,
+    License,
+    OpenAPI,
+    Operation,
+    Parameter,
+    SecurityScheme,
+    Tag,
+)
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
     STATUS_CODE_RANGES,
@@ -40,6 +50,29 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
     header_params = [param.field_info for param in route.transformer.get_header_params()]
 
     return path_params + query_params + cookie_params + header_params
+
+
+def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
+    """
+    Builds the security schemas for OpenAPI.
+    """
+    security_definitions = {}
+    operation_security = []
+
+    for security_requirement in schemes:
+        if inspect.isclass(security_requirement):
+            security_requirement = security_requirement()
+
+        if not isinstance(security_requirement, SecurityScheme):
+            raise ValueError(
+                "Security schemes must subclass from `esmerald.openapi.models.SecurityScheme`"
+            )
+        security_definition = security_requirement.model_dump(by_alias=True, exclude_none=True)
+        security_name = security_requirement.scheme_name
+        security_definitions[security_name] = security_definition
+        operation_security.append({security_name: security_requirement})
+
+    return security_definitions, operation_security
 
 
 def get_fields_from_routes(
@@ -215,11 +248,12 @@ def get_openapi_path(
             operation["deprecated"] = is_deprecated if is_deprecated else route.deprecated
 
         parameters: List[Dict[str, Any]] = []
-        security_definitions = {}
-        for security in handler.security:
-            security_definitions[security.name] = security.model_dump(
-                by_alias=True, exclude_none=True
-            )
+        security_definitions, operation_security = get_openapi_security_schemes(
+            handler.get_security_schemes()
+        )
+
+        if operation_security:
+            operation.setdefault("security", []).extend(operation_security)
 
         if security_definitions:
             security_schemes.update(security_definitions)

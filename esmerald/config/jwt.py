@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class JWTConfig(BaseModel):
     signing_key: str
     api_key_header: str = "X_API_TOKEN"
+    authorization_header: str = "Authorization"
     algorithm: str = "HS256"
     access_token_lifetime: Union[datetime, timedelta, str, float] = timedelta(minutes=5)
     refresh_token_lifetime: Union[datetime, timedelta, str, float] = timedelta(days=1)

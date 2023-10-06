@@ -36,7 +36,7 @@ from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import JSONResponse, Response
-from esmerald.routing.views import APIView
+from esmerald.routing.apis.base import View
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
@@ -45,6 +45,8 @@ from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
+
     from esmerald.applications import Esmerald
     from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
@@ -352,7 +354,7 @@ class BaseResponseHandler:
             )
         else:
             parsed_kwargs = {}
-        if isinstance(route.parent, APIView):
+        if isinstance(route.parent, View):
             fn = partial(
                 cast("AnyCallable", route.fn),
                 route.parent,
@@ -582,6 +584,15 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             request: "Request" = cast("Request", connection)
             handler = cast("APIGateHandler", self)
             await continue_or_raise_permission_exception(request, handler, awaitable)
+
+    def get_security_schemes(self) -> List["SecurityScheme"]:
+        """
+        Returns all security schemes from every level.
+        """
+        security_schemes: List["SecurityScheme"] = []
+        for layer in self.parent_levels:
+            security_schemes.extend(layer.security or [])
+        return security_schemes
 
 
 class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover

@@ -7,10 +7,10 @@ from esmerald.applications import Esmerald
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Factory, Inject
 from esmerald.params import Injects
+from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.utils.constants import IS_DEPENDENCY
 from tests.conftest import FakeDAO
@@ -139,6 +139,17 @@ def test_no_default_dependency_Injected_with_Factory(get_fake_dao) -> None:
     assert resp.json() == {"value": ["awesome_data"]}
 
 
+def test_no_default_dependency_Injected_with_Factory_from_string() -> None:
+    @get(dependencies={"fake_dao": Inject(Factory("tests.conftest.FakeDAO"))})
+    async def test(fake_dao: FakeDAO = Injects()) -> Dict[str, int]:
+        result = await fake_dao.get_all()
+        return {"value": result}
+
+    with create_client(routes=[Gateway(handler=test)]) as client:
+        resp = client.get("/")
+    assert resp.json() == {"value": ["awesome_data"]}
+
+
 def test_dependency_not_Injected_and_no_default() -> None:
     @get()
     def test(value: int = Injects()) -> Dict[str, int]:
@@ -166,6 +177,21 @@ def test_dependency_Injected_on_APIView_with_Factory(get_fake_dao) -> None:
     class C(APIView):
         path = ""
         dependencies = {"fake_dao": Inject(Factory(get_fake_dao))}
+
+        @get()
+        async def test(self, fake_dao: FakeDAO = Injects()) -> Dict[str, List[str]]:
+            result = await fake_dao.get_all()
+            return {"value": result}
+
+    with create_client(routes=[Gateway(handler=C)]) as client:
+        resp = client.get("/")
+    assert resp.json() == {"value": ["awesome_data"]}
+
+
+def test_dependency_Injected_on_APIView_with_Factory_from_string() -> None:
+    class C(APIView):
+        path = ""
+        dependencies = {"fake_dao": Inject(Factory("tests.conftest.FakeDAO"))}
 
         @get()
         async def test(self, fake_dao: FakeDAO = Injects()) -> Dict[str, List[str]]:
@@ -217,6 +243,31 @@ def test_dependency_skip_validation_with_Factory(get_fake_dao) -> None:
             Gateway(handler=skipped),
         ],
         dependencies={"fake_dao": Inject(Factory(get_fake_dao))},
+    ) as client:
+        validated_resp = client.get("/validated")
+        assert validated_resp.status_code == HTTP_500_INTERNAL_SERVER_ERROR
+
+        skipped_resp = client.get("/skipped")
+        assert skipped_resp.status_code == HTTP_200_OK
+        assert skipped_resp.json() == {"value": ["awesome_data"]}
+
+
+def test_dependency_skip_validation_with_Factory_from_string() -> None:
+    @get("/validated")
+    def validated(fake_dao: int = Injects()) -> Dict[str, List[str]]:
+        """ """
+
+    @get("/skipped")
+    async def skipped(fake_dao: FakeDAO = Injects(skip_validation=True)) -> Dict[str, List[str]]:
+        result = await fake_dao.get_all()
+        return {"value": result}
+
+    with create_client(
+        routes=[
+            Gateway(handler=validated),
+            Gateway(handler=skipped),
+        ],
+        dependencies={"fake_dao": Inject(Factory("tests.conftest.FakeDAO"))},
     ) as client:
         validated_resp = client.get("/validated")
         assert validated_resp.status_code == HTTP_500_INTERNAL_SERVER_ERROR

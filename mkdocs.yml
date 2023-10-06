@@ -83,9 +83,9 @@ nav:
   - Interceptors: "interceptors.md"
   - Permissions: "permissions.md"
   - Middleware: "middleware/middleware.md"
+  - Dependencies: "dependencies.md"
   - Exceptions: "exceptions.md"
   - Exception Handlers: "exception-handlers.md"
-  - Dependencies: "dependencies.md"
   - Pluggables: "pluggables.md"
   - Datastructures: "datastructures.md"
   - Password Hashers: "password-hashers.md"
@@ -109,6 +109,7 @@ nav:
       - Directives: "directives/directives.md"
       - Custom Directives: "directives/custom-directives.md"
       - Shell: "directives/shell.md"
+  - OpenAPI: "openapi.md"
   - WSGI Frameworks: "wsgi.md"
   - Test Client: "testclient.md"
   - Deployment:

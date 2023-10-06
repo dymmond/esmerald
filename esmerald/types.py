@@ -41,9 +41,9 @@ if TYPE_CHECKING:
     from esmerald.protocols.middleware import MiddlewareProtocol
     from esmerald.requests import Request  # noqa
     from esmerald.responses import Response  # noqa
+    from esmerald.routing.apis.base import View  # noqa
     from esmerald.routing.gateways import Gateway, WebhookGateway  # noqa
     from esmerald.routing.router import HTTPHandler, Router, WebSocketHandler  # noqa
-    from esmerald.routing.views import APIView  # noqa
     from esmerald.websockets import WebSocket  # noqa
 else:
     HTTPHandler = Any
@@ -61,7 +61,7 @@ else:
     Cookie = Any
     Router = Any
     MiddlewareProtocol = Any
-    APIView = Any
+    View = Any
     Gateway = Any
     WebhookGateway = Any
     Esmerald = Any
@@ -104,7 +104,7 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
-ParentType = Union[APIView, Router, Gateway, WebSocketGateway, Esmerald, Include]
+ParentType = Union[View, Router, Gateway, WebSocketGateway, Esmerald, Include]
 APIGateHandler = Union[
     Gateway,
     WebSocketGateway,

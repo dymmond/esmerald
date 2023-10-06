@@ -5,8 +5,6 @@ OpenAPIConfig is a simple configuration with basic fields for the auto-genmerate
 Prior to version 2, there were two pieces for the documentation but now it is simplified with a simple
 one.
 
-* [OpenAPIConfig](#openapiconfig)
-
 !!! Tip
     More information about
     <a href="https://swagger.io/" target='_blank'>OpenAPI</a>.
@@ -28,6 +26,7 @@ Currently, by default, the URL for the documentation are:
 
 * **Swagger** - `/docs/swagger`.
 * **Redoc** - `/docs/redoc`.
+* **Stoplight** - `/docs/elements`.
 
 ## Parameters
 
@@ -128,13 +127,32 @@ parameters.
 
     <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
 
+* **stoplight_js_url** - URL of the stoplight JS.
+
+    <sup>Default: `"https://unpkg.com/@stoplight/elements/web-components.min.js"`</sup>
+
+* **stoplight_css_url** - URL of the stoplight CSS.
+
+    <sup>Default: `https://unpkg.com/@stoplight/elements/styles.min.css`</sup>
+
+* **stoplight_url** - URL where the stoplight should be served.
+
+    <sup>Default: `/docs/elements`</sup>
+
+* **stoplight_favicon_url** - URL of the favicon for the stoplight.
+
+    <sup>Default: `https://esmerald.dev/statics/images/favicon.ico`</sup>
+
+* **webhooks** - A list of [Webhooks](../../routing/webhooks.md).
+
+    <sup>Default: `[]`</sup>
 
 ### How to use or create an OpenAPIConfig
 
 It is very simple actually.
 
-```python hl_lines="4 11"
-{!> ../docs_src/configurations/openapi/example1.py!}
+```python hl_lines="4 12"
+{!> ../docs_src/configurations/openapi/example1.py !}
 ```
 
 This will create your own `OpenAPIConfig` and pass it to the Esmerald application but what about changing the current
@@ -143,13 +161,14 @@ default `/docs` path?
 Let's use a an example for clarification.
 
 ```python
-{!> ../docs_src/configurations/openapi/apiview.py!}
+{!> ../docs_src/configurations/openapi/apiview.py !}
 ```
 
 From now on the url to access the `swagger` and `redoc` will be:
 
 * **Swagger** - `/another-url/swagger`.
 * **Redoc** - `/another-url/redoc`.
+* **Stoplight** - `/another-url/stoplight`.
 
 ## OpenAPIConfig and the application settings
 
@@ -157,7 +176,7 @@ As per normal Esmerald standard of configurations, it is also possible to enable
 settings.
 
 ```python
-{!> ../docs_src/configurations/openapi/settings.py!}
+{!> ../docs_src/configurations/openapi/settings.py !}
 ```
 
 Start the server with your custom settings.
