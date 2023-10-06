@@ -248,7 +248,9 @@ def get_openapi_path(
             operation["deprecated"] = is_deprecated if is_deprecated else route.deprecated
 
         parameters: List[Dict[str, Any]] = []
-        security_definitions, operation_security = get_openapi_security_schemes(handler.security)
+        security_definitions, operation_security = get_openapi_security_schemes(
+            handler.get_security_schemes()
+        )
 
         if operation_security:
             operation.setdefault("security", []).extend(operation_security)

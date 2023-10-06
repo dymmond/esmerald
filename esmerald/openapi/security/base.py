@@ -1,13 +1,8 @@
 from typing import Any, Literal, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, ConfigDict
+from pydantic import AnyUrl, ConfigDict
 
 from esmerald.openapi.models import SecurityScheme
-
-
-class HTTPAuthorizationCredentials(BaseModel):
-    scheme: str
-    credentials: str
 
 
 class HTTPBase(SecurityScheme):
