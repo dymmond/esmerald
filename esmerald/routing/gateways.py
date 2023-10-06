@@ -6,8 +6,8 @@ from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import Receive, Scope, Send
 
+from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseInterceptorMixin
-from esmerald.routing.views import APIView
 from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string, is_class_and_subclass
 from esmerald.utils.url import clean_path
@@ -41,7 +41,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self,
         path: Optional[str] = None,
         *,
-        handler: Union["HTTPHandler", APIView],
+        handler: Union["HTTPHandler", View],
         name: Optional[str] = None,
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
@@ -56,7 +56,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
     ) -> None:
         if not path:
             path = "/"
-        if is_class_and_subclass(handler, APIView):
+        if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore
 
         if not is_from_router:
@@ -67,7 +67,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self.methods = getattr(handler, "http_methods", None)
 
         if not name:
-            if not isinstance(handler, APIView):
+            if not isinstance(handler, View):
                 name = clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
@@ -104,9 +104,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
             handler.param_convertors,
         ) = compile_path(self.path)
 
-        if not is_class_and_subclass(self.handler, APIView) and not isinstance(
-            self.handler, APIView
-        ):
+        if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
             self.handler.get_response_handler()
 
@@ -147,13 +145,14 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         "interceptors",
         "permissions",
         "parent",
+        "security",
     )
 
     def __init__(
         self,
         path: Optional[str] = None,
         *,
-        handler: Union["WebSocketHandler", APIView],
+        handler: Union["WebSocketHandler", View],
         name: Optional[str] = None,
         parent: Optional["ParentType"] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -164,12 +163,12 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
     ) -> None:
         if not path:
             path = "/"
-        if is_class_and_subclass(handler, APIView):
+        if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore
         self.path = clean_path(path + handler.path)
 
         if not name:
-            if not isinstance(handler, APIView):
+            if not isinstance(handler, View):
                 name = clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
@@ -227,20 +226,21 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
     def __init__(
         self,
         *,
-        handler: Union["WebhookHandler", APIView],
+        handler: Union["WebhookHandler", View],
         name: Optional[str] = None,
         include_in_schema: bool = True,
         parent: Optional["ParentType"] = None,
         deprecated: Optional[bool] = None,
+        security: Optional[Sequence["SecurityScheme"]] = None,
     ) -> None:
-        if is_class_and_subclass(handler, APIView):
+        if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore
 
         self.path = handler.path
         self.methods = getattr(handler, "http_methods", None)
 
         if not name:
-            if not isinstance(handler, APIView):
+            if not isinstance(handler, View):
                 name = clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
@@ -261,15 +261,14 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         self.response_headers = None
         self.deprecated = deprecated
         self.parent = parent
+        self.security = security
         (
             handler.path_regex,
             handler.path_format,
             handler.param_convertors,
         ) = compile_path(self.path)
 
-        if not is_class_and_subclass(self.handler, APIView) and not isinstance(
-            self.handler, APIView
-        ):
+        if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
             self.handler.get_response_handler()
 

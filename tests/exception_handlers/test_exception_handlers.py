@@ -15,10 +15,10 @@ from esmerald.exceptions import (
 )
 from esmerald.requests import Request
 from esmerald.responses import Response
+from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 from esmerald.types import ExceptionHandlerMap
 

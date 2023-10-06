@@ -7,11 +7,12 @@ import click
 from rich.console import Console
 from rich.table import Table
 
-from esmerald import APIView, Gateway
+from esmerald import Gateway
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
 from esmerald.enums import HttpMethod
+from esmerald.routing.apis.base import View
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
@@ -98,7 +99,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
                     continue
 
                 # Type
-                if not isinstance(route.handler, APIView):
+                if not isinstance(route.handler, View):
                     if inspect.iscoroutinefunction(route.handler.fn):
                         fn_type = "async"
                     else:

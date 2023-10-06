@@ -6,10 +6,10 @@ from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from esmerald.applications import ChildEsmerald
 from esmerald.injector import Inject
 from esmerald.requests import Request
+from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
 

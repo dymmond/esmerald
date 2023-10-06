@@ -7,6 +7,8 @@ from starlette.types import Receive, Scope, Send
 from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:  # pragma: no cover
+    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
+
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
@@ -22,12 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     )
 
 
-class APIView:
-    """The Esmerald APIView class.
-
-    Subclassing this class will create a view using Class Based Views.
-    """
-
+class View:
     __slots__ = (
         "dependencies",
         "exception_handlers",
@@ -48,6 +45,8 @@ class APIView:
         "route_map",
         "operation_id",
         "methods",
+        "interceptors",
+        "security",
     )
 
     path: str
@@ -62,6 +61,8 @@ class APIView:
     tags: Optional[List[str]]
     deprecated: Optional[bool]
     include_in_schema: Optional[bool]
+    interceptors: Optional[Sequence["Interceptor"]]
+    security: Optional[List["SecurityScheme"]]
 
     def __init__(self, parent: Union["Gateway", "WebSocketGateway"]) -> None:
         for key in self.__slots__:
@@ -71,7 +72,6 @@ class APIView:
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
         self.parent = parent
-        self.interceptors: Sequence["Interceptor"] = []
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.operation_id: Optional[str] = None
         self.methods: List[str] = []
@@ -88,10 +88,11 @@ class APIView:
         route_handlers = []
 
         for handler_name in filtered_handlers:
-            if handler_name not in dir(APIView) and isinstance(
-                getattr(self, handler_name), (HTTPHandler, WebSocketHandler, WebhookHandler)
-            ):
-                route_handlers.append(handler_name)
+            for base in self.__class__.__bases__:
+                if handler_name not in dir(base) and isinstance(
+                    getattr(self, handler_name), (HTTPHandler, WebSocketHandler, WebhookHandler)
+                ):
+                    route_handlers.append(handler_name)
         return route_handlers
 
     def get_route_handlers(
@@ -100,7 +101,7 @@ class APIView:
         """A getter for the apiview's route handlers that sets their parent.
 
         Returns:
-            A list containing a copy of the route handlers defined inside the APIView.
+            A list containing a copy of the route handlers defined inside the View.
         """
         from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
@@ -154,7 +155,9 @@ class APIView:
     async def handle(
         self, scope: "Scope", receive: "Receive", send: "Send"
     ) -> None:  # pragma: no cover
-        raise NotImplementedError("APIView object does not implement handle()")
+        raise NotImplementedError(f"{self.__class__.__name__} object does not implement handle()")
 
     def create_signature_model(self, is_websocket: bool = False) -> None:  # pragma: no cover
-        raise NotImplementedError("APIView object does not implement create_signature_model()")
+        raise NotImplementedError(
+            f"{self.__class__.__name__} object does not implement create_signature_model()"
+        )

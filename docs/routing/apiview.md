@@ -85,3 +85,136 @@ to the other.
 
 * **Gateway** - Allows the APIView to have all the available handlers (`get`, `put`, `post`...) including `websocket`.
 * **WebSocketGateway** - Allows **only** to have `websockets`.
+
+## Generics
+
+Esmerald also offers some generics when it comes to build APIs. For example, the [APIView](#apiview)
+allows the creation of apis where the function name can be whatever you desire like `create_users`,
+`get_items`, `update_profile`, etc...
+
+**Generics in Esmerald are more restrict**.
+
+So what does that mean? Means **you can only perform operations where the function name coincides with the http verb**.
+For example, `get`, `put`, `post` etc...
+
+If you attempt to create a functionm where the name differs from a http verb,
+an `ImproperlyConfigured` exception is raised.
+
+The available http verbs are:
+
+* `GET`
+* `POST`
+* `PUT`
+* `PATCH`
+* `DELETE`
+* `HEAD`
+* `OPTIONS`
+* `TRACE`
+
+Basically the same availability as the [handlers](./handlers.md).
+
+### SimpleAPIView
+
+This is the base of all generics, subclassing from this class will allow you to perform all the
+available http verbs without any restriction.
+
+This is how you can import.
+
+```python
+from esmerald import SimpleAPIView
+```
+
+#### Example
+
+```python
+{!> ../docs_src/routing/generics/simple_api_view.py !}
+```
+
+### ReadAPIView
+
+Allows the `GET` verb to be used.
+
+This is how you can import.
+
+```python
+from esmerald.routing.apis.generics import ReadAPIView
+```
+
+#### Example
+
+```python
+{!> ../docs_src/routing/generics/read_api_view.py !}
+```
+
+### CreateAPIView
+
+Allows the `POST`, `PUT`, `PATCH` verbs to be used.
+
+This is how you can import.
+
+```python
+from esmerald.routing.apis.generics import CreateAPIView
+```
+
+#### Example
+
+```python
+{!> ../docs_src/routing/generics/create_api_view.py !}
+```
+
+### DeleteAPIView
+
+Allows the `DELETE` verb to be used.
+
+This is how you can import.
+
+```python
+from esmerald.routing.apis.generics import DeleteAPIView
+```
+
+#### Example
+
+```python
+{!> ../docs_src/routing/generics/delete_api_view.py !}
+```
+
+### Combining all in one
+
+What if you want to combine them all? Of course you also can.
+
+```python
+{!> ../docs_src/routing/generics/combine.py !}
+```
+
+**Combining them all is the same as using the [SimpleAPIView](#simpleapiview)**.
+
+### http_allowed_methods
+
+All the generics subclass the [SimpleAPIView](#simpleapiview) as mentioned before and that superclass
+uses the `http_allowed_methods` to verify which methods are allowed or not to be passed inside
+the API object.
+
+This means that if you want to add a `read_item()` function to any of the
+generics you also do it easily.
+
+```python hl_lines="13 28"
+{!> ../docs_src/routing/generics/allowed.py !}
+```
+
+As you can see, to make it happen you would need to declare the function name inside the
+`http_allowed_methods` to make sure that an `ImproperlyConfigured` is not raised.
+
+## What to choose
+
+All the available objects from the [APIView](#apiview) to the [SimpleAPIView](#simpleapiview) and
+generics can do whatever you want and need so what and how to choose the right one for you?
+
+Well, like everything, it will depend of what you want to achieve. For example, if you do not care
+or do not want to be bothered with `http_allowed_methods` and want to go without restrictions,
+then the [APIView](#apiview) is the right choice for you.
+
+On the other hand, if you feel like restricting youself or even during development you might want
+to restrict some actions on the fly, so maybe you can opt for choosing the [SimpleAPIView](#simpleapiview)
+or any of the generics.
+
+Your take!
