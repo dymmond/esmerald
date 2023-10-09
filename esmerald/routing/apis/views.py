@@ -13,7 +13,10 @@ class SimpleAPIMeta(type):
     def __new__(cls, name: str, bases: Tuple[Type, ...], attrs: Any) -> Any:
         """
         Making sure the `http_allowed_methods` are extended if inheritance happens
-        in the subclass
+        in the subclass.
+
+        The `http_allowed_methods` is the default for each type of generic but to allow
+        extra allowed methods, the `extra_allowed` must be added.
         """
         view = super().__new__
 
@@ -35,6 +38,13 @@ class SimpleAPIMeta(type):
                 and getattr(base, "__is_generic__", False) not in [False, None]
             ):
                 simple_view.http_allowed_methods.extend(base.http_allowed_methods)
+
+        if hasattr(simple_view, "extra_allowed"):
+            assert isinstance(
+                simple_view.extra_allowed, list
+            ), "`extra_allowed` must be a list of strings allowed."
+
+            simple_view.http_allowed_methods.extend(simple_view.extra_allowed)
 
         allowed_methods: Set[str] = {method.lower() for method in simple_view.http_allowed_methods}
         simple_view.http_allowed_methods = list(allowed_methods)

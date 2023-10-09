@@ -141,7 +141,7 @@ def test_all_api_view(test_client_factory, value):
 @pytest.mark.parametrize("value,method", [("create_user", "post"), ("read_item", "get")])
 def test_all_api_view_custom(test_client_factory, value, method):
     class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
-        http_allowed_methods: List[str] = ["create_user", "read_item"]
+        extra_allowed: List[str] = ["create_user", "read_item"]
 
         @post(status_code=200)
         async def create_user(self) -> str:
@@ -155,3 +155,15 @@ def test_all_api_view_custom(test_client_factory, value, method):
         response = getattr(client, method)("/")
         assert response.status_code == 200
         assert response.json() == f"home {value}"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [("create_user",), {"create_user"}, {"name": "create_user"}],
+    ids=["tuple", "set", "dict"],
+)
+def test_all_api_view_custom_error(test_client_factory, value):
+    with pytest.raises(AssertionError):
+
+        class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+            extra_allowed: List[str] = ("create_user", "read_item")
