@@ -1,7 +1,7 @@
 # Esmerald
 
 <p align="center">
-  <a href="https://esmerald.dymmond.com"><img src="https://res.cloudinary.com/dymmond/image/upload/v1673619342/esmerald/img/logo-gr_z1ot8o.png" alt='Esmerald'></a>
+  <a href="https://esmerald.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1673619342/esmerald/img/logo-gr_z1ot8o.png" alt='Esmerald'></a>
 </p>
 
 <p align="center">
@@ -28,6 +28,8 @@
 
 **Source Code**: [https://github.com/dymmond/esmerald](https://github.com/dymmond/esmerald)
 
+**The official supported version is always the latest released**.
+
 ---
 
 Esmerald is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
@@ -36,7 +38,9 @@ but also full scalable applications from the smallest to enterprise level.
 Esmerald is designed to build with python 3.8+ and based on standard python type hints and on the top of
 the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic).
 
-Check out the [Esmerald documentation 📚](https://esmerald.dymmond.com)
+Check out the [Esmerald documentation 📚](https://esmerald.dev)
+
+**The official supported version is always the latest released**.
 
 ## Motivation
 
@@ -133,7 +137,7 @@ $ pip install esmerald[test]
 
 Or you can skip this step if you don't want to use the EsmeraldTestClient.
 
-You can find [more information](https://esmerald.dymmond.com/management/directives) about this directive and how to
+You can find [more information](https://esmerald.dev/management/directives) about this directive and how to
 use it.
 
 ## Key Features

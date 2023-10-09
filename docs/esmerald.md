@@ -1,7 +1,7 @@
 # Esmerald
 
 <p align="center">
-  <a href="https://esmerald.dymmond.com"><img src="https://res.cloudinary.com/dymmond/image/upload/v1673619342/esmerald/img/logo-gr_z1ot8o.png" alt='Esmerald'></a>
+  <a href="https://esmerald.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1673619342/esmerald/img/logo-gr_z1ot8o.png" alt='Esmerald'></a>
 </p>
 
 <p align="center">
@@ -35,6 +35,9 @@ but also full scalable applications from the smallest to enterprise level.
 
 Esmerald is designed to build with python 3.8+ based on standard python type hints and on the top of
 the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic).
+
+!!! Success
+    **The official supported version is always the latest released**.
 
 ## Motivation
 
