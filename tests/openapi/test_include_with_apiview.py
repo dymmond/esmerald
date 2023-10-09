@@ -21,7 +21,7 @@ def read_people() -> Dict[str, str]:
 def test_add_include_to_openapi(test_client_factory, value):
     class MyAPI(value):
         if issubclass(value, SimpleAPIView):
-            http_allowed_methods = ["read_item"]
+            extra_allowed = ["read_item"]
 
         @get(
             "/item",
@@ -107,7 +107,7 @@ def test_add_include_to_openapi(test_client_factory, value):
 def test_include_no_include_in_schema(test_client_factory, value):
     class MyAPI(value):
         if issubclass(value, SimpleAPIView):
-            http_allowed_methods = ["read_item"]
+            extra_allowed = ["read_item"]
 
         @get(
             "/item",

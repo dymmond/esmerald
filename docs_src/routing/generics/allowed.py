@@ -10,7 +10,7 @@ class UserAPI(CreateAPIView):
     to be used by default.
     """
 
-    http_allowed_methods: List[str] = ["read_item"]
+    extra_allowed: List[str] = ["read_item"]
 
     @post()
     def post(self) -> str:
