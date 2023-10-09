@@ -1,7 +1,8 @@
-from typing import TYPE_CHECKING, Any, List, Set, Tuple, Type, cast
+from typing import TYPE_CHECKING, Any, ClassVar, List, Set, Tuple, Type, cast
 
 if TYPE_CHECKING:
     from esmerald import SimpleAPIView
+    from esmerald.routing.apis.generics import ListAPIView
 
 
 class SimpleAPIMeta(type):
@@ -9,6 +10,9 @@ class SimpleAPIMeta(type):
     Metaclass responsible for making sure
     only the CRUD objects are allowed.
     """
+
+    __filtered_handlers__: ClassVar[List[str]]
+    extra_allowed: List[str] = None
 
     def __new__(cls, name: str, bases: Tuple[Type, ...], attrs: Any) -> Any:
         """
@@ -26,7 +30,7 @@ class SimpleAPIMeta(type):
 
         http_allowed_methods: List[str] = []
         simple_view = cast("SimpleAPIView", view(cls, name, bases, attrs))
-        filtered_handlers: List[str] = [
+        cls.__filtered_handlers__ = [
             attr
             for attr in dir(simple_view)
             if not attr.startswith("__") and not attr.endswith("__")
@@ -40,7 +44,7 @@ class SimpleAPIMeta(type):
             ):
                 http_allowed_methods.extend(base.http_allowed_methods)
 
-        if hasattr(simple_view, "extra_allowed"):
+        if hasattr(simple_view, "extra_allowed") and simple_view.extra_allowed is not None:
             assert isinstance(
                 simple_view.extra_allowed, list
             ), "`extra_allowed` must be a list of strings allowed."
@@ -54,8 +58,26 @@ class SimpleAPIMeta(type):
 
         # Reasign the new clean list
         simple_view.http_allowed_methods = list(allowed_methods)
-        for handler_name in filtered_handlers:
+        for handler_name in cls.__filtered_handlers__:
             for base in simple_view.__bases__:
                 attribute = getattr(simple_view, handler_name)
                 simple_view.is_method_allowed(handler_name, base, attribute)
         return simple_view
+
+
+class ListAPIMeta(SimpleAPIMeta):
+    """
+    Metaclass with an extra for lists specifically.
+    """
+
+    def __new__(cls, name: str, bases: Tuple, attrs: Any) -> Any:
+        view: "ListAPIView" = super().__new__(cls, name, bases, attrs)
+
+        if not hasattr(view, "__filtered_handlers__"):
+            return view
+
+        for handler_name in view.__filtered_handlers__:
+            for base in view.__bases__:
+                attribute = getattr(view, handler_name)
+                view.is_signature_valid(handler_name, base, attribute, signature_type=list)
+        return view

@@ -210,6 +210,7 @@ omit = [
     "esmerald/types.py",
     "esmerald/contrib/*",
     "esmerald/openapi/openapi.py",
+    "esmerald/openapi/security/*",
     "tests/databases/saffier/*",
     "tests/databases/edgy/*",
     "tests/utils/functional.py",

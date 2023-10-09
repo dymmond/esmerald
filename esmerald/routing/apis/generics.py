@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from esmerald.routing.apis.views import SimpleAPIView
+from esmerald.routing.apis.views import ListView, SimpleAPIView
 
 
 class GenericMixin:
@@ -32,3 +32,11 @@ class ReadAPIView(GenericMixin, SimpleAPIView):
     """
 
     http_allowed_methods = ["get"]
+
+
+class ListAPIView(GenericMixin, ListView):
+    """
+    Only allows the return to be lists.
+    """
+
+    ...
