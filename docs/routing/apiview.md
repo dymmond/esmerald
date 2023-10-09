@@ -97,8 +97,8 @@ allows the creation of apis where the function name can be whatever you desire l
 So what does that mean? Means **you can only perform operations where the function name coincides with the http verb**.
 For example, `get`, `put`, `post` etc...
 
-If you attempt to create a functionm where the name differs from a http verb,
-an `ImproperlyConfigured` exception is raised.
+If you attempt to create a function where the name differs from a http verb,
+an `ImproperlyConfigured` exception is raised **unless the `extra_allowed` is declared**.
 
 The available http verbs are:
 
@@ -112,6 +112,27 @@ The available http verbs are:
 * `TRACE`
 
 Basically the same availability as the [handlers](./handlers.md).
+
+### Important
+
+The generics **enforce** the name matching of the functions with the handlers. That means, if
+you use a `ReadAPIView` that only allows the `get` and you use the wrong [handlers](./handlers.md)
+on the top of it, for example a [post](./handlers.md#post), an `ImproperlyConfigured` exception
+will be raised.
+
+Let us see what this means.
+
+```python hl_lines="13-14"
+{!> ../docs_src/routing/generics/important.py !}
+```
+
+As you can see, the handler `post()` does not match the function name `get`. **It should always match**.
+
+An easy way of knowing this is simple, when it comes to the available http verbs, the function name
+**should always match the handler**.
+
+Are there any exception? Yes but not for these specific cases, the exceptions are called
+[extra_allowed](#extra_allowed) but more details about this later on.
 
 ### SimpleAPIView
 
@@ -188,11 +209,12 @@ What if you want to combine them all? Of course you also can.
 
 **Combining them all is the same as using the [SimpleAPIView](#simpleapiview)**.
 
-### http_allowed_methods
+### extra_allowed
 
 All the generics subclass the [SimpleAPIView](#simpleapiview) as mentioned before and that superclass
 uses the `http_allowed_methods` to verify which methods are allowed or not to be passed inside
-the API object.
+the API object but also check if there is any `extra_allowed` list with any extra functions you
+would like the view to deliver.
 
 This means that if you want to add a `read_item()` function to any of the
 generics you also do it easily.
@@ -202,7 +224,7 @@ generics you also do it easily.
 ```
 
 As you can see, to make it happen you would need to declare the function name inside the
-`http_allowed_methods` to make sure that an `ImproperlyConfigured` is not raised.
+`extra_allowed` to make sure that an `ImproperlyConfigured` is not raised.
 
 ## What to choose
 
