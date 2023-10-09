@@ -211,10 +211,10 @@ What if you want to combine them all? Of course you also can.
 
 ### ListAPIView
 
-This is a *nice to have* type of generic. In principle, **all the functions must return lists**
+This is a *nice to have* type of generic. In principle, **all the functions must return lists or None**
 of any kind.
 
-This generic **enforces the return annotations to always be lists**.
+This generic **enforces the return annotations to always be lists or None**.
 
 Allows all the verbs be used.
 
