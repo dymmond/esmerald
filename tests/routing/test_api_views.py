@@ -1,6 +1,7 @@
-from typing import List
+from typing import Any, Dict, List, Mapping, Sequence, Set
 
 import pytest
+from pydantic import BaseModel
 
 import esmerald
 from esmerald import (
@@ -14,8 +15,12 @@ from esmerald import (
     post,
     put,
 )
-from esmerald.routing.apis.generics import CreateAPIView, DeleteAPIView, ReadAPIView
+from esmerald.routing.apis.generics import CreateAPIView, DeleteAPIView, ListAPIView, ReadAPIView
 from esmerald.testclient import create_client
+
+
+class TestModel(BaseModel):
+    name: str
 
 
 class MyAPIView(APIView):
@@ -192,3 +197,70 @@ def test_default_parameters_raise_error_on_wrong_handler(test_client_factory, va
         raised.value.detail
         == f"The function 'get' must implement the 'get()' handler, got '{value}()' instead."
     )
+
+
+def test_list_api_view(test_client_factory):
+    class GenericAPIView(ListAPIView):
+        @get()
+        def get(self) -> List[str]:
+            return ["home", "list"]
+
+    with create_client(routes=[Gateway(handler=GenericAPIView)]) as client:
+        response = client.get("/")
+        assert response.status_code == 200
+        assert len(response.json()) == 2
+
+
+@pytest.mark.parametrize(
+    "return_type",
+    [
+        str,
+        dict,
+        set,
+        int,
+        float,
+        Dict[str, str],
+        Set[int],
+        Mapping[str, Any],
+        Sequence[str],
+        Sequence[int],
+        Sequence[float],
+        Sequence[TestModel],
+    ],
+)
+def test_raises_improperly_configured_on_non_list_types(test_client_factory, return_type):
+    with pytest.raises(ImproperlyConfigured):
+
+        class GenericAPIView(ListAPIView):
+            @get()
+            def get(self) -> return_type:
+                ...
+
+
+@pytest.mark.parametrize(
+    "return_type,method",
+    [
+        (List[str], "get"),
+        (List[int], "put"),
+        (List[float], "patch"),
+        (List[TestModel], "post"),
+        (None, "get"),
+        (None, "put"),
+        (None, "post"),
+        (None, "patch"),
+    ],
+)
+def test_list_api_view_works_for_many(test_client_factory, return_type, method):
+    handler = getattr(esmerald, method)
+
+    class GenericListAPIView(ListAPIView):
+        extra_allowed = ["return_list"]
+
+        @handler()
+        def return_list(self) -> return_type:
+            return ["home", "list"]
+
+    with create_client(routes=[Gateway(handler=GenericListAPIView)]) as client:
+        response = getattr(client, method)("/")
+        assert response.status_code == handler().status_code
+        assert len(response.json()) == 2

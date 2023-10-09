@@ -29,7 +29,7 @@ class Factory:
         self.__args = args
 
     @property
-    def cls(self) -> "AnyCallable":
+    def cls(self) -> "AnyCallable":  # pragma: no cover
         """Return provided type."""
         return self.provides
 

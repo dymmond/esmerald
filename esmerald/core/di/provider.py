@@ -7,7 +7,7 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.utils.module_loading import import_string
 
 
-def _lookup(klass: Any, comp: Any, import_path: Any) -> Any:
+def _lookup(klass: Any, comp: Any, import_path: Any) -> Any:  # pragma: no cover
     """
     Runs a lookup via __import__ and returns the component.
     """
@@ -18,7 +18,7 @@ def _lookup(klass: Any, comp: Any, import_path: Any) -> Any:
         return getattr(klass, comp)
 
 
-def _importer(target: Any, attribute: Any) -> Any:
+def _importer(target: Any, attribute: Any) -> Any:  # pragma: no cover
     """
     Gets the attribute from the target.
     """
@@ -32,7 +32,7 @@ def _importer(target: Any, attribute: Any) -> Any:
     return getattr(klass, attribute)
 
 
-def _get_provider_callable(target: str) -> Any:
+def _get_provider_callable(target: str) -> Any:  # pragma: no cover
     try:
         target, attribute = target.rsplit(".", 1)
     except (TypeError, ValueError, AttributeError):
@@ -44,7 +44,7 @@ def _get_provider_callable(target: str) -> Any:
     return getter
 
 
-def load_provider(provider: str) -> Tuple[Callable, bool]:
+def load_provider(provider: str) -> Tuple[Callable, bool]:  # pragma: no cover
     """
     Loads any callable by string import. This will make
     sure that there is no need to have all the imports in one
