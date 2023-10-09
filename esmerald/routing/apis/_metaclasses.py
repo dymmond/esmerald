@@ -24,6 +24,7 @@ class SimpleAPIMeta(type):
         if not parents:
             return view(cls, name, bases, attrs)
 
+        http_allowed_methods: List[str] = []
         simple_view = cast("SimpleAPIView", view(cls, name, bases, attrs))
         filtered_handlers: List[str] = [
             attr
@@ -37,22 +38,24 @@ class SimpleAPIMeta(type):
                 and hasattr(base, "__is_generic__")
                 and getattr(base, "__is_generic__", False) not in [False, None]
             ):
-                simple_view.http_allowed_methods.extend(base.http_allowed_methods)
+                http_allowed_methods.extend(base.http_allowed_methods)
 
         if hasattr(simple_view, "extra_allowed"):
             assert isinstance(
                 simple_view.extra_allowed, list
             ), "`extra_allowed` must be a list of strings allowed."
 
-            simple_view.http_allowed_methods.extend(simple_view.extra_allowed)
+            http_allowed_methods.extend(simple_view.extra_allowed)
 
-        allowed_methods: Set[str] = {method.lower() for method in simple_view.http_allowed_methods}
+        http_allowed_methods.extend(simple_view.http_allowed_methods)
+
+        # Remove any duplicates
+        allowed_methods: Set[str] = {method.lower() for method in http_allowed_methods}
+
+        # Reasign the new clean list
         simple_view.http_allowed_methods = list(allowed_methods)
-        message = ", ".join(allowed_methods)
-
         for handler_name in filtered_handlers:
             for base in simple_view.__bases__:
                 attribute = getattr(simple_view, handler_name)
-                simple_view.is_method_allowed(handler_name, base, attribute, message)
-
+                simple_view.is_method_allowed(handler_name, base, attribute)
         return simple_view

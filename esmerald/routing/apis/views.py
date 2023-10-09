@@ -39,6 +39,9 @@ class SimpleAPIView(View, metaclass=SimpleAPIMeta):
             if hasattr(cls, "extra_allowed") and name.lower() in cls.extra_allowed:  # type: ignore[unreachable]
                 return True
             if name.lower() not in cls.http_allowed_methods:
+                if error_message is None:
+                    error_message = ", ".join(cls.http_allowed_methods)
+
                 raise ImproperlyConfigured(
                     f"{cls.__name__} only allows functions with the name(s) `{error_message}` to be implemented, got `{name.lower()}` instead."
                 )
