@@ -167,3 +167,28 @@ def test_all_api_view_custom_error(test_client_factory, value):
 
         class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
             extra_allowed: List[str] = ("create_user", "read_item")
+
+
+@pytest.mark.parametrize(
+    "value", [value for value in SimpleAPIView.http_allowed_methods if value != "get"]
+)
+def test_default_parameters_raise_error_on_wrong_handler(test_client_factory, value):
+    handler = getattr(esmerald, value)
+
+    with pytest.raises(ImproperlyConfigured) as raised:
+
+        class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+            extra_allowed: List[str] = ["create_user"]
+
+            @handler("/")
+            def get(self) -> None:
+                ...
+
+            @handler("/")
+            def create_user() -> None:
+                ...
+
+    assert (
+        raised.value.detail
+        == f"The function 'get' must implement the 'get()' handler, got '{value}()' instead."
+    )
