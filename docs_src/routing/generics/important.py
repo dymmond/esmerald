@@ -1,6 +1,4 @@
-from typing import List
-
-from esmerald import get, patch, post, put
+from esmerald import post
 from esmerald.routing.apis.generics import CreateAPIView
 
 
@@ -11,5 +9,5 @@ class UserAPI(CreateAPIView):
     """
 
     @post()
-    def get(self) -> str:
+    async def get(self) -> str:
         ...

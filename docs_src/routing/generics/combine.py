@@ -8,21 +8,21 @@ class UserAPI(CreateAPIView, DeleteAPIView, ReadAPIView):
     """
 
     @get()
-    def get(self) -> str:
+    async def get(self) -> str:
         ...
 
     @post()
-    def post(self) -> str:
+    async def post(self) -> str:
         ...
 
     @put()
-    def put(self) -> str:
+    async def put(self) -> str:
         ...
 
     @patch()
-    def patch(self) -> str:
+    async def patch(self) -> str:
         ...
 
     @delete()
-    def delete(self) -> None:
+    async def delete(self) -> None:
         ...

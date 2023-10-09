@@ -244,6 +244,10 @@ def test_raises_improperly_configured_on_non_list_types(test_client_factory, ret
         (List[int], "put"),
         (List[float], "patch"),
         (List[TestModel], "post"),
+        (None, "get"),
+        (None, "put"),
+        (None, "post"),
+        (None, "patch"),
     ],
 )
 def test_list_api_view_works_for_many(test_client_factory, return_type, method):

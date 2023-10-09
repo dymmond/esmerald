@@ -55,7 +55,7 @@ class MethodMixin:
         name: str,
         base: Any,
         method: Callable[..., Any],
-        signature_type: type,
+        signature_type: Any,
     ) -> bool:
         """
         Validates if the signature of a given function is of type `signature_type`.
@@ -66,7 +66,13 @@ class MethodMixin:
             method,
             (HTTPHandler, WebSocketHandler, WebhookHandler),
         ):
-            if not is_class_and_subclass(method.signature.return_annotation, signature_type):  # type: ignore
+            if (  # type: ignore
+                not method.signature.return_annotation
+                or method.signature.return_annotation is None
+            ):
+                return True
+
+            if not is_class_and_subclass(method.signature.return_annotation, signature_type):
                 raise ImproperlyConfigured(
                     f"{cls.__name__} must return type lists, got {type(method.signature.return_annotation)} instead."
                 )

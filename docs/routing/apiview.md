@@ -209,6 +209,35 @@ What if you want to combine them all? Of course you also can.
 
 **Combining them all is the same as using the [SimpleAPIView](#simpleapiview)**.
 
+### ListAPIView
+
+This is a *nice to have* type of generic. In principle, **all the functions must return lists**
+of any kind.
+
+This generic **enforces the return annotations to always be lists**.
+
+Allows all the verbs be used.
+
+This is how you can import.
+
+```python
+from esmerald.routing.apis.generics import ListAPIView
+```
+
+#### Example
+
+```python hl_lines="9 13 17 21"
+{!> ../docs_src/routing/generics/list_api.py !}
+```
+
+This is another generic that follows the same rules of the [SimpleAPIView](#simpleapiview), which
+means, if you want to add `extra` functions such as a `read_item()` or anything else, you must
+follow the [extra allowed](#extra_allowed) principle.
+
+```python hl_lines="8 23"
+{!> ../docs_src/routing/generics/list_api_extra.py !}
+```
+
 ### extra_allowed
 
 All the generics subclass the [SimpleAPIView](#simpleapiview) as mentioned before and that superclass

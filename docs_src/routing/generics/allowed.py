@@ -13,15 +13,15 @@ class UserAPI(CreateAPIView):
     extra_allowed: List[str] = ["read_item"]
 
     @post()
-    def post(self) -> str:
+    async def post(self) -> str:
         ...
 
     @put()
-    def put(self) -> str:
+    async def put(self) -> str:
         ...
 
     @patch()
-    def patch(self) -> str:
+    async def patch(self) -> str:
         ...
 
     @get()
