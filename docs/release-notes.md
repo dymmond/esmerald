@@ -1,5 +1,28 @@
 # Release Notes
 
+## 2.2.0
+
+### Changed
+
+- Updated `OpenAPIConfig` documentation.
+- Deprecate `v1`. Esmerald prior to version 2.0 is no longer supported.
+
+### Added
+
+-  Allow importing from from string into `Factory`. [#179](https://github.com/dymmond/esmerald/pull/179) by [@tarsil](https://github.com/tarsil).
+-  New security objects for OpenAPI documentation.
+-  New [OpenAPI][./openapi.md] documentation describing the ways of using it and what is available with examples.
+-  New [SimpleAPIView](./routing/apiview.md#simpleapiview) supported.
+-  New [CreateAPIView](./routing/apiview.md#createapiview) supported.
+-  New [ReadAPIView](./routing/apiview.md#readapiview) supported.
+-  New [DeleteAPIView](./routing/apiview.md#deleteapiview) supported.
+-  New [ListAPIView](./routing/apiview.md#listapiview) supported.
+
+### Fixed
+
+- OpenAPI `security` was not working as intended.
+
+
 ## 2.1.0
 
 ### Changed
