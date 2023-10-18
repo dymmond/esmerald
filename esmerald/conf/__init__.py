@@ -1,12 +1,13 @@
 import os
-from typing import Any, Optional, Type
+from typing import TYPE_CHECKING, Any, Optional, Type
 
 from esmerald.utils.functional import LazyObject, empty
 from esmerald.utils.module_loading import import_string
 
-ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
+if TYPE_CHECKING:
+    from esmerald.conf.global_settings import EsmeraldAPISettings
 
-APISettings = Type["EsmeraldLazySettings"]
+ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
 
 
 class EsmeraldLazySettings(LazyObject):
@@ -26,7 +27,7 @@ class EsmeraldLazySettings(LazyObject):
             ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
         )
 
-        settings: Any = import_string(settings_module)
+        settings: Type["EsmeraldAPISettings"] = import_string(settings_module)
 
         for setting, _ in settings().model_dump().items():
             assert setting.islower(), "%s should be in lowercase." % setting
@@ -47,4 +48,4 @@ class EsmeraldLazySettings(LazyObject):
         return self._wrapped is not empty
 
 
-settings: APISettings = EsmeraldLazySettings()  # type: ignore
+settings: Type["EsmeraldAPISettings"] = EsmeraldLazySettings()  # type: ignore
