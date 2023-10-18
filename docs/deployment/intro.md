@@ -22,7 +22,7 @@ is very good and also affordable like **render.com** or **Heroku**. It is your c
 your needs.
 
 The goal is not to tall you what to do but to give you a simple example in the case you would like to use, for example,
-[docker](./docker) and the reason why it is very simple. **Every case is unique**.
+[docker](./docker.md) and the reason why it is very simple. **Every case is unique**.
 
 ## Esmerald
 
@@ -65,7 +65,7 @@ class AppSettings(EsmeraldAPISettings):
             if field_name in ("allowed_hosts"):
                 return [value for value in raw_val.split(",")]
             return cls.json_loads(raw_val)
-    
+
 ```
 
 This should solve your problems of parsing 😁.
