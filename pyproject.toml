@@ -98,7 +98,7 @@ test = [
     "pytest-asyncio>=0.20.0",
     "mypy==1.5.1",
     "flake8>=5.0.4",
-    "black==23.9.1",
+    "black==23.10.0",
     "isort>=5.0.6,<6.0.0",
     "aiofiles>=0.8.0,<24",
     "a2wsgi>=1.7.0,<2",
