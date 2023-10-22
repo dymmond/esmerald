@@ -162,12 +162,127 @@ class Esmerald(Starlette):
                 """
             ),
         ] = None,
-        debug: Optional[bool] = None,
-        app_name: Optional[str] = None,
-        title: Optional[str] = None,
-        version: Optional[str] = None,
-        summary: Optional[str] = None,
-        description: Optional[str] = None,
+        debug: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean indicating if the application should return the debug tracebacks on
+                server errors, in other words, if you want to have debug errors being displayed.
+
+                Read more about this in the official [Starlette documentation](https://www.starlette.io/applications/#instantiating-the-application).
+
+                !!! Tip
+                    Do not use this in production.
+
+                ## Example
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(debug=True)
+                ```
+                """
+            ),
+        ] = None,
+        app_name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name of the Esmerald application/API. This name is displayed when the
+                [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                ## Example
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(app_name="Esmerald")
+                ```
+                """
+            ),
+        ] = None,
+        title: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The title of the Esmerald application/API. This title is displayed when the
+                [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                ## Example
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(title="My awesome Esmerald application")
+                ```
+                """
+            ),
+        ] = None,
+        version: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The version of the Esmerald application/API. This version is displayed when the
+                [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                **Note**: This is the version of your application/API and not th version of the
+                OpenAPI specification being used by Esmerald.
+
+                ## Example
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(version="0.1.0")
+                ```
+                """
+            ),
+        ] = None,
+        summary: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The summary of the Esmerald application/API. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                ## Example
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(summary="Black Window joins The Pretenders.")
+                ```
+                """
+            ),
+        ] = None,
+        description: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                ## Example
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(
+                    description='''
+                                Black Window joins The Pretenders.
+
+                                ## Powers
+
+                                You can **activate_powers**
+
+                                ## Skills
+
+                                * **read_skill**
+                                * **use_skill**
+                                '''
+                )
+                ```
+                """
+            ),
+        ] = None,
         contact: Optional[Contact] = None,
         terms_of_service: Optional[AnyUrl] = None,
         license: Optional[License] = None,
