@@ -3,91 +3,98 @@ site_description: 🚀 Highly scalable, performant, easy to learn, easy to code 
 site_url: https://esmerald.dev
 
 theme:
-      name: "material"
-      custom_dir: docs/overrides
-      language: en
-      palette:
-            - scheme: "default"
-              primary: "green"
-              accent: "orange"
-              media: "(prefers-color-scheme: light)"
-              toggle:
-                    icon: "material/lightbulb"
-                    name: "Switch to dark mode"
-            - scheme: "slate"
-              media: "(prefers-color-scheme: dark)"
-              primary: "green"
-              accent: "orange"
-              toggle:
-                    icon: "material/lightbulb-outline"
-                    name: "Switch to light mode"
-      favicon: statics/images/favicon.ico
-      logo: statics/images/logo-white.svg
-      features:
-            - search.suggest
-            - search.highlight
-            - content.tabs.link
-            - content.code.copy
+  name: "material"
+  custom_dir: docs/overrides
+  language: en
+  palette:
+    - scheme: "default"
+      primary: "green"
+      accent: "orange"
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: "material/lightbulb"
+        name: "Switch to dark mode"
+    - scheme: "slate"
+      media: "(prefers-color-scheme: dark)"
+      primary: "green"
+      accent: "orange"
+      toggle:
+        icon: "material/lightbulb-outline"
+        name: "Switch to light mode"
+  favicon: statics/images/favicon.ico
+  logo: statics/images/logo-white.svg
+  features:
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+    - content.tooltips
+    - content.code.select
+    - navigation.indexes
+    - navigation.path
+    - navigation.tabs
 
 repo_name: dymmond/esmerald
 repo_url: https://github.com/dymmond/esmerald
 edit_uri: ""
 plugins:
-      - search
-      - meta-descriptions:
-              export_csv: false
-              quiet: false
-              enable_checks: false
-              min_length: 50
-              max_length: 160
-              trim: false
-      - markdownextradata:
-              data: data
+  - search
+  - meta-descriptions:
+      export_csv: false
+      quiet: false
+      enable_checks: false
+      min_length: 50
+      max_length: 160
+      trim: false
+  - markdownextradata:
+      data: data
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            extensions:
+              - griffe_typingdoc
+            show_root_heading: true
+            show_if_no_docstring: true
+            preload_modules: [httpx, starlette]
+            inherited_members: true
+            members_order: source
+            separate_signature: true
+            unwrap_annotated: true
+            filters: ["!^_"]
+            merge_init_into_class: true
+            docstring_section_style: spacy
+            signature_crossrefs: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
 
 nav:
-      - Home: "index.md"
-      - Esmerald: "esmerald.md"
-      - Languages:
-              - en: /
-              # - pt: /pt/
-      - Application:
-              - Esmerald: "application/applications.md"
-              - Levels: "application/levels.md"
-              - Settings: "application/settings.md"
+  - Home: "index.md"
+  - Esmerald: "esmerald.md"
+  # - Languages:
+  #     - en: /
+  # - pt: /pt/
+  - Application:
+      - Esmerald: "application/applications.md"
+      - Levels: "application/levels.md"
+      - Settings: "application/settings.md"
       - Configurations:
-              - CORSConfig: "configurations/cors.md"
-              - CSRFConfig: "configurations/csrf.md"
-              - SessionConfig: "configurations/session.md"
-              - StaticFilesConfig: "configurations/staticfiles.md"
-              - TemplateConfig: "configurations/template.md"
-              - JWTConfig: "configurations/jwt.md"
-              - OpenAPIConfig: "configurations/openapi/config.md"
+          - CORSConfig: "configurations/cors.md"
+          - CSRFConfig: "configurations/csrf.md"
+          - SessionConfig: "configurations/session.md"
+          - StaticFilesConfig: "configurations/staticfiles.md"
+          - TemplateConfig: "configurations/template.md"
+          - JWTConfig: "configurations/jwt.md"
+          - OpenAPIConfig: "configurations/openapi/config.md"
+  - Features:
       - Routing:
-              - Router: "routing/router.md"
-              - Routes: "routing/routes.md"
-              - Handlers: "routing/handlers.md"
-              - APIView: "routing/apiview.md"
-              - OpenAPI Specific:
-                      - Webhooks: "routing/webhooks.md"
-      - Databases:
-              - Saffier:
-                      - Motivation: "databases/saffier/motivation.md"
-                      - Models: "databases/saffier/models.md"
-                      - Middleware:
-                              - JWT: "databases/saffier/middleware.md"
-                              - Example: "databases/saffier/example.md"
-              - Edgy:
-                      - Motivation: "databases/edgy/motivation.md"
-                      - Models: "databases/edgy/models.md"
-                      - Middleware:
-                              - JWT: "databases/edgy/middleware.md"
-                              - Example: "databases/edgy/example.md"
-              - Mongoz:
-                      - Motivation: "databases/mongoz/motivation.md"
-                      - Documents: "databases/mongoz/documents.md"
-                      - Middleware:
-                              - JWT: "databases/mongoz/middleware.md"
-                              - Example: "databases/mongoz/example.md"
+          - Router: "routing/router.md"
+          - Routes: "routing/routes.md"
+          - Handlers: "routing/handlers.md"
+          - APIView: "routing/apiview.md"
+          - OpenAPI Specific:
+              - Webhooks: "routing/webhooks.md"
       - Interceptors: "interceptors.md"
       - Permissions: "permissions.md"
       - Middleware: "middleware/middleware.md"
@@ -102,66 +109,88 @@ nav:
       - Lifespan Events: "lifespan-events.md"
       - Protocols: "protocols.md"
       - Scheduler:
-              - Asyncz:
-                      - Scheduler: "scheduler/scheduler.md"
-                      - Handler: "scheduler/handler.md"
+          - Asyncz:
+              - Scheduler: "scheduler/scheduler.md"
+              - Handler: "scheduler/handler.md"
+      - Management & Directives:
+          - Application Discovery: "directives/discovery.md"
+          - Directives: "directives/directives.md"
+          - Custom Directives: "directives/custom-directives.md"
+          - Shell: "directives/shell.md"
+  - Database Integrations:
+      - Saffier:
+          - Motivation: "databases/saffier/motivation.md"
+          - Models: "databases/saffier/models.md"
+          - Middleware:
+              - JWT: "databases/saffier/middleware.md"
+              - Example: "databases/saffier/example.md"
+      - Edgy:
+          - Motivation: "databases/edgy/motivation.md"
+          - Models: "databases/edgy/models.md"
+          - Middleware:
+              - JWT: "databases/edgy/middleware.md"
+              - Example: "databases/edgy/example.md"
+      - Mongoz:
+          - Motivation: "databases/mongoz/motivation.md"
+          - Documents: "databases/mongoz/documents.md"
+          - Middleware:
+              - JWT: "databases/mongoz/middleware.md"
+              - Example: "databases/mongoz/example.md"
+
+  - OpenAPI: "openapi.md"
+  - Extras:
       - Extra, Advanced & Useful:
-              - Request Data: "extras/request-data.md"
-              - Upload Files: "extras/upload-files.md"
-              - Form: "extras/forms.md"
-              - Body: "extras/body-fields.md"
-              - Headers: "extras/header-fields.md"
-              - Cookies: "extras/cookie-fields.md"
-      - Directives:
-              - Application Discovery: "directives/discovery.md"
-              - Directives: "directives/directives.md"
-              - Custom Directives: "directives/custom-directives.md"
-              - Shell: "directives/shell.md"
-      - OpenAPI: "openapi.md"
+          - Request Data: "extras/request-data.md"
+          - Upload Files: "extras/upload-files.md"
+          - Form: "extras/forms.md"
+          - Body: "extras/body-fields.md"
+          - Headers: "extras/header-fields.md"
+          - Cookies: "extras/cookie-fields.md"
+
       - WSGI Frameworks: "wsgi.md"
       - Test Client: "testclient.md"
       - Deployment:
-              - Intro: "deployment/intro.md"
-              - Using docker: "deployment/docker.md"
+          - Intro: "deployment/intro.md"
+          - Using docker: "deployment/docker.md"
       - Third Party Packages: "external.md"
+  - API Documentation:
+      - Esmerald: "references/esmerald.md"
+  - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"
       - Contributing: "contributing.md"
       - Sponsorship: "sponsorship.md"
       - Vendors: "vendors.md"
-      - Release Notes: "release-notes.md"
+  - Release Notes: "release-notes.md"
 markdown_extensions:
-      - attr_list
-      - toc:
-              permalink: true
-      - markdown.extensions.codehilite:
-              guess_lang: false
-      - mdx_include:
-              base_path: docs
-      - admonition
-      - codehilite
-      - extra
-      - pymdownx.superfences:
-              custom_fences:
-                    - name: mermaid
-                      class: mermaid
-                      format: !!python/name:pymdownx.superfences.fence_code_format ""
-      - pymdownx.emoji:
-              emoji_index: !!python/name:materialx.emoji.twemoji
-              emoji_generator: !!python/name:materialx.emoji.to_svg
-      - pymdownx.tabbed:
-              alternate_style: true
-      - md_in_html
+  - attr_list
+  - toc:
+      permalink: true
+  - mdx_include:
+      base_path: docs
+  - admonition
+  - extra
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.tabbed:
+      alternate_style: true
+  - md_in_html
 
 extra:
-      alternate:
-            - link: /
-              name: English
-              lang: en
-            # - link: /pt/
-            #   name: Portuguese (Portugal)
-            #   lang: en
+  analytics:
+    provider: google
+    property: G-CNBVBB90NT
+  alternate:
+    - link: /
+      name: English
+      lang: en
+    # - link: /pt/
+    #   name: Portuguese (Portugal)
+    #   lang: en
 
 extra_css:
-      - statics/css/extra.css
-      - statics/css/custom.css
+  - statics/css/extra.css
+  - statics/css/custom.css

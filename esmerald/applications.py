@@ -64,7 +64,6 @@ from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.conf import EsmeraldLazySettings
-    from esmerald.config.asyncexit import AsyncExitConfig
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -210,172 +209,107 @@ class Esmerald(Starlette):
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
-        self.parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = parent
+        self.parent = parent
 
-        self._debug: bool = self.load_settings_value("debug", debug, is_boolean=True)
-        self.debug: bool = self._debug
+        self._debug = self.load_settings_value("debug", debug, is_boolean=True)
+        self.debug = self._debug
 
-        self.title: Optional[str] = self.load_settings_value("title", title)
-        self.app_name: Optional[str] = self.load_settings_value("app_name", app_name)
-        self.description: Optional[str] = self.load_settings_value("description", description)
-        self.version: Optional[str] = self.load_settings_value("version", version)
-        self.openapi_version: Optional[str] = self.load_settings_value(
-            "openapi_version", openapi_version
-        )
-        self.summary: Optional[str] = self.load_settings_value("summary", summary)
-        self.contact: Optional[Contact] = self.load_settings_value("contact", contact)
-        self.terms_of_service: Optional[AnyUrl] = self.load_settings_value(
-            "terms_of_service", terms_of_service
-        )
-        self.license: Optional[License] = self.load_settings_value("license", license)
-        self.servers: Optional[List[Dict[str, Union[str, Any]]]] = self.load_settings_value(
-            "servers", servers
-        )
-        self.secret_key: Optional[str] = self.load_settings_value("secret_key", secret_key)
-        self.allowed_hosts: Optional[List[str]] = self.load_settings_value(
-            "allowed_hosts", allowed_hosts
-        )
-        self.allow_origins: Optional[List[str]] = self.load_settings_value(
-            "allow_origins", allow_origins
-        )
-        self.permissions: Optional[Sequence["Permission"]] = (
-            self.load_settings_value("permissions", permissions) or []
-        )
-        self.interceptors: Optional[Sequence["Interceptor"]] = (
-            self.load_settings_value("interceptors", interceptors) or []
-        )
-        self.dependencies: Optional["Dependencies"] = (
-            self.load_settings_value("dependencies", dependencies) or {}
-        )
-        self.csrf_config: Optional["CSRFConfig"] = self.load_settings_value(
-            "csrf_config", csrf_config
-        )
-        self.cors_config: Optional["CORSConfig"] = self.load_settings_value(
-            "cors_config", cors_config
-        )
-        self.openapi_config: Optional["OpenAPIConfig"] = self.load_settings_value(
-            "openapi_config", openapi_config
-        )
-        self.template_config: Optional["TemplateConfig"] = self.load_settings_value(
-            "template_config", template_config
-        )
-        self.static_files_config: Optional["StaticFilesConfig"] = self.load_settings_value(
+        self.title = self.load_settings_value("title", title)
+        self.app_name = self.load_settings_value("app_name", app_name)
+        self.description = self.load_settings_value("description", description)
+        self.version = self.load_settings_value("version", version)
+        self.openapi_version = self.load_settings_value("openapi_version", openapi_version)
+        self.summary = self.load_settings_value("summary", summary)
+        self.contact = self.load_settings_value("contact", contact)
+        self.terms_of_service = self.load_settings_value("terms_of_service", terms_of_service)
+        self.license = self.load_settings_value("license", license)
+        self.servers = self.load_settings_value("servers", servers)
+        self.secret_key = self.load_settings_value("secret_key", secret_key)
+        self.allowed_hosts = self.load_settings_value("allowed_hosts", allowed_hosts)
+        self.allow_origins = self.load_settings_value("allow_origins", allow_origins)
+        self.permissions = self.load_settings_value("permissions", permissions) or []
+        self.interceptors = self.load_settings_value("interceptors", interceptors) or []
+        self.dependencies = self.load_settings_value("dependencies", dependencies) or {}
+        self.csrf_config = self.load_settings_value("csrf_config", csrf_config)
+        self.cors_config = self.load_settings_value("cors_config", cors_config)
+        self.openapi_config = self.load_settings_value("openapi_config", openapi_config)
+        self.template_config = self.load_settings_value("template_config", template_config)
+        self.static_files_config = self.load_settings_value(
             "static_files_config", static_files_config
         )
-        self.session_config: Optional["SessionConfig"] = self.load_settings_value(
-            "session_config", session_config
-        )
-        self.response_class: Optional["ResponseType"] = self.load_settings_value(
-            "response_class", response_class
-        )
-        self.response_cookies: Optional["ResponseCookies"] = self.load_settings_value(
-            "response_cookies", response_cookies
-        )
-        self.response_headers: Optional["ResponseHeaders"] = self.load_settings_value(
-            "response_headers", response_headers
-        )
-        self.scheduler_class: Optional["SchedulerType"] = self.load_settings_value(
-            "scheduler_class", scheduler_class
-        )
-        self.scheduler_tasks: Optional[Dict[str, str]] = (
-            self.load_settings_value("scheduler_tasks", scheduler_tasks) or {}
-        )
-        self.scheduler_configurations: Dict[str, Dict[str, str]] = (
+        self.session_config = self.load_settings_value("session_config", session_config)
+        self.response_class = self.load_settings_value("response_class", response_class)
+        self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
+        self.response_headers = self.load_settings_value("response_headers", response_headers)
+        self.scheduler_class = self.load_settings_value("scheduler_class", scheduler_class)
+        self.scheduler_tasks = self.load_settings_value("scheduler_tasks", scheduler_tasks) or {}
+        self.scheduler_configurations = (
             self.load_settings_value("scheduler_configurations", scheduler_configurations) or {}
         )
-        self.enable_scheduler: bool = self.load_settings_value(
+        self.enable_scheduler = self.load_settings_value(
             "enable_scheduler", enable_scheduler, is_boolean=True
         )
-        self.timezone: Optional[Union[dtimezone, str]] = self.load_settings_value(
-            "timezone", timezone
-        )
-        self.root_path: Optional[str] = self.load_settings_value("root_path", root_path)
-        self._middleware: Optional[List["Middleware"]] = (
-            self.load_settings_value("middleware", middleware) or []
-        )
-        _exception_handlers: Dict[str, Any] = self.load_settings_value(
-            "exception_handlers", exception_handlers
-        )
-        self.exception_handlers = cast(
-            Dict[str, Any], ({} if _exception_handlers is None else dict(_exception_handlers))
-        )
-        self.on_startup: Optional[List["LifeSpanHandler"]] = self.load_settings_value(
-            "on_startup", on_startup
-        )
-        self.on_shutdown: Optional[List["LifeSpanHandler"]] = self.load_settings_value(
-            "on_shutdown", on_shutdown
-        )
-        self.lifespan: Optional[Lifespan[AppType]] = self.load_settings_value("lifespan", lifespan)
-        self.include_in_schema: bool = self.load_settings_value(
+        self.timezone = self.load_settings_value("timezone", timezone)
+        self.root_path = self.load_settings_value("root_path", root_path)
+        self._middleware = self.load_settings_value("middleware", middleware) or []
+        _exception_handlers = self.load_settings_value("exception_handlers", exception_handlers)
+        self.exception_handlers = {} if _exception_handlers is None else dict(_exception_handlers)
+        self.on_startup = self.load_settings_value("on_startup", on_startup)
+        self.on_shutdown = self.load_settings_value("on_shutdown", on_shutdown)
+        self.lifespan = self.load_settings_value("lifespan", lifespan)
+        self.tags = self.load_settings_value("tags", security)
+        self.include_in_schema = self.load_settings_value(
             "include_in_schema", include_in_schema, is_boolean=True
         )
-        self.security: Optional[List[SecurityScheme]] = self.load_settings_value(
-            "security", security
-        )
-        self.enable_openapi: bool = self.load_settings_value(
+        self.security = self.load_settings_value("security", security)
+        self.enable_openapi = self.load_settings_value(
             "enable_openapi", enable_openapi, is_boolean=True
         )
-        self.redirect_slashes: bool = self.load_settings_value(
+        self.redirect_slashes = self.load_settings_value(
             "redirect_slashes", redirect_slashes, is_boolean=True
         )
-        self.pluggables: Optional[Dict[str, Pluggable]] = self.load_settings_value(
-            "pluggables", pluggables
-        )
+        self.pluggables = self.load_settings_value("pluggables", pluggables)
 
         # OpenAPI Related
-        self.root_path_in_servers: bool = self.load_settings_value(
+        self.root_path_in_servers = self.load_settings_value(
             "root_path_in_servers", root_path_in_servers, is_boolean=True
         )
 
         if not self.include_in_schema or not self.enable_openapi:
             self.root_path_in_servers = False
 
-        self.webhooks: Sequence["gateways.WebhookGateway"] = (
-            self.load_settings_value("webhooks", webhooks) or []
-        )
-        self.openapi_url: Optional[str] = self.load_settings_value("openapi_url", openapi_url)
-        self.tags: Optional[List[Tag]] = self.load_settings_value("tags", tags)
-        self.docs_url: Optional[str] = self.load_settings_value("docs_url", docs_url)
-        self.redoc_url: Optional[str] = self.load_settings_value("redoc_url", redoc_url)
-        self.swagger_ui_oauth2_redirect_url: Optional[str] = self.load_settings_value(
+        self.webhooks = self.load_settings_value("webhooks", webhooks) or []
+        self.openapi_url = self.load_settings_value("openapi_url", openapi_url)
+        self.tags = self.load_settings_value("tags", tags)
+        self.docs_url = self.load_settings_value("docs_url", docs_url)
+        self.redoc_url = self.load_settings_value("redoc_url", redoc_url)
+        self.swagger_ui_oauth2_redirect_url = self.load_settings_value(
             "swagger_ui_oauth2_redirect_url", swagger_ui_oauth2_redirect_url
         )
-        self.redoc_js_url: Optional[str] = self.load_settings_value("redoc_js_url", redoc_js_url)
-        self.redoc_favicon_url: Optional[str] = self.load_settings_value(
-            "redoc_favicon_url", redoc_favicon_url
-        )
-        self.swagger_ui_init_oauth: Optional[Dict[str, Any]] = self.load_settings_value(
+        self.redoc_js_url = self.load_settings_value("redoc_js_url", redoc_js_url)
+        self.redoc_favicon_url = self.load_settings_value("redoc_favicon_url", redoc_favicon_url)
+        self.swagger_ui_init_oauth = self.load_settings_value(
             "swagger_ui_init_oauth", swagger_ui_init_oauth
         )
-        self.swagger_ui_parameters: Optional[Dict[str, Any]] = self.load_settings_value(
+        self.swagger_ui_parameters = self.load_settings_value(
             "swagger_ui_parameters", swagger_ui_parameters
         )
-        self.swagger_js_url: Optional[str] = self.load_settings_value(
-            "swagger_js_url", swagger_js_url
-        )
-        self.swagger_css_url: Optional[str] = self.load_settings_value(
-            "swagger_css_url", swagger_css_url
-        )
+        self.swagger_js_url = self.load_settings_value("swagger_js_url", swagger_js_url)
+        self.swagger_css_url = self.load_settings_value("swagger_css_url", swagger_css_url)
 
-        self.swagger_favicon_url: Optional[str] = self.load_settings_value(
+        self.swagger_favicon_url = self.load_settings_value(
             "swagger_favicon_url", swagger_favicon_url
         )
-        self.stoplight_js_url: Optional[str] = self.load_settings_value(
-            "stoplight_js_url", stoplight_js_url
-        )
-        self.stoplight_css_url: Optional[str] = self.load_settings_value(
-            "stoplight_css_url", stoplight_css_url
-        )
-        self.stoplight_url: Optional[str] = self.load_settings_value(
-            "stoplight_url", stoplight_url
-        )
-        self.stoplight_favicon_url: Optional[str] = self.load_settings_value(
+        self.stoplight_js_url = self.load_settings_value("stoplight_js_url", stoplight_js_url)
+        self.stoplight_css_url = self.load_settings_value("stoplight_css_url", stoplight_css_url)
+        self.stoplight_url = self.load_settings_value("stoplight_url", stoplight_url)
+        self.stoplight_favicon_url = self.load_settings_value(
             "stoplight_favicon_url", stoplight_favicon_url
         )
 
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
-        self.async_exit_config = cast("AsyncExitConfig", esmerald_settings.async_exit_config)
+        self.async_exit_config = esmerald_settings.async_exit_config
 
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
@@ -389,12 +323,10 @@ class Esmerald(Starlette):
         )
 
         self.get_default_exception_handlers()
-        self.user_middleware: List["StarletteMiddleware"] = self.build_user_middleware_stack()
-        self.middleware_stack: ASGIApp = self.build_middleware_stack()
-        self.pluggable_stack: Optional["Esmerald"] = self.build_pluggable_stack()
-        self.template_engine: Optional[TemplateEngineProtocol] = self.get_template_engine(
-            self.template_config
-        )
+        self.user_middleware = self.build_user_middleware_stack()
+        self.middleware_stack = self.build_middleware_stack()
+        self.pluggable_stack = self.build_pluggable_stack()
+        self.template_engine = self.get_template_engine(self.template_config)
 
         self._configure()
 
@@ -405,7 +337,7 @@ class Esmerald(Starlette):
         if self.static_files_config:
             for config in (
                 self.static_files_config
-                if isinstance(self.static_files_config, list)  # type: ignore
+                if isinstance(self.static_files_config, list)
                 else [self.static_files_config]
             ):
                 static_route = Include(path=config.path, app=config.to_app())
@@ -841,7 +773,7 @@ class Esmerald(Starlette):
             if isinstance(middleware, StarletteMiddleware):
                 user_middleware.append(middleware)
             else:
-                user_middleware.append(StarletteMiddleware(middleware))  # type: ignore[arg-type]
+                user_middleware.append(StarletteMiddleware(middleware))
         return user_middleware
 
     def build_middleware_stack(self) -> "ASGIApp":
@@ -912,7 +844,7 @@ class Esmerald(Starlette):
             elif isinstance(extension, Pluggable):
                 pluggables[name] = extension
                 continue
-            elif not is_class_and_subclass(extension, Extension):  # type: ignore
+            elif not is_class_and_subclass(extension, Extension):
                 raise ImproperlyConfigured(
                     "An extension must subclass from esmerald.pluggables.Extension and added to "
                     "a Pluggable object"

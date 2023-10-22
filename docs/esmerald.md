@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Esmerald
 
 <p align="center">
