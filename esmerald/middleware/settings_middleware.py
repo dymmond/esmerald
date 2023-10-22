@@ -9,7 +9,6 @@ class RequestSettingsMiddleware(MiddlewareProtocol):
 
         Args:
             app: The 'next' ASGI app to call.
-            settings: An instance of a EsmeraldAPISettings or a subclass.
         """
         super().__init__(app)
         self.app = app

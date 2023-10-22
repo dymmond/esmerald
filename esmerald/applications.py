@@ -20,6 +20,7 @@ from pydantic import AnyUrl, ValidationError
 from starlette.applications import Starlette
 from starlette.middleware import Middleware as StarletteMiddleware  # noqa
 from starlette.types import Lifespan, Receive, Scope, Send
+from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
@@ -71,7 +72,22 @@ AppType = TypeVar("AppType", bound="Esmerald")
 
 class Esmerald(Starlette):
     """
-    Creates a Esmerald application instance.
+    `Esmerald` application object. The main entry-point for any application/API
+    with Esmerald.
+
+    This object is complex and very powerful. Read more in detail about [how to start](https://esmerald.dev/esmerald/) and spin-up an application in minutes.
+
+    !!! Tip
+        All the parameters available in the object have defaults being loaded by the
+        [settings system](https://esmerald.dev/application/settings/) if nothing is provided.
+
+    ## Example
+
+    ```python
+    from esmerald import Esmerald.
+
+    app = Esmerald()
+    ```
     """
 
     __slots__ = (
@@ -123,7 +139,29 @@ class Esmerald(Starlette):
     def __init__(
         self: AppType,
         *,
-        settings_config: Optional["SettingsType"] = None,
+        settings_config: Annotated[
+            Optional["SettingsType"],
+            Doc(
+                """
+                Alternative settings parameter. This parameter is an alternative to
+                `ESMERALD_SETTINGS_MODULE` way of loading your settings into an Esmerald application.
+
+                When the `settings_module` is provided, it will make sure it takes priority over
+                any other settings provided for the instance.
+
+                Read more about the [settings module](https://esmerald.dev/application/settings/)
+                and how you can leverage it in your application.
+
+                !!! Tip
+                    The settings module can be very useful if you want to have, for example, a
+                    [ChildEsmerald](https://esmerald.dev/routing/router/?h=childe#child-esmerald-application) that needs completely different settings
+                    from the main app.
+
+                    Example: A `ChildEsmerald` that takes care of the authentication into a cloud
+                    provider such as AWS and handles the `boto3` module.
+                """
+            ),
+        ] = None,
         debug: Optional[bool] = None,
         app_name: Optional[str] = None,
         title: Optional[str] = None,
@@ -916,8 +954,25 @@ class Esmerald(Starlette):
 
 class ChildEsmerald(Esmerald):
     """
-    A simple visual representation of an Esmerald application, exactly like Esmerald
-    but for organisation purposes it might be preferred to use this class.
+    `ChildEsmerald` application object. The main entry-point for a modular application/API
+    with Esmerald.
+
+    The `ChildEsmerald` inherits directly from the `Esmerald` object which means all the same
+    parameters, attributes and functions of Esmerald ara also available in the `ChildEsmerald`.
+
+    This object is complex and very powerful. Read more in detail about [how to use](https://esmerald.dev/routing/router/?h=childe#child-esmerald-application) and spin-up an application in minutes with `ChildEsmerald`.
+
+    !!! Tip
+        All the parameters available in the object have defaults being loaded by the
+        [settings system](https://esmerald.dev/application/settings/) if nothing is provided.
+
+    ## Example
+
+    ```python
+    from esmerald import Esmerald, ChildEsmerald, Include
+
+    app = Esmerald(routes=[Include('/child', app=ChildEsmerald(...))])
+    ```
     """
 
     ...
