@@ -1304,6 +1304,29 @@ class Esmerald(Starlette):
                 """
                 Boolean flag indicating if all the routes of the application
                 should be deprecated in the OpenAPI documentation.
+
+                !!! Tip
+                    This can be particularly useful if you have, for example, a `ChildEsmerald` and
+                    you  want to deprecate in favour of a new one being implemented.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(deprecated=True)
+                ```
+
+                **Example with a ChildEsmerald**
+
+                ```python
+                from esmerald import Esmerald, ChildEsmerald, Include
+
+                app = Esmerald(routes=[
+                    Include("/child", app=ChildEsmerald(
+                        deprecated=True
+                    ))
+                ])
                 ```
                 """
             ),
