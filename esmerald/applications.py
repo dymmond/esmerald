@@ -1259,15 +1259,186 @@ class Esmerald(Starlette):
                 """
             ),
         ] = None,
-        include_in_schema: Optional[bool] = None,
-        deprecated: Optional[bool] = None,
-        enable_openapi: Optional[bool] = None,
-        redirect_slashes: Optional[bool] = None,
-        pluggables: Optional[Dict[str, Pluggable]] = None,
-        parent: Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]] = None,
-        root_path_in_servers: bool = None,
-        webhooks: Optional[Sequence["gateways.WebhookGateway"]] = None,
-        openapi_url: Optional[str] = None,
+        include_in_schema: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if all the routes of the application
+                should be included in the OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means when the application
+                level is set to `include_in_schema=False`, no schemas will be
+                displayed in the OpenAPI documentation.
+
+                !!! Tip
+                    This can be particularly useful if you have, for example, a `ChildEsmerald` and
+                    you don't want to include in the schema the routes of the said `ChildEsmerald`.
+                    This way there is no reason to do it route by route and instead you can
+                    simply do it directly in the application [level](https://esmerald.dev/application/levels/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(include_in_schema=False)
+                ```
+
+                 **Example applied to ChildEsmerald**
+
+                ```python
+                from esmerald import Esmerald, ChildEsmerald, Include
+
+                app = Esmerald(routes=[
+                    Include("/child", app=ChildEsmerald(
+                        include_in_schema=False
+                    ))
+                ])
+                ```
+                """
+            ),
+        ] = None,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if all the routes of the application
+                should be deprecated in the OpenAPI documentation.
+                ```
+                """
+            ),
+        ] = None,
+        enable_openapi: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if the OpenAPI documentation should
+                be generated or not.
+
+                When `False`, no OpenAPI documentation is accessible.
+
+                !!! Tip
+                    Disable this option if you run in production and no one should access the
+                    documentation unless behind an authentication.
+                ```
+                """
+            ),
+        ] = None,
+        redirect_slashes: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if the redirect slashes are enabled for the
+                routes or not.
+                ```
+                """
+            ),
+        ] = None,
+        pluggables: Annotated[
+            Optional[Dict[str, Pluggable]],
+            Doc(
+                """
+                A `list` of global pluggables from objects inheriting from
+                `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
+
+                Read more about how to implement the [Plugables](https://esmerald.dev/pluggables/) in Esmerald and to leverage them.
+
+                **Example**
+
+                ```python
+                from typing import Optional
+
+                from loguru import logger
+                from pydantic import BaseModel
+
+                from esmerald import Esmerald, Extension, Pluggable
+                from esmerald.types import DictAny
+
+
+                class PluggableConfig(BaseModel):
+                    name: str
+
+
+                class MyExtension(Extension):
+                    def __init__(
+                        self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+                    ):
+                        super().__init__(app, **kwargs)
+                        self.app = app
+
+                    def extend(self, config: PluggableConfig) -> None:
+                        logger.success(f"Successfully passed a config {config.name}")
+
+
+                my_config = PluggableConfig(name="my extension")
+                pluggable = Pluggable(MyExtension, config=my_config)
+
+
+                app = Esmerald(
+                    routes=[], pluggables={"my-extension": pluggable}
+                )
+                ```
+                """
+            ),
+        ] = None,
+        parent: Annotated[
+            Optional[Union["ParentType", "Esmerald", "ChildEsmerald"]],
+            Doc(
+                """
+                Used internally by Esmerald to recognise and build the [application levels](https://esmerald.dev/application/levels/).
+
+                !!! Tip
+                    Unless you know what are you doing, it is advisable not to touch this.
+                """
+            ),
+        ] = None,
+        root_path_in_servers: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag use to disable the automatic URL generation in the `servers` field
+                in the OpenAPI documentation.
+
+                **Examples**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(root_path_in_servers=False)
+                ```
+                """
+            ),
+        ] = None,
+        webhooks: Annotated[
+            Optional[Sequence["gateways.WebhookGateway"]],
+            Doc(
+                """
+                This is the same principle of the `routes` but for OpenAPI webhooks.
+
+                Read more [about webhooks](https://esmerald.dev/routing/webhooks).
+
+                When a webhook is added, it will automatically add them into the
+                OpenAPI documentation.
+                """
+            ),
+        ] = None,
+        openapi_url: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The URL where the OpenAPI schema will be served from.
+                The default is `/openapi.json`.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(openapi_url="/api/v1/openapi.json")
+                ```
+                """
+            ),
+        ] = None,
     ) -> None:
         self.settings_config = None
 
