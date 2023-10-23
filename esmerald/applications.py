@@ -697,20 +697,6 @@ class Esmerald(Starlette):
         root_path_in_servers: bool = None,
         webhooks: Optional[Sequence["gateways.WebhookGateway"]] = None,
         openapi_url: Optional[str] = None,
-        docs_url: Optional[str] = None,
-        redoc_url: Optional[str] = None,
-        swagger_ui_oauth2_redirect_url: Optional[str] = None,
-        redoc_js_url: Optional[str] = None,
-        redoc_favicon_url: Optional[str] = None,
-        swagger_ui_init_oauth: Optional[Dict[str, Any]] = None,
-        swagger_ui_parameters: Optional[Dict[str, Any]] = None,
-        swagger_js_url: Optional[str] = None,
-        swagger_css_url: Optional[str] = None,
-        swagger_favicon_url: Optional[str] = None,
-        stoplight_js_url: Optional[str] = None,
-        stoplight_css_url: Optional[str] = None,
-        stoplight_url: Optional[str] = None,
-        stoplight_favicon_url: Optional[str] = None,
     ) -> None:
         self.settings_config = None
 
@@ -805,31 +791,6 @@ class Esmerald(Starlette):
         self.webhooks = self.load_settings_value("webhooks", webhooks) or []
         self.openapi_url = self.load_settings_value("openapi_url", openapi_url)
         self.tags = self.load_settings_value("tags", tags)
-        self.docs_url = self.load_settings_value("docs_url", docs_url)
-        self.redoc_url = self.load_settings_value("redoc_url", redoc_url)
-        self.swagger_ui_oauth2_redirect_url = self.load_settings_value(
-            "swagger_ui_oauth2_redirect_url", swagger_ui_oauth2_redirect_url
-        )
-        self.redoc_js_url = self.load_settings_value("redoc_js_url", redoc_js_url)
-        self.redoc_favicon_url = self.load_settings_value("redoc_favicon_url", redoc_favicon_url)
-        self.swagger_ui_init_oauth = self.load_settings_value(
-            "swagger_ui_init_oauth", swagger_ui_init_oauth
-        )
-        self.swagger_ui_parameters = self.load_settings_value(
-            "swagger_ui_parameters", swagger_ui_parameters
-        )
-        self.swagger_js_url = self.load_settings_value("swagger_js_url", swagger_js_url)
-        self.swagger_css_url = self.load_settings_value("swagger_css_url", swagger_css_url)
-
-        self.swagger_favicon_url = self.load_settings_value(
-            "swagger_favicon_url", swagger_favicon_url
-        )
-        self.stoplight_js_url = self.load_settings_value("stoplight_js_url", stoplight_js_url)
-        self.stoplight_css_url = self.load_settings_value("stoplight_css_url", stoplight_css_url)
-        self.stoplight_url = self.load_settings_value("stoplight_url", stoplight_url)
-        self.stoplight_favicon_url = self.load_settings_value(
-            "stoplight_favicon_url", stoplight_favicon_url
-        )
 
         self.openapi_schema: Optional["OpenAPI"] = None
         self.state = State()
@@ -982,20 +943,6 @@ class Esmerald(Starlette):
             set_value(self.servers, "servers")
             set_value(self.terms_of_service, "terms_of_service")
             set_value(self.root_path_in_servers, "root_path_in_servers")
-            set_value(self.docs_url, "docs_url")
-            set_value(self.redoc_url, "redoc_url")
-            set_value(self.swagger_ui_oauth2_redirect_url, "swagger_ui_oauth2_redirect_url")
-            set_value(self.redoc_js_url, "redoc_js_url")
-            set_value(self.redoc_favicon_url, "redoc_favicon_url")
-            set_value(self.swagger_ui_init_oauth, "swagger_ui_init_oauth")
-            set_value(self.swagger_ui_parameters, "swagger_ui_parameters")
-            set_value(self.swagger_js_url, "swagger_js_url")
-            set_value(self.swagger_css_url, "swagger_css_url")
-            set_value(self.swagger_favicon_url, "swagger_favicon_url")
-            set_value(self.stoplight_js_url, "stoplight_js_url")
-            set_value(self.stoplight_css_url, "stoplight_css_url")
-            set_value(self.stoplight_url, "stoplight_url")
-            set_value(self.stoplight_favicon_url, "stoplight_favicon_url")
             set_value(self.openapi_url, "openapi_url")
 
             if self.webhooks or not self.openapi_config.webhooks:
