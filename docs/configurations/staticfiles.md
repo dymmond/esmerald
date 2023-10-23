@@ -1,7 +1,7 @@
 # StaticFilesConfig
 
-StaticFilesConfig is simple set of configurations that when passed enables the built-in middleware of Esmerald.
-When a StaticFilesConfig object is passed to an application instance, it will automatically start the `SessionMiddleware`.
+StaticFilesConfig is simple set of configurations that when passed enables the built-in of Esmerald.
+When a StaticFilesConfig object is passed to an application instance, it will enable the static files serving.
 
 !!! Check
     StaticFiles are considereed an `app` and they are pure Starlette app so using Starlette StaticFiles

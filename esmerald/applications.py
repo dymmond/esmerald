@@ -616,7 +616,7 @@ class Esmerald(Starlette):
             Optional["CSRFConfig"],
             Doc(
                 """
-                An instance of [CRSFConfig](https://esmerald.dev/configurations/cors/).
+                An instance of [CRSFConfig](https://esmerald.dev/configurations/csrf/).
 
                 This configuration is passed to the [CSRFMiddleware](https://esmerald.dev/middleware/middleware/#csrfmiddleware) and enables the middleware.
 
@@ -628,7 +628,7 @@ class Esmerald(Starlette):
                 **Example**
 
                 ```python
-                from esmerald import Esmerald, EsmeraldAPISettings
+                from esmerald import Esmerald
                 from esmerald.config import CSRFConfig
 
                 csrf_config = CSRFConfig(secret="your-long-unique-secret")
@@ -645,6 +645,8 @@ class Esmerald(Starlette):
                 An instance of [CRSFConfig](https://esmerald.dev/configurations/openapi/config/).
 
                 This object is then used by Esmerald to create the [OpenAPI](https://esmerald.dev/openapi/) documentation.
+
+                **Note**: Here is where the defaults for Esmerald OpenAPI are overriden.
 
                 !!! Tip
                     This is the way you could override the defaults all in one go
@@ -667,9 +669,74 @@ class Esmerald(Starlette):
                 """
             ),
         ] = None,
-        openapi_version: Optional[str] = None,
-        cors_config: Optional["CORSConfig"] = None,
-        static_files_config: Optional["StaticFilesConfig"] = None,
+        openapi_version: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The string version of the OpenAPI.
+
+                Esmerald will generate the OpenAPI 3.1.0 by default and will
+                output that as the OpenAPI version.
+
+                If you need to somehow trick some of the tools you are using
+                by setting a different version of the OpenAPI, this is the
+                field you can use to do it so.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(openapi_version="3.1.0")
+                ```
+                """
+            ),
+        ] = None,
+        cors_config: Annotated[
+            Optional["CORSConfig"],
+            Doc(
+                """
+                An instance of [CORSConfig](https://esmerald.dev/configurations/cors/).
+
+                This configuration is passed to the [CORSMiddleware](https://esmerald.dev/middleware/middleware/#corsmiddleware) and enables the middleware.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.config import CSRFConfig
+
+                cors_config = CORSConfig(allow_origins=["*"])
+
+                app = Esmerald(routes=routes, cors_config=cors_config)
+                ```
+                """
+            ),
+        ] = None,
+        static_files_config: Annotated[
+            Optional["StaticFilesConfig"],
+            Doc(
+                """
+                An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
+
+                This configuration is used to enable and serve static files via
+                Esmerald application.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.config import StaticFilesConfig
+
+                static_files_config = StaticFilesConfig(
+                    path="/static", directory=Path("static")
+                )
+
+                app = Esmerald(routes=routes, static_files_config=static_files_config)
+                ```
+                """
+            ),
+        ] = None,
         template_config: Optional["TemplateConfig"] = None,
         session_config: Optional["SessionConfig"] = None,
         response_class: Optional["ResponseType"] = None,
