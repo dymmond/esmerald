@@ -1,7 +1,7 @@
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from starlette.types import Lifespan
@@ -51,7 +51,7 @@ class EsmeraldAPISettings(BaseSettings):
     response_cookies: Optional[ResponseCookies] = None
     response_headers: Optional[ResponseHeaders] = None
     include_in_schema: bool = True
-    tags: Optional[List[Tag]] = None
+    tags: Optional[List[str]] = None
     timezone: str = "UTC"
     use_tz: bool = False
     root_path: Optional[str] = ""

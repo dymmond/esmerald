@@ -9,7 +9,7 @@ from esmerald.openapi.docs import (
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
-from esmerald.openapi.models import Contact, License, Tag
+from esmerald.openapi.models import Contact, License
 from esmerald.openapi.openapi import get_openapi
 from esmerald.requests import Request
 from esmerald.responses import HTMLResponse, JSONResponse
@@ -26,7 +26,7 @@ class OpenAPIConfig(BaseModel):
     license: Optional[License] = None
     security: Optional[List[SecurityScheme]] = None
     servers: Optional[List[Dict[str, Union[str, Any]]]] = None
-    tags: Optional[List[Tag]] = None
+    tags: Optional[List[str]] = None
     openapi_version: Optional[str] = None
     openapi_url: Optional[str] = None
     root_path_in_servers: bool = True

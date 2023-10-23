@@ -35,6 +35,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         "interceptors",
         "permissions",
         "deprecated",
+        "tags",
     )
 
     def __init__(
@@ -53,6 +54,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         deprecated: Optional[bool] = None,
         is_from_router: bool = False,
         security: Optional[Sequence["SecurityScheme"]] = None,
+        tags: Optional[Sequence[str]] = None,
     ) -> None:
         if not path:
             path = "/"
@@ -98,6 +100,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
         self.deprecated = deprecated
         self.parent = parent
         self.security = security
+        self.tags = tags or []
         (
             handler.path_regex,
             handler.path_format,
@@ -146,6 +149,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         "permissions",
         "parent",
         "security",
+        "tags",
     )
 
     def __init__(
@@ -221,6 +225,8 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         "exception_handlers",
         "interceptors",
         "permissions",
+        "security",
+        "tags",
     )
 
     def __init__(
@@ -232,6 +238,7 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         parent: Optional["ParentType"] = None,
         deprecated: Optional[bool] = None,
         security: Optional[Sequence["SecurityScheme"]] = None,
+        tags: Optional[Sequence[str]] = None,
     ) -> None:
         if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore
@@ -262,6 +269,7 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         self.deprecated = deprecated
         self.parent = parent
         self.security = security
+        self.tags = tags or []
         (
             handler.path_regex,
             handler.path_format,

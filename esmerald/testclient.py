@@ -13,7 +13,7 @@ from typing import (
 
 import httpx  # noqa
 from httpx._client import CookieTypes
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 from starlette.testclient import TestClient  # noqa
 
@@ -120,7 +120,7 @@ def create_client(
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
     cookies: Optional[CookieTypes] = None,
     redirect_slashes: Optional[bool] = None,
-    tags: Optional[List[Tag]] = None,
+    tags: Optional[List[str]] = None,
     webhooks: Optional[Sequence["WebhookGateway"]] = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(

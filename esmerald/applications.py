@@ -14,7 +14,7 @@ from typing import (
     cast,
 )
 
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme, Tag
+from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl, ValidationError
 from starlette.applications import Starlette
@@ -1123,10 +1123,142 @@ class Esmerald(Starlette):
                 """
             ),
         ] = None,
-        on_startup: Optional[List["LifeSpanHandler"]] = None,
-        on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-        lifespan: Optional[Lifespan[AppType]] = None,
-        tags: Optional[List[Tag]] = None,
+        on_startup: Annotated[
+            Optional[List["LifeSpanHandler"]],
+            Doc(
+                """
+                A `list` of events that are trigger upon the application
+                starts.
+
+                Read more about the [events](https://esmerald.dev/lifespan-events/).
+
+                **Example**
+
+                ```python
+                from pydantic import BaseModel
+                from saffier import Database, Registry
+
+                from esmerald import Esmerald, Gateway, post
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                class User(BaseModel):
+                    name: str
+                    email: str
+                    password: str
+                    retype_password: str
+
+
+                @post("/create", tags=["user"], description="Creates a new user in the database")
+                async def create_user(data: User) -> None:
+                    # Logic to create the user
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway(handler=create_user)],
+                    on_startup=[database.connect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        on_shutdown: Annotated[
+            Optional[List["LifeSpanHandler"]],
+            Doc(
+                """
+                A `list` of events that are trigger upon the application
+                shuts down.
+
+                Read more about the [events](https://esmerald.dev/lifespan-events/).
+
+                **Example**
+
+                ```python
+                from pydantic import BaseModel
+                from saffier import Database, Registry
+
+                from esmerald import Esmerald, Gateway, post
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                class User(BaseModel):
+                    name: str
+                    email: str
+                    password: str
+                    retype_password: str
+
+
+                @post("/create", tags=["user"], description="Creates a new user in the database")
+                async def create_user(data: User) -> None:
+                    # Logic to create the user
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway(handler=create_user)],
+                    on_shutdown=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        lifespan: Annotated[
+            Optional[Lifespan[AppType]],
+            Doc(
+                """
+                A `lifespan` context manager handler. This is an alternative
+                to `on_startup` and `on_shutdown` and you **cannot used all combined**.
+
+                Read more about the [lifespan](https://esmerald.dev/lifespan-events/).
+                """
+            ),
+        ] = None,
+        tags: Annotated[
+            Optional[List[str]],
+            Doc(
+                """
+                A list of strings/enums tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(tags=["application"])
+                ```
+
+                **Example with nested routes**
+
+                When tags are added on a level bases, those are concatenated into the
+                final handler.
+
+                ```python
+                from esmerald import Esmerald, Gateway, get
+
+                @get("/home", tags=["home"])
+                async def home() -> Dict[str, str]:
+                    return {"hello": "world"}
+
+
+                app = Esmerald(
+                    routes=[Gateway(handler=home)],
+                    tags=["application"]
+                )
+                ```
+                """
+            ),
+        ] = None,
         include_in_schema: Optional[bool] = None,
         deprecated: Optional[bool] = None,
         enable_openapi: Optional[bool] = None,

@@ -995,6 +995,7 @@ class Include(Mount):
         "middleware",
         "deprecated",
         "security",
+        "tags",
     )
 
     def __init__(
@@ -1014,6 +1015,7 @@ class Include(Mount):
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[Sequence["SecurityScheme"]] = None,
+        tags: Optional[Sequence[str]] = None,
     ) -> None:
         self.path = path
         if not path:
@@ -1050,6 +1052,7 @@ class Include(Mount):
         self.response_headers = None
         self.parent = parent
         self.security = security or []
+        self.tags = tags or []
 
         if routes:
             routes = self.resolve_route_path_handler(routes)

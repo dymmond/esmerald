@@ -110,6 +110,6 @@ class OpenAPI(BaseModel):
     webhooks: Optional[Dict[str, Union[PathItem, Reference]]] = None
     components: Optional[Components] = None
     security: Optional[List[Dict[str, List[str]]]] = None
-    tags: Optional[List[Tag]] = None
+    tags: Optional[List[str]] = None
     externalDocs: Optional[ExternalDocumentation] = None
     model_config = ConfigDict(extra="allow")
