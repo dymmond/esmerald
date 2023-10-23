@@ -1558,7 +1558,20 @@ class Esmerald(Starlette):
         self.tags = self.load_settings_value("tags", tags)
 
         self.openapi_schema: Optional["OpenAPI"] = None
-        self.state = State()
+        self.state: Annotated[
+            State,
+            Doc(
+                """
+                The state object for the application. This is always the
+                same object across the whole application.
+
+                This can be defined as the application state and not request state
+                which means that it does not change each request.
+
+                Learn more in the [Starlette documentation](https://www.starlette.io/applications/#storing-state-on-the-app-instance).
+                """
+            ),
+        ] = State()
         self.async_exit_config = esmerald_settings.async_exit_config
 
         self.router: "Router" = Router(
@@ -1601,10 +1614,11 @@ class Esmerald(Starlette):
         self.activate_openapi()
 
     def load_settings_value(
-        self, name: Any, value: Optional[Any] = None, is_boolean: bool = False
+        self, name: str, value: Optional[Any] = None, is_boolean: bool = False
     ) -> Any:
         """
-        Loads the value from the settings or returns the value passed.
+        Loader used to get the settings defaults and custom settings
+        of the application.
         """
         if not is_boolean:
             if not value:
@@ -1716,10 +1730,57 @@ class Esmerald(Starlette):
             self.openapi_config.enable(self)
 
     def get_template_engine(
-        self, template_config: "TemplateConfig"
+        self,
+        template_config: Annotated[
+            "TemplateConfig",
+            Doc(
+                """
+                An instance of [TemplateConfig](https://esmerald.dev/configurations/template/).
+
+                This configuration is a simple set of configurations that when passed enables the template engine.
+
+                !!! Note
+                    You might need to install the template engine before
+                    using this. You can always run
+                    `pip install esmerald[templates]` to help you out.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.config.template import TemplateConfig
+                from esmerald.template.jinja import JinjaTemplateEngine
+
+                template_config = TemplateConfig(
+                    directory=Path("templates"),
+                    engine=JinjaTemplateEngine,
+                )
+
+                app = Esmerald(template_config=template_config)
+                ```
+                """
+            ),
+        ],
     ) -> Optional["TemplateEngineProtocol"]:
         """
-        Returns the template engine for the application.
+        Returns the template engine for the application based on
+        the `TemplateConfig` provided.
+
+        **Example**
+
+        ```python
+        from esmerald import Esmerald
+        from esmerald.config.template import TemplateConfig
+        from esmerald.template.jinja import JinjaTemplateEngine
+
+        template_config = TemplateConfig(
+            directory=Path("templates"),
+            engine=JinjaTemplateEngine,
+        )
+
+        app = Esmerald()
+        engine = app.get_template_engine(template_config=)
+        ```
         """
         if not template_config:
             return None
@@ -1729,10 +1790,36 @@ class Esmerald(Starlette):
 
     def add_apiview(
         self,
-        value: Union["gateways.Gateway", "gateways.WebSocketGateway"],
+        value: Annotated[
+            Union["gateways.Gateway", "gateways.WebSocketGateway"],
+            Doc(
+                """
+                The `APIView` or similar to be added.
+                """
+            ),
+        ],
     ) -> None:
         """
-        Adds a View via application instance.
+        Adds an [APIView](https://esmerald.dev/routing/apiview/) or related
+        to the application routing.
+
+        **Example**
+
+        ```python
+        from esmerald import APIView, Gateway, get
+
+        class View(APIView):
+            path = "/"
+
+            @get(status_code=status_code)
+            async def hello(self) -> str:
+                return "Hello, World!"
+
+        gateway = Gateway(handler=View)
+
+        app = Esmerald()
+        app.add_apiview(value=gateway)
+        ```
         """
         self.router.add_apiview(value=value)
 
@@ -1748,10 +1835,35 @@ class Esmerald(Starlette):
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
         include_in_schema: bool = True,
-        activate_openapi: bool = True,
+        activate_openapi: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if after adding the route
+                to the application routing system, if it should
+                also be added to the OpenAPI documentation.
+                """
+            ),
+        ] = True,
     ) -> None:
         """
-        Adds a route into the router.
+        Adds a [Route](https://esmerald.dev/routing/routes/)
+        to the application routing.
+
+        This is a dynamic way of adding routes on the fly.
+
+        **Example**
+
+        ```python
+        from esmerald import get
+
+        @get(status_code=status_code)
+        async def hello(self) -> str:
+            return "Hello, World!"
+
+        app = Esmerald()
+        app.add_route(path="/hello", handler=hello)
+        ```
         """
         router = router or self.router
         router.add_route(
@@ -1781,6 +1893,30 @@ class Esmerald(Starlette):
         middleware: Optional[List["Middleware"]] = None,
         name: Optional[str] = None,
     ) -> None:
+        """
+        Adds a websocket [Route](https://esmerald.dev/routing/routes/)
+        to the application routing.
+
+        This is a dynamic way of adding routes on the fly.
+
+        **Example**
+
+        ```python
+        from esmerald import websocket
+
+        @websocket()
+        async def websocket_route(socket: WebSocket) -> None:
+            await socket.accept()
+            data = await socket.receive_json()
+
+            assert data
+            await socket.send_json({"data": "esmerald"})
+            await socket.close()
+
+        app = Esmerald()
+        app.add_websocket_route(path="/ws", handler=websocket_route)
+        ```
+        """
         router = router or self.router
         return router.add_websocket_route(
             path=path,
@@ -1793,10 +1929,36 @@ class Esmerald(Starlette):
             name=name,
         )
 
-    def add_include(self, include: Include) -> None:
+    def add_include(
+        self,
+        include: Annotated[
+            Include,
+            Doc(
+                """
+                The [Include](https://esmerald.dev/routing/routes/#include) instance
+                to be added.
+                """
+            ),
+        ],
+    ) -> None:
         """
-        Adds an include directly to the active application router
+        Adds an [Include](https://esmerald.dev/routing/routes/#include) directly to the active application router
         and creates the proper signature models.
+
+        **Example**
+
+        ```python
+        from esmerald import get, Include
+
+        @get(status_code=status_code)
+        async def hello(self) -> str:
+            return "Hello, World!"
+
+        include = Include("/child", routes=[Gateway(handler=hello)])
+
+        app = Esmerald()
+        app.add_include(include=include)
+        ```
         """
         self.router.routes.append(include)
 
@@ -1808,7 +1970,15 @@ class Esmerald(Starlette):
     def add_child_esmerald(
         self,
         path: str,
-        child: "ChildEsmerald",
+        child: Annotated[
+            "ChildEsmerald",
+            Doc(
+                """
+                The [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application) instance
+                to be added.
+                """
+            ),
+        ],
         name: Optional[str] = None,
         middleware: Optional[Sequence["Middleware"]] = None,
         dependencies: Optional["Dependencies"] = None,
@@ -1820,7 +1990,22 @@ class Esmerald(Starlette):
         security: Optional[List["SecurityScheme"]] = None,
     ) -> None:
         """
-        Adds a child esmerald into the application routers.
+        Adds a [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application) directly to the active application router.
+
+        **Example**
+
+        ```python
+        from esmerald import get, Include, ChildEsmerald
+
+        @get(status_code=status_code)
+        async def hello(self) -> str:
+            return "Hello, World!"
+
+        child = ChildEsmerald(routes=[Gateway(handler=hello)])
+
+        app = Esmerald()
+        app.add_child_esmerald(path"/child", child=child)
+        ```
         """
         if not isinstance(child, ChildEsmerald):
             raise ImproperlyConfigured("The child must be an instance of a ChildEsmerald.")
@@ -1843,9 +2028,36 @@ class Esmerald(Starlette):
         )
         self.activate_openapi()
 
-    def add_router(self, router: "Router") -> None:
+    def add_router(
+        self,
+        router: Annotated[
+            "Router",
+            Doc(
+                """
+                The [Router](https://esmerald.dev/routing/router/) instance to be
+                added.
+                """
+            ),
+        ],
+    ) -> None:
         """
-        Adds a router to the application.
+        Adds a [Router](https://esmerald.dev/routing/router/) directly to the active application router.
+
+        **Example**
+
+        ```python
+        from esmerald import get
+        from esmerald.routing.router import Router
+
+        @get(status_code=status_code)
+        async def hello(self) -> str:
+            return "Hello, World!"
+
+        router = Router(path="/aditional", routes=[Gateway(handler=hello)])
+
+        app = Esmerald()
+        app.add_router(router=router)
+        ```
         """
         for route in router.routes:
             if isinstance(route, Include):
@@ -2094,9 +2306,36 @@ class Esmerald(Starlette):
                 self.pluggables[name] = cls
         return cast("Esmerald", app)
 
-    def add_pluggable(self, name: str, extension: Any) -> None:
+    def add_pluggable(self, name: str, extension: "Extension") -> None:
         """
-        Adds an extension to the application pluggables
+        Adds a [Pluggable](https://esmerald.dev/pluggables/) directly to the active application router.
+
+        **Example**
+
+        ```python
+        from loguru import logger
+        from esmerald import Esmerald, Extension, Pluggable
+
+        from pydantic import BaseModel
+
+        class Config(BaseModel):
+            name: Optional[str]
+
+        class CustomExtension(Extension):
+            def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+                super().__init__(app, **kwargs)
+                self.app = app
+
+            def extend(self, config) -> None:
+                logger.success(f"Started standalone plugging with the name: {config.name}")
+
+                self.app.add_pluggable("manual", self)
+
+        app = Esmerald(routes=[])
+        config = Config(name="manual")
+        extension = CustomExtension(app=app)
+        extension.extend(config=config)
+        ```
         """
         self.pluggables[name] = extension
 
@@ -2104,6 +2343,18 @@ class Esmerald(Starlette):
     def settings(self) -> Type["EsmeraldAPISettings"]:
         """
         Returns the Esmerald settings object for easy access.
+
+        This `settings` are the ones being used by the application upon
+        initialisation.
+
+        **Example**
+
+        ```python
+        from esmerald import Esmerald
+
+        app = Esmerald()
+        app.settings
+        ```
         """
         general_settings = self.settings_config if self.settings_config else esmerald_settings
         return cast("Type[EsmeraldAPISettings]", general_settings)

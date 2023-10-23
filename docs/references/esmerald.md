@@ -12,8 +12,16 @@ from esmerald import Esmerald
 ::: esmerald.Esmerald
     options:
         members:
-            - load_settings_value
-
+            - state
+            - settings
+            - get_template_engine
+            - add_apiview
+            - add_route
+            - add_websocket_route
+            - add_include
+            - add_child_esmerald
+            - add_router
+            - add_pluggable
 
 ::: esmerald.ChildEsmerald
     options:
