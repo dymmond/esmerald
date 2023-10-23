@@ -535,7 +535,7 @@ class Esmerald(Starlette):
                 **Example**
 
                 ```python
-                from esmerald import esmerald, BasePermission, Request
+                from esmerald import Esmerald, BasePermission, Request
                 from esmerald.types import APIGateHandler
 
 
@@ -571,7 +571,7 @@ class Esmerald(Starlette):
                 from loguru import logger
                 from starlette.types import Receive, Scope, Send
 
-                from esmerald import esmerald
+                from esmerald import Esmerald
                 from esmerald import EsmeraldInterceptor
 
 
@@ -633,7 +633,7 @@ class Esmerald(Starlette):
 
                 csrf_config = CSRFConfig(secret="your-long-unique-secret")
 
-                app = Esmerald(routes=routes, csrf_config=csrf_config)
+                app = Esmerald(csrf_config=csrf_config)
                 ```
                 """
             ),
@@ -708,7 +708,7 @@ class Esmerald(Starlette):
 
                 cors_config = CORSConfig(allow_origins=["*"])
 
-                app = Esmerald(routes=routes, cors_config=cors_config)
+                app = Esmerald(cors_config=cors_config)
                 ```
                 """
             ),
@@ -732,25 +732,397 @@ class Esmerald(Starlette):
                     path="/static", directory=Path("static")
                 )
 
-                app = Esmerald(routes=routes, static_files_config=static_files_config)
+                app = Esmerald(static_files_config=static_files_config)
                 ```
                 """
             ),
         ] = None,
-        template_config: Optional["TemplateConfig"] = None,
-        session_config: Optional["SessionConfig"] = None,
-        response_class: Optional["ResponseType"] = None,
-        response_cookies: Optional["ResponseCookies"] = None,
-        response_headers: Optional["ResponseHeaders"] = None,
-        scheduler_class: Optional["SchedulerType"] = None,
-        scheduler_tasks: Optional[Dict[str, str]] = None,
-        scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
-        enable_scheduler: Optional[bool] = None,
-        timezone: Optional[Union[dtimezone, str]] = None,
-        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
-        root_path: Optional[str] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
+        template_config: Annotated[
+            Optional["TemplateConfig"],
+            Doc(
+                """
+                An instance of [TemplateConfig](https://esmerald.dev/configurations/template/).
+
+                This configuration is a simple set of configurations that when passed enables the template engine.
+
+                !!! Note
+                    You might need to install the template engine before
+                    using this. You can always run
+                    `pip install esmerald[templates]` to help you out.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.config.template import TemplateConfig
+                from esmerald.template.jinja import JinjaTemplateEngine
+
+                template_config = TemplateConfig(
+                    directory=Path("templates"),
+                    engine=JinjaTemplateEngine,
+                )
+
+                app = Esmerald(template_config=template_config)
+                ```
+                """
+            ),
+        ] = None,
+        session_config: Annotated[
+            Optional["SessionConfig"],
+            Doc(
+                """
+                An instance of [SessionConfig](https://esmerald.dev/configurations/session/).
+
+                This configuration is passed to the [SessionMiddleware]https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.config import SessionConfig
+
+                session_config = SessionConfig(
+                    secret_key=settings.secret_key,
+                    session_cookie="session",
+                )
+
+                app = Esmerald(session_config=session_config)
+                ```
+                """
+            ),
+        ] = None,
+        response_class: Annotated[
+            Optional["ResponseType"],
+            Doc(
+                """
+                Global default response class to be used within the
+                Esmerald application.
+
+                Read more about the [Responses](https://esmerald.dev/responses/) and how
+                to use them.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, JSONResponse
+
+                app = Esmerald(response_class=JSONResponse)
+                ```
+                """
+            ),
+        ] = None,
+        response_cookies: Annotated[
+            Optional["ResponseCookies"],
+            Doc(
+                """
+                A global sequence of `esmerald.datastructures.Cookie` objects.
+
+                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.datastructures import Cookie
+
+                response_cookies=[
+                    Cookie(
+                        key="csrf",
+                        value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz",
+                        max_age=3000,
+                        httponly=True,
+                    )
+                ]
+
+                app = Esmerald(response_cookies=response_cookies)
+                ```
+
+                """
+            ),
+        ] = None,
+        response_headers: Annotated[
+            Optional["ResponseHeaders"],
+            Doc(
+                """
+                A global mapping of `esmerald.datastructures.ResponseHeader` objects.
+
+                Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.datastructures import ResponseHeader
+
+                response_headers={
+                    "authorize": ResponseHeader(value="granted")
+                }
+
+                app = Esmerald(response_headers=response_headers)
+                ```
+                """
+            ),
+        ] = None,
+        scheduler_class: Annotated[
+            Optional["SchedulerType"],
+            Doc(
+                """
+                Esmerald integrates out of the box with [Asyncz](https://asyncz.tarsild.io/)
+                and the scheduler class is nothing more than the `AsyncIOScheduler` provided
+                by the library.
+
+                Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
+
+                !!! Tip
+                    You can create your own scheduler class and use it with Esmerald.
+                    For that you must read the [Asyncz](https://asyncz.tarsild.io/schedulers/)
+                    documentation and how to make it happen.
+
+                **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from asyncz.schedulers import AsyncIOScheduler
+
+                app = Esmerald(scheduler_class=AsyncIOScheduler)
+                ```
+                """
+            ),
+        ] = None,
+        scheduler_tasks: Annotated[
+            Optional[Dict[str, str]],
+            Doc(
+                """
+                Mapping in the format `<task-name>: <location>` indicating the tasks to
+                be run by the scheduler.
+
+                Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
+
+                **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(
+                    enable_scheduler=True,
+                    scheduler_tasks={
+                        "collect_market_data": "accounts.tasks",
+                        "send_email_newsletter": "accounts.tasks",
+                    },
+                )
+                ```
+                """
+            ),
+        ] = None,
+        scheduler_configurations: Annotated[
+            Optional[Dict[str, Union[str, Dict[str, str]]]],
+            Doc(
+                """
+                Mapping of extra configuratioms being passed to the scheduler.
+                These are [Asyncz Configurations](https://asyncz.tarsild.io/schedulers/?h=confi#example-configuration).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                configurations = {
+                    "asyncz.stores.mongo": {"type": "mongodb"},
+                    "asyncz.stores.default": {"type": "redis", "database": "0"},
+                    "asyncz.executors.threadpool": {
+                        "max_workers": "20",
+                        "class": "asyncz.executors.threadpool:ThreadPoolExecutor",
+                    },
+                    "asyncz.executors.default": {"class": "asyncz.executors.asyncio::AsyncIOExecutor"},
+                    "asyncz.task_defaults.coalesce": "false",
+                    "asyncz.task_defaults.max_instances": "3",
+                    "asyncz.task_defaults.timezone": "UTC",
+                }
+
+                app = Esmerald(
+                    scheduler_configurations=configurations
+                )
+                ```
+                """
+            ),
+        ] = None,
+        enable_scheduler: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if the internal scheduler should be enabled
+                or not.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(enable_scheduler=True)
+                ```
+                """
+            ),
+        ] = None,
+        timezone: Annotated[
+            Optional[Union[dtimezone, str]],
+            Doc(
+                """
+                Object of time `datetime.timezone` or string indicating the
+                timezone for the application.
+
+                **Note** - The timezone is internally used for the supported
+                scheduler.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(timezone="UTC")
+                ```
+                """
+            ),
+        ] = None,
+        routes: Annotated[
+            Optional[Sequence[Union["APIGateHandler", "Include"]]],
+            Doc(
+                """
+                A global `list` of esmerald routes. Those routes may vary and those can
+                be `Gateway`, `WebSocketGateWay` or even `Include`.
+
+                This is also the entry-point for the routes of the application itself
+                but it **does not rely on only one [level](https://esmerald.dev/application/levels/)**.
+
+                Read more about how to use and leverage
+                the [Esmerald routing system](https://esmerald.dev/routing/routes/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, Gateway, Request, get, Include
+
+
+                @get()
+                async def homepage(request: Request) -> str:
+                    return "Hello, home!"
+
+
+                @get()
+                async def another(request: Request) -> str:
+                    return "Hello, another!"
+
+                app = Esmerald(
+                    routes=[
+                        Gateway(handler=homepage)
+                        Include("/nested", routes=[
+                            Gateway(handler="/another")
+                        ])
+                    ]
+                )
+                ```
+
+                !!! Note
+                    The routing system is very powerful and this example
+                    is not enough to understand what more things you can do.
+                    Read in [more detail](https://esmerald.dev/routing/routes/) about this.
+                """
+            ),
+        ] = None,
+        root_path: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A path prefix that is handled by a proxy not seen in the
+                application but seen by external libraries.
+
+                This affects the tools like the OpenAPI documentation.
+
+                **Example^^
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(root_path="/api/v3")
+                ```
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[Sequence["Middleware"]],
+            Doc(
+                """
+                A global sequence of Starlette middlewares or `esmerald.middlewares` that are
+                used by the application.
+
+                Read more about the [Middleware](https://esmerald.dev/middleware/middleware/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.middleware import HTTPSRedirectMiddleware, TrustedHostMiddleware
+
+                app = Esmerald(
+                    routes=[...],
+                    middleware=[
+                        StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]),
+                        StarletteMiddleware(HTTPSRedirectMiddleware),
+                    ],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A global dictionary with handlers for exceptions.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these exception handlers on a Esmerald instance, means **the whole application**.
+
+                Read more about the [Exception handlers](https://esmerald.dev/exception-handlers/).
+
+                **Example**
+
+                ```python
+                from pydantic.error_wrappers import ValidationError
+                from esmerald import (
+                    Esmerald,
+                    JSONResponse,
+                    Request,
+                    ValidationErrorException,
+                )
+
+                async def validation_error_exception_handler(
+                    request: Request, exc: ValidationError
+                ) -> JSONResponse:
+                    extra = getattr(exc, "extra", None)
+                    if extra:
+                        return JSONResponse(
+                            {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                        )
+                    else:
+                        return JSONResponse(
+                            {"detail": exc.detail},
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                        )
+
+                app = Esmerald(
+                    exception_handlers={
+                            ValidationErrorException: validation_error_exception_handler,
+                        },
+                )
+                ```
+                """
+            ),
+        ] = None,
         on_startup: Optional[List["LifeSpanHandler"]] = None,
         on_shutdown: Optional[List["LifeSpanHandler"]] = None,
         lifespan: Optional[Lifespan[AppType]] = None,

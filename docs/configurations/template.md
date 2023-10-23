@@ -1,6 +1,6 @@
 # TemplateConfig
 
-TemplateConfig is simple set of configurations that when passed enables the template engine.
+TemplateConfig a is simple set of configurations that when passed enables the template engine.
 
 !!! info
     Currently Esmerald supports `Jinja2` and `Mako`.
