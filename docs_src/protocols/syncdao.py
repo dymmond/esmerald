@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, List
 
 from myapp.accounts.models import User
 from pydantic import BaseModel
-from tortoise.exceptions import DoesNotExist, IntegrityError
+from saffier.exceptions import ObjectNotFound, SaffierException
 
 from esmerald import AsyncDAOProtocol, DaoProtocol, Esmerald, Gateway, post
 
@@ -49,7 +49,7 @@ class AsyncUserDAO(AsyncDAOProtocol):
         # logic to get the user
         try:
             await self.model.get(pk=obj_id)
-        except DoesNotExist:
+        except ObjectNotFound:
             ...
 
     async def get_all(self, **kwargs: "DictAny") -> List[User]:
@@ -71,7 +71,7 @@ class AsyncUserDAO(AsyncDAOProtocol):
         # save in a different external database
         try:
             await self.model.create(**user)
-        except IntegrityError:
+        except SaffierException:
             ...
 
 

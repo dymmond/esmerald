@@ -5,7 +5,7 @@ openapi_config = OpenAPIConfig(
     title="My Application",
     docs_url="/mydocs/swagger",
     redoc_url="/mydocs/redoc",
-    redoc_url="/mydocs/stoplight",
+    stoplight_url="/mydocs/stoplight",
     contact=Contact(name="User", email="email@example.com"),
 )
 

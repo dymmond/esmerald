@@ -1,5 +1,5 @@
 from myapp.accounts.models import User
-from tortoise.exceptions import DoesNotExist
+from saffier.exceptions import ObjectNotFound
 
 from esmerald import Esmerald, Gateway, Inject, Injects, get
 
@@ -7,7 +7,7 @@ from esmerald import Esmerald, Gateway, Inject, Injects, get
 async def get_user_model() -> User:
     try:
         return await User.get(pk=1)
-    except DoesNotExist:
+    except ObjectNotFound:
         return None
 
 

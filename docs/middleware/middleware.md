@@ -197,6 +197,7 @@ the rest.
 
 There are some available middlewares that are also available from Starlette.
 
+* `CSRFMiddleware` - Handles with the CSRF and there is a [build-in](../configurations/csrf.md) how to enable.
 * `CORSMiddleware` - Handles with the CORS and there is a [build-in](../configurations/cors.md) how to enable.
 * `TrustedHostMiddleware` - Handles with the CORS if a given `allowed_hosts` is populated, the
 [build-in](../configurations/cors.md) explains how to use it.
@@ -207,6 +208,15 @@ for production or production like environments.
 * `SessionMiddleware` - Same middleware as the one from Starlette.
 * `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Esmerald. A [great example](../wsgi.md)
 how to use it is available.
+
+### CSRFMiddleware
+
+The default parameters used by the CSRFMiddleware implementation are restrictive by default and Esmerald allows some
+ways of using this middleware depending of the taste.
+
+```python
+{!> ../docs_src/middleware/available/csrf.py !}
+```
 
 ### CORSMiddleware
 

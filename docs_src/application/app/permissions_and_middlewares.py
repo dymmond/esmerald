@@ -1,8 +1,8 @@
 from pydantic import BaseModel, EmailStr
+from saffier.exceptions import ObjectNotFound
 from starlette.middleware import Middleware as StarletteMiddleware
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp
-from tortoise.exceptions import DoesNotExist
 
 from esmerald import (
     APIView,
@@ -19,7 +19,7 @@ from esmerald import (
     websocket,
 )
 from esmerald.config.jwt import JWTConfig
-from esmerald.contrib.auth.tortoise.base_user import User
+from esmerald.contrib.auth.saffier.base_user import User
 from esmerald.exceptions import NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.permissions import IsAdminUser
@@ -35,7 +35,7 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
     async def retrieve_user(self, user_id) -> User:
         try:
             return await User.get(pk=user_id)
-        except DoesNotExist:
+        except ObjectNotFound:
             raise NotAuthorized()
 
     async def authenticate(self, request: HTTPConnection) -> AuthResult:

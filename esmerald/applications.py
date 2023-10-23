@@ -174,7 +174,7 @@ class Esmerald(Starlette):
                 !!! Tip
                     Do not use this in production.
 
-                ## Example
+                **Example**
 
                 ```python
                 from esmerald import Esmerald
@@ -191,7 +191,7 @@ class Esmerald(Starlette):
                 The name of the Esmerald application/API. This name is displayed when the
                 [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
-                ## Example
+                **Example**
 
                 ```python
                 from esmerald import Esmerald
@@ -208,7 +208,7 @@ class Esmerald(Starlette):
                 The title of the Esmerald application/API. This title is displayed when the
                 [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
-                ## Example
+                **Example**
 
                 ```python
                 from esmerald import Esmerald
@@ -228,7 +228,7 @@ class Esmerald(Starlette):
                 **Note**: This is the version of your application/API and not th version of the
                 OpenAPI specification being used by Esmerald.
 
-                ## Example
+                **Example**
 
                 ```python
                 from esmerald import Esmerald
@@ -244,7 +244,7 @@ class Esmerald(Starlette):
                 """
                 The summary of the Esmerald application/API. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
-                ## Example
+                **Example**
 
                 ```python
                 from esmerald import Esmerald
@@ -260,7 +260,7 @@ class Esmerald(Starlette):
                 """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
-                ## Example
+                **Example**
 
                 ```python
                 from esmerald import Esmerald
@@ -283,19 +283,390 @@ class Esmerald(Starlette):
                 """
             ),
         ] = None,
-        contact: Optional[Contact] = None,
-        terms_of_service: Optional[AnyUrl] = None,
-        license: Optional[License] = None,
-        security: Optional[List[SecurityScheme]] = None,
-        servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
-        secret_key: Optional[str] = None,
-        allowed_hosts: Optional[List[str]] = None,
-        allow_origins: Optional[List[str]] = None,
-        permissions: Optional[Sequence["Permission"]] = None,
-        interceptors: Optional[Sequence["Interceptor"]] = None,
-        dependencies: Optional["Dependencies"] = None,
-        csrf_config: Optional["CSRFConfig"] = None,
-        openapi_config: Optional["OpenAPIConfig"] = None,
+        contact: Annotated[
+            Optional[Contact],
+            Doc(
+                """
+                A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.Contact` containing the contact information of the application/API.
+
+                Both dictionary and object contain several fields.
+
+                * **name** - String name of the contact.
+                * **url** - String URL of the contact. It **must** be in the format of a URL.
+                * **email** - String email address of the contact. It **must** be in the format
+                of an email address.
+
+                **Example with object**
+
+                ```python
+                from esmerald import Esmerald
+                from openapi_schemas_pydantic.v3_1_0 import Contact
+
+                contact = Contact(
+                    name="Black Window",
+                    url="https://thepretenders.com/open-for-business",
+                    email="black.window@thepretenders.com,
+                )
+
+                app = Esmerald(contact=contact)
+                ```
+
+                **Example with dictionary**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(contact={
+                    "name": "Black Window",
+                    "url": "https://thepretenders.com/open-for-business",
+                    "email": "black.window@thepretenders.com,
+                })
+                ```
+                """
+            ),
+        ] = None,
+        terms_of_service: Annotated[
+            Optional[AnyUrl],
+            Doc(
+                """
+                A URL pointing to the Terms of Service of the application.
+                This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(terms_of_service="https://example.com/terms-of-service")
+                ```
+                """
+            ),
+        ] = None,
+        license: Annotated[
+            Optional[License],
+            Doc(
+                """
+                A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.License` containing the license information of the application/API.
+
+                Both dictionary and object contain several fields.
+
+                * **name** - String name of the license.
+                * **identifier** - An [SPDX](https://spdx.dev/) license expression.
+                * **url** - String URL of the contact. It **must** be in the format of a URL.
+
+                **Example with object**
+
+                ```python
+                from esmerald import Esmerald
+                from openapi_schemas_pydantic.v3_1_0 import License
+
+                license = License(
+                    name="MIT",
+                    url="https://opensource.org/license/mit/",
+                )
+
+                app = Esmerald(license=license)
+                ```
+
+                **Example with dictionary**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(license={
+                    "name": "MIT",
+                    "url": "https://opensource.org/license/mit/",
+                })
+                ```
+                """
+            ),
+        ] = None,
+        security: Annotated[
+            Optional[List[SecurityScheme]],
+            Doc(
+                """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+                from esmerald.openapi.security.http import Bearer
+
+                app = Esmerald(security=[Bearer()])
+                ```
+                """
+            ),
+        ] = None,
+        servers: Annotated[
+            Optional[List[Dict[str, Union[str, Any]]]],
+            Doc(
+                """
+                A `list` of python dictionaries with the information regarding the connectivity
+                to the target.
+
+                This can be useful, for example, if your application is served from different domains and you want a shared OpenAPI documentation to test it all.
+
+                Esmerald automatically handles the OpenAPI documentation generation for you but
+                sometimes you might want to add an extra custom domain to it.
+
+                For example, when using `ChildEsmerald` modules, since the object itself subclasses
+                Esmerald, that also means you can have independent documentation directly in the
+                ChildEsmerald or access the [top level](https://esmerald.dev/application/levels/)
+                documentation (the application itself) where you can select the server to test it.
+
+                If the servers `list` is not provided or an is an empty `list`, the default value
+                will be a `dict` with the `url` pointing to `/`.
+
+                Each `dict` of the `list` follows the following format for the parameters:
+
+                * **url** - A URL string to the target host/domain. The URL may support server
+                variables and it may be also a relative server (for example, the domain/path of a `ChildEsmerald`).
+                * **description** - An optional string description of the host/domain.
+                * **variables** - A dictionary between the variable and its value. The value
+                is used for substitution in the servers URL template. E.g.: `/my-domain/{age: int}`.
+
+                You can read more about how the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(
+                    servers=[
+                        {"url": "https://testing.example.com", "description": "Testing environment"},
+                        {"url": "https://uat.example.com", "description": "UAT environment"},
+                        {"url": "https://live.example.com", "description": "Production environment"},
+                    ]
+                )
+                ```
+                """
+            ),
+        ] = None,
+        secret_key: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A unique string value used for the cryptography. This value is also
+                used internally by Esmerald with the JWT as well the
+                [CSRFConfig](https://esmerald.dev/configurations/csrf/).
+
+                !!! Tip
+                    Make sure you do not reuse the same secret key across environments as
+                    this can lead to security issues that you can easily avoid.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                aop = Esmerald(
+                    secret_key="p7!3cq1rapxd!@l=gz-&&k*h8sk_n8#1#+n6&q@cb&r!^z^2!g"
+                )
+                ```
+                """
+            ),
+        ] = None,
+        allowed_hosts: Annotated[
+            Optional[List[str]],
+            Doc(
+                """
+                A `list` of allowed hosts for the application. The allowed hosts when not specified
+                defaults to `["*"]` but when specified.
+
+                The allowed hosts are also what controls the
+                [TrustedHostMiddleware](https://esmerald.dev/middleware/middleware/#trustedhostmiddleware) and you can read more about how to use it.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(
+                    allowed_hosts=["*.example.com", "www.foobar.com"]
+                )
+                ```
+                """
+            ),
+        ] = None,
+        allow_origins: Annotated[
+            Optional[List[str]],
+            Doc(
+                """
+                A `list` of allowed origins hosts for the application.
+
+                The allowed origins is used by the [CORSConfig](https://esmerald.dev/configurations/cors/) and controls the [CORSMiddleware](https://esmerald.dev/middleware/middleware/#corsmiddleware).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald
+
+                app = Esmerald(allow_origins=["*"])
+                ```
+
+                !!! Tip
+                    If you create your own [CORSConfig](https://esmerald.dev/configurations/cors/),
+                    this setting **is ignored** and your custom config takes priority.
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A `list` of global permissions from objects inheriting from
+                `esmerald.permissions.BasePermission`.
+
+                Read more about how to implement the [Permissions](https://esmerald.dev/permissions/#basepermission-and-custom-permissions) in Esmerald and to leverage them.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these permissions on a Esmerald instance, means **the whole application**.
+
+                **Example**
+
+                ```python
+                from esmerald import esmerald, BasePermission, Request
+                from esmerald.types import APIGateHandler
+
+
+                class IsAdmin(BasePermission):
+                    '''
+                    Permissions for admin
+                    '''
+                    async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+                        is_admin = request.headers.get("admin", False)
+                        return bool(is_admin)
+
+
+                app = Esmerald(permissions=[IsAdmin])
+                ```
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A `list` of global interceptors from objects inheriting from
+                `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
+
+                Read more about how to implement the [Interceptors](https://esmerald.dev/interceptors/) in Esmerald and to leverage them.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these interceptors on a Esmerald instance, means **the whole application**.
+
+                **Example**
+
+                ```python
+                from loguru import logger
+                from starlette.types import Receive, Scope, Send
+
+                from esmerald import esmerald
+                from esmerald import EsmeraldInterceptor
+
+
+                class LoggingInterceptor(EsmeraldInterceptor):
+                    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+                        # Log a message here
+                        logger.info("This is my interceptor being called before reaching the handler.")
+
+
+                app = Esmerald(interceptors=[LoggingInterceptor])
+                ```
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A list of global dependencies. These dependencies will be
+                applied to each **path** of the application.
+
+                Read more about [Dependencies](https://esmerald.dev/dependencies/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, Inject
+
+                def is_valid(number: int) -> bool:
+                    return number >= 5
+
+                app = Esmerald(
+                    dependencies={
+                        "is_valid": Inject(is_valid)
+                    }
+                )
+                ```
+                """
+            ),
+        ] = None,
+        csrf_config: Annotated[
+            Optional["CSRFConfig"],
+            Doc(
+                """
+                An instance of [CRSFConfig](https://esmerald.dev/configurations/cors/).
+
+                This configuration is passed to the [CSRFMiddleware](https://esmerald.dev/middleware/middleware/#csrfmiddleware) and enables the middleware.
+
+                !!! Tip
+                    You can creatye your own `CRSFMiddleware` version and pass your own
+                    configurations. You don't need to use the built-in version although it
+                    is recommended to do it so.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, EsmeraldAPISettings
+                from esmerald.config import CSRFConfig
+
+                csrf_config = CSRFConfig(secret="your-long-unique-secret")
+
+                app = Esmerald(routes=routes, csrf_config=csrf_config)
+                ```
+                """
+            ),
+        ] = None,
+        openapi_config: Annotated[
+            Optional["OpenAPIConfig"],
+            Doc(
+                """
+                An instance of [CRSFConfig](https://esmerald.dev/configurations/openapi/config/).
+
+                This object is then used by Esmerald to create the [OpenAPI](https://esmerald.dev/openapi/) documentation.
+
+                !!! Tip
+                    This is the way you could override the defaults all in one go
+                    instead of doing attribute by attribute.
+
+                **Example**
+
+                ```python
+                from esmerald import OpenAPIConfig
+
+                openapi_config = OpenAPIConfig(
+                    title="Black Window",
+                    openapi_url="/openapi.json",
+                    docs_url="/docs/swagger",
+                    redoc_url="/docs/redoc",
+                )
+
+                app = Esmerald(openapi_config=openapi_config)
+                ```
+                """
+            ),
+        ] = None,
         openapi_version: Optional[str] = None,
         cors_config: Optional["CORSConfig"] = None,
         static_files_config: Optional["StaticFilesConfig"] = None,

@@ -1,6 +1,6 @@
 from myapp.accounts import User
 from pydantic import BaseModel
-from tortoise.exceptions import DoesNotExist, IntegrityError
+from saffier.exceptions import ObjectNotFound, SaffierException
 
 from esmerald import Esmerald, Gateway, post
 
@@ -14,9 +14,9 @@ class UserModel(BaseModel):
 async def create(data: UserModel) -> None:
     try:
         await User.get(email=data.email, name=data.name)
-    except DoesNotExist:
+    except ObjectNotFound:
         await User.create(email=data.email, name=data.name)
-    except IntegrityError:
+    except SaffierException:
         # raises an error here
         ...
 
