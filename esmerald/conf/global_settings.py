@@ -1277,33 +1277,138 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def on_startup(self) -> Union[List[LifeSpanHandler], None]:
         """
-        List of events/actions to be done on_startup.
+        A `list` of events that are trigger upon the application
+        starts.
+
+        Read more about the [events](https://esmerald.dev/lifespan-events/).
+
+        Returns:
+            List of events
+
+        Default:
+            None
+
+        **Example**
+
+        ```python
+        from pydantic import BaseModel
+        from saffier import Database, Registry
+
+        from esmerald import Esmerald, EsmeraldAPISettings, Gateway, post
+
+        database = Database("postgresql+asyncpg://user:password@host:port/database")
+        registry = Registry(database=database)
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def on_startup(self) -> Union[List[LifeSpanHandler], None]:
+                return [
+                    database.connect
+                ]
+        ```
         """
         return None
 
     @property
     def on_shutdown(self) -> Union[List[LifeSpanHandler], None]:
         """
-        List of events/actions to be done on_shutdown.
+        A `list` of events that are trigger upon the application
+        shuts down.
+
+        Read more about the [events](https://esmerald.dev/lifespan-events/).
+
+        Returns:
+            List of events
+
+        Default:
+            None
+
+        **Example**
+
+        ```python
+        from pydantic import BaseModel
+        from saffier import Database, Registry
+
+        from esmerald import Esmerald, EsmeraldAPISettings, Gateway, post
+
+        database = Database("postgresql+asyncpg://user:password@host:port/database")
+        registry = Registry(database=database)
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def on_shutdown(self) -> Union[List[LifeSpanHandler], None]:
+                return [
+                    database.connect
+                ]
+        ```
         """
         return None
 
     @property
     def lifespan(self) -> Optional["Lifespan"]:
         """
-        Custom lifespan that can be passed instead of the default Starlette.
+        A `lifespan` context manager handler. This is an alternative
+        to `on_startup` and `on_shutdown` and you **cannot used all combined**.
 
-        The lifespan context function is a newer style that replaces
-        on_startup / on_shutdown handlers. Use one or the other, not both.
+        Read more about the [lifespan](https://esmerald.dev/lifespan-events/).
         """
         return None
 
     @property
     def pluggables(self) -> Dict[str, "Pluggable"]:
         """
-        A pluggable is whatever adds extra level of functionality to
-        your an Esmerald application and is used as support for your application.
+        A `list` of global pluggables from objects inheriting from
+        `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
 
-        Can be from databases, to stores to whatever you desire.
+        Read more about how to implement the [Plugables](https://esmerald.dev/pluggables/) in Esmerald and to leverage them.
+
+        Returns:
+            Mapping of pluggables
+
+        Defaults:
+            {}
+
+        **Example**
+
+        ```python
+        from typing import Optional
+
+        from loguru import logger
+        from pydantic import BaseModel
+
+        from esmerald import Esmerald, EsmeraldAPISettings, Extension, Pluggable
+        from esmerald.types import DictAny
+
+
+        class PluggableConfig(BaseModel):
+            name: str
+
+
+        class MyExtension(Extension):
+            def __init__(
+                self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+            ):
+                super().__init__(app, **kwargs)
+                self.app = app
+
+            def extend(self, config: PluggableConfig) -> None:
+                logger.success(f"Successfully passed a config {config.name}")
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def pluggables(self) -> Dict[str, "Pluggable"]:
+                my_config = PluggableConfig(name="my extension")
+                pluggable = Pluggable(MyExtension, config=my_config)
+
+                return {
+                    "my-extension": pluggable
+                }
+        ```
         """
         return {}
