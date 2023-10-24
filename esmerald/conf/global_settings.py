@@ -399,7 +399,6 @@ class EsmeraldAPISettings(BaseSettings):
             !!! Tip
                 Disable this option if you run in production and no one should access the
                 documentation unless behind an authentication.
-            ```
             """
         ),
     ] = True
@@ -627,7 +626,8 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def reload(self) -> bool:
         """
-        Returns reloading for dev and test environments.
+        Boolean flag indicating if the server should have hot reload
+        or not.
         """
         if self.environment in [EnvironmentType.DEVELOPMENT, EnvironmentType.TESTING]:
             return True
@@ -635,6 +635,45 @@ class EsmeraldAPISettings(BaseSettings):
 
     @property
     def password_hashers(self) -> List[str]:
+        """
+        List of available password hashers of Esmerald.
+        These password hashers are used withing the `esmerald.contrib.*` and aims
+        to simplify the process of creating and validating password.
+
+        Read more about the [password hashers](https://esmerald.dev/password-hashers/?h=passwor).
+
+        Return:
+            List of strings with the module and object location of the password hashers.
+
+        Default:
+            [
+                "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
+                "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+            ]
+
+        **Example**
+
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+        # myapp.hashers.py
+        from esmerald.contrib.auth.hashers import PBKDF2PasswordHasher
+
+        class CustomHasher(PBKDF2PasswordHasher):
+            '''
+            All the hashers inherit from BasePasswordHasher
+            '''
+            salt_entropy = 3000
+
+        # settings.py
+
+        class AppSettings(EsmeraldAPISettings):
+            @property
+            def password_hashers(self) -> List[str]:
+                return ["myapp.hashers.CustomHasher"]
+                ```
+
+        """
         return [
             "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
             "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
@@ -643,38 +682,84 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def routes(self) -> List[Union[APIGateHandler, "Include"]]:
         """
-        Property that can be used as an entrypoint for the base app routes and to start the application.
+        A global `list` of esmerald routes. Those routes may vary and those can
+        be `Gateway`, `WebSocketGateWay` or even `Include`.
 
-        Example:
-            from esmerald import Include
+        This is also the entry-point for the routes of the application itself
+        but it **does not rely on only one [level](https://esmerald.dev/application/levels/)**.
 
-            class MySettings(EsmeraldAPISettings):
-                @property
-                def routes(self):
-                    return Include(path='/api/v1/', namespace='myapp.routes')
+        Read more about how to use and leverage
+        the [Esmerald routing system](https://esmerald.dev/routing/routes/).
+
+        Returns:
+            List of routes
+
+        Default:
+            []
+
+        **Example**
+
+        ```python
+        from esmerald import Esmerald, Gateway, Request, get, Include, EsmeraldAPISettings
+
+        @get()
+        async def homepage(request: Request) -> str:
+            return "Hello, home!"
+
+
+        @get()
+        async def another(request: Request) -> str:
+            return "Hello, another!"
+
+
+        class APPSettings(EsmeraldAPISettings):
+
+            @property
+            def routes(self) -> List[Union[APIGateHandler, "Include"]]:
+                return [
+                    Gateway(handler=homepage)
+                    Include("/nested",
+                        routes=[
+                            Gateway(handler="/another")
+                        ]
+                    )
+                ]
+        ```
         """
         return []
 
     @property
     def csrf_config(self) -> Optional[CSRFConfig]:
         """
-        Initial Default configuration for the CSRF.
-        This can be overwritten in another setting or simply override `secret` or then override
-        the `def csrf_config()` property to change the behavior of the whole csrf_config.
+        An instance of [CRSFConfig](https://esmerald.dev/configurations/csrf/).
+
+        This configuration is passed to the [CSRFMiddleware](https://esmerald.dev/middleware/middleware/#csrfmiddleware) and enables the middleware.
+
+        !!! Tip
+            You can creatye your own `CRSFMiddleware` version and pass your own
+            configurations. You don't need to use the built-in version although it
+            is recommended to do it so.
+
+        **Example**
 
         Default:
             None
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
-                secret: str = "n(0t=%_amauq1m&6sde4z#3mkdmfcad1942ny&#sjp1oygk-5_"
+        ```python
+        from esmerald import EsmeraldAPISettings
 
-                @property
-                def csrf_config(self) -> CSRFConfig:
-                    if not self.secret_key:
-                        raise ImproperlyConfigured("`secret` setting not configured.")
-                    return CSRFConfig(secret=self.secret_key)
+
+        class AppSettings(EsmeraldAPISettings):
+            secret: str = "n(0t=%_amauq1m&6sde4z#3mkdmfcad1942ny&#sjp1oygk-5_"
+
+            @property
+            def csrf_config(self) -> CSRFConfig:
+                if not self.secret_key:
+                    raise ImproperlyConfigured("`secret` setting not configured.")
+                return CSRFConfig(secret=self.secret_key)
+        ```
         """
         return None
 
@@ -691,73 +776,95 @@ class EsmeraldAPISettings(BaseSettings):
         Default:
             AsyncExitConfig
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
-                @property
-                def async_exit_config(self) -> AsyncExitConfig:
-                    ...
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+
+        class AppSettings(EsmeraldAPISettings):
+            @property
+            def async_exit_config(self) -> AsyncExitConfig:
+                ...
+        ```
         """
         return AsyncExitConfig()
 
     @property
     def template_config(self) -> Optional["TemplateConfig"]:
         """
-        Initial Default configuration for the TemplateConfig.
-        This can be overwritten in another setting or simply override `template_config` or then override
-        the `def template_config()` property to change the behavior of the whole template_config.
+        An instance of [TemplateConfig](https://esmerald.dev/configurations/template/).
+        This configuration is a simple set of configurations that when passed enables the template engine.
 
-        Esmerald can also support other engines like mako, Diazo, Cheetah. Currently natively
-        only supports jinja2 and mako.
+        !!! Note
+            You might need to install the template engine before
+            using this. You can always run
+            `pip install esmerald[templates]` to help you out.
 
         Default:
             JinjaTemplateEngine
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
-                @property
-                def template_config(self) -> "TemplateConfig":
-                    TemplateConfig(directory='templates', engine=MakoTemplateEngine)
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+
+        class AppSettings(EsmeraldAPISettings):
+            @property
+            def template_config(self) -> "TemplateConfig":
+                TemplateConfig(directory='templates', engine=MakoTemplateEngine)
+        ```
         """
         return None
 
     @property
     def static_files_config(self) -> Optional[StaticFilesConfig]:
         """
-        Simple configuration indicating where the statics will be placed in
-        the application.
+        An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
+
+        This configuration is used to enable and serve static files via
+        Esmerald application.
 
         Default:
             None
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
-                @property
-                def static_files_config(self) -> StaticFilesConfig:
-                    StaticFilesConfig(path='/', directories=...)
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+        class AppSettings(EsmeraldAPISettings):
+            @property
+            def static_files_config(self) -> StaticFilesConfig:
+                StaticFilesConfig(path='/', directories=...)
+        ```
         """
         return None
 
     @property
     def cors_config(self) -> Optional[CORSConfig]:
         """
-        Initial Default configuration for the CORS.
-        This can be overwritten in another setting or simply override `allow_origins` or then override
-        the `def cors_config()` property to change the behavior of the whole cors_config.
+        An instance of [CORSConfig](https://esmerald.dev/configurations/cors/).
+
+        This configuration is passed to the [CORSMiddleware](https://esmerald.dev/middleware/middleware/#corsmiddleware) and enables the middleware.
 
         Default:
             CORSConfig
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
-                allow_origins: List[str] = ['www.example.com', 'www.foobar.com']
+        ```python
+        from esmerald import EsmeraldAPISettings
 
-                @property
-                def cors_config(self) -> CORSConfig:
-                    ...
+
+        class AppSettings(EsmeraldAPISettings):
+            allow_origins: List[str] = ['www.example.com', 'www.foobar.com']
+
+            @property
+            def cors_config(self) -> CORSConfig:
+                ...
+        ```
         """
         if not self.allow_origins:
             return None
@@ -766,38 +873,60 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def session_config(self) -> Optional[SessionConfig]:
         """
-        Initial Default configuration for the SessionConfig.
-        This can be overwritten in another setting or simply override `session_config` or then override
-        the `def session_config()` property to change the behavior of the whole session_config.
+        An instance of [SessionConfig](https://esmerald.dev/configurations/session/).
+
+        This configuration is passed to the [SessionMiddleware]https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
 
         Default:
             None
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
-                @property
-                def session_config(self) -> SessionConfig:
-                    SessionConfig(engine=MakoTemplateEngine)
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def session_config(self) -> SessionConfig:
+                SessionConfig(
+                    secret_key=self..secret_key,
+                    session_cookie="session"
+                )
+        ```
         """
         return None
 
     @property
     def openapi_config(self) -> OpenAPIConfig:
         """
-        Initial Default configuration for the OpenAPI.
-        This can be overwritten in another setting or simply override `openapi_config` or then override the `def openapi_config()` property to change the behavior.
+        An instance of [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/).
+
+        This object is then used by Esmerald to create the [OpenAPI](https://esmerald.dev/openapi/) documentation.
+
+        **Note**: Here is where the defaults for Esmerald OpenAPI are overriden and if
+        this object is passed, then the previous defaults of the settings are ignored.
+
+        !!! Tip
+            This is the way you could override the defaults all in one go
+            instead of doing attribute by attribute.
 
         Default:
             OpenAPIConfig
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
+        ```python
+        from esmerald import EsmeraldAPISettings
 
-                @property
-                def openapi_config(self) -> OpenAPIConfig:
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def openapi_config(self) -> OpenAPIConfig:
                     ...
+        ```
         """
         return OpenAPIConfig(
             title=self.title,
@@ -834,23 +963,54 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def middleware(self) -> Sequence[Middleware]:
         """
-        Initial Default configuration for the middleware.
-        This can be overwritten in another setting or simply override `def middleware()`.
+        A global sequence of Starlette middlewares or `esmerald.middlewares` that are
+        used by the application.
 
-        Example:
+        Read more about the [Middleware](https://esmerald.dev/middleware/middleware/).
 
-            class MySettings(EsmeraldAPISettings):
+        Defaults:
+            []
 
-                @property
-                def middleware(self) -> List[Middleware]:
-                    return [EsmeraldMiddleware]
+        **Example**
+
+        ```python
+        from esmerald import EsmeraldAPISettings
+        from esmerald.middleware import HTTPSRedirectMiddleware, TrustedHostMiddleware
+        from starlette.middleware import Middleware as StarletteMiddleware
+
+
+        Class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def middleware(self) -> List[Middleware]:
+                return [
+                    StarletteMiddleware(
+                        TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]
+                    )
+                ]
+
+        ```
         """
         return []
 
     @property
     def scheduler_class(self) -> Any:
         """
-        Scheduler class to be used within the application.
+        Esmerald integrates out of the box with [Asyncz](https://asyncz.tarsild.io/)
+        and the scheduler class is nothing more than the `AsyncIOScheduler` provided
+        by the library.
+
+        Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
+
+        !!! Tip
+            You can create your own scheduler class and use it with Esmerald.
+            For that you must read the [Asyncz](https://asyncz.tarsild.io/schedulers/)
+            documentation and how to make it happen.
+
+        **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
+
+        Default:
+            AsyncIOScheduler
         """
         if not self.enable_scheduler:
             return None
@@ -865,7 +1025,15 @@ class EsmeraldAPISettings(BaseSettings):
 
     @property
     def scheduler_tasks(self) -> Dict[str, str]:
-        """Returns a dict of tasks for run with `scheduler_class`.
+        """
+        Mapping in the format `<task-name>: <location>` indicating the tasks to
+        be run by the scheduler.
+
+        Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
+
+        **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
+
+        Returns a dict of tasks for run with `scheduler_class`.
 
         Where the tasks are placed is not linked to the name of
         the file itself. They can be anywhere. What is imoprtant
@@ -873,53 +1041,69 @@ class EsmeraldAPISettings(BaseSettings):
         location of the file where the task is.
 
         Returns:
-            Dict[str, str]: A list of tasks.
+            A mapping with the tasks.
 
-        Example:
+        **Example**
 
-            class MySettings(EsmeraldAPISettings):
+        ```python
+        from esmerald import EsmeraldAPISettings
 
-                @property
-                def scheduler_tasks(self) -> Dict[str, str]:
-                    tasks = {
-                        "send_newslettters": "accounts.tasks",
-                        "check_balances": "finances.balance_tasks",
-                    }
 
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def scheduler_tasks(self) -> Dict[str, str]:
+                tasks = {
+                    "send_newslettters": "accounts.tasks",
+                    "check_balances": "finances.balance_tasks",
+                }
+        ```
         """
 
         return {}
 
     @property
     def scheduler_configurations(self) -> Dict[str, Union[str, Dict[str, str]]]:
-        """Returns a dict of configurations for run with `scheduler_class`.
+        """
+        Mapping of extra configuratioms being passed to the scheduler.
+        These are [Asyncz Configurations](https://asyncz.tarsild.io/schedulers/?h=confi#example-configuration).
 
-        Example:
+        Returns a dict of configurations for run with `scheduler_class`.
 
-            class MySettings(EsmeraldAPISettings):
+        Returns:
+            A mapping with the extra configurations passed to the scheduler.
 
-                @property
-                def scheduler_configurations(self) -> Dict[str, str]:
-                    configurations = {
-                        'apscheduler.stores.mongo': {
-                            'type': 'mongodb'
-                        },
-                        'apscheduler.stores.default': {
-                            'type': 'sqlalchemy',
-                            'url': 'sqlite:///jobs.sqlite'
-                        },
-                        'apscheduler.executors.default': {
-                            'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
-                            'max_workers': '20'
-                        },
-                        'apscheduler.executors.processpool': {
-                            'type': 'processpool',
-                            'max_workers': '5'
-                        },
-                        'apscheduler.task_defaults.coalesce': 'false',
-                        'apscheduler.task_defaults.max_instances': '3',
-                        'apscheduler.timezone': 'UTC',
-                    }
+        **Example**
+
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def scheduler_configurations(self) -> Dict[str, str]:
+                configurations = {
+                    'apscheduler.stores.mongo': {
+                        'type': 'mongodb'
+                    },
+                    'apscheduler.stores.default': {
+                        'type': 'sqlalchemy',
+                        'url': 'sqlite:///jobs.sqlite'
+                    },
+                    'apscheduler.executors.default': {
+                        'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
+                        'max_workers': '20'
+                    },
+                    'apscheduler.executors.processpool': {
+                        'type': 'processpool',
+                        'max_workers': '5'
+                    },
+                    'apscheduler.task_defaults.coalesce': 'false',
+                    'apscheduler.task_defaults.max_instances': '3',
+                    'apscheduler.timezone': 'UTC',
+                }
+        ```
         """
 
         return {}
@@ -927,28 +1111,164 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def interceptors(self) -> List[Interceptor]:
         """
-        Returns the default interceptors of Esmerald.
+        A `list` of global interceptors from objects inheriting from
+        `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
+
+        Read more about how to implement the [Interceptors](https://esmerald.dev/interceptors/) in Esmerald and to leverage them.
+
+        **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+        these interceptors on a Esmerald instance, means **the whole application**.
+
+        Returns:
+            List of interceptors
+
+        Default:
+            []
+
+        **Example**
+
+        ```python
+        from loguru import logger
+        from starlette.types import Receive, Scope, Send
+
+        from esmerald import Esmerald, EsmeraldInterceptor, EsmeraldAPISettings
+
+
+        class LoggingInterceptor(EsmeraldInterceptor):
+            async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+                # Log a message here
+                logger.info("This is my interceptor being called before reaching the handler.")
+
+
+        class AppSettings(EsmeraldAPISettings):
+            def interceptors(self) -> List[Interceptor]:
+                return [LoggingInterceptor]
+
+        ```
         """
         return []
 
     @property
     def permissions(self) -> List[Permission]:
         """
-        Returns the default permissions of Esmerald.
+        A `list` of global permissions from objects inheriting from
+        `esmerald.permissions.BasePermission`.
+
+        Read more about how to implement the [Permissions](https://esmerald.dev/permissions/#basepermission-and-custom-permissions) in Esmerald and to leverage them.
+
+        **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+        these permissions on a Esmerald instance, means **the whole application**.
+
+        Default:
+            []
+
+        Returns:
+            List of global permissions (not permissions on levels).
+
+        **Example**
+
+        ```python
+        from esmerald import Esmerald, EsmeraldAPISettings, BasePermission, Request
+        from esmerald.types import APIGateHandler
+
+
+        class IsAdmin(BasePermission):
+            '''
+            Permissions for admin
+            '''
+            async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+                is_admin = request.headers.get("admin", False)
+                return bool(is_admin)
+
+
+        class AppSettings(EsmeraldAPISettings):
+            def permissions(self) -> List[Permission]:
+                return [IsAdmin]
+        ```
         """
         return []
 
     @property
     def dependencies(self) -> Dependencies:
         """
-        Returns the dependencies of Esmerald main app.
+        A dictionary of global dependencies. These dependencies will be
+        applied to each **path** of the application.
+
+        Read more about [Dependencies](https://esmerald.dev/dependencies/).
+
+        Returns:
+            A dictionary of global dependencies.
+
+        Default:
+            {}
+
+        **Example**
+
+        ```python
+        from esmerald import Esmerald, EsmeraldAPISettings, Inject
+
+        def is_valid(number: int) -> bool:
+            return number >= 5
+
+        class AppSettings(EsmeraldAPISettings):
+            def dependencies(self) -> Dependencies:
+                return {
+                    "is_valid": Inject(is_valid)
+                }
+        ```
         """
         return {}
 
     @property
     def exception_handlers(self) -> ExceptionHandlerMap:
         """
-        Default exception handlers to be loaded when the application starts
+        A global dictionary with handlers for exceptions.
+
+        **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+        these exception handlers on a Esmerald instance, means **the whole application**.
+
+        Read more about the [Exception handlers](https://esmerald.dev/exception-handlers/).
+
+        Returns:
+            Mapping of exception handlers where the key is the exception object and the value
+            is the callable.
+
+        **Example**
+
+        ```python
+        from pydantic.error_wrappers import ValidationError
+        from esmerald import (
+            Esmerald,
+            EsmeraldAPISettings,
+            JSONResponse,
+            Request,
+            ValidationErrorException,
+        )
+
+        async def validation_error_exception_handler(
+            request: Request, exc: ValidationError
+        ) -> JSONResponse:
+            extra = getattr(exc, "extra", None)
+            if extra:
+                return JSONResponse(
+                    {"detail": exc.detail, "errors": exc.extra.get("extra", {})},
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                return JSONResponse(
+                    {"detail": exc.detail},
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                )
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def exception_handlers(self) -> ExceptionHandlerMap:
+                return {
+                    ValidationErrorException: validation_error_exception_handler,
+                }
+        ```
         """
         return {}
 

@@ -35,3 +35,4 @@ app.settings
         - "!^model_config"
         - "!^ipython_args"
         - "!^ptpython_config_file"
+        - "!^async_exit_config"

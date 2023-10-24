@@ -592,7 +592,7 @@ class Esmerald(Starlette):
             Optional["Dependencies"],
             Doc(
                 """
-                A list of global dependencies. These dependencies will be
+                A dictionary of global dependencies. These dependencies will be
                 applied to each **path** of the application.
 
                 Read more about [Dependencies](https://esmerald.dev/dependencies/).
@@ -644,11 +644,12 @@ class Esmerald(Starlette):
             Optional["OpenAPIConfig"],
             Doc(
                 """
-                An instance of [CRSFConfig](https://esmerald.dev/configurations/openapi/config/).
+                An instance of [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/).
 
                 This object is then used by Esmerald to create the [OpenAPI](https://esmerald.dev/openapi/) documentation.
 
-                **Note**: Here is where the defaults for Esmerald OpenAPI are overriden.
+                **Note**: Here is where the defaults for Esmerald OpenAPI are overriden and if
+                this object is passed, then the previous defaults of the settings are ignored.
 
                 !!! Tip
                     This is the way you could override the defaults all in one go
