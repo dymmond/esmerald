@@ -5,7 +5,16 @@ from typing_extensions import Annotated, Doc, Literal
 
 from esmerald.datastructures import Secret
 
-SECONDS_IN_A_DAY = 60 * 60 * 24
+SECONDS_IN_A_DAY: Annotated[
+    int,
+    Doc(
+        """
+        Total seconds in a day.
+        """
+    ),
+] = (
+    60 * 60 * 24
+)
 
 
 class SessionConfig(BaseModel):

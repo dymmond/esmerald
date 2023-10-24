@@ -29,25 +29,7 @@ Another example
 
 ## Parameters
 
-* **path** - The path for the statics.
-
-    <sup>Default: '/'</sup>
-
-* **directory** - The directory for the statics in the format of a path like. E.g: `/static`.
-
-    <sup>Default: 'None'</sup>
-
-* **html** - Run in HTML mode. Automatically loads index.html for directories if such file exist.
-
-    <sup>Default: 'False'</sup>
-
-* **packages** - A list of strings or list of tuples of strings of python packages.
-
-    <sup>Default: 'None'</sup>
-
-* **check_dir** - Ensure that the directory exists upon instantiation.
-
-    <sup>Default: 'True'</sup>
+All the parameters and defaults are available in the [StaticFilesConfig Reference](../references/configurations/static_files.md).
 
 ## StaticFilesConfig and application settings
 

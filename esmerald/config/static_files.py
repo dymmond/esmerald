@@ -4,16 +4,74 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel, DirectoryPath, constr, field_validator
 from starlette.staticfiles import StaticFiles
 from starlette.types import ASGIApp
+from typing_extensions import Annotated, Doc
 
 from esmerald.utils.url import clean_path
 
 
 class StaticFilesConfig(BaseModel):
-    path: constr(min_length=1)  # type: ignore
-    directory: Optional[Union[DirectoryPath, str, Path, Any]] = None
-    html: bool = False
-    packages: Optional[List[Union[str, Tuple[str, str]]]] = None
-    check_dir: bool = True
+    """
+    An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
+
+    This configuration is used to enable and serve static files via
+    Esmerald application.
+
+    **Example**
+
+    ```python
+    from esmerald import Esmerald
+    from esmerald.config import StaticFilesConfig
+
+    static_files_config = StaticFilesConfig(
+        path="/static", directory=Path("static")
+    )
+
+    app = Esmerald(static_files_config=static_files_config)
+    ```
+    """
+
+    path: Annotated[
+        constr(min_length=1),
+        Doc(
+            """
+            The path for the statics.
+            """
+        ),
+    ]  # type: ignore
+    directory: Annotated[
+        Optional[Union[DirectoryPath, str, Path, Any]],
+        Doc(
+            """
+            The directory for the statics in the format of a path like.
+
+            Example: `/static`.
+            """
+        ),
+    ] = None
+    html: Annotated[
+        bool,
+        Doc(
+            """
+            Run in HTML mode. Automatically loads index.html for directories if such file exist.
+            """
+        ),
+    ] = False
+    packages: Annotated[
+        Optional[List[Union[str, Tuple[str, str]]]],
+        Doc(
+            """
+            A list of strings or list of tuples of strings of python packages.
+            """
+        ),
+    ] = None
+    check_dir: Annotated[
+        bool,
+        Doc(
+            """
+            Ensure that the directory exists upon instantiation.
+            """
+        ),
+    ] = True
 
     @field_validator("path")
     def validate_path(cls, value: str) -> str:
