@@ -1,7 +1,7 @@
 from typing import Union
 
 from pydantic import BaseModel, ConfigDict, constr, field_validator
-from typing_extensions import Literal
+from typing_extensions import Annotated, Doc, Literal
 
 from esmerald.datastructures import Secret
 
@@ -9,17 +9,96 @@ SECONDS_IN_A_DAY = 60 * 60 * 24
 
 
 class SessionConfig(BaseModel):
+    """
+    An instance of [SessionConfig](https://esmerald.dev/configurations/session/).
+
+    This configuration is passed to the [SessionMiddleware](https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
+
+    **Example**
+
+    ```python
+    from esmerald import Esmerald
+    from esmerald.config import SessionConfig
+
+    session_config = SessionConfig(
+        secret_key=settings.secret_key,
+        session_cookie="session",
+    )
+
+    app = Esmerald(session_config=session_config)
+    ```
+    """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    secret_key: Union[str, Secret]
-    path: str = "/"
-    session_cookie: constr(min_length=1, max_length=256) = "session"  # type: ignore[valid-type]
-    max_age: int = SECONDS_IN_A_DAY * 180
-    https_only: bool = False
-    same_site: Literal["lax", "strict", "none"] = "lax"
+    secret_key: Annotated[
+        Union[str, Secret],
+        Doc(
+            """
+            The string used for the encryption/decryption and used to create an HMAC to sign.
+
+            !!! Tip
+                It is advised to use the same secret as the one in the settings to make it consistent.
+            """
+        ),
+    ]
+    path: Annotated[
+        str,
+        Doc(
+            """
+            The path of the cookie.
+            """
+        ),
+    ] = "/"
+    session_cookie: Annotated[
+        constr(min_length=1, max_length=256),
+        Doc(
+            """
+            The name for the session cookie.
+            """
+        ),
+    ] = "session"  # type: ignore[valid-type]
+    max_age: Annotated[
+        int,
+        Doc(
+            """
+            The number in seconds until the cookie expires.
+            """
+        ),
+    ] = (
+        SECONDS_IN_A_DAY * 180
+    )
+    https_only: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean if set enforces the session cookie to be httpsOnly.
+            """
+        ),
+    ] = False
+    same_site: Annotated[
+        Literal["lax", "strict", "none"],
+        Doc(
+            """
+            Level of restriction for the session cookie.
+
+            Learn more about the [same site](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite).
+            """
+        ),
+    ] = "lax"
 
     @field_validator("secret_key")
-    def validate_secret(cls, value: Secret) -> Secret:
+    def validate_secret(
+        cls,
+        value: Annotated[
+            Secret,
+            Doc(
+                """
+                The string secret that will be evaluated.
+                """
+            ),
+        ],
+    ) -> Secret:
         if len(value) not in [16, 24, 32]:
             raise ValueError("secret length must be 16 (128 bit), 24 (192 bit) or 32 (256 bit)")
         return value

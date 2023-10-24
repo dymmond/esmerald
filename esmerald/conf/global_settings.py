@@ -44,6 +44,11 @@ class EsmeraldAPISettings(BaseSettings):
     When no values are provided upon an instantiation of an `Esmerald` object, these
     settings are used as the defaults.
 
+    The settings can be done via `ESMERALD_SETTINGS_MODULE` or `settings_config` parameter
+    in the Esmerald instantiation.
+
+    Learn more about [settings](https://esmerald.dev/application/settings/).
+
     !!! Tip
         The settings system is extremely powerful and must be leveraged accordingly.
         Read more about how to use the [settings](https://esmerald.dev/application/settings/)

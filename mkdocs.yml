@@ -158,6 +158,13 @@ nav:
       - Esmerald: "references/esmerald.md"
       - Application:
           - Settings: "references/application/settings.md"
+      - Configurations:
+          - CORSConfig: "references/configurations/cors.md"
+          - CSRFConfig: "references/configurations/csrf.md"
+          - SessionConfig: "references/configurations/session.md"
+          - StaticFilesConfig: "references/configurations/static_files.md"
+          - TemplateConfig: "references/configurations/template.md"
+          - JWTConfig: "references/configurations/jwt.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

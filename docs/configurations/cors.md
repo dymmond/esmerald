@@ -27,39 +27,7 @@ Another example
 
 ## Parameters
 
-* **allow_origins** - A list of strings of allowed hosts. It can be used `'*'` in any part of the path. 
-E.g.: `example.*.org.
-
-    <sup>Default: `['*']`</sup>
-    <sup>Default: `Access-Control-Allow-Origin`</sup>
-
-* **allow_methods** - List of allowed HTTP methods.
-
-    <sup>Default: `['*']`</sup>
-    <sup>Header: `Access-Control-Allow-Methods`</sup>
-
-* **allow_headers** - List of allowed headers.
-
-    <sup>Default: `['*']`</sup>
-    <sup>Header: `Access-Control-Allow-Headers`</sup>
-
-* **allow_credentials** - Boolean flag enabling/disabling the credentials header.
-
-    <sup>Default: `False`</sup>
-    <sup>Header: `Access-Control-Allow-Credentials`</sup>
-
-* **allow_origin_regex** - Regex to match origins.
-
-    <sup>Default: `None`</sup>
-
-* **expose_headers** - List of headers exposed via `Access-Control-Expose-Headers`.
-
-    <sup>Default: `[]`</sup>
-
-* **max_age** - Response TTL in seconds.
-
-    <sup>Default: `600`</sup>
-    <sup>Header: `Access-Control-Max-Age`</sup>
+All the parameters and defaults are available in the [CORSConfig Reference](../references/configurations/cors.md).
 
 ## CORSConfig and application settings
 

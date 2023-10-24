@@ -23,30 +23,7 @@ Another example
 
 ## Parameters
 
-* **secret_key** - The string used for the encryption/decryption. We advise to use the same secret as the one in the
-settings to make it consistent.
-
-* **path** - The path for the cookie.
-
-    <sup>Default: `/`</sup>
-
-* **session_cookie** - The name for the session cookie.
-
-    <sup>Default: `session`</sup>
-
-* **max_age** - The number in seconds until the cookie expires.
-
-    <sup>Default: `15552000`. `60 sec x 60min x 24h x 180days = 15552000 seconds` </sup>
-
-* **https_only** - Boolean if set enforces the session cookie to be httpsOnly.
-
-    <sup>Default: `False`</sup>
-
-* **same_site** - Level of restriction for the session cookie. 
-<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite" target="_blank">
-More on this</a>.
-
-    <sup>Default: `lax`</sup>
+All the parameters and defaults are available in the [SessionConfig Reference](../references/configurations/session.md).
 
 ## SessionConfig and application settings
 

@@ -776,7 +776,7 @@ class Esmerald(Starlette):
                 """
                 An instance of [SessionConfig](https://esmerald.dev/configurations/session/).
 
-                This configuration is passed to the [SessionMiddleware]https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
+                This configuration is passed to the [SessionMiddleware](https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
 
                 **Example**
 
