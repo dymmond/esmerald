@@ -29,13 +29,7 @@ Another example
 
 ## Parameters
 
-* **engine** - The template engine to be used.
-
-    <sup>Default: 'JinjaTemplateEngine'</sup>
-
-* **directory** - The directory for the templates in the format of a path like. E.g: `/templates`.
-
-    <sup>Default: 'None'</sup>
+All the parameters and defaults are available in the [TempalteConfig Reference](../references/configurations/template.md).
 
 ## TemplateConfig and application settings
 
