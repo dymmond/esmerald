@@ -646,19 +646,20 @@ class EsmeraldAPISettings(BaseSettings):
             List of strings with the module and object location of the password hashers.
 
         Default:
+            ```python
             [
                 "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
                 "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
             ]
+            ```
 
         **Example**
 
         ```python
         from esmerald import EsmeraldAPISettings
-
-        # myapp.hashers.py
         from esmerald.contrib.auth.hashers import PBKDF2PasswordHasher
 
+        # myapp.hashers.py
         class CustomHasher(PBKDF2PasswordHasher):
             '''
             All the hashers inherit from BasePasswordHasher
@@ -668,11 +669,12 @@ class EsmeraldAPISettings(BaseSettings):
         # settings.py
 
         class AppSettings(EsmeraldAPISettings):
+
             @property
             def password_hashers(self) -> List[str]:
                 return ["myapp.hashers.CustomHasher"]
                 ```
-
+        ```
         """
         return [
             "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
