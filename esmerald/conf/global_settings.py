@@ -5,6 +5,7 @@ from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from starlette.types import Lifespan
+from typing_extensions import Annotated, Doc
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
@@ -31,54 +32,590 @@ if TYPE_CHECKING:
 
 
 class EsmeraldAPISettings(BaseSettings):
-    debug: bool = False
-    environment: Optional[str] = EnvironmentType.PRODUCTION
-    app_name: str = "Esmerald"
-    title: str = "Esmerald"
-    description: str = "Highly scalable, performant, easy to learn and for every application."
-    contact: Optional[Contact] = Contact(name="admin", email="admin@myapp.com")
-    summary: str = "Esmerald application"
-    terms_of_service: Optional[AnyUrl] = None
-    license: Optional[License] = None
-    security: Optional[List[SecurityScheme]] = None
-    servers: List[Dict[str, Union[str, Any]]] = [{"url": "/"}]
-    secret_key: str = "my secret"
-    version: str = __version__
-    openapi_version: str = "3.1.0"
-    allowed_hosts: Optional[List[str]] = ["*"]
-    allow_origins: Optional[List[str]] = None
-    response_class: Optional[ResponseType] = None
-    response_cookies: Optional[ResponseCookies] = None
-    response_headers: Optional[ResponseHeaders] = None
-    include_in_schema: bool = True
-    tags: Optional[List[str]] = None
-    timezone: str = "UTC"
-    use_tz: bool = False
-    root_path: Optional[str] = ""
-    enable_sync_handlers: bool = True
-    enable_scheduler: bool = False
-    enable_openapi: bool = True
-    redirect_slashes: bool = True
-    root_path_in_servers: bool = True
-    webhooks: Optional[Sequence[gateways.WebhookGateway]] = None
-    openapi_url: Optional[str] = "/openapi.json"
-    docs_url: Optional[str] = "/docs/swagger"
-    redoc_url: Optional[str] = "/docs/redoc"
-    swagger_ui_oauth2_redirect_url: Optional[str] = "/docs/oauth2-redirect"
-    redoc_js_url: str = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
-    redoc_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
-    swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
-    swagger_ui_parameters: Optional[Dict[str, Any]] = None
-    swagger_js_url: str = (
-        "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui-bundle.min.js"
-    )
-    swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui.min.css"
-    swagger_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
-    with_google_fonts: bool = True
-    stoplight_js_url: Optional[str] = "https://unpkg.com/@stoplight/elements/web-components.min.js"
-    stoplight_css_url: Optional[str] = "https://unpkg.com/@stoplight/elements/styles.min.css"
-    stoplight_url: Optional[str] = "/docs/elements"
-    stoplight_favicon_url: str = "https://esmerald.dev/statics/images/favicon.ico"
+    """
+    `EsmeraldAPISettings` settings object. The main entry-point for any settings
+    used by **any** Esmerald application.
+
+    Usually, when creating an application you will need some sort of organisation
+    and some sort of settings. Esmerald comes with a native settings system where
+    you will only need to inherit, override and add your own extra settings and
+    use them anywhere.
+
+    When no values are provided upon an instantiation of an `Esmerald` object, these
+    settings are used as the defaults.
+
+    !!! Tip
+        The settings system is extremely powerful and must be leveraged accordingly.
+        Read more about how to use the [settings](https://esmerald.dev/application/settings/)
+        and how you can take advantage of the system.
+
+    **Example**
+
+    ```python
+    from esmerald import EsmeraldAPISettings
+    from esmerald.conf.enums import EnvironmentType
+
+    class AppSettings(EsmeraldAPISettings):
+        '''
+        Create your own custom settings.
+        '''
+        debug: bool = False
+        environment: Optional[str] = EnvironmentType.TESTING
+    ```
+    """
+
+    debug: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean indicating if the application should return the debug tracebacks on
+            server errors, in other words, if you want to have debug errors being displayed.
+
+            Read more about this in the official [Starlette documentation](https://www.starlette.io/applications/#instantiating-the-application).
+
+            !!! Tip
+                Do not use this in production as `True`.
+            """
+        ),
+    ] = False
+    environment: Annotated[
+        Optional[str],
+        Doc(
+            """
+            Optional string indicating the environment where the settings are running.
+            You won't probably need this but it is here in case you might want to use.
+            """
+        ),
+    ] = EnvironmentType.PRODUCTION
+    app_name: Annotated[
+        str,
+        Doc(
+            """
+            The name of the Esmerald application/API. This name is displayed when the
+            [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+            """
+        ),
+    ] = "Esmerald"
+    title: Annotated[
+        str,
+        Doc(
+            """
+            The title of the Esmerald application/API. This title is displayed when the
+            [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+            """
+        ),
+    ] = "Esmerald"
+    version: Annotated[
+        str,
+        Doc(
+            """
+            The version of the Esmerald application/API. This version is displayed when the
+            [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+
+            **Note**: This is the version of your application/API and not th version of the
+            OpenAPI specification being used by Esmerald.
+            """
+        ),
+    ] = __version__
+    summary: Annotated[
+        str,
+        Doc(
+            """
+            The summary of the Esmerald application/API. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+            """
+        ),
+    ] = "Esmerald application"
+    description: Annotated[
+        str,
+        Doc(
+            """
+            The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+            """
+        ),
+    ] = "Highly scalable, performant, easy to learn and for every application."
+    contact: Annotated[
+        Optional[Contact],
+        Doc(
+            """
+            A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.Contact` containing the contact information of the application/API.
+
+            Both dictionary and object contain several fields.
+
+            * **name** - String name of the contact.
+            * **url** - String URL of the contact. It **must** be in the format of a URL.
+            * **email** - String email address of the contact. It **must** be in the format
+            of an email address.
+            """
+        ),
+    ] = Contact(name="admin", email="admin@myapp.com")
+    terms_of_service: Annotated[
+        Optional[AnyUrl],
+        Doc(
+            """
+            A URL pointing to the Terms of Service of the application.
+            This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+            """
+        ),
+    ] = None
+    license: Annotated[
+        Optional[License],
+        Doc(
+            """
+            A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.License` containing the license information of the application/API.
+
+            Both dictionary and object contain several fields.
+
+            * **name** - String name of the license.
+            * **identifier** - An [SPDX](https://spdx.dev/) license expression.
+            * **url** - String URL of the contact. It **must** be in the format of a URL.
+            """
+        ),
+    ] = None
+    security: Annotated[
+        Optional[List[SecurityScheme]],
+        Doc(
+            """
+            Used by OpenAPI definition, the security must be compliant with the norms.
+            Esmerald offers some out of the box solutions where this is implemented.
+
+            The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+            The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+            For custom security objects, you **must** subclass
+            `esmerald.openapi.security.base.HTTPBase` object.
+            """
+        ),
+    ] = None
+    servers: Annotated[
+        List[Dict[str, Union[str, Any]]],
+        Doc(
+            """
+            A `list` of python dictionaries with the information regarding the connectivity
+            to the target.
+
+            This can be useful, for example, if your application is served from different domains and you want a shared OpenAPI documentation to test it all.
+
+            Esmerald automatically handles the OpenAPI documentation generation for you but
+            sometimes you might want to add an extra custom domain to it.
+
+            For example, when using `ChildEsmerald` modules, since the object itself subclasses
+            Esmerald, that also means you can have independent documentation directly in the
+            ChildEsmerald or access the [top level](https://esmerald.dev/application/levels/)
+            documentation (the application itself) where you can select the server to test it.
+
+            If the servers `list` is not provided or an is an empty `list`, the default value
+            will be a `dict` with the `url` pointing to `/`.
+
+            Each `dict` of the `list` follows the following format for the parameters:
+
+            * **url** - A URL string to the target host/domain. The URL may support server
+            variables and it may be also a relative server (for example, the domain/path of a `ChildEsmerald`).
+            * **description** - An optional string description of the host/domain.
+            * **variables** - A dictionary between the variable and its value. The value
+            is used for substitution in the servers URL template. E.g.: `/my-domain/{age: int}`.
+
+            You can read more about how the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+            """
+        ),
+    ] = [{"url": "/"}]
+    secret_key: Annotated[
+        str,
+        Doc(
+            """
+            A unique string value used for the cryptography. This value is also
+            used internally by Esmerald with the JWT as well the
+            [CSRFConfig](https://esmerald.dev/configurations/csrf/).
+
+            !!! Tip
+                Make sure you do not reuse the same secret key across environments as
+                this can lead to security issues that you can easily avoid.
+            """
+        ),
+    ] = "my secret"
+    openapi_version: Annotated[
+        str,
+        Doc(
+            """
+            The string version of the OpenAPI.
+
+            Esmerald will generate the OpenAPI 3.1.0 by default and will
+            output that as the OpenAPI version.
+
+            If you need to somehow trick some of the tools you are using
+            by setting a different version of the OpenAPI, this is the
+            field you can use to do it so.
+            """
+        ),
+    ] = "3.1.0"
+    allowed_hosts: Annotated[
+        Optional[List[str]],
+        Doc(
+            """
+            A `list` of allowed hosts for the application. The allowed hosts when not specified
+            defaults to `["*"]` but when specified.
+
+            The allowed hosts are also what controls the
+            [TrustedHostMiddleware](https://esmerald.dev/middleware/middleware/#trustedhostmiddleware) and you can read more about how to use it.
+            """
+        ),
+    ] = ["*"]
+    allow_origins: Annotated[
+        Optional[List[str]],
+        Doc(
+            """
+            A `list` of allowed origins hosts for the application.
+
+            The allowed origins is used by the [CORSConfig](https://esmerald.dev/configurations/cors/) and controls the [CORSMiddleware](https://esmerald.dev/middleware/middleware/#corsmiddleware).
+
+            !!! Tip
+                If you create your own [CORSConfig](https://esmerald.dev/configurations/cors/),
+                this setting **is ignored** and your custom config takes priority.
+            """
+        ),
+    ] = None
+    response_class: Annotated[
+        Optional[ResponseType],
+        Doc(
+            """
+            Global default response class to be used within the
+            Esmerald application.
+
+            Read more about the [Responses](https://esmerald.dev/responses/) and how
+            to use them.
+            """
+        ),
+    ] = None
+    response_cookies: Annotated[
+        Optional[ResponseCookies],
+        Doc(
+            """
+            A global sequence of `esmerald.datastructures.Cookie` objects.
+
+            Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
+            """
+        ),
+    ] = None
+    response_headers: Annotated[
+        Optional[ResponseHeaders],
+        Doc(
+            """
+            A global mapping of `esmerald.datastructures.ResponseHeader` objects.
+
+            Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
+            """
+        ),
+    ] = None
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating if all the routes of the application
+            should be included in the OpenAPI documentation.
+
+            **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means when the application
+            level is set to `include_in_schema=False`, no schemas will be
+            displayed in the OpenAPI documentation.
+
+            !!! Tip
+                This can be particularly useful if you have, for example, a `ChildEsmerald` and
+                you don't want to include in the schema the routes of the said `ChildEsmerald`.
+                This way there is no reason to do it route by route and instead you can
+                simply do it directly in the application [level](https://esmerald.dev/application/levels/).
+            """
+        ),
+    ] = True
+    tags: Annotated[
+        Optional[List[str]],
+        Doc(
+            """
+            A list of strings/enums tags to be applied to the *path operation*.
+
+            It will be added to the generated OpenAPI documentation.
+
+            **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+            these tags on a Esmerald instance, means it will be added to every route even
+            if those routes also contain tags.
+            """
+        ),
+    ] = None
+    timezone: Annotated[
+        str,
+        Doc(
+            """
+            Object of time `datetime.timezone` or string indicating the
+            timezone for the application.
+
+            **Note** - The timezone is internally used for the supported
+            scheduler.
+            """
+        ),
+    ] = "UTC"
+    root_path: Annotated[
+        Optional[str],
+        Doc(
+            """
+            A path prefix that is handled by a proxy not seen in the
+            application but seen by external libraries.
+
+            This affects the tools like the OpenAPI documentation.
+            """
+        ),
+    ] = ""
+    enable_sync_handlers: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating the the sync handlers should be allowed in the
+            application or not.
+
+            When the `enable_sync_handlers` is set to `False` then only
+            `async` handlers are allowed in the application.
+
+            !!! Warning
+                Be careful when disabling the `enable_sync_handlers`. When this happens,
+                only `async` is allowed in the handlers.
+            """
+        ),
+    ] = True
+    enable_scheduler: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating if the internal scheduler should be enabled
+            or not.
+            """
+        ),
+    ] = False
+    enable_openapi: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating if the OpenAPI documentation should
+            be generated or not.
+
+            When `False`, no OpenAPI documentation is accessible.
+
+            !!! Tip
+                Disable this option if you run in production and no one should access the
+                documentation unless behind an authentication.
+            ```
+            """
+        ),
+    ] = True
+    redirect_slashes: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating if the redirect slashes are enabled for the
+            routes or not.
+            ```
+            """
+        ),
+    ] = True
+    root_path_in_servers: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag use to disable the automatic URL generation in the `servers` field
+            in the OpenAPI documentation.
+            """
+        ),
+    ] = True
+    webhooks: Annotated[
+        Optional[Sequence[gateways.WebhookGateway]],
+        Doc(
+            """
+            This is the same principle of the `routes` but for OpenAPI webhooks.
+
+            Read more [about webhooks](https://esmerald.dev/routing/webhooks).
+
+            When a webhook is added, it will automatically add them into the
+            OpenAPI documentation.
+            """
+        ),
+    ] = None
+    openapi_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            The URL where the OpenAPI schema will be served from.
+            The default is `/openapi.json`.
+
+            **Example**
+
+            ```python
+            from esmerald import Esmerald
+
+            app = Esmerald(openapi_url="/api/v1/openapi.json")
+            ```
+            """
+        ),
+    ] = "/openapi.json"
+    docs_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Swagger documentation
+            shall be accessed in the application.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "/docs/swagger"
+    redoc_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the ReDoc documentation
+            shall be accessed in the application.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "/docs/redoc"
+    swagger_ui_oauth2_redirect_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Swagger UI OAuth Redirect URL
+            shall be accessed in the application.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "/docs/oauth2-redirect"
+    redoc_js_url: Annotated[
+        str,
+        Doc(
+            """
+            String default relative URL where the ReDoc Javascript is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+    redoc_favicon_url: Annotated[
+        str,
+        Doc(
+            """
+            String default relative URL where the ReDoc favicon is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://esmerald.dev/statics/images/favicon.ico"
+    swagger_ui_init_oauth: Annotated[
+        Optional[Dict[str, Any]],
+        Doc(
+            """
+            String default relative URL where the Swagger Init Auth documentation
+            shall be accessed in the application.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = None
+    swagger_ui_parameters: Annotated[
+        Optional[Dict[str, Any]],
+        Doc(
+            """
+            A mapping with parameters to be passed onto Swagger.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = None
+    swagger_js_url: Annotated[
+        str,
+        Doc(
+            """
+            String default relative URL where the Swagger Javascript is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui-bundle.min.js"
+    swagger_css_url: Annotated[
+        str,
+        Doc(
+            """
+            String default relative URL where the Swagger CSS is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui.min.css"
+    swagger_favicon_url: Annotated[
+        str,
+        Doc(
+            """
+            String default relative URL where the Swagger favicon is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://esmerald.dev/statics/images/favicon.ico"
+    with_google_fonts: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating if the google fonts shall be used
+            in the ReDoc OpenAPI Documentation.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = True
+    stoplight_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Stoplight Javascript is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://unpkg.com/@stoplight/elements/web-components.min.js"
+    stoplight_css_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Stoplight CSS is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://unpkg.com/@stoplight/elements/styles.min.css"
+    stoplight_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Stoplight documentation
+            shall be accessed in the application.
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "/docs/elements"
+    stoplight_favicon_url: Annotated[
+        str,
+        Doc(
+            """
+            String default relative URL where the Stoplight favicon is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://esmerald.dev/statics/images/favicon.ico"
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))

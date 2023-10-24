@@ -154,7 +154,10 @@ nav:
           - Using docker: "deployment/docker.md"
       - Third Party Packages: "external.md"
   - API Reference:
+      - "references/index.md"
       - Esmerald: "references/esmerald.md"
+      - Application:
+          - Settings: "references/application/settings.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"
