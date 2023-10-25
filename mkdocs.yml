@@ -165,6 +165,7 @@ nav:
           - StaticFilesConfig: "references/configurations/static_files.md"
           - TemplateConfig: "references/configurations/template.md"
           - JWTConfig: "references/configurations/jwt.md"
+          - OpenAPIConfig: "references/configurations/openapi.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

@@ -493,7 +493,7 @@ class EsmeraldAPISettings(BaseSettings):
         str,
         Doc(
             """
-            String default relative URL where the ReDoc Javascript is located
+            String default URL where the ReDoc Javascript is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -504,7 +504,7 @@ class EsmeraldAPISettings(BaseSettings):
         str,
         Doc(
             """
-            String default relative URL where the ReDoc favicon is located
+            String default URL where the ReDoc favicon is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -536,7 +536,7 @@ class EsmeraldAPISettings(BaseSettings):
         str,
         Doc(
             """
-            String default relative URL where the Swagger Javascript is located
+            String default URL where the Swagger Javascript is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -547,7 +547,7 @@ class EsmeraldAPISettings(BaseSettings):
         str,
         Doc(
             """
-            String default relative URL where the Swagger CSS is located
+            String default URL where the Swagger CSS is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -558,7 +558,7 @@ class EsmeraldAPISettings(BaseSettings):
         str,
         Doc(
             """
-            String default relative URL where the Swagger favicon is located
+            String default URL where the Swagger favicon is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -580,7 +580,7 @@ class EsmeraldAPISettings(BaseSettings):
         Optional[str],
         Doc(
             """
-            String default relative URL where the Stoplight Javascript is located
+            String default URL where the Stoplight Javascript is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -591,7 +591,7 @@ class EsmeraldAPISettings(BaseSettings):
         Optional[str],
         Doc(
             """
-            String default relative URL where the Stoplight CSS is located
+            String default URL where the Stoplight CSS is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
@@ -613,7 +613,7 @@ class EsmeraldAPISettings(BaseSettings):
         str,
         Doc(
             """
-            String default relative URL where the Stoplight favicon is located
+            String default URL where the Stoplight favicon is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
