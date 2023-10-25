@@ -1356,7 +1356,6 @@ class Esmerald(Starlette):
                 """
                 Boolean flag indicating if the redirect slashes are enabled for the
                 routes or not.
-                ```
                 """
             ),
         ] = None,
@@ -1809,7 +1808,7 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import APIView, Gateway, get
+        from esmerald import Esmerald, APIView, Gateway, get
 
         class View(APIView):
             path = "/"
@@ -1828,16 +1827,96 @@ class Esmerald(Starlette):
 
     def add_route(
         self,
-        path: str,
-        handler: "HTTPHandler",
-        router: Optional["Router"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
-        name: Optional[str] = None,
-        include_in_schema: bool = True,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        handler: Annotated[
+            "HTTPHandler",
+            Doc(
+                """
+                An instance of [handler](https://esmerald.dev/routing/handlers/#http-handlers).
+                """
+            ),
+        ],
+        router: Annotated[
+            Optional["Router"],
+            Doc(
+                """
+            A `esmerald.Router` instance to where the route will be added to.
+            """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
         activate_openapi: Annotated[
             bool,
             Doc(
@@ -1879,6 +1958,7 @@ class Esmerald(Starlette):
             middleware=middleware,
             name=name,
             include_in_schema=include_in_schema,
+            deprecated=deprecated,
         )
 
         if activate_openapi:
@@ -1886,15 +1966,79 @@ class Esmerald(Starlette):
 
     def add_websocket_route(
         self,
-        path: str,
-        handler: "WebSocketHandler",
-        router: Optional["Router"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
-        name: Optional[str] = None,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        handler: Annotated[
+            "WebSocketHandler",
+            Doc(
+                """
+                An instance of [websocket handler](https://esmerald.dev/routing/handlers/#websocket-handler).
+                """
+            ),
+        ],
+        router: Annotated[
+            Optional["Router"],
+            Doc(
+                """
+            A `esmerald.Router` instance to where the route will be added to.
+            """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a websocket [Route](https://esmerald.dev/routing/routes/)
@@ -2356,7 +2500,9 @@ class Esmerald(Starlette):
         return cast("Type[EsmeraldAPISettings]", general_settings)
 
     @cached_property
-    def default_settings(self) -> Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]]:
+    def default_settings(
+        self,
+    ) -> Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]]:
         """
         Returns the default global settings.
         """
