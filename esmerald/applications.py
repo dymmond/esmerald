@@ -2132,29 +2132,29 @@ class Esmerald(Starlette):
 
         self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
 
-    def build_routes_middleware(
-        self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
-    ) -> List["Middleware"]:
-        """
-        Builds the middleware stack from the top to the bottom of the routes.
+    # def build_routes_middleware(
+    #     self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
+    # ) -> List["Middleware"]:
+    #     """
+    #     Builds the middleware stack from the top to the bottom of the routes.
 
-        The includes are an exception as they are treated as an independent ASGI
-        application and therefore handles their own middlewares independently.
-        """
-        if not middlewares:
-            middlewares = []
+    #     The includes are an exception as they are treated as an independent ASGI
+    #     application and therefore handles their own middlewares independently.
+    #     """
+    #     if not middlewares:
+    #         middlewares = []
 
-        if isinstance(route, Include):
-            app = getattr(route, "app", None)
-            if app and isinstance(app, (Esmerald, ChildEsmerald)):
-                return middlewares
+    #     if isinstance(route, Include):
+    #         app = getattr(route, "app", None)
+    #         if app and isinstance(app, (Esmerald, ChildEsmerald)):
+    #             return middlewares
 
-        if isinstance(route, (gateways.Gateway, gateways.WebSocketGateway)):
-            middlewares.extend(route.middleware)
-            if route.handler.middleware:
-                middlewares.extend(route.handler.middleware)
+    #     if isinstance(route, (gateways.Gateway, gateways.WebSocketGateway)):
+    #         middlewares.extend(route.middleware)
+    #         if route.handler.middleware:
+    #             middlewares.extend(route.handler.middleware)
 
-        return middlewares
+    #     return middlewares
 
     def build_routes_exception_handlers(
         self,
@@ -2212,14 +2212,6 @@ class Esmerald(Starlette):
             user_middleware.append(
                 StarletteMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
-
-        # Prepare the routes middleware
-        # for route in self.routes or []:
-        #     if isinstance(route, (gateways.Gateway, gateways.WebhookGateway)):
-        #         route.handler.middleware = route.handler.get_middlewares()
-
-        # self._middleware += handlers_middleware
-        # self._middleware += handlers_middleware
 
         for middleware in self._middleware or []:
             if isinstance(middleware, StarletteMiddleware):

@@ -74,3 +74,39 @@ def test_can_access_endpoint(test_app_client_factory):
         response = client.put("/users/2")
 
         assert response.status_code == 401
+
+
+class AnotherUserView(APIView):
+    """
+    User management API View
+    """
+
+    path = "/users"
+    middleware = [CustomJWTMidleware]
+
+    @post(path="/")
+    async def create(self) -> str:
+        return "post"
+
+    @get(path="/")
+    async def get_current(self, request: Request) -> str:
+        return "get"
+
+    @put(path="/{id:int}")
+    async def update_user(self, request: Request) -> str:
+        return "put"
+
+
+def test_can_access_endpoint_blocked(test_app_client_factory):
+    with create_client(routes=[Gateway(handler=AnotherUserView)]) as client:
+        response = client.post("/users")
+
+        assert response.status_code == 401
+
+        response = client.get("/users")
+
+        assert response.status_code == 401
+
+        response = client.put("/users/2")
+
+        assert response.status_code == 401
