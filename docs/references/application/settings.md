@@ -29,7 +29,7 @@ app = Esmerald()
 app.settings
 ```
 
-::: esmerald.conf.global_settings.EsmeraldAPISettings
+::: esmerald.EsmeraldAPISettings
     options:
         filters:
         - "!^model_config"

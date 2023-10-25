@@ -33,7 +33,7 @@ from starlette.routing import Router as StarletteRouter
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
-from typing_extensions import Self
+from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
 from esmerald.core.urls import include
@@ -973,16 +973,14 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
 class Include(Mount):
     """
-    Esmerald version of the classic mount from Starlette but extends it further
-    to contemplate the includes.
+    `Include` object class that allows scalability and modularity
+    to happen with elegance.
 
-    Handle with specific includes from the URLs.
+    Read more about the [Include](https://esmerald.dev/routing/routes/#include) to understand
+    what can be done.
 
     Include manages routes as a list or as a namespace but not both or a
-    ImproperlyConfigured is raised.
-
-    If the app is an Esmerald or ChildEsmerald, then the parent is set to be the include
-    itself.
+    `ImproperlyConfigured` is raised.
     """
 
     __slots__ = (
@@ -1003,22 +1001,309 @@ class Include(Mount):
 
     def __init__(
         self,
-        path: Optional[str] = None,
-        app: Optional["ASGIApp"] = None,
-        name: Optional[str] = None,
-        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
-        namespace: Optional[str] = None,
-        pattern: Optional[str] = None,
-        parent: Optional[Union["Self", "Router"]] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[Sequence["Interceptor"]] = None,
-        permissions: Optional[Sequence["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
-        include_in_schema: Optional[bool] = True,
-        deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityScheme"]] = None,
-        tags: Optional[Sequence[str]] = None,
+        path: Annotated[
+            Optional[str],
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+
+                **Example**
+
+                ```python
+                Include()
+                ```
+
+                **Example with parameters**
+
+                ```python
+                Include(path="/{age: int}")
+                ```
+                """
+            ),
+        ] = None,
+        app: Annotated[
+            Optional["ASGIApp"],
+            Doc(
+                """
+                An application can be anything that is treated as an ASGI application.
+                For example, it can be a [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application), another `Esmerald`, a [Router](https://esmerald.dev/routing/router/#router-class) or even an external [WSGI application](https://esmerald.dev/wsgi/) (Django, Flask...)
+
+                The app is a parameter that makes the Include extremely powerful when it comes
+                to integrate with ease with whatever Python stack you want and need.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, ChildEsmerald, Include
+
+                Esmerald(
+                    routes=[
+                        Include('/child', app=ChildEsmerald(...))
+                    ]
+                )
+                ```
+
+                **Example with a WSGI framework**
+
+                ```python
+                from flask import Flask, escape, request
+
+                from esmerald import Esmerald, Gateway, Include, Request, get
+                from esmerald.middleware import WSGIMiddleware
+
+                flask_app = Flask(__name__)
+
+
+                @flask_app.route("/")
+                def flask_main():
+                    name = request.args.get("name", "Esmerald")
+                    return f"Hello, {escape(name)} from your Flask integrated!"
+
+
+                @get("/home/{name:str}")
+                async def home(request: Request) -> dict:
+                    name = request.path_params["name"]
+                    return {"name": escape(name)}
+
+
+                app = Esmerald(
+                    routes=[
+                        Gateway(handler=home),
+                        Include("/flask", WSGIMiddleware(flask_app)),
+                    ]
+                )
+                ```
+
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        routes: Annotated[
+            Optional[Sequence[Union["APIGateHandler", "Include"]]],
+            Doc(
+                """
+                A global `list` of esmerald routes. Those routes may vary and those can
+                be `Gateway`, `WebSocketGateWay` or even another `Include`.
+
+                This is also an entry-point for the routes of the Include
+                but it **does not rely on only one [level](https://esmerald.dev/application/levels/)**.
+
+                Read more about how to use and leverage
+                the [Esmerald routing system](https://esmerald.dev/routing/routes/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, Gateway, Request, get, Include
+
+
+                @get()
+                async def homepage(request: Request) -> str:
+                    return "Hello, home!"
+
+
+                @get()
+                async def another(request: Request) -> str:
+                    return "Hello, another!"
+
+                app = Esmerald(
+                    routes=[
+                        Gateway(handler=homepage)
+                        Include("/nested", routes=[
+                            Gateway(handler="/another")
+                        ])
+                    ]
+                )
+                ```
+
+                !!! Note
+                    The Include is very powerful and this example
+                    is not enough to understand what more things you can do.
+                    Read in [more detail](https://esmerald.dev/routing/routes/#include) about this.
+                """
+            ),
+        ] = None,
+        namespace: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A string with a qualified namespace from where the URLs should be loaded.
+
+                The namespace is an alternative to `routes` parameter. When a `namespace` is
+                specified and a routes as well, an `ImproperlyCOnfigured` exception is raised as
+                it can only be one or another.
+
+                The `namespace` can be extremely useful as it avoids the imports from the top
+                of the file that can lead to `partially imported` errors.
+
+                When using a `namespace`, the `Include` will look for the default `route_patterns` list in the imported namespace (object) unless a different `pattern` is specified.
+
+                **Example**
+
+                Assuming there is a file with some routes located at `myapp/auth/urls.py`.
+
+                ```python title="myapp/auth/urls.py"
+                from esmerald import Gateway
+                from .view import welcome, create_user
+
+                route_patterns = [
+                    Gateway(handler=welcome, name="welcome"),
+                    Gateway(handler=create_user, name="create-user"),
+                ]
+                ```
+
+                Using the `namespace` to import the URLs.
+
+                ```python
+                from esmerald import Include
+
+                Include("/auth", namespace="myapp.auth.urls")
+                ```
+                """
+            ),
+        ] = None,
+        pattern: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A string `pattern` information from where the urls shall be read from.
+
+                By default, the when using the `namespace` it will lookup for a `route_patterns`
+                but somethimes you might want to opt for a different name and this is where the
+                `pattern` comes along.
+
+                **Example**
+
+                Assuming there is a file with some routes located at `myapp/auth/urls.py`.
+                The urls will be placed inside a `urls` list.
+
+                ```python title="myapp/auth/urls.py"
+                from esmerald import Gateway
+                from .view import welcome, create_user
+
+                urls = [
+                    Gateway(handler=welcome, name="welcome"),
+                    Gateway(handler=create_user, name="create-user"),
+                ]
+                ```
+
+                Using the `namespace` to import the URLs.
+
+                ```python
+                from esmerald import Include
+
+                Include("/auth", namespace="myapp.auth.urls", pattern="urls")
+                ```
+                """
+            ),
+        ] = None,
+        parent: Annotated[
+            Optional["ParentType"],
+            Doc(
+                """
+                Who owns the Gateway. If not specified, the application automatically it assign it.
+
+                This is directly related with the [application levels](https://esmerald.dev/application/levels/).
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+
+                This will add all the routes of the Include even those nested (Include containing more Includes.)
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Include and all of its routes and to display it in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+        security: Annotated[
+            Optional[Sequence["SecurityScheme"]],
+            Doc(
+                """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+            ),
+        ] = None,
+        tags: Annotated[
+            Optional[Sequence[str]],
+            Doc(
+                """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+            ),
+        ] = None,
     ) -> None:
         self.path = path
         if not path:

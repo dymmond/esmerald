@@ -170,6 +170,7 @@ nav:
           - Gateway: "references/routing/gateway.md"
           - WebSocketGateway: "references/routing/websocketgateway.md"
           - WebhookGateway: "references/routing/webhookgateway.md"
+          - Include: "references/routing/include.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

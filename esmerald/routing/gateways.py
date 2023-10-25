@@ -120,7 +120,7 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
                 **Example with parameters**
 
                 ```python
-                Gateway(path="{age: int}")
+                Gateway(path="/{age: int}")
                 ```
                 """
             ),
@@ -398,7 +398,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
                 **Example with parameters**
 
                 ```python
-                WebSocketGateway(path="{age: int}")
+                WebSocketGateway(path="/{age: int}")
                 ```
                 """
             ),
