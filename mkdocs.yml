@@ -166,6 +166,10 @@ nav:
           - TemplateConfig: "references/configurations/template.md"
           - JWTConfig: "references/configurations/jwt.md"
           - OpenAPIConfig: "references/configurations/openapi.md"
+      - Routing:
+          - Gateway: "references/routing/gateway.md"
+          - WebSocketGateway: "references/routing/websocketgateway.md"
+          - WebhookGateway: "references/routing/webhookgateway.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

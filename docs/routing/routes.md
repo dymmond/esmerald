@@ -21,29 +21,9 @@ validations without compromising the core.
 In simple terms, a Gateway is not a direct route but instead is a "wrapper" of a [handler](./handlers.md)
 and maps that same handler with the application routing system.
 
-**Parameters**:
+#### Parameters
 
-* **path**: The path for the Gateway. If a path is not provided it defaults to `/`. The path provided is concatenated
-with the handler's path like `/home/homepage`.
-* **handler**: An instance of [handler](./handlers.md).
-* **name**: The name for the Gateway. The name can be reversed by [`url_path_for()`](./router.md).
-* **include_in_schema**: Boolean flag telling if it should be added to the OpenAPI docs.
-* **parent**: Who `owns` the Gateway. If not specified, the application automatically it assign it. The parent is usually
-a [router](./router.md) or an [Include](#include).
-* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **middleware** - A list of middleware to run for every request. The middlewares of a Gateway will be checked from
-top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
-internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
-injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
-functions on an application top level. Exception handler callables should be of the form of
-`handler(request, exc) -> response` and may be be either standard functions, or async functions.
-* **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
+All the parameters and defaults are available in the [Gateway Reference](../references/routing/gateway.md).
 
 === "In a nutshell"
 
@@ -61,27 +41,9 @@ decided not to interfere (for now) with what already works and therefore the onl
 In simple terms, a WebSocketGateway is not a direct route but instead is a "wrapper" of a
 [websocket handler](./handlers.md) and maps that same handler with the application routing system.
 
-**Parameters**:
+#### Parameters
 
-* **path**: The path for the WebSocketGateway. If a path is not provided it defaults to `/`.
-* The path provided is concatenated with the handler's path like `/home/homepage`.
-* **handler**: An instance of [handler](./handlers.md).
-* **name**: The name for the WebSocketGateway. The name can be reversed by [`url_path_for()`](./router.md).
-* **parent**: Who `owns` the WebSocketGateway. If not specified, the application automatically it assign it.
-The parent is usually a [router](./router.md) or an [Include](#include).
-* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **middleware** - A list of middleware to run for every request. The middlewares of a WebSocketGateway will be 
-checked from top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
-internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
-injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
-functions on an application top level. Exception handler callables should be of the form of
-`handler(request, exc) -> response` and may be be either standard functions, or async functions.
+All the parameters and defaults are available in the [WebSocketGateway Reference](../references/routing/websocketgateway.md).
 
 === "In a nutshell"
 

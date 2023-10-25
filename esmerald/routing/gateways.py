@@ -6,6 +6,7 @@ from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import Receive, Scope, Send
+from typing_extensions import Annotated, Doc
 
 from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseInterceptorMixin
@@ -62,6 +63,28 @@ class BaseRoute(StarletteRoute):
 
 
 class Gateway(BaseRoute, BaseInterceptorMixin):
+    """
+    `Gateway` object class used by Esmerald routes.
+
+    The Gateway act as a brigde between the router handlers and
+    the main Esmerald routing system.
+
+    Read more about [Gateway](https://esmerald.dev/routing/routes/#gateway) and
+    how to use it.
+
+    **Example**
+
+    ```python
+    from esmerald import Esmerald. get
+
+    @get()
+    async def home() -> str:
+        return "Hello, World!"
+
+    Gateway(path="/home", handler=home)
+    ```
+    """
+
     __slots__ = (
         "_interceptors",
         "path",
@@ -80,21 +103,151 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
 
     def __init__(
         self,
-        path: Optional[str] = None,
+        path: Annotated[
+            Optional[str],
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+
+                **Example**
+
+                ```python
+                Gateway()
+                ```
+
+                **Example with parameters**
+
+                ```python
+                Gateway(path="{age: int}")
+                ```
+                """
+            ),
+        ] = None,
         *,
-        handler: Union["HTTPHandler", View],
-        name: Optional[str] = None,
-        include_in_schema: bool = True,
-        parent: Optional["ParentType"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-        interceptors: Optional[Sequence["Interceptor"]] = None,
-        permissions: Optional[Sequence["Permission"]] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        deprecated: Optional[bool] = None,
-        is_from_router: bool = False,
-        security: Optional[Sequence["SecurityScheme"]] = None,
-        tags: Optional[Sequence[str]] = None,
+        handler: Annotated[
+            Union["HTTPHandler", View],
+            Doc(
+                """
+            An instance of [handler](https://esmerald.dev/routing/handlers/#http-handlers).
+            """
+            ),
+        ],
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        parent: Annotated[
+            Optional["ParentType"],
+            Doc(
+                """
+                Who owns the Gateway. If not specified, the application automatically it assign it.
+
+                This is directly related with the [application levels](https://esmerald.dev/application/levels/).
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[Sequence["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+        is_from_router: Annotated[
+            bool,
+            Doc(
+                """
+                Used by the `.add_router()` function of the `Esmerald` class indicating if the
+                Gateway is coming from a router.
+                """
+            ),
+        ] = False,
+        security: Annotated[
+            Optional[Sequence["SecurityScheme"]],
+            Doc(
+                """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+            ),
+        ] = None,
+        tags: Annotated[
+            Optional[Sequence[str]],
+            Doc(
+                """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+            ),
+        ] = None,
     ) -> None:
         if not path:
             path = "/"
@@ -185,6 +338,32 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
 
 
 class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
+    """
+    `WebSocketGateway` object class used by Esmerald routes.
+
+    The WebSocketGateway act as a brigde between the router handlers and
+    the main Esmerald routing system.
+
+    Read more about [WebSocketGateway](https://esmerald.dev/routing/routes/#websocketgateway) and
+    how to use it.
+
+    **Example**
+
+    ```python
+    from esmerald import Esmerald. websocket
+
+    @websocket()
+    async def world_socket(socket: Websocket) -> None:
+        await socket.accept()
+        msg = await socket.receive_json()
+        assert msg
+        assert socket
+        await socket.close()
+
+    WebSocketGateway(path="/ws", handler=home)
+    ```
+    """
+
     __slots__ = (
         "_interceptors",
         "path",
@@ -202,22 +381,114 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
 
     def __init__(
         self,
-        path: Optional[str] = None,
+        path: Annotated[
+            Optional[str],
+            Doc(
+                """
+                Relative path of the `WebSocketGateway`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+
+                **Example**
+
+                ```python
+                WebSocketGateway()
+                ```
+
+                **Example with parameters**
+
+                ```python
+                WebSocketGateway(path="{age: int}")
+                ```
+                """
+            ),
+        ] = None,
         *,
-        handler: Union["WebSocketHandler", View],
-        name: Optional[str] = None,
-        parent: Optional["ParentType"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
+        handler: Annotated[
+            Union["WebSocketHandler", View],
+            Doc(
+                """
+            An instance of [handler](https://esmerald.dev/routing/handlers/#websocket-handler).
+            """
+            ),
+        ],
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        parent: Annotated[
+            Optional["ParentType"],
+            Doc(
+                """
+                Who owns the Gateway. If not specified, the application automatically it assign it.
+
+                This is directly related with the [application levels](https://esmerald.dev/application/levels/).
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[Sequence["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        is_from_router: Annotated[
+            bool,
+            Doc(
+                """
+                Used by the `.add_router()` function of the `Esmerald` class indicating if the
+                Gateway is coming from a router.
+                """
+            ),
+        ] = False,
     ) -> None:
         if not path:
             path = "/"
         if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore
-        self.path = clean_path(path + handler.path)
+
+        if not is_from_router:
+            self.path = clean_path(path + handler.path)
+        else:
+            self.path = clean_path(path)
 
         if not name:
             if not isinstance(handler, View):
@@ -283,6 +554,19 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
 
 
 class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
+    """
+    `WebhookGateway` object class used by Esmerald routes.
+
+    The WebhookGateway act as a brigde between the webhook handlers and
+    the main Esmerald routing system.
+
+    Read more about [WebhookGateway](https://esmerald.dev/routing/webhooks/) and
+    how to use it.
+
+    !!! Note
+        This is used for OpenAPI documentation purposes only.
+    """
+
     __slots__ = (
         "_interceptors",
         "path",
@@ -302,13 +586,79 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
     def __init__(
         self,
         *,
-        handler: Union["WebhookHandler", View],
-        name: Optional[str] = None,
-        include_in_schema: bool = True,
-        parent: Optional["ParentType"] = None,
-        deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityScheme"]] = None,
-        tags: Optional[Sequence[str]] = None,
+        handler: Annotated[
+            Union["WebhookHandler", View],
+            Doc(
+                """
+                An instance of [handler](https://esmerald.dev/routing/webhooks/#handlers).
+                """
+            ),
+        ],
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the WebhookGateway.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        parent: Annotated[
+            Optional["ParentType"],
+            Doc(
+                """
+                Who owns the Gateway. If not specified, the application automatically it assign it.
+
+                This is directly related with the [application levels](https://esmerald.dev/application/levels/).
+                """
+            ),
+        ] = None,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+        security: Annotated[
+            Optional[Sequence["SecurityScheme"]],
+            Doc(
+                """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+            ),
+        ] = None,
+        tags: Annotated[
+            Optional[Sequence[str]],
+            Doc(
+                """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+            ),
+        ] = None,
     ) -> None:
         if is_class_and_subclass(handler, View):
             handler = handler(parent=self)  # type: ignore

@@ -1225,7 +1225,7 @@ class Esmerald(Starlette):
             Optional[List[str]],
             Doc(
                 """
-                A list of strings/enums tags to be applied to the *path operation*.
+                A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
 
