@@ -70,11 +70,7 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
 HTTPMethods = get_args(HTTPMethod)
 
-Middleware = Union[
-    StarletteMiddleware,
-    Type[MiddlewareProtocol],
-    Callable[..., ASGIApp],
-]
+Middleware = StarletteMiddleware
 
 ResponseType = Type[Response]
 

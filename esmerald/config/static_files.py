@@ -30,14 +30,14 @@ class StaticFilesConfig(BaseModel):
     ```
     """
 
-    path: Annotated[
+    path: Annotated[  # type: ignore
         constr(min_length=1),
         Doc(
             """
             The path for the statics.
             """
         ),
-    ]  # type: ignore
+    ]
     directory: Annotated[
         Optional[Union[DirectoryPath, str, Path, Any]],
         Doc(

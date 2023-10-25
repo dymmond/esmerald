@@ -22,7 +22,46 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.types import Dependencies, ExceptionHandlerMap, Middleware, ParentType
 
 
-class Gateway(StarletteRoute, BaseInterceptorMixin):
+class BaseRoute(StarletteRoute):
+    def __init__(
+        self,
+        path: Optional[str] = None,
+        *,
+        handler: Union["HTTPHandler", View],
+        name: Optional[str] = None,
+        middleware: Optional[Sequence["Middleware"]] = None,
+        methods: Optional[List[str]] = None,
+        include_in_schema: bool = True,
+    ) -> None:
+        super().__init__(
+            path=path,
+            endpoint=cast("Callable", handler),
+            name=name,
+            methods=methods,
+            include_in_schema=include_in_schema,
+        )
+        self.middleware = middleware or []
+        self._middleware: List["Middleware"] = []
+        self.is_middleware: bool = False
+
+    def handle_middleware(self) -> None:
+        """
+        Handles the middleware of a route, either websocket or
+        http handler.
+        """
+        self.middleware += self.endpoint.middleware
+        for middleware in self.middleware or []:
+            if isinstance(middleware, StarletteMiddleware):
+                self._middleware.append(middleware)
+            else:
+                self._middleware.append(StarletteMiddleware(middleware))  # type: ignore
+
+        for cls, options in reversed(self._middleware):
+            self.app = cls(app=self.app, **options)
+            self.is_middleware = True
+
+
+class Gateway(BaseRoute, BaseInterceptorMixin):
     __slots__ = (
         "_interceptors",
         "path",
@@ -77,10 +116,11 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
 
         super().__init__(
             path=self.path,
-            endpoint=cast("Callable", handler),
+            handler=handler,
             include_in_schema=include_in_schema,
             name=name,
             methods=cast("List[str]", self.methods),
+            middleware=middleware,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -117,16 +157,8 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
 
-            self.middleware += self.handler.middleware
-            for middleware in self.middleware or []:
-                if isinstance(middleware, StarletteMiddleware):
-                    self._middleware.append(middleware)
-                else:
-                    self._middleware.append(StarletteMiddleware(middleware))
-
-            for cls, options in reversed(self._middleware):
-                self.app = cls(app=self.app, **options)
-                self.is_middleware = True
+            # Handling route middleware
+            self.handle_middleware()
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
@@ -218,12 +250,34 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
             handler.param_convertors,
         ) = compile_path(self.path)
 
+        self._middleware: List["Middleware"] = []
+        self.is_middleware: bool = False
+
+    def handle_middleware(self) -> None:
+        """
+        Handles the middleware of a route, either websocket or
+        http handler.
+        """
+        self.middleware += self.handler.middleware  # type: ignore
+        for middleware in self.middleware or []:
+            if isinstance(middleware, StarletteMiddleware):
+                self._middleware.append(middleware)
+            else:
+                self._middleware.append(StarletteMiddleware(middleware))  # type: ignore
+
+        for cls, options in reversed(self._middleware):
+            self.app = cls(app=self.app, **options)
+            self.is_middleware = True
+
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
         """
+        if self.is_middleware:
+            await self.app(scope, receive, send)
+
         if self.get_interceptors():
-            await self.intercept(scope, receive, send)  # pragma: no cover
+            await self.intercept(scope, receive, send)
 
         await self.handler.handle(scope, receive, send)
 

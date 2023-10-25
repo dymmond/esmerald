@@ -446,6 +446,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "_permissions",
         "_dependencies",
         "_response_handler",
+        "_middleware",
         "methods",
         "status_code",
         "content_encoding",
@@ -562,18 +563,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.app: Optional["ASGIApp"] = None
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
-        self._middleware = []
-        self.is_middleware: bool = False
-
-        for middleware in self.middleware or []:
-            if isinstance(middleware, StarletteMiddleware):
-                self._middleware.append(middleware)
-            else:
-                self._middleware.append(StarletteMiddleware(middleware))
-
-        for cls, options in reversed(self._middleware):
-            self.app = cls(app=self.app, **options)
-            self.is_middleware = True
+        self._middleware: List["Middleware"] = []
 
         if self.responses:
             self.validate_responses(responses=self.responses)
@@ -655,9 +645,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         """
         ASGIapp that authorizes the connection and then awaits the handler function.
         """
-        if self.is_middleware:
-            await self.app(scope, receive, send)
-
         methods = [scope["method"]]
         await self.allowed_methods(scope, receive, send, methods)
 
@@ -676,14 +663,11 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         )
         await response(scope, receive, send)
 
-    def __call__(
-        self, fn: "AnyCallable", receive: Optional["Receive"] = None, send: Optional["Send"] = None
-    ) -> "HTTPHandler":
-        if receive is None and send is None:
-            self.fn = fn
-            self.endpoint = fn
-            self.validate_handler()
-            return self
+    def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
+        self.fn = fn
+        self.endpoint = fn
+        self.validate_handler()
+        return self
 
     def check_handler_function(self) -> None:
         """Validates the route handler function once it's set by inspecting its
@@ -783,6 +767,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         "_permissions",
         "_dependencies",
         "_response_handler",
+        "_middleware",
         "methods",
         "status_code",
         "content_encoding",
@@ -1086,9 +1071,9 @@ class Include(Mount):
 
         for _middleware in self.middleware:
             if isinstance(_middleware, StarletteMiddleware):  # pragma: no cover
-                include_middleware.append(_middleware)  # type: ignore
+                include_middleware.append(_middleware)
             else:
-                include_middleware.append(
+                include_middleware.append(  # type: ignore
                     StarletteMiddleware(cast("Type[StarletteMiddleware]", _middleware))
                 )
 
@@ -1099,7 +1084,7 @@ class Include(Mount):
             app=app,
             routes=routes,
             name=name,
-            middleware=cast("Sequence[StarletteMiddleware]", include_middleware),
+            middleware=include_middleware,
         )
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
@@ -1130,9 +1115,6 @@ class Include(Mount):
 
         if isinstance(route, (Gateway, WebSocketGateway)):
             middlewares.extend(route.middleware)
-            if route.handler.middleware:
-                middlewares.extend(route.handler.middleware)
-
         return middlewares
 
     def resolve_route_path_handler(

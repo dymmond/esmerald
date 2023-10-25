@@ -59,14 +59,14 @@ class SessionConfig(BaseModel):
             """
         ),
     ] = "/"
-    session_cookie: Annotated[
+    session_cookie: Annotated[  # type: ignore
         constr(min_length=1, max_length=256),
         Doc(
             """
             The name for the session cookie.
             """
         ),
-    ] = "session"  # type: ignore[valid-type]
+    ] = "session"
     max_age: Annotated[
         int,
         Doc(
