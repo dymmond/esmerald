@@ -21,6 +21,7 @@ from typing import (
 from uuid import UUID
 
 from starlette.convertors import CONVERTOR_TYPES
+from starlette.middleware import Middleware as StarletteMiddleware
 from starlette.requests import HTTPConnection
 from starlette.responses import Response as StarletteResponse
 from starlette.routing import Mount as Mount  # noqa
@@ -57,6 +58,7 @@ if TYPE_CHECKING:  # pragma: no cover
         APIGateHandler,
         AsyncAnyCallable,
         Dependencies,
+        Middleware,
         ResponseCookies,
         ResponseHeaders,
     )
@@ -608,6 +610,24 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             if tag not in tags_clean:
                 tags_clean.append(tag)
         return tags_clean
+
+    def get_middlewares(self) -> List["Middleware"]:
+        """Builds the middleware stack for the route and returns it.
+
+        The middlewares are added from top to bottom (app -> router ->
+        controller -> route handler) and then reversed.
+        """
+        resolved_middleware = []
+        for layer in self.parent_levels:
+            layer_middleware = getattr(layer, "middleware", None) or getattr(
+                layer, "_middleware", None
+            )
+            for middleware in layer_middleware or []:
+                if isinstance(middleware, StarletteMiddleware):
+                    resolved_middleware.append(middleware)
+                else:
+                    resolved_middleware.append(StarletteMiddleware(middleware))
+        return list(reversed(resolved_middleware))
 
 
 class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover

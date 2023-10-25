@@ -1,6 +1,7 @@
 import re
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
 
+from starlette.middleware import Middleware as StarletteMiddleware
 from starlette.routing import Route as StarletteRoute
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
@@ -106,6 +107,8 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
             handler.path_format,
             handler.param_convertors,
         ) = compile_path(self.path)
+        self._middleware = []
+        self.is_middleware: bool = False
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
@@ -114,13 +117,26 @@ class Gateway(StarletteRoute, BaseInterceptorMixin):
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
 
+            self.middleware += self.handler.middleware
+            for middleware in self.middleware or []:
+                if isinstance(middleware, StarletteMiddleware):
+                    self._middleware.append(middleware)
+                else:
+                    self._middleware.append(StarletteMiddleware(middleware))
+
+            for cls, options in reversed(self._middleware):
+                self.app = cls(app=self.app, **options)
+                self.is_middleware = True
+
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
         """
+        if self.is_middleware:
+            await self.app(scope, receive, send)
+
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
-
         await self.handler.handle(scope, receive, send)
 
     def generate_operation_id(self) -> str:

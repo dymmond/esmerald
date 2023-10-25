@@ -2196,7 +2196,6 @@ class Esmerald(Starlette):
         It evaluates the middleware passed into the routes from bottom up
         """
         user_middleware = []
-        handlers_middleware: List["Middleware"] = []
 
         if self.allowed_hosts:
             user_middleware.append(
@@ -2214,11 +2213,13 @@ class Esmerald(Starlette):
                 StarletteMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
 
-        handlers_middleware += self.router.middleware
-        for route in self.routes or []:
-            handlers_middleware.extend(self.build_routes_middleware(route))
+        # Prepare the routes middleware
+        # for route in self.routes or []:
+        #     if isinstance(route, (gateways.Gateway, gateways.WebhookGateway)):
+        #         route.handler.middleware = route.handler.get_middlewares()
 
-        self._middleware += handlers_middleware
+        # self._middleware += handlers_middleware
+        # self._middleware += handlers_middleware
 
         for middleware in self._middleware or []:
             if isinstance(middleware, StarletteMiddleware):
