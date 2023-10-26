@@ -1,5 +1,7 @@
 from typing import Any, Callable, List, Union
 
+from typing_extensions import Annotated, Doc
+
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.utils.helpers import is_class_and_subclass
 
@@ -9,7 +11,14 @@ class MethodMixin:
     Mixins for method validations.
     """
 
-    http_allowed_methods: List[str] = [
+    http_allowed_methods: Annotated[
+        List[str],
+        Doc(
+            """
+            Allowed methods for the given base class.
+            """
+        ),
+    ] = [
         "get",
         "post",
         "put",
@@ -23,10 +32,43 @@ class MethodMixin:
     @classmethod
     def is_method_allowed(
         cls,
-        name: str,
-        base: Any,
-        method: Callable[..., Any],
-        error_message: Union[str, None] = None,
+        name: Annotated[
+            str,
+            Doc(
+                """
+                String referring to the http verb (method) being validated.
+
+                Example: `get`, `post`.
+                """
+            ),
+        ],
+        base: Annotated[
+            Any,
+            Doc(
+                """
+                The base class being checked against.
+                Internally, Esmerald checks against the bases of the class
+                upon the `__new__` is called.
+                """
+            ),
+        ],
+        method: Annotated[
+            Callable[..., Any],
+            Doc(
+                """
+                Uusally referred to a [handler](https://esmerald.dev/routing/handlers/)
+                being validated.
+                """
+            ),
+        ],
+        error_message: Annotated[
+            Union[str, None],
+            Doc(
+                """
+                An error message to be displayed upon the error being thrown.
+                """
+            ),
+        ] = None,
     ) -> bool:
         from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
@@ -52,10 +94,41 @@ class MethodMixin:
     @classmethod
     def is_signature_valid(
         cls,
-        name: str,
-        base: Any,
-        method: Callable[..., Any],
-        signature_type: Any,
+        name: Annotated[
+            str,
+            Doc(
+                """
+                The name of the function
+                """
+            ),
+        ],
+        base: Annotated[
+            Any,
+            Doc(
+                """
+                The base class being checked against.
+                Internally, Esmerald checks against the bases of the class
+                upon the `__new__` is called.
+                """
+            ),
+        ],
+        method: Annotated[
+            Callable[..., Any],
+            Doc(
+                """
+                Uusally referred to a [handler](https://esmerald.dev/routing/handlers/)
+                being validated.
+                """
+            ),
+        ],
+        signature_type: Annotated[
+            Any,
+            Doc(
+                """
+                The annotation being checked against.
+                """
+            ),
+        ],
     ) -> bool:
         """
         Validates if the signature of a given function is of type `signature_type`.

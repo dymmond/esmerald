@@ -358,7 +358,7 @@ class BaseRouter(StarletteRouter):
             Optional["ResponseType"],
             Doc(
                 """
-                Global default response class to be used within the
+                Default response class to be used within the
                 Esmerald application.
 
                 Read more about the [Responses](https://esmerald.dev/responses/) and how
@@ -378,7 +378,7 @@ class BaseRouter(StarletteRouter):
             Optional["ResponseCookies"],
             Doc(
                 """
-                A global sequence of `esmerald.datastructures.Cookie` objects.
+                A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
 
@@ -406,7 +406,7 @@ class BaseRouter(StarletteRouter):
             Optional["ResponseHeaders"],
             Doc(
                 """
-                A global mapping of `esmerald.datastructures.ResponseHeader` objects.
+                A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
 
