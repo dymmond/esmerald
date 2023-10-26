@@ -122,7 +122,7 @@ you can get the idea of it.
 {!> ../docs_src/interceptors/cookie_interceptor.py !}
 ```
 
-**The application** 
+**The application**
 
 The application calling both interceptors on different levels, the `app` level and the `gateway`
 level.
@@ -203,3 +203,7 @@ INFO:     Application startup complete.
 !!! Note
     You should replace the location of the settings in the example by the one you have
     in your project. This was used as example only.
+
+## API Reference
+
+Check out the [API Reference for Interceptors](./references/interceptors.md) for more details.

@@ -99,3 +99,7 @@ be `async` or not.
 3. The [handlers](./routing/handlers.md), [Gateway](./routing/routes.md#gateway),
 [WebSocketGateway](./routing/routes.md#websocketgateway), [Include](./routing/routes.md#include)
 and [Esmerald](./application/applications.md) can have as many permissions as you want.
+
+## API Reference
+
+Check out the [API Reference for Permissions](./references/permissions.md) for more details.
