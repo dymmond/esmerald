@@ -178,6 +178,8 @@ nav:
       - Permissions: "references/permissions.md"
       - Middleware:
           - BaseAuthMiddleware: "references/middleware/baseauth.md"
+      - Pluggables: "references/pluggables.md"
+      - Exceptions: "references/exceptions.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

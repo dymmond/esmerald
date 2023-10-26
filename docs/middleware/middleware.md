@@ -105,6 +105,10 @@ an **Esmerald** application.
 `BaseAuthMiddleware` is also a protocol that simply enforces the implementation of the `authenticate` method and
 assigning the result object into a `AuthResult` and make it available on every request.
 
+### API Reference
+
+Check out the [API Reference for BasseAuthMiddleware](../references/middleware/baseauth.md) for more details.
+
 ### Example of a JWT middleware class
 
 ```python title='/src/middleware/jwt.py'

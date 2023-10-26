@@ -130,3 +130,7 @@ to make sure everything is covered accordingly but this does not necessarily mea
 ```
 
 This will make sure that the application defaults will have a your exception_handler instead of the main application.
+
+## API Reference
+
+Check out the [API Reference for HTTPException](./references/exceptions.md) for more details.

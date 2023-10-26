@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Iterator, Optional
 
+from typing_extensions import Annotated, Doc
+
 from esmerald.protocols.extension import ExtensionProtocol
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -9,10 +11,45 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class Pluggable:
     """
-    The class object used to manage pluggables for esmerald.
+    The `Pluggable` is used to create an `Esmerald` pluggable from an `Extension`.
+    When Esmerald receives pluggables, it hooks them into the system and allows
+    the access via anywhere in the application.
 
-    A pluggable is whatever adds extra level of functionality to
-    your an Esmerald application and is used as support for your application.
+    Read more about the [Pluggables](https://esmerald.dev/pluggables/) and learn how to use them.
+
+    **Example**
+
+    ```python
+    from typing import Optional
+
+    from loguru import logger
+    from pydantic import BaseModel
+
+    from esmerald import Esmerald, Extension, Pluggable
+    from esmerald.types import DictAny
+
+
+    class PluggableConfig(BaseModel):
+        name: str
+
+
+    class MyExtension(Extension):
+        def __init__(
+            self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+        ):
+            super().__init__(app, **kwargs)
+            self.app = app
+
+        def extend(self, config: PluggableConfig) -> None:
+            logger.success(f"Successfully passed a config {config.name}")
+
+
+    my_config = PluggableConfig(name="my extension")
+
+    pluggable = Pluggable(MyExtension, config=my_config)
+
+    app = Esmerald(routes=[], pluggables={"my-extension": pluggable})
+    ```
     """
 
     def __init__(self, cls: "Extension", **options: Any):
@@ -35,7 +72,21 @@ class BaseExtension(ABC, ExtensionProtocol):  # pragma: no cover
     The base for any Esmerald plugglable.
     """
 
-    def __init__(self, app: Optional["Esmerald"] = None, **kwargs: Any):
+    def __init__(
+        self,
+        app: Annotated[
+            Optional["Esmerald"],
+            Doc(
+                """
+                An `Esmerald` application instance or subclasses of Esmerald.
+                """
+            ),
+        ] = None,
+        **kwargs: Annotated[
+            Any,
+            Doc("""Any additional kwargs needed."""),
+        ],
+    ):
         super().__init__(app, **kwargs)
         self.app = app
 
@@ -45,4 +96,34 @@ class BaseExtension(ABC, ExtensionProtocol):  # pragma: no cover
 
 
 class Extension(BaseExtension):
-    ...
+    """
+    `Extension` object is the one being used to add the logic that will originate
+    the `pluggable` in the application.
+
+    The `Extension` **must implement** the `extend` function.
+
+    Read more about the [Extension](https://esmerald.dev/pluggables/#extension) and learn how to use it.
+
+    **Example**
+
+    ```python
+    from typing import Optional
+
+    from esmerald import Esmerald, Extension
+    from esmerald.types import DictAny
+
+
+    class MyExtension(Extension):
+        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: "DictAny"):
+            super().__init__(app, **kwargs)
+            self.app = app
+            self.kwargs = kwargs
+
+        def extend(self, **kwargs: "DictAny") -> None:
+            '''
+            Function that should always be implemented when extending
+            the Extension class or a `NotImplementedError` is raised.
+            '''
+            # Do something here
+    ```
+    """

@@ -5,6 +5,7 @@ from pydantic import BaseModel, create_model
 from starlette import status
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.exceptions import WebSocketException as StarletteWebSocketException
+from typing_extensions import Annotated, Doc
 
 RequestErrorModel: Type[BaseModel] = create_model("Request")
 WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
@@ -26,19 +27,57 @@ class EsmeraldAPIException(Exception):
 
 class HTTPException(StarletteHTTPException, EsmeraldAPIException):
     """
-    Implementation of a unique exception allowing to override
-    the details.
+    Base of all `Esmerald` execeptions.
+
+    !!! Tip
+        For an implementation of a custom exception that you need
+        to be thrown by Esmerald, it is advised to subclass `HTTPException`.
     """
 
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
     def __init__(
         self,
-        *args: Any,
-        detail: Optional[str] = None,
-        status_code: Optional[int] = None,
-        headers: Optional[Dict[str, Any]] = None,
-        **extra: Any,
+        *args: Annotated[
+            Any,
+            Doc(
+                """
+                The args passed to the exception.
+                """
+            ),
+        ],
+        detail: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A string text with the details of the error being thrown.
+                """
+            ),
+        ] = None,
+        status_code: Annotated[
+            Optional[int],
+            Doc(
+                """
+                An integer with the status code to be raised.
+                """
+            ),
+        ] = None,
+        headers: Annotated[
+            Optional[Dict[str, Any]],
+            Doc(
+                """
+                Any python dictionary containing headers.
+                """
+            ),
+        ] = None,
+        **extra: Annotated[
+            Any,
+            Doc(
+                """
+                Any extra information used by the exception.
+                """
+            ),
+        ],
     ) -> None:
         detail = detail or getattr(self, "detail", None)
         status_code = status_code or getattr(self, "status_code", None)
