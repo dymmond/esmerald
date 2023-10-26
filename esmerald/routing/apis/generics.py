@@ -6,15 +6,7 @@ from esmerald.routing.apis.views import ListView, SimpleAPIView
 
 
 class GenericMixin:
-    __is_generic__: Annotated[
-        ClassVar[bool],
-        Doc(
-            """
-            Flag indicating the class being a generic.
-            This is used internally for classification and validations.
-            """
-        ),
-    ] = True
+    __is_generic__: ClassVar[bool] = True
 
 
 class CreateAPIView(GenericMixin, SimpleAPIView):

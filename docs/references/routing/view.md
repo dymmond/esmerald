@@ -37,6 +37,7 @@ The `View` server as the base of alll object oriented views of [Esmerald](../esm
     options:
         filters:
         - "!^__slots__"
+        - "!^__is_generic__"
         - "!^get_filtered_handler"
         - "!^get_route_handlers"
         - "!^handle"
@@ -46,6 +47,7 @@ The `View` server as the base of alll object oriented views of [Esmerald](../esm
     options:
         filters:
         - "!^__slots__"
+        - "!^__is_generic__"
         - "!^get_filtered_handler"
         - "!^get_route_handlers"
         - "!^handle"
@@ -56,6 +58,7 @@ The `View` server as the base of alll object oriented views of [Esmerald](../esm
     options:
         filters:
         - "!^__slots__"
+        - "!^__is_generic__"
         - "!^get_filtered_handler"
         - "!^get_route_handlers"
         - "!^handle"
@@ -66,6 +69,7 @@ The `View` server as the base of alll object oriented views of [Esmerald](../esm
     options:
         filters:
         - "!^__slots__"
+        - "!^__is_generic__"
         - "!^get_filtered_handler"
         - "!^get_route_handlers"
         - "!^handle"
