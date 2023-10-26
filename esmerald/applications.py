@@ -839,7 +839,6 @@ class Esmerald(Starlette):
 
                 app = Esmerald(response_cookies=response_cookies)
                 ```
-
                 """
             ),
         ] = None,

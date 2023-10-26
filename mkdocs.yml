@@ -173,6 +173,7 @@ nav:
           - WebhookGateway: "references/routing/webhookgateway.md"
           - Include: "references/routing/include.md"
           - View: "references/routing/view.md"
+          - Handlers: "references/routing/handlers.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

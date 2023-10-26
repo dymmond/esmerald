@@ -23,6 +23,10 @@ and special one for special circumstances.
 
 **Default status code**: `200`
 
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.get).
+
 ### POST
 
 ```python hl_lines="11 17"
@@ -30,6 +34,10 @@ and special one for special circumstances.
 ```
 
 **Default status code**: `201`
+
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.post).
 
 ### PUT
 
@@ -39,6 +47,10 @@ and special one for special circumstances.
 
 **Default status code**: `200`
 
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.put).
+
 ### PATCH
 
 ```python hl_lines="4 9"
@@ -47,6 +59,10 @@ and special one for special circumstances.
 
 **Default status code**: `200`
 
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.patch).
+
 ### DELETE
 
 ```python hl_lines="4 10"
@@ -54,6 +70,10 @@ and special one for special circumstances.
 ```
 
 **Default status code**: `204`
+
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.delete).
 
 ### Route
 
@@ -76,6 +96,10 @@ Example:
 
 There are also three more **unique** and exotic ones:
 
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.route).
+
 ### HEAD
 
 ```python hl_lines="4 9 14"
@@ -83,6 +107,10 @@ There are also three more **unique** and exotic ones:
 ```
 
 **Default status code**: `200`
+
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.head).
 
 ### OPTIONS
 
@@ -92,6 +120,10 @@ There are also three more **unique** and exotic ones:
 
 **Default status code**: `200`
 
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.options).
+
 ### TRACE
 
 ```python hl_lines="4 9 14"
@@ -100,52 +132,9 @@ There are also three more **unique** and exotic ones:
 
 **Default status code**: `200`
 
-**Parameters**:
+#### Parameters
 
-* **path** - The path for the handler. The path is then joined with the [Gateway](./routes.md#gateway) path.
-
-    <sup>Default: `/`</sup>
-
-* **summary** - The sumamry of the handler. Used for OpenAPI docs.
-* **description** - Description of the handler. Used for OpenAPI docs.
-* **content_media_type** - Content media type. Used for OpenAPI specification
-* **content_encoding** - Content encoding. Used for OpenAPI specification
-* **status_code** - Status code used for the response.
-
-    <sup>GET - `200`</sup><br />
-    <sup>POST - `201`</sup><br />
-    <sup>PUT - `200`</sup><br />
-    <sup>PATCH - `200`</sup><br />
-    <sup>DELETE - `204`</sup><br />
-    <sup>Route - `200`</sup>
-    <sup>HEAD - `200`</sup>
-    <sup>OPTIONS - `200`</sup>
-    <sup>TRACE - `200`</sup>
-
-* **include_in_schema** - If handler should be included in the OpenAPI schema.
-* **background** - An instance of `BackgroundTask`. Check [backgoround tasks](../background-tasks.md) for more insights.
-* **media_type** - The content type of the response.
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
-top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
-internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
-injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
-functions on an application top level. Exception handler callables should be of the form of
-`handler(request, exc) -> response` and may be be either standard functions, or async functions.
-* **response_class** - Custom subclass of [Response](../responses.md) to be used as application application response
-class.
-* **response_cookies** - List of [cookies](../datastructures.md) objects.
-* **response_headers** - Mapping dictionary of [headers](../datastructures.md) objects.
-* **tags** - List of tags to include in the OpenAPI schema.
-* **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
-* **security** - Security definition of the application. Used for OpenAPI.
-* **operation_id** - Internal unique identifier of the handler. Used for OpenAPI.
-* **response_description** - Description of the response. Used for OpenAPI.
-* **responses** - The available responses of the handler. Used for OpenAPI. [Check for more details](../responses.md#openapi-responses) how to use it.
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.trace).
 
 ## HTTP handler summary
 
@@ -169,26 +158,12 @@ needs usually to be constantly opened.
 {!> ../docs_src/routing/handlers/websocket.py !}
 ```
 
+#### Parameters
+
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.websocket).
+
+
 ## WebSocket handler summary
 
 * Handlers are used alongside [WebSocketGateway](./routes.md#websocketgateway).
 * There is only one `websocket` handler available.
-
-**Parameters**:
-
-* **path** - The path for the handler. The path is then joined with the
-[WebSocketGateway](./routes.md#websocketgateway) path.
-
-    <sup>Default: `/`</sup>
-
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
-top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
-internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
-injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
-functions on an application top level. Exception handler callables should be of the form of
-`handler(request, exc) -> response` and may be be either standard functions, or async functions.

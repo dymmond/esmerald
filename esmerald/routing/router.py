@@ -69,7 +69,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 
     from esmerald.applications import Esmerald
-    from esmerald.exceptions import HTTPException
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
@@ -1011,7 +1010,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
-        "raise_exceptions",
     )
 
     def __init__(
@@ -1041,7 +1039,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
         """
         Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
@@ -1101,7 +1098,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.responses = responses or {}
         self.content_encoding = content_encoding
         self.content_media_type = content_media_type
-        self.raise_exceptions = raise_exceptions
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None
@@ -1332,7 +1328,6 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
-        "raise_exceptions",
     )
 
     def __init__(
@@ -1362,7 +1357,6 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
         _path: str = None
         if not path:
@@ -1390,7 +1384,6 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
