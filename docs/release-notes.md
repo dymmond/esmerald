@@ -21,7 +21,7 @@ one to be used.
 
 ### Added
 
-- Annotated for documentation genetators.
+- Annotated for documentation generators.
 - Add new documentation structure for Esmerald base.
 - Add [API Reference](http://esmerald.dev/references/) . [#196](https://github.com/dymmond/esmerald/pull/196)
 
