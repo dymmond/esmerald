@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 2.3.1
+
+### Fixed
+
+- `Middleware` on levels treating each level as an independent ASGI app on an `Include` level.
+
+!!! Warning
+    This was supposed to go in the release [2.3.0](#230) but it was not merged on time to make the
+    release.
+
 ## 2.3.0
 
 ### Changed
