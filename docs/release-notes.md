@@ -5,6 +5,32 @@ hide:
 
 # Release Notes
 
+## 2.3.0
+
+### Changed
+
+- OpenAPI fields are permanently moved to [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/)
+making the codebase cleaner. The options are still available via `settings` in case of wanting to
+override the defaults but not via instantiation parameters. Via instantiation the `OpenAPIConfig` is the
+one to be used.
+
+!!! Warning
+	This is a breaking change. The functionality itself still works as it is supposed to but from now on
+	instead of passing via Esmerald instance, you need to pass the variables via [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/).
+	object instead.
+
+### Added
+
+- Annotated for documentation genetators.
+- Add new documentation structure for Esmerald base.
+- Add [API Reference](http://localhost:8000/references/) . [#196](https://github.com/dymmond/esmerald/pull/196)
+
+### Fixed
+
+- Allow tags for levels. When a tag is added to an `Include`, `Gateway`, or any other level,
+the tags are appended to the final handler. This allows inheriting from existing tags for OpenAPI.
+- `Middleware` on levels treating each level as an independent ASGI app.
+
 ## 2.2.0
 
 ### Changed
