@@ -166,6 +166,7 @@ nav:
           - TemplateConfig: "references/configurations/template.md"
           - JWTConfig: "references/configurations/jwt.md"
           - OpenAPIConfig: "references/configurations/openapi.md"
+      - Background: "references/background.md"
       - Routing:
           - Router: "references/routing/router.md"
           - Gateway: "references/routing/gateway.md"
