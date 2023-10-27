@@ -2304,24 +2304,6 @@ class Esmerald(Starlette):
 
         return exception_handlers
 
-    def build_routes_middleware(
-        self, route: "RouteParent", middlewares: Optional[List["Middleware"]] = None
-    ) -> List["Middleware"]:
-        """
-        Builds the middleware stack from the top to the bottom of the routes.
-
-        The includes are an exception as they are treated as an independent ASGI
-        application and therefore handles their own middlewares independently.
-        """
-        if not middlewares:
-            middlewares = []
-
-        if isinstance(route, Include):
-            app = getattr(route, "app", None)
-            if app and isinstance(app, (Esmerald, ChildEsmerald)):
-                return middlewares
-        return middlewares
-
     def build_user_middleware_stack(self) -> List["StarletteMiddleware"]:
         """
         Configures all the passed settings
@@ -2333,7 +2315,6 @@ class Esmerald(Starlette):
         It evaluates the middleware passed into the routes from bottom up
         """
         user_middleware = []
-        handlers_middleware: List["Middleware"] = []
 
         if self.allowed_hosts:
             user_middleware.append(
@@ -2351,11 +2332,6 @@ class Esmerald(Starlette):
                 StarletteMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
 
-        handlers_middleware += self.router.middleware
-        for route in self.routes or []:
-            handlers_middleware.extend(self.build_routes_middleware(route))
-
-        self._middleware += handlers_middleware
         for middleware in self._middleware or []:
             if isinstance(middleware, StarletteMiddleware):
                 user_middleware.append(middleware)

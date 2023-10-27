@@ -276,7 +276,8 @@ class View:
         for handler_name in filtered_handlers:
             for base in self.__class__.__bases__:
                 if handler_name not in dir(base) and isinstance(
-                    getattr(self, handler_name), (HTTPHandler, WebSocketHandler, WebhookHandler)
+                    getattr(self, handler_name),
+                    (HTTPHandler, WebSocketHandler, WebhookHandler),
                 ):
                     route_handlers.append(handler_name)
         return route_handlers
