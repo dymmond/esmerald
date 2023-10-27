@@ -206,7 +206,6 @@ def test_middleware_call_order_with_include() -> None:
     with create_client(
         routes=[
             Include(
-                path="/",
                 routes=[Gateway(path="/", handler=MyController)],
                 middleware=[create_test_middleware(2), create_test_middleware(3)],
             ),
@@ -216,8 +215,7 @@ def test_middleware_call_order_with_include() -> None:
             create_test_middleware(1),
         ],
     ) as client:
-        client.get("/router/controller/handler")
-
+        client.get("/controller/handler")
         assert results == [0, 1, 2, 3, 4, 5, 6, 7]
 
 
@@ -269,7 +267,7 @@ def test_middleware_call_order_with_nested_include() -> None:
             create_test_middleware(1),
         ],
     ) as client:
-        client.get("/router/controller/handler")
+        client.get("/controller/handler")
 
         assert results == [0, 1, 2, 3, 4, 5, 6, 7]
 
@@ -371,7 +369,7 @@ def test_middleware_call_order_with_heavy_nested_include() -> None:
             create_test_middleware(1),
         ],
     ) as client:
-        client.get("/routes/controller/handler")
+        client.get("/controller/handler")
 
         assert results == [0, 1, 2, 3, 4, 5, 6, 7]
 
@@ -467,7 +465,10 @@ def test_middleware_call_order_with_child_esmerald_as_parent() -> None:
                         routes=[
                             Include(
                                 routes=[Include(app=child_esmerald)],
-                                middleware=[create_test_middleware(2), create_test_middleware(3)],
+                                middleware=[
+                                    create_test_middleware(2),
+                                    create_test_middleware(3),
+                                ],
                             )
                         ],
                     )

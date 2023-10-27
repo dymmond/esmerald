@@ -1,7 +1,7 @@
 import pytest
 from starlette.types import ASGIApp
 
-from esmerald import Gateway, Request
+from esmerald import Gateway, Include, Request
 from esmerald.conf import settings
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.edgy.base_user import User as EdgyUser
@@ -62,16 +62,66 @@ class UserView(APIView):
 
 
 def test_can_access_endpoint(test_app_client_factory):
-    with create_client(routes=[Gateway(handler=UserView)]) as client:
-        response = client.post("/users")
+    with create_client(routes=[Gateway("/v1", handler=UserView)]) as client:
+        response = client.post("/v1/users")
 
         assert response.status_code == 201
 
-        response = client.get("/users")
+        response = client.get("/v1/users")
 
         assert response.status_code == 401
 
-        response = client.put("/users/2")
+        response = client.put("/v1/users/2")
+
+        assert response.status_code == 401
+
+
+def test_can_access_endpoint_with_include(test_app_client_factory):
+    with create_client(
+        routes=[
+            Include(
+                routes=[
+                    Gateway("/v1", handler=UserView),
+                ],
+            )
+        ]
+    ) as client:
+        response = client.post("/v1/users")
+
+        assert response.status_code == 201
+
+        response = client.get("/v1/users")
+
+        assert response.status_code == 401
+
+        response = client.put("/v1/users/2")
+
+        assert response.status_code == 401
+
+
+def test_can_access_endpoint_with_include_nested(test_app_client_factory):
+    with create_client(
+        routes=[
+            Include(
+                routes=[
+                    Include(
+                        routes=[
+                            Gateway("/v1", handler=UserView),
+                        ],
+                    )
+                ]
+            )
+        ]
+    ) as client:
+        response = client.post("/v1/users")
+
+        assert response.status_code == 201
+
+        response = client.get("/v1/users")
+
+        assert response.status_code == 401
+
+        response = client.put("/v1/users/2")
 
         assert response.status_code == 401
 
@@ -99,6 +149,56 @@ class AnotherUserView(APIView):
 
 def test_can_access_endpoint_blocked(test_app_client_factory):
     with create_client(routes=[Gateway(handler=AnotherUserView)]) as client:
+        response = client.post("/users")
+
+        assert response.status_code == 401
+
+        response = client.get("/users")
+
+        assert response.status_code == 401
+
+        response = client.put("/users/2")
+
+        assert response.status_code == 401
+
+
+def test_can_access_endpoint_blocked_with_include(test_app_client_factory):
+    with create_client(
+        routes=[
+            Include(
+                routes=[
+                    Gateway(handler=AnotherUserView),
+                ],
+            )
+        ]
+    ) as client:
+        response = client.post("/users")
+
+        assert response.status_code == 401
+
+        response = client.get("/users")
+
+        assert response.status_code == 401
+
+        response = client.put("/users/2")
+
+        assert response.status_code == 401
+
+
+def test_can_access_endpoint_blocked_with_include_nested(test_app_client_factory):
+    with create_client(
+        routes=[
+            Include(
+                routes=[
+                    Include(
+                        routes=[
+                            Gateway(handler=AnotherUserView),
+                        ],
+                    )
+                ]
+            )
+        ]
+    ) as client:
         response = client.post("/users")
 
         assert response.status_code == 401

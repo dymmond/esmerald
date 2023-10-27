@@ -736,6 +736,8 @@ class Router(BaseRouter):
                 handler=route_handler,
                 name=route_handler.path,
                 middleware=value.middleware,
+                interceptors=value.interceptors,
+                include_in_schema=value.include_in_schema,
                 permissions=value.permissions,
                 exception_handlers=value.exception_handlers,
             )
@@ -1203,7 +1205,10 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         )
         await response(scope, receive, send)
 
-    def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
+    def __call__(
+        self,
+        fn: "AnyCallable",
+    ) -> "HTTPHandler":
         self.fn = fn
         self.endpoint = fn
         self.validate_handler()
@@ -1882,13 +1887,7 @@ class Include(Mount):
         if routes:
             routes = self.resolve_route_path_handler(routes)
 
-        # Build the middleware from the routes
-        routes_middleware: List["Middleware"] = []
-        for route in routes or []:
-            routes_middleware = cast("List[Middleware]", self.build_routes_middleware(route))
-
         # Add the middleware to the include
-        self.middleware += routes_middleware
         include_middleware: Sequence["Middleware"] = []
 
         for _middleware in self.middleware:
@@ -1918,26 +1917,6 @@ class Include(Mount):
         if app is not None and isinstance(app, (Esmerald, ChildEsmerald)):
             app.parent = self
         return app
-
-    def build_routes_middleware(
-        self, route: "RouteParent", middlewares: Optional[Sequence["Middleware"]] = None
-    ) -> Sequence["Middleware"]:
-        """
-        Builds the middleware stack from the top to the bottom of the routes.
-        """
-        from esmerald import ChildEsmerald, Esmerald
-
-        if not middlewares:
-            middlewares = []
-
-        if isinstance(route, Include):
-            app = getattr(route, "app", None)
-            if app and isinstance(app, (Esmerald, ChildEsmerald)):
-                return middlewares
-
-        if isinstance(route, (Gateway, WebSocketGateway)):
-            middlewares.extend(route.middleware)
-        return middlewares
 
     def resolve_route_path_handler(
         self, routes: Sequence[Union["APIGateHandler", "Include"]]
