@@ -23,7 +23,7 @@ one to be used.
 
 - Annotated for documentation genetators.
 - Add new documentation structure for Esmerald base.
-- Add [API Reference](http://localhost:8000/references/) . [#196](https://github.com/dymmond/esmerald/pull/196)
+- Add [API Reference](http://esmerald.dev/references/) . [#196](https://github.com/dymmond/esmerald/pull/196)
 
 ### Fixed
 
