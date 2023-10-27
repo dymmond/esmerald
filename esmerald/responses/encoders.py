@@ -17,6 +17,12 @@ except ImportError:  # pragma: no cover
 
 
 class ORJSONResponse(BaseJSONResponse):
+    """
+    An alternative to `JSONResponse` and performance wise, faster.
+
+    In the same way the JSONResponse is used, so is the `ORJSONResponse`.
+    """
+
     def render(self, content: Any) -> bytes:
         assert orjson is not None, "You must install the encoders or orjson to use ORJSONResponse"
         return orjson.dumps(
@@ -27,6 +33,12 @@ class ORJSONResponse(BaseJSONResponse):
 
 
 class UJSONResponse(BaseJSONResponse):
+    """
+    An alternative to `JSONResponse` and performance wise, faster.
+
+    In the same way the JSONResponse is used, so is the `UJSONResponse`.
+    """
+
     def render(self, content: Any) -> bytes:
         assert ujson is not None, "You must install the encoders or ujson to use UJSONResponse"
         return ujson.dumps(content, ensure_ascii=False).encode("utf-8")

@@ -1,0 +1,3 @@
+# **`JSONResponse`** class
+
+::: esmerald.JSONResponse

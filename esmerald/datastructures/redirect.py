@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Type, Union
 
 from starlette.responses import RedirectResponse  # noqa
+from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
 from esmerald.enums import MediaType
@@ -10,7 +11,17 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Redirect(ResponseContainer[RedirectResponse]):
-    path: str
+    path: Annotated[
+        str,
+        Doc(
+            """
+            The url path to redirect.
+            This should be in format of `/<str>`.
+
+            Example: `/redirect-page`.
+            """
+        ),
+    ]
 
     def to_response(
         self,
