@@ -39,7 +39,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
 ]
 dependencies = [
-    "a2wsgi>=1.7.0,<2",
+    "a2wsgi>=1.8.0,<2",
     "aiofiles>=0.8.0,<24",
     "anyio>=3.7.1,<5.0.0",
     "awesome-slugify>=1.6.5,<2",

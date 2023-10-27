@@ -1476,7 +1476,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
-        websocket = WebSocket[Any, Any](scope=scope, receive=receive, send=send)
+        websocket = WebSocket(scope=scope, receive=receive, send=send)
         if self.get_permissions():
             await self.allow_connection(connection=websocket)
 
@@ -1488,7 +1488,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         else:
             await fn(**kwargs)
 
-    async def get_kwargs(self, websocket: WebSocket[Any, Any]) -> Any:
+    async def get_kwargs(self, websocket: WebSocket) -> Any:
         """Resolves the required kwargs from the request data.
 
         Args:

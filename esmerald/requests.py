@@ -37,6 +37,9 @@ class Request(StarletteRequest):
 
     @property
     def global_settings(self) -> Any:
+        """
+        Access to the global settings via `request.global_settings`.
+        """
         assert (
             "global_settings" in self.scope
         ), "RequestSettingsMiddleware must be added to the middlewares"
@@ -44,6 +47,9 @@ class Request(StarletteRequest):
 
     @property
     def app_settings(self) -> Any:
+        """
+        Access to the app settings via `request.app_settings`.
+        """
         assert (
             "app_settings" in self.scope
         ), "RequestSettingsMiddleware must be added to the middlewares"
