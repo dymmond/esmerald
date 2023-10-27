@@ -5,3 +5,4 @@
         inherited_members: false
         filters:
         - "!^model_config"
+        - "!^validate_model"

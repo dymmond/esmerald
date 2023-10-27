@@ -276,6 +276,10 @@ async def create() -> Union[None, ItemOut]:
 
 This will add an extra response description and details to your OpenAPI spec handler definition.
 
+### API Reference
+
+Check out the [API Reference for OpenAPIResponse](./references/responses/openapi-response.md) for more details.
+
 ### Important
 
 When adding an `OpenAPIResponse` you can also vary and override the defaults of each handler. For
