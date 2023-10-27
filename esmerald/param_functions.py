@@ -10,7 +10,7 @@ def DirectInjects(
     allow_none: bool = True,
 ) -> Any:
     """
-    This function should be only called if not Inject()/Injects is used in the dependencies.
-    This is a simple wrapper of the classic Inject()
+    This function should be only called if Inject/Injects is not used in the dependencies.
+    This is a simple wrapper of the classic Inject().
     """
     return DirectInject(dependency=dependency, use_cache=use_cache, allow_none=allow_none)

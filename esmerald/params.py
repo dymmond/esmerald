@@ -619,11 +619,13 @@ class Injects(FieldInfo):
     Creates a FieldInfo class with extra parameters.
     This is used for dependencies and to inject them.
 
-    Example:
+    **Example**
 
-        @get(dependencies={"value": Inject(lambda: 13)})
-        def myview(value: Injects()):
-            return {"value": value}
+    ```python
+    @get(dependencies={"value": Inject(lambda: 13)})
+    def myview(value: Injects()):
+        return {"value": value}
+    ```
     """
 
     def __init__(

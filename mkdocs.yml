@@ -198,8 +198,10 @@ nav:
           - UJSON: "references/responses/ujson.md"
           - OpenAPIResponse: "references/responses/openapi-response.md"
       - WebSocket: "references/websockets.md"
+      - Dependency Injection: "references/injector.md"
       - UploadFile: "references/uploadfile.md"
       - Status Code: "references/status-codes.md"
+      - Test Client: "references/test-client.md"
   - About:
       - Esmerald People: "esmerald-people.md"
       - Examples & Scaffolds: "examples.md"

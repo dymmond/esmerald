@@ -11,7 +11,6 @@ from typing import (
     cast,
 )
 
-import httpx  # noqa
 from httpx._client import CookieTypes
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
