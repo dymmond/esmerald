@@ -33,7 +33,7 @@ from starlette.routing import Router as StarletteRouter
 from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
 from starlette.routing import compile_path
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
-from typing_extensions import Self
+from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
 from esmerald.core.urls import include
@@ -69,7 +69,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 
     from esmerald.applications import Esmerald
-    from esmerald.exceptions import HTTPException
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
@@ -88,87 +87,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.typing import AnyCallable
 
 
-class Parent:
-    def create_signature_models(self, route: "RouteParent") -> None:
-        """
-        Creates the signature models for the given routes.
-
-        Args:
-            route: The route for the signature model to be created.
-        """
-        if isinstance(route, (Include, Host)):
-            for _route in route.routes:
-                self.create_signature_models(_route)
-
-        if isinstance(route, (Gateway, WebhookGateway)):
-            if not route.handler.parent:  # pragma: no cover
-                route.handler.parent = route  # type: ignore
-
-            if not is_class_and_subclass(route.handler, View) and not isinstance(
-                route.handler, View
-            ):
-                route.handler.create_signature_model()
-
-        if isinstance(route, WebSocketGateway):
-            route.handler.create_signature_model(is_websocket=True)
-
-    def validate_root_route_parent(
-        self,
-        value: Union["Router", "Include", "Gateway", "WebSocketGateway", "WebhookGateway"],
-        override: bool = False,
-    ) -> None:
-        """
-        Handles everything parent from the root. When in the root, the parent must be setup.
-        Appends the route path if exists.
-        """
-        # Getting the value of the router for the path
-        value.path = clean_path(self.path + getattr(value, "path", "/"))
-        if isinstance(value, (Include, Gateway, WebSocketGateway, WebSocketGateway)):
-            if not value.parent and not override:
-                value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
-
-        if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
-            if not is_class_and_subclass(value.handler, View) and not isinstance(
-                value.handler, View
-            ):
-                if not value.handler.parent:
-                    value.handler.parent = value  # type: ignore
-            else:
-                if not value.handler.parent:  # pragma: no cover
-                    value(parent=self)  # type: ignore
-
-                handler: View = cast("View", value.handler)
-                route_handlers = handler.get_route_handlers()
-                for route_handler in route_handlers:
-                    gateway = (
-                        Gateway
-                        if not isinstance(route_handler, WebSocketHandler)
-                        else WebSocketGateway
-                    )
-
-                    gate = gateway(
-                        path=value.path,
-                        handler=route_handler,
-                        name=route_handler.fn.__name__,
-                        middleware=value.middleware,
-                        interceptors=value.interceptors,
-                        permissions=value.permissions,
-                        exception_handlers=value.exception_handlers,
-                    )
-
-                    if isinstance(gate, (Gateway, WebhookGateway)):
-                        include_in_schema = (
-                            value.include_in_schema
-                            if value.include_in_schema is not None
-                            else route_handler.include_in_schema
-                        )
-                        gate.include_in_schema = include_in_schema
-
-                    self.routes.append(gate)
-                self.routes.pop(self.routes.index(value))
-
-
-class Router(Parent, StarletteRouter):
+class BaseRouter(StarletteRouter):
     __slots__ = (
         "redirect_slashes",
         "default",
@@ -185,31 +104,368 @@ class Router(Parent, StarletteRouter):
         "tags",
         "deprecated",
         "security",
+        "on_startup",
+        "on_shutdown",
     )
 
     def __init__(
         self,
-        path: Optional[str] = None,
-        app: Optional["Esmerald"] = None,
-        parent: Optional["ParentType"] = None,
-        on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
-        on_startup: Optional[Sequence["LifeSpanHandler"]] = None,
-        redirect_slashes: bool = True,
-        default: Optional["ASGIApp"] = None,
-        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
-        name: Optional[str] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[Sequence["Interceptor"]] = None,
-        permissions: Optional[Sequence["Permission"]] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-        response_class: Optional["ResponseType"] = None,
-        response_cookies: Optional["ResponseCookies"] = None,
-        response_headers: Optional["ResponseHeaders"] = None,
-        lifespan: Optional[Lifespan[Any]] = None,
-        tags: Optional[Sequence[str]] = None,
+        path: Annotated[
+            Optional[str],
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+
+                **Example**
+
+                ```python
+                Include()
+                ```
+
+                **Example with parameters**
+
+                ```python
+                Include(path="/{age: int}")
+                ```
+                """
+            ),
+        ] = None,
+        app: Annotated[
+            Optional["Esmerald"],
+            Doc(
+                """
+                A `Router` instance always expects an `Esmerald` instance
+                as an app or any subclass of Esmerald, like a `ChildEsmerald`.
+
+                **Example**
+
+                ```python
+                from esmerald import ChildEsmerald, Router
+
+                Router('/child', app=ChildEsmerald(...))
+                ```
+                """
+            ),
+        ] = None,
+        parent: Annotated[
+            Optional["ParentType"],
+            Doc(
+                """
+                Who owns the Gateway. If not specified, the application automatically it assign it.
+
+                This is directly related with the [application levels](https://esmerald.dev/application/levels/).
+                """
+            ),
+        ] = None,
+        on_startup: Annotated[
+            Optional[List["LifeSpanHandler"]],
+            Doc(
+                """
+                A `list` of events that are trigger upon the application
+                starts.
+
+                Read more about the [events](https://esmerald.dev/lifespan-events/).
+
+                **Example**
+
+                ```python
+                from pydantic import BaseModel
+                from saffier import Database, Registry
+
+                from esmerald import Router, Gateway, post
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                class User(BaseModel):
+                    name: str
+                    email: str
+                    password: str
+                    retype_password: str
+
+
+                @post("/create", tags=["user"], description="Creates a new user in the database")
+                async def create_user(data: User) -> None:
+                    # Logic to create the user
+                    ...
+
+
+                app = Router(
+                    routes=[Gateway(handler=create_user)],
+                    on_startup=[database.connect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        on_shutdown: Annotated[
+            Optional[List["LifeSpanHandler"]],
+            Doc(
+                """
+                A `list` of events that are trigger upon the application
+                shuts down.
+
+                Read more about the [events](https://esmerald.dev/lifespan-events/).
+
+                **Example**
+
+                ```python
+                from pydantic import BaseModel
+                from saffier import Database, Registry
+
+                from esmerald import Router, Gateway, post
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                class User(BaseModel):
+                    name: str
+                    email: str
+                    password: str
+                    retype_password: str
+
+
+                @post("/create", tags=["user"], description="Creates a new user in the database")
+                async def create_user(data: User) -> None:
+                    # Logic to create the user
+                    ...
+
+
+                app = Router(
+                    routes=[Gateway(handler=create_user)],
+                    on_shutdown=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        redirect_slashes: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if the redirect slashes are enabled for the
+                routes or not.
+                """
+            ),
+        ] = None,
+        default: Annotated[
+            Optional["ASGIApp"],
+            Doc(
+                """
+                A `default` ASGI callable.
+                """
+            ),
+        ] = None,
+        routes: Annotated[
+            Optional[Sequence[Union["APIGateHandler", "Include"]]],
+            Doc(
+                """
+                A `list` of esmerald routes. Those routes may vary and those can
+                be `Gateway`, `WebSocketGateWay` or even an `Include`.
+
+                This is also an entry-point for the routes of the `Router`
+                but it **does not rely on only one [level](https://esmerald.dev/application/levels/)**.
+
+                Read more about how to use and leverage
+                the [Esmerald routing system](https://esmerald.dev/routing/routes/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, Gateway, Request, get, Include
+
+
+                @get()
+                async def homepage(request: Request) -> str:
+                    return "Hello, home!"
+
+
+                @get()
+                async def another(request: Request) -> str:
+                    return "Hello, another!"
+
+                app = Esmerald(
+                    routes=[
+                        Gateway(handler=homepage)
+                        Include("/nested", routes=[
+                            Gateway(handler="/another")
+                        ])
+                    ]
+                )
+                ```
+
+                !!! Note
+                    The Include is very powerful and this example
+                    is not enough to understand what more things you can do.
+                    Read in [more detail](https://esmerald.dev/routing/routes/#include) about this.
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        response_class: Annotated[
+            Optional["ResponseType"],
+            Doc(
+                """
+                Default response class to be used within the
+                Esmerald application.
+
+                Read more about the [Responses](https://esmerald.dev/responses/) and how
+                to use them.
+
+                **Example**
+
+                ```python
+                from esmerald import Router, JSONResponse
+
+                Router(response_class=JSONResponse)
+                ```
+                """
+            ),
+        ] = None,
+        response_cookies: Annotated[
+            Optional["ResponseCookies"],
+            Doc(
+                """
+                A sequence of `esmerald.datastructures.Cookie` objects.
+
+                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
+
+                **Example**
+
+                ```python
+                from esmerald import Router
+                from esmerald.datastructures import Cookie
+
+                response_cookies=[
+                    Cookie(
+                        key="csrf",
+                        value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz",
+                        max_age=3000,
+                        httponly=True,
+                    )
+                ]
+
+                Router(response_cookies=response_cookies)
+                ```
+                """
+            ),
+        ] = None,
+        response_headers: Annotated[
+            Optional["ResponseHeaders"],
+            Doc(
+                """
+                A mapping of `esmerald.datastructures.ResponseHeader` objects.
+
+                Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
+
+                **Example**
+
+                ```python
+                from esmerald import Router
+                from esmerald.datastructures import ResponseHeader
+
+                response_headers={
+                    "authorize": ResponseHeader(value="granted")
+                }
+
+                Router(response_headers=response_headers)
+                ```
+                """
+            ),
+        ] = None,
+        lifespan: Annotated[
+            Optional[Lifespan[Any]],
+            Doc(
+                """
+                A `lifespan` context manager handler. This is an alternative
+                to `on_startup` and `on_shutdown` and you **cannot used all combined**.
+
+                Read more about the [lifespan](https://esmerald.dev/lifespan-events/).
+                """
+            ),
+        ] = None,
+        tags: Annotated[
+            Optional[Sequence[str]],
+            Doc(
+                """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+            ),
+        ] = None,
         deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityScheme"]] = None,
+        security: Annotated[
+            Optional[Sequence["SecurityScheme"]],
+            Doc(
+                """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+            ),
+        ] = None,
     ):
         self.app = app
         if not path:
@@ -289,102 +545,6 @@ class Router(Parent, StarletteRouter):
     def activate(self) -> None:
         self.routes = self.reorder_routes()
 
-    def add_apiview(self, value: Union["Gateway", "WebSocketGateway"]) -> None:
-        """Adds a Gateway/WebSocketGateway coming containing the handler of type View.
-        Generates the signature model for it and sorts the routing list.
-        """
-        routes = []
-        if not value.handler.parent:  # pragma: no cover
-            value.handler(parent=self)  # type: ignore
-
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
-        for route_handler in route_handlers:
-            gateway = (
-                Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
-            )
-            gate = gateway(
-                path=value.path,
-                handler=route_handler,
-                name=route_handler.path,
-                middleware=value.middleware,
-                permissions=value.permissions,
-                exception_handlers=value.exception_handlers,
-            )
-            self.routes.append(gate)
-            routes.append(gate)
-
-        for route in routes or []:
-            self.create_signature_models(route)
-        self.activate()
-
-    def add_route(
-        self,
-        path: str,
-        handler: "HTTPHandler",
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
-        name: Optional[str] = None,
-        include_in_schema: bool = True,
-        deprecated: Optional[bool] = None,
-    ) -> None:
-        """
-        Adds a new route on a router level making it dynamic based on the handler given.
-        If methods is passed, then a new handler will be created for each method passed.
-        """
-        if not isinstance(handler, HTTPHandler):
-            raise ImproperlyConfigured(
-                f"handler must be a instance of HTTPHandler and not {handler.__class__.__name__}. "
-                "Example: get(), put(), post(), delete(), patch(), route()."
-            )
-        gateway = Gateway(
-            path=self.path + path,
-            handler=handler,
-            name=name,
-            include_in_schema=include_in_schema,
-            dependencies=dependencies,
-            exception_handlers=cast("ExceptionHandlerMap", exception_handlers),
-            interceptors=interceptors,
-            permissions=permissions,
-            middleware=middleware,
-            deprecated=deprecated,
-        )
-        self.validate_root_route_parent(gateway)
-        self.create_signature_models(gateway)
-        self.routes.append(gateway)
-
-    def add_websocket_route(
-        self,
-        path: str,
-        handler: "WebSocketHandler",
-        name: Optional[str] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-    ) -> None:
-        if not isinstance(handler, WebSocketHandler):
-            raise ImproperlyConfigured(
-                f"handler must be a instance of WebSocketHandler and not {handler.__class__.__name__}. "
-                "Example: websocket()."
-            )
-        websocket_gateway = WebSocketGateway(
-            path=path,
-            handler=handler,
-            name=name,
-            dependencies=dependencies,
-            exception_handlers=exception_handlers,
-            interceptors=interceptors,
-            permissions=permissions,
-            middleware=middleware,
-        )
-        self.validate_root_route_parent(websocket_gateway)
-        self.create_signature_models(websocket_gateway)
-        self.routes.append(websocket_gateway)
-
     async def not_found(
         self, scope: "Scope", receive: "Receive", send: "Send"
     ) -> None:  # pragma: no cover
@@ -439,6 +599,389 @@ class Router(Parent, StarletteRouter):
 
         return decorator
 
+    def create_signature_models(self, route: "RouteParent") -> None:
+        """
+        Creates the signature models for the given routes.
+
+        Args:
+            route: The route for the signature model to be created.
+        """
+        if isinstance(route, (Include, Host)):
+            for _route in route.routes:
+                self.create_signature_models(_route)
+
+        if isinstance(route, (Gateway, WebhookGateway)):
+            if not route.handler.parent:  # pragma: no cover
+                route.handler.parent = route  # type: ignore
+
+            if not is_class_and_subclass(route.handler, View) and not isinstance(
+                route.handler, View
+            ):
+                route.handler.create_signature_model()
+
+        if isinstance(route, WebSocketGateway):
+            route.handler.create_signature_model(is_websocket=True)
+
+    def validate_root_route_parent(
+        self,
+        value: Union["Router", "Include", "Gateway", "WebSocketGateway", "WebhookGateway"],
+        override: bool = False,
+    ) -> None:
+        """
+        Handles everything parent from the root. When in the root, the parent must be setup.
+        Appends the route path if exists.
+        """
+        # Getting the value of the router for the path
+        value.path = clean_path(self.path + getattr(value, "path", "/"))
+        if isinstance(value, (Include, Gateway, WebSocketGateway, WebSocketGateway)):
+            if not value.parent and not override:
+                value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
+
+        if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
+            if not is_class_and_subclass(value.handler, View) and not isinstance(
+                value.handler, View
+            ):
+                if not value.handler.parent:
+                    value.handler.parent = value  # type: ignore
+            else:
+                if not value.handler.parent:  # pragma: no cover
+                    value(parent=self)  # type: ignore
+
+                handler: View = cast("View", value.handler)
+                route_handlers = handler.get_route_handlers()
+                for route_handler in route_handlers:
+                    gateway = (
+                        Gateway
+                        if not isinstance(route_handler, WebSocketHandler)
+                        else WebSocketGateway
+                    )
+
+                    gate = gateway(
+                        path=value.path,
+                        handler=route_handler,
+                        name=route_handler.fn.__name__,
+                        middleware=value.middleware,
+                        interceptors=value.interceptors,
+                        permissions=value.permissions,
+                        exception_handlers=value.exception_handlers,
+                    )
+
+                    if isinstance(gate, (Gateway, WebhookGateway)):
+                        include_in_schema = (
+                            value.include_in_schema
+                            if value.include_in_schema is not None
+                            else route_handler.include_in_schema
+                        )
+                        gate.include_in_schema = include_in_schema
+
+                    self.routes.append(gate)
+                self.routes.pop(self.routes.index(value))
+
+
+class Router(BaseRouter):
+    """
+    The `Router` object used by `Esmerald` upon instantiation.
+
+    The router is what is created by default when the `routes` parameter is
+    defined.
+
+    This object is complex and very powerful. Read more in detail about [the Router](https://esmerald.dev/routing/router/) and how to use it.
+
+    """
+
+    def add_apiview(
+        self,
+        value: Annotated[
+            Union["Gateway", "WebSocketGateway"],
+            Doc(
+                """
+                The `APIView` or similar to be added.
+                """
+            ),
+        ],
+    ) -> None:
+        """
+        Adds an [APIView](https://esmerald.dev/routing/apiview/) or related
+        to the application routing.
+
+        **Example**
+
+        ```python
+        from esmerald import Router, APIView, Gateway, get
+
+        class View(APIView):
+            path = "/"
+
+            @get(status_code=status_code)
+            async def hello(self) -> str:
+                return "Hello, World!"
+
+        gateway = Gateway(handler=View)
+
+        app = Router()
+        app.add_apiview(value=gateway)
+        ```
+        """
+        routes = []
+        if not value.handler.parent:  # pragma: no cover
+            value.handler(parent=self)  # type: ignore
+
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
+        for route_handler in route_handlers:
+            gateway = (
+                Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
+            )
+            gate = gateway(
+                path=value.path,
+                handler=route_handler,
+                name=route_handler.path,
+                middleware=value.middleware,
+                permissions=value.permissions,
+                exception_handlers=value.exception_handlers,
+            )
+            self.routes.append(gate)
+            routes.append(gate)
+
+        for route in routes or []:
+            self.create_signature_models(route)
+        self.activate()
+
+    def add_route(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        handler: Annotated[
+            "HTTPHandler",
+            Doc(
+                """
+                An instance of [handler](https://esmerald.dev/routing/handlers/#http-handlers).
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> None:
+        """
+        Adds a [Route](https://esmerald.dev/routing/routes/)
+        to the application routing.
+
+        This is a dynamic way of adding routes on the fly.
+
+        **Example**
+
+        ```python
+        from esmerald import get
+
+        @get(status_code=status_code)
+        async def hello(self) -> str:
+            return "Hello, World!"
+
+        app = Esmerald()
+        app.add_route(path="/hello", handler=hello)
+        ```
+        """
+        if not isinstance(handler, HTTPHandler):
+            raise ImproperlyConfigured(
+                f"handler must be a instance of HTTPHandler and not {handler.__class__.__name__}. "
+                "Example: get(), put(), post(), delete(), patch(), route()."
+            )
+        gateway = Gateway(
+            path=self.path + path,
+            handler=handler,
+            name=name,
+            include_in_schema=include_in_schema,
+            dependencies=dependencies,
+            exception_handlers=cast("ExceptionHandlerMap", exception_handlers),
+            interceptors=interceptors,
+            permissions=permissions,
+            middleware=middleware,
+            deprecated=deprecated,
+        )
+        self.validate_root_route_parent(gateway)
+        self.create_signature_models(gateway)
+        self.routes.append(gateway)
+
+    def add_websocket_route(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        handler: Annotated[
+            "WebSocketHandler",
+            Doc(
+                """
+                An instance of [websocket handler](https://esmerald.dev/routing/handlers/#websocket-handler).
+                """
+            ),
+        ],
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+    ) -> None:
+        """
+        Adds a websocket [Route](https://esmerald.dev/routing/routes/)
+        to the application routing.
+
+        This is a dynamic way of adding routes on the fly.
+
+        **Example**
+
+        ```python
+        from esmerald import websocket
+
+        @websocket()
+        async def websocket_route(socket: WebSocket) -> None:
+            await socket.accept()
+            data = await socket.receive_json()
+
+            assert data
+            await socket.send_json({"data": "esmerald"})
+            await socket.close()
+
+        app = Esmerald()
+        app.add_websocket_route(path="/ws", handler=websocket_route)
+        ```
+        """
+        if not isinstance(handler, WebSocketHandler):
+            raise ImproperlyConfigured(
+                f"handler must be a instance of WebSocketHandler and not {handler.__class__.__name__}. "
+                "Example: websocket()."
+            )
+        websocket_gateway = WebSocketGateway(
+            path=path,
+            handler=handler,
+            name=name,
+            dependencies=dependencies,
+            exception_handlers=exception_handlers,
+            interceptors=interceptors,
+            permissions=permissions,
+            middleware=middleware,
+        )
+        self.validate_root_route_parent(websocket_gateway)
+        self.create_signature_models(websocket_gateway)
+        self.routes.append(websocket_gateway)
+
 
 class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
     __slots__ = (
@@ -446,6 +989,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "_permissions",
         "_dependencies",
         "_response_handler",
+        "_middleware",
         "methods",
         "status_code",
         "content_encoding",
@@ -466,7 +1010,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
-        "raise_exceptions",
     )
 
     def __init__(
@@ -496,7 +1039,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
         """
         Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
@@ -556,12 +1098,12 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.responses = responses or {}
         self.content_encoding = content_encoding
         self.content_media_type = content_media_type
-        self.raise_exceptions = raise_exceptions
 
         self.fn: Optional["AnyCallable"] = None
         self.app: Optional["ASGIApp"] = None
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
+        self._middleware: List["Middleware"] = []
 
         if self.responses:
             self.validate_responses(responses=self.responses)
@@ -765,6 +1307,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         "_permissions",
         "_dependencies",
         "_response_handler",
+        "_middleware",
         "methods",
         "status_code",
         "content_encoding",
@@ -785,7 +1328,6 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
-        "raise_exceptions",
     )
 
     def __init__(
@@ -815,7 +1357,6 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
     ) -> None:
         _path: str = None
         if not path:
@@ -843,7 +1384,6 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -936,7 +1476,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
-        websocket = WebSocket[Any, Any](scope=scope, receive=receive, send=send)
+        websocket = WebSocket(scope=scope, receive=receive, send=send)
         if self.get_permissions():
             await self.allow_connection(connection=websocket)
 
@@ -948,7 +1488,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         else:
             await fn(**kwargs)
 
-    async def get_kwargs(self, websocket: WebSocket[Any, Any]) -> Any:
+    async def get_kwargs(self, websocket: WebSocket) -> Any:
         """Resolves the required kwargs from the request data.
 
         Args:
@@ -970,16 +1510,14 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
 class Include(Mount):
     """
-    Esmerald version of the classic mount from Starlette but extends it further
-    to contemplate the includes.
+    `Include` object class that allows scalability and modularity
+    to happen with elegance.
 
-    Handle with specific includes from the URLs.
+    Read more about the [Include](https://esmerald.dev/routing/routes/#include) to understand
+    what can be done.
 
     Include manages routes as a list or as a namespace but not both or a
-    ImproperlyConfigured is raised.
-
-    If the app is an Esmerald or ChildEsmerald, then the parent is set to be the include
-    itself.
+    `ImproperlyConfigured` is raised.
     """
 
     __slots__ = (
@@ -995,25 +1533,314 @@ class Include(Mount):
         "middleware",
         "deprecated",
         "security",
+        "tags",
     )
 
     def __init__(
         self,
-        path: Optional[str] = None,
-        app: Optional["ASGIApp"] = None,
-        name: Optional[str] = None,
-        routes: Optional[Sequence[Union["APIGateHandler", "Include"]]] = None,
-        namespace: Optional[str] = None,
-        pattern: Optional[str] = None,
-        parent: Optional[Union["Self", "Router"]] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[Sequence["Interceptor"]] = None,
-        permissions: Optional[Sequence["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
-        include_in_schema: Optional[bool] = True,
-        deprecated: Optional[bool] = None,
-        security: Optional[Sequence["SecurityScheme"]] = None,
+        path: Annotated[
+            Optional[str],
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+
+                **Example**
+
+                ```python
+                Include()
+                ```
+
+                **Example with parameters**
+
+                ```python
+                Include(path="/{age: int}")
+                ```
+                """
+            ),
+        ] = None,
+        app: Annotated[
+            Optional["ASGIApp"],
+            Doc(
+                """
+                An application can be anything that is treated as an ASGI application.
+                For example, it can be a [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application), another `Esmerald`, a [Router](https://esmerald.dev/routing/router/#router-class) or even an external [WSGI application](https://esmerald.dev/wsgi/) (Django, Flask...)
+
+                The app is a parameter that makes the Include extremely powerful when it comes
+                to integrate with ease with whatever Python stack you want and need.
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, ChildEsmerald, Include
+
+                Esmerald(
+                    routes=[
+                        Include('/child', app=ChildEsmerald(...))
+                    ]
+                )
+                ```
+
+                **Example with a WSGI framework**
+
+                ```python
+                from flask import Flask, escape, request
+
+                from esmerald import Esmerald, Gateway, Include, Request, get
+                from esmerald.middleware import WSGIMiddleware
+
+                flask_app = Flask(__name__)
+
+
+                @flask_app.route("/")
+                def flask_main():
+                    name = request.args.get("name", "Esmerald")
+                    return f"Hello, {escape(name)} from your Flask integrated!"
+
+
+                @get("/home/{name:str}")
+                async def home(request: Request) -> dict:
+                    name = request.path_params["name"]
+                    return {"name": escape(name)}
+
+
+                app = Esmerald(
+                    routes=[
+                        Gateway(handler=home),
+                        Include("/flask", WSGIMiddleware(flask_app)),
+                    ]
+                )
+                ```
+
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                """
+            ),
+        ] = None,
+        routes: Annotated[
+            Optional[Sequence[Union["APIGateHandler", "Include"]]],
+            Doc(
+                """
+                A global `list` of esmerald routes. Those routes may vary and those can
+                be `Gateway`, `WebSocketGateWay` or even another `Include`.
+
+                This is also an entry-point for the routes of the Include
+                but it **does not rely on only one [level](https://esmerald.dev/application/levels/)**.
+
+                Read more about how to use and leverage
+                the [Esmerald routing system](https://esmerald.dev/routing/routes/).
+
+                **Example**
+
+                ```python
+                from esmerald import Esmerald, Gateway, Request, get, Include
+
+
+                @get()
+                async def homepage(request: Request) -> str:
+                    return "Hello, home!"
+
+
+                @get()
+                async def another(request: Request) -> str:
+                    return "Hello, another!"
+
+                app = Esmerald(
+                    routes=[
+                        Gateway(handler=homepage)
+                        Include("/nested", routes=[
+                            Gateway(handler="/another")
+                        ])
+                    ]
+                )
+                ```
+
+                !!! Note
+                    The Include is very powerful and this example
+                    is not enough to understand what more things you can do.
+                    Read in [more detail](https://esmerald.dev/routing/routes/#include) about this.
+                """
+            ),
+        ] = None,
+        namespace: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A string with a qualified namespace from where the URLs should be loaded.
+
+                The namespace is an alternative to `routes` parameter. When a `namespace` is
+                specified and a routes as well, an `ImproperlyCOnfigured` exception is raised as
+                it can only be one or another.
+
+                The `namespace` can be extremely useful as it avoids the imports from the top
+                of the file that can lead to `partially imported` errors.
+
+                When using a `namespace`, the `Include` will look for the default `route_patterns` list in the imported namespace (object) unless a different `pattern` is specified.
+
+                **Example**
+
+                Assuming there is a file with some routes located at `myapp/auth/urls.py`.
+
+                ```python title="myapp/auth/urls.py"
+                from esmerald import Gateway
+                from .view import welcome, create_user
+
+                route_patterns = [
+                    Gateway(handler=welcome, name="welcome"),
+                    Gateway(handler=create_user, name="create-user"),
+                ]
+                ```
+
+                Using the `namespace` to import the URLs.
+
+                ```python
+                from esmerald import Include
+
+                Include("/auth", namespace="myapp.auth.urls")
+                ```
+                """
+            ),
+        ] = None,
+        pattern: Annotated[
+            Optional[str],
+            Doc(
+                """
+                A string `pattern` information from where the urls shall be read from.
+
+                By default, the when using the `namespace` it will lookup for a `route_patterns`
+                but somethimes you might want to opt for a different name and this is where the
+                `pattern` comes along.
+
+                **Example**
+
+                Assuming there is a file with some routes located at `myapp/auth/urls.py`.
+                The urls will be placed inside a `urls` list.
+
+                ```python title="myapp/auth/urls.py"
+                from esmerald import Gateway
+                from .view import welcome, create_user
+
+                urls = [
+                    Gateway(handler=welcome, name="welcome"),
+                    Gateway(handler=create_user, name="create-user"),
+                ]
+                ```
+
+                Using the `namespace` to import the URLs.
+
+                ```python
+                from esmerald import Include
+
+                Include("/auth", namespace="myapp.auth.urls", pattern="urls")
+                ```
+                """
+            ),
+        ] = None,
+        parent: Annotated[
+            Optional["ParentType"],
+            Doc(
+                """
+                Who owns the Gateway. If not specified, the application automatically it assign it.
+
+                This is directly related with the [application levels](https://esmerald.dev/application/levels/).
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional["Dependencies"],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence["Interceptor"]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence["Permission"]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional["ExceptionHandlerMap"],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List["Middleware"]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+
+                This will add all the routes of the Include even those nested (Include containing more Includes.)
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Include and all of its routes and to display it in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+        security: Annotated[
+            Optional[Sequence["SecurityScheme"]],
+            Doc(
+                """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+            ),
+        ] = None,
+        tags: Annotated[
+            Optional[Sequence[str]],
+            Doc(
+                """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+            ),
+        ] = None,
     ) -> None:
         self.path = path
         if not path:
@@ -1050,6 +1877,7 @@ class Include(Mount):
         self.response_headers = None
         self.parent = parent
         self.security = security or []
+        self.tags = tags or []
 
         if routes:
             routes = self.resolve_route_path_handler(routes)
@@ -1065,9 +1893,9 @@ class Include(Mount):
 
         for _middleware in self.middleware:
             if isinstance(_middleware, StarletteMiddleware):  # pragma: no cover
-                include_middleware.append(_middleware)  # type: ignore
+                include_middleware.append(_middleware)
             else:
-                include_middleware.append(
+                include_middleware.append(  # type: ignore
                     StarletteMiddleware(cast("Type[StarletteMiddleware]", _middleware))
                 )
 
@@ -1078,7 +1906,7 @@ class Include(Mount):
             app=app,
             routes=routes,
             name=name,
-            middleware=cast("Sequence[StarletteMiddleware]", include_middleware),
+            middleware=include_middleware,
         )
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
@@ -1109,9 +1937,6 @@ class Include(Mount):
 
         if isinstance(route, (Gateway, WebSocketGateway)):
             middlewares.extend(route.middleware)
-            if route.handler.middleware:
-                middlewares.extend(route.handler.middleware)
-
         return middlewares
 
     def resolve_route_path_handler(

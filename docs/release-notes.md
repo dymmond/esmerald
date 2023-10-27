@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Release Notes
 
 ## 2.2.0
@@ -11,7 +16,7 @@
 
 -  Allow importing from from string into `Factory`. [#179](https://github.com/dymmond/esmerald/pull/179) by [@tarsil](https://github.com/tarsil).
 -  New security objects for OpenAPI documentation.
--  New [OpenAPI][./openapi.md] documentation describing the ways of using it and what is available with examples.
+-  New [OpenAPI](./openapi.md) documentation describing the ways of using it and what is available with examples.
 -  New [SimpleAPIView](./routing/apiview.md#simpleapiview) supported.
 -  New [CreateAPIView](./routing/apiview.md#createapiview) supported.
 -  New [ReadAPIView](./routing/apiview.md#readapiview) supported.

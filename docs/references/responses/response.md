@@ -1,0 +1,3 @@
+# **`Response`** class
+
+::: esmerald.Response

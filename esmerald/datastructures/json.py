@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
+from typing_extensions import Annotated, Doc
+
 from esmerald.datastructures.base import ResponseContainer  # noqa
 from esmerald.enums import MediaType
 from esmerald.responses import JSONResponse  # noqa
@@ -13,9 +15,31 @@ class JSON(ResponseContainer[JSONResponse]):
     Returns a wrapper of a JSONResponse.
     """
 
-    content: Optional[Dict[str, Any]] = None
-    status_code: Optional[int] = None
-    media_type: str = "application/json"
+    content: Annotated[
+        Optional[Dict[str, Any]],
+        Doc(
+            """
+            The content being sent to the response.
+            """
+        ),
+    ] = None
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
+            The status code of the response. It will default to the
+            [handler](https://esmerald.dev/routing/handlers/) if none is provided.
+            """
+        ),
+    ] = None
+    media_type: Annotated[
+        str,
+        Doc(
+            """
+            The media type of the response.
+            """
+        ),
+    ] = "application/json"
 
     def __init__(
         self,

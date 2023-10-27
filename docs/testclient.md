@@ -11,6 +11,10 @@ This section requires the esmerald testing suite to be installed. You can do it 
 $ pip install esmerald[test]
 ```
 
+## API Reference
+
+Check the [API Reference for the test client](./references/test-client.md) to understand more.
+
 ## The test client
 
 ```python

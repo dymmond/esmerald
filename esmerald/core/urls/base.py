@@ -59,12 +59,6 @@ def include(
         router_patterns = [
             Router(path='/', routes=[include('myapp.routes', pattern='myapp_urls')])
         ]
-
-
-    Args:
-        namespace (Any): Example: 'mymodule.urls'
-        pattern (Optional[str], optional): The name of the list to be read from the
-        module. Defaults to `router_patterns`.
     """
     if not isinstance(arg, str):
         raise ImproperlyConfigured("The value should be a string with the format <module>.<file>")

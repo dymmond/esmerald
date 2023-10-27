@@ -16,25 +16,9 @@ of those same routes and therefore all the available parameters such as [permiss
 [dependencies](../dependencies.md) and almost every other parameter available in the handlers are also available
 in the APIView.
 
-**Parameters**:
+### Parameters
 
-* **path** - The path for the APIView.
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
-requests (HTTP and Websockets).
-* **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
-top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
-internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-* **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
-injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
-functions on an application top level. Exception handler callables should be of the form of
-`handler(request, exc) -> response` and may be be either standard functions, or async functions.
-* **response_class** - Custom subclass of [Response](../responses.md) to be used as application application response
-class.
-* **response_cookies** - List of [cookies](../datastructures.md) objects.
-* **response_headers** - Mapping dictionary of [headers](../datastructures.md) objects.
-* **tags** - List of tags to include in the OpenAPI schema.
+All the parameters and defaults are available in the [View Reference](../references/routing/view.md).
 
 ## APIView routing
 

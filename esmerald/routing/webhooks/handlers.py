@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Type, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Union
 
 from starlette import status
 
 from esmerald.enums import HttpMethod, MediaType
-from esmerald.exceptions import HTTPException, ImproperlyConfigured
+from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.permissions.types import Permission
 from esmerald.routing.router import WebhookHandler
@@ -49,7 +49,6 @@ class whget(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -75,7 +74,6 @@ class whget(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -105,7 +103,6 @@ class whead(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -131,7 +128,6 @@ class whead(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -161,7 +157,6 @@ class whoptions(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -187,7 +182,6 @@ class whoptions(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -217,7 +211,6 @@ class whtrace(WebhookHandler):  # pragma: no cover
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -243,7 +236,6 @@ class whtrace(WebhookHandler):  # pragma: no cover
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -273,7 +265,6 @@ class whpost(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -299,7 +290,6 @@ class whpost(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -329,7 +319,6 @@ class whput(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -355,7 +344,6 @@ class whput(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -385,7 +373,6 @@ class whpatch(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -411,7 +398,6 @@ class whpatch(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -441,7 +427,6 @@ class whdelete(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -467,7 +452,6 @@ class whdelete(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )
@@ -498,7 +482,6 @@ class whroute(WebhookHandler):
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
         operation_id: Optional[str] = None,
-        raise_exceptions: Optional[List[Type["HTTPException"]]] = None,
         response_description: Optional[str] = SUCCESSFUL_RESPONSE,
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
     ) -> None:
@@ -541,7 +524,6 @@ class whroute(WebhookHandler):
             deprecated=deprecated,
             security=security,
             operation_id=operation_id,
-            raise_exceptions=raise_exceptions,
             response_description=response_description,
             responses=responses,
         )

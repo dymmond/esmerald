@@ -44,7 +44,7 @@ from .routing.webhooks import (
     whroute,
     whtrace,
 )
-from .websockets import WebSocket, WebSocketDisconnect
+from .websockets import WebSocket, WebSocketDisconnect, WebSocketState
 
 __all__ = [
     "AllowAny",
@@ -104,6 +104,7 @@ __all__ = [
     "WebSocket",
     "WebSocketDisconnect",
     "WebSocketGateway",
+    "WebSocketState",
     "delete",
     "get",
     "head",

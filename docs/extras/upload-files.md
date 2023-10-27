@@ -119,3 +119,7 @@ from esmerald.datastructures import File # datastructure
 
 from esmerald.params import File # param
 ```
+
+## API Reference
+
+Read more about the `UploadFile` in the [API Reference](../references/uploadfile.md)

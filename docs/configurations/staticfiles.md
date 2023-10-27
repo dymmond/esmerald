@@ -1,7 +1,7 @@
 # StaticFilesConfig
 
-StaticFilesConfig is simple set of configurations that when passed enables the built-in middleware of Esmerald.
-When a StaticFilesConfig object is passed to an application instance, it will automatically start the `SessionMiddleware`.
+StaticFilesConfig is simple set of configurations that when passed enables the built-in of Esmerald.
+When a StaticFilesConfig object is passed to an application instance, it will enable the static files serving.
 
 !!! Check
     StaticFiles are considereed an `app` and they are pure Starlette app so using Starlette StaticFiles
@@ -29,25 +29,7 @@ Another example
 
 ## Parameters
 
-* **path** - The path for the statics.
-
-    <sup>Default: '/'</sup>
-
-* **directory** - The directory for the statics in the format of a path like. E.g: `/static`.
-
-    <sup>Default: 'None'</sup>
-
-* **html** - Run in HTML mode. Automatically loads index.html for directories if such file exist.
-
-    <sup>Default: 'False'</sup>
-
-* **packages** - A list of strings or list of tuples of strings of python packages.
-
-    <sup>Default: 'None'</sup>
-
-* **check_dir** - Ensure that the directory exists upon instantiation.
-
-    <sup>Default: 'True'</sup>
+All the parameters and defaults are available in the [StaticFilesConfig Reference](../references/configurations/static_files.md).
 
 ## StaticFilesConfig and application settings
 

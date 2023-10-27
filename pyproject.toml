@@ -39,7 +39,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
 ]
 dependencies = [
-    "a2wsgi>=1.7.0,<2",
+    "a2wsgi>=1.8.0,<2",
     "aiofiles>=0.8.0,<24",
     "anyio>=3.7.1,<5.0.0",
     "awesome-slugify>=1.6.5,<2",
@@ -135,13 +135,14 @@ dev = [
 ]
 
 doc = [
+    "griffe-typingdoc>=0.2.2",
     "mkautodoc>=0.2.0,<0.3.0",
     "mkdocs>=1.1.2,<2.0.0",
     "mkdocs-material>=9.4.4,<10.0.0",
     "mdx-include>=1.4.2,<2.0.0",
     "mkdocs-markdownextradata-plugin>=0.2.5,<0.3.0",
     "mkdocs-meta-descriptions-plugin>=2.3.0",
-    "mkdocstrings>=0.20.0,<0.30.0",
+    "mkdocstrings[python]>=0.23.0,<0.30.0",
     "pyyaml>=6.0,<7.0.0",
 ]
 

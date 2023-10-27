@@ -3,7 +3,6 @@ from typing import List
 from esmerald import Request, get
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.openapi.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
-from esmerald.openapi.security.http import Basic, Bearer, Digest
 
 from .daos import UserDAO
 from .schemas import Error, UserOut

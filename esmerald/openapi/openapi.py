@@ -22,7 +22,6 @@ from esmerald.openapi.models import (
     Operation,
     Parameter,
     SecurityScheme,
-    Tag,
 )
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
@@ -113,12 +112,12 @@ def get_fields_from_routes(
 
 
 def get_openapi_operation(
-    *, route: Union[router.HTTPHandler, Any], method: str, operation_ids: Set[str]
+    *, route: Union[router.HTTPHandler, Any], operation_ids: Set[str]
 ) -> Dict[str, Any]:  # pragma: no cover
     operation = Operation()
 
     if route.tags:
-        operation.tags = cast("List[str]", route.tags)
+        operation.tags = route.get_handler_tags()
 
     if route.summary:
         operation.summary = route.summary
@@ -240,9 +239,7 @@ def get_openapi_path(
 
     # For each method
     for method in route.handler.methods:
-        operation = get_openapi_operation(
-            route=handler, method=method, operation_ids=operation_ids
-        )
+        operation = get_openapi_operation(route=handler, operation_ids=operation_ids)
         # If the parent if marked as deprecated, it takes precedence
         if is_deprecated or route.deprecated:
             operation["deprecated"] = is_deprecated if is_deprecated else route.deprecated
@@ -411,7 +408,7 @@ def get_openapi(
     summary: Optional[str] = None,
     description: Optional[str] = None,
     routes: Sequence[BaseRoute],
-    tags: Optional[List[Tag]] = None,
+    tags: Optional[List[str]] = None,
     servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
     terms_of_service: Optional[Union[str, AnyUrl]] = None,
     contact: Optional[Contact] = None,

@@ -12,6 +12,7 @@ from starlette.responses import PlainTextResponse as PlainTextResponse  # noqa
 from starlette.responses import RedirectResponse as RedirectResponse  # noqa
 from starlette.responses import Response as StarletteResponse  # noqa
 from starlette.responses import StreamingResponse as StreamingResponse  # noqa
+from typing_extensions import Annotated, Doc
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
@@ -24,15 +25,85 @@ T = TypeVar("T")
 
 
 class Response(StarletteResponse, Generic[T]):
+    """
+    Default `Response` object from Esmerald where it can be as the
+    return annotation of a [handler](https://esmerald.dev/routing/handlers/).
+
+    Esmerakd automatically will understand what time of response is going to be
+    used and parse all the details automatically.
+
+    **Example**
+
+    ```python
+    from pydantic import BaseModel
+
+    from esmerald import Esmerald, Gateway, Response, get
+    from esmerald.datastructures import Cookie
+
+
+    @get(path="/me")
+    async def home() -> Response:
+        return Response(
+            Item(id=1, sku="sku1238"),
+            headers={"SKY-HEADER": "sku-xyz"},
+            cookies=[Cookie(key="sku", value="a-value")],
+        )
+
+
+    Esmerald(routes=[Gateway(handler=home)])
+    ```
+    """
+
     def __init__(
         self,
-        content: T,
+        content: Annotated[
+            Any,
+            Doc(
+                """
+                Any content being sent to the response.
+                """
+            ),
+        ],
         *,
         status_code: int = status.HTTP_200_OK,
         media_type: Optional[Union["MediaType", str]] = MediaType.JSON,
-        background: Optional[Union["BackgroundTask", "BackgroundTasks"]] = None,
+        background: Annotated[
+            Optional[Union["BackgroundTask", "BackgroundTasks"]],
+            Doc(
+                """
+                Any instance of a [BackgroundTask or BackgroundTasks](https://esmerald.dev/background-tasks/).
+                """
+            ),
+        ] = None,
         headers: Optional[Dict[str, Any]] = None,
-        cookies: Optional["ResponseCookies"] = None,
+        cookies: Annotated[
+            Optional["ResponseCookies"],
+            Doc(
+                """
+                A sequence of `esmerald.datastructures.Cookie` objects.
+
+                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
+
+                **Example**
+
+                ```python
+                from esmerald import Response
+                from esmerald.datastructures import Cookie
+
+                response_cookies=[
+                    Cookie(
+                        key="csrf",
+                        value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz",
+                        max_age=3000,
+                        httponly=True,
+                    )
+                ]
+
+                Response(response_cookies=response_cookies)
+                ```
+                """
+            ),
+        ] = None,
     ) -> None:
         super().__init__(
             content=content,

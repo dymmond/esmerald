@@ -6,7 +6,7 @@ tasks to run **after** the returning response.
 This can be useful for those operations that need to happen after the request without blocking the
 client (the client doesn't have to wait to complete) from receiving that same response.
 
-Example: 
+Example:
 
 * Registering a user in the system and send an email confirming the registration.
 * Processing a file that can take "some time". Simply return a HTTP 202 and process the file in the
@@ -37,6 +37,7 @@ There are also two ways of passing via handlers:
         - [Using a list](#using-a-list-1)
         - [Using the add\_task](#using-the-add_task)
     - [Technical information](#technical-information)
+    - [API Reference](#api-reference)
 
 ### Using a single instance
 
@@ -113,3 +114,7 @@ the `BackgroundTask` and Esmerald will know how to handle those for you.
 
 For more details about these objects, you can see in
 [Starlette official docs for Background Tasks](https://www.starlette.io/background/).
+
+## API Reference
+
+Learn more about the `BackgroundTask` by checking the [API Reference](http://localhost:8000/references/background/).

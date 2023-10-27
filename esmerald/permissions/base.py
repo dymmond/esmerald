@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
+from typing_extensions import Annotated, Doc
+
 from esmerald.exceptions import ImproperlyConfigured
 
 if TYPE_CHECKING:
@@ -97,16 +99,94 @@ class BasePermissionMetaclass(BaseOperationHolder, type):  # type: ignore[misc,u
 
 class BasePermission(metaclass=BasePermissionMetaclass):
     """
-    A base class from which all permission classes should inherit.
+    `BasePermission` class object. The entry-point for **all** permissions
+    used by `Esmerald.
+
+    When creating a permission or a set of permissions for the application,
+    those **must** inherit from the `BasePermission` and implement the `has_permission`.
+
+    **Example**
+
+    ```python
+    from esmerald import BasePermission, Request
+    from esmerald.types import APIGateHandler
+
+
+    class IsProjectAllowed(BasePermission):
+        '''
+        Permission to validate if has access to a given project
+        '''
+
+        async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+            allow_project = request.headers.get("allow_access")
+            return bool(allow_project)
+    ```
     """
 
     def has_permission(
         self,
-        request: "Request",
-        apiview: "APIGateHandler",
+        request: Annotated[
+            "Request",
+            Doc(
+                """
+                The request object being passed through the request.
+                """
+            ),
+        ],
+        apiview: Annotated[
+            "APIGateHandler",
+            Doc(
+                """
+                A [handler](https://esmerald.dev/routing/handlers/) usually
+                corresponding the [level](https://esmerald.dev/application/levels/)
+                where the permission is placed.
+                """
+            ),
+        ],
     ) -> bool:
         """
-        Return `True` if permission is granted, `False` otherwise.
+        **Mandatory** functionality and entry-point for verifying
+        if the resource is available or not.
+
+        The `has_permission` can be both `sync` and `async` depending
+        of the needs of application.
+
+        Returns:
+            Boolean indicating if has or not permission to access the specific resource.
+
+        **Example with `async`**
+
+        ```python
+        from esmerald import BasePermission, Request
+        from esmerald.types import APIGateHandler
+
+
+        class IsProjectAllowed(BasePermission):
+            '''
+            Permission to validate if has access to a given project
+            '''
+
+            async def has_permission(self, request: "Request", apiview: "APIGateHandler") -> bool:
+                allow_project = request.headers.get("allow_access")
+                return bool(allow_project)
+        ```
+
+        **Example with `sync`**
+
+        ```python
+        from esmerald import BasePermission, Request
+        from esmerald.types import APIGateHandler
+
+
+        class IsProjectAllowed(BasePermission):
+            '''
+            Permission to validate if has access to a given project
+            '''
+
+            def has_permission(self, request: "Request", apiview: "APIGateHandler") -> bool:
+                allow_project = request.headers.get("allow_access")
+                return bool(allow_project)
+        ```
         """
         return True
 

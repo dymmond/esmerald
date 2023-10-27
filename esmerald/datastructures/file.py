@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union, cast
 
 from pydantic import FilePath, field_validator, model_validator  # noqa
 from starlette.responses import FileResponse  # noqa
+from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer
 from esmerald.enums import MediaType
@@ -12,9 +13,30 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class File(ResponseContainer[FileResponse]):
-    path: FilePath
-    filename: str
-    stat_result: Optional[os.stat_result] = None
+    path: Annotated[
+        FilePath,
+        Doc(
+            """
+            The path to the file to download.
+            """
+        ),
+    ]
+    filename: Annotated[
+        str,
+        Doc(
+            """
+            The name of the file to be added to the `Content-Disposition` attachment.
+            """
+        ),
+    ]
+    stat_result: Annotated[
+        Optional[os.stat_result],
+        Doc(
+            """
+            The equivalent of the `os.stat_result`.
+            """
+        ),
+    ] = None
 
     @model_validator(mode="before")
     def validate_fields(cls, values: Dict[str, Any]) -> Any:

@@ -14,6 +14,7 @@ from typing import (
 )
 
 from starlette.responses import StreamingResponse  # noqa
+from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
 from esmerald.enums import MediaType
@@ -23,12 +24,19 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Stream(ResponseContainer[StreamingResponse]):
-    iterator: Union[
-        Iterator[Union[str, bytes]],
-        AsyncIterator[Union[str, bytes]],
-        AsyncGenerator[Union[str, bytes], Any],
-        Callable[[], AsyncGenerator[Union[str, bytes], Any]],
-        Callable[[], Generator[Union[str, bytes], Any, Any]],
+    iterator: Annotated[
+        Union[
+            Iterator[Union[str, bytes]],
+            AsyncIterator[Union[str, bytes]],
+            AsyncGenerator[Union[str, bytes], Any],
+            Callable[[], AsyncGenerator[Union[str, bytes], Any]],
+            Callable[[], Generator[Union[str, bytes], Any, Any]],
+        ],
+        Doc(
+            """
+            Any iterable function.
+            """
+        ),
     ]
 
     def to_response(

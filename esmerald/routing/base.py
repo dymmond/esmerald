@@ -594,6 +594,21 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             security_schemes.extend(layer.security or [])
         return security_schemes
 
+    def get_handler_tags(self) -> List[str]:
+        """
+        Returns all the tags associated with the handler
+        by checking the parents as well.
+        """
+        tags: List[str] = []
+        for layer in self.parent_levels:
+            tags.extend(layer.tags or [])
+
+        tags_clean: List[str] = []
+        for tag in tags:
+            if tag not in tags_clean:
+                tags_clean.append(tag)
+        return tags_clean
+
 
 class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover
     def get_interceptors(self) -> List["AsyncCallable"]:

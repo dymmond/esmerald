@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Optional, Sequence, Union
 
 from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 from pydantic import AnyUrl, BaseModel
+from typing_extensions import Annotated, Doc
 
 from esmerald.openapi.docs import (
     get_redoc_html,
@@ -9,7 +10,7 @@ from esmerald.openapi.docs import (
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
-from esmerald.openapi.models import Contact, License, Tag
+from esmerald.openapi.models import Contact, License
 from esmerald.openapi.openapi import get_openapi
 from esmerald.requests import Request
 from esmerald.responses import HTMLResponse, JSONResponse
@@ -17,35 +18,314 @@ from esmerald.routing.handlers import get
 
 
 class OpenAPIConfig(BaseModel):
-    title: Optional[str] = None
-    version: Optional[str] = None
-    summary: Optional[str] = None
-    description: Optional[str] = None
-    contact: Optional[Contact] = None
-    terms_of_service: Optional[AnyUrl] = None
-    license: Optional[License] = None
-    security: Optional[List[SecurityScheme]] = None
-    servers: Optional[List[Dict[str, Union[str, Any]]]] = None
-    tags: Optional[List[Tag]] = None
-    openapi_version: Optional[str] = None
-    openapi_url: Optional[str] = None
-    root_path_in_servers: bool = True
-    docs_url: Optional[str] = None
-    redoc_url: Optional[str] = None
-    swagger_ui_oauth2_redirect_url: Optional[str] = None
-    redoc_js_url: Optional[str] = None
-    redoc_favicon_url: Optional[str] = None
-    swagger_ui_init_oauth: Optional[Dict[str, Any]] = None
-    swagger_ui_parameters: Optional[Dict[str, Any]] = None
-    swagger_js_url: Optional[str] = None
-    swagger_css_url: Optional[str] = None
-    swagger_favicon_url: Optional[str] = None
-    with_google_fonts: bool = True
-    stoplight_js_url: Optional[str] = None
-    stoplight_css_url: Optional[str] = None
-    stoplight_url: Optional[str] = None
-    stoplight_favicon_url: Optional[str] = None
-    webhooks: Optional[Sequence[Any]] = None
+    """
+    An instance of [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/).
+
+    This object is then used by Esmerald to create the [OpenAPI](https://esmerald.dev/openapi/) documentation.
+
+    **Note**: Here is where the defaults for Esmerald OpenAPI are overriden and if
+    this object is passed, then the previous defaults of the settings are ignored.
+
+    !!! Tip
+        This is the way you could override the defaults all in one go
+        instead of doing attribute by attribute.
+
+    **Example**
+
+    ```python
+    from esmerald import OpenAPIConfig
+
+    openapi_config = OpenAPIConfig(
+        title="Black Window",
+        openapi_url="/openapi.json",
+        docs_url="/docs/swagger",
+        redoc_url="/docs/redoc",
+    )
+
+    app = Esmerald(openapi_config=openapi_config)
+    ```
+
+    !!! Important
+        Esmerald when starting an application, checks the attributes and looks for an
+        `openapi_config` parameter.
+
+        If the parameter is not specified, `Esmerald` will automatically use the internal
+        settings system to generate the default OpenAPIConfig and populate the values.
+    """
+
+    title: Annotated[
+        Optional[str],
+        Doc(
+            """
+            Title of the application/API documentation.
+            """
+        ),
+    ] = None
+    version: Annotated[
+        Optional[str],
+        Doc(
+            """
+            The version of the API documentation.
+            """
+        ),
+    ] = None
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
+            Simple and short summary text of the application/API.
+            """
+        ),
+    ] = None
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
+            A longer and more descriptive explanation of the application/API documentation.
+            """
+        ),
+    ] = None
+    contact: Annotated[
+        Optional[Contact],
+        Doc(
+            """
+            API contact information. This is an OpenAPI schema contact, meaning, in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.contact.Contact`.
+            """
+        ),
+    ] = None
+    terms_of_service: Annotated[
+        Optional[AnyUrl],
+        Doc(
+            """
+            URL to a page that contains terms of service.
+            """
+        ),
+    ] = None
+    license: Annotated[
+        Optional[License],
+        Doc(
+            """
+            API Licensing information. This is an OpenAPI schema licence, meaning, in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.license.License`.
+            """
+        ),
+    ] = None
+    security: Annotated[
+        Optional[List[SecurityScheme]],
+        Doc(
+            """
+            API Security requirements information. This is an OpenAPI schema security, meaning, in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.security_requirement.SecurityScheme`.
+            """
+        ),
+    ] = None
+    servers: Annotated[
+        Optional[List[Dict[str, Union[str, Any]]]],
+        Doc(
+            """
+            A python list with dictionary compatible with OpenAPI specification.
+            """
+        ),
+    ] = None
+    tags: Annotated[
+        Optional[List[str]],
+        Doc(
+            """
+            A list of OpenAPI compatible tag (string) information.
+            """
+        ),
+    ] = None
+    openapi_version: Annotated[
+        Optional[str],
+        Doc(
+            """
+            The version of the OpenAPI being used. Esmerald uses the version 3.1.0 by
+            default and tis can be useful if you want to trick some of the existing tools
+            that require a lower version.
+            """
+        ),
+    ] = None
+    openapi_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            URL of the `openapi.json` in the format of a path.
+
+            Example: `/openapi.json.`
+            """
+        ),
+    ] = None
+    root_path_in_servers: Annotated[
+        bool,
+        Doc(
+            """
+            A `boolean` flag indicating if the root path should be included in the servers.
+            """
+        ),
+    ] = True
+    docs_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Swagger documentation
+            shall be accessed in the application.
+
+            Example: '/docs/swagger`.
+            """
+        ),
+    ] = None
+    redoc_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the ReDoc documentation
+            shall be accessed in the application.
+
+            Example: '/docs/swagger`.
+            """
+        ),
+    ] = None
+    swagger_ui_oauth2_redirect_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Swagger UI OAuth Redirect URL
+            shall be accessed in the application.
+
+            Example: `/docs/oauth2-redirect`.
+            """
+        ),
+    ] = None
+    redoc_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the ReDoc Javascript is located
+            and used within OpenAPI documentation,
+
+            Example: `https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js`.
+            """
+        ),
+    ] = None
+    redoc_favicon_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the ReDoc favicon is located
+            and used within OpenAPI documentation,
+
+            Example: `https://esmerald.dev/statics/images/favicon.ico`.
+            """
+        ),
+    ] = None
+    swagger_ui_init_oauth: Annotated[
+        Optional[Dict[str, Any]],
+        Doc(
+            """
+            String default relative URL where the Swagger Init Auth documentation
+            shall be accessed in the application.
+            """
+        ),
+    ] = None
+    swagger_ui_parameters: Annotated[
+        Optional[Dict[str, Any]],
+        Doc(
+            """
+            A mapping with parameters to be passed onto Swagger.
+            """
+        ),
+    ] = None
+    swagger_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            """
+        ),
+    ] = None
+    swagger_css_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the Swagger Javascript is located
+            and used within OpenAPI documentation,
+
+            Example: `https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui-bundle.min.js`.
+            """
+        ),
+    ] = None
+    swagger_favicon_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the Swagger favicon is located
+            and used within OpenAPI documentation,
+
+            Example: `https://esmerald.dev/statics/images/favicon.ico`.
+            """
+        ),
+    ] = None
+    with_google_fonts: Annotated[
+        bool,
+        Doc(
+            """
+            Boolean flag indicating if the google fonts shall be used
+            in the ReDoc OpenAPI Documentation.
+            """
+        ),
+    ] = True
+    stoplight_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            Boolean flag indicating if the google fonts shall be used
+            in the ReDoc OpenAPI Documentation.
+            """
+        ),
+    ] = None
+    stoplight_css_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the Stoplight CSS is located
+            and used within OpenAPI documentation,
+
+            Example: `https://unpkg.com/@stoplight/elements/styles.min.css`.
+            """
+        ),
+    ] = None
+    stoplight_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Stoplight documentation
+            shall be accessed in the application.
+
+            Example: `/docs/elements`.
+            """
+        ),
+    ] = None
+    stoplight_favicon_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the Stoplight favicon is located
+            and used within OpenAPI documentation,
+
+            Example: `https://esmerald.dev/statics/images/favicon.ico`.
+            """
+        ),
+    ] = None
+    webhooks: Annotated[
+        Optional[Sequence[Any]],
+        Doc(
+            """
+            This is the same principle of the `routes` but for OpenAPI webhooks.
+
+            Read more [about webhooks](https://esmerald.dev/routing/webhooks).
+
+            When a webhook is added, it will automatically add them into the
+            OpenAPI documentation.
+            """
+        ),
+    ] = None
 
     def openapi(self, app: Any) -> Dict[str, Any]:
         """Loads the OpenAPI routing schema"""
@@ -137,7 +417,7 @@ class OpenAPIConfig(BaseModel):
                     title=self.title + " - ReDoc",
                     redoc_js_url=self.redoc_js_url,
                     redoc_favicon_url=self.redoc_favicon_url,
-                    with_google_fonts=True,
+                    with_google_fonts=self.with_google_fonts,
                 )
 
             app.add_route(

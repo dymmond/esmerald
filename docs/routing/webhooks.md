@@ -65,11 +65,7 @@ from esmerald.routing.gateways import WebhookGateway
 
 #### Parameters
 
-* **path** - Altough is called path, it corresponds to the **name** of the webhook
-and it does not require a `/` at the beginning of it like a normal path would. E.g.: `subscription`.
-* **handler** - The [handler](#handlers) function of the webhook.
-* **include_in_schema** - Flag if the webhook should be included in the OpenAPI schema.
-* **deprecated** - Flag if the webhook is deprecated.
+All the parameters and defaults are available in the [WebhookGateway Reference](../references/routing/websocketgateway.md).
 
 ### Handlers
 

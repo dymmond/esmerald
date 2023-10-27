@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # OpenAPI
 
 Esmerald as mentioned across the documentation supports natively the automatic generation of the

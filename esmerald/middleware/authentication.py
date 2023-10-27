@@ -3,24 +3,67 @@ from typing import Any
 
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp, Receive, Scope, Send
+from typing_extensions import Annotated, Doc
 
-from esmerald.enums import ScopeType
 from esmerald.parsers import ArbitraryBaseModel
 from esmerald.protocols.middleware import MiddlewareProtocol
 
 
 class AuthResult(ArbitraryBaseModel):
-    user: Any
+    user: Annotated[
+        Any,
+        Doc(
+            """
+            Arbitrary user coming from the `authenticate` of the `BaseAuthMiddleware`
+            and can be assigned to the `request.user`.
+            """
+        ),
+    ]
 
 
 class BaseAuthMiddleware(ABC, MiddlewareProtocol):  # pragma: no cover
-    scopes = {ScopeType.HTTP, ScopeType.WEBSOCKET}
+    """
+    `BaseAuthMiddleware` is the object that you can implement if you
+    want to implement any `authentication` middleware with Esmerald.
 
-    def __init__(self, app: ASGIApp):
+    It is not mandatory to use it and you are free to implement your.
+
+    Esmerald being based on Starlette, also offers a simple but powerful
+    interface for handling `authentication` and [permissions](https://esmerald.dev/permissions/).
+
+    Once you have installed the `AuthenticationMiddleware` and implemented the
+    `authenticate`, the `request.user` will be available in any of your
+    endpoints.
+
+    Read more about how [Esmerald implements](https://esmerald.dev/middleware/middleware#baseauthmiddleware) the `BaseAuthMiddleware`.
+
+    When implementing the `authenticate`, you must assign the result into the
+    `AuthResult` object in order for the middleware to assign the `request.user`
+    properly.
+
+    The `AuthResult` is of type `esmerald.middleware.authentication.AuthResult`.
+    """
+
+    def __init__(
+        self,
+        app: Annotated[
+            ASGIApp,
+            Doc(
+                """
+                An ASGI type callable.
+                """
+            ),
+        ],
+    ):
         super().__init__(app)
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        Function callable that automatically will call the `authenticate` function
+        from any middleware subclassing the `BaseAuthMiddleware` and assign the `AuthUser` user
+        to the `request.user`.
+        """
         auth_result = await self.authenticate(HTTPConnection(scope))
         scope["user"] = auth_result.user
         await self.app(scope, receive, send)

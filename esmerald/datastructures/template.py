@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
+from typing_extensions import Annotated, Doc
+
 from esmerald.datastructures.base import ResponseContainer  # noqa
 from esmerald.enums import MediaType
 from esmerald.exceptions import TemplateNotFound  # noqa
@@ -13,16 +15,61 @@ class Template(ResponseContainer[TemplateResponse]):
     """
     Template allows to pass the original template name and an alternative in case of exception
     not found.
-
-    Args:
-        name: Template name
-        context: The context to be passed to the template
-        alternative_template: The alternative template to be rendered if the original doesn't exist.
     """
 
-    name: str
-    context: Optional[Dict[str, Any]] = {}
-    alternative_template: Optional[str] = None
+    name: Annotated[
+        str,
+        Doc(
+            """
+            The template name in the format of a *path*.
+
+            Example: `templates/base/index.html`
+            """
+        ),
+    ]
+    context: Annotated[
+        Optional[Dict[str, Any]],
+        Doc(
+            """
+            Any context that should be sent to the templates to be rendered.
+
+            **Example**
+
+            ```python
+            from esmerald import Esmerald, Gateway, Template, get
+            from esmerald.datastructures import Cookie, ResponseHeader
+
+
+            @get(
+                path="/home",
+                response_headers={"local-header": ResponseHeader(value="my-header")},
+                response_cookies=[
+                    Cookie(key="redirect-cookie", value="redirect-cookie"),
+                    Cookie(key="general-cookie", value="general-cookie"),
+                ],
+            )
+            def home() -> Template:
+                return Template(
+                    name="my-tem",
+                    context={"user": "me"},
+                    alternative_template=...,
+                )
+
+            ```
+            """
+        ),
+    ] = {}
+    alternative_template: Annotated[
+        Optional[str],
+        Doc(
+            """
+            An alternative template name if the `name` is not found.
+            This should also be in the format of a *path*.
+
+            Example: `templates/base/alternative_index.html`
+            """
+        ),
+    ] = None
 
     def to_response(
         self,

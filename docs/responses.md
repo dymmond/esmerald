@@ -54,6 +54,10 @@ Classic and generic `Response` that fits almost every single use case out there.
 Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
 unless you want to.
 
+## API Reference
+
+Check out the [API Reference for Response](./references/responses/response.md) for more details.
+
 ### JSON
 
 The classic JSON response for 99% of the responses used nowaday. The `JSON` returns a
@@ -62,6 +66,10 @@ The classic JSON response for 99% of the responses used nowaday. The `JSON` retu
 ```python
 {!> ../docs_src/responses/json.py !}
 ```
+
+## API Reference
+
+Check out the [API Reference for JSON](./references/responses/json.md) for more details.
 
 #### JSONResponse
 
@@ -77,6 +85,10 @@ or alternatively
 from esmerald.responses import JSONResponse
 ```
 
+## API Reference
+
+Check out the [API Reference for JSONResponse](./references/responses/json-response.md) for more details.
+
 ### OrJSON
 
 Super fast JSON serialization/deserialization response.
@@ -91,6 +103,10 @@ Super fast JSON serialization/deserialization response.
 !!! Check
     More details about the ORJSOM can be [found here](https://github.com/ijl/orjson).
 
+## API Reference
+
+Check out the [API Reference for OrJSON](./references/responses/orjson.md) for more details.
+
 #### ORJSONResponse
 
 You can always use directly the `ORJSONResponse` from Esmerald without using the wrapper.
@@ -98,6 +114,10 @@ You can always use directly the `ORJSONResponse` from Esmerald without using the
 ```python
 from esmerald.responses.encoders import ORJSONResponse
 ```
+
+## API Reference
+
+Check out the [API Reference for ORJSONResponse](./references/responses/orjson-response.md) for more details.
 
 ### UJSON
 
@@ -114,6 +134,10 @@ Another super fast JSON serialization/deserialization response.
     More details about the UJSON can be [found here](https://github.com/ultrajson/ultrajson).
     For JSONResponse the way of doing it the same as ORJSONResponse and UJSONResponse.
 
+## API Reference
+
+Check out the [API Reference for UJSON](./references/responses/ujson.md) for more details.
+
 #### UJSONResponse
 
 You can always use directly the `UJSONResponse` from Esmerald without using the wrapper.
@@ -121,6 +145,10 @@ You can always use directly the `UJSONResponse` from Esmerald without using the 
 ```python
 from esmerald.responses.encoders import UJSONResponse
 ```
+
+## API Reference
+
+Check out the [API Reference for UJSONResponse](./references/responses/ujson-response.md) for more details.
 
 ### Template
 
@@ -132,13 +160,9 @@ This response returns a `TemplateResponse`.
 {!> ../docs_src/responses/template.py !}
 ```
 
-**Parameters**:
+## API Reference
 
-* **name** - Template name/location. E.g.: `accounts/list.html`.
-* **context** - The dict context to be sent to the template.
-* **alternative_template** - Template name/location of an alternative template if the **name** of
-the original is not found.
-E.g.: If `accounts/list.html` is not found `alternative_template="base/list.html"`.
+Check out the [API Reference for Template](./references/responses/template.md) for more details.
 
 ### Redirect
 
@@ -150,9 +174,9 @@ This response returns a `ResponseRedirect`.
 {!> ../docs_src/responses/redirect.py !}
 ```
 
-**Parameters**:
+## API Reference
 
-* **path** - The url path to redirect.
+Check out the [API Reference for Redirect](./references/responses/redirect.md) for more details.
 
 ### File
 
@@ -162,10 +186,9 @@ The File response sends a file. This response returns a `FileResponse`.
 {!> ../docs_src/responses/file.py !}
 ```
 
-**Parameters**:
+## API Reference
 
-* **path** - The path to the file to download.
-* **filename** - The name of the file to be added to the `Content-Disposition` attachment.
+Check out the [API Reference for File](./references/responses/file.md) for more details.
 
 ### Stream
 
@@ -175,9 +198,9 @@ The Stream response uses the `StreamResponse`.
 {!> ../docs_src/responses/stream.py !}
 ```
 
-**Parameters**:
+## API Reference
 
-* **iterator** - Any iterable function.
+Check out the [API Reference for Stream](./references/responses/stream.md) for more details.
 
 ## Important notes
 
@@ -252,6 +275,10 @@ async def create() -> Union[None, ItemOut]:
 ```
 
 This will add an extra response description and details to your OpenAPI spec handler definition.
+
+### API Reference
+
+Check out the [API Reference for OpenAPIResponse](./references/responses/openapi-response.md) for more details.
 
 ### Important
 
