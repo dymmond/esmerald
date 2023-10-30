@@ -13,7 +13,7 @@ async def get_data(context: Context) -> Dict[str, Any]:
     return data
 
 
-def test_context():
+def test_context(test_client_factory):
     with create_client(routes=[Gateway(handler=get_data)]) as client:
         response = client.get("/")
 
@@ -29,7 +29,7 @@ async def get_context_route(context: Context) -> Dict[str, Any]:
     return data
 
 
-def test_context_route():
+def test_context_route(test_client_factory):
     with create_client(routes=[Gateway(handler=get_context_route)]) as client:
         response = client.get("/")
 
@@ -44,7 +44,7 @@ async def change_context(context: Context) -> Dict[str, Any]:
     return ctx.get_context_data()
 
 
-def test_add_to_context():
+def test_add_to_context(test_client_factory):
     with create_client(routes=[Gateway(handler=change_context)]) as client:
         response = client.get("/")
 
