@@ -2,7 +2,16 @@ from starlette import status
 
 from esmerald.enums import HttpMethod
 
-RESERVED_KWARGS = {"state", "headers", "cookies", "request", "socket", "data", "query"}
+RESERVED_KWARGS = {
+    "state",
+    "headers",
+    "cookies",
+    "request",
+    "socket",
+    "data",
+    "query",
+    "payload",
+}
 REQUIRED = "required"
 IS_DEPENDENCY = "is_dependency"
 SKIP_VALIDATION = "skip_validation"
@@ -17,6 +26,7 @@ REDIRECT_STATUS_CODES = {
 
 SOCKET = "socket"
 DATA = "data"
+PAYLOAD = "payload"
 REQUEST = "request"
 
 AVAILABLE_METHODS = [

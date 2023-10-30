@@ -36,7 +36,7 @@ from esmerald.openapi.utils import (
 from esmerald.params import Param
 from esmerald.routing import gateways, router
 from esmerald.typing import Undefined
-from esmerald.utils.constants import DATA
+from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.url import clean_path
 
@@ -95,7 +95,10 @@ def get_fields_from_routes(
             handler = cast(router.HTTPHandler, route.handler)
 
             # Get the data_field
-            if DATA in handler.signature_model.model_fields:
+            if (
+                DATA in handler.signature_model.model_fields
+                or PAYLOAD in handler.signature_model.model_fields
+            ):
                 data_field = handler.data_field
                 body_fields.append(data_field)
 

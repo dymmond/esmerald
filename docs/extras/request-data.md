@@ -4,6 +4,13 @@ In every application there will be times where sending a payload to the server w
 
 Esmerald is prepared to handle those with ease and that is thanks to Pydantic.
 
+There are two ways of doing this, using the [data](#the-data-field) or using the [payload](#the-payload-field).
+
+## Warning
+
+You can only declare `data` or `payload` in the handler **but not both** or an `ImproperlyConfigured`
+exception is raised.
+
 ## The `data` field
 
 When sending a payload to the backend to be validated, the handler needs to have a `data` field declared. Without it,
@@ -18,13 +25,31 @@ Fundamentally the `data` field is what holds the information about the sent payl
 The data can also be simple types such as `list`, `dict`, `str`. It does not necessarily mean you need to always use
 pydantic models.
 
+## The `payload` field
+
+Fundamentally is an alternative to `data` but does exactly the same. If you are more familiar with
+the concept of `payload` then this is for you.
+
+```python hl_lines="12"
+{!> ../docs_src/extras/request_payload/data_field.py !}
+```
+
 ## Nested models
 
-You can also do nested models for the `data` to be processed.
+You can also do nested models for the `data` or `payload` to be processed.
 
-```python hl_lines="6 16 20"
-{!> ../docs_src/extras/request_data/nested_models.py !}
-```
+=== "data"
+
+    ```python hl_lines="6 16 20"
+    {!> ../docs_src/extras/request_data/nested_models.py !}
+    ```
+
+=== "payload"
+
+    ```python hl_lines="6 16 20"
+    {!> ../docs_src/extras/request_payload/nested_models.py !}
+    ```
+
 
 The data expected to be sent to be validated is all required and expected with the following format:
 
@@ -49,9 +74,17 @@ There are many ways to process and validate a field and also the option to make 
 
 That can be achieved by using the typing `Optional` to make it not mandatory.
 
-```python hl_lines="9-10 16"
-{!> ../docs_src/extras/request_data/not_mandatory.py !}
-```
+=== "data"
+
+    ```python hl_lines="9-10 16"
+    {!> ../docs_src/extras/request_data/not_mandatory.py !}
+    ```
+
+=== "payload"
+
+    ```python hl_lines="9-10 16"
+    {!> ../docs_src/extras/request_payload/not_mandatory.py !}
+    ```
 
 The `address` is not mandatory to be send in the payload and therefore it can be done like this:
 
@@ -81,9 +114,17 @@ What about the field validation? What if you need to validate some of the data b
 
 Since Esmerald uses pydantic, you can take advantage of it.
 
-```python hl_lines="9 11-12"
-{!> ../docs_src/extras/request_data/validation.py !}
-```
+=== "data"
+
+    ```python hl_lines="9 11-12"
+    {!> ../docs_src/extras/request_data/validation.py !}
+    ```
+
+=== "payload"
+
+    ```python hl_lines="9 11-12"
+    {!> ../docs_src/extras/request_payload/validation.py !}
+    ```
 
 Since pydantic runs the validations internally, you will have the errors thrown if something is missing.
 
@@ -107,14 +148,22 @@ The expected payload would be:
 You don't necessarily need to use the pydantic default validation for your fields. You can always apply one of your
 own.
 
+=== "data"
+
 ```python
 {!> ../docs_src/extras/request_data/custom_validation.py !}
 ```
 
+=== "payload"
+
+    ```python
+    {!> ../docs_src/extras/request_payload/custom_validation.py !}
+    ```
+
 ## Summary
 
-* To process a payload it must have a `data` field declared in the handler.
-* `data` can be any type, including pydantic models.
+* To process a payload it must have a `data` or a `payload` field declared in the handler.
+* `data` or `payload` can be any type, including pydantic models.
 * Validations can be achieved by:
     * Using the `Field` from pydantic and automatic delegate the validations to it.
     * Using custom validations.
