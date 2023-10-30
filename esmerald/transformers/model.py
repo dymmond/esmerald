@@ -15,7 +15,7 @@ from esmerald.transformers.utils import (
     get_signature,
     merge_sets,
 )
-from esmerald.utils.constants import DATA, RESERVED_KWARGS
+from esmerald.utils.constants import DATA, PAYLOAD, RESERVED_KWARGS
 from esmerald.utils.pydantic.schema import is_field_optional
 
 if TYPE_CHECKING:
@@ -100,7 +100,10 @@ class TransformerModel(ArbitraryExtraBaseModel):
             if key in signature_fields:
                 _dependencies.add(cls.dependency_tree(key=key, dependencies=dependencies))
 
-        ignored_keys = {*RESERVED_KWARGS, *(dependency.key for dependency in _dependencies)}
+        ignored_keys = {
+            *RESERVED_KWARGS,
+            *(dependency.key for dependency in _dependencies),
+        }
 
         parameter_definitions = set()
         for field_name, model_field in signature_fields.items():
@@ -178,15 +181,18 @@ class TransformerModel(ArbitraryExtraBaseModel):
         query_params_names: Set[ParamSetting] = set()
 
         form_data = None
+
         # For the reserved keyword data
-        data_field = signature_model.model_fields.get("data")
+        data_field = signature_model.model_fields.get(DATA) or signature_model.model_fields.get(
+            PAYLOAD
+        )
         if data_field:
             extra = getattr(data_field, "json_schema_extra", None) or {}
             media_type = extra.get("media_type")
             if media_type in MEDIA_TYPES:
                 form_data = (media_type, data_field)
 
-        path_params, query_params, cookies, headers, reserved_kwargs = cls.update_parameters(
+        (path_params, query_params, cookies, headers, reserved_kwargs,) = cls.update_parameters(
             global_dependencies=dependencies,
             local_dependencies=_dependencies,
             path_params=path_params,
@@ -199,8 +205,13 @@ class TransformerModel(ArbitraryExtraBaseModel):
         )
 
         is_optional = False
+        if DATA in reserved_kwargs and PAYLOAD in reserved_kwargs:
+            raise ImproperlyConfigured("Only 'data' or 'payload' must be provided but not both.")
+
         if DATA in reserved_kwargs:
             is_optional = is_field_optional(signature_model.model_fields["data"])
+        elif PAYLOAD in reserved_kwargs:
+            is_optional = is_field_optional(signature_model.model_fields["payload"])
 
         return TransformerModel(
             form_data=form_data,
@@ -238,7 +249,9 @@ class TransformerModel(ArbitraryExtraBaseModel):
             cookies = merge_sets(cookies, dependency_model.cookies)
             headers = merge_sets(headers, dependency_model.headers)
 
-            if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
+            if DATA in reserved_kwargs and DATA in dependency_model.reserved_kwargs:
+                cls.validate_data(form_data, dependency_model)  # pragma: no cover
+            elif PAYLOAD in reserved_kwargs and PAYLOAD in dependency_model.reserved_kwargs:
                 cls.validate_data(form_data, dependency_model)  # pragma: no cover
             reserved_kwargs.update(dependency_model.reserved_kwargs)
 
@@ -294,8 +307,10 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cookies: Any,
     ) -> Any:
         reserved_kwargs: Any = {}
-        if "data" in self.reserved_kwargs:
-            reserved_kwargs["data"] = self.get_request_data(request=cast("Request", connection))
+        if DATA in self.reserved_kwargs:
+            reserved_kwargs[DATA] = self.get_request_data(request=cast("Request", connection))
+        if PAYLOAD in self.reserved_kwargs:
+            reserved_kwargs[PAYLOAD] = self.get_request_data(request=cast("Request", connection))
         if "request" in self.reserved_kwargs:
             reserved_kwargs["request"] = connection
         if "socket" in self.reserved_kwargs:
