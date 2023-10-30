@@ -104,6 +104,8 @@ nav:
       - Pluggables: "pluggables.md"
       - Datastructures: "datastructures.md"
       - Password Hashers: "password-hashers.md"
+      - Request: "requests.md"
+      - Context: "context.md"
       - Responses: "responses.md"
       - Background Tasks: "background-tasks.md"
       - Lifespan Events: "lifespan-events.md"
@@ -183,6 +185,7 @@ nav:
       - Pluggables: "references/pluggables.md"
       - Exceptions: "references/exceptions.md"
       - Request: "references/request.md"
+      - Context: "references/context.md"
       - Responses:
           - Response: "references/responses/response.md"
           - JSONResponse: "references/responses/json-response.md"

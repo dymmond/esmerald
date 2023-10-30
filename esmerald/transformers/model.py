@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type
 
 from pydantic.fields import FieldInfo
 
+from esmerald.context import Context
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
@@ -15,10 +16,11 @@ from esmerald.transformers.utils import (
     get_signature,
     merge_sets,
 )
-from esmerald.utils.constants import DATA, PAYLOAD, RESERVED_KWARGS
+from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
 from esmerald.utils.pydantic.schema import is_field_optional
 
 if TYPE_CHECKING:
+    from esmerald.routing.router import HTTPHandler, WebSocketHandler
     from esmerald.types import Dependencies  # pragma: no cover
     from esmerald.websockets import WebSocket  # pragma: no cover
 
@@ -257,7 +259,11 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         return path_params, query_params, cookies, headers, reserved_kwargs
 
-    def to_kwargs(self, connection: Union["WebSocket", "Request"]) -> Any:
+    def to_kwargs(
+        self,
+        connection: Union["WebSocket", "Request"],
+        handler: Union["HTTPHandler", "WebSocketHandler"] = None,
+    ) -> Any:
         connection_params = {}
         for key, value in connection.query_params.items():
             if key not in self.query_param_names and len(value) == 1:
@@ -295,6 +301,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
             query_params=query_params,
             headers=headers,
             cookies=cookies,
+            handler=handler,
         )
 
     def handle_reserved_kwargs(
@@ -305,12 +312,19 @@ class TransformerModel(ArbitraryExtraBaseModel):
         query_params: Any,
         headers: Any,
         cookies: Any,
+        handler: Optional[Any] = None,
     ) -> Any:
         reserved_kwargs: Any = {}
         if DATA in self.reserved_kwargs:
             reserved_kwargs[DATA] = self.get_request_data(request=cast("Request", connection))
         if PAYLOAD in self.reserved_kwargs:
             reserved_kwargs[PAYLOAD] = self.get_request_data(request=cast("Request", connection))
+
+        if CONTEXT in self.reserved_kwargs and handler is not None:
+            reserved_kwargs[CONTEXT] = self.get_request_context(
+                handler=handler, request=cast("Request", connection)
+            )
+
         if "request" in self.reserved_kwargs:
             reserved_kwargs["request"] = connection
         if "socket" in self.reserved_kwargs:
@@ -396,6 +410,14 @@ class TransformerModel(ArbitraryExtraBaseModel):
         form_data = await request.form()
         parsed_form = parse_form_data(media_type, form_data, field)
         return parsed_form if parsed_form or not self.is_optional else None
+
+    def get_request_context(
+        self, handler: Union["HTTPHandler", "WebSocketHandler"], request: "Request"
+    ) -> Context:
+        """
+        Generates the context of the handler where additional information can be provided and passed properly.
+        """
+        return Context(__handler__=handler, __request__=request)
 
     async def get_dependencies(
         self,

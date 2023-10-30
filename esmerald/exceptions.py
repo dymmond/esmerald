@@ -172,6 +172,10 @@ class EnvironmentError(EsmeraldAPIException):
     ...
 
 
+class BroadcastError(ImproperlyConfigured):
+    ...
+
+
 ExceptionErrorMap = Union[
     HTTPException,
     NotAuthenticated,
