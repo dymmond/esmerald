@@ -341,7 +341,7 @@ class BaseResponseHandler:
         is_data_or_payload: str = None
 
         if parameter_model.has_kwargs:
-            kwargs = parameter_model.to_kwargs(connection=request)
+            kwargs = parameter_model.to_kwargs(connection=request, handler=route)
 
             is_data_or_payload = DATA if kwargs.get(DATA) else PAYLOAD
             request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)

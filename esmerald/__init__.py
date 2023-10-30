@@ -5,6 +5,7 @@ from starlette import status
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.context import Context
 from esmerald.injector import Factory, Inject
 
 from .applications import ChildEsmerald, Esmerald
@@ -55,6 +56,7 @@ __all__ = [
     "Body",
     "BasePermission",
     "ChildEsmerald",
+    "Context",
     "CORSConfig",
     "CSRFConfig",
     "Cookie",

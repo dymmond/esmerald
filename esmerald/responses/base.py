@@ -65,8 +65,22 @@ class Response(StarletteResponse, Generic[T]):
             ),
         ],
         *,
-        status_code: int = status.HTTP_200_OK,
-        media_type: Optional[Union["MediaType", str]] = MediaType.JSON,
+        status_code: Annotated[
+            int,
+            Doc(
+                """
+                The response status code.
+                """
+            ),
+        ] = status.HTTP_200_OK,
+        media_type: Annotated[
+            Optional[Union["MediaType", str]],
+            Doc(
+                """
+                The media type used in the response.
+                """
+            ),
+        ] = MediaType.JSON,
         background: Annotated[
             Optional[Union["BackgroundTask", "BackgroundTasks"]],
             Doc(
@@ -75,7 +89,14 @@ class Response(StarletteResponse, Generic[T]):
                 """
             ),
         ] = None,
-        headers: Optional[Dict[str, Any]] = None,
+        headers: Annotated[
+            Optional[Dict[str, Any]],
+            Doc(
+                """
+                Any additional headers being passed to the response.
+                """
+            ),
+        ] = None,
         cookies: Annotated[
             Optional["ResponseCookies"],
             Doc(

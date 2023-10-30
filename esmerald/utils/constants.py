@@ -7,6 +7,7 @@ RESERVED_KWARGS = {
     "headers",
     "cookies",
     "request",
+    "context",
     "socket",
     "data",
     "query",
@@ -28,6 +29,7 @@ SOCKET = "socket"
 DATA = "data"
 PAYLOAD = "payload"
 REQUEST = "request"
+CONTEXT = "context"
 
 AVAILABLE_METHODS = [
     HttpMethod.GET,
