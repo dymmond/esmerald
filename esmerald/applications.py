@@ -65,6 +65,7 @@ from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.conf import EsmeraldLazySettings
+    from esmerald.datastructures import Secret
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -455,7 +456,7 @@ class Esmerald(Starlette):
             ),
         ] = None,
         secret_key: Annotated[
-            Optional[str],
+            Union[Optional[str], Optional["Secret"]],
             Doc(
                 """
                 A unique string value used for the cryptography. This value is also
