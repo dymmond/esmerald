@@ -127,8 +127,8 @@ For this will be using `httpx` but you are free to use whatever client you prefe
 {!> ../docs_src/databases/mongoz/example/access.py !}
 ```
 
-Did you notice the `X_API_TOKEN` in the `headers`? Well that is because the default `api_key_header`
-from the [JWTConfig](../../configurations/jwt.md#parameters) is called `X_API_TOKEN` and the
+Did you notice the `Authorization` in the `headers`? Well that is because the default `api_key_header`
+from the [JWTConfig](../../configurations/jwt.md#parameters) is called `Authorization` and the
 contrib middleware from Esmerald to provide integration with Mongoz uses it to validate if is passed
 in the header or not.
 

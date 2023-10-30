@@ -87,7 +87,7 @@ def test_security_api_key_in_query(auth):
 @pytest.mark.parametrize(
     "token,value",
     [
-        (APIKeyInQuery(name="X_API_TOKEN"), "X_API_TOKEN"),
+        (APIKeyInQuery(name="Authorization"), "Authorization"),
         (APIKeyInQuery(name="X_TOKEN"), "X_TOKEN"),
         (APIKeyInQuery(name="test"), "test"),
     ],

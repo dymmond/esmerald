@@ -525,7 +525,7 @@ of the [RequestSettingsMiddleware](./middleware/middleware.md#requestsettingsmid
 - Include now supports its own middleware handling and loading [#26](https://github.com/dymmond/esmerald/pull/26).
 This hange make sure that the parent level doesn't get affected and do not influence the middleware
 of other includes.
-- [JWTConfig](./configurations/jwt.md) `api_key_header` now defaults to `X_API_TOKEN`.
+- [JWTConfig](./configurations/jwt.md) `api_key_header` now defaults to `Authorization`.
 
 ### Fixed
 
