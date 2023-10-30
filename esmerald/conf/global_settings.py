@@ -542,7 +542,7 @@ class EsmeraldAPISettings(BaseSettings):
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
             """
         ),
-    ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui-bundle.min.js"
+    ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-bundle.min.js"
     swagger_css_url: Annotated[
         str,
         Doc(
@@ -553,7 +553,7 @@ class EsmeraldAPISettings(BaseSettings):
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
             """
         ),
-    ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.1.3/swagger-ui.min.css"
+    ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.min.css"
     swagger_favicon_url: Annotated[
         str,
         Doc(
