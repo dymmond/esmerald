@@ -267,14 +267,14 @@ async def test_to_response_returning_file_response() -> None:
 @pytest.mark.parametrize(
     "iterator, should_raise",
     [
-        # [my_generator(), False],
-        # [my_async_generator(), False],
-        # [MySyncIterator(), False],
-        # [MyAsyncIterator(), False],
-        # [my_generator, False],
-        # [my_async_generator, False],
-        # [MyAsyncIterator, False],
-        # [MySyncIterator, False],
+        [my_generator(), False],
+        [my_async_generator(), False],
+        [MySyncIterator(), False],
+        [MyAsyncIterator(), False],
+        [my_generator, False],
+        [my_async_generator, False],
+        [MyAsyncIterator, False],
+        [MySyncIterator, False],
         [{"key": 1}, True],
     ],
 )
