@@ -1,7 +1,6 @@
 import functools
 import hashlib
 import math
-import secrets
 import warnings
 from typing import Any, Callable, Dict, Optional, Sequence, Union
 
@@ -9,6 +8,7 @@ from passlib.context import CryptContext
 
 from esmerald.conf import settings
 from esmerald.exceptions import ImproperlyConfigured
+from esmerald.utils.crypto import get_random_string as _get_random_string
 from esmerald.utils.module_loading import import_string
 
 from .constants import (
@@ -27,7 +27,10 @@ def is_password_usable(encoded: Optional[str]) -> bool:
 
 
 def check_password(
-    password: str, encoded: str, setter: Callable[..., Any] = None, preferred: str = "default"
+    password: str,
+    encoded: str,
+    setter: Callable[..., Any] = None,
+    preferred: str = "default",
 ) -> bool:
     """
     Return a boolean of whether the raw password matches the three
@@ -118,7 +121,7 @@ def get_random_string(length: int, allowed_chars: str = RANDOM_STRING_CHARS) -> 
       * length: 12, bit length =~ 71 bits
       * length: 22, bit length =~ 131 bits
     """
-    return "".join(secrets.choice(allowed_chars) for _ in range(length))  # pragma no cover
+    return _get_random_string(length=length, allowed_chars=allowed_chars)
 
 
 def get_hasher(algorithm: str = "default") -> "BasePasswordHasher":

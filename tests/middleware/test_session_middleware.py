@@ -53,7 +53,7 @@ async def clear_session(request: Request) -> JSONResponse:
 
 
 def test_session(test_client_factory):
-    session_config = SessionConfig(secret_key=get_random_secret_key())
+    session_config = SessionConfig(secret_key=get_random_secret_key(32))
     with create_client(
         routes=[
             Gateway(path="/view_session", handler=view_session),
@@ -85,7 +85,7 @@ def test_session(test_client_factory):
 
 
 def test_session_expires():
-    session_config = SessionConfig(secret_key=get_random_secret_key(), max_age=-1)
+    session_config = SessionConfig(secret_key=get_random_secret_key(32), max_age=-1)
 
     with create_client(
         routes=[

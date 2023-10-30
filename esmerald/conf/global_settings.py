@@ -11,6 +11,7 @@ from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
+from esmerald.datastructures import Secret
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Pluggable
@@ -225,7 +226,7 @@ class EsmeraldAPISettings(BaseSettings):
         ),
     ] = [{"url": "/"}]
     secret_key: Annotated[
-        str,
+        Union[str, Secret],
         Doc(
             """
             A unique string value used for the cryptography. This value is also
