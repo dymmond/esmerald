@@ -41,6 +41,7 @@ from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
+from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
@@ -335,16 +336,18 @@ class BaseResponseHandler:
         """
         Determines what kwargs are required for the given handler and assignes to the specific
         object dictionary.
-
-        It supports more one object payload to be sent.
         """
         signature_model = get_signature(route)
+        is_data_or_payload: str = None
 
         if parameter_model.has_kwargs:
             kwargs = parameter_model.to_kwargs(connection=request)
-            request_data = kwargs.get("data")
+
+            is_data_or_payload = DATA if kwargs.get(DATA) else PAYLOAD
+            request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
+
             if request_data:
-                kwargs["data"] = await request_data
+                kwargs[is_data_or_payload] = await request_data
             for dependency in parameter_model.dependencies:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(
                     dependency=dependency, connection=request, **kwargs

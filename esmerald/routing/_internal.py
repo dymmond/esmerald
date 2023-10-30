@@ -4,7 +4,7 @@ from typing import Any, Dict, List, cast, get_args
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
-from esmerald.utils.constants import DATA
+from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.models import create_field_model
 
 
@@ -52,8 +52,12 @@ class FieldInfoMixin:
         This builds a model for the required data field. Validates the type of encoding
         being passed and builds a model if a datastructure is evaluated.
         """
-        if DATA in self.signature_model.model_fields:
-            data = self.signature_model.model_fields[DATA]
+        if (
+            DATA in self.signature_model.model_fields
+            or PAYLOAD in self.signature_model.model_fields
+        ):
+            data_or_payload = DATA if DATA in self.signature_model.model_fields else PAYLOAD
+            data = self.signature_model.model_fields[data_or_payload]
 
             if not isinstance(data, Body):
                 body = Body(alias="body")

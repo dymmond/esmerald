@@ -60,7 +60,7 @@ from esmerald.transformers.datastructures import EsmeraldSignature as SignatureM
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
-from esmerald.utils.constants import DATA, REDIRECT_STATUS_CODES, REQUEST, SOCKET
+from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
@@ -1289,6 +1289,11 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         if DATA in self.signature.parameters and "GET" in self.methods:
             raise ImproperlyConfigured("'data' argument is unsupported for 'GET' request handlers")
 
+        if PAYLOAD in self.signature.parameters and "GET" in self.methods:
+            raise ImproperlyConfigured(
+                "'payload' argument is unsupported for 'GET' request handlers"
+            )
+
         if SOCKET in self.signature.parameters:
             raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
 
@@ -1453,7 +1458,7 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         if signature.return_annotation is not None:
             raise ImproperlyConfigured("Websocket functions should return 'None'.")
 
-        unsupported_kwargs = [REQUEST, DATA]
+        unsupported_kwargs = [REQUEST, DATA, PAYLOAD]
         for kwarg in unsupported_kwargs:
             if kwarg in signature.parameters:
                 raise ImproperlyConfigured(
