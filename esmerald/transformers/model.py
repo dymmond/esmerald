@@ -206,7 +206,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         is_optional = False
         if DATA in reserved_kwargs and PAYLOAD in reserved_kwargs:
-            raise ImproperlyConfigured("Only 'data' or 'payload' must be passed but not both.")
+            raise ImproperlyConfigured("Only 'data' or 'payload' must be provided but not both.")
 
         if DATA in reserved_kwargs:
             is_optional = is_field_optional(signature_model.model_fields["data"])
