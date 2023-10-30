@@ -14,7 +14,7 @@ def get_random_string(
     return "".join(secrets.choice(allowed_chars) for _ in range(length))
 
 
-def get_random_secret_key(length: Optional[int] = 32) -> str:
+def get_random_secret_key(length: Optional[int] = 50) -> str:
     """
     Return a 50 character random string usable as a SECRET_KEY setting value.
     """
