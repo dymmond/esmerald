@@ -1,7 +1,10 @@
+import re
 from inspect import Parameter as InspectParameter
 from inspect import Signature
-from typing import Any, ClassVar, Optional, Set, Union
+from typing import Any, ClassVar, Dict, Optional, Set, Union
 
+import msgspec
+from msgspec import ValidationError as MsgspecValidationError
 from orjson import loads
 from pydantic import ValidationError
 
@@ -17,12 +20,28 @@ from esmerald.websockets import WebSocket
 class EsmeraldSignature(ArbitraryBaseModel):
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
+    msgspec_structs: ClassVar[Dict[str, msgspec.Struct]]
+
+    @classmethod
+    def parse_msgspec_structures(cls, kwargs: Any) -> Any:
+        """
+        Parses the kwargs for a possible msgspec Struct and instantiates it.
+        """
+        for k, v in kwargs.items():
+            if k in cls.msgspec_structs:
+                kwargs[k] = msgspec.json.decode(
+                    msgspec.json.encode(v), type=cls.msgspec_structs[k]
+                )
+        return kwargs
 
     @classmethod
     def parse_values_for_connection(
         cls, connection: Union[Request, WebSocket], **kwargs: Any
     ) -> Any:
         try:
+            if cls.msgspec_structs:
+                kwargs = cls.parse_msgspec_structures(kwargs)
+
             signature = cls(**kwargs)
             values = {}
             for key in cls.model_fields:
@@ -30,6 +49,29 @@ class EsmeraldSignature(ArbitraryBaseModel):
             return values
         except ValidationError as e:
             raise cls.build_exception(connection, e) from e
+        except MsgspecValidationError as e:
+            raise cls.build_msgspec_exception(connection, e) from e
+
+    @classmethod
+    def build_msgspec_exception(
+        cls, connection: Union[Request, WebSocket], exception: MsgspecValidationError
+    ) -> ValidationErrorException:
+        """
+        Builds the exceptions for the message spec.
+        """
+        error_pattern = re.compile(r"`\$\.(.+)`$")
+
+        match = error_pattern.search(str(exception))
+        if match:
+            keys = list(match.groups())
+            message = {keys[0]: str(exception).split(" - ")[0]}
+        else:
+            message = str(exception)  # type: ignore
+
+        method, url = get_connection_info(connection=connection)
+        error_message = f"Validation failed for {url} with method {method}."
+
+        return ValidationErrorException(detail=error_message, extra=[message])
 
     @classmethod
     def build_exception(

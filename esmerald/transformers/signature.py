@@ -1,6 +1,7 @@
 from inspect import Signature as InspectSignature
 from typing import TYPE_CHECKING, Any, Dict, Generator, Set, Type
 
+import msgspec
 from pydantic import create_model
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -61,8 +62,20 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
     def create_signature(self) -> Type[EsmeraldSignature]:
+        """
+        Creates the EsmeraldSignature based on the type of parameteres.
+
+        This allows to understand if the msgspec is also available and allowed.
+        """
         try:
+            msgpspec_structs: Dict[str, msgspec.Struct] = {}
+
             for param in self.parameters:
+                if isinstance(param.annotation, msgspec.Struct) or issubclass(
+                    param.annotation, msgspec.Struct
+                ):
+                    msgpspec_structs[param.name] = param.annotation
+
                 self.validate_missing_dependency(param)
                 self.get_dependency_names(param)
                 self.set_default_field(param)
@@ -79,6 +92,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             )
             model.return_annotation = self.signature.return_annotation
             model.dependency_names = self.dependency_names
+            model.msgspec_structs = msgpspec_structs
             return model
         except TypeError as e:
             raise ImproperlyConfigured(  # pragma: no cover
