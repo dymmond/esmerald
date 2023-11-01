@@ -11,6 +11,7 @@ from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
 from esmerald.transformers.utils import get_field_definition_from_param
 from esmerald.typing import Undefined
 from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
+from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
     from esmerald.typing import AnyCallable  # pragma: no cover
@@ -71,7 +72,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             msgpspec_structs: Dict[str, msgspec.Struct] = {}
 
             for param in self.parameters:
-                if isinstance(param.annotation, msgspec.Struct) or issubclass(
+                if isinstance(param.annotation, msgspec.Struct) or is_class_and_subclass(
                     param.annotation, msgspec.Struct
                 ):
                     msgpspec_structs[param.name] = param.annotation

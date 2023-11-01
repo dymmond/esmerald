@@ -16,8 +16,8 @@ class User(Struct):
 
 
 # class BaseUser(BaseModel):
-# model_config = {"arbitrary_types_allowed": True}
-# user: User
+#     model_config = {"arbitrary_types_allowed": True}
+#     user: User
 
 
 @post(status_code=status.HTTP_202_ACCEPTED)
