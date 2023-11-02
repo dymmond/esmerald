@@ -5,12 +5,13 @@ from msgspec import ValidationError
 from pydantic._internal._schema_generation_shared import (
     GetJsonSchemaHandler as GetJsonSchemaHandler,
 )
-from pydantic.json_schema import JsonSchemaValue as JsonSchemaValue
 from pydantic_core.core_schema import (
     CoreSchema,
     PlainValidatorFunctionSchema,
     with_info_plain_validator_function,
 )
+
+REF_TEMPLATE = "#/components/schemas/{name}"
 
 
 class Struct(msgspec.Struct):
@@ -66,8 +67,9 @@ class Struct(msgspec.Struct):
     @classmethod
     def __get_pydantic_json_schema__(
         cls, core_schema: CoreSchema, handler: GetJsonSchemaHandler
-    ) -> JsonSchemaValue:
-        return {"type": "object"}
+    ) -> Any:
+        _, schema_definitions = msgspec.json.schema_components((cls,), REF_TEMPLATE)
+        return schema_definitions[cls.__name__]
 
     @classmethod
     def __get_pydantic_core_schema__(

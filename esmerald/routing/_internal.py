@@ -25,22 +25,16 @@ class FieldInfoMixin:
         responses: Dict[int, ResponseParam] = {}
         if self.responses:
             for status_code, response in self.responses.items():
-                annotation = (
-                    List[response.model[0]]  # type: ignore
-                    if isinstance(response.model, list)
-                    else response.model
-                )
+                model = response.model[0] if isinstance(response.model, list) else response.model
 
-                name = (
-                    response.model[0].__name__
-                    if isinstance(response.model, list)
-                    else response.model.__name__
+                annotation = (
+                    List[model] if isinstance(response.model, list) else model  # type: ignore
                 )
 
                 responses[status_code] = ResponseParam(
                     annotation=annotation,
                     description=response.description,
-                    alias=name,
+                    alias=model.__name__,
                 )
         return responses
 

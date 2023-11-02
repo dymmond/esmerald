@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Annotated, Union
 
-# from msgspec import Struct
+import msgspec
 from pydantic import BaseModel
 from starlette import status
 
@@ -55,3 +55,59 @@ def test_user_msgspec_two(test_client_factory):
         data = {"user": {"name": "Esmerald", "email": "esmerald@esmerald.dev"}}
         response = client.post("/", json=data)
         assert response.json() == data
+
+
+Id = Annotated[int, msgspec.Meta(gt=0)]
+Email = Annotated[str, msgspec.Meta(min_length=5, max_length=100, pattern="[^@]+@[^@]+\\.[^@]+")]
+
+
+class Comment(msgspec.Struct):
+    id: Id
+    email: Email
+
+
+@post(status_code=status.HTTP_202_ACCEPTED)
+def comments(payload: Comment) -> Comment:
+    return payload
+
+
+def test_user_msgspec_constraints_name(test_client_factory):
+    with create_client(routes=[Gateway(handler=comments)]) as client:
+        data = {"id": -1, "email": "cenas"}
+        response = client.post("/", json=data)
+
+        assert response.status_code == 400
+        assert response.json()["errors"] == [{"id": "Expected `int` >= 1"}]
+
+
+def test_user_msgspec_constraints_email(test_client_factory):
+    with create_client(routes=[Gateway(handler=comments)]) as client:
+        data = {"id": 4, "email": "cenas"}
+        response = client.post("/", json=data)
+
+        assert response.status_code == 400
+        assert response.json()["errors"] == [
+            {"email": "Expected `str` matching regex '[^@]+@[^@]+\\\\.[^@]+'"}
+        ]
+
+
+class Address(msgspec.Struct):
+    name: str
+
+
+class AddressBook(msgspec.Struct):
+    address: Address
+
+
+@post()
+def nested(payload: AddressBook) -> AddressBook:
+    return payload
+
+
+def test_nested_msgspec_struct(test_client_factory):
+    with create_client(routes=[Gateway(handler=nested)]) as client:
+        data = {"address": {"name": "Lisbon, Portugal"}}
+        response = client.post("/", json=data)
+
+        assert response.status_code == 201
+        assert response.json() == {"address": {"name": "Lisbon, Portugal"}}
