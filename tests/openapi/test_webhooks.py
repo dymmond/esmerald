@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from esmerald import WebhookGateway, whpost
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 
 class Payment(BaseModel):
@@ -22,6 +23,7 @@ def test_openapi_schema():
         routes=[],
         enable_openapi=True,
         webhooks=[WebhookGateway(handler=new_payment)],
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
 

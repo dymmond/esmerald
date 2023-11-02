@@ -2,6 +2,7 @@ from typing import Dict
 
 from esmerald import Esmerald, Gateway, get
 from esmerald.testclient import EsmeraldTestClient
+from tests.settings import TestSettings
 
 
 @get("/bar")
@@ -20,6 +21,7 @@ app = Esmerald(
     ],
     routes=[Gateway(handler=bar)],
     enable_openapi=True,
+    settings_config=TestSettings,
 )
 
 
@@ -46,7 +48,10 @@ def test_openapi_schema(test_client_factory):
         },
         "servers": [
             {"url": "/", "description": "Default server"},
-            {"url": "http://staging.esmerald.dev", "description": "Staging of Esmerald"},
+            {
+                "url": "http://staging.esmerald.dev",
+                "description": "Staging of Esmerald",
+            },
             {"url": "https://esmerald.dev"},
         ],
         "paths": {

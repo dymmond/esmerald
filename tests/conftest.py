@@ -22,6 +22,7 @@ class FakeDAO(AsyncDAOProtocol):
 def test_client_factory(anyio_backend_name, anyio_backend_options):
     # anyio_backend_name defined by:
     # https://anyio.readthedocs.io/en/stable/testing.html#specifying-the-backends-to-run-on
+
     return functools.partial(
         EsmeraldTestClient,
         backend=anyio_backend_name,

@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from esmerald import Gateway, JSONResponse, get
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 
 class Error(BaseModel):
@@ -42,7 +43,10 @@ async def read_item(id: str) -> None:
 
 def test_open_api_schema(test_client_factory):
     with create_client(
-        routes=[Gateway(handler=read_item)], enable_openapi=True, include_in_schema=True
+        routes=[Gateway(handler=read_item)],
+        enable_openapi=True,
+        include_in_schema=True,
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
 

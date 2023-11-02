@@ -2,6 +2,7 @@ from typing import Dict
 
 from esmerald import Esmerald, Gateway, Include, get
 from esmerald.testclient import EsmeraldTestClient, create_client
+from tests.settings import TestSettings
 
 
 @get("/bar", tags=["bar"])
@@ -13,6 +14,7 @@ app = Esmerald(
     routes=[Gateway(handler=bar)],
     enable_openapi=True,
     tags=["test"],
+    settings_config=TestSettings,
 )
 
 

@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from esmerald import JSON, ChildEsmerald, Gateway, Include, get
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 
 class Item(BaseModel):
@@ -37,7 +38,8 @@ def test_add_child_esmerald_to_openapi(test_client_factory):
                     include_in_schema=True,
                 ),
             ),
-        ]
+        ],
+        settings_config=TestSettings(),
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -115,7 +117,8 @@ def test_child_esmerald_disabled_openapi(test_client_factory):
                     include_in_schema=True,
                 ),
             ),
-        ]
+        ],
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -175,7 +178,8 @@ def test_child_esmerald_not_included_in_schema(test_client_factory):
                 ),
             ),
             Gateway(handler=read_people),
-        ]
+        ],
+        settings_config=TestSettings(),
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text

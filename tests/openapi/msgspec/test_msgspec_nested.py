@@ -1,19 +1,26 @@
-from esmerald import Gateway, get
+from esmerald.datastructures.msgspec import Struct
+from esmerald.routing.gateways import Gateway
+from esmerald.routing.handlers import post
 from esmerald.testclient import create_client
 from tests.settings import TestSettings
 
 
-@get("/item/{id}")
-async def read_item(id: str) -> None:
-    """ """
+class Address(Struct):
+    name: str
 
 
-def test_open_api_schema(test_client_factory):
+class AddressBook(Struct):
+    address: Address
+
+
+@post()
+def user_with_pydantic(payload: AddressBook) -> None:
+    ...
+
+
+def test_user_msgspec_openapi(test_client_factory):
     with create_client(
-        routes=[Gateway(handler=read_item)],
-        enable_openapi=True,
-        include_in_schema=True,
-        settings_config=TestSettings,
+        routes=[Gateway(handler=user_with_pydantic)], settings_config=TestSettings
     ) as client:
         response = client.get("/openapi.json")
 
@@ -28,23 +35,27 @@ def test_open_api_schema(test_client_factory):
             },
             "servers": [{"url": "/"}],
             "paths": {
-                "/item/{id}": {
-                    "get": {
-                        "summary": "Read Item",
-                        "operationId": "read_item_item__id__get",
-                        "parameters": [
-                            {
-                                "name": "id",
-                                "in": "path",
-                                "required": True,
-                                "deprecated": False,
-                                "allowEmptyValue": False,
-                                "allowReserved": False,
-                                "schema": {"type": "string", "title": "Id"},
-                            }
-                        ],
+                "/": {
+                    "post": {
+                        "summary": "User With Pydantic",
+                        "operationId": "user_with_pydantic__post",
+                        "requestBody": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "properties": {
+                                            "address": {"$ref": "#/components/schemas/Address"}
+                                        },
+                                        "type": "object",
+                                        "required": ["address"],
+                                        "title": "Body_user_with_pydantic__post",
+                                    }
+                                }
+                            },
+                            "required": True,
+                        },
                         "responses": {
-                            "200": {"description": "Successful response"},
+                            "201": {"description": "Successful response"},
                             "422": {
                                 "description": "Validation Error",
                                 "content": {
@@ -62,6 +73,18 @@ def test_open_api_schema(test_client_factory):
             },
             "components": {
                 "schemas": {
+                    "Address": {
+                        "properties": {"name": {"type": "string"}},
+                        "type": "object",
+                        "required": ["name"],
+                        "title": "Address",
+                    },
+                    "AddressBook": {
+                        "properties": {"address": {"$ref": "#/components/schemas/Address"}},
+                        "type": "object",
+                        "required": ["address"],
+                        "title": "AddressBook",
+                    },
                     "HTTPValidationError": {
                         "properties": {
                             "detail": {
