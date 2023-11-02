@@ -419,3 +419,9 @@ Below we have a few examples of possible responses recognised by Esmerald automa
 ```python hl_lines="15 26 29"
 {!> ../docs_src/extras/form/dataclass.py !}
 ```
+
+**MsgSpec**
+
+```python
+{!> ../docs_src/responses/msgspec.py !}
+```

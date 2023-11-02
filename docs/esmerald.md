@@ -148,7 +148,7 @@ example.
 
 ## Key Features
 
-* **Fluid and Fast**: Thanks to Starlette and Pydantic.
+* **Fluid and Fast**: Thanks to Starlette and Pydantic/msgpec.
 * **Fast to develop**: Thanks to the simplicity of design, the development times can be reduced exponentially.
 * **Intuitive**: If you are used to the other frameworks, Esmerald is a no brainer to develop.
 * **Easy**: Developed with design in mind and easy learning.
@@ -172,6 +172,7 @@ distribute them.
 * **Scheduler**: Yes, that's right, we come with a scheduler for those background tasks.
 * **Simplicity from settings**: Yes, we have a way to make the code even cleaner by introducing settings
 based systems.
+* **msgspec** - Support for `msgspec`.
 
 ## Relation to Starlette and other frameworks
 
