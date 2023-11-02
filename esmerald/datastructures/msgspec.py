@@ -23,6 +23,10 @@ class Struct(msgspec.Struct):
     way. This will provide all the necessary data for Pydantic to generate
     the necessary schema data.
 
+    This datastructure subclasses the `msgspec.Struct` directly which means
+    there is no additional unique information added besides the
+    Pydantic unique functionalities.
+
     **Example**
 
     ```python
