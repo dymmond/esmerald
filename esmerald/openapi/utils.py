@@ -4,14 +4,14 @@ import msgspec
 from pydantic import TypeAdapter
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
-from typing_extensions import Literal
+from typing_extensions import Literal, get_args
 
 from esmerald.datastructures.msgspec import Struct
 from esmerald.openapi.validation import (
     validation_error_definition,
     validation_error_response_definition,
 )
-from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.helpers import is_class_and_subclass, is_msgspec_struct
 
 VALIDATION_ERROR_DEFINITION = validation_error_definition.model_dump(exclude_none=True)
 VALIDATION_ERROR_RESPONSE_DEFINITION = validation_error_response_definition.model_dump(
@@ -47,12 +47,16 @@ def get_msgspec_definitions(
     """
     definitions: Dict[str, str] = {}
     for field, _ in field_mapping:
+        origin_args = get_args(field.annotation)
+        schema_definitions: Dict[str, str] = {}
+
         if isinstance(field.annotation, Struct) or is_class_and_subclass(field.annotation, Struct):
             _, schema_definitions = msgspec.json.schema_components(
                 (field.annotation,), REF_TEMPLATE
             )
-            definitions.update(**schema_definitions)
-
+        elif is_msgspec_struct(field.annotation):
+            _, schema_definitions = msgspec.json.schema_components((origin_args[0],), REF_TEMPLATE)
+        definitions.update(**schema_definitions)
     return definitions
 
 

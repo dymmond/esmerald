@@ -7,6 +7,8 @@ import slugify
 from starlette._utils import is_async_callable as is_async_callable
 from typing_extensions import get_args, get_origin
 
+from esmerald.datastructures.msgspec import Struct
+
 if sys.version_info >= (3, 10):
     from types import UnionType
 
@@ -26,6 +28,28 @@ def is_class_and_subclass(value: typing.Any, _type: typing.Any) -> bool:
         return issubclass(value, _type)
     except TypeError:
         return False
+
+
+def is_msgspec_struct(value: typing.Any) -> bool:
+    """
+    Analyses if is a msgspec.Struct and uses this for OpenAPI
+    documentation generation.
+    """
+    original = get_origin(value)
+    if not original and not isclass(value):
+        return False
+
+    try:
+        if original and original is list:
+            _args = get_args(value)
+            if len(_args) == 0:
+                return False
+
+            if isinstance(_args[0], Struct) or is_class_and_subclass(_args[0], Struct):
+                return True
+    except TypeError:
+        return False
+    return False
 
 
 def clean_string(value: str) -> str:
