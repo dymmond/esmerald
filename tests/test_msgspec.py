@@ -1,8 +1,9 @@
-from typing import Annotated, Union
+from typing import Union
 
 import msgspec
 from pydantic import BaseModel
 from starlette import status
+from typing_extensions import Annotated
 
 from esmerald.datastructures.msgspec import Struct
 from esmerald.routing.gateways import Gateway
