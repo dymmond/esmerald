@@ -6,6 +6,7 @@ from esmerald import Gateway, JSONResponse, get
 from esmerald.openapi.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
 from esmerald.openapi.security.http import Basic, Bearer, Digest
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 
 class Error(BaseModel):
@@ -55,6 +56,7 @@ def test_security_api_key_in_cookie():
         routes=[Gateway(handler=read_people)],
         enable_openapi=True,
         include_in_schema=True,
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
 
@@ -209,7 +211,12 @@ def test_security_api_key_in_cookie():
             },
             "components": {
                 "securitySchemes": {
-                    "Basic": {"type": "http", "name": "Basic", "in": "header", "scheme": "basic"},
+                    "Basic": {
+                        "type": "http",
+                        "name": "Basic",
+                        "in": "header",
+                        "scheme": "basic",
+                    },
                     "Bearer": {
                         "type": "http",
                         "name": "Authorization",
@@ -222,9 +229,21 @@ def test_security_api_key_in_cookie():
                         "in": "header",
                         "scheme": "digest",
                     },
-                    "APIKeyInHeader": {"type": "apiKey", "name": "X_TOKEN_HEADER", "in": "header"},
-                    "APIKeyInQuery": {"type": "apiKey", "name": "X_TOKEN_QUERY", "in": "query"},
-                    "APIKeyInCookie": {"type": "apiKey", "name": "X_TOKEN_COOKIE", "in": "cookie"},
+                    "APIKeyInHeader": {
+                        "type": "apiKey",
+                        "name": "X_TOKEN_HEADER",
+                        "in": "header",
+                    },
+                    "APIKeyInQuery": {
+                        "type": "apiKey",
+                        "name": "X_TOKEN_QUERY",
+                        "in": "query",
+                    },
+                    "APIKeyInCookie": {
+                        "type": "apiKey",
+                        "name": "X_TOKEN_COOKIE",
+                        "in": "cookie",
+                    },
                 }
             },
         }

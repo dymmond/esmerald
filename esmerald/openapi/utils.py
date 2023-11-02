@@ -1,14 +1,17 @@
 from typing import Any, Dict, List, Tuple, Union
 
+import msgspec
 from pydantic import TypeAdapter
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
-from typing_extensions import Literal
+from typing_extensions import Literal, get_args
 
+from esmerald.datastructures.msgspec import Struct
 from esmerald.openapi.validation import (
     validation_error_definition,
     validation_error_response_definition,
 )
+from esmerald.utils.helpers import is_class_and_subclass, is_msgspec_struct
 
 VALIDATION_ERROR_DEFINITION = validation_error_definition.model_dump(exclude_none=True)
 VALIDATION_ERROR_RESPONSE_DEFINITION = validation_error_response_definition.model_dump(
@@ -32,6 +35,29 @@ ALLOWED_STATUS_CODE = {
     "4XX",
     "5XX",
 }
+REF_TEMPLATE = "#/components/schemas/{name}"
+
+
+def get_msgspec_definitions(
+    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue]
+) -> Dict[str, str]:
+    """
+    Gets any field definition for a msgspec Struct declared
+    in the OpenAPI spec.
+    """
+    definitions: Dict[str, str] = {}
+    for field, _ in field_mapping:
+        origin_args = get_args(field.annotation)
+        schema_definitions: Dict[str, str] = {}
+
+        if isinstance(field.annotation, Struct) or is_class_and_subclass(field.annotation, Struct):
+            _, schema_definitions = msgspec.json.schema_components(
+                (field.annotation,), REF_TEMPLATE
+            )
+        elif is_msgspec_struct(field.annotation):
+            _, schema_definitions = msgspec.json.schema_components((origin_args[0],), REF_TEMPLATE)
+        definitions.update(**schema_definitions)
+    return definitions
 
 
 def get_definitions(
@@ -46,6 +72,8 @@ def get_definitions(
     field_mapping, definitions = schema_generator.generate_definitions(
         inputs=inputs  # type: ignore
     )
+
+    definitions.update(**get_msgspec_definitions(field_mapping))  # type: ignore
     return field_mapping, definitions  # type: ignore[return-value]
 
 

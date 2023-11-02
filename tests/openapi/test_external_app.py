@@ -8,6 +8,7 @@ from esmerald import JSON, Gateway, Include, get
 from esmerald.middleware import WSGIMiddleware
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 flask_app = Flask(__name__)
 
@@ -41,7 +42,8 @@ def test_external_app_not_include_in_schema(test_client_factory):
         routes=[
             Gateway(handler=read_people),
             Include("/child", app=WSGIMiddleware(flask_app)),
-        ]
+        ],
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text

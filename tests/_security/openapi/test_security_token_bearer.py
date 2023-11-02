@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from esmerald import Gateway, JSONResponse, get
 from esmerald.openapi.security.http import Bearer
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 
 class Error(BaseModel):
@@ -45,6 +46,7 @@ def test_security_token_bearer(auth):
         routes=[Gateway(handler=read_item), Gateway(handler=read_people)],
         enable_openapi=True,
         include_in_schema=True,
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
 

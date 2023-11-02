@@ -50,10 +50,10 @@ dependencies = [
     "loguru>=0.7.0,<0.8.0",
     "pydantic>=2.4.0,<3.0.0",
     "pydantic-settings>=2.0.0,<3.0.0",
-    "pyfactories>=2.0.0",
     "python-multipart>=0.0.5,<0.0.7",
     "openapi-schemas-pydantic>=3.0.0",
     "orjson>=3.8.5,<4.0.0",
+    "msgspec>=0.18.4,<1.0.0",
     "rich>=13.3.1,<14.0.0",
     "starlette>=0.31.1,<1.0",
 ]

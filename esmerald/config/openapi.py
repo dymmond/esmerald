@@ -363,13 +363,18 @@ class OpenAPIConfig(BaseModel):
                 return JSONResponse(self.openapi(app))
 
             app.add_route(
-                path="/", handler=_openapi, include_in_schema=False, activate_openapi=False
+                path="/",
+                handler=_openapi,
+                include_in_schema=False,
+                activate_openapi=False,
             )
 
         if self.openapi_url and self.docs_url:
 
             @get(path=self.docs_url)
-            async def swagger_ui_html(request: Request) -> HTMLResponse:  # pragma: no cover
+            async def swagger_ui_html(
+                request: Request,
+            ) -> HTMLResponse:  # pragma: no cover
                 root_path = request.scope.get("root_path", "").rstrip("/")
                 openapi_url = root_path + self.openapi_url
                 oauth2_redirect_url = self.swagger_ui_oauth2_redirect_url
@@ -396,7 +401,9 @@ class OpenAPIConfig(BaseModel):
         if self.swagger_ui_oauth2_redirect_url:
 
             @get(self.swagger_ui_oauth2_redirect_url)
-            async def swagger_ui_redirect(request: Request) -> HTMLResponse:  # pragma: no cover
+            async def swagger_ui_redirect(
+                request: Request,
+            ) -> HTMLResponse:  # pragma: no cover
                 return get_swagger_ui_oauth2_redirect_html()
 
             app.add_route(
@@ -421,13 +428,18 @@ class OpenAPIConfig(BaseModel):
                 )
 
             app.add_route(
-                path="/", handler=redoc_html, include_in_schema=False, activate_openapi=False
+                path="/",
+                handler=redoc_html,
+                include_in_schema=False,
+                activate_openapi=False,
             )
 
         if self.openapi_url and self.stoplight_url:
 
             @get(self.stoplight_url)
-            async def stoplight_html(request: Request) -> HTMLResponse:  # pragma: no cover
+            async def stoplight_html(
+                request: Request,
+            ) -> HTMLResponse:  # pragma: no cover
                 root_path = request.scope.get("root_path", "").rstrip("/")
                 openapi_url = root_path + self.openapi_url
                 return get_stoplight_html(
@@ -439,7 +451,10 @@ class OpenAPIConfig(BaseModel):
                 )
 
             app.add_route(
-                path="/", handler=stoplight_html, include_in_schema=False, activate_openapi=False
+                path="/",
+                handler=stoplight_html,
+                include_in_schema=False,
+                activate_openapi=False,
             )
 
         app.router.activate()

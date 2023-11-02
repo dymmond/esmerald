@@ -5,6 +5,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald import JSON, Gateway, Include, MiddlewareProtocol, get
 from esmerald.testclient import create_client
+from tests.settings import TestSettings
 
 
 class Item(BaseModel):
@@ -40,9 +41,13 @@ def test_add_middleware_to_openapi(test_client_factory):
         routes=[
             Gateway(handler=read_people),
             Gateway("/read-mode", handler=read_mode, middleware=[CustomMiddleware]),
-            Include("/child", routes=[Gateway(handler=read_item, middleware=[CustomMiddleware])]),
+            Include(
+                "/child",
+                routes=[Gateway(handler=read_item, middleware=[CustomMiddleware])],
+            ),
         ],
         enable_openapi=True,
+        settings_config=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text

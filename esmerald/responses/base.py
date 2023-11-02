@@ -3,6 +3,7 @@ from dataclasses import is_dataclass
 from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
 
+import msgspec
 from pydantic import BaseModel
 from starlette import status
 from starlette.responses import FileResponse as FileResponse  # noqa
@@ -137,10 +138,17 @@ class Response(StarletteResponse, Generic[T]):
 
     @staticmethod
     def transform(value: Any) -> Dict[str, Any]:
+        """
+        The transformation of the data being returned.
+
+        It supports Pydantic models, `dataclasses` and `msgspec.Struct`.
+        """
         if isinstance(value, BaseModel):
             return value.model_dump()
         if is_dataclass(value):
             return dataclasses.asdict(value)
+        if isinstance(value, msgspec.Struct):
+            return msgspec.structs.asdict(value)
         raise TypeError("unsupported type")  # pragma: no cover
 
     def render(self, content: Any) -> bytes:

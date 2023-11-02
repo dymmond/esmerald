@@ -1,20 +1,31 @@
-from esmerald import Gateway, get
+from typing import Union
+
+from pydantic import BaseModel
+
+from esmerald.datastructures.msgspec import Struct
+from esmerald.routing.gateways import Gateway
+from esmerald.routing.handlers import post
 from esmerald.testclient import create_client
 from tests.settings import TestSettings
 
 
-@get("/item/{id}")
-async def read_item(id: str) -> None:
-    """ """
+class User(Struct):
+    name: str
+    email: Union[str, None] = None
 
 
-def test_open_api_schema(test_client_factory):
-    with create_client(
-        routes=[Gateway(handler=read_item)],
-        enable_openapi=True,
-        include_in_schema=True,
-        settings_config=TestSettings,
-    ) as client:
+class BaseUser(BaseModel):
+    model_config = {"arbitrary_types_allowed": True}
+    user: User
+
+
+@post()
+def user(payload: BaseUser) -> None:
+    ...
+
+
+def test_user_msgspec_with_pydantic_openapi(test_client_factory):
+    with create_client(routes=[Gateway(handler=user)], settings_config=TestSettings) as client:
         response = client.get("/openapi.json")
 
         assert response.json() == {
@@ -28,23 +39,20 @@ def test_open_api_schema(test_client_factory):
             },
             "servers": [{"url": "/"}],
             "paths": {
-                "/item/{id}": {
-                    "get": {
-                        "summary": "Read Item",
-                        "operationId": "read_item_item__id__get",
-                        "parameters": [
-                            {
-                                "name": "id",
-                                "in": "path",
-                                "required": True,
-                                "deprecated": False,
-                                "allowEmptyValue": False,
-                                "allowReserved": False,
-                                "schema": {"type": "string", "title": "Id"},
-                            }
-                        ],
+                "/": {
+                    "post": {
+                        "summary": "User",
+                        "operationId": "user__post",
+                        "requestBody": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/BaseUser"}
+                                }
+                            },
+                            "required": True,
+                        },
                         "responses": {
-                            "200": {"description": "Successful response"},
+                            "201": {"description": "Successful response"},
                             "422": {
                                 "description": "Validation Error",
                                 "content": {
@@ -62,6 +70,22 @@ def test_open_api_schema(test_client_factory):
             },
             "components": {
                 "schemas": {
+                    "BaseUser": {
+                        "properties": {
+                            "user": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "email": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                                },
+                                "type": "object",
+                                "required": ["name"],
+                                "title": "User",
+                            }
+                        },
+                        "type": "object",
+                        "required": ["user"],
+                        "title": "BaseUser",
+                    },
                     "HTTPValidationError": {
                         "properties": {
                             "detail": {
