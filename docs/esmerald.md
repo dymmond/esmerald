@@ -39,7 +39,7 @@ Esmerald is a modern, powerful, flexible, high performant web framework designed
 but also full scalable applications from the smallest to enterprise level.
 
 Esmerald is designed to build with python 3.8+ based on standard python type hints and on the top of
-the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic).
+the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
 !!! Success
     **The official supported version is always the latest released**.
