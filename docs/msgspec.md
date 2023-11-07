@@ -118,7 +118,7 @@ When this payload is sent, the **validations are done automatically by the `msgs
 which means you can implement as many validations as you want as you would normally do while
 using `msgspec`.
 
-```python hl_lines="9-12 16-17"
+```python
 {!> ../docs_src/msgspec/validations.py !}
 ```
 
@@ -126,7 +126,7 @@ And just like that, you are now using `msgspec` and all of its power within **Es
 
 ### `msgspec.Struct`
 
-As mentuoned before, importing from `esmerald.datastructures.msgspec.Struct` should be the way
+As mentioned before, importing from `esmerald.datastructures.msgspec.Struct` should be the way
 for Esmerald to use it without any issues but you can still use the normal `msgspec.Struct` as well.
 
 ```python
