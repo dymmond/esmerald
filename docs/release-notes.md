@@ -5,6 +5,30 @@ hide:
 
 # Release Notes
 
+## 2.4.0
+
+### Changed
+
+- Updated SwaggerUI version.
+- Updated [responses](./responses.md) with a `msgspec` response example.
+
+### Added
+
+- Support for [payload](./extras/request-data.md) as alternative to `data`. This aims
+to make the process more intuitive and easy to implement. [#199](https://github.com/dymmond/esmerald/pull/199).
+- [Context](./context.md) - The new context object for the [handlers](https://esmerald.dev/routing/handlers/).
+- Support for [msgspec](./msgspec.md) natively allowing to have more than just Pydantic.
+
+!!! Note
+    Esmerald is not fully tight with Pydantic which means it's more flexible and extendible and allows more versatility.
+
+### Fixed
+
+- Missing [Request](./request.md) document.
+- Removed the use of `random` for the secrets in favour of the `secrets` library instead.
+- Contrib documentation updates regarding the Authorization headers.
+
+
 ## 2.3.1
 
 ### Fixed
