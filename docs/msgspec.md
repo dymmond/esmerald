@@ -111,7 +111,7 @@ The rest, it is still as clean as always was in Esmerald.
 Now, the cool part is when we send a payload to the API, something like this:
 
 ```shell
-data = {"name": "Esmerald, "email": "esmerald@esmerald.dev"}
+data = {"name": "Esmerald", "email": "esmerald@esmerald.dev"}
 ```
 
 When this payload is sent, the **validations are done automatically by the `msgspec` library**
