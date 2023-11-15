@@ -142,7 +142,7 @@ use it.
 
 ## Key Features
 
-* **Fluid and Fast**: Thanks to Starlette and Pydantic/msgpec.
+* **Fluid and Fast**: Thanks to Starlette and Pydantic/msgspec.
 * **Fast to develop**: Thanks to the simplicity of design, the development times can be reduced exponentially.
 * **Intuitive**: If you are used to the other frameworks, Esmerald is a no brainer to develop.
 * **Easy**: Developed with design in mind and easy learning.
