@@ -20,7 +20,7 @@ def get_random_string(length=10):
     return result_str
 
 
-class User(edgy.Model):
+class TestUser(edgy.Model):
     """
     Inherits from the abstract user and adds the registry
     from esmerald settings.
@@ -52,7 +52,7 @@ async def rollback_transactions():
             yield
 
 
-@pytest.fixture
+@pytest.fixture()
 def app() -> Esmerald:
     app = Esmerald(routes=[Gateway(handler=user)])
     return app
@@ -65,8 +65,8 @@ async def async_client(app) -> AsyncGenerator:
 
 
 @post("/create")
-async def user() -> User:
-    user = await User.query.create(name="Esmerald")
+async def user() -> TestUser:
+    user = await TestUser.query.create(name="Esmerald")
     return user
 
 
