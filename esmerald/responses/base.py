@@ -1,9 +1,9 @@
 import dataclasses
 from dataclasses import is_dataclass
-from json import dumps
 from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
 
 import msgspec
+from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
 from pydantic import BaseModel
 from starlette import status
 from starlette.responses import FileResponse as FileResponse  # noqa
@@ -164,7 +164,11 @@ class Response(StarletteResponse, Generic[T]):
             ):
                 return b""
             if self.media_type == MediaType.JSON:
-                return dumps(content, default=self.transform, ensure_ascii=False).encode("utf-8")
+                return dumps(
+                    content,
+                    default=self.transform,
+                    option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
+                )
             return super().render(content)
         except (AttributeError, ValueError, TypeError) as e:  # pragma: no cover
             raise ImproperlyConfigured("Unable to serialize response content") from e
