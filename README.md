@@ -295,7 +295,7 @@ async def world_socket(socket: Websocket) -> None:
     msg = await socket.receive_json()
     assert msg
     assert socket
-    await socket.close(
+    await socket.close()
 
 
 app = Esmerald(routes=[
