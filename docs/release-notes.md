@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 2.4.1
+
+### Fix
+
+- Regression when performing a `model_dump` of pydantic models in the responses.
+- Re-enable `orjson` for generic response parsing.
+
 ## 2.4.0
 
 ### Changed
@@ -27,7 +34,6 @@ to make the process more intuitive and easy to implement. [#199](https://github.
 - Missing [Request](./request.md) document.
 - Removed the use of `random` for the secrets in favour of the `secrets` library instead.
 - Contrib documentation updates regarding the Authorization headers.
-
 
 ## 2.3.1
 
