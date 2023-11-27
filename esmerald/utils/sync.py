@@ -21,7 +21,7 @@ class AsyncCallable(Generic[P, T]):
         if is_async_callable(fn):
             self.fn = fn
         else:
-            self.fn = partial(run_sync, fn)  # type:ignore[assignment]
+            self.fn = partial(run_sync, fn)
 
     async def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
         return await self.fn(*args, **kwargs)
