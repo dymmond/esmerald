@@ -31,7 +31,6 @@ class Param(FieldInfo):
         required: bool = True,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        const: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
         lt: Optional[float] = None,
@@ -56,7 +55,6 @@ class Param(FieldInfo):
         self.deprecated = deprecated
         self.examples = examples
         self.include_in_schema = include_in_schema
-        self.const = const
         self.allow_none = allow_none
 
         extra: Dict[str, Any] = {}
@@ -70,7 +68,6 @@ class Param(FieldInfo):
         extra.update(examples=self.examples)
         extra.update(deprecated=self.deprecated)
         extra.update(include_in_schema=self.include_in_schema)
-        extra.update(const=self.const)
         extra.update(allow_none=self.allow_none)
 
         super().__init__(
@@ -81,7 +78,6 @@ class Param(FieldInfo):
             alias_priority=alias_priority,
             title=title,
             description=description,
-            const=const,
             gt=gt,
             ge=ge,
             lt=lt,
@@ -93,7 +89,6 @@ class Param(FieldInfo):
             examples=examples,
             allow_inf_nan=allow_inf_nan,
             json_schema_extra=extra,
-            include=include_in_schema,
             validate_default=validate_default,
             validation_alias=validation_alias,
             discriminator=discriminator,
@@ -126,7 +121,6 @@ class Header(Param):
         required: bool = True,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        const: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
         lt: Optional[float] = None,
@@ -158,7 +152,6 @@ class Header(Param):
             alias_priority=alias_priority,
             title=title,
             description=description,
-            const=const,
             gt=gt,
             ge=ge,
             lt=lt,
@@ -203,7 +196,6 @@ class Cookie(Param):
         required: bool = True,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        const: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
         lt: Optional[float] = None,
@@ -235,7 +227,6 @@ class Cookie(Param):
             alias_priority=alias_priority,
             title=title,
             description=description,
-            const=const,
             gt=gt,
             ge=ge,
             lt=lt,
@@ -280,7 +271,6 @@ class Query(Param):
         required: bool = True,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        const: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
         lt: Optional[float] = None,
@@ -312,7 +302,6 @@ class Query(Param):
             alias_priority=alias_priority,
             title=title,
             description=description,
-            const=const,
             gt=gt,
             ge=ge,
             lt=lt,
@@ -354,7 +343,6 @@ class Path(Param):
         required: bool = True,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        const: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
         lt: Optional[float] = None,
@@ -381,7 +369,6 @@ class Path(Param):
             annotation=annotation,
             title=title,
             description=description,
-            const=const,
             gt=gt,
             ge=ge,
             lt=lt,
@@ -420,7 +407,6 @@ class Body(FieldInfo):
         alias: Optional[str] = None,
         alias_priority: Optional[int] = _PyUndefined,
         description: Optional[str] = None,
-        const: Optional[bool] = None,
         embed: Optional[bool] = None,
         gt: Optional[float] = None,
         ge: Optional[float] = None,
@@ -462,7 +448,6 @@ class Body(FieldInfo):
             alias=alias,
             alias_priority=alias_priority,
             description=description,
-            const=const,
             gt=gt,
             ge=ge,
             lt=lt,
