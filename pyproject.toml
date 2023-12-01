@@ -55,7 +55,7 @@ dependencies = [
     "orjson>=3.8.5,<4.0.0",
     "msgspec>=0.18.4,<1.0.0",
     "rich>=13.3.1,<14.0.0",
-    "starlette>=0.32.0,<1.0",
+    "starlette==0.32.0.post1",
 ]
 keywords = [
     "api",
