@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 2.4.2
+
+### Changed
+
+- Pin starlette version to `0.32.0.post1`
+
 ## 2.4.1
 
 ### Fix
