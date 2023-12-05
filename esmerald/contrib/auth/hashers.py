@@ -1,4 +1,5 @@
 import functools
+import asyncio
 import hashlib
 import math
 import warnings
@@ -54,7 +55,11 @@ def check_password(
     is_correct: bool = hasher_handler.hasher.verify(password, encoded)
 
     if setter and is_correct and must_update:
-        setter(password)
+        if asyncio.iscoroutinefunction(setter):
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(setter(password))
+        else:
+            setter(password)
     return is_correct
 
 
