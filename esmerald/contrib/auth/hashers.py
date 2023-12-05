@@ -11,6 +11,7 @@ from esmerald.conf import settings
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.utils.crypto import get_random_string as _get_random_string
 from esmerald.utils.module_loading import import_string
+from esmerald.utils.helpers import is_async_callable
 
 from .constants import (
     RANDOM_STRING_CHARS,
@@ -55,12 +56,13 @@ def check_password(
     is_correct: bool = hasher_handler.hasher.verify(password, encoded)
 
     if setter and is_correct and must_update:
-        if asyncio.iscoroutinefunction(setter):
+        if is_async_callable(setter):
             loop = asyncio.get_event_loop()
             loop.run_until_complete(setter(password))
         else:
             setter(password)
     return is_correct
+
 
 
 def make_password(password: Optional[str], hasher: str = "default") -> str:
