@@ -33,7 +33,7 @@ class TemplateDirective(BaseDirective):
         self.verbosity = options["verbosity"]
 
         # Todo: Handle the creation of a simple project
-        self.simple = options["simple"]
+        self.simple = options.get('simple', False)
 
         self.validate_name(name)
 
