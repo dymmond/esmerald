@@ -1,0 +1,16 @@
+import uvicorn
+from esmerald import Esmerald, get, Gateway
+
+
+@get()
+async def index() -> dict:
+    return {'message': 'hello world'}
+
+esmerald_app = Esmerald(
+    routes=[
+        Gateway('/', handler=index)
+    ]
+)
+
+if __name__ == '__main__':
+    uvicorn.run(esmerald_app, port=8000)
