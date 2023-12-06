@@ -32,6 +32,9 @@ class TemplateDirective(BaseDirective):
         self.a_or_an = "an" if app_or_project == "app" else "a"
         self.verbosity = options["verbosity"]
 
+        # Todo: Handle the creation of a simple project
+        self.simple = options["simple"]
+
         self.validate_name(name)
 
         top_dir = os.path.join(os.getcwd(), name)
