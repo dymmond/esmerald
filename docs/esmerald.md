@@ -123,6 +123,11 @@ $ pip install esmerald[ptpython] # ptpython shell
 
 ### Start a project using directives
 
+!!! Warning
+    This is for more advanced users that are already comfortable with Esmerald (or Python in general)
+    or feel like it is not a problem using these directives. If you do not feel comfortable yet to use this,
+    please continue reading the documentation and learning more about Esmerald.
+
 If you wish to start an Esmerald project with a default suggested structure.
 
 ```shell

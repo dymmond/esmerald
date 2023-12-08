@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 2.4.3
+
+### Fixed
+
+- OpenAPI `contact` it was not parsing properly on transformation.
+- Rename `include` attribute from `Param` (base) and call `include_in_schema`.
+- Missing `nest_asyncio` dependency when using `esmerald shell`.
+
 ## 2.4.2
 
 ### Changed
