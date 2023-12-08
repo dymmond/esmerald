@@ -1720,6 +1720,7 @@ class Esmerald(Starlette):
             set_value(self.openapi_version, "openapi_version")
             set_value(self.summary, "summary")
             set_value(self.description, "description")
+            set_value(self.contact, "contact")
             set_value(self.tags, "tags")
             set_value(self.servers, "servers")
             set_value(self.terms_of_service, "terms_of_service")

@@ -345,7 +345,7 @@ class OpenAPIConfig(BaseModel):
             webhooks=self.webhooks,
         )
         app.openapi_schema = openapi_schema
-        return openapi_schema
+        return app.openapi_schema
 
     def enable(self, app: Any) -> None:
         """Enables the OpenAPI documentation"""
@@ -356,6 +356,7 @@ class OpenAPIConfig(BaseModel):
             @get(path=self.openapi_url)
             async def _openapi(request: Request) -> JSONResponse:
                 root_path = request.scope.get("root_path", "").rstrip("/")
+
                 if root_path not in server_urls:
                     if root_path and self.root_path_in_servers:
                         self.servers.insert(0, {"url": root_path})

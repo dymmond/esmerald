@@ -4,6 +4,7 @@ import json
 import warnings
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
+from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
@@ -546,5 +547,5 @@ def get_openapi(
         output["tags"] = tags
 
     openapi = OpenAPI(**output)
-    model_dump = openapi.model_dump(by_alias=True, exclude_none=True)
-    return model_dump
+    model_dump = openapi.model_dump_json(by_alias=True, exclude_none=True)
+    return cast(Dict[str, Any], loads(model_dump))
