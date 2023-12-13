@@ -3,10 +3,11 @@ import string
 from typing import Any
 
 import pytest
-from edgy.exceptions import ObjectNotFound
 from jose.exceptions import JWTError
 from starlette.types import ASGIApp
 
+import edgy
+from edgy.exceptions import ObjectNotFound
 from esmerald import APIView, Gateway, HTTPException, Request, Response, get, settings, status
 from esmerald.contrib.auth.edgy.base_user import AbstractUser
 from esmerald.exceptions import NotAuthorized
@@ -19,17 +20,13 @@ database, models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
-def get_random_string(length=10):
-    letters = string.ascii_lowercase
-    result_str = "".join(random.choice(letters) for i in range(length))
-    return result_str
-
-
 class User(AbstractUser):
     """
     Inherits from the abstract user and adds the registry
     from esmerald settings.
     """
+
+    is_confirm: bool = edgy.BooleanField(default=False)
 
     class Meta:
         registry = models
