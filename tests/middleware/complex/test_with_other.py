@@ -127,10 +127,7 @@ def test_middleware_can_be_added_on_top(test_client_factory):
             user_id: str,
             load_related: bool = False,
         ) -> Any:
-            return await self.services.get_single(
-                user_id=user_id,
-                load_related=load_related,
-            )
+            ...
 
         @get(
             path="/whoami",
@@ -147,6 +144,15 @@ def test_middleware_can_be_added_on_top(test_client_factory):
         assert response.status_code == 200
 
         response = client.get("/users")
+        assert response.status_code == 401
+
+        response = client.get("/users/2")
+        assert response.status_code == 401
+
+        response = client.get("/users/25")
+        assert response.status_code == 401
+
+        response = client.get("/users/whoami")
         assert response.status_code == 401
 
 
@@ -168,10 +174,7 @@ def test_middleware_can_be_added_on_handler(test_client_factory):
             user_id: str,
             load_related: bool = False,
         ) -> Any:
-            return await self.services.get_single(
-                user_id=user_id,
-                load_related=load_related,
-            )
+            return "Working when no middleware is here"
 
         @get(
             path="/whoami",
@@ -181,7 +184,7 @@ def test_middleware_can_be_added_on_handler(test_client_factory):
             self,
             request: Request,
         ) -> Any:
-            ...
+            return "I'm dragonfly"
 
     with create_client(
         routes=[Gateway(handler=home), Gateway(handler=AnotherUserAPIView)]
@@ -192,9 +195,17 @@ def test_middleware_can_be_added_on_handler(test_client_factory):
         response = client.get("/users")
         assert response.status_code == 401
 
+        response = client.get("/users/2")
+        assert response.status_code == 200
+        assert response.json() == "Working when no middleware is here"
+
+        response = client.get("/users/whoami")
+        assert response.status_code == 200
+        assert response.json() == "I'm dragonfly"
+
 
 def test_middleware_can_be_added_on_both(test_client_factory):
-    class AnotherUserAPIView(APIView):
+    class UserView(APIView):
         path = "/users"
         tags = ["User"]
         middleware = [JWTAuthMiddleware]
@@ -212,10 +223,7 @@ def test_middleware_can_be_added_on_both(test_client_factory):
             user_id: str,
             load_related: bool = False,
         ) -> Any:
-            return await self.services.get_single(
-                user_id=user_id,
-                load_related=load_related,
-            )
+            ...
 
         @get(
             path="/whoami",
@@ -227,11 +235,18 @@ def test_middleware_can_be_added_on_both(test_client_factory):
         ) -> Any:
             ...
 
-    with create_client(
-        routes=[Gateway(handler=home), Gateway(handler=AnotherUserAPIView)]
-    ) as client:
+    with create_client(routes=[Gateway(handler=home), Gateway(handler=UserView)]) as client:
         response = client.get("/")
         assert response.status_code == 200
 
         response = client.get("/users")
+        assert response.status_code == 401
+
+        response = client.get("/users/2")
+        assert response.status_code == 401
+
+        response = client.get("/users/25")
+        assert response.status_code == 401
+
+        response = client.get("/users/whoami")
         assert response.status_code == 401
