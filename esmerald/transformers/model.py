@@ -194,7 +194,13 @@ class TransformerModel(ArbitraryExtraBaseModel):
             if media_type in MEDIA_TYPES:
                 form_data = (media_type, data_field)
 
-        (path_params, query_params, cookies, headers, reserved_kwargs,) = cls.update_parameters(
+        (
+            path_params,
+            query_params,
+            cookies,
+            headers,
+            reserved_kwargs,
+        ) = cls.update_parameters(
             global_dependencies=dependencies,
             local_dependencies=_dependencies,
             path_params=path_params,
