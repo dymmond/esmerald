@@ -53,7 +53,7 @@ dependencies = [
     "python-multipart>=0.0.5,<0.0.7",
     "openapi-schemas-pydantic>=3.0.0",
     "orjson>=3.8.5,<4.0.0",
-    "msgspec==0.18.4,<1.0.0",
+    "msgspec==0.18.5",
     "nest_asyncio>=1.5.8,<2.0.0",
     "rich>=13.3.1,<14.0.0",
     "starlette>=0.28.0,<=0.32.0.post1",
