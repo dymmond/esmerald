@@ -1,13 +1,11 @@
-import random
-import string
 from typing import Any
 
+import edgy
 import pytest
+from edgy.exceptions import ObjectNotFound
 from jose.exceptions import JWTError
 from starlette.types import ASGIApp
 
-import edgy
-from edgy.exceptions import ObjectNotFound
 from esmerald import APIView, Gateway, HTTPException, Request, Response, get, settings, status
 from esmerald.contrib.auth.edgy.base_user import AbstractUser
 from esmerald.exceptions import NotAuthorized
