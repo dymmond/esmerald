@@ -129,7 +129,7 @@ test = [
 dev = [
     "ipdb",
     "autoflake>=1.4.0",
-    "flake8>=3.8.3,<6.0.0",
+    "flake8>=3.8.3,<8.0.0",
     "uvicorn[standard]>=0.24.0",
     "pre-commit>=3.0.4,<4.0.0",
     "watchfiles>=0.16.1,<0.22.0",
