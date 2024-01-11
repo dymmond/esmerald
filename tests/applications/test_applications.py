@@ -304,7 +304,8 @@ def test_app_add_route(test_client_factory):
     assert response.text == "Hello, World!"
 
 
-def test_app_add_route_with_root_path(test_client_factory):
+@pytest.mark.parametrize("path", ["/stuff", "/test", "/a-root-path", "/new-root-path"])
+def test_app_add_route_with_root_path(test_client_factory, path):
     @get()
     async def homepage(request: Request) -> PlainTextResponse:
         return PlainTextResponse("Hello, World!")
@@ -313,11 +314,12 @@ def test_app_add_route_with_root_path(test_client_factory):
         routes=[
             Gateway("/", handler=homepage),
         ],
-        root_path="/",
+        root_path=f"/{path}",
     )
 
     client = test_client_factory(app)
-    response = client.get("/")
+    response = client.get(f"/{path}")
+
     assert response.status_code == 200
     assert response.text == "Hello, World!"
 

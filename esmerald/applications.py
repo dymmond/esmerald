@@ -2389,8 +2389,8 @@ class Esmerald(Starlette):
         )
 
         app: "ASGIApp" = self.router
-        for cls, options in reversed(middleware):
-            app = cls(app=app, **options)
+        for cls, args, kwargs in reversed(middleware):
+            app = cls(app=app, *args, **kwargs)  # noqa
         return app
 
     def build_pluggable_stack(self) -> Optional["Esmerald"]:
@@ -2485,13 +2485,23 @@ class Esmerald(Starlette):
         """
         return esmerald_settings
 
+    async def build_include_scope(self, scope: Scope) -> Scope:
+        """
+        Builds the scope for a specific mounted application.
+        """
+        if "route_root_path" in scope:
+            if "root_include_path" not in scope:
+                scope["root_include_path"] = scope["route_root_path"]
+        return scope
+
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        scope["app"] = self
         if scope["type"] == "lifespan":
             await self.router.lifespan(scope, receive, send)
             return
+
         if self.root_path:
             scope["root_path"] = self.root_path
+
         scope["state"] = {}
         await super().__call__(scope, receive, send)
 

@@ -256,7 +256,7 @@ by Starlette as well.
 * `int` returns a Python integer.
 * `float` returns a Python float.
 * `uuid` returns a Python `uuid.UUID` instance.
-* `path` returna thje rest of the path, including any additional `/` characters.
+* `path` returns the rest of the path, including any additional `/` characters.
 
 As per standard, the converters are used by prefixing them with a colon:
 
