@@ -26,7 +26,7 @@ def test_serve_flask_via_esmerald(test_client_factory):
         Include("/flask", WSGIMiddleware(flask_app)),
     ]
 
-    with create_client(routes=routes) as client:
+    with create_client(routes=routes, enable_openapi=False) as client:
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}

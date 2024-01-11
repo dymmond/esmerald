@@ -106,6 +106,7 @@ class BaseRouter(StarletteRouter):
         "security",
         "on_startup",
         "on_shutdown",
+        "root_path",
     )
 
     def __init__(
@@ -467,7 +468,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
     ):
-        self.app = app
+        self._app = app
         if not path:
             path = "/"
         else:
@@ -507,11 +508,10 @@ class BaseRouter(StarletteRouter):
             default=default,
             lifespan=self.esmerald_lifespan,
         )
-
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
         self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
-        self.parent: Optional["ParentType"] = parent or self.app
+        self.parent: Optional["ParentType"] = parent or app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
@@ -536,11 +536,12 @@ class BaseRouter(StarletteRouter):
         self.activate()
 
     def reorder_routes(self) -> List[Sequence[Union["APIGateHandler", "Include"]]]:
-        return sorted(
+        routes = sorted(
             self.routes,
             key=lambda router: router.path != "" and router.path != "/",
             reverse=True,
         )
+        return routes
 
     def activate(self) -> None:
         self.routes = self.reorder_routes()
@@ -633,6 +634,7 @@ class BaseRouter(StarletteRouter):
         """
         # Getting the value of the router for the path
         value.path = clean_path(self.path + getattr(value, "path", "/"))
+
         if isinstance(value, (Include, Gateway, WebSocketGateway, WebSocketGateway)):
             if not value.parent and not override:
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
@@ -1205,10 +1207,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         )
         await response(scope, receive, send)
 
-    def __call__(
-        self,
-        fn: "AnyCallable",
-    ) -> "HTTPHandler":
+    def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
         self.fn = fn
         self.endpoint = fn
         self.validate_handler()
@@ -1871,7 +1870,6 @@ class Include(Mount):
         if namespace:
             routes = include(namespace, pattern)
 
-        self.app = app
         self.name = name
         self.namespace = namespace
         self.pattern = pattern
@@ -1903,11 +1901,11 @@ class Include(Mount):
                     StarletteMiddleware(cast("Type[StarletteMiddleware]", _middleware))
                 )
 
-        app = self.resolve_app_parent(app=app)
+        self.app = self.resolve_app_parent(app=app)
 
         super().__init__(
             self.path,
-            app=app,
+            app=self.app,
             routes=routes,
             name=name,
             middleware=include_middleware,
@@ -2003,7 +2001,6 @@ class Include(Mount):
                         if not isinstance(route_handler, WebSocketHandler)
                         else WebSocketGateway
                     )
-
                     gate = gateway(
                         path=route.path,
                         handler=route_handler,
