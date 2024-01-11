@@ -5,6 +5,21 @@ hide:
 
 # Release Notes
 
+## 2.5.0
+
+### Changed
+
+- Upgraded internal dependencies.
+- The internals for the middleware are now delegated to Starlette directly.
+- Middlewares of Gateway and WebSocket Gateways are now delegated to Starlette.
+
+### Fixed
+
+- Internals to be compliant with new version of Starlette.
+- Building middleware stack for the `Middleware` object.
+- Internal testing to reflect the new way of the `Include` to be compliant with the ASGI spec.
+
+
 ## 2.4.3
 
 ### Fixed
