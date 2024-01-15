@@ -10,7 +10,7 @@ printer = Print()
 
 
 @click.option(
-    "--with-deployment-files",
+    "--with-deployment",
     is_flag=True,
     show_default=True,
     default=False,
@@ -27,7 +27,7 @@ printer = Print()
 @click.argument("name", type=str)
 @click.command(name="createproject")
 def create_project(
-    name: str, verbosity: int, with_deployment_files: bool, deployment_folder_name: str
+    name: str, verbosity: int, with_deployment: bool, deployment_folder_name: str
 ) -> None:
     """
     Creates the scaffold of a project.
@@ -39,7 +39,7 @@ def create_project(
     options = {
         "secret_key": SECRET_KEY_INSECURE_PREFIX + get_random_secret_key(),
         "verbosity": verbosity,
-        "with_deployment_files": with_deployment_files,
+        "with_deployment": with_deployment,
         "deployment_folder_name": deployment_folder_name,
     }
     directive = TemplateDirective()

@@ -31,7 +31,7 @@ class TemplateDirective(BaseDirective):
         self.name = name
         self.a_or_an = "an" if app_or_project == "app" else "a"
         self.verbosity = options["verbosity"]
-        self.with_deployment = options.get("with_deployment_files", False)
+        self.with_deployment = options.get("with_deployment", False)
         self.deployment_folder_name = options.get("deployment_folder_name", False)
 
         self.validate_name(name)
