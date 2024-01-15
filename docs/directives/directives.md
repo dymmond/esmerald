@@ -22,6 +22,7 @@ Currently there are two built-in directives.
 * [directives](#list-available-directives) - Lists all the available directives.
 * [createproject](#create-project) - Used to generate a scaffold for a project.
 * [createapp](#create-app) - Used to generate a scaffold for an application.
+* [createdeployment](#create-deployment) - Used to generate files for a deployment with docker, nginx, supervisor and gunicorn.
 * [show_urls](#show-urls) - Shows the information about the your esmerald application.
 * [shell](./shell.md) - Starts the python interactive shell for your Esmerald application.
 
@@ -67,7 +68,15 @@ This is a simple directive that generates a folder structure with some files for
 
 #### Parameters
 
-* **-v/--verbosity** - 1 for none and `2` displays all generated files.
+* **--with-deployment** - Flag indicating if the project generation should include deployment files.
+
+    <sup>Default: `False`</sup>
+
+* **--deployment-folder-name** - The custom name of the folder where the deployment files will be placed if `--with-deployment` is `True`.
+
+    <sup>Default: `deployment/`</sup>
+
+* **-v/--verbosity** - `1` for none and `2` displays all generated files.
 
     <sup>Default: `1`</sup>
 
@@ -153,7 +162,7 @@ This is another directive that allows you to generate a scaffold for a possible 
 
 #### Parameters
 
-* **-v/--verbosity** - 1 for none and `2` displays all generated files.
+* **-v/--verbosity** - `1` for none and `2` displays all generated files.
 
     <sup>Default: `1`</sup>
 
@@ -296,7 +305,97 @@ $ pip install esmerald[test]
 
 Or you can skip this step if you don't want to use the EsmeraldTestClient at all.
 
-## Show URLs
+### Create deployment
+
+This is another directive that allows you to generate a scaffold for a deployment using nginx, supervisor, gunicorn and docker.
+
+!!! Note
+    This generates a ready based files containing the minimum information need to speedup the deployment
+    process and can/should be adapted to your needs but at least 80% of the configurations are already
+    prepared for you.
+
+    The `Dockerfile` image comes with the minimum version of Python 3.12. It is recommended to update accordingly
+    if you have any restrictions.
+
+There are two ways of generating the deployments. One with the [createproject](#create-project) and providing
+the necessary flags and the other one in isolation.
+
+**This directive is considered in isolation**.
+
+#### Parameters
+
+* **--deployment-folder-name** - The custom name of the folder where the files will be placed.
+
+    <sup>Default: `deployment/`</sup>
+
+* **-v/--verbosity** - `1` for none and `2` displays all generated files.
+
+    <sup>Default: `1`</sup>
+
+The default run and syntax is as follow:
+
+```shell
+$ esmerald createdeployment <YOUR-PROJECT-NAME>
+```
+
+**Example**:
+
+Using our previous example of [create project](#create-project), let's use the already created `myproject`.
+
+```shell
+$ cd myproject/
+$ esmerald createdeployment myproject
+```
+
+You should have a folder called `deployment` with a similar structure to this:
+
+{!> ../docs_src/_shared/deployment_struct_example.md !}
+
+As you can see, all of the minimum files for your project are generated inside a default `deployment/`
+folder and ready to be used saving you a tremendous amount of time.
+
+But, what if you want to provide a different name for the deployment folder instead of `deployment/`?
+
+Well, thanks to the parameter `--deployment-folder-name` you can specify the name of the folder and
+that will also reflect in the files.
+
+**Example**:
+
+Let us use `myproject` as an example and call the folder `deploy` instead of `deployment`.
+
+```shell
+$ esmerald createdeployment myproject --deployment-folder-name deploy
+```
+
+Once the directive runs, You should have a folder called `deploy` with a similar structure to this:
+
+{!> ../docs_src/_shared/deploy_struct_example.md !}
+
+#### Run the Dockerfile
+
+Since everything is already provided and your changes into the files are reflected, for example,
+making sure the requirements are installed inside the docker image, you can run the docker build
+for that same image directly from yhr project root.
+
+**Example**
+
+Using the `myproject` example, it would be something like this:
+
+```shell
+$ docker build -t myorg/myproject:latest -f deployment/docker/Dockerfile .
+```
+
+!!! Tip
+    If you are not familiar with Docker, it is highly recommended to
+    [read the official documentation](https://docs.docker.com/) and get yourself familiar with it.
+
+This should trigger the whole process of your `Dockerfile` and install everything accordingly.
+
+!!! Warning
+    If you don't want the same locations for the generated files, you can simply move them to any
+    place at your discretion and update the files accordingly to reflect your custom settings.
+
+### Show URLs
 
 This is another built-in Esmerald application and it simply to show the information about the
 URLs of your application via command line.
@@ -315,7 +414,7 @@ $ esmerald --app myproject.main:app show_urls
 $ esmerald myproject.main:app show_urls
 ```
 
-## Runserver
+### Runserver
 
 This is an extremly powerfull directive and **it should only be used for development** purposes.
 

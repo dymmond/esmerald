@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 
 import esmerald
 from esmerald.core.directives.base import BaseDirective
+from esmerald.core.directives.constants import TREAT_AS_PROJECT_DIRECTIVE
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.terminal import Print
 
@@ -31,10 +32,15 @@ class TemplateDirective(BaseDirective):
         self.name = name
         self.a_or_an = "an" if app_or_project == "app" else "a"
         self.verbosity = options["verbosity"]
+        self.with_deployment = options.get("with_deployment", False)
+        self.deployment_folder_name = options.get("deployment_folder_name", None)
 
-        self.validate_name(name)
+        if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            self.validate_name(name)
+            top_dir = os.path.join(os.getcwd(), name)
+        else:
+            top_dir = os.path.join(os.getcwd(), self.deployment_folder_name)
 
-        top_dir = os.path.join(os.getcwd(), name)
         try:
             os.makedirs(top_dir)
         except FileExistsError:
@@ -42,21 +48,75 @@ class TemplateDirective(BaseDirective):
         except OSError as e:
             raise DirectiveError(detail=str(e)) from e
 
-        base_name = f"{app_or_project}_name"
+        if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            base_name = f"{app_or_project}_name"
+        else:
+            base_name = "project_name"
+
         base_subdir = f"{app_or_project}_template"
+        base_deployment = "deployment_template"
 
         context = {
             base_name: name,
             "esmerald_version": self.get_version(),
             "project_secret": options.get("secret_key"),
+            "deployment_folder": self.deployment_folder_name,
         }
 
-        template_dir = os.path.join(esmerald.__path__[0], "conf", base_subdir)
+        template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_subdir)
         prefix_length = len(template_dir) + 1
 
+        # Creates the project or application structure
+        self.iterate_templates(
+            top_dir=top_dir,
+            prefix_length=prefix_length,
+            name=name,
+            base_name=base_name,
+            app_or_project=app_or_project,
+            template_dir=template_dir,
+            context=context,
+        )
+
+        # Add deployment files to the project
+        if self.with_deployment:
+            template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_deployment)
+            prefix_length = len(template_dir) + 1
+            self.iterate_templates(
+                top_dir=top_dir,
+                prefix_length=prefix_length,
+                name=name,
+                base_name=base_name,
+                app_or_project=app_or_project,
+                template_dir=template_dir,
+                context=context,
+                with_deployment=self.with_deployment,
+                deployment_folder_name=self.deployment_folder_name,
+            )
+
+    def iterate_templates(
+        self,
+        top_dir: str,
+        prefix_length: int,
+        name: str,
+        base_name: str,
+        app_or_project: str,
+        template_dir: str,
+        context: Dict[str, Any],
+        with_deployment: bool = False,
+        deployment_folder_name: Union[str, None] = None,
+    ) -> None:
+        """
+        Iterates through a specific template directory and populates with the corresponding
+        variables
+        """
         for root, dirs, files in os.walk(template_dir):
             path_rest = root[prefix_length:]
+
             relative_dir = path_rest.replace(base_name, name)
+
+            if with_deployment:
+                relative_dir = f"{deployment_folder_name}/{relative_dir}"
+
             if relative_dir:
                 target_dir = os.path.join(top_dir, relative_dir)
                 os.makedirs(target_dir, exist_ok=True)

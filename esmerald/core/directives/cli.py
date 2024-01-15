@@ -16,6 +16,7 @@ from esmerald.core.directives.constants import (
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.operations import (
     create_app,
+    create_deployment,
     create_project,
     list,
     run,
@@ -125,6 +126,7 @@ esmerald_cli.add_command(list)
 esmerald_cli.add_command(show_urls)
 esmerald_cli.add_command(run)
 esmerald_cli.add_command(create_project)
+esmerald_cli.add_command(create_deployment)
 esmerald_cli.add_command(create_app)
 esmerald_cli.add_command(runserver)
 esmerald_cli.add_command(shell)
