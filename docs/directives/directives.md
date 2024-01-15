@@ -97,25 +97,30 @@ You should have a folder called `myproject` with a similar structure to this:
 ```shell
 .
 ├── Makefile
-└── myproject
-    ├── __init__.py
-    ├── apps
-    │   └── __init__.py
-    ├── configs
-    │   ├── __init__.py
-    │   ├── development
-    │   │   ├── __init__.py
-    │   │   └── settings.py
-    │   ├── settings.py
-    │   └── testing
-    │       ├── __init__.py
-    │       └── settings.py
-    ├── main.py
-    ├── serve.py
-    ├── tests
-    │   ├── __init__.py
-    │   └── test_app.py
-    └── urls.py
+├── myproject
+│   ├── apps
+│   │   └── __init__.py
+│   ├── configs
+│   │   ├── development
+│   │   │   ├── __init__.py
+│   │   │   └── settings.py
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   └── testing
+│   │       ├── __init__.py
+│   │       └── settings.py
+│   ├── __init__.py
+│   ├── main.py
+│   ├── serve.py
+│   ├── tests
+│   │   ├── __init__.py
+│   │   └── test_app.py
+│   └── urls.py
+└── requirements
+    ├── base.txt
+    ├── development.txt
+    └── testing.txt
+
 ```
 
 A lot of files generated right? Yes but those are actually quite simple but let's talk about what is happening there.
@@ -125,6 +130,7 @@ peoject locally, for example:
     * `make run` - Starts your project with the development settings.
     * `make test` - Runs your local tests with the testing settings.
     * `make clean` - Removes all the `*.pyc` from your project.
+    * `make requirements` - Installs the mininum requirements from the `requirements` folder.
 
     !!! Info
         The tests are using [pytest](https://docs.pytest.org/) but you can change to whatever you want.
