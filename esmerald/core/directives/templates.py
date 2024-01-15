@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 
 import esmerald
 from esmerald.core.directives.base import BaseDirective
+from esmerald.core.directives.constants import TREAT_AS_PROJECT_DIRECTIVE
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.terminal import Print
 
@@ -32,11 +33,14 @@ class TemplateDirective(BaseDirective):
         self.a_or_an = "an" if app_or_project == "app" else "a"
         self.verbosity = options["verbosity"]
         self.with_deployment = options.get("with_deployment", False)
-        self.deployment_folder_name = options.get("deployment_folder_name", False)
+        self.deployment_folder_name = options.get("deployment_folder_name", None)
 
-        self.validate_name(name)
+        if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            self.validate_name(name)
+            top_dir = os.path.join(os.getcwd(), name)
+        else:
+            top_dir = os.path.join(os.getcwd(), self.deployment_folder_name)
 
-        top_dir = os.path.join(os.getcwd(), name)
         try:
             os.makedirs(top_dir)
         except FileExistsError:
@@ -44,7 +48,11 @@ class TemplateDirective(BaseDirective):
         except OSError as e:
             raise DirectiveError(detail=str(e)) from e
 
-        base_name = f"{app_or_project}_name"
+        if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            base_name = f"{app_or_project}_name"
+        else:
+            base_name = "project_name"
+
         base_subdir = f"{app_or_project}_template"
         base_deployment = "deployment_template"
 
@@ -52,6 +60,7 @@ class TemplateDirective(BaseDirective):
             base_name: name,
             "esmerald_version": self.get_version(),
             "project_secret": options.get("secret_key"),
+            "deployment_folder": self.deployment_folder_name,
         }
 
         template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_subdir)

@@ -8,7 +8,7 @@ RUN aptitude update                           && \
     aptitude install curl -y                  && \
     aptitude clean && aptitude autoclean       && \
     find /var/lib/apt/lists/ -type f -delete && \
-    echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main 13" > /etc/apt/sources.list.d/pgdg.list                                && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main 17" > /etc/apt/sources.list.d/pgdg.list                                && \
     curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 
@@ -20,10 +20,10 @@ RUN aptitude update && \
 # RUN pip install --upgrade -r /var/www/requirements/requirements.txt
 
 COPY {{ project_name }} /var/www/{{ project_name }}
-COPY gunicorn/gunicorn_conf.py /var/www/
+COPY {{ deployment_folder }}/gunicorn/gunicorn_conf.py /var/www/
 
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY supervisor/supervisord.conf /etc/supervisord.conf
+COPY {{ deployment_folder }}/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY {{ deployment_folder }}/supervisor/supervisord.conf /etc/supervisord.conf
 
 RUN useradd {{ project_name }} && find /var/www -type f -exec chmod 755 {} \; && find /var/www -type d -exec chmod 755 {} \; && chown -R {{ project_name }}:{{ project_name }} /var/www
 
