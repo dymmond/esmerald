@@ -31,6 +31,8 @@ class TemplateDirective(BaseDirective):
         self.name = name
         self.a_or_an = "an" if app_or_project == "app" else "a"
         self.verbosity = options["verbosity"]
+        self.with_deployment = options.get("with_deployment_files", False)
+        self.deployment_folder_name = options.get("deployment_folder_name", False)
 
         self.validate_name(name)
 
@@ -44,6 +46,7 @@ class TemplateDirective(BaseDirective):
 
         base_name = f"{app_or_project}_name"
         base_subdir = f"{app_or_project}_template"
+        base_deployment = "deployment_template"
 
         context = {
             base_name: name,
@@ -51,12 +54,60 @@ class TemplateDirective(BaseDirective):
             "project_secret": options.get("secret_key"),
         }
 
-        template_dir = os.path.join(esmerald.__path__[0], "conf", base_subdir)
+        template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_subdir)
         prefix_length = len(template_dir) + 1
 
+        # Creates the project or application structure
+        self.iterate_templates(
+            top_dir=top_dir,
+            prefix_length=prefix_length,
+            name=name,
+            base_name=base_name,
+            app_or_project=app_or_project,
+            template_dir=template_dir,
+            context=context,
+        )
+
+        # Add deployment files to the project
+        if self.with_deployment:
+            template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_deployment)
+            prefix_length = len(template_dir) + 1
+            self.iterate_templates(
+                top_dir=top_dir,
+                prefix_length=prefix_length,
+                name=name,
+                base_name=base_name,
+                app_or_project=app_or_project,
+                template_dir=template_dir,
+                context=context,
+                with_deployment=self.with_deployment,
+                deployment_folder_name=self.deployment_folder_name,
+            )
+
+    def iterate_templates(
+        self,
+        top_dir: str,
+        prefix_length: int,
+        name: str,
+        base_name: str,
+        app_or_project: str,
+        template_dir: str,
+        context: Dict[str, Any],
+        with_deployment: bool = False,
+        deployment_folder_name: Union[str, None] = None,
+    ) -> None:
+        """
+        Iterates through a specific template directory and populates with the corresponding
+        variables
+        """
         for root, dirs, files in os.walk(template_dir):
             path_rest = root[prefix_length:]
+
             relative_dir = path_rest.replace(base_name, name)
+
+            if with_deployment:
+                relative_dir = f"{deployment_folder_name}/{relative_dir}"
+
             if relative_dir:
                 target_dir = os.path.join(top_dir, relative_dir)
                 os.makedirs(target_dir, exist_ok=True)
