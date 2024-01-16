@@ -62,9 +62,9 @@ class Token(BaseModel):
         except (JWSError, JWTError) as e:
             raise ImproperlyConfigured("Error encoding the token.") from e
 
-    @staticmethod
+    @classmethod
     def decode(
-        token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
+        cls, token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
     ) -> "Token":  # pragma: no cover
         """
         Decodes the given token.
@@ -78,4 +78,4 @@ class Token(BaseModel):
             )
         except (JWSError, JWTError, JWSAlgorithmError, JWSSignatureError) as e:
             raise e
-        return Token(**data)
+        return cls(**data)
