@@ -5,6 +5,22 @@ hide:
 
 # Release Notes
 
+## 2.6.0
+
+### Added
+
+- New [createdeployment](./directives/directives.md#create-deployment) directive allowing
+the generation of deployment scaffolds for any Esmerald project.
+
+### Changed
+
+- Added `requirements` to the `createproject` directive generating the minimum requirements
+for an Esmerald project.
+
+### Fixed
+
+- `BaseAuthentication` for `self.app` when its of the type of HTTPHandler and WebSocketHandler.
+
 ## 2.5.0
 
 ### Changed
