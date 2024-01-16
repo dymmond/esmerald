@@ -125,7 +125,9 @@ class CreateUser(BaseModel):
     username: str
 
 
-@get()
+@get(
+    middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
+)
 async def home(request: Request) -> dict:
     return {"message": f"hello {request.user.email}"}
 
@@ -161,9 +163,10 @@ def app():
             Gateway("/login", handler=login),
             Gateway("/create", handler=create_user),
             Include(
-                routes=[Gateway(handler=home)],
-                middleware=[
-                    StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)
+                routes=[
+                    Gateway(
+                        handler=home,
+                    )
                 ],
             ),
         ],

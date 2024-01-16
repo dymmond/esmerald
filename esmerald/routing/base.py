@@ -308,7 +308,6 @@ class BaseResponseHandler:
                 route=route,
                 parameter_model=parameter_model,
             )
-
         return response
 
     async def call_handler_function(
@@ -420,6 +419,7 @@ class BaseResponseHandler:
                     status_code=self.status_code,
                 )
             self._response_handler = handler
+
         return cast(
             "Callable[[Any], Awaitable[StarletteResponse]]",
             self._response_handler,

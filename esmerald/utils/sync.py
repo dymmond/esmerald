@@ -1,10 +1,10 @@
-import functools
+import asyncio
+from concurrent import futures
+from concurrent.futures import Future
 from functools import partial
 from typing import Any, Awaitable, Callable, Generic, TypeVar
 
-import anyio
-from anyio._core._eventloop import threadlocals
-from anyio.to_thread import run_sync
+from anyio import to_thread
 from typing_extensions import ParamSpec
 
 from esmerald.utils.helpers import is_async_callable
@@ -21,23 +21,19 @@ class AsyncCallable(Generic[P, T]):
         if is_async_callable(fn):
             self.fn = fn
         else:
-            self.fn = partial(run_sync, fn)
+            self.fn = partial(to_thread.run_sync, fn)
 
     async def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
         return await self.fn(*args, **kwargs)
 
 
-def execsync(async_function: Callable[..., T], raise_error: bool = True) -> Callable[..., T]:
+def run_sync(async_function: Awaitable) -> Any:
     """
-    Runs any async function inside a blocking function (sync).
+    Runs the queries in sync mode
     """
-
-    @functools.wraps(async_function)
-    def wrapper(*args: Any, **kwargs: Any) -> T:  # pragma: no cover
-        current_async_module = getattr(threadlocals, "current_async_module", None)
-        partial_func = functools.partial(async_function, *args, **kwargs)
-        if current_async_module is not None and raise_error is True:
-            return anyio.from_thread.run(partial_func)  # type: ignore
-        return anyio.run(partial_func)  # type: ignore
-
-    return wrapper
+    try:
+        return asyncio.run(async_function)  # type: ignore
+    except RuntimeError:
+        with futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future: Future = executor.submit(asyncio.run, async_function)  # type: ignore
+            return future.result()

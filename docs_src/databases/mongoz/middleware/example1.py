@@ -11,7 +11,7 @@ jwt_config = JWTConfig(signing_key=settings.secret_key, auth_header_types=["Bear
 jwt_auth_middleware = StarletteMiddleware(
     JWTAuthMiddleware,
     config=jwt_config,
-    user=import_string("myapp.models.User"),
+    user_model=import_string("myapp.models.User"),
 )
 
 app = Esmerald(middleware=[jwt_auth_middleware])

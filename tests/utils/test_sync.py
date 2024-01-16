@@ -1,5 +1,5 @@
 from esmerald.utils.helpers import is_async_callable
-from esmerald.utils.sync import AsyncCallable, execsync
+from esmerald.utils.sync import AsyncCallable, run_sync
 
 
 async def process() -> None:
@@ -23,6 +23,6 @@ def test_async_callable_transform():
 
 
 def test_execsync():
-    wrapper = execsync(process)
+    wrapper = run_sync(process())
 
     assert is_async_callable(wrapper) is False
