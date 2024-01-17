@@ -291,7 +291,9 @@ def get_openapi_path(
 
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):
-            response_schema = {"type": "string"}
+            response_schema = (
+                {"type": "string"} if handler.status_code not in handler.responses else {}
+            )
 
             operation.setdefault("responses", {}).setdefault(status_code, {}).setdefault(
                 "content", {}
@@ -337,7 +339,6 @@ def get_openapi_path(
                     or status_text
                     or "Additional Response"
                 )
-
                 dict_update(openapi_response, model_schema)
                 openapi_response["description"] = description
 
