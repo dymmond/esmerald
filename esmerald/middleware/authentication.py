@@ -8,7 +8,6 @@ from typing_extensions import Annotated, Doc
 from esmerald.enums import ScopeType
 from esmerald.parsers import ArbitraryBaseModel
 from esmerald.protocols.middleware import MiddlewareProtocol
-from esmerald.routing import router
 
 
 class AuthResult(ArbitraryBaseModel):
@@ -73,9 +72,6 @@ class BaseAuthMiddleware(ABC, MiddlewareProtocol):  # pragma: no cover
 
         auth_result = await self.authenticate(HTTPConnection(scope))
         scope["user"] = auth_result.user
-
-        if isinstance(self.app, (router.HTTPHandler, router.WebhookHandler)):
-            return self.app  # type: ignore
         await self.app(scope, receive, send)
 
     @abstractmethod

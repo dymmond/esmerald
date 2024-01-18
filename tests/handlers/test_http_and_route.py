@@ -21,8 +21,13 @@ from esmerald.testclient import create_client
     ],
 )
 def test_route_handler_default_status_code(method: Any, status_code: int) -> None:
-    route_handler = route(path="/", methods=[method], status_code=status_code)
-    assert route_handler.status_code == status_code
+    @route(path="/", methods=[method], status_code=status_code)
+    async def to_be_decorated() -> None:
+        ...
+
+    with create_client(routes=[Gateway(handler=to_be_decorated)]) as client:
+        response = getattr(client, method.lower())("/")
+        assert response.status_code == status_code
 
 
 def test_raises_exception_route_http_handler() -> None:

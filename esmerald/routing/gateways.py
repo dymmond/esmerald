@@ -252,11 +252,6 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
         self._middleware: List["Middleware"] = self.handle_middleware(
             handler=handler, base_middleware=self.middleware
         )
-        self.is_middleware: bool = False
-
-        if self._middleware:
-            self.is_middleware = True
-
         super().__init__(
             path=self.path,
             endpoint=cast(Callable, handler),
@@ -290,6 +285,10 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
             handler.param_convertors,
         ) = compile_path(self.path)
 
+        self.is_middleware = False
+        if self._middleware:
+            self.is_middleware = True
+
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
             self.handler.get_response_handler()
@@ -300,13 +299,10 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
+        if self._middleware:
+            self.is_middleware = True
         """
-        if self.is_middleware:
-            await self.app(scope, receive, send)
-
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
-        await self.handler.handle(scope, receive, send)
+        await self.app(scope, receive, send)
 
     def generate_operation_id(self) -> str:
         """
@@ -515,14 +511,10 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddle
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
+        if self._middleware:
+            self.is_middleware = True
         """
-        if self.is_middleware:
-            await self.app(scope, receive, send)
-
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
-
-        await self.handler.handle(scope, receive, send)
+        await self.app(scope, receive, send)
 
 
 class WebhookGateway(StarletteRoute, BaseInterceptorMixin):

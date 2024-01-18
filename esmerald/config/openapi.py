@@ -353,7 +353,7 @@ class OpenAPIConfig(BaseModel):
             urls = {server.get("url") for server in self.servers}
             server_urls = set(urls)
 
-            @get(path=self.openapi_url)
+            @get(path=self.openapi_url)  # type: ignore
             async def _openapi(request: Request) -> JSONResponse:
                 root_path = request.scope.get("root_path", "").rstrip("/")
 
@@ -372,7 +372,7 @@ class OpenAPIConfig(BaseModel):
 
         if self.openapi_url and self.docs_url:
 
-            @get(path=self.docs_url)
+            @get(path=self.docs_url)  # type: ignore
             async def swagger_ui_html(
                 request: Request,
             ) -> HTMLResponse:  # pragma: no cover
@@ -401,7 +401,7 @@ class OpenAPIConfig(BaseModel):
 
         if self.swagger_ui_oauth2_redirect_url:
 
-            @get(self.swagger_ui_oauth2_redirect_url)
+            @get(self.swagger_ui_oauth2_redirect_url)  # type: ignore
             async def swagger_ui_redirect(
                 request: Request,
             ) -> HTMLResponse:  # pragma: no cover
@@ -416,7 +416,7 @@ class OpenAPIConfig(BaseModel):
 
         if self.openapi_url and self.redoc_url:
 
-            @get(self.redoc_url)
+            @get(self.redoc_url)  # type: ignore
             async def redoc_html(request: Request) -> HTMLResponse:  # pragma: no cover
                 root_path = request.scope.get("root_path", "").rstrip("/")
                 openapi_url = root_path + self.openapi_url
@@ -437,7 +437,7 @@ class OpenAPIConfig(BaseModel):
 
         if self.openapi_url and self.stoplight_url:
 
-            @get(self.stoplight_url)
+            @get(self.stoplight_url)  # type: ignore
             async def stoplight_html(
                 request: Request,
             ) -> HTMLResponse:  # pragma: no cover

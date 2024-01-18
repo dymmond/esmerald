@@ -53,7 +53,7 @@ from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing._internal import FieldInfoMixin
 from esmerald.routing.apis.base import View
-from esmerald.routing.base import BaseHandlerMixin
+from esmerald.routing.base import BaseInterceptorMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
@@ -987,9 +987,10 @@ class Router(BaseRouter):
         self.routes.append(websocket_gateway)
 
 
-class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
+class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
     __slots__ = (
         "path",
+        "_interceptors",
         "_permissions",
         "_dependencies",
         "_response_handler",
@@ -1014,6 +1015,8 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
+        "interceptors",
+        "__type__",
     )
 
     def __init__(
@@ -1089,6 +1092,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.dependencies: "Dependencies" = dependencies or {}
         self.description = description or inspect.cleandoc(self.endpoint.__doc__ or "")
         self.permissions = list(permissions) if permissions else []
+        self.interceptors: Sequence["Interceptor"] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
         self.media_type = media_type
@@ -1108,9 +1112,15 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
         self._middleware: List["Middleware"] = []
+        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
+        self.__type__: Union[str, None] = None
+        self.app = self
 
         if self.responses:
             self.validate_responses(responses=self.responses)
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> Any:
+        await self.handle(scope=scope, receive=receive, send=send)
 
     def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
         """
@@ -1189,6 +1199,9 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         """
         ASGIapp that authorizes the connection and then awaits the handler function.
         """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         methods = [scope["method"]]
         await self.allowed_methods(scope, receive, send, methods)
 
@@ -1206,12 +1219,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
             parameter_model=parameter_model,
         )
         await response(scope, receive, send)
-
-    def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
-        self.fn = fn
-        self.endpoint = fn
-        self.validate_handler()
-        return self
 
     def check_handler_function(self) -> None:
         """Validates the route handler function once it's set by inspecting its
@@ -1399,7 +1406,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         self.path = path
 
 
-class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
+class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
     """
     Websocket handler object representation.
     """
@@ -1431,7 +1438,8 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self._response_handler: Union[
             "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
         ] = Void
-
+        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
+        self.interceptors: Sequence["Interceptor"] = []
         self.endpoint = endpoint
         self.parent: "ParentType" = None
         self.dependencies = dependencies
@@ -1443,12 +1451,6 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.include_in_schema = None
         self.fn: Optional["AnyCallable"] = None
         self.tags: Sequence[str] = []
-
-    def __call__(self, fn: "AnyCallable") -> "WebSocketHandler":
-        self.fn = fn
-        self.endpoint = fn
-        self.validate_websocket_handler_function()
-        return self
 
     def validate_reserved_words(self, signature: "Signature") -> None:
         """
@@ -1485,6 +1487,9 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         websocket = WebSocket(scope=scope, receive=receive, send=send)
         if self.get_permissions():
             await self.allow_connection(connection=websocket)
