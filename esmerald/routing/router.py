@@ -1014,6 +1014,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
+        "__type__",
     )
 
     def __init__(
@@ -1108,6 +1109,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
         self._middleware: List["Middleware"] = []
+        self.__type__: Union[str, None] = None
 
         if self.responses:
             self.validate_responses(responses=self.responses)
@@ -1207,11 +1209,11 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         )
         await response(scope, receive, send)
 
-    def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
-        self.fn = fn
-        self.endpoint = fn
-        self.validate_handler()
-        return self
+    # def __call__(self, fn: "AnyCallable") -> "HTTPHandler":
+    #     self.fn = fn
+    #     self.endpoint = fn
+    #     self.validate_handler()
+    #     return self
 
     def check_handler_function(self) -> None:
         """Validates the route handler function once it's set by inspecting its
@@ -1444,11 +1446,11 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         self.fn: Optional["AnyCallable"] = None
         self.tags: Sequence[str] = []
 
-    def __call__(self, fn: "AnyCallable") -> "WebSocketHandler":
-        self.fn = fn
-        self.endpoint = fn
-        self.validate_websocket_handler_function()
-        return self
+    # def __call__(self, fn: "AnyCallable") -> "WebSocketHandler":
+    #     self.fn = fn
+    #     self.endpoint = fn
+    #     self.validate_websocket_handler_function()
+    #     return self
 
     def validate_reserved_words(self, signature: "Signature") -> None:
         """

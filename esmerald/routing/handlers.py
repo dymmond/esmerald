@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
 from starlette import status
 from typing_extensions import Annotated, Doc
@@ -26,29 +26,11 @@ if TYPE_CHECKING:  # pragma: no cover
 SUCCESSFUL_RESPONSE = "Successful response"
 
 
-class get(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `get` and
-    all of its operatations.
-
-    **Example**
-
-    ```python
-    from esmerald import get
-
-
-    @get()
-    async def get() -> str:
-        return "Hello, World!"
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def get(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -65,13 +47,13 @@ class get(HTTPHandler):
                 @get(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -85,12 +67,12 @@ class get(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -103,104 +85,104 @@ class get(HTTPHandler):
                 async def get_joiners() -> None:
                     ...
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
@@ -215,12 +197,12 @@ class get(HTTPHandler):
                 @get(response_class=JSONResponse)
                 ```
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
@@ -243,12 +225,12 @@ class get(HTTPHandler):
                 @get(response_cookies=response_cookies)
                 ```
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
@@ -266,12 +248,12 @@ class get(HTTPHandler):
                 @get(response_headers=response_headers)
                 ```
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -288,12 +270,12 @@ class get(HTTPHandler):
                 @get(tags=["application"])
                 ```
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
 
@@ -305,12 +287,12 @@ class get(HTTPHandler):
                 @get(deprecated=True)
                 ```
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -330,12 +312,12 @@ class get(HTTPHandler):
                 @get(security=[Bearer()])
                 ```
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -343,21 +325,21 @@ class get(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -393,10 +375,27 @@ class get(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `get` and
+    all of its operatations.
+
+    **Example**
+
+    ```python
+    from esmerald import get
+
+
+    @get()
+    async def get() -> str:
+        return "Hello, World!"
+    ```
+    """
+
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             methods=[HttpMethod.GET],
             summary=summary,
@@ -421,171 +420,171 @@ class get(HTTPHandler):
             response_description=response_description,
             responses=responses,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.GET.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
 
 
-class head(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `head` and
-    all of its operatations.
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def head(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
                 """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
                 Read more about the [Responses](https://esmerald.dev/responses/) and how
                 to use them.
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -594,21 +593,21 @@ class head(HTTPHandler):
                 these tags on a Esmerald instance, means it will be added to every route even
                 if those routes also contain tags.
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -619,12 +618,12 @@ class head(HTTPHandler):
                 For custom security objects, you **must** subclass
                 `esmerald.openapi.security.base.HTTPBase` object.
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -632,21 +631,21 @@ class head(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -656,10 +655,16 @@ class head(HTTPHandler):
 
                 Read more about [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object and how to use it.
                 """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `head` and
+    all of its operatations.
+    """
+
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             methods=[HttpMethod.HEAD],
             summary=summary,
@@ -684,558 +689,20 @@ class head(HTTPHandler):
             response_description=response_description,
             responses=responses,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.HEAD.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
 
 
-class options(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `options` and
-    all of its operatations.
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
-                Relative path of the `handler`.
-                The path can contain parameters in a dictionary like format
-                and if the path is not provided, it will default to `/`.
-                """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
-                """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
-                """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
-                An integer indicating the status code of the handler.
-
-                This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
-                """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The string indicating the content encoding of the handler.
-
-                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
-                documentation.
-                """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The string indicating the content media type of the handler.
-
-                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
-                documentation.
-                """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
-                Boolean flag indicating if it should be added to the OpenAPI docs.
-                """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
-                An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
-
-                Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
-                understand what can be done.
-                """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
-                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
-                """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
-                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
-                """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-                """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
-                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
-                """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
-                The default `media-type` used by the handler.
-                """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
-                Response class to be used within the
-                handler application.
-
-                Read more about the [Responses](https://esmerald.dev/responses/) and how
-                to use them.
-                """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
-                A sequence of `esmerald.datastructures.Cookie` objects.
-
-                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
-                """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
-                A mapping of `esmerald.datastructures.ResponseHeader` objects.
-
-                Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
-                """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
-                A list of strings tags to be applied to the *path operation*.
-
-                It will be added to the generated OpenAPI documentation.
-
-                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
-                these tags on a Esmerald instance, means it will be added to every route even
-                if those routes also contain tags.
-                """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
-                Boolean flag indicating if the handler
-                should be deprecated in the OpenAPI documentation.
-                """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
-                Used by OpenAPI definition, the security must be compliant with the norms.
-                Esmerald offers some out of the box solutions where this is implemented.
-
-                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
-
-                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
-
-                For custom security objects, you **must** subclass
-                `esmerald.openapi.security.base.HTTPBase` object.
-                """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The unique identifier of the `handler`. This acts as a unique ID
-                for the OpenAPI documentation.
-
-                !!! Tip
-                    Usually you don't need this as Esmerald handles it automatically
-                    but it is here if you want to add your own.
-                """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
-                A description of the response. This is used for OpenAPI documentation
-                purposes only and accepts all the docstrings including `markdown` format.
-                """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
-                Additional responses that are handled by the handler and need to be described
-                in the OpenAPI documentation.
-
-                The `responses` is a dictionary like object where the first parameter is an
-                `integer` and the second is an instance of an [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object.
-
-
-                Read more about [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object and how to use it.
-                """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
-            path=path,
-            methods=[HttpMethod.OPTIONS],
-            summary=summary,
-            description=description,
-            status_code=status_code,
-            content_encoding=content_encoding,
-            content_media_type=content_media_type,
-            include_in_schema=include_in_schema,
-            background=background,
-            dependencies=dependencies,
-            exception_handlers=exception_handlers,
-            permissions=permissions,
-            middleware=middleware,
-            media_type=media_type,
-            response_class=response_class,
-            response_cookies=response_cookies,
-            response_headers=response_headers,
-            tags=tags,
-            deprecated=deprecated,
-            security=security,
-            operation_id=operation_id,
-            response_description=response_description,
-            responses=responses,
-        )
-
-
-class trace(HTTPHandler):  # pragma: no cover
-    """
-    Handler responsible for the HTTP method `trace` and
-    all of its operatations.
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
-                Relative path of the `handler`.
-                The path can contain parameters in a dictionary like format
-                and if the path is not provided, it will default to `/`.
-                """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
-                """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
-                """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
-                An integer indicating the status code of the handler.
-
-                This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
-                """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The string indicating the content encoding of the handler.
-
-                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
-                documentation.
-                """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The string indicating the content media type of the handler.
-
-                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
-                documentation.
-                """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
-                Boolean flag indicating if it should be added to the OpenAPI docs.
-                """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
-                An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
-
-                Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
-                understand what can be done.
-                """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
-                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
-                """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
-                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
-                """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-                """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
-                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
-                """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
-                The default `media-type` used by the handler.
-                """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
-                Response class to be used within the
-                handler application.
-
-                Read more about the [Responses](https://esmerald.dev/responses/) and how
-                to use them.
-                """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
-                A sequence of `esmerald.datastructures.Cookie` objects.
-
-                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
-                """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
-                A mapping of `esmerald.datastructures.ResponseHeader` objects.
-
-                Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
-                """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
-                A list of strings tags to be applied to the *path operation*.
-
-                It will be added to the generated OpenAPI documentation.
-
-                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
-                these tags on a Esmerald instance, means it will be added to every route even
-                if those routes also contain tags.
-                """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
-                Boolean flag indicating if the handler
-                should be deprecated in the OpenAPI documentation.
-                """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
-                Used by OpenAPI definition, the security must be compliant with the norms.
-                Esmerald offers some out of the box solutions where this is implemented.
-
-                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
-
-                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
-
-                For custom security objects, you **must** subclass
-                `esmerald.openapi.security.base.HTTPBase` object.
-                """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
-                The unique identifier of the `handler`. This acts as a unique ID
-                for the OpenAPI documentation.
-
-                !!! Tip
-                    Usually you don't need this as Esmerald handles it automatically
-                    but it is here if you want to add your own.
-                """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
-                A description of the response. This is used for OpenAPI documentation
-                purposes only and accepts all the docstrings including `markdown` format.
-                """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
-                Additional responses that are handled by the handler and need to be described
-                in the OpenAPI documentation.
-
-                The `responses` is a dictionary like object where the first parameter is an
-                `integer` and the second is an instance of an [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object.
-
-
-                Read more about [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object and how to use it.
-                """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
-            path=path,
-            methods=[HttpMethod.TRACE],
-            summary=summary,
-            description=description,
-            status_code=status_code,
-            content_encoding=content_encoding,
-            content_media_type=content_media_type,
-            include_in_schema=include_in_schema,
-            background=background,
-            dependencies=dependencies,
-            exception_handlers=exception_handlers,
-            permissions=permissions,
-            middleware=middleware,
-            media_type=media_type,
-            response_class=response_class,
-            response_cookies=response_cookies,
-            response_headers=response_headers,
-            tags=tags,
-            deprecated=deprecated,
-            security=security,
-            operation_id=operation_id,
-            response_description=response_description,
-            responses=responses,
-        )
-
-
-class post(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `post` and
-    all of its operatations.
-
-    **Example**
-
-    ```python
-    from esmerald import post
-
-
-    @post()
-    async def create() -> None:
-        ...
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def post(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -1252,13 +719,13 @@ class post(HTTPHandler):
                 @post(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -1277,12 +744,12 @@ class post(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -1295,104 +762,104 @@ class post(HTTPHandler):
                 async def create_joiners() -> None:
                     ...
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_201_CREATED,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_201_CREATED,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
@@ -1407,12 +874,12 @@ class post(HTTPHandler):
                 @post(response_class=JSONResponse)
                 ```
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
@@ -1435,12 +902,12 @@ class post(HTTPHandler):
                 @post(response_cookies=response_cookies)
                 ```
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
@@ -1458,12 +925,12 @@ class post(HTTPHandler):
                 @post(response_headers=response_headers)
                 ```
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -1480,12 +947,12 @@ class post(HTTPHandler):
                 @post(tags=["application"])
                 ```
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
 
@@ -1497,12 +964,12 @@ class post(HTTPHandler):
                 @post(deprecated=True)
                 ```
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -1522,12 +989,12 @@ class post(HTTPHandler):
                 @post(security=[Bearer()])
                 ```
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -1535,21 +1002,21 @@ class post(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -1585,10 +1052,27 @@ class post(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `post` and
+    all of its operatations.
+
+    **Example**
+
+    ```python
+    from esmerald import post
+
+
+    @post()
+    async def create() -> None:
+        ...
+    ```
+    """
+
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             status_code=status_code,
             content_encoding=content_encoding,
@@ -1613,31 +1097,20 @@ class post(HTTPHandler):
             response_description=response_description,
             responses=responses,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.POST.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
 
 
-class put(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `put` and
-    all of its operatations.
-
-    **Example**
-
-    ```python
-    from esmerald import put
-
-
-    @put()
-    async def update() -> str:
-        return "updated!"
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def put(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -1654,13 +1127,13 @@ class put(HTTPHandler):
                 @put(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -1674,12 +1147,12 @@ class put(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -1692,104 +1165,104 @@ class put(HTTPHandler):
                 async def update_joiners() -> None:
                     ...
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
@@ -1804,12 +1277,12 @@ class put(HTTPHandler):
                 @put(response_class=JSONResponse)
                 ```
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
@@ -1832,12 +1305,12 @@ class put(HTTPHandler):
                 @put(response_cookies=response_cookies)
                 ```
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
@@ -1855,12 +1328,12 @@ class put(HTTPHandler):
                 @put(response_headers=response_headers)
                 ```
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -1877,12 +1350,12 @@ class put(HTTPHandler):
                 @put(tags=["application"])
                 ```
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
 
@@ -1894,12 +1367,12 @@ class put(HTTPHandler):
                 @put(deprecated=True)
                 ```
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -1919,12 +1392,12 @@ class put(HTTPHandler):
                 @put(security=[Bearer()])
                 ```
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -1932,21 +1405,21 @@ class put(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -1982,10 +1455,27 @@ class put(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `put` and
+    all of its operatations.
+
+    **Example**
+
+    ```python
+    from esmerald import put
+
+
+    @put()
+    async def update() -> str:
+        return "updated!"
+    ```
+    """
+
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             methods=[HttpMethod.PUT],
             summary=summary,
@@ -2010,31 +1500,20 @@ class put(HTTPHandler):
             response_description=response_description,
             responses=responses,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.PUT.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
 
 
-class patch(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `path` and
-    all of its operatations.
-
-    **Example**
-
-    ```python
-    from esmerald import patch
-
-
-    @patch()
-    async def update_partial() -> str:
-        return "done!"
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def patch(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -2051,13 +1530,13 @@ class patch(HTTPHandler):
                 @patch(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -2071,12 +1550,12 @@ class patch(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -2089,104 +1568,104 @@ class patch(HTTPHandler):
                 async def update_partial_joiners() -> None:
                     ...
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
@@ -2201,12 +1680,12 @@ class patch(HTTPHandler):
                 @patch(response_class=JSONResponse)
                 ```
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
@@ -2229,12 +1708,12 @@ class patch(HTTPHandler):
                 @patch(response_cookies=response_cookies)
                 ```
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
@@ -2252,12 +1731,12 @@ class patch(HTTPHandler):
                 @patch(response_headers=response_headers)
                 ```
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -2274,12 +1753,12 @@ class patch(HTTPHandler):
                 @patch(tags=["application"])
                 ```
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
 
@@ -2291,12 +1770,12 @@ class patch(HTTPHandler):
                 @patch(deprecated=True)
                 ```
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -2316,12 +1795,12 @@ class patch(HTTPHandler):
                 @patch(security=[Bearer()])
                 ```
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -2329,21 +1808,21 @@ class patch(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -2379,10 +1858,27 @@ class patch(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `path` and
+    all of its operatations.
+
+    **Example**
+
+    ```python
+    from esmerald import patch
+
+
+    @patch()
+    async def update_partial() -> str:
+        return "done!"
+    ```
+    """
+
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             methods=[HttpMethod.PATCH],
             summary=summary,
@@ -2407,31 +1903,20 @@ class patch(HTTPHandler):
             response_description=response_description,
             responses=responses,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.PATCH.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
 
 
-class delete(HTTPHandler):
-    """
-    Handler responsible for the HTTP method `delete` and
-    all of its operatations.
-
-    **Example**
-
-    ```python
-    from esmerald import delete
-
-
-    @delete()
-    async def remove() -> None:
-        ...
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def delete(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -2448,13 +1933,13 @@ class delete(HTTPHandler):
                 @delete(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -2468,12 +1953,12 @@ class delete(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -2486,104 +1971,104 @@ class delete(HTTPHandler):
                 async def delete_joiners() -> None:
                     ...
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_204_NO_CONTENT,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_204_NO_CONTENT,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
@@ -2598,12 +2083,12 @@ class delete(HTTPHandler):
                 @delete(response_class=JSONResponse)
                 ```
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
@@ -2626,12 +2111,12 @@ class delete(HTTPHandler):
                 @delete(response_cookies=response_cookies)
                 ```
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
@@ -2649,12 +2134,12 @@ class delete(HTTPHandler):
                 @delete(response_headers=response_headers)
                 ```
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -2671,12 +2156,12 @@ class delete(HTTPHandler):
                 @delete(tags=["application"])
                 ```
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
 
@@ -2688,12 +2173,12 @@ class delete(HTTPHandler):
                 @delete(deprecated=True)
                 ```
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -2713,12 +2198,12 @@ class delete(HTTPHandler):
                 @delete(security=[Bearer()])
                 ```
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -2726,21 +2211,21 @@ class delete(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -2776,10 +2261,27 @@ class delete(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-    ) -> None:
-        super().__init__(
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `delete` and
+    all of its operatations.
+
+    **Example**
+
+    ```python
+    from esmerald import delete
+
+
+    @delete()
+    async def remove() -> None:
+        ...
+    ```
+    """
+
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             methods=[HttpMethod.DELETE],
             summary=summary,
@@ -2804,31 +2306,559 @@ class delete(HTTPHandler):
             response_description=response_description,
             responses=responses,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.DELETE.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
 
 
-class route(HTTPHandler):
+def options(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
+                Relative path of the `handler`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
+                An integer indicating the status code of the handler.
+
+                This can be achieved by passing directly the value or
+                by using the `esmerald.status` or even the `starlette.status`.
+                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The string indicating the content encoding of the handler.
+
+                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
+                documentation.
+                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The string indicating the content media type of the handler.
+
+                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
+                documentation.
+                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
+                An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
+
+                Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
+                understand what can be done.
+                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
+                The default `media-type` used by the handler.
+                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
+                Response class to be used within the
+                handler application.
+
+                Read more about the [Responses](https://esmerald.dev/responses/) and how
+                to use them.
+                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
+                A sequence of `esmerald.datastructures.Cookie` objects.
+
+                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
+                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
+                A mapping of `esmerald.datastructures.ResponseHeader` objects.
+
+                Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
+                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
+                Boolean flag indicating if the handler
+                should be deprecated in the OpenAPI documentation.
+                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The unique identifier of the `handler`. This acts as a unique ID
+                for the OpenAPI documentation.
+
+                !!! Tip
+                    Usually you don't need this as Esmerald handles it automatically
+                    but it is here if you want to add your own.
+                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
+                A description of the response. This is used for OpenAPI documentation
+                purposes only and accepts all the docstrings including `markdown` format.
+                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
+                Additional responses that are handled by the handler and need to be described
+                in the OpenAPI documentation.
+
+                The `responses` is a dictionary like object where the first parameter is an
+                `integer` and the second is an instance of an [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object.
+
+
+                Read more about [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object and how to use it.
+                """
+        ),
+    ] = None,
+) -> HTTPHandler:
     """
-    Handler responsible for allowing multiple HTTP verbs in one go
+    Handler responsible for the HTTP method `options` and
     all of its operatations.
+    """
 
-    **Example**
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
+            path=path,
+            methods=[HttpMethod.OPTIONS],
+            summary=summary,
+            description=description,
+            status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
+            include_in_schema=include_in_schema,
+            background=background,
+            dependencies=dependencies,
+            exception_handlers=exception_handlers,
+            permissions=permissions,
+            middleware=middleware,
+            media_type=media_type,
+            response_class=response_class,
+            response_cookies=response_cookies,
+            response_headers=response_headers,
+            tags=tags,
+            deprecated=deprecated,
+            security=security,
+            operation_id=operation_id,
+            response_description=response_description,
+            responses=responses,
+        )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.OPTIONS.value
+        handler.validate_handler()
+        return handler
 
-    ```python
-    from esmerald import route
+    return wrapper
 
 
-    @route(methods=["GET", "POST", "DELETE"])
-    async def operate() -> str:
-        return "Hello, World!"
+def trace(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
+                Relative path of the `handler`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
+                """
+        ),
+    ] = None,
+    *,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
+                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
+                An integer indicating the status code of the handler.
+
+                This can be achieved by passing directly the value or
+                by using the `esmerald.status` or even the `starlette.status`.
+                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The string indicating the content encoding of the handler.
+
+                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
+                documentation.
+                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The string indicating the content media type of the handler.
+
+                This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
+                documentation.
+                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
+                An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
+
+                Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
+                understand what can be done.
+                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
+                The default `media-type` used by the handler.
+                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
+                Response class to be used within the
+                handler application.
+
+                Read more about the [Responses](https://esmerald.dev/responses/) and how
+                to use them.
+                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
+                A sequence of `esmerald.datastructures.Cookie` objects.
+
+                Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
+                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
+                A mapping of `esmerald.datastructures.ResponseHeader` objects.
+
+                Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
+                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
+                A list of strings tags to be applied to the *path operation*.
+
+                It will be added to the generated OpenAPI documentation.
+
+                **Note** almost everything in Esmerald can be done in [levels](https://esmerald.dev/application/levels/), which means
+                these tags on a Esmerald instance, means it will be added to every route even
+                if those routes also contain tags.
+                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
+                Boolean flag indicating if the handler
+                should be deprecated in the OpenAPI documentation.
+                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
+                Used by OpenAPI definition, the security must be compliant with the norms.
+                Esmerald offers some out of the box solutions where this is implemented.
+
+                The [Esmerald security](https://esmerald.dev/openapi/) is available to automatically used.
+
+                The security can be applied also on a [level basis](https://esmerald.dev/application/levels/).
+
+                For custom security objects, you **must** subclass
+                `esmerald.openapi.security.base.HTTPBase` object.
+                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The unique identifier of the `handler`. This acts as a unique ID
+                for the OpenAPI documentation.
+
+                !!! Tip
+                    Usually you don't need this as Esmerald handles it automatically
+                    but it is here if you want to add your own.
+                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
+                A description of the response. This is used for OpenAPI documentation
+                purposes only and accepts all the docstrings including `markdown` format.
+                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
+                Additional responses that are handled by the handler and need to be described
+                in the OpenAPI documentation.
+
+                The `responses` is a dictionary like object where the first parameter is an
+                `integer` and the second is an instance of an [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object.
+
+
+                Read more about [OpenAPIResponse](https://esmerald.dev/responses/#openapi-responses) object and how to use it.
+                """
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for the HTTP method `trace` and
+    all of its operatations.
     ```
     """
 
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
+            path=path,
+            methods=[HttpMethod.TRACE],
+            summary=summary,
+            description=description,
+            status_code=status_code,
+            content_encoding=content_encoding,
+            content_media_type=content_media_type,
+            include_in_schema=include_in_schema,
+            background=background,
+            dependencies=dependencies,
+            exception_handlers=exception_handlers,
+            permissions=permissions,
+            middleware=middleware,
+            media_type=media_type,
+            response_class=response_class,
+            response_cookies=response_cookies,
+            response_headers=response_headers,
+            tags=tags,
+            deprecated=deprecated,
+            security=security,
+            operation_id=operation_id,
+            response_description=response_description,
+            responses=responses,
+        )
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.TRACE.value
+        handler.validate_handler()
+        return handler
+
+    return wrapper
+
+
+def route(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -2845,13 +2875,13 @@ class route(HTTPHandler):
                 @route(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        methods: Annotated[
-            List[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    methods: Annotated[
+        List[str],
+        Doc(
+            """
                 List of strings of methods allowed by the handler.
 
                 **Example**
@@ -2865,12 +2895,12 @@ class route(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        summary: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    summary: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The summary of the handler. This short summary is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -2884,12 +2914,12 @@ class route(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-        description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The description of the Esmerald application/API. This description is displayed when the [OpenAPI](https://esmerald.dev/openapi/) documentation is used.
 
                 **Example**
@@ -2902,104 +2932,104 @@ class route(HTTPHandler):
                 async def operate_joiners() -> None:
                     ...
                 """
-            ),
-        ] = None,
-        status_code: Annotated[
-            Optional[int],
-            Doc(
-                """
+        ),
+    ] = None,
+    status_code: Annotated[
+        Optional[int],
+        Doc(
+            """
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
                 by using the `esmerald.status` or even the `starlette.status`.
                 """
-            ),
-        ] = status.HTTP_200_OK,
-        content_encoding: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = status.HTTP_200_OK,
+    content_encoding: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content encoding of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        content_media_type: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    content_media_type: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The string indicating the content media type of the handler.
 
                 This is used for the generation of the [OpenAPI](https://esmerald.dev/openapi/)
                 documentation.
                 """
-            ),
-        ] = None,
-        include_in_schema: Annotated[
-            bool,
-            Doc(
-                """
+        ),
+    ] = None,
+    include_in_schema: Annotated[
+        bool,
+        Doc(
+            """
                 Boolean flag indicating if it should be added to the OpenAPI docs.
                 """
-            ),
-        ] = True,
-        background: Annotated[
-            Optional["BackgroundTaskType"],
-            Doc(
-                """
+        ),
+    ] = True,
+    background: Annotated[
+        Optional["BackgroundTaskType"],
+        Doc(
+            """
                 An instance of an `esmerald.background.BackgroundTask` or `esmerald.background.BackgroundTasks` to be passed onto the handler.
 
                 Read more about [Background tasks](https://esmerald.dev/background-tasks/) to
                 understand what can be done.
                 """
-            ),
-        ] = None,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-        media_type: Annotated[
-            Union[MediaType, str],
-            Doc(
-                """
+        ),
+    ] = None,
+    media_type: Annotated[
+        Union[MediaType, str],
+        Doc(
+            """
                 The default `media-type` used by the handler.
                 """
-            ),
-        ] = MediaType.JSON,
-        response_class: Annotated[
-            Optional["ResponseType"],
-            Doc(
-                """
+        ),
+    ] = MediaType.JSON,
+    response_class: Annotated[
+        Optional["ResponseType"],
+        Doc(
+            """
                 Response class to be used within the
                 handler application.
 
@@ -3014,12 +3044,12 @@ class route(HTTPHandler):
                 @route(response_class=JSONResponse)
                 ```
                 """
-            ),
-        ] = None,
-        response_cookies: Annotated[
-            Optional["ResponseCookies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_cookies: Annotated[
+        Optional["ResponseCookies"],
+        Doc(
+            """
                 A sequence of `esmerald.datastructures.Cookie` objects.
 
                 Read more about the [Cookies](https://esmerald.dev/extras/cookie-fields/?h=responsecook#cookie-from-response-cookies).
@@ -3042,12 +3072,12 @@ class route(HTTPHandler):
                 @route(response_cookies=response_cookies)
                 ```
                 """
-            ),
-        ] = None,
-        response_headers: Annotated[
-            Optional["ResponseHeaders"],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_headers: Annotated[
+        Optional["ResponseHeaders"],
+        Doc(
+            """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
 
                 Read more about the [ResponseHeader](https://esmerald.dev/extras/header-fields/#response-headers).
@@ -3065,12 +3095,12 @@ class route(HTTPHandler):
                 @route(response_headers=response_headers)
                 ```
                 """
-            ),
-        ] = None,
-        tags: Annotated[
-            Optional[Sequence[str]],
-            Doc(
-                """
+        ),
+    ] = None,
+    tags: Annotated[
+        Optional[Sequence[str]],
+        Doc(
+            """
                 A list of strings tags to be applied to the *path operation*.
 
                 It will be added to the generated OpenAPI documentation.
@@ -3087,12 +3117,12 @@ class route(HTTPHandler):
                 @route(tags=["application"])
                 ```
                 """
-            ),
-        ] = None,
-        deprecated: Annotated[
-            Optional[bool],
-            Doc(
-                """
+        ),
+    ] = None,
+    deprecated: Annotated[
+        Optional[bool],
+        Doc(
+            """
                 Boolean flag indicating if the handler
                 should be deprecated in the OpenAPI documentation.
 
@@ -3104,12 +3134,12 @@ class route(HTTPHandler):
                 @route(deprecated=True)
                 ```
                 """
-            ),
-        ] = None,
-        security: Annotated[
-            Optional[List["SecurityScheme"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    security: Annotated[
+        Optional[List["SecurityScheme"]],
+        Doc(
+            """
                 Used by OpenAPI definition, the security must be compliant with the norms.
                 Esmerald offers some out of the box solutions where this is implemented.
 
@@ -3129,12 +3159,12 @@ class route(HTTPHandler):
                 @route(security=[Bearer()])
                 ```
                 """
-            ),
-        ] = None,
-        operation_id: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    operation_id: Annotated[
+        Optional[str],
+        Doc(
+            """
                 The unique identifier of the `handler`. This acts as a unique ID
                 for the OpenAPI documentation.
 
@@ -3142,21 +3172,21 @@ class route(HTTPHandler):
                     Usually you don't need this as Esmerald handles it automatically
                     but it is here if you want to add your own.
                 """
-            ),
-        ] = None,
-        response_description: Annotated[
-            Optional[str],
-            Doc(
-                """
+        ),
+    ] = None,
+    response_description: Annotated[
+        Optional[str],
+        Doc(
+            """
                 A description of the response. This is used for OpenAPI documentation
                 purposes only and accepts all the docstrings including `markdown` format.
                 """
-            ),
-        ] = SUCCESSFUL_RESPONSE,
-        responses: Annotated[
-            Optional[Dict[int, OpenAPIResponse]],
-            Doc(
-                """
+        ),
+    ] = SUCCESSFUL_RESPONSE,
+    responses: Annotated[
+        Optional[Dict[int, OpenAPIResponse]],
+        Doc(
+            """
                 Additional responses that are handled by the handler and need to be described
                 in the OpenAPI documentation.
 
@@ -3192,27 +3222,42 @@ class route(HTTPHandler):
                     ...
                 ```
                 """
-            ),
-        ] = None,
-    ) -> None:
-        if not methods or not isinstance(methods, list):
+        ),
+    ] = None,
+) -> HTTPHandler:
+    """
+    Handler responsible for allowing multiple HTTP verbs in one go
+    all of its operatations.
+
+    **Example**
+
+    ```python
+    from esmerald import route
+
+
+    @route(methods=["GET", "POST", "DELETE"])
+    async def operate() -> str:
+        return "Hello, World!"
+    ```
+    """
+    if not methods or not isinstance(methods, list):
+        raise ImproperlyConfigured(
+            "http handler demands `methods` to be declared. "
+            "An example would be: @route(methods=['GET', 'PUT'])."
+        )
+
+    for method in methods:
+        if method.upper() not in AVAILABLE_METHODS:
             raise ImproperlyConfigured(
-                "http handler demands `methods` to be declared. "
-                "An example would be: @route(methods=['GET', 'PUT'])."
+                f"Invalid method {method}. " "An example would be: @route(methods=['GET', 'PUT'])."
             )
 
-        for method in methods:
-            if method.upper() not in AVAILABLE_METHODS:
-                raise ImproperlyConfigured(
-                    f"Invalid method {method}. "
-                    "An example would be: @route(methods=['GET', 'PUT'])."
-                )
+    methods = [method.upper() for method in methods]
+    if not status_code:  # pragma: no cover
+        status_code = status.HTTP_200_OK
 
-        methods = [method.upper() for method in methods]
-        if not status_code:  # pragma: no cover
-            status_code = status.HTTP_200_OK
-
-        super().__init__(
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = HTTPHandler(
             path=path,
             methods=methods,
             summary=summary,
@@ -3238,32 +3283,20 @@ class route(HTTPHandler):
             responses=responses,
         )
 
+        handler.fn = func
+        handler.endpoint = func
+        handler.__type__ = HttpMethod.OPTIONS.value
+        handler.validate_handler()
+        return handler
 
-class websocket(WebSocketHandler):
-    """
-    Handler responsible for the Websocket `websocket` integration and
-    all of its operatations.
-
-    **Example**
-
-    ```python
-    from esmerald import websocket, Socket
+    return wrapper
 
 
-    @websocket()
-    async def handle_socket(socket: WebSocket) -> None:
-        await socket.accept()
-        await socket.send_json({"data": "123"})
-        await socket.close()
-    ```
-    """
-
-    def __init__(
-        self,
-        path: Annotated[
-            Optional[str],
-            Doc(
-                """
+def websocket(
+    path: Annotated[
+        Optional[str],
+        Doc(
+            """
                 Relative path of the `handler`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
@@ -3280,46 +3313,53 @@ class websocket(WebSocketHandler):
                 @websocket(path="/{age: int}")
                 ```
                 """
-            ),
-        ] = None,
-        *,
-        dependencies: Annotated[
-            Optional["Dependencies"],
-            Doc(
-                """
+        ),
+    ] = None,
+    *,
+    dependencies: Annotated[
+        Optional["Dependencies"],
+        Doc(
+            """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
                 """
-            ),
-        ] = None,
-        exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
-            Doc(
-                """
+        ),
+    ] = None,
+    exception_handlers: Annotated[
+        Optional["ExceptionHandlerMap"],
+        Doc(
+            """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
                 """
-            ),
-        ] = None,
-        middleware: Annotated[
-            Optional[List["Middleware"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    middleware: Annotated[
+        Optional[List["Middleware"]],
+        Doc(
+            """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
-            ),
-        ] = None,
-        permissions: Annotated[
-            Optional[List["Permission"]],
-            Doc(
-                """
+        ),
+    ] = None,
+    permissions: Annotated[
+        Optional[List["Permission"]],
+        Doc(
+            """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
                 """
-            ),
-        ] = None,
-    ):
-        super().__init__(
+        ),
+    ] = None,
+) -> WebSocketHandler:
+    def wrapper(func: Any) -> HTTPHandler:
+        handler = WebSocketHandler(
             path=path,
             dependencies=dependencies,
             exception_handlers=exception_handlers,
             permissions=permissions,
             middleware=middleware,
         )
+        handler.fn = func
+        handler.endpoint = func
+        handler.validate_websocket_handler_function()
+        return handler
+
+    return wrapper

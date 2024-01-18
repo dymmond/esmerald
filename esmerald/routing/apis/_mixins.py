@@ -78,6 +78,7 @@ class MethodMixin:
         ):
             if hasattr(cls, "extra_allowed") and cls.extra_allowed is not None and name.lower() in cls.extra_allowed:  # type: ignore[unreachable]
                 return True
+
             if name.lower() not in cls.http_allowed_methods:
                 if error_message is None:
                     error_message = ", ".join(cls.http_allowed_methods)
@@ -85,9 +86,9 @@ class MethodMixin:
                 raise ImproperlyConfigured(
                     f"{cls.__name__} only allows functions with the name(s) `{error_message}` to be implemented, got `{name.lower()}` instead."
                 )
-            elif name.lower() != method.__class__.__name__.lower():
+            elif name.lower() != method.__type__.lower():
                 raise ImproperlyConfigured(
-                    f"The function '{name.lower()}' must implement the '{name.lower()}()' handler, got '{method.__class__.__name__.lower()}()' instead."
+                    f"The function '{name.lower()}' must implement the '{name.lower()}()' handler, got '{method.__type__.lower()}()' instead."
                 )
         return True
 
