@@ -1108,13 +1108,11 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
         self.content_media_type = content_media_type
 
         self.fn: Optional["AnyCallable"] = None
-        self.app: Optional["ASGIApp"] = None
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
         self._middleware: List["Middleware"] = []
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.__type__: Union[str, None] = None
-        self.app = self
 
         if self.responses:
             self.validate_responses(responses=self.responses)
