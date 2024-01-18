@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
 
 from starlette import status
 from typing_extensions import Annotated, Doc
@@ -426,7 +426,7 @@ def get(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def head(
@@ -695,7 +695,7 @@ def head(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def post(
@@ -1103,7 +1103,7 @@ def post(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def put(
@@ -1506,7 +1506,7 @@ def put(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def patch(
@@ -1909,7 +1909,7 @@ def patch(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def delete(
@@ -2312,7 +2312,7 @@ def delete(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def options(
@@ -2581,7 +2581,7 @@ def options(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def trace(
@@ -2851,7 +2851,7 @@ def trace(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def route(
@@ -3289,7 +3289,7 @@ def route(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(HTTPHandler, wrapper)
 
 
 def websocket(
@@ -3349,7 +3349,7 @@ def websocket(
         ),
     ] = None,
 ) -> WebSocketHandler:
-    def wrapper(func: Any) -> HTTPHandler:
+    def wrapper(func: Any) -> WebSocketHandler:
         handler = WebSocketHandler(
             path=path,
             dependencies=dependencies,
@@ -3362,4 +3362,4 @@ def websocket(
         handler.validate_websocket_handler_function()
         return handler
 
-    return wrapper
+    return cast(WebSocketHandler, wrapper)

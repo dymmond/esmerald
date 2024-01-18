@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
 
 from starlette import status
 from typing_extensions import Annotated, Doc
@@ -426,7 +426,7 @@ def whget(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whead(
@@ -695,7 +695,7 @@ def whead(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whpost(
@@ -1103,7 +1103,7 @@ def whpost(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whput(
@@ -1506,7 +1506,7 @@ def whput(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whpatch(
@@ -1909,7 +1909,7 @@ def whpatch(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whdelete(
@@ -2312,7 +2312,7 @@ def whdelete(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whoptions(
@@ -2581,7 +2581,7 @@ def whoptions(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whtrace(
@@ -2851,7 +2851,7 @@ def whtrace(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
 
 
 def whroute(
@@ -3289,4 +3289,4 @@ def whroute(
         handler.validate_handler()
         return handler
 
-    return wrapper
+    return cast(WebhookHandler, wrapper)
