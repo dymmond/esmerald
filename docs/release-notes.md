@@ -5,6 +5,19 @@ hide:
 
 # Release Notes
 
+## 2.7.0
+
+### Changed
+
+- `Token.decode()` is now a `classmethod`. This allows to subclass the `Token` and add extra fields into the model
+allowing operations like `encode()` with extra claims. This can be useful for situations like claiming a `refresh` or `access` token.
+- Internal handlers decorators are now wrapped in a function decorator. This does not affect anything but allows more control over the middleware
+calls to async ASGI applications.
+
+### Fixed
+
+- OpenAPI when overriding the response for the default status codes of the handlers.
+
 ## 2.6.0
 
 ### Added
