@@ -76,7 +76,7 @@ to make the process more intuitive and easy to implement. [#199](https://github.
 
 ### Fixed
 
-- Missing [Request](./request.md) document.
+- Missing [Request](./requests.md) document.
 - Removed the use of `random` for the secrets in favour of the `secrets` library instead.
 - Contrib documentation updates regarding the Authorization headers.
 
