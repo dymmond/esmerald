@@ -610,7 +610,8 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
         for tag in tags:
             if tag not in tags_clean:
                 tags_clean.append(tag)
-        return tags_clean
+
+        return tags_clean if tags_clean else None
 
 
 class BaseInterceptorMixin(BaseHandlerMixin):  # pragma: no cover
