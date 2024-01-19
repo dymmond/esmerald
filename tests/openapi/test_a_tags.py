@@ -70,7 +70,6 @@ def test_tags_nested(test_client_factory):
         response = client.get("/openapi.json")
 
         assert response.status_code == 200, response.text
-
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
@@ -78,7 +77,7 @@ def test_tags_nested(test_client_factory):
                 "summary": "Esmerald application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
-                "version": client.app.version,
+                "version": app.version,
             },
             "servers": [{"url": "/"}],
             "paths": {

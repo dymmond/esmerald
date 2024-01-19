@@ -119,9 +119,7 @@ def get_openapi_operation(
     *, route: Union[router.HTTPHandler, Any], operation_ids: Set[str]
 ) -> Dict[str, Any]:  # pragma: no cover
     operation = Operation()
-
-    if route.tags:
-        operation.tags = route.get_handler_tags()
+    operation.tags = route.get_handler_tags()
 
     if route.summary:
         operation.summary = route.summary
