@@ -129,7 +129,7 @@ class RefreshAuthentication(BaseModel):
                 token=token,
                 key=settings.jwt_config.signing_key,
                 algorithms=[settings.jwt_config.algorithm],
-            )  # type: ignore
+            )
         except (JWSError, JWTError) as e:
             raise AuthenticationError(str(e)) from e
 
