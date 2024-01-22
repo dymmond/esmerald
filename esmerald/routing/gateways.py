@@ -284,7 +284,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
             handler.path_format,
             handler.param_convertors,
         ) = compile_path(self.path)
-        
+
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
             self.handler.get_response_handler()
