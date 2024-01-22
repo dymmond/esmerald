@@ -1,3 +1,4 @@
+import warnings
 from datetime import timezone as dtimezone
 from functools import cached_property
 from typing import (
@@ -143,6 +144,22 @@ class Esmerald(Starlette):
         self: AppType,
         *,
         settings_config: Annotated[
+            Optional["SettingsType"],
+            Doc(
+                """
+                Alternative settings parameter. This parameter is an alternative to
+                `ESMERALD_SETTINGS_MODULE` way of loading your settings into an Esmerald application.
+
+                Read more about the [settings module](https://esmerald.dev/application/settings/)
+                and how you can leverage it in your application.
+
+                !!! Warning
+                    This option will be deprecated in the version 2.9 of Esmerald. Please use
+                    `settings_module` instead.
+                """
+            ),
+        ] = None,
+        settings_module: Annotated[
             Optional["SettingsType"],
             Doc(
                 """
@@ -1465,19 +1482,31 @@ class Esmerald(Starlette):
             ),
         ] = None,
     ) -> None:
-        self.settings_config = None
+        assert (
+            settings_config is None or settings_module is None
+        ), "You can use `settings_module` or `settings_config` but not both."
 
         if settings_config:
-            if not isinstance(settings_config, EsmeraldAPISettings) and not is_class_and_subclass(
-                settings_config, EsmeraldAPISettings
+            warnings.warn(
+                "The `settings_config` is deprecated, and will be removed in version 2.9.0. "  # noqa: E501
+                "Use `settings_module` instead.",  # noqa: E501
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        settings_module = settings_module or settings_config
+
+        if settings_module:
+            if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
+                settings_module, EsmeraldAPISettings
             ):
                 raise ImproperlyConfigured(
-                    "settings_config must be a subclass of EsmeraldSettings"
+                    "settings_module must be a subclass of EsmeraldSettings"
                 )
-            elif isinstance(settings_config, EsmeraldAPISettings):
-                self.settings_config = settings_config  # type: ignore
-            elif is_class_and_subclass(settings_config, EsmeraldAPISettings):
-                self.settings_config = settings_config()
+            elif isinstance(settings_module, EsmeraldAPISettings):
+                self.settings_module = settings_module  # type: ignore
+            elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
+                self.settings_module = settings_module()
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -1624,12 +1653,12 @@ class Esmerald(Starlette):
         """
         if not is_boolean:
             if not value:
-                return self.get_settings_value(self.settings_config, esmerald_settings, name)
+                return self.get_settings_value(self.settings_module, esmerald_settings, name)
             return value
 
         if value is not None:
             return value
-        return self.get_settings_value(self.settings_config, esmerald_settings, name)
+        return self.get_settings_value(self.settings_module, esmerald_settings, name)
 
     def create_webhooks_signature_model(self, webhooks: Sequence[gateways.WebhookGateway]) -> None:
         """
@@ -2473,7 +2502,7 @@ class Esmerald(Starlette):
         app.settings
         ```
         """
-        general_settings = self.settings_config if self.settings_config else esmerald_settings
+        general_settings = self.settings_module if self.settings_module else esmerald_settings
         return cast("Type[EsmeraldAPISettings]", general_settings)
 
     @cached_property
