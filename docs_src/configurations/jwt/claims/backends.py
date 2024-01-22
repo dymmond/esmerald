@@ -17,7 +17,7 @@ class AccessToken(BaseModel):
 
 class RefreshToken(BaseModel):
     """
-    Model used only to ref
+    Model used only to refresh
     """
 
     refresh_token: str
