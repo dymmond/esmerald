@@ -1,5 +1,17 @@
 from inspect import Signature as InspectSignature
-from typing import TYPE_CHECKING, Any, Dict, Generator, Set, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    List,
+    Set,
+    Type,
+    Union,
+    _GenericAlias,
+    get_args,
+    get_origin,
+)
 
 import msgspec
 from pydantic import create_model
@@ -62,6 +74,50 @@ class SignatureFactory(ArbitraryExtraBaseModel):
     def skip_parameter_validation(self, param: Parameter) -> bool:
         return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
+    def extract_arguments(
+        self, param: Union[Parameter, None] = None, argument_list: Union[List[Any], None] = None
+    ) -> List[Type[type]]:
+        """
+        Recursively extracts the types.
+        """
+        arguments: List[Any] = list(argument_list) if argument_list is not None else []
+        args = get_args(param)
+
+        for arg in args:
+            if isinstance(arg, _GenericAlias):
+                arguments.extend(self.extract_arguments(param=arg, argument_list=arguments))
+            else:
+                if arg not in arguments:
+                    arguments.append(arg)
+        return arguments
+
+    def handle_msgspec_structs(
+        self, parameters: Generator[Parameter, None, None] = None
+    ) -> Dict[str, msgspec.Struct]:
+        """
+        Handles any msgspec case being sent by the payload.
+        """
+        msgpspec_structs: Dict[str, msgspec.Struct] = {}
+        if parameters is None:
+            parameters = self.parameters
+
+        for param in parameters:
+            origin = get_origin(param.annotation)
+
+            if not origin:
+                if isinstance(param.annotation, msgspec.Struct) or is_class_and_subclass(
+                    param.annotation, msgspec.Struct
+                ):
+                    msgpspec_structs[param.name] = param.annotation
+            else:
+                arguments: List[Type[type]] = self.extract_arguments(param=param.annotation)
+
+                if any(isinstance(value, msgspec.Struct) for value in arguments) or any(
+                    is_class_and_subclass(value, msgspec.Struct) for value in arguments
+                ):
+                    msgpspec_structs[param.name] = param.annotation
+        return msgpspec_structs
+
     def create_signature(self) -> Type[EsmeraldSignature]:
         """
         Creates the EsmeraldSignature based on the type of parameteres.
@@ -69,14 +125,9 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         This allows to understand if the msgspec is also available and allowed.
         """
         try:
-            msgpspec_structs: Dict[str, msgspec.Struct] = {}
+            msgpspec_structs: Dict[str, msgspec.Struct] = self.handle_msgspec_structs()
 
             for param in self.parameters:
-                if isinstance(param.annotation, msgspec.Struct) or is_class_and_subclass(
-                    param.annotation, msgspec.Struct
-                ):
-                    msgpspec_structs[param.name] = param.annotation
-
                 self.validate_missing_dependency(param)
                 self.get_dependency_names(param)
                 self.set_default_field(param)
