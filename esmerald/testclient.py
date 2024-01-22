@@ -31,6 +31,7 @@ if TYPE_CHECKING:  # pragma: no cover
     )
     from esmerald.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
+    from esmerald.pluggables import Pluggable
     from esmerald.routing.gateways import WebhookGateway
     from esmerald.types import (
         APIGateHandler,
@@ -95,6 +96,7 @@ def create_client(
     backend: "Literal['asyncio', 'trio']" = "asyncio",
     backend_options: Optional[Dict[str, Any]] = None,
     interceptors: Optional[List["Interceptor"]] = None,
+    pluggables: Optional[Dict[str, "Pluggable"]] = None,
     permissions: Optional[List["Permission"]] = None,
     dependencies: Optional["Dependencies"] = None,
     middleware: Optional[List["Middleware"]] = None,
@@ -164,6 +166,7 @@ def create_client(
             include_in_schema=include_in_schema,
             tags=tags,
             webhooks=webhooks,
+            pluggables=pluggables,
         ),
         base_url=base_url,
         backend=backend,
