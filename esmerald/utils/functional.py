@@ -139,15 +139,14 @@ def unpickle_lazyobject(wrapped: Any) -> Any:  # pragma: no cover
 class SimpleLazyObject(LazyObject):  # pragma: no cover
     """
     A lazy object initialized from any function.
-    Designed for compound objects of unknown type. For builtins or objects of
-    known type, use django.utils.functional.lazy.
+    Designed for compound objects of unknown type.
     """
 
     def __init__(self, func: Callable[..., RT]) -> None:
         """
         Pass in a callable that returns the object to be wrapped.
         If copies are made of the resulting SimpleLazyObject, which can happen
-        in various circumstances within Django, then you must ensure that the
+        in various circumstances, then you must ensure that the
         callable can be safely run more than once and will return the same
         value.
         """
