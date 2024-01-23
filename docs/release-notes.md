@@ -5,6 +5,23 @@ hide:
 
 # Release Notes
 
+## 2.7.1
+
+### Added
+
+- `settings_module` as replacement for `settings_config`.
+- Deprecation warning for `settings_config` in favour of `settings_module` parameter.
+
+### Changed
+
+- Added improvements to the scaffold generated ny `esmerald createproject` in the tests.
+- Added extra origin type for when a MsgSpec Struct is passed in the payload of a handler.
+
+### Fixed
+
+- OpenAPI Tags not loading from top down if handler had `tags=None`.
+- TestClient to allow passing pluggables inside `create_client`.
+
 ## 2.7.0
 
 ### Changed
