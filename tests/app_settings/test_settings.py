@@ -139,15 +139,14 @@ def test_inner_settings_config(test_client_factory):
         )
 
     with create_client(
-        routes=[Gateway(handler=_app_settings)], settings_config=AppSettings
+        routes=[Gateway(handler=_app_settings)], settings_module=AppSettings
     ) as client:
         response = client.get("/app-settings")
-
         assert client.app.settings.app_name == "new app"
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_config, EsmeraldAPISettings)
+        assert isinstance(client.app.settings_module, EsmeraldAPISettings)
 
 
 def test_inner_settings_config_as_instance(test_client_factory):
@@ -170,7 +169,7 @@ def test_inner_settings_config_as_instance(test_client_factory):
         )
 
     with create_client(
-        routes=[Gateway(handler=_app_settings)], settings_config=AppSettings()
+        routes=[Gateway(handler=_app_settings)], settings_module=AppSettings()
     ) as client:
         response = client.get("/app-settings")
 
@@ -178,7 +177,7 @@ def test_inner_settings_config_as_instance(test_client_factory):
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_config, EsmeraldAPISettings)
+        assert isinstance(client.app.settings_module, EsmeraldAPISettings)
 
 
 def test_child_esmerald_independent_settings(test_client_factory):
@@ -196,7 +195,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
 
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
-        settings_config=ChildSettings,
+        settings_module=ChildSettings,
         middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
     )
 
@@ -233,7 +232,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
     secret = get_random_secret_key()
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
-        settings_config=ChildSettings,
+        settings_module=ChildSettings,
         middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
         csrf_config=CSRFConfig(secret=secret),
     )
@@ -268,11 +267,11 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
 
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
-        settings_config=NestedChildSettings,
+        settings_module=NestedChildSettings,
         middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
     )
 
-    nested_child = ChildEsmerald(routes=[Include(app=child)], settings_config=ChildSettings)
+    nested_child = ChildEsmerald(routes=[Include(app=child)], settings_module=ChildSettings)
 
     with create_client(
         routes=[Include("/child", app=nested_child)],
@@ -293,11 +292,11 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
         assert client.app.app_name == settings.app_name
 
 
-@pytest.mark.parametrize("settings_config", [Esmerald, ChildEsmerald, DummySettings, DummyObject])
-def test_raises_exception_on_wrong_settings(settings_config, test_client_factory):
-    """If a settings_config is thrown but not type EsmeraldAPISettings"""
+@pytest.mark.parametrize("settings_module", [Esmerald, ChildEsmerald, DummySettings, DummyObject])
+def test_raises_exception_on_wrong_settings(settings_module, test_client_factory):
+    """If a settings_module is thrown but not type EsmeraldAPISettings"""
     with pytest.raises(ImproperlyConfigured):
-        with create_client(routes=[], settings_config=settings_config):
+        with create_client(routes=[], settings_module=settings_module):
             """ """
 
 

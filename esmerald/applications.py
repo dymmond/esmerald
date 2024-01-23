@@ -1494,6 +1494,9 @@ class Esmerald(Starlette):
                 stacklevel=2,
             )
 
+        self.settings_config = None
+        self.settings_module = None
+
         settings_module = settings_module or settings_config
 
         if settings_module:
