@@ -45,7 +45,7 @@ class EsmeraldAPISettings(BaseSettings):
     When no values are provided upon an instantiation of an `Esmerald` object, these
     settings are used as the defaults.
 
-    The settings can be done via `ESMERALD_SETTINGS_MODULE` or `settings_config` parameter
+    The settings can be done via `ESMERALD_SETTINGS_MODULE` or `settings_module` parameter
     in the Esmerald instantiation.
 
     Learn more about [settings](https://esmerald.dev/application/settings/).
@@ -883,7 +883,7 @@ class EsmeraldAPISettings(BaseSettings):
         """
         An instance of [SessionConfig](https://esmerald.dev/configurations/session/).
 
-        This configuration is passed to the [SessionMiddleware]https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
+        This configuration is passed to the [SessionMiddleware](https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
 
         Default:
             None
