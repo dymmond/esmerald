@@ -1,6 +1,7 @@
 """
 Functions to use with the Router.
 """
+
 from importlib import import_module
 from typing import TYPE_CHECKING, Any, Optional, Sequence, Union
 

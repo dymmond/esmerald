@@ -1,6 +1,7 @@
 """
 Functions to use with the Factory dependency injection.
 """
+
 from typing import Any, Callable, Tuple, cast
 
 from esmerald.exceptions import ImproperlyConfigured
