@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 2.7.2
+
+### Changed
+
+- Security update for python multipart.
+- Update minimum Starlette requirement.
+
 ## 2.7.1
 
 ### Added
