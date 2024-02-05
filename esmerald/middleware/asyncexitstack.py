@@ -1,9 +1,10 @@
+from contextlib import AsyncExitStack
 from typing import Optional
 
-from esmerald.concurrency import AsyncExitStack
+from starlette.types import ASGIApp, Receive, Scope, Send
+
 from esmerald.config import AsyncExitConfig
 from esmerald.protocols.middleware import MiddlewareProtocol
-from esmerald.types import ASGIApp, Receive, Scope, Send
 
 
 class AsyncExitStackMiddleware(MiddlewareProtocol):
@@ -30,5 +31,5 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
             except Exception as e:
                 exception = e
                 raise e
-            if exception:
-                raise exception
+        if exception:
+            raise exception
