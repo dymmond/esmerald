@@ -7,4 +7,4 @@ from .configs.app_settings import InstanceSettings
 async def home(request: Request) -> JSONResponse: ...
 
 
-app = Esmerald(routes=[Gateway(handler=home)], settings_config=InstanceSettings)
+app = Esmerald(routes=[Gateway(handler=home)], settings_module=InstanceSettings)

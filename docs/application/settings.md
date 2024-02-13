@@ -133,13 +133,13 @@ This is a great tool to make your Esmerald applications 100% independent and mod
 where you simply want to plug an existing esmerald application into another and that same esmerald application
 already has unique settings and defaults.
 
-The `settings_config` is a parameter available in every single `Esmerald` instance as well as `ChildEsmerald`.
+The `settings_module` is a parameter available in every single `Esmerald` instance as well as `ChildEsmerald`.
 
-### Creating a settings_config
+### Creating a settings_module
 
 The configurations have **literally the same concept**
 as the [EsmeraldAPISettings](#esmeraldapisettings-and-the-application), which means that every single
-`settings_config` **must be derived from the EsmeraldAPISettings** or an `ImproperlyConfigured` exception
+`settings_module` **must be derived from the EsmeraldAPISettings** or an `ImproperlyConfigured` exception
 is thrown.
 
 The reason why the above is to keep the integrity of the application and settings.
@@ -157,7 +157,7 @@ Check out the [order of priority](#order-of-priority) to understand a bit more.
 
 There is an order or priority in which Esmerald reads your settings.
 
-If a `settings_config` is passed into an Esmerald instance, that same object takes priority above
+If a `settings_module` is passed into an Esmerald instance, that same object takes priority above
 anything else. Let us imagine the following:
 
 * An Esmerald application with normal settings.
@@ -176,19 +176,19 @@ passed some defaults.
 1. Passed the `ChildEsmeraldSettings` into the `ChildEsmerald` instance.
 2. Passed the `ChildEsmerald` into the `Esmerald` application.
 
-So, how does the priority take place here using the `settings_config`?
+So, how does the priority take place here using the `settings_module`?
 
 1. If no parameter value (upon instantiation), for example `app_name`, is provided, it will check for that same value
-inside the `settings_config`.
-2. If `settings_config` does not provide an `app_name` value, it will look for the value in the
+inside the `settings_module`.
+2. If `settings_module` does not provide an `app_name` value, it will look for the value in the
 `ESMERALD_SETTINGS_MODULE`.
 3. If no `ESMERALD_SETTINGS_MODULE` environment variable is provided by you, then it will default
 to the Esmerald defaults. [Read more about this here](#esmerald-settings-module).
 
 So the order of priority:
 
-1. Parameter instance value takes priority above `settings_config`.
-2. `settings_config` takes priority above `ESMERALD_SETTINGS_MODULE`.
+1. Parameter instance value takes priority above `settings_module`.
+2. `settings_module` takes priority above `ESMERALD_SETTINGS_MODULE`.
 3. `ESMERALD_SETTINGS_MODULE` is the last being checked.
 
 ## Settings config and Esmerald settings module
@@ -199,7 +199,7 @@ the same time ([order of priority](#order-of-priority)).
 Let us use an example where:
 
 1. We create a main Esmerald settings object to be used by the `ESMERALD_SETTINGS_MODULE`.
-2. We create a `settings_config` to be used by the Esmerald instance.
+2. We create a `settings_module` to be used by the Esmerald instance.
 3. We start the application using both.
 
 Let us also assume you have all the settings inside a `src/configs` directory.
@@ -235,7 +235,7 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
 
-Great! Now not only we have used the `settings_config` and `ESMERALD_SETTINGS_MODULE` but we used
+Great! Now not only we have used the `settings_module` and `ESMERALD_SETTINGS_MODULE` but we used
 them at the same time!
 
 Check out the [order of priority](#order-of-priority) to understand which value takes precedence
