@@ -65,8 +65,7 @@ class DummySettings(BaseModel):
     app_name: str = "test"
 
 
-class DummyObject:
-    ...
+class DummyObject: ...
 
 
 @get("/request-settings")

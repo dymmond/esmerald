@@ -50,8 +50,7 @@ class MiddlewareWithArgsAndKwargs(BaseHTTPMiddleware):  # pragma: no cover
 
     async def dispatch(  # type: ignore
         self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
 
 @get(path="/")

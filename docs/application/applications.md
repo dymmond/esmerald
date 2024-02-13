@@ -2,6 +2,7 @@
 
 Esmerald runs Starlette under the hood and therefore includes an application class **Esmerald** that ties
 of its functionality.
+
 ## The Esmerald class
 
 === "In a nutshell"
@@ -71,7 +72,7 @@ or a [CORSConfig](../configurations/cors.md) object but not both.
 * **routes** - A list of routes to serve incoming HTTP and WebSocket requests.
 A list of [Gateway](../routing/routes.md#gateway), [WebSocketGateway](../routing/routes.md#websocketgateway)
 or [Include](../routing/routes.md#include)
-* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming 
+* **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
 requests (HTTP and Websockets).
@@ -114,7 +115,7 @@ arguments, and may be be either standard functions, or async functions.
 * **lifepan** - The lifespan context function is a newer style that replaces on_startup / on_shutdown handlers.
 Use one or the other, not both.
 * **tags** - List of tags to include in the OpenAPI schema.
-* **include_in_schema** - Boolean flag to indicate if should be schema inclded or not.
+* **include_in_schema** - Boolean flag to indicate if should be schema included or not.
 * **deprecated** - Boolean flag for deprecation. Used for OpenAPI.
 * **security** - Security definition of the application. Used for OpenAPI.
 * **enable_openapi** - Flag to enable/disable OpenAPI docs. It is enabled by default.
@@ -127,6 +128,7 @@ Settings are another way of controlling the parameters passed to the
 more details and how to use it to power up your application.
 
 To access the application settings there are different ways:
+
 === "Within the application request"
 
     ```python hl_lines="6"

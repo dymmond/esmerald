@@ -31,8 +31,7 @@ class AnotherSample(MiddlewareProtocol):
         super().__init__(app, **kwargs)
         self.app = app
 
-    async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        ...
+    async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None: ...
 
 
 class CustomMiddleware(MiddlewareProtocol):
@@ -40,8 +39,7 @@ class CustomMiddleware(MiddlewareProtocol):
         super().__init__(app, **kwargs)
         self.app = app
 
-    async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        ...
+    async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None: ...
 
 
 @get()

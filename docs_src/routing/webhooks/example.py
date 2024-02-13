@@ -14,13 +14,11 @@ class Payment(BaseModel):
 
 
 @whpost("new-event")
-async def new_event(data: Payment) -> None:
-    ...
+async def new_event(data: Payment) -> None: ...
 
 
 @post("/create")
-async def create_payment(data: Payment) -> None:
-    ...
+async def create_payment(data: Payment) -> None: ...
 
 
 app = Esmerald(

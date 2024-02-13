@@ -15,17 +15,14 @@ class Payment(BaseModel):
 
 class PaymentWebhook(APIView):
     @whpost("new-event")
-    async def new_event(self, data: Payment) -> None:
-        ...
+    async def new_event(self, data: Payment) -> None: ...
 
     @whpost("payments")
-    async def new_payment(self, data: Payment) -> None:
-        ...
+    async def new_payment(self, data: Payment) -> None: ...
 
 
 @post("/create")
-async def create_payment(data: Payment) -> None:
-    ...
+async def create_payment(data: Payment) -> None: ...
 
 
 app = Esmerald(

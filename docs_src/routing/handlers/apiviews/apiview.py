@@ -17,8 +17,7 @@ class UserAPIView(APIView):
         return JSONResponse({"users": users})
 
     @get(path="/deny", permissions=[DenyAll], description="API description")
-    async def all_usersa(self, request: Request) -> JSONResponse:
-        ...
+    async def all_usersa(self, request: Request) -> JSONResponse: ...
 
     @get(path="/allow")
     async def all_usersb(self, request: Request) -> JSONResponse:

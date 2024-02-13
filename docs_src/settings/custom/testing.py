@@ -1,19 +1,15 @@
-from typing import List
+from __future__ import annotations
 
 from esmerald.conf.enums import EnvironmentType
-from esmerald.contrib.databases.tortoise import init_database, stop_database
 from esmerald.types import LifeSpanHandler
 
 from ..configs.settings import AppSettings
-from ..configs.testing.databases import TORTOISE_ORM
 
 
-async def start_database():
-    await init_database(config=TORTOISE_ORM)
+async def start_database(): ...
 
 
-async def close_database():
-    await stop_database()
+async def close_database(): ...
 
 
 class TestingSettings(AppSettings):
@@ -23,14 +19,14 @@ class TestingSettings(AppSettings):
     reload: bool = False
 
     @property
-    def on_startup(self) -> List[LifeSpanHandler]:
+    def on_startup(self) -> list[LifeSpanHandler]:
         """
         List of events/actions to be done on_startup.
         """
         return [start_database]
 
     @property
-    def on_shutdown(self) -> List[LifeSpanHandler]:
+    def on_shutdown(self) -> list[LifeSpanHandler]:
         """
         List of events/actions to be done on_shutdown.
         """

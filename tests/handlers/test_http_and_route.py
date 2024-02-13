@@ -22,8 +22,7 @@ from esmerald.testclient import create_client
 )
 def test_route_handler_default_status_code(method: Any, status_code: int) -> None:
     @route(path="/", methods=[method], status_code=status_code)
-    async def to_be_decorated() -> None:
-        ...
+    async def to_be_decorated() -> None: ...
 
     with create_client(routes=[Gateway(handler=to_be_decorated)]) as client:
         response = getattr(client, method.lower())("/")

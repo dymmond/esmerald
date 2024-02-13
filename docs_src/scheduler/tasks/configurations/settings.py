@@ -7,8 +7,7 @@ class AppSettings(EsmeraldAPISettings):
     enable_scheduler: bool = True
 
     @property
-    def scheduler_tasks(self) -> Dict[str, str]:
-        ...
+    def scheduler_tasks(self) -> Dict[str, str]: ...
 
     @property
     def scheduler_configurations(self) -> Dict[str, Union[str, Dict[str, str]]]:

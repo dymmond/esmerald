@@ -110,8 +110,7 @@ def test_middleware_can_be_added_on_top(test_client_factory):
         @get(
             path="/",
         )
-        async def all_users(self) -> Any:
-            ...
+        async def all_users(self) -> Any: ...
 
         @get(
             path="/{user_id}",
@@ -121,8 +120,7 @@ def test_middleware_can_be_added_on_top(test_client_factory):
             self,
             user_id: str,
             load_related: bool = False,
-        ) -> Any:
-            ...
+        ) -> Any: ...
 
         @get(
             path="/whoami",
@@ -131,8 +129,7 @@ def test_middleware_can_be_added_on_top(test_client_factory):
         async def get_authenticated_user_data(
             self,
             request: Request,
-        ) -> Any:
-            ...
+        ) -> Any: ...
 
     with create_client(routes=[Gateway(handler=home), Gateway(handler=UserAPIView)]) as client:
         response = client.get("/")
@@ -157,8 +154,7 @@ def test_middleware_can_be_added_on_handler(test_client_factory):
         tags = ["User"]
 
         @get(path="/", middleware=[JWTAuthMiddleware])
-        async def all_users(self) -> Any:
-            ...
+        async def all_users(self) -> Any: ...
 
         @get(
             path="/{user_id}",
@@ -206,8 +202,7 @@ def test_middleware_can_be_added_on_both(test_client_factory):
         middleware = [JWTAuthMiddleware]
 
         @get(path="/", middleware=[JWTAuthMiddleware])
-        async def all_users(self) -> Any:
-            ...
+        async def all_users(self) -> Any: ...
 
         @get(
             path="/{user_id}",
@@ -217,8 +212,7 @@ def test_middleware_can_be_added_on_both(test_client_factory):
             self,
             user_id: str,
             load_related: bool = False,
-        ) -> Any:
-            ...
+        ) -> Any: ...
 
         @get(
             path="/whoami",
@@ -227,8 +221,7 @@ def test_middleware_can_be_added_on_both(test_client_factory):
         async def get_authenticated_user_data(
             self,
             request: Request,
-        ) -> Any:
-            ...
+        ) -> Any: ...
 
     with create_client(routes=[Gateway(handler=home), Gateway(handler=UserView)]) as client:
         response = client.get("/")

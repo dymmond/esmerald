@@ -7,8 +7,7 @@ class World(APIView):
         return JSON(content=f"URL: {url}")
 
     @post(path="/{url}", status_code=status.HTTP_201_CREATED)
-    async def mars(self, request: Request, url: str) -> JSON:
-        ...
+    async def mars(self, request: Request, url: str) -> JSON: ...
 
 
 app = Esmerald(routes=[Gateway("/world", handler=World)])

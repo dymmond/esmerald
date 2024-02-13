@@ -9,8 +9,7 @@ class User(BaseModel):
 
 
 @post("/create")
-def create(data: User) -> User:
-    ...
+def create(data: User) -> User: ...
 
 
 app = Esmerald(routes=[Gateway(handler=create)])

@@ -9,5 +9,4 @@ class UserAPI(CreateAPIView):
     """
 
     @post()
-    async def get(self) -> str:
-        ...
+    async def get(self) -> str: ...

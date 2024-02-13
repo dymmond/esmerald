@@ -18,8 +18,7 @@ class World(APIView):
         return Response(f"URL: {url}")
 
     @post(path="/{url}", status_code=status.HTTP_201_CREATED)
-    async def mars(self, request: Request, url: str) -> Response:
-        ...
+    async def mars(self, request: Request, url: str) -> Response: ...
 
     @websocket(path="/{path_param:str}")
     async def pluto(self, socket: WebSocket) -> None:

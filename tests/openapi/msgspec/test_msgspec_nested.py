@@ -14,8 +14,7 @@ class AddressBook(Struct):
 
 
 @post()
-def user_with_pydantic(payload: AddressBook) -> None:
-    ...
+def user_with_pydantic(payload: AddressBook) -> None: ...
 
 
 def test_user_msgspec_openapi(test_client_factory):
