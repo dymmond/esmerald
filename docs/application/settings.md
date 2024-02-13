@@ -32,7 +32,7 @@ When starting a Esmerald instance if no parameters are provided, it will automat
 system settings object, the `EsmeraldAPISettings`.
 
 === "No parameters"
-ExampleObjectExampleObject
+
     ```python hl_lines="4"
     {!> ../docs_src/settings/app/no_parameters.py!}
     ```
