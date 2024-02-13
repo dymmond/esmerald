@@ -13,8 +13,7 @@ class MyAPIView(APIView):
     path = "/"
 
     @get(path="/")
-    def get_person(self) -> Item:
-        ...
+    def get_person(self) -> Item: ...
 
     @websocket(path="/socket")
     async def ws(self, socket: WebSocket) -> None:

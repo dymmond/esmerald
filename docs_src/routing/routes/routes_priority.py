@@ -2,13 +2,11 @@ from esmerald import Esmerald, Gateway, get
 
 
 @get()
-async def user() -> dict:
-    ...
+async def user() -> dict: ...
 
 
 @get()
-async def active_user() -> dict:
-    ...
+async def active_user() -> dict: ...
 
 
 # Don't do this: `/users/me`` will never match the incoming requests.

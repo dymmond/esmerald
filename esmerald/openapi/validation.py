@@ -11,12 +11,10 @@ class BaseDetail(BaseModel):
     items: Dict[str, Any]
 
 
-class Detail(BaseDetail):
-    ...
+class Detail(BaseDetail): ...
 
 
-class Loc(BaseDetail):
-    ...
+class Loc(BaseDetail): ...
 
 
 class Property(BaseModel):

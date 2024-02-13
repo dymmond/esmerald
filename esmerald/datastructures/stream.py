@@ -48,9 +48,11 @@ class Stream(ResponseContainer[StreamingResponse]):
     ) -> StreamingResponse:  # pragma: no cover
         return StreamingResponse(
             background=self.background,
-            content=self.iterator
-            if isinstance(self.iterator, (Iterable, AsyncIterable))
-            else self.iterator(),
+            content=(
+                self.iterator
+                if isinstance(self.iterator, (Iterable, AsyncIterable))
+                else self.iterator()
+            ),
             headers=headers,
             media_type=media_type,
             status_code=status_code,

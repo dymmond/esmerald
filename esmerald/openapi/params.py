@@ -1,5 +1,4 @@
 from pydantic.fields import FieldInfo
 
 
-class ResponseParam(FieldInfo):
-    ...
+class ResponseParam(FieldInfo): ...

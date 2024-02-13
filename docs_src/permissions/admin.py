@@ -24,8 +24,7 @@ class IsAuthOrReadOnly(IsAuthenticatedOrReadOnly):
 
 
 @get()
-async def home() -> None:
-    ...
+async def home() -> None: ...
 
 
 class UserAPIView(APIView):

@@ -17,5 +17,4 @@ class InterceptorProtocol(Protocol):  # pragma: no cover
     An interceptor could be anything from logging to rerouting or even input sanitizing.
     """
 
-    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        ...
+    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None: ...

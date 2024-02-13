@@ -94,8 +94,7 @@ def test_read_api_view(test_client_factory, value):
 def test_delete_api_view(test_client_factory, value):
     class MyDeleteAPIView(DeleteAPIView):
         @delete()
-        async def delete(self) -> None:
-            ...  # pragma: no cover
+        async def delete(self) -> None: ...  # pragma: no cover
 
     with create_client(routes=[Gateway(handler=MyDeleteAPIView)]) as client:
         response = getattr(client, value)("/")
@@ -180,12 +179,10 @@ def test_default_parameters_raise_error_on_wrong_handler(test_client_factory, va
             extra_allowed: List[str] = ["create_user"]
 
             @handler("/")
-            def get(self) -> None:
-                ...
+            def get(self) -> None: ...
 
             @handler("/")
-            def create_user() -> None:
-                ...
+            def create_user() -> None: ...
 
     assert (
         raised.value.detail
@@ -227,8 +224,7 @@ def test_raises_improperly_configured_on_non_list_types(test_client_factory, ret
 
         class GenericAPIView(ListAPIView):
             @get()
-            def get(self) -> return_type:
-                ...
+            def get(self) -> return_type: ...
 
 
 @pytest.mark.parametrize(
