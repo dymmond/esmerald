@@ -353,7 +353,7 @@ the [tips and tricks](https://saffier.tarsild.io/tips-and-tricks/) with saffier.
 
 The design is up to you.
 
-What will we be creating:
+What we will be creating:
 
 * **myproject/main/main.py** - The entry-point for our Esmerald application
 * **createsuperuser** - Our directive.
