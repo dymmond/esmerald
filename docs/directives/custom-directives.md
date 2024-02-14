@@ -92,7 +92,7 @@ $ esmerald run --directive mydirective --name esmerald
 
 The `run --directive` is **always** expecting the name of the file of your directive.
 
-For example, you created a `createsuperuser` file with your `Directive` logic. The `--directive`
+For example, you created a `createsuperuser.py` file with your `Directive` logic. The `--directive`
 parameter will be `run --directive createsuperuser`.
 
 Example:
