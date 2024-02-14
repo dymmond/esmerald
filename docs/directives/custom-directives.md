@@ -104,7 +104,7 @@ $ esmerald run --directive createsuperuser --email example@esmerald.dev
 
 ### How to create a directive
 
-To create a directive you **must inherit from the BaseDiretive** class and **must call Directive**
+To create a directive you **must inherit from the BaseDiretive** class and **must call `Directive`**
 to your object.
 
 ```python
@@ -219,7 +219,7 @@ This is the place where you add any argument needed to run your custom directive
 are `argparse` related arguments so the syntax should be familiar.
 
 ```python
-    {!> ../docs_src/directives/arguments.py !}
+{!> ../docs_src/directives/arguments.py !}
 ```
 
 As you can see, the Directive has five parameters and all of them required.
