@@ -92,7 +92,7 @@ $ esmerald run --directive mydirective --name esmerald
 
 The `run --directive` is **always** expecting the name of the file of your directive.
 
-For example, you created a `createsuperuser` file with your `Directive` logic. The `--directive`
+For example, you created a `createsuperuser.py` file with your `Directive` logic. The `--directive`
 parameter will be `run --directive createsuperuser`.
 
 Example:
@@ -104,7 +104,7 @@ $ esmerald run --directive createsuperuser --email example@esmerald.dev
 
 ### How to create a directive
 
-To create a directive you **must inherit from the BaseDiretive** class and **must call Directive**
+To create a directive you **must inherit from the BaseDiretive** class and **must call `Directive`**
 to your object.
 
 ```python
@@ -219,7 +219,7 @@ This is the place where you add any argument needed to run your custom directive
 are `argparse` related arguments so the syntax should be familiar.
 
 ```python
-    {!> ../docs_src/directives/arguments.py !}
+{!> ../docs_src/directives/arguments.py !}
 ```
 
 As you can see, the Directive has five parameters and all of them required.
@@ -353,7 +353,7 @@ the [tips and tricks](https://saffier.tarsild.io/tips-and-tricks/) with saffier.
 
 The design is up to you.
 
-What will we be creating:
+What we will be creating:
 
 * **myproject/main/main.py** - The entry-point for our Esmerald application
 * **createsuperuser** - Our directive.

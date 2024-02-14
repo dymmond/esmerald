@@ -8,7 +8,7 @@ class Item(BaseModel):
     name: str
 
 
-@get("{name}")
+@get("/{name}")
 async def show_name(name: str) -> JSONResponse:
     return JSONResponse({"name": name})
 

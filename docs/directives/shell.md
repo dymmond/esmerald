@@ -19,7 +19,7 @@ is equally valid and works in the same way.
 
 ## How does it work
 
-Esmerald ecosystem is complex internally but simpler to the user. Esnerald will use the application
+Esmerald ecosystem is complex internally but simpler to the user. Esmerald will use the application
 discovery to understand some of your defaults and events and start the shell.
 
 ### Requirements
@@ -96,7 +96,7 @@ $ esmerald shell --kernel ptpython # start with ptpython
 ### How does it look like
 
 Esmerald doesn't want to load all python globals and locals for you. Instead loads all the
-essentials and and some python packages automatically for you but you can still import others.
+essentials and some python packages automatically for you but you can still import others.
 
 It looks like this:
 
