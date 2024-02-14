@@ -39,7 +39,7 @@ And like Starlette, the same example to send files with `EsmeraldTestClient`.
 `httpx` is a great library created by the same author of `Starlette` and `Django Rest Framework`.
 
 !!! Info
-    By default the TestClient EsmeraldTestClient raise any exceptions that occur in the application.
+    By default the EsmeraldTestClient raise any exceptions that occur in the application.
     Occasionally you might want to test the content of 500 error responses, rather than allowing client to raise the
     server exception. In this case you should use `client = EsmeraldTestClient(app, raise_server_exceptions=False)`.
 
