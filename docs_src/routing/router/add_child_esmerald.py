@@ -2,7 +2,7 @@ from esmerald import ChildEsmerald, Esmerald, Gateway, get
 
 
 @get()
-async def home(self) -> str:
+async def home() -> str:
     return "home"
 
 
