@@ -987,7 +987,7 @@ class EsmeraldAPISettings(BaseSettings):
         from starlette.middleware import Middleware as StarletteMiddleware
 
 
-        Class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldAPISettings):
 
             @property
             def middleware(self) -> List[Middleware]:
