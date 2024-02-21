@@ -1039,7 +1039,7 @@ class Esmerald(Starlette):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )
