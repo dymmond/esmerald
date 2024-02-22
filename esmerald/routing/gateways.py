@@ -287,7 +287,6 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
-            self.handler.get_response_handler()
 
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
@@ -658,7 +657,6 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
-            self.handler.get_response_handler()
 
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
