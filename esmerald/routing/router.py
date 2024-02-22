@@ -1554,7 +1554,7 @@ class Include(Mount):
             Optional[str],
             Doc(
                 """
-                Relative path of the `Gateway`.
+                Relative path of the `Include`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
 
