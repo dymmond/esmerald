@@ -318,7 +318,7 @@ class BaseResponseHandler:
             route=route,
             parameter_model=parameter_model,
         )
-        return response
+        return cast("StarletteResponse", response)
 
     async def call_handler_function(
         self,
