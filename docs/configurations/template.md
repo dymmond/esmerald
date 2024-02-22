@@ -41,3 +41,12 @@ but also via settings.
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+
+## `url_for`
+
+Esmerald automatically provides the `url_for` when using the jinja template system, that means
+you can do something like this:
+
+```jinja
+{!> ../docs_src/_shared/jinja.html!}
+```
