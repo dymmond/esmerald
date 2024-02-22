@@ -293,7 +293,7 @@ class BaseRouter(StarletteRouter):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )
@@ -1668,7 +1668,7 @@ class Include(Mount):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )

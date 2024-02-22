@@ -68,9 +68,8 @@ That is achieved in a similar way as the [handlers](#via-handlers).
 
 ### Using a single instance
 
-In the same way you created a singke background task for the handlers, in the response works in a
+In the same way you created a singe background task for the handlers, in the response works in a
 similar way.
-
 
 ```python hl_lines="22-26"
 {!> ../docs_src/background_tasks/response/via_handlers.py !}

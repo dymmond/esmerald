@@ -728,7 +728,7 @@ class EsmeraldAPISettings(BaseSettings):
                     Gateway(handler=homepage)
                     Include("/nested",
                         routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ]
                     )
                 ]
@@ -987,7 +987,7 @@ class EsmeraldAPISettings(BaseSettings):
         from starlette.middleware import Middleware as StarletteMiddleware
 
 
-        Class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldAPISettings):
 
             @property
             def middleware(self) -> List[Middleware]:

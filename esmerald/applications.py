@@ -1039,7 +1039,7 @@ class Esmerald(Starlette):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )
@@ -1970,10 +1970,10 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import get
+        from esmerald import Esmerald, get
 
         @get(status_code=status_code)
-        async def hello(self) -> str:
+        async def hello() -> str:
             return "Hello, World!"
 
         app = Esmerald()
@@ -2028,7 +2028,7 @@ class Esmerald(Starlette):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the WebSocketGateway. The name can be reversed by `url_path_for()`.
                 """
             ),
         ] = None,
@@ -2082,7 +2082,7 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import websocket
+        from esmerald import Esmerald, websocket
 
         @websocket()
         async def websocket_route(socket: WebSocket) -> None:
@@ -2175,7 +2175,7 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import get, Include, ChildEsmerald
+        from esmerald import get, Include, ChildEsmerald, Esmerald
 
         @get(status_code=status_code)
         async def hello(self) -> str:
