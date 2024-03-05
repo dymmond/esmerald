@@ -3,8 +3,10 @@ from typing import Any, Dict, Optional, Type, Union
 
 from pydantic import BaseModel, create_model
 from starlette import status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.exceptions import WebSocketException as StarletteWebSocketException
+from starlette.exceptions import (
+    HTTPException as StarletteHTTPException,
+    WebSocketException as StarletteWebSocketException,
+)
 from typing_extensions import Annotated, Doc
 
 RequestErrorModel: Type[BaseModel] = create_model("Request")

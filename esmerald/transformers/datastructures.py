@@ -1,6 +1,5 @@
 import re
-from inspect import Parameter as InspectParameter
-from inspect import Signature
+from inspect import Parameter as InspectParameter, Signature
 from typing import Any, ClassVar, Dict, Optional, Set, Union
 
 import msgspec

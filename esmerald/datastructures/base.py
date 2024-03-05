@@ -21,20 +21,23 @@ from pydantic._internal._schema_generation_shared import (
     GetJsonSchemaHandler as GetJsonSchemaHandler,
 )
 from pydantic.json_schema import JsonSchemaValue as JsonSchemaValue
-from pydantic_core.core_schema import CoreSchema, PlainValidatorFunctionSchema
 from pydantic_core.core_schema import (
+    CoreSchema,
+    PlainValidatorFunctionSchema,
     with_info_plain_validator_function as general_plain_validator_function,
 )
-from starlette.datastructures import URL as URL  # noqa: F401
-from starlette.datastructures import Address as Address  # noqa: F401
-from starlette.datastructures import FormData as FormData  # noqa: F401
-from starlette.datastructures import Headers as Headers  # noqa: F401
-from starlette.datastructures import MutableHeaders as MutableHeaders  # noqa
-from starlette.datastructures import QueryParams as QueryParams  # noqa: F401
-from starlette.datastructures import Secret as StarletteSecret  # noqa
-from starlette.datastructures import State as StarletteStateClass  # noqa: F401
-from starlette.datastructures import UploadFile as StarletteUploadFile  # noqa
-from starlette.datastructures import URLPath as URLPath  # noqa: F401
+from starlette.datastructures import (
+    URL as URL,  # noqa: F401
+    Address as Address,  # noqa: F401
+    FormData as FormData,  # noqa: F401
+    Headers as Headers,  # noqa: F401
+    MutableHeaders as MutableHeaders,  # noqa
+    QueryParams as QueryParams,  # noqa: F401
+    Secret as StarletteSecret,  # noqa
+    State as StarletteStateClass,  # noqa: F401
+    UploadFile as StarletteUploadFile,  # noqa
+    URLPath as URLPath,  # noqa: F401
+)
 from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import Literal
 
