@@ -11,7 +11,6 @@ export EXCLUDE=__init__.py
 
 set -x
 
-${PREFIX}ruff $SOURCE_FILES --fix --line-length 99
-${PREFIX}black $SOURCE_FILES --line-length 99
-${PREFIX}isort $SOURCE_FILES --project=esmerald --line-length 99
 ${PREFIX}mypy esmerald
+${PREFIX}ruff check $SOURCE_FILES --fix --line-length 99
+${PREFIX}black $SOURCE_FILES --line-length 99

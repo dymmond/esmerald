@@ -4,8 +4,7 @@ from functools import cached_property
 from typing import Optional, Tuple
 
 import mongoz
-from edgy import Database as EdgyDatabase
-from edgy import Registry as EdgyRegistry
+from edgy import Database as EdgyDatabase, Registry as EdgyRegistry
 from pydantic import ConfigDict
 from saffier import Database, Registry
 

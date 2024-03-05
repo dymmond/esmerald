@@ -4,8 +4,7 @@ from dataclasses import dataclass
 
 import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from starlette.responses import JSONResponse, PlainTextResponse
-from starlette.responses import Response as StarletteResponse
+from starlette.responses import JSONResponse, PlainTextResponse, Response as StarletteResponse
 from starlette.routing import Host, NoMatchFound
 from starlette.websockets import WebSocket, WebSocketDisconnect
 

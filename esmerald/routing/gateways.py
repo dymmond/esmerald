@@ -2,9 +2,11 @@ import re
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
 
 from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.routing import Route as StarletteRoute
-from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
-from starlette.routing import compile_path
+from starlette.routing import (
+    Route as StarletteRoute,
+    WebSocketRoute as StarletteWebSocketRoute,
+    compile_path,
+)
 from starlette.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 

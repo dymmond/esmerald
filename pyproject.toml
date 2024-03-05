@@ -118,7 +118,7 @@ test = [
     "edgy[postgres]>=0.4.0",
     "mongoz>=0.4.1",
     "requests>=2.28.2,<3.0.0",
-    "ruff>=0.0.256,<1.0.0",
+    "ruff>=0.3.0,<1.0.0",
     "ujson>=5.7.0,<6",
 
     # types
@@ -160,6 +160,9 @@ path = "esmerald/__init__.py"
 [project.scripts]
 esmerald = "esmerald.__main__:run_cli"
 
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
 [tool.isort]
 profile = "black"
 known_third_party = ["esmerald", "pydantic", "starlette"]
@@ -182,19 +185,9 @@ no_implicit_optional = false
 strict_equality = false
 strict_optional = false
 
-[tool.ruff]
-select = [
-    "E", # pycodestyle errors
-    "W", # pycodestyle warnings
-    "F", # pyflakes
-    "C", # flake8-comprehensions
-    "B", # flake8-bugbear
-]
-ignore = [
-    "E501", # line too long, handled by black
-    "B008", # do not perform function calls in argument defaults
-    "C901", # too complex
-]
+[tool.ruff.lint]
+select = ["E", "W", "F", "C", "B", "I"]
+ignore = ["E501", "B008", "C901", "B026"]
 
 exclude = ["docs_src/*"]
 

@@ -13,9 +13,9 @@ from starlette.responses import (
     JSONResponse,
     PlainTextResponse,
     RedirectResponse,
+    Response as StarletteResponse,
+    StreamingResponse,
 )
-from starlette.responses import Response as StarletteResponse
-from starlette.responses import StreamingResponse
 from starlette.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
 
 from esmerald.backgound import BackgroundTask
