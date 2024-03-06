@@ -5,6 +5,19 @@ hide:
 
 # Release Notes
 
+## 2.7.3
+
+### Added
+
+- Allowing `app` to loaded as a str as alternative to an object.
+
+### Changed
+
+- Internal code for lazy objects.
+- Make `a2wsgi` optional for `WSGIMiddleware`.
+- `httpx` is now only a depedency for testing.
+- Cleared some core dependencies.
+
 ## 2.7.2
 
 ### Changed
