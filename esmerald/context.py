@@ -2,7 +2,7 @@ import copy
 import warnings
 from typing import TYPE_CHECKING, Any, Dict, Union
 
-from starlette.datastructures import URL
+from lilya.datastructures import URL
 from typing_extensions import Annotated, Doc
 
 if TYPE_CHECKING:
@@ -133,7 +133,7 @@ class Context:
         }
         return context_data
 
-    def url_for(
+    def path_for(
         self,
         name: Annotated[
             str,
@@ -162,5 +162,5 @@ class Context:
             ),
         ],
     ) -> Any:
-        url: URL = self.request.url_for(name, **path_params)
+        url: URL = self.request.path_for(name, **path_params)
         return str(url)

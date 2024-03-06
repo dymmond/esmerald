@@ -14,7 +14,7 @@ from starlette.types import Receive, Send
 from esmerald.enums import MediaType
 from esmerald.exceptions import InternalServerError
 from esmerald.requests import ClientDisconnect, Request, empty_send
-from esmerald.responses import JSONResponse, PlainTextResponse, Response
+from esmerald.responses import JSONResponse, PlainText, Response
 from esmerald.testclient import EsmeraldTestClient
 
 
@@ -224,7 +224,7 @@ def test_request_raw_path(test_client_factory):
         request = Request(scope, receive)
         path = request.scope["path"]
         raw_path = request.scope["raw_path"]
-        response = PlainTextResponse(f"{path}, {raw_path}")
+        response = PlainText(f"{path}, {raw_path}")
         await response(scope, receive, send)
 
     client = EsmeraldTestClient(app)

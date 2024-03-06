@@ -5,7 +5,7 @@ from starlette.middleware import Middleware as StarletteMiddleware
 from esmerald import EsmeraldAPISettings
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
-from esmerald.utils.module_loading import import_string
+from lilya._internal._module_loading import import_string
 
 if TYPE_CHECKING:
     from esmerald.types import Middleware

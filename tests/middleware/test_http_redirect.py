@@ -1,19 +1,19 @@
-from starlette.middleware import Middleware
+from lilya.middleware import DefineMiddleware
 
 from esmerald import Gateway, Request, get
 from esmerald.applications import Esmerald
 from esmerald.middleware.https import HTTPSRedirectMiddleware
-from esmerald.responses import PlainTextResponse
+from esmerald.responses import PlainText
 
 
 def test_https_redirect_middleware(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("OK", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("OK", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(HTTPSRedirectMiddleware)],
+        middleware=[DefineMiddleware(HTTPSRedirectMiddleware)],
     )
 
     client = test_client_factory(app, base_url="https://testserver")

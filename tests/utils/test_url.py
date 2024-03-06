@@ -1,4 +1,4 @@
-from esmerald.utils.url import clean_path, join_paths
+from lilya._internal._path import clean_path, join_paths
 
 
 def test_clean_path():

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
 
-from starlette import status
+from lilya import status
 from typing_extensions import Annotated, Doc
 
 from esmerald.enums import HttpMethod, MediaType
@@ -94,7 +94,7 @@ def get(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -159,7 +159,7 @@ def get(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -421,7 +421,7 @@ def get(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.GET.value
         handler.validate_handler()
         return handler
@@ -464,7 +464,7 @@ def head(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -529,7 +529,7 @@ def head(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -690,7 +690,7 @@ def head(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.HEAD.value
         handler.validate_handler()
         return handler
@@ -771,7 +771,7 @@ def post(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_201_CREATED,
@@ -836,7 +836,7 @@ def post(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -1098,7 +1098,7 @@ def post(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.POST.value
         handler.validate_handler()
         return handler
@@ -1174,7 +1174,7 @@ def put(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -1239,7 +1239,7 @@ def put(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -1501,7 +1501,7 @@ def put(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.PUT.value
         handler.validate_handler()
         return handler
@@ -1577,7 +1577,7 @@ def patch(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -1642,7 +1642,7 @@ def patch(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -1904,7 +1904,7 @@ def patch(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.PATCH.value
         handler.validate_handler()
         return handler
@@ -1980,7 +1980,7 @@ def delete(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_204_NO_CONTENT,
@@ -2045,7 +2045,7 @@ def delete(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -2307,7 +2307,7 @@ def delete(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.DELETE.value
         handler.validate_handler()
         return handler
@@ -2350,7 +2350,7 @@ def options(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -2415,7 +2415,7 @@ def options(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -2576,7 +2576,7 @@ def options(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
         return handler
@@ -2619,7 +2619,7 @@ def trace(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -2684,7 +2684,7 @@ def trace(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -2846,7 +2846,7 @@ def trace(
             responses=responses,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.TRACE.value
         handler.validate_handler()
         return handler
@@ -2941,7 +2941,7 @@ def route(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -3006,7 +3006,7 @@ def route(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -3284,7 +3284,7 @@ def route(
         )
 
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
         return handler
@@ -3336,7 +3336,7 @@ def websocket(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -3358,7 +3358,7 @@ def websocket(
             middleware=middleware,
         )
         handler.fn = func
-        handler.endpoint = func
+        handler.handler = func
         handler.validate_websocket_handler_function()
         return handler
 

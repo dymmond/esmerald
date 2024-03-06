@@ -135,7 +135,7 @@ requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
 * **interceptors** - A list of [interceptors](../interceptors.md).
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
+or <a href='https://www.lilya.dev/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
@@ -158,7 +158,7 @@ requests (HTTP and Websockets).
 * **interceptors** - A list of [interceptors](../interceptors.md).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
+or <a href='https://www.lilya.dev/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
@@ -183,7 +183,7 @@ requests (HTTP and Websockets).
 * **interceptors** - A list of [interceptors](../interceptors.md).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
-or <a href='https://www.starlette.io/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
+or <a href='https://www.lilya.dev/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.

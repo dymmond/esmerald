@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional
 
-from starlette.types import ASGIApp
+from lilya.types import ASGIApp
 from typing_extensions import Protocol, runtime_checkable
 
 

@@ -6,7 +6,7 @@ from esmerald import EsmeraldAPISettings
 from esmerald.conf import settings
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
-from esmerald.utils.module_loading import import_string
+from lilya._internal._module_loading import import_string
 
 if TYPE_CHECKING:
     from esmerald.types import Middleware

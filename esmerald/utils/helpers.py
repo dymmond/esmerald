@@ -4,7 +4,7 @@ from inspect import isclass
 from typing import Any, Union
 
 import slugify
-from starlette._utils import is_async_callable as is_async_callable
+from lilya.compat import is_async_callable as is_async_callable
 from typing_extensions import get_args, get_origin
 
 from esmerald.datastructures.msgspec import Struct

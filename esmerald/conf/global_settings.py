@@ -1,10 +1,10 @@
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
+from lilya.types import Lifespan
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from starlette.types import Lifespan
 from typing_extensions import Annotated, Doc
 
 from esmerald import __version__
@@ -77,7 +77,7 @@ class EsmeraldAPISettings(BaseSettings):
             Boolean indicating if the application should return the debug tracebacks on
             server errors, in other words, if you want to have debug errors being displayed.
 
-            Read more about this in the official [Starlette documentation](https://www.starlette.io/applications/#instantiating-the-application).
+            Read more about this in the official [Lilya documentation](https://www.lilya.dev/applications/#instantiating-the-application).
 
             !!! Tip
                 Do not use this in production as `True`.
@@ -1137,7 +1137,7 @@ class EsmeraldAPISettings(BaseSettings):
 
         ```python
         from loguru import logger
-        from starlette.types import Receive, Scope, Send
+        from lilya.types import Receive, Scope, Send
 
         from esmerald import Esmerald, EsmeraldInterceptor, EsmeraldAPISettings
 

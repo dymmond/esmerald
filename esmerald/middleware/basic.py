@@ -1,11 +1,11 @@
 from typing import TypeVar
 
+from lilya.requests import Request as StarletteRequest
+from lilya.responses import Response
 from starlette.middleware.base import (
     BaseHTTPMiddleware,  # noqa
     RequestResponseEndpoint as RequestResponseEndpoint,  # noqa
 )
-from starlette.requests import Request as StarletteRequest
-from starlette.responses import Response
 
 from esmerald.requests import Request
 

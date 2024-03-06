@@ -4,6 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
 
 import click
+from lilya.compat import run_sync
 from starlette.types import Lifespan
 
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
@@ -11,7 +12,6 @@ from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
 from esmerald.routing.events import generate_lifespan_events
-from esmerald.utils.sync import run_sync
 
 if TYPE_CHECKING:
     from esmerald.applications import ChildEsmerald, Esmerald

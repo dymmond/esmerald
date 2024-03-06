@@ -1,9 +1,9 @@
 from typing import Optional
 
 from pydantic import BaseModel
-from starlette import status
 
 from esmerald import HTTPException, JSONResponse, Request, post
+from lilya import status
 
 
 class PartialContentException(HTTPException):

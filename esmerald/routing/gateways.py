@@ -1,20 +1,17 @@
 import re
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
 
-from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.routing import (
-    Route as StarletteRoute,
-    WebSocketRoute as StarletteWebSocketRoute,
-    compile_path,
-)
-from starlette.types import Receive, Scope, Send
+from lilya._internal._path import clean_path
+from lilya._utils import is_class_and_subclass
+from lilya.middleware import DefineMiddleware
+from lilya.routing import Path as LilyaPath, WebSocketPath as LilyaWebSocketPath, compile_path
+from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseInterceptorMixin
 from esmerald.typing import Void, VoidType
-from esmerald.utils.helpers import clean_string, is_class_and_subclass
-from esmerald.utils.url import clean_path
+from esmerald.utils.helpers import clean_string
 
 if TYPE_CHECKING:  # pragma: no cover
     from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
@@ -37,14 +34,14 @@ class BaseMiddleware:
         if not is_class_and_subclass(handler, View) and not isinstance(handler, View):
             base_middleware += handler.middleware or []
             for middleware in base_middleware or []:
-                if isinstance(middleware, StarletteMiddleware):
+                if isinstance(middleware, DefineMiddleware):
                     _middleware.append(middleware)
                 else:
-                    _middleware.append(StarletteMiddleware(middleware))  # type: ignore
+                    _middleware.append(DefineMiddleware(middleware))  # type: ignore
         return _middleware
 
 
-class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
+class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
     """
     `Gateway` object class used by Esmerald routes.
 
@@ -154,7 +151,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
             Optional[List["Middleware"]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -256,7 +253,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
         )
         super().__init__(
             path=self.path,
-            endpoint=cast(Callable, handler),
+            handler=cast(Callable, handler),
             include_in_schema=include_in_schema,
             name=name,
             methods=cast("List[str]", self.methods),
@@ -264,7 +261,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
         )
         """
         A "bridge" to a handler and router mapping functionality.
-        Since the default Starlette Route endpoint does not understand the Esmerald handlers,
+        Since the default Starlette Route handler does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
@@ -281,11 +278,9 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
         self.parent = parent
         self.security = security
         self.tags = tags or []
-        (
-            handler.path_regex,
-            handler.path_format,
-            handler.param_convertors,
-        ) = compile_path(self.path)
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
+            self.path
+        )
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
@@ -314,7 +309,7 @@ class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
         return operation_id
 
 
-class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddleware):
+class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware):
     """
     `WebSocketGateway` object class used by Esmerald routes.
 
@@ -419,7 +414,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddle
             Optional[List["Middleware"]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -482,13 +477,13 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddle
 
         super().__init__(
             path=self.path,
-            endpoint=cast("Callable", handler),
+            handler=cast("Callable", handler),
             name=name,
             middleware=self._middleware,
         )
         """
         A "bridge" to a handler and router mapping functionality.
-        Since the default Starlette Route endpoint does not understand the Esmerald handlers,
+        Since the default Starlette Route handler does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
@@ -499,11 +494,9 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddle
         self.exception_handlers = exception_handlers or {}
         self.include_in_schema = False
         self.parent = parent
-        (
-            handler.path_regex,
-            handler.path_format,
-            handler.param_convertors,
-        ) = compile_path(self.path)
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
+            self.path
+        )
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
@@ -514,7 +507,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddle
         await self.app(scope, receive, send)
 
 
-class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
+class WebhookGateway(LilyaPath, BaseInterceptorMixin):
     """
     `WebhookGateway` object class used by Esmerald routes.
 
@@ -633,7 +626,7 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
             else:
                 name = clean_string(handler.__class__.__name__)
 
-        self.endpoint = cast("Callable", handler)
+        self.handler = cast("Callable", handler)
         self.include_in_schema = include_in_schema
 
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
@@ -651,11 +644,9 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
         self.parent = parent
         self.security = security
         self.tags = tags or []
-        (
-            handler.path_regex,
-            handler.path_format,
-            handler.param_convertors,
-        ) = compile_path(self.path)
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
+            self.path
+        )
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name

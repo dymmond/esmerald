@@ -15,7 +15,7 @@ application.
 
 !!! Tip
     You can create a middleware like Starlette and add it into the application. To understand how to build them,
-    Starlette has some great documentation <a href="https://www.starlette.io/middleware/" target='_blank'>here</a>.
+    Starlette has some great documentation <a href="https://www.lilya.dev/middleware/" target='_blank'>here</a>.
 
 ```python
 {!> ../docs_src/middleware/starlette_middleware.py !}
@@ -50,7 +50,7 @@ In the case of Esmerald configurations, a `config` parameter is declared and pas
 in the `__init__` but this is not enforced on a protocol level but on a subclass level, the middleware itself.
 
 Enforcing this protocol also aligns with writing
-<a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>pure asgi middlewares</a>.
+<a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>pure asgi middlewares</a>.
 
 !!! Note
     MiddlewareProtocol does not enforce `config` parameters but enforces the `app` parameter as this will make sure
@@ -91,11 +91,11 @@ To add middlewares to the application is very simple.
     and [route](./../routing/handlers.md#route) as well as [websocket](./../routing/handlers.md#websocket).
     We simply choose `Gateway` as it looks simpler to read and understand.
 
-## <a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>Writing ASGI middlewares</a>
+## <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Writing ASGI middlewares</a>
 
 **Esmerald** since follows the ASGI practices and uses Starlette underneath a good way of understand what can be
 done with middleware and how to write some of them, Starlette also goes through with a lot of
-<a href='https://www.starlette.io/middleware/#writing-pure-asgi-middleware' target='_blank'>detail</a>.
+<a href='https://www.lilya.dev/middleware/#writing-pure-asgi-middleware' target='_blank'>detail</a>.
 
 ## BaseAuthMiddleware
 
@@ -322,7 +322,7 @@ This integration works using [EsmeraldTimming](https://github.com/dymmond/esmera
 1. Esmerald supports [Starlette middleware](#starlette-middleware), [MiddlewareProtocol](#esmerald-protocols).
 2. A MiddlewareProtocol is simply an interface that enforces `__init__` and `async __call__` to be implemented.
 3. `app` is required parameter from any class inheriting from the `MiddlewareProtocol`.
-4. <a href='https://www.starlette.io/middleware/#pure-asgi-middleware' target='_blank'>Pure ASGI Middleware</a>
+4. <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Pure ASGI Middleware</a>
 is encouraged and the `MiddlewareProtocol` enforces that.
 5. Middleware classes can be added to any [layer of the application](#quick-note)
 6. All authentication middlewares must inherit from the BaseAuthMiddleware.

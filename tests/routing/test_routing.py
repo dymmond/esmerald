@@ -3,10 +3,10 @@ import uuid
 from dataclasses import dataclass
 
 import pytest
+from lilya.responses import JSONResponse, PlainText, Response as LilyaResponse
+from lilya.routing import Host, NoMatchFound
+from lilya.websockets import WebSocket, WebSocketDisconnect
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from starlette.responses import JSONResponse, PlainTextResponse, Response as StarletteResponse
-from starlette.routing import Host, NoMatchFound
-from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from esmerald.applications import Esmerald
 from esmerald.enums import MediaType
@@ -32,47 +32,47 @@ async def allow_access(request: Request) -> JSONResponse:
 
 
 @get(path="/", media_type=MediaType.TEXT, status_code=200)
-async def homepage(request: Request) -> StarletteResponse:
-    return StarletteResponse("Hello, world")
+async def homepage(request: Request) -> LilyaResponse:
+    return LilyaResponse("Hello, world")
 
 
 @get(path="/", media_type=MediaType.TEXT, status_code=200)
-async def users(request: Request) -> StarletteResponse:
-    return StarletteResponse("All users")
+async def users(request: Request) -> LilyaResponse:
+    return LilyaResponse("All users")
 
 
 @get(path="/", media_type=MediaType.TEXT, status_code=200)
-async def user(request: Request, username: str) -> StarletteResponse:
+async def user(request: Request, username: str) -> LilyaResponse:
     content = "User " + username
-    return StarletteResponse(content)
+    return LilyaResponse(content)
 
 
 @get(path="/me", media_type=MediaType.TEXT, status_code=200)
-async def user_me(request: Request) -> StarletteResponse:
+async def user_me(request: Request) -> LilyaResponse:
     content = "User fixed me"
-    return StarletteResponse(content)
+    return LilyaResponse(content)
 
 
 @put(path="/", media_type=MediaType.TEXT, status_code=200)
-async def disable_user(request: Request) -> StarletteResponse:
+async def disable_user(request: Request) -> LilyaResponse:
     content = "User " + request.path_params["username"] + " disabled"
-    return StarletteResponse(content)
+    return LilyaResponse(content)
 
 
 @get(path="/", media_type=MediaType.TEXT, status_code=200)
-async def user_no_match(request: Request) -> StarletteResponse:  # pragma: no cover
+async def user_no_match(request: Request) -> LilyaResponse:  # pragma: no cover
     content = "User fixed no match"
-    return StarletteResponse(content)
+    return LilyaResponse(content)
 
 
 @get(path="/", media_type=MediaType.TEXT, status_code=200)
-async def func_homepage(request: Request) -> StarletteResponse:
-    return StarletteResponse("Hello, world!")
+async def func_homepage(request: Request) -> LilyaResponse:
+    return LilyaResponse("Hello, world!")
 
 
 @post(path="/", media_type=MediaType.TEXT, status_code=200)
-async def contact(request: Request) -> StarletteResponse:
-    return StarletteResponse("Hello, POST!")
+async def contact(request: Request) -> LilyaResponse:
+    return LilyaResponse("Hello, POST!")
 
 
 @get(path="/", status_code=200)
@@ -165,9 +165,9 @@ class TestMyAPIView(APIView):
     async def esmerald(self, param: str, name: str) -> UJSONResponse:
         return UJSONResponse({"param": param, "name": name})
 
-    @get(path="/name/{endpoint}")
-    async def name(self, param: str, name: str, endpoint: str) -> UJSONResponse:
-        return UJSONResponse({"param": param, "name": name, "endpoint": endpoint})
+    @get(path="/name/{handler}")
+    async def name(self, param: str, name: str, handler: str) -> UJSONResponse:
+        return UJSONResponse({"param": param, "name": name, "handler": handler})
 
     @websocket(path="/socket")
     async def websocket_endpoint_include(self, socket: WebSocket, param: str, name: str) -> None:
@@ -236,7 +236,7 @@ routes = [
     ),
     Include(
         "/static",
-        app=StarletteResponse("xxxxx", media_type=MediaType.PNG, status_code=200),
+        app=LilyaResponse("xxxxx", media_type=MediaType.PNG, status_code=200),
     ),
     Gateway("/func", handler=func_homepage),
     Gateway("/func", handler=contact),
@@ -382,7 +382,7 @@ def test_router_apiview(test_client_factory):
         assert response.json() == {
             "name": "test",
             "param": "param",
-            "endpoint": "endpot",
+            "handler": "endpot",
         }
 
 
@@ -542,14 +542,14 @@ def test_router_add_websocket_route(test_client_factory):
 
 @get(path="/", media_type=MediaType.TEXT)
 async def http_endpoint(request: Request) -> Response:
-    url = request.url_for("http_endpoint")
+    url = request.path_for("http_endpoint")
     return Response(f"URL: {url}")
 
 
 @websocket(path="/")
 async def websocket_endpoint_switch(socket: WebSocket) -> None:
     await socket.accept()
-    await socket.send_json({"URL": str(socket.url_for("websocket_endpoint"))})
+    await socket.send_json({"URL": str(socket.path_for("websocket_endpoint"))})
     await socket.close()
 
 
@@ -573,12 +573,12 @@ def test_protocol_switch(test_client_factory):
                 pass  # pragma: nocover
 
 
-ok = PlainTextResponse("OK")
+ok = PlainText("OK")
 
 
 @get(path="/")
-async def get_ok() -> PlainTextResponse:
-    return PlainTextResponse("OK")  # pragma: no cover
+async def get_ok() -> PlainText:
+    return PlainText("OK")  # pragma: no cover
 
 
 def test_include_urls(test_client_factory):
@@ -725,8 +725,8 @@ def test_subdomain_reverse_urls(test_client_factory):
 async def echo_urls(request: Request) -> UJSONResponse:
     return UJSONResponse(
         {
-            "index": request.url_for("index"),
-            "submount": request.url_for("include:submount"),
+            "index": request.path_for("index"),
+            "submount": request.path_for("include:submount"),
         }
     )
 
@@ -773,8 +773,8 @@ double_mount_routes = [
 
 
 @get("/")
-async def url_ok() -> PlainTextResponse:
-    return PlainTextResponse("Hello, World!")
+async def url_ok() -> PlainText:
+    return PlainText("Hello, World!")
 
 
 def test_url_for_with_double_mount(test_client_factory):
@@ -831,8 +831,8 @@ def test_lifespan_async(test_client_factory):
     shutdown_complete = False
 
     @get("/")
-    async def hello_world(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("hello, world")
+    async def hello_world(request: Request) -> PlainText:
+        return PlainText("hello, world")
 
     async def run_startup() -> None:
         nonlocal startup_complete
@@ -865,7 +865,7 @@ def test_lifespan_state_unsupported(test_client_factory):
 
     app = Router(
         lifespan=lifespan,
-        routes=[Include("/", PlainTextResponse("hello, esmerald"))],
+        routes=[Include("/", PlainText("hello, esmerald"))],
     )
 
     async def no_state_wrapper(scope, receive, send):
@@ -884,8 +884,8 @@ def test_lifespan_sync(test_client_factory):
     shutdown_complete = False
 
     @get("/")
-    def hello_world(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("hello, world")
+    def hello_world(request: Request) -> PlainText:
+        return PlainText("hello, world")
 
     def run_startup():
         nonlocal startup_complete

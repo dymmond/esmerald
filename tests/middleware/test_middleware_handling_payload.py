@@ -1,8 +1,8 @@
 import logging
 
 from _pytest.logging import LogCaptureFixture
+from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.enums import ScopeType
 from esmerald.protocols.middleware import MiddlewareProtocol

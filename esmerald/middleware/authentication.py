@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Set
 
-from starlette.requests import HTTPConnection
-from starlette.types import ASGIApp, Receive, Scope, Send
+from lilya._internal._connection import Connection
+from lilya.types import ASGIApp, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.enums import ScopeType
@@ -70,12 +70,12 @@ class BaseAuthMiddleware(ABC, MiddlewareProtocol):  # pragma: no cover
             await self.app(scope, receive, send)
             return
 
-        auth_result = await self.authenticate(HTTPConnection(scope))
+        auth_result = await self.authenticate(Connection(scope))
         scope["user"] = auth_result.user
         await self.app(scope, receive, send)
 
     @abstractmethod
-    async def authenticate(self, request: HTTPConnection) -> AuthResult:
+    async def authenticate(self, request: Connection) -> AuthResult:
         """
         The abstract method that needs to be implemented for any authentication middleware.
         """

@@ -16,7 +16,7 @@ from esmerald import Request
 
 You can learn more about the `Request` by checking the [API Reference](./references/request.md).
 
-You can also read more about the `request` in the [Official Starlette documentation](https://www.starlette.io/requests/).
+You can also read more about the `request` in the [Official Starlette documentation](https://www.lilya.dev/requests/).
 
 ## The Request
 

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
+from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald import JSON, Gateway, Include, MiddlewareProtocol, get
 from esmerald.testclient import create_client

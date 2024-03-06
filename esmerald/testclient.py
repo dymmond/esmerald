@@ -12,9 +12,9 @@ from typing import (
 )
 
 from httpx._client import CookieTypes
+from lilya.testclient import TestClient  # noqa
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
-from starlette.testclient import TestClient  # noqa
 
 from esmerald.applications import Esmerald
 from esmerald.utils.crypto import get_random_secret_key

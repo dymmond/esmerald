@@ -1,25 +1,25 @@
 import inspect
 import typing
 
-from starlette._exception_handler import (
+from lilya._internal._exception_handlers import (
     ExceptionHandlers,
     StatusHandlers,
     _lookup_exception_handler,
 )
-from starlette._utils import is_async_callable
-from starlette.concurrency import run_in_threadpool
-from starlette.exceptions import HTTPException
-from starlette.requests import Request
-from starlette.responses import Response
-from starlette.types import ASGIApp, Message, Receive, Scope, Send
-from starlette.websockets import WebSocket
+from lilya.compat import is_async_callable
+from lilya.concurrency import run_in_threadpool
+from lilya.exceptions import HTTPException
+from lilya.requests import Request
+from lilya.responses import Response
+from lilya.types import ASGIApp, Message, Receive, Scope, Send
+from lilya.websockets import WebSocket
 
 
 def wrap_app_handling_exceptions(app: ASGIApp, conn: typing.Union[Request, WebSocket]) -> ASGIApp:
     exception_handlers: ExceptionHandlers
     status_handlers: StatusHandlers
     try:
-        exception_handlers, status_handlers = conn.scope["starlette.exception_handlers"]
+        exception_handlers, status_handlers = conn.scope["lilya.exception_handlers"]
     except KeyError:  # pragma: no cover
         exception_handlers, status_handlers = {}, {}
 

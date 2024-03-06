@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from starlette.types import Receive, Scope, Send
+from lilya.types import Receive, Scope, Send
 from typing_extensions import Protocol, runtime_checkable
 
 T = TypeVar("T")
@@ -10,9 +10,9 @@ T = TypeVar("T")
 class InterceptorProtocol(Protocol):  # pragma: no cover
     """
     Generic object serving the base for interception of messages,
-    before reaching the endpoint. This is inspired by the AOP (Aspect Oriented Programming).
+    before reaching the handler. This is inspired by the AOP (Aspect Oriented Programming).
 
-    The interceptor is handled between the call and the API endpoint itself and acts on it.
+    The interceptor is handled between the call and the API handler itself and acts on it.
 
     An interceptor could be anything from logging to rerouting or even input sanitizing.
     """

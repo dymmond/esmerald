@@ -108,7 +108,7 @@ deprecated_lifespan = pytest.mark.filterwarnings(
     r":(async )?generator function lifespans are deprecated, use an "
     r"@contextlib\.asynccontextmanager function instead"
     r":DeprecationWarning"
-    r":starlette.routing"
+    r":lilya.routing"
 )
 
 

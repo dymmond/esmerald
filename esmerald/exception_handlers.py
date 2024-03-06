@@ -1,11 +1,11 @@
 from typing import Union
 
+from lilya import status
+from lilya.exceptions import HTTPException as LilyaHTTPException
+from lilya.requests import Request
+from lilya.responses import Response as LilyaResponse
 from orjson import loads
 from pydantic import ValidationError
-from starlette import status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.requests import Request
-from starlette.responses import Response as StarletteResponse
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import ExceptionErrorMap, HTTPException, ImproperlyConfigured
@@ -13,10 +13,10 @@ from esmerald.responses import JSONResponse, Response
 
 
 async def http_exception_handler(
-    request: Request, exc: Union[HTTPException, StarletteHTTPException]
+    request: Request, exc: Union[HTTPException, LilyaHTTPException]
 ) -> Union[JSONResponse, Response]:  # pragma: no cover
     """
-    Default exception handler for StarletteHTTPException and Esmerald HTTPException.
+    Default exception handler for LilyaHTTPException and Esmerald HTTPException.
     """
     extra = getattr(exc, "extra", None)
     headers = getattr(exc, "headers", None)
@@ -65,13 +65,13 @@ async def http_error_handler(
 
 async def improperly_configured_exception_handler(
     request: Request, exc: ImproperlyConfigured
-) -> StarletteResponse:  # pragma: no cover
+) -> LilyaResponse:  # pragma: no cover
     """
     When an ImproperlyConfiguredException is raised.
     """
     status_code = (
         exc.status_code
-        if isinstance(exc, StarletteHTTPException)
+        if isinstance(exc, LilyaHTTPException)
         else status.HTTP_500_INTERNAL_SERVER_ERROR
     )
     if not status_code:
@@ -80,7 +80,7 @@ async def improperly_configured_exception_handler(
     content = {"detail": exc.detail}
     if exc.extra:
         content.update({"extra": exc.extra})  # type: ignore[dict-item]
-    headers = exc.headers if isinstance(exc, (HTTPException, StarletteHTTPException)) else None
+    headers = exc.headers if isinstance(exc, (HTTPException, LilyaHTTPException)) else None
 
     return Response(
         media_type=MediaType.JSON,

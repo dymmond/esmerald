@@ -1,6 +1,6 @@
+from lilya.types import Receive, Scope, Send
 from loguru import logger
 from pydantic import BaseModel
-from starlette.types import Receive, Scope, Send
 
 from esmerald import ChildEsmerald, Gateway, Include, JSONResponse, Request, post
 from esmerald.exceptions import NotAuthorized

@@ -20,14 +20,11 @@ from typing import (
 )
 from uuid import UUID
 
-from starlette.convertors import CONVERTOR_TYPES
-from starlette.requests import HTTPConnection
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import (
-    Mount as Mount,  # noqa
-    compile_path,
-)
-from starlette.types import Receive, Scope, Send
+from lilya._internal._connection import Connection
+from lilya.responses import Response as LilyaResponse
+from lilya.routing import compile_path
+from lilya.transformers import TRANSFORMER_TYPES
+from lilya.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -78,7 +75,7 @@ param_type_map = {
     "path": Path,
 }
 
-CONV2TYPE = {conv: typ for typ, conv in CONVERTOR_TYPES.items()}
+CONV2TYPE = {conv: typ for typ, conv in TRANSFORMER_TYPES.items()}
 
 
 T = TypeVar("T", bound="BaseHandlerMixin")
@@ -96,7 +93,7 @@ class OpenAPIDefinitionMixin:  # pragma: no cover
         Using the Starlette CONVERTORS and the application registered convertors,
         transforms the path into a PathParameterSchema used for the OpenAPI definition.
         """
-        _, path, variables = compile_path(path)
+        _, path, variables, _ = compile_path(path)
 
         parsed_components: List[Union[str, PathParameterSchema]] = []
 
@@ -167,7 +164,7 @@ class BaseResponseHandler:
 
         async def response_content(
             data: ResponseContainer, app: Type["Esmerald"], **kwargs: Dict[str, Any]
-        ) -> StarletteResponse:
+        ) -> LilyaResponse:
             _headers = {**self.get_headers(headers), **data.headers}
             _cookies = self.get_cookies(data.cookies, cookies)
             response: Response = data.to_response(
@@ -189,7 +186,7 @@ class BaseResponseHandler:
         status_code: Optional[int] = None,
         media_type: Optional[str] = MediaType.TEXT,
     ) -> "AsyncAnyCallable":
-        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> StarletteResponse:
+        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(data.cookies, cookies)
             _headers = {
                 **self.get_headers(headers),
@@ -220,7 +217,7 @@ class BaseResponseHandler:
     ) -> "AsyncAnyCallable":
         """Creates a handler function for Esmerald JSON responses"""
 
-        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> StarletteResponse:
+        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(cookies, [])
             _headers = {
                 **self.get_headers(headers),
@@ -246,9 +243,7 @@ class BaseResponseHandler:
     ) -> "AsyncAnyCallable":
         """Creates an handler for Starlette Responses."""
 
-        async def response_content(
-            data: StarletteResponse, **kwargs: Dict[str, Any]
-        ) -> StarletteResponse:
+        async def response_content(data: LilyaResponse, **kwargs: Dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(cookies, [])
             _headers = {
                 **self.get_headers(headers),
@@ -273,7 +268,8 @@ class BaseResponseHandler:
         response_class: Any,
         status_code: int,
     ) -> "AsyncAnyCallable":
-        async def response_content(data: Any, **kwargs: Dict[str, Any]) -> StarletteResponse:
+        async def response_content(data: Any, **kwargs: Dict[str, Any]) -> LilyaResponse:
+
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies, [])
             if isinstance(data, JSONResponse):
@@ -301,7 +297,7 @@ class BaseResponseHandler:
         request: Request,
         route: "HTTPHandler",
         parameter_model: "TransformerModel",
-    ) -> "StarletteResponse":
+    ) -> "LilyaResponse":
         """
         Get response for the given request using the specified route and parameter model.
 
@@ -312,7 +308,7 @@ class BaseResponseHandler:
             parameter_model (TransformerModel): The parameter model for handling request parameters.
 
         Returns:
-            StarletteResponse: The response generated for the request.
+            LilyaResponse: The response generated for the request.
         """
         response = await self.call_handler_function(
             scope=scope,
@@ -320,7 +316,7 @@ class BaseResponseHandler:
             route=route,
             parameter_model=parameter_model,
         )
-        return cast("StarletteResponse", response)
+        return cast("LilyaResponse", response)
 
     async def call_handler_function(
         self,
@@ -403,7 +399,7 @@ class BaseResponseHandler:
             return await fn()
         return fn()
 
-    def get_response_handler(self) -> Callable[[Any], Awaitable[StarletteResponse]]:
+    def get_response_handler(self) -> Callable[[Any], Awaitable[LilyaResponse]]:
         """
         Checks and validates the type of return response and maps to the corresponding
         handler with the given parameters.
@@ -417,7 +413,7 @@ class BaseResponseHandler:
             headers = self.get_response_headers()
             cookies = self.get_response_cookies()
 
-            if is_class_and_subclass(self.signature.return_annotation, ResponseContainer):
+            if is_class_and_subclass(self.handler_signature.return_annotation, ResponseContainer):
                 handler = self.response_container_handler(
                     cookies=cookies,
                     media_type=self.media_type,
@@ -425,20 +421,20 @@ class BaseResponseHandler:
                     headers=headers,
                 )
             elif is_class_and_subclass(
-                self.signature.return_annotation,
+                self.handler_signature.return_annotation,
                 JSONResponse,
             ):
                 handler = self.json_response_handler(
                     status_code=self.status_code, cookies=cookies, headers=headers
                 )
-            elif is_class_and_subclass(self.signature.return_annotation, Response):
+            elif is_class_and_subclass(self.handler_signature.return_annotation, Response):
                 handler = self.response_handler(
                     cookies=cookies,
                     status_code=self.status_code,
                     media_type=self.media_type,
                     headers=headers,
                 )
-            elif is_class_and_subclass(self.signature.return_annotation, StarletteResponse):
+            elif is_class_and_subclass(self.handler_signature.return_annotation, LilyaResponse):
                 handler = self.starlette_response_handler(
                     cookies=cookies,
                     headers=headers,
@@ -455,7 +451,7 @@ class BaseResponseHandler:
             self._response_handler = handler
 
         return cast(
-            "Callable[[Any], Awaitable[StarletteResponse]]",
+            "Callable[[Any], Awaitable[LilyaResponse]]",
             self._response_handler,
         )
 
@@ -466,7 +462,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
     """
 
     @property
-    def signature(self) -> Signature:
+    def handler_signature(self) -> Signature:
         """The Signature of 'self.fn'."""
         return Signature.from_callable(cast("AnyCallable", self.fn))
 
@@ -608,7 +604,7 @@ class BaseHandlerMixin(BaseSignature, BaseResponseHandler, OpenAPIDefinitionMixi
             data = await data
         return data
 
-    async def allow_connection(self, connection: "HTTPConnection") -> None:  # pragma: no cover
+    async def allow_connection(self, connection: "Connection") -> None:  # pragma: no cover
         """
         Validates the connection.
 

@@ -2,7 +2,7 @@ from mimetypes import guess_type
 from pathlib import PurePath
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from starlette.types import Receive, Scope, Send
+from lilya.types import Receive, Scope, Send
 
 from esmerald.enums import MediaType
 from esmerald.responses.base import Response

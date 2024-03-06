@@ -1,16 +1,15 @@
-# from json import loads
 from typing import TYPE_CHECKING, Any, cast
 
-from orjson import loads
-from starlette.datastructures import URL  # noqa
-from starlette.requests import (  # noqa
+from lilya._internal._connection import Connection as Connection  # noqa: F401
+from lilya.datastructures import URL  # noqa
+from lilya.requests import (
     ClientDisconnect as ClientDisconnect,  # noqa
-    HTTPConnection as HTTPConnection,  # noqa: F401
     Request as StarletteRequest,  # noqa: F401
     empty_receive,
     empty_send,
 )
-from starlette.types import Receive, Scope, Send
+from lilya.types import Receive, Scope, Send
+from orjson import loads
 
 from esmerald.typing import Void
 
@@ -67,6 +66,6 @@ class Request(StarletteRequest):
             self._json = loads(body)
         return self._json
 
-    def url_for(self, __name: str, **path_params: Any) -> Any:
-        url: URL = super().url_for(__name, **path_params)
+    def path_for(self, __name: str, **path_params: Any) -> Any:
+        url: URL = super().path_for(__name, **path_params)
         return str(url)

@@ -1,7 +1,7 @@
 import pytest
+from lilya._internal._module_loading import import_string
 
 from esmerald import EsmeraldAPISettings
-from esmerald.utils.module_loading import import_string
 
 
 def test_import_error_module_loading():

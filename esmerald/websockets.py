@@ -1,15 +1,15 @@
 from typing import Optional
 
-from starlette.requests import HTTPConnection as HTTPConnection  # noqa: F401
-from starlette.websockets import (
+from lilya._internal._connection import Connection as Connection  # noqa: F401
+from lilya.websockets import (
     WebSocket as WebSocket,  # noqa
     WebSocketClose as WebSocketClose,  # noqa
-    WebSocketDisconnect as StarletteWebSocketDisconnect,  # noqa
+    WebSocketDisconnect as LilyaWebSocketDisconnect,  # noqa
     WebSocketState as WebSocketState,  # noqa
 )
 
 
-class WebSocketDisconnect(StarletteWebSocketDisconnect):
+class WebSocketDisconnect(LilyaWebSocketDisconnect):
     """Esmerald WebSocketDisconnect"""
 
     def __init__(self, code: int = 1000, reason: Optional[str] = None) -> None:

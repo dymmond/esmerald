@@ -15,12 +15,12 @@ from typing import (
     cast,
 )
 
+from lilya.apps import Lilya
+from lilya.middleware import DefineMiddleware  # noqa
+from lilya.types import Lifespan, Receive, Scope, Send
 from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl, ValidationError
-from starlette.applications import Starlette
-from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-from starlette.types import Lifespan, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings as esmerald_settings
@@ -72,7 +72,7 @@ if TYPE_CHECKING:  # pragma: no cover
 AppType = TypeVar("AppType", bound="Esmerald")
 
 
-class Esmerald(Starlette):
+class Esmerald(Lilya):
     """
     `Esmerald` application object. The main entry-point for any application/API
     with Esmerald.
@@ -189,7 +189,7 @@ class Esmerald(Starlette):
                 Boolean indicating if the application should return the debug tracebacks on
                 server errors, in other words, if you want to have debug errors being displayed.
 
-                Read more about this in the official [Starlette documentation](https://www.starlette.io/applications/#instantiating-the-application).
+                Read more about this in the official [Lilya documentation](https://www.lilya.dev/applications/#applications).
 
                 !!! Tip
                     Do not use this in production.
@@ -589,7 +589,7 @@ class Esmerald(Starlette):
 
                 ```python
                 from loguru import logger
-                from starlette.types import Receive, Scope, Send
+                from lilya.types import Receive, Scope, Send
 
                 from esmerald import Esmerald
                 from esmerald import EsmeraldInterceptor
@@ -1075,7 +1075,7 @@ class Esmerald(Starlette):
             Optional[Sequence["Middleware"]],
             Doc(
                 """
-                A global sequence of Starlette middlewares or `esmerald.middlewares` that are
+                A global sequence of Lilya middlewares or `esmerald.middlewares` that are
                 used by the application.
 
                 Read more about the [Middleware](https://esmerald.dev/middleware/middleware/).
@@ -1089,8 +1089,8 @@ class Esmerald(Starlette):
                 app = Esmerald(
                     routes=[...],
                     middleware=[
-                        StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]),
-                        StarletteMiddleware(HTTPSRedirectMiddleware),
+                        DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]),
+                        DefineMiddleware(HTTPSRedirectMiddleware),
                     ],
                 )
                 ```
@@ -1602,7 +1602,7 @@ class Esmerald(Starlette):
                 This can be defined as the application state and not request state
                 which means that it does not change each request.
 
-                Learn more in the [Starlette documentation](https://www.starlette.io/applications/#storing-state-on-the-app-instance).
+                Learn more in the [Lilya documentation](https://www.lilya.dev/applications/#storing-state-on-the-app-instance).
                 """
             ),
         ] = State()
@@ -1921,7 +1921,7 @@ class Esmerald(Starlette):
             Optional[List["Middleware"]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -2068,7 +2068,7 @@ class Esmerald(Starlette):
             Optional[List["Middleware"]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -2338,7 +2338,7 @@ class Esmerald(Starlette):
 
         return exception_handlers
 
-    def build_user_middleware_stack(self) -> List["StarletteMiddleware"]:
+    def build_user_middleware_stack(self) -> List["DefineMiddleware"]:
         """
         Configures all the passed settings
         and wraps inside an exception handler.
@@ -2352,31 +2352,31 @@ class Esmerald(Starlette):
 
         if self.allowed_hosts:
             user_middleware.append(
-                StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
+                DefineMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
             )
         if self.cors_config:
             user_middleware.append(
-                StarletteMiddleware(CORSMiddleware, **self.cors_config.model_dump())
+                DefineMiddleware(CORSMiddleware, **self.cors_config.model_dump())
             )
         if self.csrf_config:
-            user_middleware.append(StarletteMiddleware(CSRFMiddleware, config=self.csrf_config))
+            user_middleware.append(DefineMiddleware(CSRFMiddleware, config=self.csrf_config))
 
         if self.session_config:
             user_middleware.append(
-                StarletteMiddleware(SessionMiddleware, **self.session_config.model_dump())
+                DefineMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
 
         for middleware in self._middleware or []:
-            if isinstance(middleware, StarletteMiddleware):
+            if isinstance(middleware, DefineMiddleware):
                 user_middleware.append(middleware)
             else:
-                user_middleware.append(StarletteMiddleware(middleware))
+                user_middleware.append(DefineMiddleware(middleware))
         return user_middleware
 
     def build_middleware_stack(self) -> "ASGIApp":
         """
         Esmerald uses the [esmerald.protocols.MiddlewareProtocol] (interfaces) and therefore we
-        wrap the StarletteMiddleware in a slighly different manner.
+        wrap the DefineMiddleware in a slighly different manner.
 
         Overriding the default build_middleware_stack will allow to control the initial
         middlewares that are loaded by Esmerald. All of these values can be updated.
@@ -2402,7 +2402,7 @@ class Esmerald(Starlette):
 
         middleware = (
             [
-                StarletteMiddleware(
+                DefineMiddleware(
                     EsmeraldAPIExceptionMiddleware,
                     exception_handlers=exception_handlers,
                     error_handler=error_handler,
@@ -2411,12 +2411,12 @@ class Esmerald(Starlette):
             ]
             + self.user_middleware
             + [
-                StarletteMiddleware(
+                DefineMiddleware(
                     ExceptionMiddleware,
                     handlers=exception_handlers,
                     debug=debug,
                 ),
-                StarletteMiddleware(AsyncExitStackMiddleware, config=self.async_exit_config),
+                DefineMiddleware(AsyncExitStackMiddleware, config=self.async_exit_config),
             ]
         )
 

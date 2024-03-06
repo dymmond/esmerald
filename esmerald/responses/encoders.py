@@ -1,6 +1,6 @@
 from typing import Any
 
-from starlette.responses import JSONResponse as JSONResponse
+from lilya.responses import JSONResponse as JSONResponse
 
 from esmerald.responses.json import BaseJSONResponse
 

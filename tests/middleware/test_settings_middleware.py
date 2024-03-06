@@ -1,4 +1,4 @@
-from starlette.middleware import Middleware as StarletteMiddleware
+from lilya.middleware import DefineMiddleware
 
 from esmerald import Gateway, JSONResponse, Request, get, settings, status
 from esmerald.middleware import RequestSettingsMiddleware
@@ -25,7 +25,7 @@ def test_request_settings_default(test_client_factory):
     """
     with create_client(
         routes=[Gateway(handler=home)],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     ) as client:
         response = client.get("/")
 

@@ -1,6 +1,6 @@
 from random import randint
 
-from starlette.status import HTTP_200_OK
+from lilya.status import HTTP_200_OK
 
 from esmerald.enums import MediaType
 from esmerald.injector import Inject

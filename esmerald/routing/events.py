@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional, Sequence, TypeVar
 
-from starlette._utils import is_async_callable
-from starlette.types import Lifespan, Receive, Scope, Send
+from lilya.compat import is_async_callable
+from lilya.types import Lifespan, Receive, Scope, Send
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.types import LifeSpanHandler

@@ -62,7 +62,7 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 Esmerald wouldn't be possible without two colossals:
 
-* <a href="https://www.starlette.io/" class="external-link" target="_blank">Starlette</a>
+* <a href="https://www.lilya.dev/" class="external-link" target="_blank">Starlette</a>
 * <a href="https://pydantic-docs.helpmanual.io/" class="external-link" target="_blank">Pydantic</a>
 
 ## Installation

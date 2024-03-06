@@ -1,7 +1,7 @@
 from typing import Type
 
 import pytest
-from starlette.status import HTTP_400_BAD_REQUEST
+from lilya.status import HTTP_400_BAD_REQUEST
 
 from esmerald.applications import ChildEsmerald
 from esmerald.enums import MediaType

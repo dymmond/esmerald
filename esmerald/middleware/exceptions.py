@@ -1,13 +1,13 @@
 from inspect import getmro
 from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, cast
 
+from lilya import status
+from lilya.exceptions import HTTPException as StarletteHTTPException
+from lilya.middleware.exceptions import ExceptionMiddleware as StarletteExceptionMiddleware
+from lilya.middleware.server_error import ServerErrorMiddleware
+from lilya.responses import Response as LilyaResponse
+from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
-from starlette import status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.middleware.errors import ServerErrorMiddleware
-from starlette.middleware.exceptions import ExceptionMiddleware as StarletteExceptionMiddleware
-from starlette.responses import Response as StarletteResponse
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
@@ -109,9 +109,7 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             event = {"type": "websocket.close", "code": code, "reason": reason}
             await send(event)
 
-    def default_http_exception_handler(
-        self, request: Request, exc: Exception
-    ) -> "StarletteResponse":
+    def default_http_exception_handler(self, request: Request, exc: Exception) -> "LilyaResponse":
         """Default handler for exceptions subclassed from HTTPException."""
         status_code = (
             exc.status_code
