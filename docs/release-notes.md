@@ -9,7 +9,7 @@ hide:
 
 ### Added
 
-- Allowing `app` to loaded as a str as alternative to an object.
+- Allowing `app` to load as a string as alternative to an object inside the `Include`.
 
 ### Changed
 
