@@ -288,7 +288,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
 
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
         if self._middleware:
@@ -498,7 +498,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
             self.path
         )
 
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
         if self._middleware:

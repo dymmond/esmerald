@@ -1484,7 +1484,7 @@ class WebSocketHandler(BaseInterceptorMixin, LilyaWebSocketPath):
                 "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions."
             )
 
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
