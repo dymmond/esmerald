@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from copy import copy
 from http.cookies import SimpleCookie
 from typing import (
     TYPE_CHECKING,
@@ -16,6 +15,18 @@ from typing import (
     cast,
 )
 
+from lilya._internal._message import Address as Address  # noqa: F401
+from lilya.datastructures import (
+    URL as URL,  # noqa: F401
+    DataUpload as LilyaUploadFile,  # noqa
+    FormData as FormData,  # noqa: F401
+    Header as Header,  # noqa: F401
+    QueryParam as QueryParam,  # noqa: F401
+    Secret as Secret,  # noqa
+    State as State,  # noqa: F401
+    URLPath as URLPath,  # noqa: F401
+)
+from lilya.responses import Response as LilyaResponse  # noqa
 from pydantic import BaseModel, ConfigDict, field_validator  # noqa
 from pydantic._internal._schema_generation_shared import (
     GetJsonSchemaHandler as GetJsonSchemaHandler,
@@ -26,31 +37,18 @@ from pydantic_core.core_schema import (
     PlainValidatorFunctionSchema,
     with_info_plain_validator_function as general_plain_validator_function,
 )
-from starlette.datastructures import (
-    URL as URL,  # noqa: F401
-    Address as Address,  # noqa: F401
-    FormData as FormData,  # noqa: F401
-    Headers as Headers,  # noqa: F401
-    MutableHeaders as MutableHeaders,  # noqa
-    QueryParams as QueryParams,  # noqa: F401
-    Secret as StarletteSecret,  # noqa
-    State as StarletteStateClass,  # noqa: F401
-    UploadFile as StarletteUploadFile,  # noqa
-    URLPath as URLPath,  # noqa: F401
-)
-from starlette.responses import Response as StarletteResponse  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
 from esmerald.enums import MediaType
 
-R = TypeVar("R", bound=StarletteResponse)
+R = TypeVar("R", bound=LilyaResponse)
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
 
 
-class UploadFile(StarletteUploadFile):  # pragma: no cover
+class UploadFile(LilyaUploadFile):  # pragma: no cover
     """
     Adding pydantic specific functionalitty for parsing.
     """
@@ -61,13 +59,13 @@ class UploadFile(StarletteUploadFile):  # pragma: no cover
 
     @classmethod
     def validate(cls: Type["UploadFile"], v: Any) -> Any:
-        if not isinstance(v, StarletteUploadFile):
+        if not isinstance(v, LilyaUploadFile):
             raise ValueError(f"Expected UploadFile, got: {type(v)}")
         return v
 
     @classmethod
     def _validate(cls, __input_value: Any, _: Any) -> "UploadFile":
-        if not isinstance(__input_value, StarletteUploadFile):
+        if not isinstance(__input_value, LilyaUploadFile):
             raise ValueError(f"Expected UploadFile, got: {type(__input_value)}")
         return cast(UploadFile, __input_value)
 
@@ -82,33 +80,6 @@ class UploadFile(StarletteUploadFile):  # pragma: no cover
         cls, source: Type[Any], handler: Callable[[Any], CoreSchema]
     ) -> CoreSchema:
         return cast(PlainValidatorFunctionSchema, general_plain_validator_function(cls._validate))
-
-
-class Secret(StarletteSecret):  # pragma: no cover
-    def __len__(self) -> int:
-        return len(self._value)
-
-
-class State(StarletteStateClass):  # pragma: no cover
-    state: Dict[str, Any]
-
-    def __copy__(self) -> "State":
-        return self.__class__(copy(self._state))
-
-    def __len__(self) -> int:
-        return len(self._state)
-
-    def __getattr__(self, key: str) -> Any:
-        try:
-            return self._state[key]
-        except KeyError as e:
-            raise AttributeError(f"State has no key '{key}'") from e
-
-    def __getitem__(self, key: str) -> Any:
-        return self._state[key]
-
-    def copy(self) -> "State":
-        return copy(self)
 
 
 class Cookie(BaseModel):

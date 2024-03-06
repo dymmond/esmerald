@@ -1,7 +1,7 @@
 from contextlib import AsyncExitStack
 from typing import Optional
 
-from starlette.types import ASGIApp, Receive, Scope, Send
+from lilya.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.config import AsyncExitConfig
 from esmerald.protocols.middleware import MiddlewareProtocol

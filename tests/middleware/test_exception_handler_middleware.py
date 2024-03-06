@@ -1,8 +1,8 @@
 import json
 from typing import Any
 
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
+from lilya.exceptions import HTTPException as StarletteHTTPException
+from lilya.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from esmerald.exceptions import HTTPException
 from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware

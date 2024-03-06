@@ -1,7 +1,7 @@
 from asyncio import sleep
 from typing import Any, Dict
 
-from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from lilya.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from esmerald.applications import ChildEsmerald
 from esmerald.injector import Inject

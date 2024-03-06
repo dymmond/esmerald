@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 import pytest
-from starlette.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
+from lilya.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
 
 from esmerald.applications import Esmerald
 from esmerald.exceptions import ImproperlyConfigured

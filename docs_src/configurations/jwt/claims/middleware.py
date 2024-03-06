@@ -1,17 +1,17 @@
 from jose import JWSError, JWTError
 from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.requests import HTTPConnection
 
 from esmerald.conf import settings
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware as EsmeraldMiddleware
 from esmerald.exceptions import AuthenticationError, NotAuthorized
 from esmerald.middleware.authentication import AuthResult
 from esmerald.security.jwt.token import Token
-from esmerald.utils.module_loading import import_string
+from lilya._internal._connection import Connection
+from lilya._internal._module_loading import import_string
 
 
 class JWTAuthMiddleware(EsmeraldMiddleware):
-    def get_token(self, request: HTTPConnection) -> Token:
+    def get_token(self, request: Connection) -> Token:
         """
         Gets the token from the headers.
         """
@@ -37,7 +37,7 @@ class JWTAuthMiddleware(EsmeraldMiddleware):
             raise AuthenticationError(str(e)) from e
         return token
 
-    async def authenticate(self, request: HTTPConnection) -> AuthResult:
+    async def authenticate(self, request: Connection) -> AuthResult:
         """
         Retrieves the header default of the config, validates
         and returns the AuthResult.

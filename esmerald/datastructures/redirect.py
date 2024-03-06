@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Type, Union
 
-from starlette.responses import RedirectResponse  # noqa
+from lilya.responses import RedirectResponse  # noqa
 from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer  # noqa

@@ -1,7 +1,7 @@
 from unittest import mock
 
 import pytest
-from starlette import status
+from lilya import status
 
 from esmerald import ChildEsmerald
 from esmerald.exceptions import ImproperlyConfigured

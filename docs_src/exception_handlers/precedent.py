@@ -1,5 +1,4 @@
 from pydantic.error_wrappers import ValidationError
-from starlette import status
 
 from esmerald import (
     Esmerald,
@@ -10,6 +9,7 @@ from esmerald import (
     ValidationErrorException,
     get,
 )
+from lilya import status
 
 
 async def validation_error_exception_handler(

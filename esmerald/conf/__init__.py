@@ -1,8 +1,8 @@
 import os
 from typing import TYPE_CHECKING, Any, Optional, Type
 
-from esmerald.utils.functional import LazyObject, empty
-from esmerald.utils.module_loading import import_string
+from dymmond_settings.functional import LazyObject, empty
+from lilya._internal._module_loading import import_string
 
 if TYPE_CHECKING:
     from esmerald.conf.global_settings import EsmeraldAPISettings

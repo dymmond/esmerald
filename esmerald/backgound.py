@@ -1,17 +1,12 @@
-from typing import Any, Callable, List, Optional, TypeVar
+from typing import Any, Callable, List, Optional
 
-from starlette.background import (
-    BackgroundTask as StarletteBackgroundTask,  # noqa
-    BackgroundTasks as StarletteBackgroundTasks,  # noqa
-)
-from starlette.responses import Response as StarletteResponse  # noqa
+from lilya.background import Task, Tasks
 from typing_extensions import ParamSpec
 
 P = ParamSpec("P")
-R = TypeVar("R", bound=StarletteResponse)
 
 
-class BackgroundTask(StarletteBackgroundTask):
+class BackgroundTask(Task):
     """
     `BackgroundTask` as a single instance can be easily achieved.
 
@@ -48,7 +43,7 @@ class BackgroundTask(StarletteBackgroundTask):
         super().__init__(func, *args, **kwargs)
 
 
-class BackgroundTasks(StarletteBackgroundTasks):
+class BackgroundTasks(Tasks):
     """
     Alternatively, the `BackgroundTasks` can also be used to be passed
     in.

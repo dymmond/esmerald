@@ -112,7 +112,7 @@ You can use `def` or `async def` functions when declaring those functionalities 
 the `BackgroundTask` and Esmerald will know how to handle those for you.
 
 For more details about these objects, you can see in
-[Starlette official docs for Background Tasks](https://www.starlette.io/background/).
+[Starlette official docs for Background Tasks](https://www.lilya.dev/background/).
 
 ## API Reference
 

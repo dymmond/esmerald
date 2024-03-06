@@ -1,15 +1,15 @@
 """The tests in this file were adapted from:
 
-https://github.com/encode/starlette/blob/master/tests/test_websockets.py
+https://github.com/encode/lilya/blob/master/tests/test_websockets.py
 """
 
 import sys
 
 import anyio
 import pytest
-from starlette import status
-from starlette.types import Receive, Scope, Send
-from starlette.websockets import WebSocketDisconnect, WebSocketState
+from lilya import status
+from lilya.types import Receive, Scope, Send
+from lilya.websockets import WebSocketDisconnect, WebSocketState
 
 from esmerald.testclient import EsmeraldTestClient
 from esmerald.websockets import WebSocket

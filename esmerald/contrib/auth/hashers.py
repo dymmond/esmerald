@@ -4,12 +4,12 @@ import math
 import warnings
 from typing import Any, Callable, Dict, Optional, Sequence, Union
 
+from lilya._internal._module_loading import import_string
 from passlib.context import CryptContext
 
 from esmerald.conf import settings
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.utils.crypto import get_random_string as _get_random_string
-from esmerald.utils.module_loading import import_string
 
 from .constants import (
     RANDOM_STRING_CHARS,

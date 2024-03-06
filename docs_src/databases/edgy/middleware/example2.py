@@ -4,7 +4,7 @@ from esmerald import Esmerald
 from esmerald.conf import settings
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
-from esmerald.utils.module_loading import import_string
+from lilya._internal._module_loading import import_string
 
 
 class AppAuthMiddleware(JWTAuthMiddleware):

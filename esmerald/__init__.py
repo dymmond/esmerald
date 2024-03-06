@@ -1,7 +1,7 @@
 __version__ = "2.7.4"
 
 
-from starlette import status
+from lilya import status
 
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings

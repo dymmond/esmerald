@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from starlette.datastructures import Headers
+from lilya.datastructures import Header
 from typing_extensions import Literal
 
 from esmerald.routing.gateways import WebSocketGateway
@@ -32,7 +32,7 @@ def test_websocket_send_receive_json(mode: "Literal['text', 'binary']") -> None:
     [
         [(b"test", b"hello-world")],
         {"test": "hello-world"},
-        Headers(headers={"test": "hello-world"}),
+        Header({"test": "hello-world"}),
     ],
 )
 def test_accept_set_headers(headers: Any) -> None:

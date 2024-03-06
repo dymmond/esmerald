@@ -4,8 +4,9 @@ Functions to use with the Factory dependency injection.
 
 from typing import Any, Callable, Tuple, cast
 
+from lilya._internal._module_loading import import_string
+
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.utils.module_loading import import_string
 
 
 def _lookup(klass: Any, comp: Any, import_path: Any) -> Any:  # pragma: no cover

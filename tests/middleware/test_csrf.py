@@ -1,8 +1,8 @@
 from typing import Optional
 
 import pytest
-from starlette import status
-from starlette.status import HTTP_200_OK, HTTP_201_CREATED
+from lilya import status
+from lilya.status import HTTP_200_OK, HTTP_201_CREATED
 
 from esmerald.config import CSRFConfig
 from esmerald.routing.gateways import Gateway, WebSocketGateway

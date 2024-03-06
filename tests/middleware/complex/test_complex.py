@@ -1,5 +1,5 @@
 import pytest
-from starlette.types import ASGIApp
+from lilya.types import ASGIApp
 
 from esmerald import Gateway, Include, Request
 from esmerald.conf import settings

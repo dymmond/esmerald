@@ -1,8 +1,8 @@
 import os
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union, cast
 
-from pydantic import FilePath, field_validator, model_validator  # noqa
-from starlette.responses import FileResponse  # noqa
+from lilya.responses import FileResponse  # noqa
+from pydantic import FilePath, model_validator  # noqa
 from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer

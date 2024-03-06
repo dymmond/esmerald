@@ -1,11 +1,10 @@
 from copy import copy
 from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple, Union, cast
 
-from starlette.routing import compile_path
-from starlette.types import Receive, Scope, Send
+from lilya._internal._path import clean_path
+from lilya.routing import compile_path
+from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
-
-from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:  # pragma: no cover
     from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
@@ -113,7 +112,7 @@ class View:
         Optional[List["Middleware"]],
         Doc(
             """
-            A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+            A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
             """
         ),
     ]
@@ -256,7 +255,7 @@ class View:
                 setattr(self, key, None)
 
         self.path = clean_path(self.path or "/")
-        self.path_regex, self.path_format, self.param_convertors = compile_path(self.path)
+        self.path_regex, self.path_format, self.param_convertors, _ = compile_path(self.path)
         self.parent = parent
         self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.operation_id: Optional[str] = None

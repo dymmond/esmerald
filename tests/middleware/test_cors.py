@@ -1,20 +1,20 @@
-from starlette.middleware import Middleware
+from lilya.middleware import DefineMiddleware
 
 from esmerald import CORSConfig, Gateway, Request, get, route
 from esmerald.applications import Esmerald
 from esmerald.middleware.cors import CORSMiddleware
-from esmerald.responses import PlainTextResponse
+from esmerald.responses import PlainText
 
 
 def test_cors_allow_all(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_origins=["*"],
                 allow_headers=["*"],
@@ -68,13 +68,13 @@ def test_cors_allow_all(test_client_factory):
 
 def test_cors_allow_all_except_credentials(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_origins=["*"],
                 allow_headers=["*"],
@@ -118,8 +118,8 @@ def test_cors_allow_all_except_credentials(test_client_factory):
 
 def test_cors_allow_specific_origin_with_config(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     cors_config = CORSConfig(
         allow_origins=["https://example.org"],
@@ -161,13 +161,13 @@ def test_cors_allow_specific_origin_with_config(test_client_factory):
 
 def test_cors_allow_specific_origin(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_origins=["https://example.org"],
                 allow_headers=["X-Example", "Content-Type"],
@@ -215,7 +215,7 @@ def test_cors_disallowed_preflight(test_client_factory):
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_origins=["https://example.org"],
                 allow_headers=["X-Example"],
@@ -292,7 +292,7 @@ def test_preflight_allows_request_origin_if_origins_wildcard_and_credentials_all
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_origins=["*"],
                 allow_methods=["POST"],
@@ -356,7 +356,7 @@ def test_cors_preflight_allow_all_methods(test_client_factory):
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])],
     )
 
     client = test_client_factory(app)
@@ -395,8 +395,8 @@ def test_cors_preflight_allow_all_methods_config(test_client_factory):
 
 def test_cors_allow_all_methods(test_client_factory):
     @route(methods=["delete", "get", "head", "options", "patch", "post", "put"])
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[
@@ -405,7 +405,7 @@ def test_cors_allow_all_methods(test_client_factory):
                 handler=homepage,
             )
         ],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])],
     )
 
     client = test_client_factory(app)
@@ -422,13 +422,13 @@ def test_cors_allow_all_methods(test_client_factory):
 
 def test_cors_allow_origin_regex(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_headers=["X-Example", "Content-Type"],
                 allow_origin_regex="https://.*",
@@ -493,13 +493,13 @@ def test_cors_allow_origin_regex(test_client_factory):
 
 def test_cors_allow_origin_regex_fullmatch(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_headers=["X-Example", "Content-Type"],
                 allow_origin_regex=r"https://.*\.example.org",
@@ -527,12 +527,12 @@ def test_cors_allow_origin_regex_fullmatch(test_client_factory):
 
 def test_cors_credentialed_requests_return_specific_origin(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["*"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"])],
     )
     client = test_client_factory(app)
 
@@ -547,8 +547,8 @@ def test_cors_credentialed_requests_return_specific_origin(test_client_factory):
 
 def test_cors_credentialed_requests_return_specific_origin_config(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     cors = CORSConfig(allow_origins=["*"])
     app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors)
@@ -565,12 +565,12 @@ def test_cors_credentialed_requests_return_specific_origin_config(test_client_fa
 
 def test_cors_vary_header_defaults_to_origin(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["https://example.org"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["https://example.org"])],
     )
 
     headers = {"Origin": "https://example.org"}
@@ -584,8 +584,8 @@ def test_cors_vary_header_defaults_to_origin(test_client_factory):
 
 def test_cors_vary_header_defaults_to_origin_config(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     cors = CORSConfig(allow_origins=["https://example.org"])
     app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors)
@@ -601,12 +601,12 @@ def test_cors_vary_header_defaults_to_origin_config(test_client_factory):
 
 def test_cors_vary_header_is_not_set_for_non_credentialed_request(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["*"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"])],
     )
     client = test_client_factory(app)
 
@@ -619,8 +619,8 @@ def test_cors_vary_header_is_not_set_for_non_credentialed_request_config(
     test_client_factory,
 ):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     cors = CORSConfig(allow_origins=["*"])
     app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors)
@@ -633,12 +633,12 @@ def test_cors_vary_header_is_not_set_for_non_credentialed_request_config(
 
 def test_cors_vary_header_is_properly_set_for_credentialed_request(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["*"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"])],
     )
     client = test_client_factory(app)
 
@@ -651,14 +651,14 @@ def test_cors_vary_header_is_properly_set_when_allow_origins_is_not_wildcard(
     test_client_factory,
 ):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     app = Esmerald(
         routes=[
             Gateway("/", handler=homepage),
         ],
-        middleware=[Middleware(CORSMiddleware, allow_origins=["https://example.org"])],
+        middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["https://example.org"])],
     )
     client = test_client_factory(app)
 
@@ -671,8 +671,8 @@ def test_cors_vary_header_is_properly_set_when_allow_origins_is_not_wildcard_con
     test_client_factory,
 ):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     cors = CORSConfig(allow_origins=["https://example.org"])
     app = Esmerald(
@@ -692,15 +692,15 @@ def test_cors_allowed_origin_does_not_leak_between_credentialed_requests(
     test_client_factory,
 ):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     app = Esmerald(
         routes=[
             Gateway("/", handler=homepage),
         ],
         middleware=[
-            Middleware(
+            DefineMiddleware(
                 CORSMiddleware,
                 allow_origins=["*"],
                 allow_headers=["*"],
@@ -727,8 +727,8 @@ def test_cors_allowed_origin_does_not_leak_between_credentialed_requests_config(
     test_client_factory,
 ):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Homepage", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("Homepage", status_code=200)
 
     cors = CORSConfig(
         allow_origins=["*"],

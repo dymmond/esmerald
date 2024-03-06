@@ -2,11 +2,11 @@ import logging
 from typing import Any, Awaitable, Callable, List, Type, cast
 
 from _pytest.logging import LogCaptureFixture
+from lilya.middleware.cors import CORSMiddleware
+from lilya.middleware.trustedhost import TrustedHostMiddleware
+from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.applications import ChildEsmerald
 from esmerald.config import CORSConfig

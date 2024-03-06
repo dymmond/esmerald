@@ -3,22 +3,24 @@ from dataclasses import is_dataclass
 from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
 
 import msgspec
-from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
-from pydantic import BaseModel
-from starlette import status
-from starlette.responses import (
+from lilya import status
+from lilya.responses import (
     FileResponse as FileResponse,  # noqa
     HTMLResponse as HTMLResponse,  # noqa
     JSONResponse as JSONResponse,  # noqa
-    PlainTextResponse as PlainTextResponse,  # noqa
+    PlainText as PlainText,  # noqa
     RedirectResponse as RedirectResponse,  # noqa
-    Response as StarletteResponse,  # noqa
+    Response as LilyaResponse,  # noqa
     StreamingResponse as StreamingResponse,  # noqa
 )
+from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
+from pydantic import BaseModel
 from typing_extensions import Annotated, Doc
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
+
+PlainTextResponse = PlainText
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -27,7 +29,7 @@ if TYPE_CHECKING:  # pragma: no cover
 T = TypeVar("T")
 
 
-class Response(StarletteResponse, Generic[T]):
+class Response(LilyaResponse, Generic[T]):
     """
     Default `Response` object from Esmerald where it can be as the
     return annotation of a [handler](https://esmerald.dev/routing/handlers/).
@@ -153,7 +155,7 @@ class Response(StarletteResponse, Generic[T]):
             return msgspec.structs.asdict(value)
         raise TypeError("unsupported type")  # pragma: no cover
 
-    def render(self, content: Any) -> bytes:
+    def make_response(self, content: Any) -> bytes:
         try:
             if (
                 content is None

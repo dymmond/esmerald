@@ -1,16 +1,16 @@
 import traceback
 from typing import TypeVar
 
-from starlette.middleware.errors import ServerErrorMiddleware as StarletteServerErrorMiddleware
-from starlette.requests import Request as StarletteRequest
-from starlette.responses import HTMLResponse, PlainTextResponse, Response
+from lilya.middleware.server_error import ServerErrorMiddleware as LilyaServerError
+from lilya.requests import Request as StarletteRequest
+from lilya.responses import HTMLResponse, PlainText, Response
 
 from esmerald.requests import Request as _Request
 
 Request = TypeVar("Request", _Request, StarletteRequest)
 
 
-class ServerErrorMiddleware(StarletteServerErrorMiddleware):  # pragma: no cover
+class ServerErrorMiddleware(LilyaServerError):  # pragma: no cover
     """
     Handles returning 500 responses when a server error occurs.
 
@@ -32,7 +32,7 @@ class ServerErrorMiddleware(StarletteServerErrorMiddleware):  # pragma: no cover
             content = self.generate_html(exc)
             return HTMLResponse(content, status_code=500)
         content = self.generate_plain_text(exc)
-        return PlainTextResponse(content, status_code=500)
+        return PlainText(content, status_code=500)
 
     def error_response(self, request: Request, exc: Exception) -> Response:
-        return PlainTextResponse("Internal Server Error", status_code=500)
+        return PlainText("Internal Server Error", status_code=500)

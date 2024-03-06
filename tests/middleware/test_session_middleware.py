@@ -2,8 +2,8 @@ import os
 import re
 
 import pytest
+from lilya.responses import JSONResponse
 from pydantic import ValidationError
-from starlette.responses import JSONResponse
 
 from esmerald.config import SessionConfig
 from esmerald.datastructures import Secret

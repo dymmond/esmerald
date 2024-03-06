@@ -1,1 +1,1 @@
-from starlette.staticfiles import StaticFiles as StaticFiles  # noqa
+from lilya.staticfiles import StaticFiles as StaticFiles  # noqa

@@ -13,7 +13,7 @@ from typing import (
     Union,
 )
 
-from starlette.responses import StreamingResponse  # noqa
+from lilya.responses import StreamingResponse  # noqa
 from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer  # noqa

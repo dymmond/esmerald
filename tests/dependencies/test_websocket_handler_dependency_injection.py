@@ -2,7 +2,7 @@ from asyncio import sleep
 from typing import Any, Dict
 
 import pytest
-from starlette.websockets import WebSocketDisconnect
+from lilya.websockets import WebSocketDisconnect
 
 from esmerald.injector import Inject
 from esmerald.routing.apis.views import APIView

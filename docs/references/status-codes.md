@@ -9,7 +9,7 @@ from esmerald import status
 The `status` is provided by Starlette which means you can also:
 
 ```python
-from starlette import status
+from lilya import status
 ```
 
 By default, the Esmerald [handlers](https://esmerald.dev/routing/handlers/) take care of the

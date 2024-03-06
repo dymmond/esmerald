@@ -1,15 +1,15 @@
-from starlette.middleware import Middleware
+from lilya.middleware import DefineMiddleware
 
 from esmerald import Gateway, Request, get
 from esmerald.applications import Esmerald
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
-from esmerald.responses import PlainTextResponse
+from esmerald.responses import PlainText
 
 
 def test_trusted_host_middleware_settings(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("OK", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("OK", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
@@ -31,13 +31,13 @@ def test_trusted_host_middleware_settings(test_client_factory):
 
 def test_trusted_host_middleware(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("OK", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("OK", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
-            Middleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.testserver"])
+            DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.testserver"])
         ],
     )
 
@@ -62,12 +62,12 @@ def test_default_allowed_hosts():
 
 def test_www_redirect(test_client_factory):
     @get()
-    def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("OK", status_code=200)
+    def homepage(request: Request) -> PlainText:
+        return PlainText("OK", status_code=200)
 
     app = Esmerald(
         routes=[Gateway("/", handler=homepage)],
-        middleware=[Middleware(TrustedHostMiddleware, allowed_hosts=["www.example.com"])],
+        middleware=[DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com"])],
     )
 
     client = test_client_factory(app, base_url="https://example.com")

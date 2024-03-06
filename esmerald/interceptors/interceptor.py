@@ -1,10 +1,8 @@
 from abc import ABC
-from typing import TYPE_CHECKING
+
+from lilya.types import Receive, Scope, Send
 
 from esmerald.protocols.interceptor import InterceptorProtocol
-
-if TYPE_CHECKING:  # pragma: no cover
-    from starlette.types import Receive, Scope, Send
 
 
 class EsmeraldInterceptor(ABC, InterceptorProtocol):
@@ -21,7 +19,7 @@ class EsmeraldInterceptor(ABC, InterceptorProtocol):
     from esmerald import Esmerald, Gateway, JSONResponse, get
 
     from loguru import logger
-    from starlette.types import Receive, Scope, Send
+    from lilya.types import Receive, Scope, Send
 
 
     class LoggingInterceptor(EsmeraldInterceptor):
@@ -47,7 +45,7 @@ class EsmeraldInterceptor(ABC, InterceptorProtocol):
 
         ```python
         from loguru import logger
-        from starlette.types import Receive, Scope, Send
+        from lilya.types import Receive, Scope, Send
 
 
         class LoggingInterceptor(EsmeraldInterceptor):

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, NamedTuple, Set, Tuple, Type, Union, cast
 
+from lilya.datastructures import URL
 from pydantic.fields import FieldInfo
-from starlette.datastructures import URL
 
 from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException

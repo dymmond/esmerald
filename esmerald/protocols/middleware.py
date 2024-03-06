@@ -1,6 +1,6 @@
 from typing import Any
 
-from starlette.types import ASGIApp, Receive, Scope, Send
+from lilya.types import ASGIApp, Receive, Scope, Send
 from typing_extensions import Protocol, runtime_checkable
 
 
