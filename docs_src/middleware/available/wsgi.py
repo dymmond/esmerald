@@ -1,7 +1,7 @@
 from flask import Flask, make_response
 
 from esmerald import Esmerald, Include
-from esmerald.middleware import WSGIMiddleware
+from esmerald.middleware.wsgi import WSGIMiddleware
 
 flask = Flask(__name__)
 

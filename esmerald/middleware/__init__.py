@@ -8,7 +8,6 @@ from .https import HTTPSRedirectMiddleware
 from .sessions import SessionMiddleware
 from .settings_middleware import RequestSettingsMiddleware
 from .trustedhost import TrustedHostMiddleware
-from .wsgi import WSGIMiddleware
 
 __all__ = [
     "AsyncExitStackMiddleware",
@@ -21,5 +20,4 @@ __all__ = [
     "SessionMiddleware",
     "RequestSettingsMiddleware",
     "TrustedHostMiddleware",
-    "WSGIMiddleware",
 ]

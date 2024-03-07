@@ -1,7 +1,7 @@
 from flask import Flask, escape, request
 
 from esmerald import Esmerald, Include
-from esmerald.middleware import WSGIMiddleware
+from esmerald.middleware.wsgi import WSGIMiddleware
 
 flask_app = Flask(__name__)
 another_flask_app = Flask(__name__)
