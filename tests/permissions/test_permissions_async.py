@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from starlette.status import HTTP_200_OK, HTTP_403_FORBIDDEN
-from starlette.websockets import WebSocketDisconnect
+from lilya.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+from lilya.websockets import WebSocketDisconnect
 
 from esmerald.applications import ChildEsmerald
 from esmerald.permissions import AllowAny, BasePermission, DenyAll

@@ -258,6 +258,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
             name=name,
             methods=cast("List[str]", self.methods),
             middleware=self._middleware,
+            exception_handlers=exception_handlers,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -270,7 +271,6 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
         self.permissions: Sequence["Permission"] = permissions or []
-        self.exception_handlers = exception_handlers or {}
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -480,6 +480,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
             handler=cast("Callable", handler),
             name=name,
             middleware=self._middleware,
+            exception_handlers=exception_handlers,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -491,7 +492,6 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
         self.permissions = permissions or []
-        self.exception_handlers = exception_handlers or {}
         self.include_in_schema = False
         self.parent = parent
         (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
