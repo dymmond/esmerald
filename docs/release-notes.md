@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 2.7.4
+
+### Fixed
+
+- `WSGIMiddleware` optional was being called in the core middlewares.
+
 ## 2.7.3
 
 ### Added
