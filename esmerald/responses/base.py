@@ -173,6 +173,6 @@ class Response(LilyaResponse, Generic[T]):
                     default=self.transform,
                     option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
                 )
-            return super().render(content)
+            return super().make_response(content)
         except (AttributeError, ValueError, TypeError) as e:  # pragma: no cover
             raise ImproperlyConfigured("Unable to serialize response content") from e
