@@ -1,7 +1,5 @@
 from contextlib import asynccontextmanager
 
-import pytest
-
 from esmerald import Esmerald
 
 
@@ -103,43 +101,12 @@ def test_app_async_cm_lifespan(test_client_factory):
     assert cleanup_complete
 
 
-deprecated_lifespan = pytest.mark.filterwarnings(
-    r"ignore"
-    r":(async )?generator function lifespans are deprecated, use an "
-    r"@contextlib\.asynccontextmanager function instead"
-    r":DeprecationWarning"
-    r":lilya.routing"
-)
-
-
-@deprecated_lifespan
 def test_app_async_gen_lifespan(test_client_factory):
     startup_complete = False
     cleanup_complete = False
 
+    @asynccontextmanager
     async def lifespan(app):
-        nonlocal startup_complete, cleanup_complete
-        startup_complete = True
-        yield
-        cleanup_complete = True
-
-    app = Esmerald(lifespan=lifespan)
-
-    assert not startup_complete
-    assert not cleanup_complete
-    with test_client_factory(app):
-        assert startup_complete
-        assert not cleanup_complete
-    assert startup_complete
-    assert cleanup_complete
-
-
-@deprecated_lifespan
-def test_app_sync_gen_lifespan(test_client_factory):
-    startup_complete = False
-    cleanup_complete = False
-
-    def lifespan(app):
         nonlocal startup_complete, cleanup_complete
         startup_complete = True
         yield

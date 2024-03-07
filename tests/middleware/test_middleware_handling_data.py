@@ -94,7 +94,7 @@ def test_setting_cors_middleware() -> None:
         assert len(unpacked_middleware) == 2
         cors_middleware = cast("Any", unpacked_middleware[1])
 
-        assert isinstance(cors_middleware.cls, type(CORSMiddleware))
+        assert isinstance(cors_middleware.middleware, type(CORSMiddleware))
         assert cors_middleware.kwargs["allow_headers"] == ["*"]
         assert cors_middleware.kwargs["allow_methods"] == ["*"]
         assert cors_middleware.kwargs["allow_origins"] == cors_config.allow_origins
@@ -115,7 +115,7 @@ def test_trusted_hosts_middleware() -> None:
 
     assert len(unpacked_middleware) == 1
     trusted_hosts_middleware = cast("Any", unpacked_middleware[0])
-    assert isinstance(trusted_hosts_middleware.cls, type(TrustedHostMiddleware))
+    assert isinstance(trusted_hosts_middleware.middleware, type(TrustedHostMiddleware))
     assert trusted_hosts_middleware.kwargs["allowed_hosts"] == ["*"]
 
 
