@@ -10,7 +10,7 @@ from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
 
 if TYPE_CHECKING:  # pragma: no cover
-    from starlette.datastructures import FormData
+    from lilya.datastructures import FormData
 
 
 class HashableBaseModel(BaseModel):  # pragma: no cover

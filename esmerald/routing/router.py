@@ -1057,7 +1057,12 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
         """
         if not path:
             path = "/"
-        super().__init__(path=path, handler=handler, include_in_schema=include_in_schema)
+        super().__init__(
+            path=path,
+            handler=handler,
+            include_in_schema=include_in_schema,
+            exception_handlers=exception_handlers,
+        )
 
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
@@ -1091,7 +1096,6 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
             status_code = int(status_code)
         self.status_code = status_code
 
-        self.exception_handlers = exception_handlers or {}
         self.dependencies: Dependencies = dependencies or {}
         self.description = description or inspect.cleandoc(self.handler.__doc__ or "")
         self.permissions = list(permissions) if permissions else []
@@ -1433,7 +1437,7 @@ class WebSocketHandler(BaseInterceptorMixin, LilyaWebSocketPath):
     ):
         if not path:
             path = "/"
-        super().__init__(path=path, handler=handler)
+        super().__init__(path=path, handler=handler, exception_handlers=exception_handlers)
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
         self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
@@ -1442,7 +1446,6 @@ class WebSocketHandler(BaseInterceptorMixin, LilyaWebSocketPath):
         self.handler = handler
         self.parent: ParentType = None
         self.dependencies = dependencies
-        self.exception_handlers = exception_handlers
         self.permissions = permissions
         self.middleware = middleware
         self.signature_model: Optional[Type[SignatureModel]] = None

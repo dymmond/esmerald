@@ -94,7 +94,7 @@ def whget(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -464,7 +464,7 @@ def whead(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -771,7 +771,7 @@ def whpost(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_201_CREATED,
@@ -1174,7 +1174,7 @@ def whput(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -1577,7 +1577,7 @@ def whpatch(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -1980,7 +1980,7 @@ def whdelete(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_204_NO_CONTENT,
@@ -2350,7 +2350,7 @@ def whoptions(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -2619,7 +2619,7 @@ def whtrace(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,
@@ -2941,7 +2941,7 @@ def whroute(
                 An integer indicating the status code of the handler.
 
                 This can be achieved by passing directly the value or
-                by using the `esmerald.status` or even the `starlette.status`.
+                by using the `esmerald.status` or even the `lilya.status`.
                 """
         ),
     ] = status.HTTP_200_OK,

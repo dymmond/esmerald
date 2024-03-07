@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
 
 import click
 from lilya.compat import run_sync
-from starlette.types import Lifespan
+from lilya.types import Lifespan
 
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv

@@ -984,7 +984,7 @@ class EsmeraldAPISettings(BaseSettings):
         ```python
         from esmerald import EsmeraldAPISettings
         from esmerald.middleware import HTTPSRedirectMiddleware, TrustedHostMiddleware
-        from starlette.middleware import Middleware as StarletteMiddleware
+        from lilya.middleware import Middleware as StarletteMiddleware
 
 
         class AppSettings(EsmeraldAPISettings):
