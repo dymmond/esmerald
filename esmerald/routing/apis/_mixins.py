@@ -141,13 +141,15 @@ class MethodMixin:
             (HTTPHandler, WebSocketHandler, WebhookHandler),
         ):
             if (  # type: ignore
-                not method.signature.return_annotation
-                or method.signature.return_annotation is None
+                not method.handler_signature.return_annotation
+                or method.handler_signature.return_annotation is None
             ):
                 return True
 
-            if not is_class_and_subclass(method.signature.return_annotation, signature_type):
+            if not is_class_and_subclass(
+                method.handler_signature.return_annotation, signature_type
+            ):
                 raise ImproperlyConfigured(
-                    f"{cls.__name__} must return type lists, got {type(method.signature.return_annotation)} instead."
+                    f"{cls.__name__} must return type lists, got {type(method.handler_signature.return_annotation)} instead."
                 )
         return True
