@@ -6,14 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from esmerald.config import StaticFilesConfig
-
-# from esmerald.requests import Request
-# from esmerald.routing.router import Include
 from esmerald.testclient import create_client
-
-# from lilya.middleware import DefineMiddleware
-
-# from starlette.middleware.base import BaseHTTPMiddleware
 
 
 def test_staticfiles(tmpdir: str) -> None:
@@ -50,30 +43,6 @@ def test_staticfiles_with_pathlib(tmpdir, test_client_factory):
         response = client.get("/example.txt")
         assert response.status_code == 200
         assert response.text == "<file content>"
-
-
-# def test_staticfiles_head_with_middleware(tmpdir, test_client_factory):
-#     """
-#     see https://github.com/encode/starlette/pull/935
-#     """
-#     path = os.path.join(tmpdir, "example.txt")
-#     with open(path, "w") as file:
-#         file.write("x" * 100)
-
-#     async def does_nothing_middleware(request: Request, call_next):
-#         response = await call_next(request)
-#         return response
-
-#     static_files_config = StaticFilesConfig(path="/", directory=tmpdir)
-#     routes = [Include("/static", app=static_files_config.to_app(), name="static")]
-#     middleware = [DefineMiddleware(BaseHTTPMiddleware, dispatch=does_nothing_middleware)]
-
-#     with create_client(
-#         routes=routes, static_files_config=static_files_config, middleware=middleware
-#     ) as client:
-#         response = client.head("/static/example.txt")
-#         assert response.status_code == 200
-#         assert response.headers.get("content-length") == "100"
 
 
 def test_staticfiles_html(tmpdir: Any) -> None:
