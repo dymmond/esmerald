@@ -23,7 +23,7 @@ class ORJSONResponse(BaseJSONResponse):
     In the same way the JSONResponse is used, so is the `ORJSONResponse`.
     """
 
-    def render(self, content: Any) -> bytes:
+    def make_response(self, content: Any) -> bytes:
         assert orjson is not None, "You must install the encoders or orjson to use ORJSONResponse"
         return orjson.dumps(
             content,
@@ -39,6 +39,6 @@ class UJSONResponse(BaseJSONResponse):
     In the same way the JSONResponse is used, so is the `UJSONResponse`.
     """
 
-    def render(self, content: Any) -> bytes:
+    def make_response(self, content: Any) -> bytes:
         assert ujson is not None, "You must install the encoders or ujson to use UJSONResponse"
         return ujson.dumps(content, ensure_ascii=False).encode("utf-8")

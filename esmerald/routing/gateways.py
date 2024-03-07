@@ -117,7 +117,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -388,7 +388,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,

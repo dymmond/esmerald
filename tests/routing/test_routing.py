@@ -283,7 +283,7 @@ def test_router(test_client_factory):
 
         response = client.get("/foo")
         assert response.status_code == 404
-        assert response.json()["detail"] == "The resource cannot be found."
+        assert response.json()["detail"] == "Not Found"
 
         response = client.get("/users")
         assert response.status_code == 200
@@ -427,32 +427,32 @@ def test_route_converters(test_client_factory):
         response = client.get("/int/5")
         assert response.status_code == 200
         assert response.json() == {"int": 5}
-        assert app.url_path_for("int-convertor", param=5) == "/int/5"
+        assert app.path_for("int-convertor", param=5) == "/int/5"
 
         # Test path with parentheses
         response = client.get("/path-with-parentheses(7)")
         assert response.status_code == 200
         assert response.json() == {"int": 7}
-        assert app.url_path_for("path-with-parentheses", param=7) == "/path-with-parentheses(7)"
+        assert app.path_for("path-with-parentheses", param=7) == "/path-with-parentheses(7)"
 
         # Test float conversion
         response = client.get("/float/25.5")
         assert response.status_code == 200
         assert response.json() == {"float": 25.5}
-        assert app.url_path_for("float-convertor", param=25.5) == "/float/25.5"
+        assert app.path_for("float-convertor", param=25.5) == "/float/25.5"
 
         # Test path conversion
         response = client.get("/path/some/example")
         assert response.status_code == 200
         assert response.json() == {"path": "some/example"}
-        assert app.url_path_for("path-convertor", param="some/example") == "/path/some/example"
+        assert app.path_for("path-convertor", param="some/example") == "/path/some/example"
 
         # Test UUID conversion
         response = client.get("/uuid/ec38df32-ceda-4cfa-9b4a-1aeb94ad551a")
         assert response.status_code == 200
         assert response.json() == {"uuid": "ec38df32-ceda-4cfa-9b4a-1aeb94ad551a"}
         assert (
-            app.url_path_for(
+            app.path_for(
                 "uuid-convertor",
                 param=uuid.UUID("ec38df32-ceda-4cfa-9b4a-1aeb94ad551a"),
             )
@@ -464,21 +464,21 @@ def test_url_path_for(test_client_factory):
     with create_client(routes=routes) as client:
         app = client.app
 
-        assert app.url_path_for("homepage") == "/"
-        assert app.url_path_for("user", username="esmerald") == "/users/esmerald"
-        assert app.url_path_for("websocket_endpoint") == "/ws"
+        assert app.path_for("homepage") == "/"
+        assert app.path_for("user", username="esmerald") == "/users/esmerald"
+        assert app.path_for("websocket_endpoint") == "/ws"
 
         with pytest.raises(NoMatchFound, match='No route exists for name "broken" and params "".'):
-            assert app.url_path_for("broken")
+            assert app.path_for("broken")
         with pytest.raises(
             NoMatchFound,
             match='No route exists for name "broken" and params "key, key2".',
         ):
-            assert app.url_path_for("broken", key="value", key2="value2")
+            assert app.path_for("broken", key="value", key2="value2")
         with pytest.raises(AssertionError):
-            app.url_path_for("user", username="fluid/esmerald")
+            app.path_for("user", username="fluid/esmerald")
         with pytest.raises(AssertionError):
-            app.url_path_for("user", username="")
+            app.path_for("user", username="")
 
 
 def test_url_for(test_client_factory):
@@ -486,31 +486,27 @@ def test_url_for(test_client_factory):
         app = client.app
 
         assert (
-            app.url_path_for("homepage").make_absolute_url(base_url="https://example.org")
+            app.path_for("homepage").make_absolute_url(base_url="https://example.org")
             == "https://example.org/"
         )
         assert (
-            app.url_path_for("homepage").make_absolute_url(
-                base_url="https://example.org/root_path/"
-            )
+            app.path_for("homepage").make_absolute_url(base_url="https://example.org/root_path/")
             == "https://example.org/root_path/"
         )
         assert (
-            app.url_path_for("user", username="tomchristie").make_absolute_url(
+            app.path_for("user", username="tomchristie").make_absolute_url(
                 base_url="https://example.org"
             )
             == "https://example.org/users/tomchristie"
         )
         assert (
-            app.url_path_for("user", username="tomchristie").make_absolute_url(
+            app.path_for("user", username="tomchristie").make_absolute_url(
                 base_url="https://example.org/root_path/"
             )
             == "https://example.org/root_path/users/tomchristie"
         )
         assert (
-            app.url_path_for("websocket_endpoint").make_absolute_url(
-                base_url="https://example.org"
-            )
+            app.path_for("websocket_endpoint").make_absolute_url(base_url="https://example.org")
             == "wss://example.org/ws"
         )
 
@@ -593,12 +589,12 @@ def test_include_urls(test_client_factory):
 
 def test_reverse_include_urls():
     included = Include("/users", app=ok, name="users")
-    assert included.url_path_for("users", path="/a") == "/users/a"
+    assert included.path_for("users", path="/a") == "/users/a"
 
     users = [Gateway("/{username}", handler=get_ok, name="user")]
     included = Include("/{subpath}/users", routes=users, name="users")
-    assert included.url_path_for("users:user", subpath="test", username="tom") == "/test/users/tom"
-    assert included.url_path_for("users", subpath="test", path="/tom") == "/test/users/tom"
+    assert included.path_for("users:user", subpath="test", username="tom") == "/test/users/tom"
+    assert included.path_for("users", subpath="test", path="/tom") == "/test/users/tom"
 
 
 def test_include_at_root(test_client_factory):
@@ -676,19 +672,19 @@ def test_host_reverse_urls(test_client_factory):
     with create_client(routes=mixed_hosts_app) as client:
         app = client.app
         assert (
-            app.url_path_for("homepage").make_absolute_url("https://whatever")
+            app.path_for("homepage").make_absolute_url("https://whatever")
             == "https://www.example.org/"
         )
         assert (
-            app.url_path_for("users").make_absolute_url("https://whatever")
+            app.path_for("users").make_absolute_url("https://whatever")
             == "https://www.example.org/users"
         )
         assert (
-            app.url_path_for("api:users").make_absolute_url("https://whatever")
+            app.path_for("api:users").make_absolute_url("https://whatever")
             == "https://api.example.org/users"
         )
         assert (
-            app.url_path_for("port:homepage").make_absolute_url("https://whatever")
+            app.path_for("port:homepage").make_absolute_url("https://whatever")
             == "https://port.example.org:3600/"
         )
 
@@ -714,7 +710,7 @@ def test_subdomain_routing(test_client_factory):
 def test_subdomain_reverse_urls(test_client_factory):
     client = test_client_factory(subdomain_router, base_url="https://esmerald.example.org/")
     assert (
-        client.app.url_path_for(
+        client.app.path_for(
             "subdomains", subdomain="esmerald", path="/homepage"
         ).make_absolute_url("https://whatever")
         == "https://esmerald.example.org/homepage"
@@ -779,7 +775,7 @@ async def url_ok() -> PlainText:
 
 def test_url_for_with_double_mount(test_client_factory):
     app = Esmerald(routes=double_mount_routes)
-    url = app.url_path_for("include:static", path="123")
+    url = app.path_for("include:static", path="123")
     assert url == "/include/static/123"
 
 
@@ -798,7 +794,7 @@ def test_standalone_route_does_not_match(test_client_factory):
     with create_client(routes=routes) as client:
         response = client.get("/invalid")
         assert response.status_code == 404
-        assert response.json()["detail"] == "The resource cannot be found."
+        assert response.json()["detail"] == "Not Found"
 
 
 @websocket(path="/")
@@ -949,13 +945,13 @@ def test_raise_on_shutdown(test_app_client_factory):
 def test_duplicated_param_names():
     with pytest.raises(
         ValueError,
-        match="Duplicated param name id at path /{id}/{id}",
+        match="Duplicated param name id in the path /{id}/{id}",
     ):
         Gateway("/{id}/{id}", handler=user)
 
     with pytest.raises(
         ValueError,
-        match="Duplicated param names id, name at path /{id}/{name}/{id}/{name}",
+        match="Duplicated param names id, name in the path /{id}/{name}/{id}/{name}",
     ):
         Gateway("/{id}/{name}/{id}/{name}", handler=user)
 

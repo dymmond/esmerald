@@ -3,8 +3,7 @@ from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, ca
 
 from lilya import status
 from lilya.exceptions import HTTPException as StarletteHTTPException
-from lilya.middleware.exceptions import ExceptionMiddleware as StarletteExceptionMiddleware
-from lilya.middleware.server_error import ServerErrorMiddleware
+from lilya.middleware.exceptions import ExceptionMiddleware as LilyaExceptionMiddleware
 from lilya.responses import Response as LilyaResponse
 from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
@@ -13,13 +12,14 @@ from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
 from esmerald.exceptions import HTTPException, WebSocketException
 from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
+from esmerald.middleware.errors import ServerErrorMiddleware
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.types import ExceptionHandler, ExceptionHandlerMap
 from esmerald.websockets import WebSocket
 
 
-class ExceptionMiddleware(StarletteExceptionMiddleware):
+class ExceptionMiddleware(LilyaExceptionMiddleware):
     """
     Reimplementation of the Exception Middleware.
     """
@@ -49,7 +49,7 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
             await self.app(scope, receive, send)
             return
 
-        scope["starlette.exception_handlers"] = (
+        scope["lilya.exception_handlers"] = (
             self._exception_handlers,
             self._status_handlers,
         )
