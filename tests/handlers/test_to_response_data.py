@@ -192,8 +192,8 @@ async def test_to_response_returning_redirect_response() -> None:
 
         cookies = response.headers.getlist("set-cookie")
         assert len(cookies) == 2
-        assert cookies[0] == "redirect-cookie=xyz; Path=/; SameSite=lax"
-        assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+        assert cookies[0] == b"redirect-cookie=xyz; Path=/; SameSite=lax"
+        assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
         assert response.background == background_task
 
 
@@ -258,8 +258,8 @@ async def test_to_response_returning_file_response() -> None:
 
         cookies = response.headers.getlist("set-cookie")
         assert len(cookies) == 3
-        assert cookies[0] == "file-cookie=xyz; Path=/; SameSite=lax"
-        assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+        assert cookies[0] == b"file-cookie=xyz; Path=/; SameSite=lax"
+        assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
         assert response.background == background_task
 
 
@@ -309,8 +309,8 @@ async def test_to_response_streaming_response(
 
             cookies = response.headers.getlist("set-cookie")
             assert len(cookies) == 3
-            assert cookies[0] == "streaming-cookie=xyz; Path=/; SameSite=lax"
-            assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+            assert cookies[0] == b"streaming-cookie=xyz; Path=/; SameSite=lax"
+            assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
             assert response.background == background_task
     else:
         with pytest.raises(ValidationError):
@@ -348,6 +348,6 @@ async def func_to_response_template_response() -> None:  # pragma: no cover
 
         cookies = response.headers.getlist("set-cookie")
         assert len(cookies) == 2
-        assert cookies[0] == "template-cookie=xyz; Path=/; SameSite=lax"
-        assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+        assert cookies[0] == b"template-cookie=xyz; Path=/; SameSite=lax"
+        assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
         assert response.background == background_task
