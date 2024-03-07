@@ -33,11 +33,12 @@ class BaseMiddleware:
 
         if not is_class_and_subclass(handler, View) and not isinstance(handler, View):
             base_middleware += handler.middleware or []
-            for middleware in base_middleware or []:
-                if isinstance(middleware, DefineMiddleware):
-                    _middleware.append(middleware)
-                else:
-                    _middleware.append(DefineMiddleware(middleware))  # type: ignore
+
+        for middleware in base_middleware or []:
+            if isinstance(middleware, DefineMiddleware):
+                _middleware.append(middleware)
+            else:
+                _middleware.append(DefineMiddleware(middleware))  # type: ignore
         return _middleware
 
 
