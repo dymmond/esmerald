@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional, Type, Union
 from lilya import status
 from lilya.exceptions import (
     HTTPException as LilyaHTTPException,
+    ImproperlyConfigured as ImproperlyConfigured,
     WebSocketException as LilyaWebSocketException,
 )
 from pydantic import BaseModel, create_model
@@ -102,9 +103,6 @@ class EsmeraldError(RuntimeError):
     """
 
     ...
-
-
-class ImproperlyConfigured(HTTPException, ValueError): ...
 
 
 class ImproperlyMiddlewareConfigured(ImproperlyConfigured): ...
