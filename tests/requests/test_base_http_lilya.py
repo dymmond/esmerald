@@ -7,7 +7,8 @@ from typing import Any, Optional
 
 import anyio
 import pytest
-from starlette.datastructures import Address, State
+from lilya._internal._message import Address
+from lilya.datastructures import State
 from starlette.status import HTTP_200_OK
 from starlette.types import Receive, Send
 
