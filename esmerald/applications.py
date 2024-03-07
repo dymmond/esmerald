@@ -2359,7 +2359,9 @@ class Esmerald(Lilya):
                 DefineMiddleware(CORSMiddleware, **self.cors_config.model_dump())
             )
         if self.csrf_config:
-            user_middleware.append(DefineMiddleware(CSRFMiddleware, config=self.csrf_config))
+            user_middleware.append(
+                DefineMiddleware(CSRFMiddleware, **self.csrf_config.model_dump())
+            )
 
         if self.session_config:
             user_middleware.append(
