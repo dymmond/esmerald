@@ -1882,7 +1882,6 @@ class Include(LilyaInclude):
         self.dependencies = dependencies or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
         self.permissions: Sequence[Permission] = permissions or []
-        self.exception_handlers = exception_handlers or {}
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
