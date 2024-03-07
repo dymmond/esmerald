@@ -2,9 +2,9 @@ from contextlib import suppress
 from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING, Any, Dict, List, get_args, get_origin
 
+from lilya.datastructures import DataUpload as LilyaUploadFile
 from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
-from starlette.datastructures import UploadFile as StarletteUploadFile
 
 from esmerald.datastructures import UploadFile
 from esmerald.enums import EncodingType
@@ -84,7 +84,7 @@ def parse_form_data(
     """
     values_dict: Dict[str, Any] = {}
     for key, value in form_data.multi_items():
-        if not isinstance(value, StarletteUploadFile):
+        if not isinstance(value, LilyaUploadFile):
             with suppress(JSONDecodeError):
                 value = loads(value)
         value_in_dict = values_dict.get(key)
@@ -99,13 +99,13 @@ def parse_form_data(
         if get_origin(field.annotation) is list:
             values = list(values_dict.values())
             return flatten(values=values)
-        if field.annotation in (StarletteUploadFile, UploadFile) and values_dict:
+        if field.annotation in (LilyaUploadFile, UploadFile) and values_dict:
             return list(values_dict.values())[0]
 
         # Check the arguments if there is any MULTI_PART in a possible Union with UploadFile
         # and a None (Optional).
         for arg in get_args(field.annotation):
-            if issubclass(arg, (StarletteUploadFile, UploadFile)) and values_dict:
+            if issubclass(arg, (LilyaUploadFile, UploadFile)) and values_dict:
                 return list(values_dict.values())[0]
 
     return values_dict if values_dict else None
