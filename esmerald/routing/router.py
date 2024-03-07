@@ -315,7 +315,7 @@ class BaseRouter(LilyaRouter):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -573,17 +573,17 @@ class BaseRouter(LilyaRouter):
             response = JSONResponse({"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND)
         await response(scope, receive, send)
 
-    def url_path_for(self, name: str, **path_params: Any) -> URLPath:
+    def path_for(self, name: str, **path_params: Any) -> URLPath:
         for route in self.routes or []:
             try:
-                return cast("URLPath", route.url_path_for(name, **path_params))
+                return cast("URLPath", route.path_for(name, **path_params))
             except NoMatchFound:
                 ...
 
             if isinstance(route, (Gateway, WebSocketGateway)):
                 handler = cast("Union[HTTPHandler, WebSocketHandler]", route.handler)
                 try:
-                    return handler.url_path_for(name, **path_params)
+                    return handler.path_for(name, **path_params)
                 except NoMatchFound:
                     ...
 
@@ -818,7 +818,7 @@ class Router(BaseRouter):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -903,7 +903,7 @@ class Router(BaseRouter):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -1633,7 +1633,7 @@ class Include(LilyaInclude):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -1859,9 +1859,6 @@ class Include(LilyaInclude):
         if not path:
             self.path = "/"
 
-        if routes:
-            routes = self.resolve_route_path_handler(routes)
-
         # Add the middleware to the include
         self.middleware = middleware or []
         include_middleware: Sequence[Middleware] = []
@@ -1879,6 +1876,20 @@ class Include(LilyaInclude):
 
         self.app = self.resolve_app_parent(app=app)
 
+        self.dependencies = dependencies or {}
+        self.interceptors: Sequence[Interceptor] = interceptors or []
+        self.permissions: Sequence[Permission] = permissions or []
+        self.exception_handlers = exception_handlers or {}
+        self.response_class = None
+        self.response_cookies = None
+        self.response_headers = None
+        self.parent = parent
+        self.security = security or []
+        self.tags = tags or []
+
+        if routes:
+            routes = self.resolve_route_path_handler(routes)
+
         super().__init__(
             path=self.path,
             app=self.app,
@@ -1891,17 +1902,6 @@ class Include(LilyaInclude):
             include_in_schema=include_in_schema,
             deprecated=deprecated,
         )
-
-        self.dependencies = dependencies or {}
-        self.interceptors: Sequence[Interceptor] = interceptors or []
-        self.permissions: Sequence[Permission] = permissions or []
-        self.exception_handlers = exception_handlers or {}
-        self.response_class = None
-        self.response_cookies = None
-        self.response_headers = None
-        self.parent = parent
-        self.security = security or []
-        self.tags = tags or []
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
         """

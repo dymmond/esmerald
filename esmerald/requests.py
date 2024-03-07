@@ -4,7 +4,7 @@ from lilya._internal._connection import Connection as Connection  # noqa: F401
 from lilya.datastructures import URL  # noqa
 from lilya.requests import (
     ClientDisconnect as ClientDisconnect,  # noqa
-    Request as StarletteRequest,  # noqa: F401
+    Request as LilyaRequest,  # noqa: F401
     empty_receive,
     empty_send,
 )
@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.types import HTTPMethod
 
 
-class Request(StarletteRequest):
+class Request(LilyaRequest):
     def __init__(
         self,
         scope: "Scope",

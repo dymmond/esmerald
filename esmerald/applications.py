@@ -1929,7 +1929,7 @@ class Esmerald(Lilya):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -2028,7 +2028,7 @@ class Esmerald(Lilya):
             Optional[str],
             Doc(
                 """
-                The name for the WebSocketGateway. The name can be reversed by `url_path_for()`.
+                The name for the WebSocketGateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,

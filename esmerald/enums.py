@@ -1,7 +1,15 @@
 from enum import Enum
 
 
-class HttpMethod(str, Enum):
+class StrEnum(str, Enum):
+    def __str__(self) -> str:
+        return self.value  # type: ignore
+
+    def __repr__(self) -> str:
+        return str(self)
+
+
+class HttpMethod(StrEnum, Enum):
     GET = "GET"
     POST = "POST"
     PUT = "PUT"
@@ -12,7 +20,7 @@ class HttpMethod(str, Enum):
     TRACE = "TRACE"
 
 
-class MediaType(str, Enum):
+class MediaType(StrEnum, Enum):
     JSON = "application/json"
     HTML = "text/html"
     TEXT = "text/plain"
@@ -22,23 +30,23 @@ class MediaType(str, Enum):
     OCTET = "application/octet-stream"
 
 
-class OpenAPIMediaType(str, Enum):
+class OpenAPIMediaType(StrEnum, Enum):
     OPENAPI_YAML = "application/vnd.oai.openapi"
     OPENAPI_JSON = "application/vnd.oai.openapi+json"
 
 
-class EncodingType(str, Enum):
+class EncodingType(StrEnum, Enum):
     JSON = "application/json"
     MULTI_PART = "multipart/form-data"
     URL_ENCODED = "application/x-www-form-urlencoded"
 
 
-class ScopeType(str, Enum):
+class ScopeType(StrEnum, Enum):
     HTTP = "http"
     WEBSOCKET = "websocket"
 
 
-class ParamType(str, Enum):
+class ParamType(StrEnum, Enum):
     PATH = "path"
     QUERY = "query"
     COOKIE = "cookie"

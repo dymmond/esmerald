@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from lilya.requests import Request as StarletteRequest
+from lilya.requests import Request as LilyaRequest
 from lilya.responses import Response
 from starlette.middleware.base import (
     BaseHTTPMiddleware,  # noqa
@@ -9,7 +9,7 @@ from starlette.middleware.base import (
 
 from esmerald.requests import Request
 
-Req = TypeVar("Req", Request, StarletteRequest)
+Req = TypeVar("Req", Request, LilyaRequest)
 
 
 class BasicHTTPMiddleware(BaseHTTPMiddleware):

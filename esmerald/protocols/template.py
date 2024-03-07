@@ -6,7 +6,7 @@ from typing_extensions import Protocol, runtime_checkable
 
 @runtime_checkable
 class TemplateProtocol(Protocol):  # pragma: no cover
-    def render(self, **context: Optional[Dict[str, Any]]) -> str: ...
+    def make_response(self, **context: Optional[Dict[str, Any]]) -> str: ...
 
 
 TP = TypeVar("TP", bound=TemplateProtocol, covariant=True)

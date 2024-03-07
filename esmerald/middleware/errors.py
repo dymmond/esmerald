@@ -2,12 +2,12 @@ import traceback
 from typing import TypeVar
 
 from lilya.middleware.server_error import ServerErrorMiddleware as LilyaServerError
-from lilya.requests import Request as StarletteRequest
+from lilya.requests import Request as LilyaRequest
 from lilya.responses import HTMLResponse, PlainText, Response
 
 from esmerald.requests import Request as _Request
 
-Request = TypeVar("Request", _Request, StarletteRequest)
+Request = TypeVar("Request", _Request, LilyaRequest)
 
 
 class ServerErrorMiddleware(LilyaServerError):  # pragma: no cover
