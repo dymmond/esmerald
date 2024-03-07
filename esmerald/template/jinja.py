@@ -43,7 +43,7 @@ class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):
         @pass_context
         def url_for(context: dict, name: str, **path_params: Any) -> Any:
             request = context["request"]
-            return request.url_for(name, **path_params)
+            return request.path_for(name, **path_params)
 
         loader = FileSystemLoader(directory)
         env_options.setdefault("loader", loader)
