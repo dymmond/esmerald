@@ -5,17 +5,17 @@ them by using [protocols](../protocols.md). Inspired by other great frameworks, 
 for the middleware protocol. Let's be honest, it is not that we can reinvent the wheel on something already working out
 of the box.
 
-There are two ways of designing the middleware for Esmerald. [Starlette middleware](#starlette-middleware) and
+There are two ways of designing the middleware for Esmerald. [Lilya middleware](#lilya-middleware) and
 [Esmerald protocols](#esmerald-protocols) as both work quite well together.
 
-## Starlette middleware
+## Lilya middleware
 
-The Starlette middleware is the classic already available way of declaring the middleware within an **Esmerald**
+The Lilya middleware is the classic already available way of declaring the middleware within an **Esmerald**
 application.
 
 !!! Tip
-    You can create a middleware like Starlette and add it into the application. To understand how to build them,
-    Starlette has some great documentation <a href="https://www.lilya.dev/middleware/" target='_blank'>here</a>.
+    You can create a middleware like Lilya and add it into the application. To understand how to build them,
+    Lilya has some great documentation <a href="https://www.lilya.dev/middleware/" target='_blank'>here</a>.
 
 ```python
 {!> ../docs_src/middleware/starlette_middleware.py !}
@@ -28,7 +28,7 @@ and automatically enable the built-in middlewares.
 
 ## Esmerald protocols
 
-Esmerald protocols are not too different from the [Starlette middleware](#starlette-middleware). In fact,
+Esmerald protocols are not too different from the [Lilya middleware](#lilya-middleware). In fact,
 the name itself happens only because of the use of the
 <a href="https://peps.python.org/pep-0544/" target="_blank">python protocols</a>
 which forces a certain structure to happen and since **Esmerald** likes configurations as much as possible,
@@ -54,7 +54,7 @@ Enforcing this protocol also aligns with writing
 
 !!! Note
     MiddlewareProtocol does not enforce `config` parameters but enforces the `app` parameter as this will make sure
-    it will also work with Starlette as well as used as standard.
+    it will also work with Lilya as well as used as standard.
 
 ### Quick sample
 
@@ -93,8 +93,8 @@ To add middlewares to the application is very simple.
 
 ## <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Writing ASGI middlewares</a>
 
-**Esmerald** since follows the ASGI practices and uses Starlette underneath a good way of understand what can be
-done with middleware and how to write some of them, Starlette also goes through with a lot of
+**Esmerald** since follows the ASGI practices and uses Lilya underneath a good way of understand what can be
+done with middleware and how to write some of them, Lilya also goes through with a lot of
 <a href='https://www.lilya.dev/middleware/#writing-pure-asgi-middleware' target='_blank'>detail</a>.
 
 ## BaseAuthMiddleware
@@ -192,24 +192,24 @@ INFO:     Application startup complete.
 ### Important
 
 If you need to specify parameters in your middleware then you will need to wrap it in a
-`starlette.middleware.Middleware` object to do it so. See `GZipMiddleware` [example](#middleware-and-the-settings).
+`lilya.middleware.DefineMiddleware` object to do it so. See `GZipMiddleware` [example](#middleware-and-the-settings).
 
 If no parameters are needed, then you can simply pass the middleware class directly and Esmerald will take care of
 the rest.
 
 ## Available middlewares
 
-There are some available middlewares that are also available from Starlette.
+There are some available middlewares that are also available from Lilya.
 
 * `CSRFMiddleware` - Handles with the CSRF and there is a [built-in](../configurations/csrf.md) how to enable.
 * `CORSMiddleware` - Handles with the CORS and there is a [built-in](../configurations/cors.md) how to enable.
 * `TrustedHostMiddleware` - Handles with the CORS if a given `allowed_hosts` is populated, the
 [built-in](../configurations/cors.md) explains how to use it.
-* `GZipMiddleware` - Same middleware as the one from Starlette.
+* `GZipMiddleware` - Same middleware as the one from Lilya.
 * `HTTPSRedirectMiddleware` - Middleware that handles HTTPS redirects for your application. Very useful to be used
 for production or production like environments.
 * `RequestSettingsMiddleware` - The middleware that exposes the application settings in the request.
-* `SessionMiddleware` - Same middleware as the one from Starlette.
+* `SessionMiddleware` - Same middleware as the one from Lilya.
 * `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Esmerald. A [great example](../wsgi.md)
 how to use it is available.
 
@@ -259,7 +259,7 @@ Adds signed cookie-based HTTP sessions. Session information is readable but not 
 
 ### HTTPSRedirectMiddleware
 
-Like Starlette, enforces that all incoming requests must either be https or wss. Any http os ws will be redirected to
+Like Lilya, enforces that all incoming requests must either be https or wss. Any http os ws will be redirected to
 the secure schemes instead.
 
 ```python
@@ -276,7 +276,7 @@ Enforces all requests to have a correct set `Host` header in order to protect ag
 
 ### GZipMiddleware
 
-Like Starlette, it handles GZip responses for any request that includes "gzip" in the Accept-Encoding header.
+Like Lilya, it handles GZip responses for any request that includes "gzip" in the Accept-Encoding header.
 
 ```python
 {!> ../docs_src/middleware/available/gzip.py !}
@@ -293,10 +293,10 @@ in the [WSGI Frameworks](../wsgi.md) section.
 
 ### Other middlewares
 
-You can build your own middlewares as explained above but also reuse middlewares directly for Starlette if you wish.
+You can build your own middlewares as explained above but also reuse middlewares directly for Lilya if you wish.
 The middlewares are 100% compatible.
 
-Although some of the middlewares might mention Starlette or other ASGI framework, they are 100%
+Although some of the middlewares might mention Lilya or other ASGI framework, they are 100%
 compatible with Esmerald as well.
 
 #### <a href="https://github.com/abersheeran/asgi-ratelimit">RateLimitMiddleware</a>
@@ -319,7 +319,7 @@ This integration works using [EsmeraldTimming](https://github.com/dymmond/esmera
 
 ## Important points
 
-1. Esmerald supports [Starlette middleware](#starlette-middleware), [MiddlewareProtocol](#esmerald-protocols).
+1. Esmerald supports [Lilya middleware](#lilya-middleware), [MiddlewareProtocol](#esmerald-protocols).
 2. A MiddlewareProtocol is simply an interface that enforces `__init__` and `async __call__` to be implemented.
 3. `app` is required parameter from any class inheriting from the `MiddlewareProtocol`.
 4. <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Pure ASGI Middleware</a>

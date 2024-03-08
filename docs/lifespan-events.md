@@ -14,34 +14,17 @@ These cycles cover the **whole** application.
 
 Currently Esmerald supports **on_startup**, **on_shutdown** and **lifespan**.
 
-Esmerald being built on the top of Starlette, it inherited those behaviours, which means, it can be
+Esmerald being built on the top of Lilya, it inherited those behaviours, which means, it can be
 easily assembled to work directly with these events 🤖.
 
-!!! Deprecation Warning
-    After the release of Starlette 0.26.0 it was announced the deprecation of **on_startup** and
-    **on_shutdown** in favour of the newly **lifespan**. Esmerald supports lifespan since its
-    inception so this won't affect directly the framework.
-
 ### Esmerald on_startup and on_shutdown
-
-Since the annoucement of Starlette that `on_startup` and `on_shutdown` would be removed after the
-the release 1.0 in favour of `lifespan`, Esmerald decided to follow through since it is 100%
-compatible with it.
-
-Despite the deprecation of those fields, Esmerald has an underlying implementation that
-**will allow** the `on_startup` and `on_shutdown` to still exist even after this deprecation from
-Starlette.
-
-**Does this mean that Esmerald will have to maintain its own events?** No, despite allowing
-`on_startup` and `on_shutdown` to exist in the same way it does now, the underlying implementation
-changed. 
 
 If you pass an `on_startup` and an `on_shutdown` parameters intead of the `lifespan`, Esmerald
 will **automatically generate the async context manager** for you and pass it to the `lifespan`
 internally for you.
 
-This way Esmerald assures 100% compatibility with Starlette and still maintains the same
-"look and feel" as before. 
+This way Esmerald assures 100% compatibility with Lilya and still maintains the same
+"look and feel" as before.
 
 **You can use on_startup/on_shutdown and lifespan but not both at the same time**.
 
@@ -105,7 +88,7 @@ Let us see what does it mean in practical examples by changing the previous one 
 This is quite something to unwrap here. What is actually happening?
 
 So, before you need to explicitly declare the `on_startup` and `on_shutdown` events in the
-corresponding parameters in the Esmerald application but with the `lifespan` you do that in 
+corresponding parameters in the Esmerald application but with the `lifespan` you do that in
 **one place only**.
 
 The first part before the `yield` will be executed **before the application starts** and
@@ -142,9 +125,9 @@ new `lifespan` async context manager directly to it.
 
 ## Curiosity about async context managers
 
-This section is out of the scope of the lifespan and events of Esmerald and it is 
+This section is out of the scope of the lifespan and events of Esmerald and it is
 **for curiosity only**. Please see the [lifespan](#lifespan) section as in the case of Esmerald,
-the way of **declaring is different** and an `app: Esmerald` parameter is **always required**. 
+the way of **declaring is different** and an `app: Esmerald` parameter is **always required**.
 
 ### General approach to async context managers
 

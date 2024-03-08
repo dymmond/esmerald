@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from starlette.convertors import Convertor, register_url_convertor
+from lilya.transformers import Transformer, register_path_transformer
 
 
-class DateTimeConvertor(Convertor):
+class DateTimeConvertor(Transformer):
     regex = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(.[0-9]+)?"
 
     def convert(self, value: str) -> datetime:
@@ -13,4 +13,4 @@ class DateTimeConvertor(Convertor):
         return value.strftime("%Y-%m-%dT%H:%M:%S")
 
 
-register_url_convertor("datetime", DateTimeConvertor())
+register_path_transformer("datetime", DateTimeConvertor())

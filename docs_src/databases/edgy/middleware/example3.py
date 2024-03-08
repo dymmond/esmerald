@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING, List
 
-from starlette.types import ASGIApp
-
 from esmerald import EsmeraldAPISettings
 from esmerald.conf import settings
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from lilya._internal._module_loading import import_string
+from lilya.types import ASGIApp
 
 if TYPE_CHECKING:
     from esmerald.types import Middleware

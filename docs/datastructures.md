@@ -1,6 +1,6 @@
 # Datastructures
 
-Esmerald comes equipped with some datastructures. If you want to use the same as Starlette, feel free as they are
+Esmerald comes equipped with some datastructures. If you want to use the same as Lilya, feel free as they are
 compatible and work out of the box.
 
 ## How to access them
@@ -13,7 +13,7 @@ from esmerald.datastructures import Headers
 
 The available datastructures to be imported from `Esmerald` are as follow.
 
-* **Starlette**:
+* **Lilya**:
     * `URL`
     * `Address`
     * `FormData`
@@ -36,5 +36,5 @@ and see how to use them.
 All the datastructures can be and are used across the codebase and can be applied by you anywhere.
 
 !!! Note
-    As mentioned before, all the Starlette datastructures are 100% compatible with `Esmerald`. You can use whatever
+    As mentioned before, all the Lilya datastructures are 100% compatible with `Esmerald`. You can use whatever
     it suits you.

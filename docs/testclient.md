@@ -30,13 +30,13 @@ You can use any of the `httpx` standard API like authentication, session cookies
 {!> ../docs_src/testclient/example2.py !}
 ```
 
-And like Starlette, the same example to send files with `EsmeraldTestClient`.
+And like Lilya, the same example to send files with `EsmeraldTestClient`.
 
 ```python
 {!> ../docs_src/testclient/example3.py !}
 ```
 
-`httpx` is a great library created by the same author of `Starlette` and `Django Rest Framework`.
+`httpx` is a great library created by the same author of `Django Rest Framework`.
 
 !!! Info
     By default the EsmeraldTestClient raise any exceptions that occur in the application.

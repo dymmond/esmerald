@@ -8,7 +8,7 @@ Using  an enterprise application as example, the routing system surely will not 
 components and packages and imported also inside complex design systems.
 Esmerald handles with those cases without any kind of issues at all.
 
-Starlette routing system alone wasn't enough to serve all the complexities and cases for all sort of
+Lilya routing system alone wasn't enough to serve all the complexities and cases for all sort of
 different APIs and systems so Esmerald created its own.
 
 ## Gateway
@@ -33,7 +33,7 @@ All the parameters and defaults are available in the [Gateway Reference](../refe
 
 ## WebSocketGateway
 
-Same principle as [Gateway](#gateway) with one particularity. Due to the nature of Starlette and websockets we
+Same principle as [Gateway](#gateway) with one particularity. Due to the nature of Lilya and websockets we
 decided not to interfere (for now) with what already works and therefore the only supported websockets are `async`.
 
 ### WebSocketGateway and application
@@ -53,10 +53,10 @@ All the parameters and defaults are available in the [WebSocketGateway Reference
 
 ## Include
 
-Includes are unique to Esmerald, very similar to the `Mount` of Starlette but more powerful and with more control
+Includes are unique to Esmerald, very similar to the `Include` of Lilya but more powerful and with more control
 and feature and allows:
 
-1. Scalability without issues (thanks to Starlette).
+1. Scalability without issues (thanks to Lilya).
 2. Clean routing design.
 3. Separation of concerns.
 4. Separation of routes.
@@ -142,7 +142,7 @@ When complexity increses and the level of routes increases as well, `Include` al
 
 `Include` supports as many nested routes with different paths and Gateways, WebSocketGateways and Includes as you
 desire to have. Once the application starts, the routes are assembled and it will not impact the performance, thanks
-to Starlette.
+to Lilya.
 
 Nested routes also allows all the functionalities on each level, from middleware, permissions and exception handlers
 to dependencies.
@@ -204,13 +204,13 @@ The path is `/` for both `src.urls` and `accounts.v1.urls` and unique with their
 
 !!! Check
     Remember, the route paths are registered only once and there is no "override". First in, first registered.
-    This is feature came from Starlette and there is a reason why it is like this and we decided not to break it since
+    This is feature came from Lilya and there is a reason why it is like this and we decided not to break it since
     it was designed to be hierarchical, from the top to bottom.
 
 ## Routes priority
 
 The [application routes](#application-routes) in simple terms are simply prioritised. Since **Esmerald** uses
-Starlette under the hood that also means that the incoming paths are matched agains each [Gateway](#gateway),
+Lilya under the hood that also means that the incoming paths are matched agains each [Gateway](#gateway),
 [WebSocketGateway](#websocketgateway) and [Include](#include) in order.
 
 In cases where more than one, let's say Gateway could match an incoming path, you should ensure that more specifc
@@ -249,8 +249,8 @@ Gateway('/customers/{customer_id}', handler=customer)
 By default this will capture characters up to the end of the path of the next '/' and also are joint to the path
 of a handler. In the example above, it will become `/customers/{customer_id}/example`.
 
-Converters can be used to modify what is being captured. The current available converters are the same ones used
-by Starlette as well.
+Transformers can be used to modify what is being captured. The current available transformers are the same ones used
+by Lilya as well.
 
 * `str` returns a string, and is the default.
 * `int` returns a Python integer.
@@ -258,7 +258,7 @@ by Starlette as well.
 * `uuid` returns a Python `uuid.UUID` instance.
 * `path` returns the rest of the path, including any additional `/` characters.
 
-As per standard, the converters are used by prefixing them with a colon:
+As per standard, the transformers are used by prefixing them with a colon:
 
 ```python
 Gateway('/customers/{customer_id:int}', handler=customer)
@@ -266,16 +266,16 @@ Gateway('/floating-point/{number:float}', handler=floating_point)
 Gateway('/uploaded/{rest_of_path:path}', handler=uploaded)
 ```
 
-### Custom converters
+### Custom transformers
 
-If a need for a different converter that is not defined or available, you can also create your own. Using the same
-example as Starlette since it works with **Esmerald**.
+If a need for a different transformer that is not defined or available, you can also create your own. Using the same
+example as Lilya since it works with **Esmerald**.
 
 ```python
 {!> ../docs_src/routing/routes/converter_example.py !}
 ```
 
-With the custom converter created you can now use it.
+With the custom transformer created you can now use it.
 
 ```python
 Gateway('/sells/{date:datetime}', handler=sell)

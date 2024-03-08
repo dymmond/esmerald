@@ -1,5 +1,4 @@
 from jose import JWSError, JWTError
-from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald.conf import settings
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware as EsmeraldMiddleware
@@ -8,6 +7,7 @@ from esmerald.middleware.authentication import AuthResult
 from esmerald.security.jwt.token import Token
 from lilya._internal._connection import Connection
 from lilya._internal._module_loading import import_string
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
 class JWTAuthMiddleware(EsmeraldMiddleware):
@@ -57,7 +57,7 @@ class JWTAuthMiddleware(EsmeraldMiddleware):
 
 # Middleware responsible from user accesses.
 # This can be imported in any level of the application
-AuthMiddleware = StarletteMiddleware(
+AuthMiddleware = LilyaMiddleware(
     JWTAuthMiddleware,
     config=settings.jwt_config,
     user_model=import_string("accounts.models.User"),

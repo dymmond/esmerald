@@ -1,13 +1,12 @@
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.config import CSRFConfig
 from esmerald.middleware import CSRFMiddleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
 
 # Option one
-middleware = [StarletteMiddleware(CSRFMiddleware, secret="your-long-unique-secret")]
+middleware = [LilyaMiddleware(CSRFMiddleware, secret="your-long-unique-secret")]
 
 app = Esmerald(routes=routes, middleware=middleware)
 
