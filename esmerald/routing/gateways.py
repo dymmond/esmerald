@@ -257,7 +257,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
             handler=cast(Callable, handler),
             include_in_schema=include_in_schema,
             name=name,
-            methods=cast("List[str]", self.methods),
+            methods=self.methods,
             middleware=self._middleware,
             exception_handlers=exception_handlers,
         )
@@ -268,10 +268,10 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
-        self.handler = handler
+        self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
-        self.permissions: Sequence["Permission"] = permissions or []
+        self.permissions: Sequence["Permission"] = permissions or []  # type: ignore
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -307,7 +307,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
 
         assert self.handler.methods
         operation_id = f"{operation_id}_{methods[0].lower()}"
-        return operation_id
+        return cast(str, operation_id)
 
 
 class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware):
@@ -489,10 +489,10 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
-        self.handler = handler
+        self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
-        self.permissions = permissions or []
+        self.permissions = permissions or []  # type: ignore
         self.include_in_schema = False
         self.parent = parent
         (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
@@ -632,10 +632,9 @@ class WebhookGateway(LilyaPath, BaseInterceptorMixin):
 
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
-        self.handler = handler
         self.dependencies: Any = {}
         self.interceptors: Sequence["Interceptor"] = []
-        self.permissions: Sequence["Permission"] = []
+        self.permissions: Sequence["Permission"] = []  # type: ignore
         self.middleware: Any = []
         self.exception_handlers: Any = {}
         self.response_class = None
@@ -665,4 +664,4 @@ class WebhookGateway(LilyaPath, BaseInterceptorMixin):
 
         assert self.handler.methods
         operation_id = f"{operation_id}_{methods[0].lower()}"
-        return operation_id
+        return cast(str, operation_id)

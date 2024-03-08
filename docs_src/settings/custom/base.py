@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from esmerald import EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
-from esmerald.middleware.basic import BasicHTTPMiddleware
+from esmerald.middleware.https import HTTPSRedirectMiddleware
 from esmerald.types import Middleware
+from lilya.middleware import DefineMiddleware
 
 
 class AppSettings(EsmeraldAPISettings):
@@ -15,4 +16,4 @@ class AppSettings(EsmeraldAPISettings):
 
     @property
     def middleware(self) -> list[Middleware]:
-        return [BasicHTTPMiddleware]
+        return [DefineMiddleware(HTTPSRedirectMiddleware)]

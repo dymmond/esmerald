@@ -155,7 +155,7 @@ class Response(LilyaResponse, Generic[T]):
             return msgspec.structs.asdict(value)
         raise TypeError("unsupported type")  # pragma: no cover
 
-    def make_response(self, content: Any) -> bytes:
+    def make_response(self, content: Any) -> Union[bytes, str]:
         try:
             if (
                 content is None

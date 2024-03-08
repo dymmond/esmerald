@@ -310,7 +310,7 @@ class View:
                 self.get_route_middleware(route_handler)
 
             if self.exception_handlers:
-                route_handler.exception_handlers = self.get_exception_handlers(route_handler)
+                route_handler.exception_handlers = self.get_exception_handlers(route_handler)  # type: ignore
             if self.tags or []:  # pragma: no cover
                 for tag in reversed(self.tags):
                     route_handler.tags.insert(0, tag)

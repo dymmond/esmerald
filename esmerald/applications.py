@@ -1509,7 +1509,7 @@ class Esmerald(Lilya):
             elif isinstance(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module  # type: ignore
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
-                self.settings_module = settings_module()
+                self.settings_module = settings_module()  # type: ignore
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -1656,12 +1656,16 @@ class Esmerald(Lilya):
         """
         if not is_boolean:
             if not value:
-                return self.get_settings_value(self.settings_module, esmerald_settings, name)
+                return self.get_settings_value(
+                    cast("EsmeraldAPISettings", self.settings_module), esmerald_settings, name
+                )
             return value
 
         if value is not None:
             return value
-        return self.get_settings_value(self.settings_module, esmerald_settings, name)
+        return self.get_settings_value(
+            cast("EsmeraldAPISettings", self.settings_module), esmerald_settings, name
+        )
 
     def create_webhooks_signature_model(self, webhooks: Sequence[gateways.WebhookGateway]) -> None:
         """
@@ -2248,7 +2252,7 @@ class Esmerald(Lilya):
                         dependencies=route.dependencies,
                         exception_handlers=route.exception_handlers,
                         name=route.name,
-                        middleware=route.middleware,
+                        middleware=cast("List[Middleware]", route.middleware),
                         interceptors=route.interceptors,
                         permissions=route.permissions,
                         routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
@@ -2321,7 +2325,7 @@ class Esmerald(Lilya):
             exception_handlers = {}
 
         if isinstance(route, Include):
-            exception_handlers.update(route.exception_handlers)  # type: ignore
+            exception_handlers.update(route.exception_handlers)
             app = getattr(route, "app", None)
             if app and isinstance(app, (Esmerald, ChildEsmerald)):
                 return exception_handlers
@@ -2332,9 +2336,9 @@ class Esmerald(Lilya):
                 )
 
         if isinstance(route, (gateways.Gateway, gateways.WebSocketGateway)):
-            exception_handlers.update(route.exception_handlers)  # type: ignore
+            exception_handlers.update(route.exception_handlers)
             if route.handler.exception_handlers:
-                exception_handlers.update(route.handler.exception_handlers)  # type: ignore
+                exception_handlers.update(route.handler.exception_handlers)
 
         return exception_handlers
 

@@ -67,6 +67,6 @@ def wrap_app_handling_exceptions(app: ASGIApp, conn: typing.Union[Request, WebSo
                     else:
                         await handler(conn, exc)
                 else:
-                    await run_in_threadpool(handler, conn, exc)  # type: ignore
+                    await run_in_threadpool(handler, conn, exc)
 
     return wrapped_app

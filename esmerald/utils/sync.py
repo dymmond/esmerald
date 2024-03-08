@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Awaitable, Callable, Generic, TypeVar
+from typing import Awaitable, Callable, Generic, TypeVar, cast
 
 from anyio import to_thread
 from typing_extensions import ParamSpec
@@ -16,7 +16,7 @@ class AsyncCallable(Generic[P, T]):
     def __init__(self, fn: Callable[P, T]):
         self.fn: Callable[P, Awaitable[T]]
         if is_async_callable(fn):
-            self.fn = fn
+            self.fn = cast(Callable, fn)
         else:
             self.fn = partial(to_thread.run_sync, fn)
 

@@ -113,6 +113,10 @@ class BaseRouter(LilyaRouter):
         "on_startup",
         "on_shutdown",
         "root_path",
+        "path",
+        "_app",
+        "esmerald_lifespan",
+        "routing",
     )
 
     def __init__(
@@ -521,7 +525,7 @@ class BaseRouter(LilyaRouter):
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
-        self.permissions: Sequence[Permission] = permissions or []
+        self.permissions: Sequence[Permission] = permissions or []  # type: ignore
         self.routes: Any = routes or []
         self.middleware = middleware or []
         self.tags = tags or []
@@ -732,7 +736,7 @@ class Router(BaseRouter):
         """
         routes = []
         if not value.handler.parent:  # pragma: no cover
-            value.handler(parent=self)  # type: ignore
+            value.handler(parent=self)
 
         route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
         for route_handler in route_handlers:
@@ -1091,7 +1095,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
             if not isinstance(method, str):
                 raise ImproperlyConfigured(f"`{method}` in `methods` must be a string.")
 
-        self.methods: Set[str] = {HttpMethod[method].value for method in methods}
+        self.methods: Set[str] = {HttpMethod[method].value for method in methods}  # type: ignore
 
         if isinstance(status_code, IntEnum):  # pragma: no cover
             status_code = int(status_code)
@@ -1099,7 +1103,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
 
         self.dependencies: Dependencies = dependencies or {}
         self.description = description or inspect.cleandoc(self.handler.__doc__ or "")
-        self.permissions = list(permissions) if permissions else []
+        self.permissions = list(permissions) if permissions else []  # type: ignore
         self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
@@ -1447,7 +1451,7 @@ class WebSocketHandler(BaseInterceptorMixin, LilyaWebSocketPath):
         self.handler = handler
         self.parent: ParentType = None
         self.dependencies = dependencies
-        self.permissions = permissions
+        self.permissions = permissions  # type: ignore
         self.middleware = middleware
         self.signature_model: Optional[Type[SignatureModel]] = None
         self.websocket_parameter_model: Optional[TransformerModel] = None
@@ -1897,7 +1901,7 @@ class Include(LilyaInclude):
 
         self.dependencies = dependencies or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
-        self.permissions: Sequence[Permission] = permissions or []
+        self.permissions: Sequence[Permission] = permissions or []  # type: ignore
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -1994,17 +1998,17 @@ class Include(LilyaInclude):
                 continue
 
             if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                route.handler.parent = route
+                route.handler.parent = route  # type: ignore
                 routing.append(route)
                 continue
 
             if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
                 if not route.handler.parent:
-                    route.handler = route.handler(parent=self)  # type: ignore
+                    route.handler = route.handler(parent=self)
 
-                route_handlers: List[
-                    Union[HTTPHandler, WebSocketHandler]
-                ] = route.handler.get_route_handlers()  # type: ignore[union-attr]
+                route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = (
+                    route.handler.get_route_handlers()
+                )
 
                 for route_handler in route_handlers:
                     gateway = (
