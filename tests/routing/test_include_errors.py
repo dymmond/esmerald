@@ -15,7 +15,7 @@ route_patterns = [Gateway(handler=home)]
 
 
 def test_raise_error_namespace_and_routes():
-    with pytest.raises(AssertionError):
+    with pytest.raises(ImproperlyConfigured):
         Include(namespace="test", routes=[gateway])
 
 

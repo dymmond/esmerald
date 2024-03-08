@@ -43,6 +43,7 @@ from lilya.types import ASGIApp, Lifespan, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
+from esmerald.core.urls import include
 from esmerald.datastructures import File, Redirect
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import (
@@ -1862,6 +1863,21 @@ class Include(LilyaInclude):
         if not path:
             self.path = "/"
 
+        if namespace and routes:
+            raise ImproperlyConfigured("It can only be namespace or routes, not both.")
+
+        if namespace and not isinstance(namespace, str):
+            raise ImproperlyConfigured("Namespace must be a string. Example: 'myapp.routes'.")
+
+        if pattern and not isinstance(pattern, str):
+            raise ImproperlyConfigured("Pattern must be a string. Example: 'route_patterns'.")
+
+        if pattern and routes:
+            raise ImproperlyConfigured("Pattern must be used only with namespace.")
+
+        if namespace:
+            routes = include(namespace, pattern)
+
         # Add the middleware to the include
         self.middleware = middleware or []
         include_middleware: Sequence[Middleware] = []
@@ -1889,6 +1905,9 @@ class Include(LilyaInclude):
         self.security = security or []
         self.tags = tags or []
 
+        if namespace:
+            routes = include(namespace, pattern)
+
         if routes:
             routes = self.resolve_route_path_handler(routes)
 
@@ -1898,11 +1917,9 @@ class Include(LilyaInclude):
             routes=routes,
             name=name,
             middleware=include_middleware,
-            pattern=pattern,
-            namespace=namespace,
             exception_handlers=exception_handlers,
-            include_in_schema=include_in_schema,
             deprecated=deprecated,
+            include_in_schema=include_in_schema,
         )
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
