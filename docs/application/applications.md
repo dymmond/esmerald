@@ -1,6 +1,6 @@
 # Applications
 
-Esmerald runs Starlette under the hood and therefore includes an application class **Esmerald** that ties
+Esmerald runs Lilya under the hood and therefore includes an application class **Esmerald** that ties
 of its functionality.
 
 ## The Esmerald class
@@ -79,7 +79,7 @@ requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. A Esmerald application will always include the
 middlewares from the configurations passed (CSRF, CORS, JWT...) and the custom user middleware. The middlewares
 can be subclasses of the [MiddlewareProtocol](../protocols.md).
-or <a href='https://www.lilya.dev/middleware/' target='_blank'>Starlette Middleware</a> as they are both converted
+or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a> as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](.././dependencies.md) instances enable application level dependency
 injection.

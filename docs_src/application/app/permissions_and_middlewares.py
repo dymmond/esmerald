@@ -1,6 +1,4 @@
 from pydantic import BaseModel, EmailStr
-from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.types import ASGIApp
 
 from esmerald import (
     APIView,
@@ -23,6 +21,8 @@ from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.permissions import IsAdminUser
 from esmerald.security.jwt.token import Token
 from lilya._internal._connection import Connection
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
+from lilya.types import ASGIApp
 from saffier.exceptions import ObjectNotFound
 
 
@@ -115,5 +115,5 @@ app = Esmerald(
         )
     ],
     permissions=[IsAdmin],
-    middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config)],
+    middleware=[LilyaMiddleware(JWTAuthMiddleware, config=jwt_config)],
 )

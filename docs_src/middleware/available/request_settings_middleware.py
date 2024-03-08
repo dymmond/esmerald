@@ -1,8 +1,7 @@
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import Esmerald
 from esmerald.middleware import RequestSettingsMiddleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
-middleware = [StarletteMiddleware(RequestSettingsMiddleware)]
+middleware = [LilyaMiddleware(RequestSettingsMiddleware)]
 
 app = Esmerald(routes=[...], middleware=middleware)

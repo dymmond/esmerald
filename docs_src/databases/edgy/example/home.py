@@ -5,7 +5,7 @@ from esmerald import JSONResponse, Request, get
 async def home(request: Request) -> JSONResponse:
     """
     Esmerald request has a `user` property that also
-    comes from its origins (Starlette).
+    comes from its origins (Lilya).
 
     When building an authentication middleware, it
     is recommended to inherit from the `BaseAuthMiddleware`.

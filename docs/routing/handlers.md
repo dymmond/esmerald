@@ -149,7 +149,7 @@ needs usually to be constantly opened.
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API" target="_blank">More on websockets</a>.
 
 !!! warning
-    Due to the nature of websockets, Esmerald does a direct implementation of the WebSocket from Starlette which also
+    Due to the nature of websockets, Esmerald does a direct implementation of the WebSocket from Lilya which also
     means no `sync` functions.
 
 ### WebSocket

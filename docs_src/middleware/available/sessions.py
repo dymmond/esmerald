@@ -1,13 +1,12 @@
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.config import SessionConfig
 from esmerald.middleware import SessionMiddleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
 
 # Option one
-middleware = [StarletteMiddleware(SessionMiddleware, secret_key=...)]
+middleware = [LilyaMiddleware(SessionMiddleware, secret_key=...)]
 
 app = Esmerald(routes=routes, middleware=middleware)
 

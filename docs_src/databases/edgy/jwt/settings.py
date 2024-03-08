@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING, List
 
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import EsmeraldAPISettings
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from lilya._internal._module_loading import import_string
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 if TYPE_CHECKING:
     from esmerald.types import Middleware
@@ -25,7 +24,7 @@ class CustomSettings(EsmeraldAPISettings):
         Initial middlewares to be loaded on startup of the application.
         """
         return [
-            StarletteMiddleware(
+            LilyaMiddleware(
                 JWTAuthMiddleware,
                 config=self.jwt_config,
                 user_model=import_string("myapp.models.User"),

@@ -1,13 +1,12 @@
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.config import CORSConfig
 from esmerald.middleware import CORSMiddleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
 
 # Option one
-middleware = [StarletteMiddleware(CORSMiddleware, allow_origins=["*"])]
+middleware = [LilyaMiddleware(CORSMiddleware, allow_origins=["*"])]
 
 app = Esmerald(routes=routes, middleware=middleware)
 

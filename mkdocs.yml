@@ -57,7 +57,7 @@ plugins:
               - griffe_typingdoc
             show_root_heading: true
             show_if_no_docstring: true
-            preload_modules: [httpx, starlette, a2wsgi]
+            preload_modules: [httpx, lilya, a2wsgi]
             inherited_members: true
             members_order: source
             separate_signature: true

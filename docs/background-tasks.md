@@ -1,7 +1,6 @@
 # Background Tasks
 
-Like Starlette and any other Starlette based frameworks, in Esmerald you can define background
-tasks to run **after** the returning response.
+Like Lilya, in Esmerald you can define background tasks to run **after** the returning response.
 
 This can be useful for those operations that need to happen after the request without blocking the
 client (the client doesn't have to wait to complete) from receiving that same response.
@@ -15,7 +14,7 @@ background.
 
 ## How to use
 
-As mentioned before, Esmerald uses the background tasks from Starlette and you can pass them in
+As mentioned before, Esmerald uses the background tasks from Lilya and you can pass them in
 different ways:
 
 * Via [handlers](#via-handlers)
@@ -102,8 +101,8 @@ The `.add_task()` receives as arguments:
 
 ## Technical information
 
-The class `BackgroundTask` and `BackgroundTasks` come directly from `starlette.background`. This
-means you can import directly from Starlette if you want.
+The class `BackgroundTask` and `BackgroundTasks` come directly from `lilya.background`. This
+means you can import directly from Lilya if you want.
 
 Esmerald imports those classes and adds some extra typing information but without affecting the
 overall functionality of the core.
@@ -112,8 +111,8 @@ You can use `def` or `async def` functions when declaring those functionalities 
 the `BackgroundTask` and Esmerald will know how to handle those for you.
 
 For more details about these objects, you can see in
-[Starlette official docs for Background Tasks](https://www.lilya.dev/background/).
+[Lilya official docs for Background Tasks](https://www.lilya.dev/tasks/).
 
 ## API Reference
 
-Learn more about the `BackgroundTask` by checking the [API Reference](http://localhost:8000/references/background/).
+Learn more about the `BackgroundTask` by checking the [API Reference](./references/background.md).

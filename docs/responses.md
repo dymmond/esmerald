@@ -2,7 +2,7 @@
 
 Like every application, there are many different responses that can be used for different use cases and scenarios.
 
-Esmerald having `Starlette` under the hood also means that all available responses from it simply just work.
+Esmerald having `Lilya` under the hood also means that all available responses from it simply just work.
 
 You simply just need to decide which type of response your function will have and let `Esmerald` take care of the rest.
 
@@ -73,10 +73,10 @@ Check out the [API Reference for JSON](./references/responses/json.md) for more 
 
 #### JSONResponse
 
-You can always use directly the `JSONResponse` from Starlette without using the Esmerald wrapper.
+You can always use directly the `JSONResponse` from Lilya without using the Esmerald wrapper.
 
 ```python
-from starlette.responses import JSONResponse as JSONResponse
+from lilya.responses import JSONResponse as JSONResponse
 ```
 
 or alternatively
@@ -205,11 +205,11 @@ Check out the [API Reference for Stream](./references/responses/stream.md) for m
 ## Important notes
 
 [Template](#template), [Redirect](#redirect), [File](#file) and [Stream](#stream) are wrappers
-around the Starlette `TemplateResponse`, `RedirectResponse`, `FileResponse` and `StreamResponse`.
+around the Lilya `TemplateResponse`, `RedirectResponse`, `FileResponse` and `StreamResponse`.
 
 Those responses are also possible to be used directly without the need of using the wrapper.
 
-The wrappers, like Starlette, also accept the classic parameters such as `headers` and `cookies`.
+The wrappers, like Lilya, also accept the classic parameters such as `headers` and `cookies`.
 
 ## Response status codes
 

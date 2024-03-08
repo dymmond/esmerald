@@ -1,6 +1,6 @@
 # Test Client
 
-Esmerald offers an extension of the Starlette `TestClient` called `EsmeraldTestClient` as well
+Esmerald offers an extension of the Lilya `TestClient` called `EsmeraldTestClient` as well
 as a `create_client` that can be used for context testing.
 
 

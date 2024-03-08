@@ -1,11 +1,10 @@
-from starlette.types import ASGIApp
-
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.saffier.base_user import User
 from esmerald.exceptions import NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.security.jwt.token import Token
 from lilya._internal._connection import Connection
+from lilya.types import ASGIApp
 from saffier.exceptions import ObjectNotFound
 
 

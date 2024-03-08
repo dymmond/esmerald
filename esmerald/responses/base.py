@@ -5,9 +5,11 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVa
 import msgspec
 from lilya import status
 from lilya.responses import (
+    Error as Error,
     FileResponse as FileResponse,  # noqa
     HTMLResponse as HTMLResponse,  # noqa
     JSONResponse as JSONResponse,  # noqa
+    Ok as Ok,
     PlainText as PlainText,  # noqa
     RedirectResponse as RedirectResponse,  # noqa
     Response as LilyaResponse,  # noqa

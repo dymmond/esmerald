@@ -6,7 +6,7 @@ You can import the `status` module from `esmerald`:
 from esmerald import status
 ```
 
-The `status` is provided by Starlette which means you can also:
+The `status` is provided by Lilya which means you can also:
 
 ```python
 from lilya import status

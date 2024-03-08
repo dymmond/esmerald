@@ -54,7 +54,6 @@ dependencies = [
     "msgspec>=0.18.5,<1.0.0",
     "nest_asyncio>=1.5.8,<2.0.0",
     "rich>=13.3.1,<14.0.0",
-    "starlette>=0.36.3,<1",
 ]
 keywords = [
     "api",
@@ -165,7 +164,7 @@ combine-as-imports = true
 
 [tool.isort]
 profile = "black"
-known_third_party = ["esmerald", "pydantic", "starlette"]
+known_third_party = ["esmerald", "pydantic", "msgspec", "lilya"]
 
 [tool.mypy]
 strict = true

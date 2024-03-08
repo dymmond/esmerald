@@ -1,4 +1,5 @@
 from .base import (
+    Error,
     FileResponse,
     HTMLResponse,
     JSONResponse,
@@ -10,9 +11,11 @@ from .base import (
 from .template import TemplateResponse
 
 __all__ = [
+    "Error",
     "FileResponse",
     "HTMLResponse",
     "JSONResponse",
+    "PlainText",
     "PlainText",
     "Response",
     "LilyaResponse",
