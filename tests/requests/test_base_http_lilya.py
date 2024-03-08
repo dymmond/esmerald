@@ -1,16 +1,11 @@
-"""The tests in this file were adapted from:
-
-https://github.com/encode/starlette/blob/master/tests/test_requests.py.
-"""
-
 from typing import Any, Optional
 
 import anyio
 import pytest
 from lilya._internal._message import Address
 from lilya.datastructures import State
-from starlette.status import HTTP_200_OK
-from starlette.types import Receive, Send
+from lilya.status import HTTP_200_OK
+from lilya.types import Receive, Send
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import InternalServerError
