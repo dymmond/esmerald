@@ -30,7 +30,7 @@ except ImportError:  # pragma: nocover
     jinja2 = None
 
 
-class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):
+class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):  # type: ignore
     def __init__(
         self, directory: Union["DirectoryPath", List["DirectoryPath"]], **env_options: Any
     ) -> None:

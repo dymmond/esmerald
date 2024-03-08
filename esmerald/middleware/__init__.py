@@ -1,6 +1,5 @@
 from .asyncexitstack import AsyncExitStackMiddleware
 from .authentication import BaseAuthMiddleware
-from .basic import BasicHTTPMiddleware
 from .cors import CORSMiddleware
 from .csrf import CSRFMiddleware
 from .gzip import GZipMiddleware
@@ -12,7 +11,6 @@ from .trustedhost import TrustedHostMiddleware
 __all__ = [
     "AsyncExitStackMiddleware",
     "BaseAuthMiddleware",
-    "BasicHTTPMiddleware",
     "CORSMiddleware",
     "CSRFMiddleware",
     "GZipMiddleware",

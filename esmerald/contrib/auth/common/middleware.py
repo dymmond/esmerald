@@ -81,7 +81,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
                 token=auth_token,
                 key=self.config.signing_key,
                 algorithms=[self.config.algorithm],
-            )  # type: ignore
+            )
         except (JWSError, JWTError) as e:
             raise AuthenticationError(str(e)) from e
 

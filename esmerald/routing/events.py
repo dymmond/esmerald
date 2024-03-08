@@ -39,7 +39,7 @@ class AyncLifespanContextManager:  # pragma: no cover
         """Runs the functions on startup"""
         for handler in self.on_startup:
             if is_async_callable(handler):
-                await handler()
+                await handler()  # type: ignore
             else:
                 handler()
 
@@ -47,7 +47,7 @@ class AyncLifespanContextManager:  # pragma: no cover
         """Runs the functions on shutdown"""
         for handler in self.on_shutdown:
             if is_async_callable(handler):
-                await handler()
+                await handler()  # type: ignore
             else:
                 handler()
 
