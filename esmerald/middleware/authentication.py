@@ -29,7 +29,7 @@ class BaseAuthMiddleware(ABC, MiddlewareProtocol):  # pragma: no cover
 
     It is not mandatory to use it and you are free to implement your.
 
-    Esmerald being based on Starlette, also offers a simple but powerful
+    Esmerald being based on Lilya, also offers a simple but powerful
     interface for handling `authentication` and [permissions](https://esmerald.dev/permissions/).
 
     Once you have installed the `AuthenticationMiddleware` and implemented the

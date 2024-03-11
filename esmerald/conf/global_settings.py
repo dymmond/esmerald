@@ -971,7 +971,7 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def middleware(self) -> Sequence[Middleware]:
         """
-        A global sequence of Starlette middlewares or `esmerald.middlewares` that are
+        A global sequence of Lilya middlewares or `esmerald.middlewares` that are
         used by the application.
 
         Read more about the [Middleware](https://esmerald.dev/middleware/middleware/).

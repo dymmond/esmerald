@@ -236,8 +236,6 @@ def test_cors_disallowed_preflight(test_client_factory):
     assert response.text == "Disallowed CORS origin, method, headers"
     assert "access-control-allow-origin" not in response.headers
 
-    # Bug specific test, https://github.com/encode/starlette/pull/1199
-    # Test preflight response text with multiple disallowed headers
     headers = {
         "Origin": "https://example.org",
         "Access-Control-Request-Method": "GET",
@@ -271,8 +269,6 @@ def test_cors_disallowed_preflight_with_config(test_client_factory):
     assert response.text == "Disallowed CORS origin, headers"
     assert "access-control-allow-origin" not in response.headers
 
-    # Bug specific test, https://github.com/encode/starlette/pull/1199
-    # Test preflight response text with multiple disallowed headers
     headers = {
         "Origin": "https://example.org",
         "Access-Control-Request-Method": "GET",

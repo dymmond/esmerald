@@ -159,7 +159,7 @@ def whget(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -529,7 +529,7 @@ def whead(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -836,7 +836,7 @@ def whpost(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -1239,7 +1239,7 @@ def whput(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -1642,7 +1642,7 @@ def whpatch(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -2045,7 +2045,7 @@ def whdelete(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -2415,7 +2415,7 @@ def whoptions(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -2684,7 +2684,7 @@ def whtrace(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,
@@ -3006,7 +3006,7 @@ def whroute(
         Optional[List["Middleware"]],
         Doc(
             """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
         ),
     ] = None,

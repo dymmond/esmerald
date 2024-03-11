@@ -112,7 +112,7 @@ class View:
         Optional[List["Middleware"]],
         Doc(
             """
-            A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+            A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
             """
         ),
     ]
