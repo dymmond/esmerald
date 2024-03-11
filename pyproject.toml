@@ -135,6 +135,7 @@ dev = [
 
 doc = [
     "griffe-typingdoc>=0.2.2",
+    "mike>=2.0.0",
     "mkautodoc>=0.2.0,<0.3.0",
     "mkdocs>=1.1.2,<2.0.0",
     "mkdocs-material>=9.4.4,<10.0.0",

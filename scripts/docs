@@ -10,4 +10,4 @@ fi
 
 set -x
 
-${PREFIX}mkdocs serve
+${PREFIX}mike serve
