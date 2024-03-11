@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from lilya.exceptions import HTTPException as StarletteHTTPException
+from lilya.exceptions import HTTPException as LilyaException
 from lilya.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from esmerald.exceptions import HTTPException
@@ -70,9 +70,7 @@ def test_default_handle_esmerald_http_exception_extra_list() -> None:
 def test_default_handle_starlette_http_exception_handling() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
-        StarletteHTTPException(
-            detail="esmerald exception", status_code=HTTP_500_INTERNAL_SERVER_ERROR
-        ),
+        LilyaException(detail="esmerald exception", status_code=HTTP_500_INTERNAL_SERVER_ERROR),
     )
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {

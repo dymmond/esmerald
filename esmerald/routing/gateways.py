@@ -152,7 +152,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
             Optional[List["Middleware"]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -263,7 +263,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
         )
         """
         A "bridge" to a handler and router mapping functionality.
-        Since the default Starlette Route handler does not understand the Esmerald handlers,
+        Since the default Lilya Route handler does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
@@ -415,7 +415,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
             Optional[List["Middleware"]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -485,7 +485,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
         )
         """
         A "bridge" to a handler and router mapping functionality.
-        Since the default Starlette Route handler does not understand the Esmerald handlers,
+        Since the default Lilya Route handler does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void

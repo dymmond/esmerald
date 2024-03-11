@@ -360,7 +360,7 @@ class BaseRouter(LilyaRouter):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -562,7 +562,7 @@ class BaseRouter(LilyaRouter):
         """Esmerald version of a not found handler when a resource is
         called and cannot be dealt with properly.
 
-        Esmerald overrides the original Starlette not_found to return always
+        Esmerald overrides the original Lilya not_found to return always
         JSONReponse.
 
         For plain ASGI apps, just returns the response.
@@ -815,7 +815,7 @@ class Router(BaseRouter):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -948,7 +948,7 @@ class Router(BaseRouter):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -1166,7 +1166,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
     @property
     def allow_header(self) -> Mapping[str, str]:
         """
-        Default allow header to be injected in the Response and Starlette Response type
+        Default allow header to be injected in the Response and Lilya Response type
         handlers.
         """
         return {"allow": str(self.methods)}
@@ -1810,7 +1810,7 @@ class Include(LilyaInclude):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -1941,7 +1941,7 @@ class Include(LilyaInclude):
     ) -> List[Union[Gateway, WebSocketGateway, Include]]:
         """
         Make sure the paths are properly configured from the handler handler.
-        The handler can be a Starlette function, an View or a HTTPHandler.
+        The handler can be a Lilya function, an View or a HTTPHandler.
 
         LilyaBasePath() has a limitation of not allowing nested LilyaBasePath().
 

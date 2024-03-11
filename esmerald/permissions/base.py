@@ -212,7 +212,7 @@ class BaseAbstractUserPermission(ABC):
         This method must be overridden by subclasses.
 
         Args:
-            request: A Starlette 'Connection' instance.
+            request: A Lilya 'Connection' instance.
 
         Returns:
             bool: True or False
@@ -225,7 +225,7 @@ class BaseAbstractUserPermission(ABC):
         This method must be overridden by subclasses.
 
         Args:
-            request: A Starlette 'Connection' instance.
+            request: A Lilya 'Connection' instance.
 
         Returns:
             bool: True or False
@@ -278,7 +278,7 @@ class IsAuthenticated(BaseAbstractUserPermission):
     ) -> bool:
         """
         Args:
-            request: A Starlette 'Connection' instance.
+            request: A Lilya 'Connection' instance.
             apiview: A Esmerald 'APIController' instance or a `APIGateHandler` instance.
 
         Returns:
@@ -300,7 +300,7 @@ class IsAdminUser(BaseAbstractUserPermission):
     ) -> bool:
         """
         Args:
-            request: A Starlette 'Connection' instance.
+            request: A Lilya 'Connection' instance.
             apiview: A Esmerald 'APIController' instance or a `APIGateHandler` instance.
 
         Returns:
@@ -322,7 +322,7 @@ class IsAuthenticatedOrReadOnly(BaseAbstractUserPermission):
     ) -> bool:
         """
         Args:
-            request: A Starlette 'Connection' instance.
+            request: A Lilya 'Connection' instance.
             apiview: A Esmerald 'APIController' instance or a `APIGateHandler` instance.
 
         Returns:

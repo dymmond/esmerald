@@ -90,7 +90,7 @@ class PathParameterSchema(TypedDict):
 class OpenAPIDefinitionMixin:  # pragma: no cover
     def parse_path(self, path: str) -> List[Union[str, PathParameterSchema]]:
         """
-        Using the Starlette CONVERTORS and the application registered convertors,
+        Using the Lilya TRANSFORMERS and the application registered convertors,
         transforms the path into a PathParameterSchema used for the OpenAPI definition.
         """
         _, path, variables, _ = compile_path(path)
@@ -241,7 +241,7 @@ class BaseResponseHandler:
         cookies: "ResponseCookies",
         headers: Optional["ResponseHeaders"] = None,
     ) -> "AsyncAnyCallable":
-        """Creates an handler for Starlette Responses."""
+        """Creates an handler for Lilya Responses."""
 
         async def response_content(data: LilyaResponse, **kwargs: Dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(cookies, [])
