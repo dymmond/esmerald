@@ -1,6 +1,6 @@
 site_name: Esmerald
 site_description: 🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀
-site_url: https://esmerald.dev/esmerald/
+site_url: https://esmerald.dev
 
 theme:
   name: "material"
@@ -71,7 +71,7 @@ plugins:
 
 nav:
   # - Home: "index.md"
-  - Esmerald: "esmerald.md"
+  - Esmerald: "index.md"
   # - Languages:
   #     - en: /
   # - pt: /pt/
