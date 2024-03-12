@@ -29,6 +29,8 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 ### POST
 
+!!! warning For Esmerald to be able to handle payloads in an HTTP request like a Post request, the payload must be assigned to a parameter named [data](https://esmerald.dev/extras/request-data/#the-data-field) or [payload](https://esmerald.dev/extras/request-data/#the-payload-field) in the function definition of the endpoint.
+
 ```python hl_lines="11 17"
 {!> ../docs_src/routing/handlers/post.py !}
 ```
