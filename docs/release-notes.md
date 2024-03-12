@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.0.0-beta2
+
+### Added
+
+- Allow the use `from lilya.middleware import Middleware` as alternative to `DefineMiddleware`,
+
+### Changed
+
+- Cleaned the `ServerErrorMiddleware` from the lilya import.
+
 ## 3.0.0-beta1
 
 !!! Warning
