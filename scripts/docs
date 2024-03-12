@@ -10,4 +10,13 @@ fi
 
 set -x
 
+VERSION_FILE="esmerald/__init__.py"
+VERSION=`grep __version__ ${VERSION_FILE} | grep -o '[0-9][^"]*'`
+
+echo $VERSION
+
+echo "Running version generator for version $VERSION"
+${PREFIX}mike deploy --update-aliases $VERSION latest
+echo "Setting default latest to version $VERSION"
+${PREFIX}mike set-default latest
 ${PREFIX}mike serve

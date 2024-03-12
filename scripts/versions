@@ -9,8 +9,8 @@ echo "Installing dependencies"
 pip install -U pip && pip install mkdocs mkautodoc mkdocs-material griffe-typingdoc mdx-include pyyaml mkdocs-markdownextradata-plugin mkdocstrings[python] httpx starlette lilya mike a2wsgi mkdocs-meta-descriptions-plugin
 
 echo "Running version generator for version $VERSION"
-mike deploy --push --update-aliases $VERSION latest
+mike deploy --update-aliases $VERSION latest
 
 
 echo "Setting default latest to version $VERSION"
-mike set-default --push latest
+mike set-default latest

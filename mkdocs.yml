@@ -70,7 +70,7 @@ plugins:
             show_symbol_type_toc: true
 
 nav:
-  - Home: "index.md"
+  # - Home: "index.md"
   - Esmerald: "esmerald.md"
   # - Languages:
   #     - en: /
