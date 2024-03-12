@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for showing interes in contributing to Esmerald. There are many ways you can help and contribute to the
+Thank you for showing interest in contributing to Esmerald. There are many ways you can help and contribute to the
 project.
 
 * Try Esmerald and [report bugs and issues](https://github.com/dymmond/esmerald/issues/new) you find.
