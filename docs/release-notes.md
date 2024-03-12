@@ -5,6 +5,37 @@ hide:
 
 # Release Notes
 
+## 3.0.0-beta1
+
+!!! Warning
+	This is a major release and it will be under the the version `3` of Esmerald.
+	You should not be affected but in case you are, please report any issues
+	so we can correct it.
+
+### Added
+
+- Support for `Lilya` and drop `Starlette`.
+
+### Changed
+
+- `CSRFConfig` `cookie_secure` renamed to `secure`.
+- `CSRFConfig` `httponly` renamed to `httponly`.
+- `CSRFConfig` `cookie_samesite` renamed to `samesite`.
+- `CSRFConfig` `cookie_domain` renamed to `domain`.
+- `CSRFConfig` `cookie_secure` renamed to `secure`.
+- Removed support for the `BasicMiddleware` as this can be imported from any other ASGI application.
+
+#### Internal
+
+In the past, `Middleware` was being used but with the introduction of Lilya, now is `DefineMiddleware` that
+is applied.
+
+```python
+from lilya.middleware import DefineMiddleware
+```
+
+- The `PlainTextResponse` was renamed to `PlainText`.
+
 ## 2.7.4
 
 ### Fixed
