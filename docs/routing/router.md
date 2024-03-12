@@ -192,4 +192,3 @@ functions on an application top level. Exception handler callables should be of 
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 * **include_in_schema** - Boolean if this ChildEsmerald should be included in the schema.
 * **deprecated** - Boolean if this ChildEsmerald should be marked as deprecated.
-* **include_in_schema** - Security definition (OpenAPI) of the ChildEsmerald.

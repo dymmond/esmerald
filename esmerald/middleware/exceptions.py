@@ -136,9 +136,9 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             media_type=MediaType.JSON,
             content=content.model_dump(exclude_none=True),
             status_code=content.status_code,
-            headers=exc.headers
-            if isinstance(exc, (HTTPException, StarletteHTTPException))
-            else None,
+            headers=(
+                exc.headers if isinstance(exc, (HTTPException, StarletteHTTPException)) else None
+            ),
         )
 
     def get_exception_handler(

@@ -1,0 +1,43 @@
+import multiprocessing
+import os
+
+loglevel = os.getenv("LOG_LEVEL", "info")
+access_log = True
+host = os.getenv("HOST", "0.0.0.0")
+port = os.getenv("PORT", "80")
+
+bind = None
+bind_env = os.getenv("BIND", "unix:///var/www/{{ project_name }}.sock")
+if bind_env:
+    bind = bind_env
+else:
+    bind = f"{host}:{port}"
+
+error_log = "-"
+keepalive = int(os.getenv("KEEP_ALIVE", "5"))
+timeout = int(os.getenv("TIMEOUT", "120"))
+graceful_timeout = int(os.getenv("GRACEFUL_TIMEOUT", "120"))
+forwarded_allow_ips = os.getenv("FORWARD_ALLOW_IPS", "*")
+worker_class = os.getenv("WORKER_CLASS", "uvicorn.workers.UvicornWorker")
+user = os.getenv("USER", "{{ project_name }}")
+group = os.getenv("GROUP", "{{ project_name }}")
+workers_per_core = float(os.getenv("WORKERS_PER_CORE", "1"))
+
+web_concurrency = None
+max_workers = os.getenv("MAX_WORKERS")
+use_max_workers = None
+
+if max_workers:
+    use_max_workers = int(max_workers)
+
+concurr = os.getenv("WEB_CONCURRENCY", None)
+cores = multiprocessing.cpu_count()
+default_web_concurrency = float(workers_per_core) * cores
+
+if concurr:
+    web_concurrency = int(concurr)
+    assert web_concurrency > 0
+else:
+    web_concurrency = max(int(default_web_concurrency), 2)
+    if use_max_workers:
+        web_concurrency = min(web_concurrency, use_max_workers)

@@ -4,6 +4,7 @@ import json
 import warnings
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
+from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
@@ -118,9 +119,7 @@ def get_openapi_operation(
     *, route: Union[router.HTTPHandler, Any], operation_ids: Set[str]
 ) -> Dict[str, Any]:  # pragma: no cover
     operation = Operation()
-
-    if route.tags:
-        operation.tags = route.get_handler_tags()
+    operation.tags = route.get_handler_tags()
 
     if route.summary:
         operation.summary = route.summary
@@ -290,7 +289,9 @@ def get_openapi_path(
 
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):
-            response_schema = {"type": "string"}
+            response_schema = (
+                {"type": "string"} if handler.status_code not in handler.responses else {}
+            )
 
             operation.setdefault("responses", {}).setdefault(status_code, {}).setdefault(
                 "content", {}
@@ -336,7 +337,6 @@ def get_openapi_path(
                     or status_text
                     or "Additional Response"
                 )
-
                 dict_update(openapi_response, model_schema)
                 openapi_response["description"] = description
 
@@ -546,5 +546,5 @@ def get_openapi(
         output["tags"] = tags
 
     openapi = OpenAPI(**output)
-    model_dump = openapi.model_dump(by_alias=True, exclude_none=True)
-    return model_dump
+    model_dump = openapi.model_dump_json(by_alias=True, exclude_none=True)
+    return cast(Dict[str, Any], loads(model_dump))

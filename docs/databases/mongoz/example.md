@@ -12,6 +12,7 @@ Let us build a simple integration and application where we will be creating:
 - [Login API](#login-api) to authenticate the user.
 - [Home API](#home-api) to authenticate the user and return the logged-in user email.
 - [Assemble the apis](#assemble-the-apis) where we wrap the application.
+- [Bonus - Refreshing the Token](#refreshing-the-token) where we will cover how to implement a token refresh API.
 
 We will be using a local MongoDB database for this example but feel free to integrate with your database.
 
@@ -107,6 +108,19 @@ itself promotes clean design.
 We have imported all the APIs directly in the `app.py` but this **is not mandatory**. You can
 take advantage of the [Include](../../routing/routes.md#include) and clean your application
 even more.
+
+## Refreshing the token
+
+All of these APIs are great to start with but an application using JWT usually needs something
+that allows to refresh the existing token. That process can be done in many different ways.
+
+Esmerald provides an example how to [refresh the token](../../configurations/jwt.md#the-claims) with
+details that can serve and help you with your process.
+
+The example contains ways of taking advantage of the existing tools provided by Esmerald as well
+as assumptions how to structure it.
+
+Check out [how to implement a refresh token](../../configurations/jwt.md#the-claims).
 
 ## Extra
 

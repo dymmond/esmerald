@@ -21,8 +21,7 @@ class BaseUser(BaseModel):
 
 
 @post(responses={203: OpenAPIResponse(model=[User])})
-def user(payload: BaseUser) -> None:
-    ...
+def user(payload: BaseUser) -> None: ...
 
 
 def test_user_msgspec_with_pydantic_openapi(test_client_factory):

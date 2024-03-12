@@ -45,7 +45,7 @@ class EsmeraldAPISettings(BaseSettings):
     When no values are provided upon an instantiation of an `Esmerald` object, these
     settings are used as the defaults.
 
-    The settings can be done via `ESMERALD_SETTINGS_MODULE` or `settings_config` parameter
+    The settings can be done via `ESMERALD_SETTINGS_MODULE` or `settings_module` parameter
     in the Esmerald instantiation.
 
     Learn more about [settings](https://esmerald.dev/application/settings/).
@@ -728,7 +728,7 @@ class EsmeraldAPISettings(BaseSettings):
                     Gateway(handler=homepage)
                     Include("/nested",
                         routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ]
                     )
                 ]
@@ -883,7 +883,7 @@ class EsmeraldAPISettings(BaseSettings):
         """
         An instance of [SessionConfig](https://esmerald.dev/configurations/session/).
 
-        This configuration is passed to the [SessionMiddleware]https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
+        This configuration is passed to the [SessionMiddleware](https://esmerald.dev/middleware/middleware/#sessionmiddleware) and enables the middleware.
 
         Default:
             None
@@ -987,7 +987,7 @@ class EsmeraldAPISettings(BaseSettings):
         from starlette.middleware import Middleware as StarletteMiddleware
 
 
-        Class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldAPISettings):
 
             @property
             def middleware(self) -> List[Middleware]:

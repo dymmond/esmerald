@@ -3,8 +3,10 @@ from typing import Any, Dict, Optional, Type, Union
 
 from pydantic import BaseModel, create_model
 from starlette import status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.exceptions import WebSocketException as StarletteWebSocketException
+from starlette.exceptions import (
+    HTTPException as StarletteHTTPException,
+    WebSocketException as StarletteWebSocketException,
+)
 from typing_extensions import Annotated, Doc
 
 RequestErrorModel: Type[BaseModel] = create_model("Request")
@@ -102,12 +104,10 @@ class EsmeraldError(RuntimeError):
     ...
 
 
-class ImproperlyConfigured(HTTPException, ValueError):
-    ...
+class ImproperlyConfigured(HTTPException, ValueError): ...
 
 
-class ImproperlyMiddlewareConfigured(ImproperlyConfigured):
-    ...
+class ImproperlyMiddlewareConfigured(ImproperlyConfigured): ...
 
 
 class NotAuthenticated(HTTPException):
@@ -152,28 +152,23 @@ class TemplateNotFound(InternalServerError):
         super().__init__(*args, detail=f"Template {template_name} not found.")
 
 
-class MissingDependency(EsmeraldAPIException, ImportError):
-    ...
+class MissingDependency(EsmeraldAPIException, ImportError): ...
 
 
-class OpenAPIException(ImproperlyConfigured):
-    ...
+class OpenAPIException(ImproperlyConfigured): ...
 
 
-class WebSocketException(StarletteWebSocketException):
-    ...
+class WebSocketException(StarletteWebSocketException): ...
 
 
 class AuthenticationError(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
-class EnvironmentError(EsmeraldAPIException):
-    ...
+class EnvironmentError(EsmeraldAPIException): ...
 
 
-class BroadcastError(ImproperlyConfigured):
-    ...
+class BroadcastError(ImproperlyConfigured): ...
 
 
 ExceptionErrorMap = Union[

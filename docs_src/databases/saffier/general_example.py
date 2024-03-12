@@ -3,8 +3,7 @@ from tortoise import fields, models
 from esmerald.contrib.auth.tortoise.base_user import User as BaseUser
 
 
-class User(BaseUser):
-    ...
+class User(BaseUser): ...
 
 
 class Profile(models.Model):

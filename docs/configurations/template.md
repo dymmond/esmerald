@@ -5,6 +5,11 @@ TemplateConfig is a simple set of configurations that when passed enables the te
 !!! info
     Currently Esmerald supports `Jinja2` and `Mako`.
 
+It is important to understand that you don't need to use the provided `JinjaTemplateEngine` or `MakoTemplateEngine`
+from Esmerald within the `TemplateConfig`.
+
+You are free to build your own and pass it to the `TemplateConfig`. This way you can design however you see fit.
+
 ## Requirements
 
 This section requires `jinja` or `mako` to be installed. You can do it so by running:
@@ -41,3 +46,12 @@ but also via settings.
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+
+## `url_for`
+
+Esmerald automatically provides the `url_for` when using the jinja template system, that means
+you can do something like this:
+
+```jinja
+{!> ../docs_src/_shared/jinja.html!}
+```

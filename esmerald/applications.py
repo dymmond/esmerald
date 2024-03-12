@@ -1,3 +1,4 @@
+import warnings
 from datetime import timezone as dtimezone
 from functools import cached_property
 from typing import (
@@ -143,6 +144,22 @@ class Esmerald(Starlette):
         self: AppType,
         *,
         settings_config: Annotated[
+            Optional["SettingsType"],
+            Doc(
+                """
+                Alternative settings parameter. This parameter is an alternative to
+                `ESMERALD_SETTINGS_MODULE` way of loading your settings into an Esmerald application.
+
+                Read more about the [settings module](https://esmerald.dev/application/settings/)
+                and how you can leverage it in your application.
+
+                !!! Warning
+                    This option will be deprecated in the version 2.9 of Esmerald. Please use
+                    `settings_module` instead.
+                """
+            ),
+        ] = None,
+        settings_module: Annotated[
             Optional["SettingsType"],
             Doc(
                 """
@@ -1022,7 +1039,7 @@ class Esmerald(Starlette):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )
@@ -1465,19 +1482,34 @@ class Esmerald(Starlette):
             ),
         ] = None,
     ) -> None:
-        self.settings_config = None
+        assert (
+            settings_config is None or settings_module is None
+        ), "You can use `settings_module` or `settings_config` but not both."
 
         if settings_config:
-            if not isinstance(settings_config, EsmeraldAPISettings) and not is_class_and_subclass(
-                settings_config, EsmeraldAPISettings
+            warnings.warn(
+                "The `settings_config` is deprecated, and will be removed in version 2.9.0. "  # noqa: E501
+                "Use `settings_module` instead.",  # noqa: E501
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        self.settings_config = None
+        self.settings_module = None
+
+        settings_module = settings_module or settings_config
+
+        if settings_module:
+            if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
+                settings_module, EsmeraldAPISettings
             ):
                 raise ImproperlyConfigured(
-                    "settings_config must be a subclass of EsmeraldSettings"
+                    "settings_module must be a subclass of EsmeraldSettings"
                 )
-            elif isinstance(settings_config, EsmeraldAPISettings):
-                self.settings_config = settings_config  # type: ignore
-            elif is_class_and_subclass(settings_config, EsmeraldAPISettings):
-                self.settings_config = settings_config()
+            elif isinstance(settings_module, EsmeraldAPISettings):
+                self.settings_module = settings_module  # type: ignore
+            elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
+                self.settings_module = settings_module()
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -1624,12 +1656,12 @@ class Esmerald(Starlette):
         """
         if not is_boolean:
             if not value:
-                return self.get_settings_value(self.settings_config, esmerald_settings, name)
+                return self.get_settings_value(self.settings_module, esmerald_settings, name)
             return value
 
         if value is not None:
             return value
-        return self.get_settings_value(self.settings_config, esmerald_settings, name)
+        return self.get_settings_value(self.settings_module, esmerald_settings, name)
 
     def create_webhooks_signature_model(self, webhooks: Sequence[gateways.WebhookGateway]) -> None:
         """
@@ -1720,6 +1752,7 @@ class Esmerald(Starlette):
             set_value(self.openapi_version, "openapi_version")
             set_value(self.summary, "summary")
             set_value(self.description, "description")
+            set_value(self.contact, "contact")
             set_value(self.tags, "tags")
             set_value(self.servers, "servers")
             set_value(self.terms_of_service, "terms_of_service")
@@ -1937,10 +1970,10 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import get
+        from esmerald import Esmerald, get
 
         @get(status_code=status_code)
-        async def hello(self) -> str:
+        async def hello() -> str:
             return "Hello, World!"
 
         app = Esmerald()
@@ -1995,7 +2028,7 @@ class Esmerald(Starlette):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the WebSocketGateway. The name can be reversed by `url_path_for()`.
                 """
             ),
         ] = None,
@@ -2049,7 +2082,7 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import websocket
+        from esmerald import Esmerald, websocket
 
         @websocket()
         async def websocket_route(socket: WebSocket) -> None:
@@ -2142,7 +2175,7 @@ class Esmerald(Starlette):
         **Example**
 
         ```python
-        from esmerald import get, Include, ChildEsmerald
+        from esmerald import get, Include, ChildEsmerald, Esmerald
 
         @get(status_code=status_code)
         async def hello(self) -> str:
@@ -2388,8 +2421,8 @@ class Esmerald(Starlette):
         )
 
         app: "ASGIApp" = self.router
-        for cls, options in reversed(middleware):
-            app = cls(app=app, **options)
+        for cls, args, kwargs in reversed(middleware):
+            app = cls(app=app, *args, **kwargs)  # noqa
         return app
 
     def build_pluggable_stack(self) -> Optional["Esmerald"]:
@@ -2472,7 +2505,7 @@ class Esmerald(Starlette):
         app.settings
         ```
         """
-        general_settings = self.settings_config if self.settings_config else esmerald_settings
+        general_settings = self.settings_module if self.settings_module else esmerald_settings
         return cast("Type[EsmeraldAPISettings]", general_settings)
 
     @cached_property
@@ -2484,13 +2517,23 @@ class Esmerald(Starlette):
         """
         return esmerald_settings
 
+    async def build_include_scope(self, scope: Scope) -> Scope:
+        """
+        Builds the scope for a specific mounted application.
+        """
+        if "route_root_path" in scope:
+            if "root_include_path" not in scope:
+                scope["root_include_path"] = scope["route_root_path"]
+        return scope
+
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        scope["app"] = self
         if scope["type"] == "lifespan":
             await self.router.lifespan(scope, receive, send)
             return
+
         if self.root_path:
             scope["root_path"] = self.root_path
+
         scope["state"] = {}
         await super().__call__(scope, receive, send)
 

@@ -8,5 +8,4 @@ class UserAPI(DeleteAPIView):
     """
 
     @delete()
-    async def delete(self) -> None:
-        ...
+    async def delete(self) -> None: ...

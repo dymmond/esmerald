@@ -1,6 +1,6 @@
 # WSGI frameworks
 
-Did you know becausde of the awesome work from [a2wsgi](https://github.com/abersheeran/a2wsgi) and from previous
+Did you know because of the awesome work from [a2wsgi](https://github.com/abersheeran/a2wsgi) and from previous
 amazing jobs from Starlette added to the simplicity of Esmerald you can integrate any wsgi
 framework (Flask, Django...)?
 
@@ -39,13 +39,13 @@ compared to other giants like Django.
 
 === "Esmerald"
 
-    ```python hl_lines="1 6-7 10 22 31-32 36" 
+    ```python hl_lines="1 6-7 10 22 31-32 36"
     {!> ../docs_src/wsgi/esmerald.py!}
     ```
 
 === "ChildEsmerald"
 
-    ```python hl_lines="1 6-7 10 22 31-32 36" 
+    ```python hl_lines="1 6-7 10 22 31-32 36"
     {!> ../docs_src/wsgi/childesmerald.py!}
     ```
 
@@ -53,7 +53,7 @@ You already get the idea, the integrations are endeless!
 
 ## Verify it
 
-With all of examples from before, you can now verify that the iontegrations are working.
+With all of examples from before, you can now verify that the integrations are working.
 
 The paths pointing to the `WSGIMiddleware` will be handled by Flask and the rest is handled by **Esmerald**,
 including the Esmerald inside another Esmerald.

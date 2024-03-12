@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+for file in `find . -name '*.py' -not -name '__init__.py' -not -name '__main__.py'`; do
+    [ -f "$file" ] || break
+    echo "$file"
+    sed -i '1 i\from __future__ import annotations' $file
+done

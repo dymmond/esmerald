@@ -19,11 +19,13 @@ clean_pycache: ## Removes the __pycaches__
 run: ## Starts the local server with production settings
 	ESMERALD_SETTINGS_MODULE={{ project_name }}.configs.development.settings.DevelopmentAppSettings python -m {{ project_name }}.serve
 
-
 .PHONY: test
 test: ## Runs the local tests with nose
 	ESMERALD_SETTINGS_MODULE={{ project_name }}.configs.testing.settings.TestingAppSettings pytest -s $(TESTONLY)
 
+.PHONY: requirements
+requirements: ## Installs the development requirements
+	pip install -r requirements/development.txt
 
 ifndef VERBOSE
 .SILENT:

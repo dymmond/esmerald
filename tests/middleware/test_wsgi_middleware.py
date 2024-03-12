@@ -2,7 +2,7 @@ from flask import Flask, request
 from markupsafe import escape
 
 from esmerald import Esmerald, Gateway, Include, Request, get
-from esmerald.middleware import WSGIMiddleware
+from esmerald.middleware.wsgi import WSGIMiddleware
 from esmerald.testclient import create_client
 
 flask_app = Flask(__name__)
@@ -26,7 +26,7 @@ def test_serve_flask_via_esmerald(test_client_factory):
         Include("/flask", WSGIMiddleware(flask_app)),
     ]
 
-    with create_client(routes=routes) as client:
+    with create_client(routes=routes, enable_openapi=False) as client:
         response = client.get("/home/esmerald")
         assert response.status_code == 200
         assert response.json() == {"name": "esmerald"}

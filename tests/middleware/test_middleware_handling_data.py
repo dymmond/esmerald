@@ -50,8 +50,7 @@ class MiddlewareWithArgsAndKwargs(BaseHTTPMiddleware):  # pragma: no cover
 
     async def dispatch(  # type: ignore
         self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
 
 @get(path="/")
@@ -88,18 +87,18 @@ def test_setting_cors_middleware() -> None:
         cur = client.app.router
 
         while hasattr(cur, "app"):
-            unpacked_middleware.extend(cur.app.user_middleware)
-            _ids.append(id(cur.app.user_middleware))
-            cur = cast("Any", cur.app)  # type: ignore
+            unpacked_middleware.extend(cur._app.user_middleware)
+            _ids.append(id(cur._app.user_middleware))
+            cur = cast("Any", cur._app)  # type: ignore
 
         assert len(unpacked_middleware) == 2
         cors_middleware = cast("Any", unpacked_middleware[1])
 
         assert isinstance(cors_middleware.cls, type(CORSMiddleware))
-        assert cors_middleware.options["allow_headers"] == ["*"]
-        assert cors_middleware.options["allow_methods"] == ["*"]
-        assert cors_middleware.options["allow_origins"] == cors_config.allow_origins
-        assert cors_middleware.options["allow_origins"] == cors_config.allow_origins
+        assert cors_middleware.kwargs["allow_headers"] == ["*"]
+        assert cors_middleware.kwargs["allow_methods"] == ["*"]
+        assert cors_middleware.kwargs["allow_origins"] == cors_config.allow_origins
+        assert cors_middleware.kwargs["allow_origins"] == cors_config.allow_origins
 
 
 def test_trusted_hosts_middleware() -> None:
@@ -110,14 +109,14 @@ def test_trusted_hosts_middleware() -> None:
     cur = client.app.router
 
     while hasattr(cur, "app"):
-        unpacked_middleware.extend(cur.app.user_middleware)
-        _ids.append(id(cur.app.user_middleware))
-        cur = cast("Any", cur.app)  # type: ignore
+        unpacked_middleware.extend(cur._app.user_middleware)
+        _ids.append(id(cur._app.user_middleware))
+        cur = cast("Any", cur._app)  # type: ignore
 
     assert len(unpacked_middleware) == 1
     trusted_hosts_middleware = cast("Any", unpacked_middleware[0])
     assert isinstance(trusted_hosts_middleware.cls, type(TrustedHostMiddleware))
-    assert trusted_hosts_middleware.options["allowed_hosts"] == ["*"]
+    assert trusted_hosts_middleware.kwargs["allowed_hosts"] == ["*"]
 
 
 def test_request_body_logging_middleware(caplog: "LogCaptureFixture") -> None:

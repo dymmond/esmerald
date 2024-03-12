@@ -43,7 +43,7 @@ using a protocol helps enforcing that and allows a better design.
 For those coming from a more enforced typed language like Java or C#, a protocol is the python equivalent to an
 interface.
 
-The `MiddlewareProtocol` is simply an interface to build middlewares for **Esmerald** by enforcing the implemenation of
+The `MiddlewareProtocol` is simply an interface to build middlewares for **Esmerald** by enforcing the implementation of
 the `__init__` and the `async def __call__`.
 
 In the case of Esmerald configurations, a `config` parameter is declared and passed
@@ -201,10 +201,10 @@ the rest.
 
 There are some available middlewares that are also available from Starlette.
 
-* `CSRFMiddleware` - Handles with the CSRF and there is a [build-in](../configurations/csrf.md) how to enable.
-* `CORSMiddleware` - Handles with the CORS and there is a [build-in](../configurations/cors.md) how to enable.
+* `CSRFMiddleware` - Handles with the CSRF and there is a [built-in](../configurations/csrf.md) how to enable.
+* `CORSMiddleware` - Handles with the CORS and there is a [built-in](../configurations/cors.md) how to enable.
 * `TrustedHostMiddleware` - Handles with the CORS if a given `allowed_hosts` is populated, the
-[build-in](../configurations/cors.md) explains how to use it.
+[built-in](../configurations/cors.md) explains how to use it.
 * `GZipMiddleware` - Same middleware as the one from Starlette.
 * `HTTPSRedirectMiddleware` - Middleware that handles HTTPS redirects for your application. Very useful to be used
 for production or production like environments.

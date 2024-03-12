@@ -70,8 +70,8 @@ plugins:
             show_symbol_type_toc: true
 
 nav:
-  - Home: "index.md"
-  - Esmerald: "esmerald.md"
+  # - Home: "index.md"
+  - Esmerald: "index.md"
   # - Languages:
   #     - en: /
   # - pt: /pt/
@@ -231,6 +231,8 @@ markdown_extensions:
   - md_in_html
 
 extra:
+  version:
+    provider: mike
   analytics:
     provider: google
     property: G-CNBVBB90NT

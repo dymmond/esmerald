@@ -5,7 +5,7 @@ from markupsafe import escape
 from pydantic import BaseModel
 
 from esmerald import JSON, Gateway, Include, get
-from esmerald.middleware import WSGIMiddleware
+from esmerald.middleware.wsgi import WSGIMiddleware
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
 from tests.settings import TestSettings

@@ -1,0 +1,143 @@
+user {{ project_name }}
+pid /run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+
+    sendfile off;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+    server_tokens off;
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format json_format '{ "@timestamp": "$time_iso8601", '
+                        '"@fields": { '
+                        '"remote_addr": "$remote_addr", '
+                        '"remote_user": "$remote_user", '
+                        '"body_bytes_sent": "$body_bytes_sent", '
+                        '"request_time": "$request_time", '
+                        '"status": "$status", '
+                        '"request": "$request", '
+                        '"request_method": "$request_method", '
+                        '"http_referrer": "$http_referer", '
+                        '"http_user_agent": "$http_user_agent" } }';
+
+    access_log off;
+    error_log /dev/stderr;
+
+    gzip on;
+    gzip_disable "msie6";
+
+    map $http_forwarded $proxy_add_forwarded {
+        # If the incoming Forwarded header is syntactically valid, append to it
+            "~^(,[ \\t]*)*([!#$%&'*+.^_`|~0-9A-Za-z-]+=([!#$%&'*+.^_`|~0-9A-Za-z-]+|\"([\\t \\x21\\x23-\\x5B\\x5D-\\x7E\\x80-\\xFF]|\\\\[\\t \\x21-\\x7E\\x80-\\xFF])*\"))?(;([!#$%&'*+.^_`|~0-9A-Za-z-]+=([!#$%&'*+.^_`|~0-9A-Za-z-]+|\"([\\t \\x21\\x23-\\x5B\\x5D-\\x7E\\x80-\\xFF]|\\\\[\\t \\x21-\\x7E\\x80-\\xFF])*\"))?)*([ \\t]*,([ \\t]*([!#$%&'*+.^_`|~0-9A-Za-z-]+=([!#$%&'*+.^_`|~0-9A-Za-z-]+|\"([\\t \\x21\\x23-\\x5B\\x5D-\\x7E\\x80-\\xFF]|\\\\[\\t \\x21-\\x7E\\x80-\\xFF])*\"))?(;([!#$%&'*+.^_`|~0-9A-Za-z-]+=([!#$%&'*+.^_`|~0-9A-Za-z-]+|\"([\\t \\x21\\x23-\\x5B\\x5D-\\x7E\\x80-\\xFF]|\\\\[\\t \\x21-\\x7E\\x80-\\xFF])*\"))?)*)?)*$" "$http_forwarded, $proxy_forwarded_elem";
+
+        # Otherwise, replace it
+            default "$proxy_forwarded_elem";
+    }
+
+    map $remote_addr $proxy_forwarded_elem {
+        # IPv4 addresses can be sent as-is
+            ~^[0-9.]+$          "for=$remote_addr";
+
+        # IPv6 addresses need to be bracketed and quoted
+            ~^[0-9A-Fa-f:.]+$   "for=\"[$remote_addr]\"";
+
+        # Unix domain socket names cannot be represented in RFC 7239 syntax
+            default             "for=unknown";
+    }
+
+
+    server {
+        listen 8080;
+        server_name _; # managed by Certbot
+
+        # gzip on;
+        # gzip_disable "MSIE [1-6]\.";
+        gzip_proxied any;
+
+        # a pretty comprehensive list of content mime types that we want to compress
+        # there's a lot of repetition here because different applications might use different
+        # (and possibly non-standard) types. we don't really care, we still want them included
+        # don't include text/html -- it is always included anyway
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+
+        access_log off;
+        error_log /dev/stderr;
+
+        gzip on;
+        gzip_disable "msie6";
+
+        gzip_types
+            text/css
+            text/plain
+            text/javascript
+            application/javascript
+            application/json
+            application/x-javascript
+            application/xml
+            application/xml+rss
+            application/xhtml+xml
+            application/x-font-ttf
+            application/x-font-opentype
+            application/vnd.ms-fontobject
+            image/svg+xml
+            image/x-icon
+            application/rss+xml
+            application/atom_xml;
+
+        # increase the compression level, at the expense of additional CPU
+        # cpu cycles are cheap virtually everywhere now, bandwidth not nearly as much
+        gzip_comp_level 9;
+
+        # the default is to gzip only HTTP 1.1 requests
+        # we want to gzip http 1.0 requests, too, so lower the level required
+        gzip_http_version 1.0;
+
+        # set the Vary: Accept-Encoding header to force proxies to store compressed and uncompressed versions
+        # per the nginx docs, a bug in IE 4 - 6 will cause them to not cache anything with this on
+        # most people aren't going to care about ie 6 anymore, but keep that in mind
+        gzip_vary on;
+
+        # increase the size of the buffers which hold responses to make sure larger content can be compressed too
+        # this means there are 16 buffers and they can each hold 8k
+        # if you serve a lot of ridiculously large text (like combined CSS) you might consider upping this slightly
+        gzip_buffers 20 8k;
+
+        # up the minimum length a little to account for gzip overhead
+        # this means anything smaller than 50 bytes won't be compressed.
+        # the default is 20 bytes, which is sooo tiny it's a waste to compress
+        gzip_min_length 60;
+
+
+        location / {
+            proxy_pass http://unix:/var/www/{{ project_name }}.sock;
+            proxy_connect_timeout 180s;
+            proxy_read_timeout 300s;
+
+            proxy_http_version  1.1;
+            proxy_cache_bypass  $http_upgrade;
+            proxy_set_header Connection        "upgrade";
+            proxy_set_header Upgrade           $http_upgrade;
+            proxy_set_header Host              $host;
+            proxy_set_header Forwarded         $proxy_add_forwarded;
+            proxy_set_header X-Real-IP         $remote_addr;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host  $host;
+            proxy_set_header X-Forwarded-Port  $server_port;
+        }
+    }
+}

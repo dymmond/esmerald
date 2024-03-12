@@ -161,9 +161,15 @@ def app():
             Gateway("/login", handler=login),
             Gateway("/create", handler=create_user),
             Include(
-                routes=[Gateway(handler=home)],
-                middleware=[
-                    StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)
+                routes=[
+                    Gateway(
+                        handler=home,
+                        middleware=[
+                            StarletteMiddleware(
+                                JWTAuthMiddleware, config=jwt_config, user_model=User
+                            )
+                        ],
+                    )
                 ],
             ),
         ],
@@ -214,6 +220,18 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, as
             "/", headers={jwt_config.authorization_header: f"X_API {token}"}
         )
         assert response.status_code == 401
+
+
+async def test_cannot_access_endpoint_with_invalid_token_on_gateway(
+    test_client_factory, async_client
+):
+    time = datetime.now() + timedelta(seconds=1)
+    token = await get_user_and_token(time=time)
+
+    response = await async_client.get(
+        "/", headers={jwt_config.authorization_header: f"X_API {token}"}
+    )
+    assert response.status_code == 401
 
 
 async def test_can_access_endpoint_with_valid_token(test_client_factory, async_client):

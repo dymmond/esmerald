@@ -1,4 +1,4 @@
-__version__ = "2.4.2"
+__version__ = "2.7.4"
 
 
 from starlette import status

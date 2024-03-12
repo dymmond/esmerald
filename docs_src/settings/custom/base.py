@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from esmerald import EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
 from esmerald.middleware.basic import BasicHTTPMiddleware
@@ -12,5 +14,5 @@ class AppSettings(EsmeraldAPISettings):
     reload: bool = False
 
     @property
-    def middleware(self) -> List[Middleware]:
+    def middleware(self) -> list[Middleware]:
         return [BasicHTTPMiddleware]

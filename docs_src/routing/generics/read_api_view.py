@@ -8,5 +8,4 @@ class UserAPI(ReadAPIView):
     """
 
     @get()
-    async def get(self) -> str:
-        ...
+    async def get(self) -> str: ...

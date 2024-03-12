@@ -60,8 +60,7 @@ class IsAdmin(IsAdminUser):
 
 
 @get()
-async def home() -> None:
-    ...
+async def home() -> None: ...
 
 
 @get("/me")
@@ -86,8 +85,7 @@ class UserApiView(APIView):
     path = "/users"
 
     @post("/create")
-    async def create_user(self, data: User, request: Request) -> None:
-        ...
+    async def create_user(self, data: User, request: Request) -> None: ...
 
     @websocket(path="/ws")
     async def websocket_endpoint(self, socket: WebSocket) -> None:

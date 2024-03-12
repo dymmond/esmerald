@@ -126,7 +126,7 @@ Esmerald object as well.
 
 ## Nested Routes
 
-WHen complexity increses and the level of routes increases as well, `Include` allows nested routes in a clean fashion.
+When complexity increses and the level of routes increases as well, `Include` allows nested routes in a clean fashion.
 
 === "Simple Nested"
 
@@ -256,7 +256,7 @@ by Starlette as well.
 * `int` returns a Python integer.
 * `float` returns a Python float.
 * `uuid` returns a Python `uuid.UUID` instance.
-* `path` returna thje rest of the path, including any additional `/` characters.
+* `path` returns the rest of the path, including any additional `/` characters.
 
 As per standard, the converters are used by prefixing them with a colon:
 
@@ -319,7 +319,7 @@ More than one middleware can be added to each list.
 {!> ../docs_src/routing/routes/exception_handlers.py !}
 ```
 
-The above example illustrates the various levels where the exception handlers can be implemented and follows an
+The above example illustrates the various levels where the exception handlers can be implemented and follows a
 parent order where the order is:
 
 1. Default application built-in exception handlers.

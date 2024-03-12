@@ -1,7 +1,9 @@
 from typing import TypeVar
 
-from starlette.middleware.base import BaseHTTPMiddleware  # noqa
-from starlette.middleware.base import RequestResponseEndpoint as RequestResponseEndpoint  # noqa
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,  # noqa
+    RequestResponseEndpoint as RequestResponseEndpoint,  # noqa
+)
 from starlette.requests import Request as StarletteRequest
 from starlette.responses import Response
 

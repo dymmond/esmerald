@@ -2,9 +2,11 @@ import re
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
 
 from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.routing import Route as StarletteRoute
-from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
-from starlette.routing import compile_path
+from starlette.routing import (
+    Route as StarletteRoute,
+    WebSocketRoute as StarletteWebSocketRoute,
+    compile_path,
+)
 from starlette.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
@@ -23,46 +25,26 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.types import Dependencies, ExceptionHandlerMap, Middleware, ParentType
 
 
-class BaseRoute(StarletteRoute):
-    def __init__(
-        self,
-        path: Optional[str] = None,
-        *,
-        handler: Union["HTTPHandler", View],
-        name: Optional[str] = None,
-        middleware: Optional[Sequence["Middleware"]] = None,
-        methods: Optional[List[str]] = None,
-        include_in_schema: bool = True,
-    ) -> None:
-        super().__init__(
-            path=path,
-            endpoint=cast("Callable", handler),
-            name=name,
-            methods=methods,
-            include_in_schema=include_in_schema,
-        )
-        self.middleware = middleware or []
-        self._middleware: List["Middleware"] = []
-        self.is_middleware: bool = False
-
-    def handle_middleware(self) -> None:
+class BaseMiddleware:
+    def handle_middleware(
+        self, handler: Any, base_middleware: List["Middleware"]
+    ) -> List["Middleware"]:
         """
-        Handles the middleware of a route, either websocket or
-        http handler.
+        Handles both types of middlewares for Gateway and WebSocketGateway
         """
-        self.middleware += self.endpoint.middleware
-        for middleware in self.middleware or []:
-            if isinstance(middleware, StarletteMiddleware):
-                self._middleware.append(middleware)
-            else:
-                self._middleware.append(StarletteMiddleware(middleware))  # type: ignore
+        _middleware: List["Middleware"] = []
 
-        for cls, options in reversed(self._middleware):
-            self.app = cls(app=self.app, **options)
-            self.is_middleware = True
+        if not is_class_and_subclass(handler, View) and not isinstance(handler, View):
+            base_middleware += handler.middleware or []
+            for middleware in base_middleware or []:
+                if isinstance(middleware, StarletteMiddleware):
+                    _middleware.append(middleware)
+                else:
+                    _middleware.append(StarletteMiddleware(middleware))  # type: ignore
+        return _middleware
 
 
-class Gateway(BaseRoute, BaseInterceptorMixin):
+class Gateway(StarletteRoute, BaseInterceptorMixin, BaseMiddleware):
     """
     `Gateway` object class used by Esmerald routes.
 
@@ -169,7 +151,7 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[Sequence["Middleware"]],
+            Optional[List["Middleware"]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -267,13 +249,18 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
             else:
                 name = clean_string(handler.__class__.__name__)
 
+        # Handle middleware
+        self.middleware = middleware or []
+        self._middleware: List["Middleware"] = self.handle_middleware(
+            handler=handler, base_middleware=self.middleware
+        )
         super().__init__(
             path=self.path,
-            handler=handler,
+            endpoint=cast(Callable, handler),
             include_in_schema=include_in_schema,
             name=name,
             methods=cast("List[str]", self.methods),
-            middleware=middleware,
+            middleware=self._middleware,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -286,7 +273,6 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
         self.permissions: Sequence["Permission"] = permissions or []
-        self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
         self.response_class = None
         self.response_cookies = None
@@ -300,29 +286,20 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
             handler.path_format,
             handler.param_convertors,
         ) = compile_path(self.path)
-        self._middleware = []
-        self.is_middleware: bool = False
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
-            self.handler.get_response_handler()
 
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()
 
-            # Handling route middleware
-            self.handle_middleware()
-
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
+        if self._middleware:
+            self.is_middleware = True
         """
-        if self.is_middleware:
-            await self.app(scope, receive, send)
-
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
-        await self.handler.handle(scope, receive, send)
+        await self.app(scope, receive, send)
 
     def generate_operation_id(self) -> str:
         """
@@ -337,7 +314,7 @@ class Gateway(BaseRoute, BaseInterceptorMixin):
         return operation_id
 
 
-class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
+class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin, BaseMiddleware):
     """
     `WebSocketGateway` object class used by Esmerald routes.
 
@@ -439,7 +416,7 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[Sequence["Middleware"]],
+            Optional[List["Middleware"]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -496,10 +473,18 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
             else:
                 name = clean_string(handler.__class__.__name__)
 
+        # Handle middleware
+        self.middleware = middleware or []
+        self._middleware: List["Middleware"] = self.handle_middleware(
+            handler=handler, base_middleware=self.middleware
+        )
+        self.is_middleware: bool = False
+
         super().__init__(
             path=self.path,
             endpoint=cast("Callable", handler),
             name=name,
+            middleware=self._middleware,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -511,7 +496,6 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
         self.permissions = permissions or []
-        self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
         self.include_in_schema = False
         self.parent = parent
@@ -521,36 +505,13 @@ class WebSocketGateway(StarletteWebSocketRoute, BaseInterceptorMixin):
             handler.param_convertors,
         ) = compile_path(self.path)
 
-        self._middleware: List["Middleware"] = []
-        self.is_middleware: bool = False
-
-    def handle_middleware(self) -> None:
-        """
-        Handles the middleware of a route, either websocket or
-        http handler.
-        """
-        self.middleware += self.handler.middleware  # type: ignore
-        for middleware in self.middleware or []:
-            if isinstance(middleware, StarletteMiddleware):
-                self._middleware.append(middleware)
-            else:
-                self._middleware.append(StarletteMiddleware(middleware))  # type: ignore
-
-        for cls, options in reversed(self._middleware):
-            self.app = cls(app=self.app, **options)
-            self.is_middleware = True
-
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
+        if self._middleware:
+            self.is_middleware = True
         """
-        if self.is_middleware:
-            await self.app(scope, receive, send)
-
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
-
-        await self.handler.handle(scope, receive, send)
+        await self.app(scope, receive, send)
 
 
 class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
@@ -698,7 +659,6 @@ class WebhookGateway(StarletteRoute, BaseInterceptorMixin):
 
         if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
             self.handler.name = self.name
-            self.handler.get_response_handler()
 
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id()

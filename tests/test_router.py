@@ -45,11 +45,9 @@ def test_add_router_events(test_client_factory) -> None:
     Adds a route to the router and events
     """
 
-    def start():
-        ...
+    def start(): ...
 
-    def stop():
-        ...
+    def stop(): ...
 
     with create_client(
         routes=[Gateway(handler=route_one)], on_startup=[start], on_shutdown=[stop]

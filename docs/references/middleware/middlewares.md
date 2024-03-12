@@ -14,4 +14,4 @@ All the `Esmerald` native middlewares.
 
 ::: esmerald.middleware.GZipMiddleware
 
-::: esmerald.middleware.WSGIMiddleware
+::: esmerald.middleware.wsgi.WSGIMiddleware

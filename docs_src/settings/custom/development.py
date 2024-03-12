@@ -1,24 +1,22 @@
+from __future__ import annotations
+
 import logging
 import sys
-from typing import Any, List
+from typing import Any
 
 from loguru import logger
 
 from esmerald.conf.enums import EnvironmentType
-from esmerald.contrib.databases.tortoise import init_database, stop_database
 from esmerald.logging import InterceptHandler
 from esmerald.types import LifeSpanHandler
 
-from ..configs.development.databases import TORTOISE_ORM
 from ..configs.settings import AppSettings
 
 
-async def start_database():
-    await init_database(config=TORTOISE_ORM)
+async def start_database(): ...
 
 
-async def close_database():
-    await stop_database()
+async def close_database(): ...
 
 
 class DevelopmentSettings(AppSettings):
@@ -39,14 +37,14 @@ class DevelopmentSettings(AppSettings):
         logger.configure(handlers=[{"sink": sys.stderr, "level": logging_level}])
 
     @property
-    def on_startup(self) -> List[LifeSpanHandler]:
+    def on_startup(self) -> list[LifeSpanHandler]:
         """
         List of events/actions to be done on_startup.
         """
         return [start_database]
 
     @property
-    def on_shutdown(self) -> List[LifeSpanHandler]:
+    def on_shutdown(self) -> list[LifeSpanHandler]:
         """
         List of events/actions to be done on_shutdown.
         """

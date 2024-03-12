@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Set
 
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
+from esmerald.enums import ScopeType
 from esmerald.parsers import ArbitraryBaseModel
 from esmerald.protocols.middleware import MiddlewareProtocol
 
@@ -57,6 +58,7 @@ class BaseAuthMiddleware(ABC, MiddlewareProtocol):  # pragma: no cover
     ):
         super().__init__(app)
         self.app = app
+        self.scopes: Set[str] = {ScopeType.HTTP, ScopeType.WEBSOCKET}
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
@@ -64,6 +66,10 @@ class BaseAuthMiddleware(ABC, MiddlewareProtocol):  # pragma: no cover
         from any middleware subclassing the `BaseAuthMiddleware` and assign the `AuthUser` user
         to the `request.user`.
         """
+        if scope["type"] not in self.scopes:
+            await self.app(scope, receive, send)
+            return
+
         auth_result = await self.authenticate(HTTPConnection(scope))
         scope["user"] = auth_result.user
         await self.app(scope, receive, send)

@@ -11,7 +11,7 @@ from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.utils import fetch_directive
 from esmerald.core.terminal.print import Print
 from esmerald.routing.events import generate_lifespan_events
-from esmerald.utils.sync import execsync
+from esmerald.utils.sync import run_sync
 
 if TYPE_CHECKING:
     from esmerald.applications import ChildEsmerald, Esmerald
@@ -70,7 +70,7 @@ def run(env: DirectiveEnv, directive: str, directive_args: Any) -> None:
     ## Check if application is up and execute any event
     # Shutting down after
     lifespan = generate_lifespan_events(env.app.on_startup, env.app.on_shutdown, env.app.lifespan)
-    execsync(execute_lifespan)(env.app, lifespan, directive, program_name, position)  # type: ignore
+    run_sync(execute_lifespan(env.app, lifespan, directive, program_name, position))
 
 
 def get_position() -> int:

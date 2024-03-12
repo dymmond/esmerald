@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+VERSION_FILE="esmerald/__init__.py"
+VERSION=`grep __version__ ${VERSION_FILE} | grep -o '[0-9][^"]*'`
+
+echo $VERSION
+
+echo "Installing dependencies"
+pip install -U pip && pip install mkdocs mkautodoc mkdocs-material griffe-typingdoc mdx-include pyyaml mkdocs-markdownextradata-plugin mkdocstrings[python] httpx starlette lilya mike a2wsgi mkdocs-meta-descriptions-plugin
+
+echo "Running version generator for version $VERSION"
+mike deploy --update-aliases $VERSION latest
+
+
+echo "Setting default latest to version $VERSION"
+mike set-default latest

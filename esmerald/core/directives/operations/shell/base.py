@@ -8,7 +8,7 @@ import nest_asyncio
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.operations.shell.enums import ShellOption
 from esmerald.routing.events import AyncLifespanContextManager
-from esmerald.utils.sync import execsync
+from esmerald.utils.sync import run_sync
 
 
 @click.option(
@@ -38,7 +38,7 @@ def shell(env: DirectiveEnv, kernel: bool) -> None:
     lifespan = handle_lifespan_events(
         on_startup=on_startup, on_shutdown=on_shutdown, lifespan=lifespan
     )
-    execsync(run_shell)(env.app, lifespan, kernel)  # type: ignore
+    run_sync(run_shell(env.app, lifespan, kernel))  # type: ignore
     return None
 
 

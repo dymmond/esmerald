@@ -33,8 +33,7 @@ class ApplicationPermission(BasePermission):
 
 def test_permissions_with_http_handler_one() -> None:
     @get(path="/secret", permissions=[LocalPermission])
-    def my_http_route_handler() -> None:
-        ...
+    def my_http_route_handler() -> None: ...
 
     with create_client(
         permissions=[ApplicationPermission],
@@ -56,8 +55,7 @@ def test_permissions_with_http_handler_one() -> None:
 
 def test_permissions_with_http_handler_two() -> None:
     @route(methods=["GET"], path="/secret", permissions=[LocalPermission])
-    async def my_asgi_handler() -> None:
-        ...
+    async def my_asgi_handler() -> None: ...
 
     with create_client(
         permissions=[ApplicationPermission], routes=[Gateway(handler=my_asgi_handler)]
@@ -98,8 +96,7 @@ def test_permissions_with_websocket_handler() -> None:
 
 def test_permissions_with_child_esmerald() -> None:
     @route(methods=["GET"], path="/secret", permissions=[LocalPermission])
-    async def my_asgi_handler() -> None:
-        ...
+    async def my_asgi_handler() -> None: ...
 
     child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)])
 
@@ -122,8 +119,7 @@ def test_permissions_with_child_esmerald() -> None:
 
 def test_permissions_with_child_esmerald_two() -> None:
     @route(methods=["GET"], path="/secret", permissions=[ApplicationPermission])
-    async def my_asgi_handler() -> None:
-        ...
+    async def my_asgi_handler() -> None: ...
 
     child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)])
 

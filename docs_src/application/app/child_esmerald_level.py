@@ -37,8 +37,7 @@ class UserApiView(APIView):
     path = "/users"
 
     @post("/create")
-    async def create_user(self, data: User, request: Request) -> None:
-        ...
+    async def create_user(self, data: User, request: Request) -> None: ...
 
     @websocket(path="/ws")
     async def websocket_endpoint(self, socket: WebSocket) -> None:

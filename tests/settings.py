@@ -4,12 +4,12 @@ from functools import cached_property
 from typing import Optional, Tuple
 
 import mongoz
-from edgy import Database as EdgyDatabase
-from edgy import Registry as EdgyRegistry
+from edgy import Database as EdgyDatabase, Registry as EdgyRegistry
 from pydantic import ConfigDict
 from saffier import Database, Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.config.jwt import JWTConfig
 
 TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@localhost:27017")
 
@@ -36,6 +36,10 @@ class TestSettings(EsmeraldAPISettings):
     @cached_property
     def mongoz_registry(self) -> mongoz.Registry:
         return mongoz.Registry(TEST_DATABASE_URL, event_loop=asyncio.get_running_loop)
+
+    @property
+    def jwt_config(self) -> JWTConfig:
+        return JWTConfig(signing_key=self.secret_key)
 
 
 class TestConfig(TestSettings):

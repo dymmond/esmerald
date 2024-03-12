@@ -13,13 +13,11 @@ from esmerald.websockets import WebSocket
 
 
 @get(path="/")
-def get_handler() -> None:
-    ...
+def get_handler() -> None: ...
 
 
 @post(path="/")
-def post_handler() -> None:
-    ...
+def post_handler() -> None: ...
 
 
 @put(path="/")

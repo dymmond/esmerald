@@ -52,10 +52,12 @@ def get_msgspec_definitions(
 
         if isinstance(field.annotation, Struct) or is_class_and_subclass(field.annotation, Struct):
             _, schema_definitions = msgspec.json.schema_components(
-                (field.annotation,), REF_TEMPLATE
+                types=(field.annotation,), ref_template=REF_TEMPLATE
             )
         elif is_msgspec_struct(field.annotation):
-            _, schema_definitions = msgspec.json.schema_components((origin_args[0],), REF_TEMPLATE)
+            _, schema_definitions = msgspec.json.schema_components(
+                types=(origin_args[0],), ref_template=REF_TEMPLATE
+            )
         definitions.update(**schema_definitions)
     return definitions
 

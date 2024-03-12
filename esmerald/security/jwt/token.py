@@ -46,22 +46,25 @@ class Token(BaseModel):
         except (TypeError, ValueError) as e:
             raise ValueError(f"{subject} is not a valid string.") from e
 
-    def encode(self, key: str, algorithm: str) -> Union[str, Any]:  # pragma: no cover
+    def encode(
+        self, key: str, algorithm: str, **claims_extra: Any
+    ) -> Union[str, Any]:  # pragma: no cover
         """
         Encodes the token into a proper str formatted and allows passing kwargs.
         """
+        claims: Dict = {**self.model_dump(exclude_none=True), **claims_extra}
         try:
             return jwt.encode(
-                claims=self.model_dump(exclude_none=True),
+                claims=claims,
                 key=key,
                 algorithm=algorithm,
             )
         except (JWSError, JWTError) as e:
             raise ImproperlyConfigured("Error encoding the token.") from e
 
-    @staticmethod
+    @classmethod
     def decode(
-        token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
+        cls, token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
     ) -> "Token":  # pragma: no cover
         """
         Decodes the given token.
@@ -75,4 +78,4 @@ class Token(BaseModel):
             )
         except (JWSError, JWTError, JWSAlgorithmError, JWSSignatureError) as e:
             raise e
-        return Token(**data)
+        return cls(**data)

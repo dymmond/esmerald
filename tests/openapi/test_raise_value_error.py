@@ -23,8 +23,7 @@ class DummyErrorDataclass:
     detail: str
 
 
-class DummyError:
-    ...
+class DummyError: ...
 
 
 def test_openapi_response_value_error_for_type(test_client_factory):

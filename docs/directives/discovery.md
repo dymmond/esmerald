@@ -71,7 +71,7 @@ When no `--app` or no `ESMERALD_DEFAULT_APP` environment variable is provided, E
         and repeats the same process. If no files are found then throws an `EnvironmentError`
         exception.
 
-* Once one of those files is found, Esmerald will analised the type of objects contained in the
+* Once one of those files is found, Esmerald will analise the type of objects contained in the
 module and will check if any of them is a valid `Esmerald` type and return it.
 
 * If Esmerald understand that none of those objects are type `Esmerald` (or subclasses), it will
@@ -93,11 +93,11 @@ When using some of the custom directives or built-in directives with this method
 
 * **ESMERALD_DEFAULT_APP** - The Esmerald application to run the directives against.
 
-The reason for this is because every Emerald application might differ in structure and design.
-Esmerald not being opinionated in the way you should assemble the application needs to know,
+The reason for this is because every Esmerald application might differ in structure and design.
+Esmerald not being opinionated in the way you should assemble, the application needs to know,
 **at least where the entry-point is going be**.
 
-Also, gives a clean design for the time where it is needed to go to production as the procedure is
+Also, gives a clean design for the time when it is needed to go to production as the procedure is
 very likely to be done using environment variables.
 
 So to save time you can simply do:
@@ -227,6 +227,10 @@ Now this is a beauty! This directive is special and **should be only used for de
 can see [more details](./directives.md#runserver) how to use it and the corresponding parameters.
 
 It is time to run this directive.
+
+!!! Note
+    For development purposes, Esmerald uses `uvicorn`. If you don't have it installed, please run
+    `pip install uvicorn`.
 
 ##### Using the auto discover
 

@@ -9,8 +9,7 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.types import DictAny
 
 
-class MyNewPluggable:
-    ...
+class MyNewPluggable: ...
 
 
 class PluggableNoPlug(Extension):  # pragma: no cover

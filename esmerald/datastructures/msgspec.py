@@ -68,7 +68,9 @@ class Struct(msgspec.Struct):
     def __get_pydantic_json_schema__(
         cls, core_schema: CoreSchema, handler: GetJsonSchemaHandler
     ) -> Any:
-        _, schema_definitions = msgspec.json.schema_components((cls,), REF_TEMPLATE)
+        _, schema_definitions = msgspec.json.schema_components(
+            types=(cls,), ref_template=REF_TEMPLATE
+        )
         return schema_definitions[cls.__name__]
 
     @classmethod

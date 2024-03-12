@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 from copy import copy
 from enum import IntEnum
@@ -24,14 +26,17 @@ from starlette import status
 from starlette.datastructures import URLPath
 from starlette.middleware import Middleware as StarletteMiddleware
 from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import BaseRoute as StarletteBaseRoute
-from starlette.routing import Host, Mount, NoMatchFound
-from starlette.routing import Route as StarletteRoute
-from starlette.routing import Router as StarletteRouter
-from starlette.routing import WebSocketRoute as StarletteWebSocketRoute
-from starlette.routing import compile_path
+from starlette.responses import JSONResponse, Response as StarletteResponse
+from starlette.routing import (
+    BaseRoute as StarletteBaseRoute,
+    Host,
+    Mount,
+    NoMatchFound,
+    Route as StarletteRoute,
+    Router as StarletteRouter,
+    WebSocketRoute as StarletteWebSocketRoute,
+    compile_path,
+)
 from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
@@ -53,7 +58,7 @@ from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing._internal import FieldInfoMixin
 from esmerald.routing.apis.base import View
-from esmerald.routing.base import BaseHandlerMixin
+from esmerald.routing.base import BaseInterceptorMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
@@ -62,6 +67,7 @@ from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
+from esmerald.utils.module_loading import import_string
 from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
 
@@ -106,6 +112,7 @@ class BaseRouter(StarletteRouter):
         "security",
         "on_startup",
         "on_shutdown",
+        "root_path",
     )
 
     def __init__(
@@ -133,7 +140,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         app: Annotated[
-            Optional["Esmerald"],
+            Optional[Esmerald],
             Doc(
                 """
                 A `Router` instance always expects an `Esmerald` instance
@@ -150,7 +157,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         parent: Annotated[
-            Optional["ParentType"],
+            Optional[ParentType],
             Doc(
                 """
                 Who owns the Gateway. If not specified, the application automatically it assign it.
@@ -160,7 +167,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         on_startup: Annotated[
-            Optional[List["LifeSpanHandler"]],
+            Optional[List[LifeSpanHandler]],
             Doc(
                 """
                 A `list` of events that are trigger upon the application
@@ -202,7 +209,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         on_shutdown: Annotated[
-            Optional[List["LifeSpanHandler"]],
+            Optional[List[LifeSpanHandler]],
             Doc(
                 """
                 A `list` of events that are trigger upon the application
@@ -253,7 +260,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         default: Annotated[
-            Optional["ASGIApp"],
+            Optional[ASGIApp],
             Doc(
                 """
                 A `default` ASGI callable.
@@ -261,7 +268,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         routes: Annotated[
-            Optional[Sequence[Union["APIGateHandler", "Include"]]],
+            Optional[Sequence[Union[APIGateHandler, Include]]],
             Doc(
                 """
                 A `list` of esmerald routes. Those routes may vary and those can
@@ -292,7 +299,7 @@ class BaseRouter(StarletteRouter):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )
@@ -314,7 +321,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         dependencies: Annotated[
-            Optional["Dependencies"],
+            Optional[Dependencies],
             Doc(
                 """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
@@ -322,7 +329,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         interceptors: Annotated[
-            Optional[Sequence["Interceptor"]],
+            Optional[Sequence[Interceptor]],
             Doc(
                 """
                 A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
@@ -330,7 +337,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         permissions: Annotated[
-            Optional[Sequence["Permission"]],
+            Optional[Sequence[Permission]],
             Doc(
                 """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -338,7 +345,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
+            Optional[ExceptionHandlerMap],
             Doc(
                 """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
@@ -346,7 +353,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[List[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -354,7 +361,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         response_class: Annotated[
-            Optional["ResponseType"],
+            Optional[ResponseType],
             Doc(
                 """
                 Default response class to be used within the
@@ -374,7 +381,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         response_cookies: Annotated[
-            Optional["ResponseCookies"],
+            Optional[ResponseCookies],
             Doc(
                 """
                 A sequence of `esmerald.datastructures.Cookie` objects.
@@ -402,7 +409,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
         response_headers: Annotated[
-            Optional["ResponseHeaders"],
+            Optional[ResponseHeaders],
             Doc(
                 """
                 A mapping of `esmerald.datastructures.ResponseHeader` objects.
@@ -451,7 +458,7 @@ class BaseRouter(StarletteRouter):
         ] = None,
         deprecated: Optional[bool] = None,
         security: Annotated[
-            Optional[Sequence["SecurityScheme"]],
+            Optional[Sequence[SecurityScheme]],
             Doc(
                 """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -467,7 +474,7 @@ class BaseRouter(StarletteRouter):
             ),
         ] = None,
     ):
-        self.app = app
+        self._app = app
         if not path:
             path = "/"
         else:
@@ -507,15 +514,14 @@ class BaseRouter(StarletteRouter):
             default=default,
             lifespan=self.esmerald_lifespan,
         )
-
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
         self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
-        self.parent: Optional["ParentType"] = parent or self.app
+        self.parent: Optional[ParentType] = parent or app
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
-        self.interceptors: Sequence["Interceptor"] = interceptors or []
-        self.permissions: Sequence["Permission"] = permissions or []
+        self.interceptors: Sequence[Interceptor] = interceptors or []
+        self.permissions: Sequence[Permission] = permissions or []
         self.routes: Any = routes or []
         self.middleware = middleware or []
         self.tags = tags or []
@@ -535,12 +541,13 @@ class BaseRouter(StarletteRouter):
 
         self.activate()
 
-    def reorder_routes(self) -> List[Sequence[Union["APIGateHandler", "Include"]]]:
-        return sorted(
+    def reorder_routes(self) -> List[Sequence[Union[APIGateHandler, Include]]]:
+        routes = sorted(
             self.routes,
             key=lambda router: router.path != "" and router.path != "/",
             reverse=True,
         )
+        return routes
 
     def activate(self) -> None:
         self.routes = self.reorder_routes()
@@ -599,7 +606,7 @@ class BaseRouter(StarletteRouter):
 
         return decorator
 
-    def create_signature_models(self, route: "RouteParent") -> None:
+    def create_signature_models(self, route: RouteParent) -> None:
         """
         Creates the signature models for the given routes.
 
@@ -624,7 +631,7 @@ class BaseRouter(StarletteRouter):
 
     def validate_root_route_parent(
         self,
-        value: Union["Router", "Include", "Gateway", "WebSocketGateway", "WebhookGateway"],
+        value: Union[Router, Include, Gateway, WebSocketGateway, WebhookGateway],
         override: bool = False,
     ) -> None:
         """
@@ -633,6 +640,7 @@ class BaseRouter(StarletteRouter):
         """
         # Getting the value of the router for the path
         value.path = clean_path(self.path + getattr(value, "path", "/"))
+
         if isinstance(value, (Include, Gateway, WebSocketGateway, WebSocketGateway)):
             if not value.parent and not override:
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
@@ -692,7 +700,7 @@ class Router(BaseRouter):
     def add_apiview(
         self,
         value: Annotated[
-            Union["Gateway", "WebSocketGateway"],
+            Union[Gateway, WebSocketGateway],
             Doc(
                 """
                 The `APIView` or similar to be added.
@@ -760,7 +768,7 @@ class Router(BaseRouter):
             ),
         ],
         handler: Annotated[
-            "HTTPHandler",
+            HTTPHandler,
             Doc(
                 """
                 An instance of [handler](https://esmerald.dev/routing/handlers/#http-handlers).
@@ -768,7 +776,7 @@ class Router(BaseRouter):
             ),
         ],
         dependencies: Annotated[
-            Optional["Dependencies"],
+            Optional[Dependencies],
             Doc(
                 """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
@@ -776,7 +784,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         interceptors: Annotated[
-            Optional[Sequence["Interceptor"]],
+            Optional[Sequence[Interceptor]],
             Doc(
                 """
                 A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
@@ -784,7 +792,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         permissions: Annotated[
-            Optional[Sequence["Permission"]],
+            Optional[Sequence[Permission]],
             Doc(
                 """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -792,7 +800,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
+            Optional[ExceptionHandlerMap],
             Doc(
                 """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
@@ -800,7 +808,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[List[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -885,7 +893,7 @@ class Router(BaseRouter):
             ),
         ],
         handler: Annotated[
-            "WebSocketHandler",
+            WebSocketHandler,
             Doc(
                 """
                 An instance of [websocket handler](https://esmerald.dev/routing/handlers/#websocket-handler).
@@ -901,7 +909,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         dependencies: Annotated[
-            Optional["Dependencies"],
+            Optional[Dependencies],
             Doc(
                 """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
@@ -909,7 +917,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         interceptors: Annotated[
-            Optional[Sequence["Interceptor"]],
+            Optional[Sequence[Interceptor]],
             Doc(
                 """
                 A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
@@ -917,7 +925,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         permissions: Annotated[
-            Optional[Sequence["Permission"]],
+            Optional[Sequence[Permission]],
             Doc(
                 """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -925,7 +933,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
+            Optional[ExceptionHandlerMap],
             Doc(
                 """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
@@ -933,7 +941,7 @@ class Router(BaseRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[List[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -985,9 +993,10 @@ class Router(BaseRouter):
         self.routes.append(websocket_gateway)
 
 
-class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
+class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
     __slots__ = (
         "path",
+        "_interceptors",
         "_permissions",
         "_dependencies",
         "_response_handler",
@@ -1012,6 +1021,8 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         "deprecated",
         "security",
         "operation_id",
+        "interceptors",
+        "__type__",
     )
 
     def __init__(
@@ -1026,20 +1037,20 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         include_in_schema: bool = True,
-        background: Optional["BackgroundTaskType"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        background: Optional[BackgroundTaskType] = None,
+        dependencies: Optional[Dependencies] = None,
+        exception_handlers: Optional[ExceptionHandlerMap] = None,
+        permissions: Optional[List[Permission]] = None,
+        middleware: Optional[List[Middleware]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
-        response_class: Optional["ResponseType"] = None,
-        response_cookies: Optional["ResponseCookies"] = None,
-        response_headers: Optional["ResponseHeaders"] = None,
+        response_class: Optional[ResponseType] = None,
+        response_cookies: Optional[ResponseCookies] = None,
+        response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
-        security: Optional[List["SecurityScheme"]] = None,
+        security: Optional[List[SecurityScheme]] = None,
         operation_id: Optional[str] = None,
     ) -> None:
         """
@@ -1049,14 +1060,14 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
             path = "/"
         super().__init__(path=path, endpoint=endpoint, include_in_schema=include_in_schema)
 
-        self._permissions: Union[List["Permission"], "VoidType"] = Void
-        self._dependencies: "Dependencies" = {}
+        self._permissions: Union[List[Permission], VoidType] = Void
+        self._dependencies: Dependencies = {}
 
-        self._response_handler: Union[
-            "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
-        ] = Void
+        self._response_handler: Union[Callable[[Any], Awaitable[StarletteResponse]], VoidType] = (
+            Void
+        )
 
-        self.parent: "ParentType" = None
+        self.parent: ParentType = None
         self.path = path
         self.endpoint = endpoint
         self.summary = summary
@@ -1084,9 +1095,10 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.status_code = status_code
 
         self.exception_handlers = exception_handlers or {}
-        self.dependencies: "Dependencies" = dependencies or {}
+        self.dependencies: Dependencies = dependencies or {}
         self.description = description or inspect.cleandoc(self.endpoint.__doc__ or "")
         self.permissions = list(permissions) if permissions else []
+        self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
         self.media_type = media_type
@@ -1094,21 +1106,25 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         self.response_cookies = response_cookies
         self.response_headers = response_headers
         self.background = background
-        self.signature_model: Optional[Type["SignatureModel"]] = None
-        self.transformer: Optional["TransformerModel"] = None
+        self.signature_model: Optional[Type[SignatureModel]] = None
+        self.transformer: Optional[TransformerModel] = None
         self.response_description = response_description
         self.responses = responses or {}
         self.content_encoding = content_encoding
         self.content_media_type = content_media_type
 
-        self.fn: Optional["AnyCallable"] = None
-        self.app: Optional["ASGIApp"] = None
-        self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
+        self.fn: Optional[AnyCallable] = None
+        self.route_map: Dict[str, Tuple[HTTPHandler, TransformerModel]] = {}
         self.path_regex, self.path_format, self.param_convertors = compile_path(path)
-        self._middleware: List["Middleware"] = []
+        self._middleware: List[Middleware] = []
+        self._interceptors: Union[List[Interceptor], VoidType] = Void
+        self.__type__: Union[str, None] = None
 
         if self.responses:
             self.validate_responses(responses=self.responses)
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> Any:
+        await self.handle(scope=scope, receive=receive, send=send)
 
     def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
         """
@@ -1149,7 +1165,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         """
         return {"allow": str(self.methods)}
 
-    def get_response_class(self) -> Type["Response"]:
+    def get_response_class(self) -> Type[Response]:
         """
         Returns the closest custom Response class in the parent graph or the
         default Response class.
@@ -1160,24 +1176,24 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
                 response_class = layer.response_class
         return response_class
 
-    def get_response_headers(self) -> "ResponseHeaders":
+    def get_response_headers(self) -> ResponseHeaders:
         """
         Returns all header parameters in the scope of the handler function.
         """
-        resolved_response_headers: "ResponseHeaders" = {}
+        resolved_response_headers: ResponseHeaders = {}
         for layer in self.parent_levels:
             resolved_response_headers.update(layer.response_headers or {})
         return resolved_response_headers
 
-    def get_response_cookies(self) -> "ResponseCookies":
+    def get_response_cookies(self) -> ResponseCookies:
         """Returns a list of Cookie instances. Filters the list to ensure each
         cookie key is unique.
         """
 
-        cookies: "ResponseCookies" = []
+        cookies: ResponseCookies = []
         for layer in self.parent_levels:
             cookies.extend(layer.response_cookies or [])
-        filtered_cookies: "ResponseCookies" = []
+        filtered_cookies: ResponseCookies = []
         for cookie in reversed(cookies):
             if not any(cookie.key == c.key for c in filtered_cookies):
                 filtered_cookies.append(cookie)
@@ -1187,6 +1203,9 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
         """
         ASGIapp that authorizes the connection and then awaits the handler function.
         """
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         methods = [scope["method"]]
         await self.allowed_methods(scope, receive, send, methods)
 
@@ -1204,15 +1223,6 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
             parameter_model=parameter_model,
         )
         await response(scope, receive, send)
-
-    def __call__(
-        self,
-        fn: "AnyCallable",
-    ) -> "HTTPHandler":
-        self.fn = fn
-        self.endpoint = fn
-        self.validate_handler()
-        return self
 
     def check_handler_function(self) -> None:
         """Validates the route handler function once it's set by inspecting its
@@ -1257,7 +1267,7 @@ class HTTPHandler(BaseHandlerMixin, FieldInfoMixin, StarletteRoute):
 
         if return_annotation is Signature.empty:
             raise ImproperlyConfigured(
-                "A return value of a route handler function should be type annotated."
+                "A return value of a route handler function should be type annotated. "
                 "If your function doesn't return a value or returns None, annotate it as returning 'NoReturn' or 'None' respectively."
             )
         if (
@@ -1352,20 +1362,20 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         summary: Optional[str] = None,
         description: Optional[str] = None,
         include_in_schema: bool = True,
-        background: Optional["BackgroundTaskType"] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        background: Optional[BackgroundTaskType] = None,
+        dependencies: Optional[Dependencies] = None,
+        exception_handlers: Optional[ExceptionHandlerMap] = None,
+        permissions: Optional[List[Permission]] = None,
+        middleware: Optional[List[Middleware]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
-        response_class: Optional["ResponseType"] = None,
-        response_cookies: Optional["ResponseCookies"] = None,
-        response_headers: Optional["ResponseHeaders"] = None,
+        response_class: Optional[ResponseType] = None,
+        response_cookies: Optional[ResponseCookies] = None,
+        response_headers: Optional[ResponseHeaders] = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
         responses: Optional[Dict[int, OpenAPIResponse]] = None,
-        security: Optional[List["SecurityScheme"]] = None,
+        security: Optional[List[SecurityScheme]] = None,
         operation_id: Optional[str] = None,
     ) -> None:
         _path: str = None
@@ -1400,7 +1410,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         self.path = path
 
 
-class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
+class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
     """
     Websocket handler object representation.
     """
@@ -1419,39 +1429,34 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
         path: Optional[str] = None,
         *,
         endpoint: Callable[..., Any] = None,
-        dependencies: Optional["Dependencies"] = None,
-        exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        permissions: Optional[List["Permission"]] = None,
-        middleware: Optional[List["Middleware"]] = None,
+        dependencies: Optional[Dependencies] = None,
+        exception_handlers: Optional[ExceptionHandlerMap] = None,
+        permissions: Optional[List[Permission]] = None,
+        middleware: Optional[List[Middleware]] = None,
     ):
         if not path:
             path = "/"
         super().__init__(path=path, endpoint=endpoint)
-        self._permissions: Union[List["Permission"], "VoidType"] = Void
-        self._dependencies: "Dependencies" = {}
-        self._response_handler: Union[
-            "Callable[[Any], Awaitable[StarletteResponse]]", VoidType
-        ] = Void
-
+        self._permissions: Union[List[Permission], VoidType] = Void
+        self._dependencies: Dependencies = {}
+        self._response_handler: Union[Callable[[Any], Awaitable[StarletteResponse]], VoidType] = (
+            Void
+        )
+        self._interceptors: Union[List[Interceptor], VoidType] = Void
+        self.interceptors: Sequence[Interceptor] = []
         self.endpoint = endpoint
-        self.parent: "ParentType" = None
+        self.parent: ParentType = None
         self.dependencies = dependencies
         self.exception_handlers = exception_handlers
         self.permissions = permissions
         self.middleware = middleware
-        self.signature_model: Optional[Type["SignatureModel"]] = None
-        self.websocket_parameter_model: Optional["TransformerModel"] = None
+        self.signature_model: Optional[Type[SignatureModel]] = None
+        self.websocket_parameter_model: Optional[TransformerModel] = None
         self.include_in_schema = None
-        self.fn: Optional["AnyCallable"] = None
+        self.fn: Optional[AnyCallable] = None
         self.tags: Sequence[str] = []
 
-    def __call__(self, fn: "AnyCallable") -> "WebSocketHandler":
-        self.fn = fn
-        self.endpoint = fn
-        self.validate_websocket_handler_function()
-        return self
-
-    def validate_reserved_words(self, signature: "Signature") -> None:
+    def validate_reserved_words(self, signature: Signature) -> None:
         """
         Validates if special words are in the signature.
         """
@@ -1486,6 +1491,9 @@ class WebSocketHandler(BaseHandlerMixin, StarletteWebSocketRoute):
 
     async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
+        if self.get_interceptors():
+            await self.intercept(scope, receive, send)
+
         websocket = WebSocket(scope=scope, receive=receive, send=send)
         if self.get_permissions():
             await self.allow_connection(connection=websocket)
@@ -1552,7 +1560,7 @@ class Include(Mount):
             Optional[str],
             Doc(
                 """
-                Relative path of the `Gateway`.
+                Relative path of the `Include`.
                 The path can contain parameters in a dictionary like format
                 and if the path is not provided, it will default to `/`.
 
@@ -1571,7 +1579,7 @@ class Include(Mount):
             ),
         ] = None,
         app: Annotated[
-            Optional["ASGIApp"],
+            ASGIApp | str,
             Doc(
                 """
                 An application can be anything that is treated as an ASGI application.
@@ -1598,7 +1606,7 @@ class Include(Mount):
                 from flask import Flask, escape, request
 
                 from esmerald import Esmerald, Gateway, Include, Request, get
-                from esmerald.middleware import WSGIMiddleware
+                from esmerald.middleware.wsgi import WSGIMiddleware
 
                 flask_app = Flask(__name__)
 
@@ -1635,7 +1643,7 @@ class Include(Mount):
             ),
         ] = None,
         routes: Annotated[
-            Optional[Sequence[Union["APIGateHandler", "Include"]]],
+            Optional[Sequence[Union[APIGateHandler, Include]]],
             Doc(
                 """
                 A global `list` of esmerald routes. Those routes may vary and those can
@@ -1666,7 +1674,7 @@ class Include(Mount):
                     routes=[
                         Gateway(handler=homepage)
                         Include("/nested", routes=[
-                            Gateway(handler="/another")
+                            Gateway(handler=another)
                         ])
                     ]
                 )
@@ -1754,7 +1762,7 @@ class Include(Mount):
             ),
         ] = None,
         parent: Annotated[
-            Optional["ParentType"],
+            Optional[ParentType],
             Doc(
                 """
                 Who owns the Gateway. If not specified, the application automatically it assign it.
@@ -1764,7 +1772,7 @@ class Include(Mount):
             ),
         ] = None,
         dependencies: Annotated[
-            Optional["Dependencies"],
+            Optional[Dependencies],
             Doc(
                 """
                 A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
@@ -1772,7 +1780,7 @@ class Include(Mount):
             ),
         ] = None,
         interceptors: Annotated[
-            Optional[Sequence["Interceptor"]],
+            Optional[Sequence[Interceptor]],
             Doc(
                 """
                 A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
@@ -1780,7 +1788,7 @@ class Include(Mount):
             ),
         ] = None,
         permissions: Annotated[
-            Optional[Sequence["Permission"]],
+            Optional[Sequence[Permission]],
             Doc(
                 """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -1788,7 +1796,7 @@ class Include(Mount):
             ),
         ] = None,
         exception_handlers: Annotated[
-            Optional["ExceptionHandlerMap"],
+            Optional[ExceptionHandlerMap],
             Doc(
                 """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
@@ -1796,7 +1804,7 @@ class Include(Mount):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[List[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1822,7 +1830,7 @@ class Include(Mount):
             ),
         ] = None,
         security: Annotated[
-            Optional[Sequence["SecurityScheme"]],
+            Optional[Sequence[SecurityScheme]],
             Doc(
                 """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -1871,14 +1879,13 @@ class Include(Mount):
         if namespace:
             routes = include(namespace, pattern)
 
-        self.app = app
         self.name = name
         self.namespace = namespace
         self.pattern = pattern
         self.include_in_schema = include_in_schema
         self.dependencies = dependencies or {}
-        self.interceptors: Sequence["Interceptor"] = interceptors or []
-        self.permissions: Sequence["Permission"] = permissions or []
+        self.interceptors: Sequence[Interceptor] = interceptors or []
+        self.permissions: Sequence[Permission] = permissions or []
         self.middleware = middleware or []
         self.exception_handlers = exception_handlers or {}
         self.deprecated = deprecated
@@ -1893,7 +1900,7 @@ class Include(Mount):
             routes = self.resolve_route_path_handler(routes)
 
         # Add the middleware to the include
-        include_middleware: Sequence["Middleware"] = []
+        include_middleware: Sequence[Middleware] = []
 
         for _middleware in self.middleware:
             if isinstance(_middleware, StarletteMiddleware):  # pragma: no cover
@@ -1903,11 +1910,14 @@ class Include(Mount):
                     StarletteMiddleware(cast("Type[StarletteMiddleware]", _middleware))
                 )
 
-        app = self.resolve_app_parent(app=app)
+        if isinstance(app, str):
+            app = import_string(app)
+
+        self.app = self.resolve_app_parent(app=app)
 
         super().__init__(
             self.path,
-            app=app,
+            app=self.app,
             routes=routes,
             name=name,
             middleware=include_middleware,
@@ -1924,8 +1934,8 @@ class Include(Mount):
         return app
 
     def resolve_route_path_handler(
-        self, routes: Sequence[Union["APIGateHandler", "Include"]]
-    ) -> List[Union["Gateway", "WebSocketGateway", "Include"]]:
+        self, routes: Sequence[Union[APIGateHandler, Include]]
+    ) -> List[Union[Gateway, WebSocketGateway, Include]]:
         """
         Make sure the paths are properly configured from the handler endpoint.
         The handler can be a Starlette function, an View or a HTTPHandler.
@@ -2003,7 +2013,6 @@ class Include(Mount):
                         if not isinstance(route_handler, WebSocketHandler)
                         else WebSocketGateway
                     )
-
                     gate = gateway(
                         path=route.path,
                         handler=route_handler,

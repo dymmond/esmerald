@@ -19,4 +19,4 @@ class EsmeraldSettings(EsmeraldAPISettings):
 
 
 # Create an Esmerald application
-app = Esmerald(routes=..., settings_config=EsmeraldSettings)
+app = Esmerald(routes=..., settings_module=EsmeraldSettings)
