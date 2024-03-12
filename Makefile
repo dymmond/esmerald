@@ -17,7 +17,7 @@ clean_pycache: ## Removes the __pycaches__
 
 .PHONY: serve-docs
 serve-docs: ## Runs the local docs
-	scripts/docs
+	mike serve
 
 .PHONY: build-docs
 build-docs: ## Runs the local docs
