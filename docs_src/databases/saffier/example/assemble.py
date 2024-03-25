@@ -6,11 +6,10 @@ import os
 import sys
 from pathlib import Path
 
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import Esmerald, Gateway, Include
 from esmerald.conf import settings
 from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
 def build_path():
@@ -40,9 +39,7 @@ def get_application():
             Include(
                 routes=[Gateway(handler=home)],
                 middleware=[
-                    StarletteMiddleware(
-                        JWTAuthMiddleware, config=settings.jwt_config, user_model=User
-                    )
+                    LilyaMiddleware(JWTAuthMiddleware, config=settings.jwt_config, user_model=User)
                 ],
             ),
         ],

@@ -1,15 +1,14 @@
 from typing import List
 
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import Esmerald, EsmeraldAPISettings
 from esmerald.middleware import TrustedHostMiddleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
 
 # Option one
 middleware = [
-    StarletteMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com", "*.example.com"])
+    LilyaMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com", "*.example.com"])
 ]
 
 app = Esmerald(routes=routes, middleware=middleware)

@@ -1,8 +1,4 @@
 from pydantic import BaseModel, EmailStr
-from saffier.exceptions import ObjectNotFound
-from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.requests import HTTPConnection
-from starlette.types import ASGIApp
 
 from esmerald import (
     APIView,
@@ -24,6 +20,10 @@ from esmerald.exceptions import NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.permissions import IsAdminUser
 from esmerald.security.jwt.token import Token
+from lilya._internal._connection import Connection
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
+from lilya.types import ASGIApp
+from saffier.exceptions import ObjectNotFound
 
 
 class JWTAuthMiddleware(BaseAuthMiddleware):
@@ -38,7 +38,7 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
         except ObjectNotFound:
             raise NotAuthorized()
 
-    async def authenticate(self, request: HTTPConnection) -> AuthResult:
+    async def authenticate(self, request: Connection) -> AuthResult:
         token = request.headers.get(self.config.api_key_header)
 
         if not token:
@@ -115,5 +115,5 @@ app = Esmerald(
         )
     ],
     permissions=[IsAdmin],
-    middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config)],
+    middleware=[LilyaMiddleware(JWTAuthMiddleware, config=jwt_config)],
 )

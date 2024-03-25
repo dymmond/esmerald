@@ -1,8 +1,7 @@
 # WSGI frameworks
 
-Did you know because of the awesome work from [a2wsgi](https://github.com/abersheeran/a2wsgi) and from previous
-amazing jobs from Starlette added to the simplicity of Esmerald you can integrate any wsgi
-framework (Flask, Django...)?
+Did you know because of the awesome work from [a2wsgi](https://github.com/abersheeran/a2wsgi)
+added to the simplicity of Esmerald you can integrate any wsgi framework (Flask, Django...)?
 
 Yes, that's right, you can now smoothly move to Esmerald without rewriting your old applications from the scratch,
 actually, you can reuse them directly within Esmerald, even another Esmerald running inside another Esmerald,

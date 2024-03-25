@@ -3,15 +3,15 @@ from contextlib import asynccontextmanager
 
 import anyio
 import pytest
-from starlette import status
-from starlette.middleware import Middleware
-from starlette.routing import Host
+from lilya import status
+from lilya.middleware import DefineMiddleware
+from lilya.routing import Host
 
 from esmerald import Request
 from esmerald.applications import Esmerald
 from esmerald.exceptions import HTTPException, ImproperlyConfigured, WebSocketException
 from esmerald.middleware import TrustedHostMiddleware
-from esmerald.responses import JSONResponse, PlainTextResponse
+from esmerald.responses import JSONResponse, PlainText
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import get, head, options, route, websocket
 from esmerald.routing.router import Include, Router
@@ -32,29 +32,29 @@ async def http_exception(request, exc):
 
 
 @route(methods=["GET", "HEAD", "TRACE"])
-def func_homepage(request: Request) -> PlainTextResponse:
-    return PlainTextResponse("Hello, world!")
+def func_homepage(request: Request) -> PlainText:
+    return PlainText("Hello, world!")
 
 
 @get()
-async def async_homepage(request: Request) -> PlainTextResponse:
-    return PlainTextResponse("Hello, world!")
+async def async_homepage(request: Request) -> PlainText:
+    return PlainText("Hello, world!")
 
 
 @get()
-def all_users_page(request: Request) -> PlainTextResponse:
-    return PlainTextResponse("Hello, everyone!")
+def all_users_page(request: Request) -> PlainText:
+    return PlainText("Hello, everyone!")
 
 
 @get()
-def user_page(request: Request) -> PlainTextResponse:
+def user_page(request: Request) -> PlainText:
     username = request.path_params["username"]
-    return PlainTextResponse(f"Hello, {username}!")
+    return PlainText(f"Hello, {username}!")
 
 
 @get()
-def custom_subdomain(request: Request) -> PlainTextResponse:
-    return PlainTextResponse("Subdomain: " + request.path_params["subdomain"])
+def custom_subdomain(request: Request) -> PlainText:
+    return PlainText("Subdomain: " + request.path_params["subdomain"])
 
 
 @get()
@@ -63,13 +63,13 @@ def runtime_error(request: Request) -> None:
 
 
 @head()
-def head_func(request: Request) -> PlainTextResponse:
-    return PlainTextResponse("Hello, world!")
+def head_func(request: Request) -> PlainText:
+    return PlainText("Hello, world!")
 
 
 @options()
-def head_options(request: Request) -> PlainTextResponse:
-    return PlainTextResponse("Hello, world!")
+def head_options(request: Request) -> PlainText:
+    return PlainText("Hello, world!")
 
 
 @websocket()
@@ -119,7 +119,9 @@ exception_handlers = {
     CustomWSException: custom_ws_exception_handler,
 }
 
-middleware = [Middleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.example.org"])]
+middleware = [
+    DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.example.org"])
+]
 
 app = Esmerald(
     routes=[
@@ -146,7 +148,7 @@ def client(test_client_factory):
 
 
 def test_url_path_for():
-    assert app.url_path_for("func_homepage") == "/func"
+    assert app.path_for("func_homepage") == "/func"
 
 
 def test_func_route(client):
@@ -210,7 +212,7 @@ def test_websocket_route(client):
 def test_400(client):
     response = client.get("/404")
     assert response.status_code == 404
-    assert response.json() == {"detail": "The resource cannot be found."}
+    assert response.json() == {"detail": "Not Found"}
 
 
 def test_405(client):
@@ -289,8 +291,8 @@ def test_app_debug(test_client_factory):
 
 def test_app_add_route(test_client_factory):
     @get()
-    async def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Hello, World!")
+    async def homepage(request: Request) -> PlainText:
+        return PlainText("Hello, World!")
 
     app = Esmerald(
         routes=[
@@ -307,8 +309,8 @@ def test_app_add_route(test_client_factory):
 @pytest.mark.parametrize("path", ["/stuff", "/test", "/a-root-path", "/new-root-path"])
 def test_app_add_route_with_root_path(test_client_factory, path):
     @get()
-    async def homepage(request: Request) -> PlainTextResponse:
-        return PlainTextResponse("Hello, World!")
+    async def homepage(request: Request) -> PlainText:
+        return PlainText("Hello, World!")
 
     app = Esmerald(
         routes=[
@@ -391,43 +393,12 @@ def test_app_async_cm_lifespan(test_client_factory):
     assert cleanup_complete
 
 
-deprecated_lifespan = pytest.mark.filterwarnings(
-    r"ignore"
-    r":(async )?generator function lifespans are deprecated, use an "
-    r"@contextlib\.asynccontextmanager function instead"
-    r":DeprecationWarning"
-    r":starlette.routing"
-)
-
-
-@deprecated_lifespan
 def test_app_async_gen_lifespan(test_client_factory):
     startup_complete = False
     cleanup_complete = False
 
+    @asynccontextmanager
     async def lifespan(app):
-        nonlocal startup_complete, cleanup_complete
-        startup_complete = True
-        yield
-        cleanup_complete = True
-
-    app = Esmerald(lifespan=lifespan)
-
-    assert not startup_complete
-    assert not cleanup_complete
-    with test_client_factory(app):
-        assert startup_complete
-        assert not cleanup_complete
-    assert startup_complete
-    assert cleanup_complete
-
-
-@deprecated_lifespan
-def test_app_sync_gen_lifespan(test_client_factory):
-    startup_complete = False
-    cleanup_complete = False
-
-    def lifespan(app):
         nonlocal startup_complete, cleanup_complete
         startup_complete = True
         yield

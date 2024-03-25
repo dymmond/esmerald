@@ -1,1 +1,1 @@
-from starlette.middleware.sessions import SessionMiddleware as SessionMiddleware  # noqa
+from lilya.middleware.sessions import SessionMiddleware as SessionMiddleware  # noqa

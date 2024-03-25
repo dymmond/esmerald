@@ -1,12 +1,13 @@
 from http import HTTPStatus
 from typing import Any, Dict, Optional, Type, Union
 
-from pydantic import BaseModel, create_model
-from starlette import status
-from starlette.exceptions import (
-    HTTPException as StarletteHTTPException,
-    WebSocketException as StarletteWebSocketException,
+from lilya import status
+from lilya.exceptions import (
+    HTTPException as LilyaHTTPException,
+    ImproperlyConfigured as ImproperlyConfigured,
+    WebSocketException as LilyaWebSocketException,
 )
+from pydantic import BaseModel, create_model
 from typing_extensions import Annotated, Doc
 
 RequestErrorModel: Type[BaseModel] = create_model("Request")
@@ -27,7 +28,7 @@ class EsmeraldAPIException(Exception):
         return "".join(self.args).strip()
 
 
-class HTTPException(StarletteHTTPException, EsmeraldAPIException):
+class HTTPException(LilyaHTTPException, EsmeraldAPIException):
     """
     Base of all `Esmerald` execeptions.
 
@@ -104,9 +105,6 @@ class EsmeraldError(RuntimeError):
     ...
 
 
-class ImproperlyConfigured(HTTPException, ValueError): ...
-
-
 class ImproperlyMiddlewareConfigured(ImproperlyConfigured): ...
 
 
@@ -158,7 +156,7 @@ class MissingDependency(EsmeraldAPIException, ImportError): ...
 class OpenAPIException(ImproperlyConfigured): ...
 
 
-class WebSocketException(StarletteWebSocketException): ...
+class WebSocketException(LilyaWebSocketException): ...
 
 
 class AuthenticationError(HTTPException):

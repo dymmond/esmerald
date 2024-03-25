@@ -1,3 +1,3 @@
-from starlette.middleware.cors import CORSMiddleware  # noqa
+from lilya.middleware.cors import CORSMiddleware  # noqa
 
 __all__ = ["CORSMiddleware"]

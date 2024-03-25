@@ -1,6 +1,5 @@
-from starlette.responses import HTMLResponse
-
 from esmerald.testclient import EsmeraldTestClient
+from lilya.responses import HTMLResponse
 
 
 async def app(scope, receive, send):

@@ -1,12 +1,11 @@
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from lilya._internal._path import clean_path
+from lilya.staticfiles import StaticFiles
+from lilya.types import ASGIApp
 from pydantic import BaseModel, DirectoryPath, constr, field_validator
-from starlette.staticfiles import StaticFiles
-from starlette.types import ASGIApp
 from typing_extensions import Annotated, Doc
-
-from esmerald.utils.url import clean_path
 
 
 class StaticFilesConfig(BaseModel):

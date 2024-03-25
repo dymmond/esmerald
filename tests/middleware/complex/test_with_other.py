@@ -4,13 +4,13 @@ import edgy
 import pytest
 from edgy.exceptions import ObjectNotFound
 from jose.exceptions import JWTError
-from starlette.types import ASGIApp
+from lilya.types import ASGIApp
 
 from esmerald import APIView, Gateway, HTTPException, Request, Response, get, settings, status
 from esmerald.contrib.auth.edgy.base_user import AbstractUser
 from esmerald.exceptions import NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
-from esmerald.requests import HTTPConnection
+from esmerald.requests import Connection
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 
@@ -71,7 +71,7 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
         except ObjectNotFound:
             raise NotAuthorized() from None
 
-    async def authenticate(self, request: HTTPConnection) -> AuthResult:
+    async def authenticate(self, request: Connection) -> AuthResult:
         try:
             # token_raw = request.headers.get(self.config.authorization_header, None)
             # token = token_raw.split(" ")[1] if token_raw else None

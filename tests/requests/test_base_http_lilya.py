@@ -1,20 +1,16 @@
-"""The tests in this file were adapted from:
-
-https://github.com/encode/starlette/blob/master/tests/test_requests.py.
-"""
-
 from typing import Any, Optional
 
 import anyio
 import pytest
-from starlette.datastructures import Address, State
-from starlette.status import HTTP_200_OK
-from starlette.types import Receive, Send
+from lilya._internal._message import Address
+from lilya.datastructures import State
+from lilya.status import HTTP_200_OK
+from lilya.types import Receive, Send
 
 from esmerald.enums import MediaType
 from esmerald.exceptions import InternalServerError
 from esmerald.requests import ClientDisconnect, Request, empty_send
-from esmerald.responses import JSONResponse, PlainTextResponse, Response
+from esmerald.responses import JSONResponse, PlainText, Response
 from esmerald.testclient import EsmeraldTestClient
 
 
@@ -224,7 +220,7 @@ def test_request_raw_path(test_client_factory):
         request = Request(scope, receive)
         path = request.scope["path"]
         raw_path = request.scope["raw_path"]
-        response = PlainTextResponse(f"{path}, {raw_path}")
+        response = PlainText(f"{path}, {raw_path}")
         await response(scope, receive, send)
 
     client = EsmeraldTestClient(app)

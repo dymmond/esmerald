@@ -5,18 +5,18 @@ from time import sleep
 from typing import Any, AsyncGenerator, AsyncIterator, Generator, Iterator
 
 import pytest
-from pydantic import ValidationError
-from starlette import status
-from starlette.responses import (
+from lilya import status
+from lilya.responses import (
     FileResponse,
     HTMLResponse,
     JSONResponse,
-    PlainTextResponse,
+    PlainText,
     RedirectResponse,
-    Response as StarletteResponse,
+    Response as LilyaResponse,
     StreamingResponse,
 )
-from starlette.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
+from lilya.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
+from pydantic import ValidationError
 
 from esmerald.backgound import BackgroundTask
 from esmerald.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
@@ -137,8 +137,8 @@ async def test_to_response_returning_esmerald_response() -> None:
     "expected_response",
     [
         Response(status_code=HTTP_200_OK, content=b"abc", media_type=MediaType.TEXT),
-        StarletteResponse(status_code=HTTP_200_OK, content=b"abc"),
-        PlainTextResponse(content="abc"),
+        LilyaResponse(status_code=HTTP_200_OK, content=b"abc"),
+        PlainText(content="abc"),
         HTMLResponse(content="<div><span/></div"),
         JSONResponse(status_code=HTTP_200_OK, content={}),
         UJSONResponse(status_code=HTTP_200_OK, content={}),
@@ -148,16 +148,16 @@ async def test_to_response_returning_esmerald_response() -> None:
     ],
 )
 async def test_to_response_returning_redirect_starlette_response(
-    expected_response: StarletteResponse,
+    expected_response: LilyaResponse,
 ) -> None:
     @get(path="/test")
-    def test_function() -> StarletteResponse:
+    def test_function() -> LilyaResponse:
         return expected_response
 
     with create_client(test_function) as client:
         route = client.app.routes[0]  # type: ignore
         response = await route.to_response(data=route.fn(), app=None)  # type: ignore
-        assert isinstance(response, StarletteResponse)
+        assert isinstance(response, LilyaResponse)
         assert response is expected_response
 
 
@@ -192,8 +192,8 @@ async def test_to_response_returning_redirect_response() -> None:
 
         cookies = response.headers.getlist("set-cookie")
         assert len(cookies) == 2
-        assert cookies[0] == "redirect-cookie=xyz; Path=/; SameSite=lax"
-        assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+        assert cookies[0] == b"redirect-cookie=xyz; Path=/; SameSite=lax"
+        assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
         assert response.background == background_task
 
 
@@ -258,8 +258,8 @@ async def test_to_response_returning_file_response() -> None:
 
         cookies = response.headers.getlist("set-cookie")
         assert len(cookies) == 3
-        assert cookies[0] == "file-cookie=xyz; Path=/; SameSite=lax"
-        assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+        assert cookies[0] == b"file-cookie=xyz; Path=/; SameSite=lax"
+        assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
         assert response.background == background_task
 
 
@@ -309,8 +309,8 @@ async def test_to_response_streaming_response(
 
             cookies = response.headers.getlist("set-cookie")
             assert len(cookies) == 3
-            assert cookies[0] == "streaming-cookie=xyz; Path=/; SameSite=lax"
-            assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+            assert cookies[0] == b"streaming-cookie=xyz; Path=/; SameSite=lax"
+            assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
             assert response.background == background_task
     else:
         with pytest.raises(ValidationError):
@@ -348,6 +348,6 @@ async def func_to_response_template_response() -> None:  # pragma: no cover
 
         cookies = response.headers.getlist("set-cookie")
         assert len(cookies) == 2
-        assert cookies[0] == "template-cookie=xyz; Path=/; SameSite=lax"
-        assert cookies[1] == "general-cookie=xxx; Path=/; SameSite=lax"
+        assert cookies[0] == b"template-cookie=xyz; Path=/; SameSite=lax"
+        assert cookies[1] == b"general-cookie=xxx; Path=/; SameSite=lax"
         assert response.background == background_task

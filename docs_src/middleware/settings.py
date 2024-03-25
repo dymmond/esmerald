@@ -1,10 +1,9 @@
 from typing import List
 
-from starlette.middleware import Middleware as StarletteMiddleware
-
 from esmerald import EsmeraldAPISettings
 from esmerald.middleware import GZipMiddleware, HTTPSRedirectMiddleware
 from esmerald.types import Middleware
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
 class AppSettings(EsmeraldAPISettings):
@@ -15,5 +14,5 @@ class AppSettings(EsmeraldAPISettings):
         """
         return [
             HTTPSRedirectMiddleware,
-            StarletteMiddleware(GZipMiddleware, minimum_size=500, compresslevel=9),
+            LilyaMiddleware(GZipMiddleware, minimum_size=500, compresslevel=9),
         ]

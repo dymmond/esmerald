@@ -3,10 +3,10 @@ from collections import OrderedDict
 from typing import Any, Dict
 
 import pydantic
+from lilya._internal._module_loading import import_string
 
 import esmerald
 from esmerald.core.terminal import OutputColour, Print
-from esmerald.utils.module_loading import import_string
 
 printer = Print()
 

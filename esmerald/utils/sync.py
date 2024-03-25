@@ -1,8 +1,5 @@
-import asyncio
-from concurrent import futures
-from concurrent.futures import Future
 from functools import partial
-from typing import Any, Awaitable, Callable, Generic, TypeVar
+from typing import Awaitable, Callable, Generic, TypeVar, cast
 
 from anyio import to_thread
 from typing_extensions import ParamSpec
@@ -19,21 +16,9 @@ class AsyncCallable(Generic[P, T]):
     def __init__(self, fn: Callable[P, T]):
         self.fn: Callable[P, Awaitable[T]]
         if is_async_callable(fn):
-            self.fn = fn
+            self.fn = cast(Callable, fn)
         else:
             self.fn = partial(to_thread.run_sync, fn)
 
     async def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
         return await self.fn(*args, **kwargs)
-
-
-def run_sync(async_function: Awaitable) -> Any:
-    """
-    Runs the queries in sync mode
-    """
-    try:
-        return asyncio.run(async_function)  # type: ignore
-    except RuntimeError:
-        with futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future: Future = executor.submit(asyncio.run, async_function)  # type: ignore
-            return future.result()

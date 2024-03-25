@@ -1,8 +1,8 @@
 from typing import Any, Type, Union
 
 import pytest
+from lilya.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from pydantic import BaseModel
-from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.responses import Response

@@ -293,8 +293,9 @@ Passing parameters in the object will always override the values from the defaul
 ```python
 from esmerald import EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
-from esmerald.middleware.basic import BasicHTTPMiddleware
+from esmerald.middleware.https import HTTPSRedirectMiddleware
 from esmerald.types import Middleware
+from lilya.middleware import DefineMiddleware
 
 
 class AppSettings(EsmeraldAPISettings):
@@ -302,16 +303,16 @@ class AppSettings(EsmeraldAPISettings):
 
     @property
     def middleware(self) -> List[Middleware]:
-        return [BasicHTTPMiddleware]
+        return [DefineMiddleware(HTTPSRedirectMiddleware)]
 
 ```
 
 The application will:
 
 1. Start with `debug` as `False`.
-2. Will start with a middleware `BasicHTTPMiddleware`.
+2. Will start with a middleware `HTTPSRedirectMiddleware`.
 
-Starting the application with the above settings will make sure that has an initial `BasicHTTPMiddleware` and `debug`
+Starting the application with the above settings will make sure that has an initial `HTTPSRedirectMiddleware` and `debug`
 set with values **but** what happens if you use the settings + parameters on instantiation?
 
 ```python
@@ -323,9 +324,9 @@ app = Esmerald(debug=True, middleware=[])
 The application will:
 
 1. Start with `debug` as `True`.
-2. Will start without custom middlewares it the `BasicHTTPMiddleware` it was overridden by `[]`.
+2. Will start without custom middlewares it the `HTTPSRedirectMiddleware` it was overridden by `[]`.
 
-Although it was set in the settings to start with `BasicHTTPMiddleware` and debug as `False`, once you pass different
+Although it was set in the settings to start with `HTTPSRedirectMiddleware` and debug as `False`, once you pass different
 values in the moment of instantiating an `Esmerald` object, those will become the values to be used.
 
 **Declaring parameters in the instance will always precede the values from your settings**.

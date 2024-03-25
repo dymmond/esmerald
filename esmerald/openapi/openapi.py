@@ -4,13 +4,14 @@ import json
 import warnings
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
+from lilya._internal._path import clean_path
+from lilya.middleware import DefineMiddleware
+from lilya.routing import BasePath
+from lilya.status import HTTP_422_UNPROCESSABLE_ENTITY
 from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
-from starlette.middleware import Middleware
-from starlette.routing import BaseRoute
-from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from typing_extensions import Literal
 
 from esmerald.enums import MediaType
@@ -39,7 +40,6 @@ from esmerald.routing import gateways, router
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass
-from esmerald.utils.url import clean_path
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
@@ -76,7 +76,7 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
 
 
 def get_fields_from_routes(
-    routes: Sequence[BaseRoute], request_fields: Optional[List[FieldInfo]] = None
+    routes: Sequence[BasePath], request_fields: Optional[List[FieldInfo]] = None
 ) -> List[FieldInfo]:
     """Extracts the fields from the given routes of Esmerald"""
     body_fields: List[FieldInfo] = []
@@ -132,9 +132,9 @@ def get_openapi_operation(
     operation_id = route.operation_id
     if operation_id in operation_ids:
         message = (
-            f"Duplicate Operation ID {operation_id} for function " + f"{route.endpoint.__name__}"
+            f"Duplicate Operation ID {operation_id} for function " + f"{route.handler.__name__}"
         )
-        file_name = getattr(route.endpoint, "__globals__", {}).get("__file__")
+        file_name = getattr(route.handler, "__globals__", {}).get("__file__")
         if file_name:
             message += f" at {file_name}"
         warnings.warn(message, stacklevel=1)
@@ -399,7 +399,7 @@ def is_middleware_app(route: router.Include) -> bool:
     """
     from esmerald import MiddlewareProtocol
 
-    return bool(isinstance(route.app, (Middleware, MiddlewareProtocol)))
+    return bool(isinstance(route.app, (DefineMiddleware, MiddlewareProtocol)))
 
 
 def get_openapi(
@@ -410,13 +410,13 @@ def get_openapi(
     openapi_version: str = "3.1.0",
     summary: Optional[str] = None,
     description: Optional[str] = None,
-    routes: Sequence[BaseRoute],
+    routes: Sequence[BasePath],
     tags: Optional[List[str]] = None,
     servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
     terms_of_service: Optional[Union[str, AnyUrl]] = None,
     contact: Optional[Contact] = None,
     license: Optional[License] = None,
-    webhooks: Optional[Sequence[BaseRoute]] = None,
+    webhooks: Optional[Sequence[BasePath]] = None,
 ) -> Dict[str, Any]:  # pragma: no cover
     """
     Builds the whole OpenAPI route structure and object
@@ -457,7 +457,7 @@ def get_openapi(
     # Iterate through the routes
     def iterate_routes(
         app: Any,
-        routes: Sequence[BaseRoute],
+        routes: Sequence[BasePath],
         definitions: Any = None,
         components: Any = None,
         prefix: Optional[str] = "",

@@ -1,7 +1,4 @@
 from pydantic.error_wrappers import ValidationError
-from starlette import status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.responses import Response as StarletteResponse
 
 from esmerald import (
     HTTPException,
@@ -13,14 +10,17 @@ from esmerald import (
 )
 from esmerald.applications import Esmerald
 from esmerald.enums import MediaType
+from lilya import status
+from lilya.exceptions import HTTPException as LilyaHTTPException
+from lilya.responses import Response as LilyaResponse
 
 
 async def improperly_configured_exception_handler(
     request: Request, exc: ImproperlyConfigured
-) -> StarletteResponse:
+) -> LilyaResponse:
     status_code = (
         exc.status_code
-        if isinstance(exc, StarletteHTTPException)
+        if isinstance(exc, LilyaHTTPException)
         else status.HTTP_500_INTERNAL_SERVER_ERROR
     )
     if not status_code:
@@ -29,7 +29,7 @@ async def improperly_configured_exception_handler(
     content = {"detail": exc.detail}
     if exc.extra:
         content.update({"extra": exc.extra})
-    headers = exc.headers if isinstance(exc, (HTTPException, StarletteHTTPException)) else None
+    headers = exc.headers if isinstance(exc, (HTTPException, LilyaHTTPException)) else None
 
     return Response(
         media_type=MediaType.JSON,

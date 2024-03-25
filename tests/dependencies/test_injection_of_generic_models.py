@@ -1,7 +1,7 @@
 from typing import Generic, Optional, Type, TypeVar
 
+from lilya.status import HTTP_200_OK
 from pydantic import BaseModel
-from starlette.status import HTTP_200_OK
 
 from esmerald.injector import Inject
 from esmerald.routing.gateways import Gateway

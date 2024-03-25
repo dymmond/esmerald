@@ -1,4 +1,4 @@
-from starlette import status
+from lilya import status
 
 from esmerald.responses.encoders import ORJSONResponse, UJSONResponse
 from esmerald.routing.gateways import Gateway

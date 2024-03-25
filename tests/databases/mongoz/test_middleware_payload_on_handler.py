@@ -7,9 +7,9 @@ from uuid import uuid4
 import pytest
 from anyio import from_thread, sleep, to_thread
 from httpx import AsyncClient
+from lilya.middleware import DefineMiddleware as LilyaMiddleware
 from mongoz import DocumentNotFound
 from pydantic import BaseModel
-from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald import Esmerald, Gateway, Include, JSONResponse, Request, get, post, status
 from esmerald.conf import settings
@@ -126,7 +126,7 @@ class CreateUser(BaseModel):
 
 
 @get(
-    middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
+    middleware=[LilyaMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
 )
 async def home(request: Request) -> dict:
     return {"message": f"hello {request.user.email}"}
@@ -184,7 +184,7 @@ async def async_client(app) -> AsyncGenerator:
 async def test_cannot_access_endpoint_without_header(test_client_factory, async_client):
     with create_client(
         routes=[Gateway(handler=home)],
-        middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
+        middleware=[LilyaMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
     ) as client:
         response = client.get("/")
 
@@ -197,7 +197,7 @@ async def test_cannot_access_endpoint_with_invalid_header(test_client_factory, a
 
     with create_client(
         routes=[Gateway(handler=home)],
-        middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
+        middleware=[LilyaMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
     ) as client:
         response = client.get("/", headers={jwt_config.authorization_header: token})
 
@@ -210,7 +210,7 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, as
 
     with create_client(
         routes=[Gateway(handler=home)],
-        middleware=[StarletteMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
+        middleware=[LilyaMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)],
         raise_server_exceptions=False,
     ):
         response = await async_client.get(

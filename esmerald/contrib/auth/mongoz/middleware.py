@@ -1,8 +1,8 @@
 from typing import Any, TypeVar
 
 import bson
+from lilya.types import ASGIApp
 from mongoz import DocumentNotFound
-from starlette.types import ASGIApp
 
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.common.middleware import CommonJWTAuthMiddleware

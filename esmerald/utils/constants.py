@@ -1,4 +1,4 @@
-from starlette import status
+from lilya import status
 
 from esmerald.enums import HttpMethod
 

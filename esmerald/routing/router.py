@@ -22,22 +22,24 @@ from typing import (
     cast,
 )
 
-from starlette import status
-from starlette.datastructures import URLPath
-from starlette.middleware import Middleware as StarletteMiddleware
-from starlette.requests import HTTPConnection
-from starlette.responses import JSONResponse, Response as StarletteResponse
-from starlette.routing import (
-    BaseRoute as StarletteBaseRoute,
+from lilya import status
+from lilya._internal._connection import Connection
+from lilya._internal._module_loading import import_string
+from lilya._internal._path import clean_path
+from lilya.datastructures import URLPath
+from lilya.middleware import DefineMiddleware
+from lilya.responses import JSONResponse, Response as LilyaResponse
+from lilya.routing import (
+    BasePath as LilyaBasePath,
     Host,
-    Mount,
+    Include as LilyaInclude,
     NoMatchFound,
-    Route as StarletteRoute,
-    Router as StarletteRouter,
-    WebSocketRoute as StarletteWebSocketRoute,
+    Path as LilyaPath,
+    Router as LilyaRouter,
+    WebSocketPath as LilyaWebSocketPath,
     compile_path,
 )
-from starlette.types import ASGIApp, Lifespan, Receive, Scope, Send
+from lilya.types import ASGIApp, Lifespan, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
@@ -67,8 +69,6 @@ from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
-from esmerald.utils.module_loading import import_string
-from esmerald.utils.url import clean_path
 from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -93,7 +93,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.typing import AnyCallable
 
 
-class BaseRouter(StarletteRouter):
+class BaseRouter(LilyaRouter):
     __slots__ = (
         "redirect_slashes",
         "default",
@@ -113,6 +113,10 @@ class BaseRouter(StarletteRouter):
         "on_startup",
         "on_shutdown",
         "root_path",
+        "path",
+        "_app",
+        "esmerald_lifespan",
+        "routing",
     )
 
     def __init__(
@@ -316,7 +320,7 @@ class BaseRouter(StarletteRouter):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -356,7 +360,7 @@ class BaseRouter(StarletteRouter):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -490,8 +494,8 @@ class BaseRouter(StarletteRouter):
                     Include,
                     Gateway,
                     WebSocketGateway,
-                    StarletteBaseRoute,
-                    Mount,
+                    LilyaBasePath,
+                    LilyaBasePath,
                     Host,
                     Router,
                 ),
@@ -521,7 +525,7 @@ class BaseRouter(StarletteRouter):
         self.dependencies = dependencies or {}
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
-        self.permissions: Sequence[Permission] = permissions or []
+        self.permissions: Sequence[Permission] = permissions or []  # type: ignore
         self.routes: Any = routes or []
         self.middleware = middleware or []
         self.tags = tags or []
@@ -558,7 +562,7 @@ class BaseRouter(StarletteRouter):
         """Esmerald version of a not found handler when a resource is
         called and cannot be dealt with properly.
 
-        Esmerald overrides the original Starlette not_found to return always
+        Esmerald overrides the original Lilya not_found to return always
         JSONReponse.
 
         For plain ASGI apps, just returns the response.
@@ -574,17 +578,17 @@ class BaseRouter(StarletteRouter):
             response = JSONResponse({"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND)
         await response(scope, receive, send)
 
-    def url_path_for(self, name: str, **path_params: Any) -> URLPath:
+    def path_for(self, name: str, **path_params: Any) -> URLPath:
         for route in self.routes or []:
             try:
-                return cast("URLPath", route.url_path_for(name, **path_params))
+                return cast("URLPath", route.path_for(name, **path_params))
             except NoMatchFound:
                 ...
 
             if isinstance(route, (Gateway, WebSocketGateway)):
                 handler = cast("Union[HTTPHandler, WebSocketHandler]", route.handler)
                 try:
-                    return handler.url_path_for(name, **path_params)
+                    return handler.path_for(name, **path_params)
                 except NoMatchFound:
                     ...
 
@@ -732,7 +736,7 @@ class Router(BaseRouter):
         """
         routes = []
         if not value.handler.parent:  # pragma: no cover
-            value.handler(parent=self)  # type: ignore
+            value.handler(parent=self)
 
         route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
         for route_handler in route_handlers:
@@ -811,7 +815,7 @@ class Router(BaseRouter):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -819,7 +823,7 @@ class Router(BaseRouter):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -904,7 +908,7 @@ class Router(BaseRouter):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -944,7 +948,7 @@ class Router(BaseRouter):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -993,7 +997,7 @@ class Router(BaseRouter):
         self.routes.append(websocket_gateway)
 
 
-class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
+class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
     __slots__ = (
         "path",
         "_interceptors",
@@ -1028,7 +1032,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
     def __init__(
         self,
         path: Optional[str] = None,
-        endpoint: Callable[..., Any] = None,
+        handler: Callable[..., Any] = None,
         *,
         methods: Optional[Sequence[str]] = None,
         status_code: Optional[int] = None,
@@ -1058,18 +1062,21 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
         """
         if not path:
             path = "/"
-        super().__init__(path=path, endpoint=endpoint, include_in_schema=include_in_schema)
+        super().__init__(
+            path=path,
+            handler=handler,
+            include_in_schema=include_in_schema,
+            exception_handlers=exception_handlers,
+        )
 
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
 
-        self._response_handler: Union[Callable[[Any], Awaitable[StarletteResponse]], VoidType] = (
-            Void
-        )
+        self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
 
         self.parent: ParentType = None
         self.path = path
-        self.endpoint = endpoint
+        self.handler = handler
         self.summary = summary
         self.tags = tags or []
         self.include_in_schema = include_in_schema
@@ -1088,16 +1095,15 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
             if not isinstance(method, str):
                 raise ImproperlyConfigured(f"`{method}` in `methods` must be a string.")
 
-        self.methods: Set[str] = {HttpMethod[method].value for method in methods}
+        self.methods: Set[str] = {HttpMethod[method].value for method in methods}  # type: ignore
 
         if isinstance(status_code, IntEnum):  # pragma: no cover
             status_code = int(status_code)
         self.status_code = status_code
 
-        self.exception_handlers = exception_handlers or {}
         self.dependencies: Dependencies = dependencies or {}
-        self.description = description or inspect.cleandoc(self.endpoint.__doc__ or "")
-        self.permissions = list(permissions) if permissions else []
+        self.description = description or inspect.cleandoc(self.handler.__doc__ or "")
+        self.permissions = list(permissions) if permissions else []  # type: ignore
         self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
@@ -1115,7 +1121,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
 
         self.fn: Optional[AnyCallable] = None
         self.route_map: Dict[str, Tuple[HTTPHandler, TransformerModel]] = {}
-        self.path_regex, self.path_format, self.param_convertors = compile_path(path)
+        self.path_regex, self.path_format, self.param_convertors, _ = compile_path(path)
         self._middleware: List[Middleware] = []
         self._interceptors: Union[List[Interceptor], VoidType] = Void
         self.__type__: Union[str, None] = None
@@ -1124,7 +1130,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
             self.validate_responses(responses=self.responses)
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> Any:
-        await self.handle(scope=scope, receive=receive, send=send)
+        await self.handle_dispatch(scope=scope, receive=receive, send=send)
 
     def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
         """
@@ -1160,7 +1166,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
     @property
     def allow_header(self) -> Mapping[str, str]:
         """
-        Default allow header to be injected in the Response and Starlette Response type
+        Default allow header to be injected in the Response and Lilya Response type
         handlers.
         """
         return {"allow": str(self.methods)}
@@ -1199,7 +1205,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
                 filtered_cookies.append(cookie)
         return filtered_cookies
 
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         ASGIapp that authorizes the connection and then awaits the handler function.
         """
@@ -1213,7 +1219,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
         route_handler, parameter_model = self.route_map[scope["method"]]
 
         if self.get_permissions():
-            connection = HTTPConnection(scope=scope, receive=receive)
+            connection = Connection(scope=scope, receive=receive)
             await self.allow_connection(connection)
 
         response = await self.get_response_for_request(
@@ -1263,7 +1269,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
         """
         Validate annotations of the handlers.
         """
-        return_annotation = self.signature.return_annotation
+        return_annotation = self.handler_signature.return_annotation
 
         if return_annotation is Signature.empty:
             raise ImproperlyConfigured(
@@ -1296,15 +1302,15 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
         """
         Validates if special words are in the signature.
         """
-        if DATA in self.signature.parameters and "GET" in self.methods:
+        if DATA in self.handler_signature.parameters and "GET" in self.methods:
             raise ImproperlyConfigured("'data' argument is unsupported for 'GET' request handlers")
 
-        if PAYLOAD in self.signature.parameters and "GET" in self.methods:
+        if PAYLOAD in self.handler_signature.parameters and "GET" in self.methods:
             raise ImproperlyConfigured(
                 "'payload' argument is unsupported for 'GET' request handlers"
             )
 
-        if SOCKET in self.signature.parameters:
+        if SOCKET in self.handler_signature.parameters:
             raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
 
     def validate_handler(self) -> None:
@@ -1312,12 +1318,12 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, StarletteRoute):
         self.validate_annotations()
         self.validate_reserved_kwargs()
 
-    async def to_response(self, app: "Esmerald", data: Any) -> StarletteResponse:
+    async def to_response(self, app: "Esmerald", data: Any) -> LilyaResponse:
         response_handler = self.get_response_handler()
         return await response_handler(app=app, data=data)  # type: ignore[call-arg]
 
 
-class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
+class WebhookHandler(HTTPHandler, FieldInfoMixin, LilyaPath):
     """
     Base for a webhook handler.
     """
@@ -1353,7 +1359,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
     def __init__(
         self,
         path: Optional[str] = None,
-        endpoint: Callable[..., Any] = None,
+        handler: Callable[..., Any] = None,
         *,
         methods: Optional[Sequence[str]] = None,
         status_code: Optional[int] = None,
@@ -1383,7 +1389,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
             _path = "/"  # pragma: no cover
         super().__init__(
             path=_path,
-            endpoint=endpoint,
+            handler=handler,
             methods=methods,
             summary=summary,
             description=description,
@@ -1410,7 +1416,7 @@ class WebhookHandler(HTTPHandler, FieldInfoMixin, StarletteRoute):
         self.path = path
 
 
-class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
+class WebSocketHandler(BaseInterceptorMixin, LilyaWebSocketPath):
     """
     Websocket handler object representation.
     """
@@ -1428,7 +1434,7 @@ class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
         self,
         path: Optional[str] = None,
         *,
-        endpoint: Callable[..., Any] = None,
+        handler: Callable[..., Any] = None,
         dependencies: Optional[Dependencies] = None,
         exception_handlers: Optional[ExceptionHandlerMap] = None,
         permissions: Optional[List[Permission]] = None,
@@ -1436,19 +1442,16 @@ class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
     ):
         if not path:
             path = "/"
-        super().__init__(path=path, endpoint=endpoint)
+        super().__init__(path=path, handler=handler, exception_handlers=exception_handlers)
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
-        self._response_handler: Union[Callable[[Any], Awaitable[StarletteResponse]], VoidType] = (
-            Void
-        )
+        self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
         self._interceptors: Union[List[Interceptor], VoidType] = Void
         self.interceptors: Sequence[Interceptor] = []
-        self.endpoint = endpoint
+        self.handler = handler
         self.parent: ParentType = None
         self.dependencies = dependencies
-        self.exception_handlers = exception_handlers
-        self.permissions = permissions
+        self.permissions = permissions  # type: ignore
         self.middleware = middleware
         self.signature_model: Optional[Type[SignatureModel]] = None
         self.websocket_parameter_model: Optional[TransformerModel] = None
@@ -1489,7 +1492,7 @@ class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
                 "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions."
             )
 
-    async def handle(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """The handle of a websocket"""
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
@@ -1526,7 +1529,7 @@ class WebSocketHandler(BaseInterceptorMixin, StarletteWebSocketRoute):
         return signature_model.parse_values_for_connection(connection=websocket, **kwargs)
 
 
-class Include(Mount):
+class Include(LilyaInclude):
     """
     `Include` object class that allows scalability and modularity
     to happen with elegance.
@@ -1638,7 +1641,7 @@ class Include(Mount):
             Optional[str],
             Doc(
                 """
-                The name for the Gateway. The name can be reversed by `url_path_for()`.
+                The name for the Gateway. The name can be reversed by `path_for()`.
                 """
             ),
         ] = None,
@@ -1807,7 +1810,7 @@ class Include(Mount):
             Optional[List[Middleware]],
             Doc(
                 """
-                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Starlette Middleware](https://www.starlette.io/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
                 """
             ),
         ] = None,
@@ -1879,35 +1882,16 @@ class Include(Mount):
         if namespace:
             routes = include(namespace, pattern)
 
-        self.name = name
-        self.namespace = namespace
-        self.pattern = pattern
-        self.include_in_schema = include_in_schema
-        self.dependencies = dependencies or {}
-        self.interceptors: Sequence[Interceptor] = interceptors or []
-        self.permissions: Sequence[Permission] = permissions or []
-        self.middleware = middleware or []
-        self.exception_handlers = exception_handlers or {}
-        self.deprecated = deprecated
-        self.response_class = None
-        self.response_cookies = None
-        self.response_headers = None
-        self.parent = parent
-        self.security = security or []
-        self.tags = tags or []
-
-        if routes:
-            routes = self.resolve_route_path_handler(routes)
-
         # Add the middleware to the include
+        self.middleware = middleware or []
         include_middleware: Sequence[Middleware] = []
 
         for _middleware in self.middleware:
-            if isinstance(_middleware, StarletteMiddleware):  # pragma: no cover
+            if isinstance(_middleware, DefineMiddleware):  # pragma: no cover
                 include_middleware.append(_middleware)
             else:
                 include_middleware.append(  # type: ignore
-                    StarletteMiddleware(cast("Type[StarletteMiddleware]", _middleware))
+                    DefineMiddleware(cast("Type[DefineMiddleware]", _middleware))
                 )
 
         if isinstance(app, str):
@@ -1915,12 +1899,31 @@ class Include(Mount):
 
         self.app = self.resolve_app_parent(app=app)
 
+        self.dependencies = dependencies or {}
+        self.interceptors: Sequence[Interceptor] = interceptors or []
+        self.permissions: Sequence[Permission] = permissions or []  # type: ignore
+        self.response_class = None
+        self.response_cookies = None
+        self.response_headers = None
+        self.parent = parent
+        self.security = security or []
+        self.tags = tags or []
+
+        if namespace:
+            routes = include(namespace, pattern)
+
+        if routes:
+            routes = self.resolve_route_path_handler(routes)
+
         super().__init__(
-            self.path,
+            path=self.path,
             app=self.app,
             routes=routes,
             name=name,
             middleware=include_middleware,
+            exception_handlers=exception_handlers,
+            deprecated=deprecated,
+            include_in_schema=include_in_schema,
         )
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
@@ -1937,21 +1940,21 @@ class Include(Mount):
         self, routes: Sequence[Union[APIGateHandler, Include]]
     ) -> List[Union[Gateway, WebSocketGateway, Include]]:
         """
-        Make sure the paths are properly configured from the handler endpoint.
-        The handler can be a Starlette function, an View or a HTTPHandler.
+        Make sure the paths are properly configured from the handler handler.
+        The handler can be a Lilya function, an View or a HTTPHandler.
 
-        Mount() has a limitation of not allowing nested Mount().
+        LilyaBasePath() has a limitation of not allowing nested LilyaBasePath().
 
         Example:
 
             route_patterns = [
-                Mount(path='/my path', routes=[
-                    Mount(path='/another mount')
+                LilyaBasePath(path='/my path', routes=[
+                    LilyaBasePath(path='/another mount')
                 ])
             ]
 
 
-        Include() extends the Mount and adds extras on the top. Allowing nested
+        Include() extends the LilyaBasePath and adds extras on the top. Allowing nested
         Include() also allows importing in different ways. Via qualified namespace
         or via list() but not both.
 
@@ -1995,17 +1998,17 @@ class Include(Mount):
                 continue
 
             if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                route.handler.parent = route
+                route.handler.parent = route  # type: ignore
                 routing.append(route)
                 continue
 
             if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
                 if not route.handler.parent:
-                    route.handler = route.handler(parent=self)  # type: ignore
+                    route.handler = route.handler(parent=self)
 
-                route_handlers: List[
-                    Union[HTTPHandler, WebSocketHandler]
-                ] = route.handler.get_route_handlers()  # type: ignore[union-attr]
+                route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = (
+                    route.handler.get_route_handlers()
+                )
 
                 for route_handler in route_handlers:
                     gateway = (

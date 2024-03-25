@@ -1,8 +1,8 @@
 from typing import TypeVar
 
 from jose import JWSError, JWTError
-from starlette.requests import HTTPConnection
-from starlette.types import ASGIApp
+from lilya._internal._connection import Connection
+from lilya.types import ASGIApp
 
 from esmerald.config.jwt import JWTConfig
 from esmerald.exceptions import AuthenticationError, NotAuthorized
@@ -58,7 +58,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
         self.config = config
         self.user_model = user_model
 
-    async def authenticate(self, request: HTTPConnection) -> AuthResult:
+    async def authenticate(self, request: Connection) -> AuthResult:
         """
         Retrieves the header default of the config and validates against the decoding.
 
@@ -81,7 +81,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
                 token=auth_token,
                 key=self.config.signing_key,
                 algorithms=[self.config.algorithm],
-            )  # type: ignore
+            )
         except (JWSError, JWTError) as e:
             raise AuthenticationError(str(e)) from e
 

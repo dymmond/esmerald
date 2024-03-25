@@ -2,8 +2,8 @@ import json
 from typing import Any, Dict, List
 
 import pytest
+from lilya.middleware import DefineMiddleware
 from pydantic import BaseModel
-from starlette.middleware import Middleware as StarletteMiddleware
 
 from esmerald import (
     ChildEsmerald,
@@ -93,7 +93,7 @@ def test_settings_global(test_client_factory):
     with create_client(
         app_name="my app",
         routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     ) as client:
         request_settings = client.get("/request-settings")
         app_settings = client.get("/app-settings")
@@ -107,7 +107,7 @@ def test_settings_global(test_client_factory):
 def test_settings_global_without_parameters(test_client_factory):
     with create_client(
         routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     ) as client:
         request_settings = client.get("/request-settings")
         app_settings = client.get("/app-settings")
@@ -195,7 +195,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
         settings_module=ChildSettings,
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     )
 
     with create_client(routes=[Include("/child", app=child)]) as client:
@@ -232,7 +232,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
         settings_module=ChildSettings,
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        middleware=[DefineMiddleware(RequestSettingsMiddleware)],
         csrf_config=CSRFConfig(secret=secret),
     )
 
@@ -267,7 +267,7 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
         settings_module=NestedChildSettings,
-        middleware=[StarletteMiddleware(RequestSettingsMiddleware)],
+        middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     )
 
     nested_child = ChildEsmerald(routes=[Include(app=child)], settings_module=ChildSettings)

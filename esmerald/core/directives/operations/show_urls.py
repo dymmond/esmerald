@@ -4,6 +4,7 @@ import sys
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 import click
+from lilya._internal._path import clean_path
 from rich.console import Console
 from rich.table import Table
 
@@ -13,10 +14,9 @@ from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
 from esmerald.enums import HttpMethod
 from esmerald.routing.apis.base import View
-from esmerald.utils.url import clean_path
 
 if TYPE_CHECKING:
-    from starlette.routing import BaseRoute
+    from lilya.routing import BasePath
 
     from esmerald.applications import ChildEsmerald, Esmerald
     from esmerald.routing.router import Router
@@ -82,7 +82,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
     table.add_column("HTTP Methods", style=OutputColour.RED, vertical="middle")
 
     def parse_routes(
-        app: Optional[Union["Esmerald", "ChildEsmerald", "Router", "BaseRoute"]],
+        app: Optional[Union["Esmerald", "ChildEsmerald", "Router", "BasePath"]],
         table: Table,
         route: Optional[Any] = None,
         prefix: Optional[str] = "",

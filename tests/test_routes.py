@@ -1,5 +1,5 @@
 import pytest
-from starlette import status
+from lilya import status
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.apis.views import APIView

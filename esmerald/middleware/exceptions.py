@@ -1,25 +1,25 @@
 from inspect import getmro
 from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, cast
 
+from lilya import status
+from lilya.exceptions import HTTPException as LilyaException
+from lilya.middleware.exceptions import ExceptionMiddleware as LilyaExceptionMiddleware
+from lilya.responses import Response as LilyaResponse
+from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
-from starlette import status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.middleware.errors import ServerErrorMiddleware
-from starlette.middleware.exceptions import ExceptionMiddleware as StarletteExceptionMiddleware
-from starlette.responses import Response as StarletteResponse
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
 from esmerald.exceptions import HTTPException, WebSocketException
 from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
+from esmerald.middleware.errors import ServerErrorMiddleware
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.types import ExceptionHandler, ExceptionHandlerMap
 from esmerald.websockets import WebSocket
 
 
-class ExceptionMiddleware(StarletteExceptionMiddleware):
+class ExceptionMiddleware(LilyaExceptionMiddleware):
     """
     Reimplementation of the Exception Middleware.
     """
@@ -35,7 +35,7 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
         self._status_handlers: Dict[int, Callable] = {}
         self._exception_handlers: Dict[Type[Exception], Callable] = {
             HTTPException: http_exception_handler,
-            StarletteHTTPException: http_exception_handler,
+            LilyaException: http_exception_handler,
             WebSocketException: self.websocket_exception,
         }
         if handlers is not None:
@@ -49,7 +49,7 @@ class ExceptionMiddleware(StarletteExceptionMiddleware):
             await self.app(scope, receive, send)
             return
 
-        scope["starlette.exception_handlers"] = (
+        scope["lilya.exception_handlers"] = (
             self._exception_handlers,
             self._status_handlers,
         )
@@ -99,7 +99,7 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             if isinstance(ex, WebSocketException):
                 code = ex.code
                 reason = ex.detail
-            elif isinstance(ex, StarletteHTTPException):
+            elif isinstance(ex, LilyaException):
                 code = ex.status_code + 4000
                 reason = ex.detail
             else:
@@ -109,13 +109,11 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             event = {"type": "websocket.close", "code": code, "reason": reason}
             await send(event)
 
-    def default_http_exception_handler(
-        self, request: Request, exc: Exception
-    ) -> "StarletteResponse":
+    def default_http_exception_handler(self, request: Request, exc: Exception) -> "LilyaResponse":
         """Default handler for exceptions subclassed from HTTPException."""
         status_code = (
             exc.status_code
-            if isinstance(exc, StarletteHTTPException)
+            if isinstance(exc, LilyaException)
             else status.HTTP_500_INTERNAL_SERVER_ERROR
         )
         if status_code == status.HTTP_500_INTERNAL_SERVER_ERROR and self.debug:
@@ -124,7 +122,7 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
         return self.create_exception_response(exc)
 
     def create_exception_response(self, exc: Exception) -> Response:
-        if isinstance(exc, (HTTPException, StarletteHTTPException)):
+        if isinstance(exc, (HTTPException, LilyaException)):
             content = ResponseContent(detail=exc.detail, status_code=exc.status_code)
             if isinstance(exc, HTTPException):
                 extra = exc.extra.get("extra", {})
@@ -136,9 +134,7 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             media_type=MediaType.JSON,
             content=content.model_dump(exclude_none=True),
             status_code=content.status_code,
-            headers=(
-                exc.headers if isinstance(exc, (HTTPException, StarletteHTTPException)) else None
-            ),
+            headers=(exc.headers if isinstance(exc, (HTTPException, LilyaException)) else None),
         )
 
     def get_exception_handler(

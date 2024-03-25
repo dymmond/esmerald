@@ -1,7 +1,7 @@
 from typing import Any, TypeVar
 
 from edgy import ObjectNotFound
-from starlette.types import ASGIApp
+from lilya.types import ASGIApp
 
 from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.common.middleware import CommonJWTAuthMiddleware

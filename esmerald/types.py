@@ -13,9 +13,9 @@ from typing import (
     get_args,
 )
 
-from starlette.middleware import Middleware as StarletteMiddleware  # noqa
-from starlette.responses import Response as StarletteResponse  # noqa
-from starlette.types import ASGIApp  # noqa
+from lilya.middleware import DefineMiddleware  # noqa
+from lilya.responses import Response as LilyaResponse  # noqa
+from lilya.types import ASGIApp  # noqa
 from typing_extensions import Literal
 
 from esmerald.backgound import BackgroundTask, BackgroundTasks
@@ -70,7 +70,7 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
 HTTPMethods = get_args(HTTPMethod)
 
-Middleware = StarletteMiddleware
+Middleware = DefineMiddleware
 
 ResponseType = Type[Response]
 

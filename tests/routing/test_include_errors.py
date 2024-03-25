@@ -28,7 +28,7 @@ def test_raise_error_namespace(arg):
 @pytest.mark.parametrize("arg", [gateway, 2, get])
 def test_raise_error_pattern(arg):
     with pytest.raises(ImproperlyConfigured):
-        Include(pattern=arg)
+        Include(pattern=arg, routes=[gateway])
 
 
 def test_raise_error_pattern_and_routes():

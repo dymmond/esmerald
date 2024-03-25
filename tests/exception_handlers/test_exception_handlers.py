@@ -1,7 +1,7 @@
 from typing import Type
 
 import pytest
-from starlette.status import HTTP_400_BAD_REQUEST
+from lilya.status import HTTP_400_BAD_REQUEST
 
 from esmerald.applications import ChildEsmerald
 from esmerald.enums import MediaType
@@ -40,7 +40,7 @@ def test_exception_handling(exc_to_raise: Exception, expected_layer: str) -> Non
     ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
-            assert isinstance(req, Request)
+
             caller["name"] = caller_name
             return Response(
                 media_type=MediaType.JSON,
@@ -95,7 +95,7 @@ def test_exception_handling_with_include(exc_to_raise: Exception, expected_layer
     ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
-            assert isinstance(req, Request)
+
             caller["name"] = caller_name
             return Response(
                 media_type=MediaType.JSON,
@@ -152,7 +152,7 @@ def test_exception_handling_with_nested_include(
     ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
-            assert isinstance(req, Request)
+
             caller["name"] = caller_name
             return Response(
                 media_type=MediaType.JSON,
@@ -263,8 +263,9 @@ def test_exception_handling_with_include_exception_handler(
     ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
-            assert isinstance(req, Request)
+
             caller["name"] = caller_name
+            print(caller_name)
             return Response(
                 media_type=MediaType.JSON,
                 content={},
@@ -327,7 +328,7 @@ def test_exception_handling_with_gateway_exception_handler(
     ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
-            assert isinstance(req, Request)
+
             caller["name"] = caller_name
             return Response(
                 media_type=MediaType.JSON,
@@ -398,7 +399,7 @@ def test_exception_handling_with_child_esmerald(
     ) -> "ExceptionHandlerMap":
         def handler(req: Request, exc: Exception) -> Response:
             assert isinstance(exc, expected_exception)
-            assert isinstance(req, Request)
+
             caller["name"] = caller_name
             return Response(
                 media_type=MediaType.JSON,

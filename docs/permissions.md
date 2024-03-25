@@ -4,8 +4,11 @@ Authentication and authorization are a must in every application. Managing those
 and also widely used but with **Esmerald** you have a clear separation of permissions although still allowing
 [inject](./dependencies.md) to happen as well.
 
-Inspired by the same author of Starlette, Esmerald permissions are as simple as you want them to be and as complex
+Inspired by the same author of Django Rest Framework, Esmerald permissions are as simple as you want them to be and as complex
 as you design. For all tastes.
+
+!!! Note
+    This permission system is not the same as the [Lilya permission system](https://lilya.dev/permissions).
 
 ## BasePermission and custom permissions
 

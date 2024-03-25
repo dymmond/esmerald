@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional, Sequence, TypeVar
 
-from starlette._utils import is_async_callable
-from starlette.types import Lifespan, Receive, Scope, Send
+from lilya.compat import is_async_callable
+from lilya.types import Lifespan, Receive, Scope, Send
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.types import LifeSpanHandler
@@ -14,10 +14,6 @@ class AyncLifespanContextManager:  # pragma: no cover
     """
     Manages and handles the on_startup and on_shutdown events
     in an Esmerald way.
-
-    This is not the same as the on_startup and on_shutdown
-    from Starlette. Those are now deprecated and will be removed
-    in the version 1.0 of Starlette.
 
     This aims to provide a similar functionality but by generating
     a lifespan event based on the values from the on_startup and on_shutdown
@@ -39,7 +35,7 @@ class AyncLifespanContextManager:  # pragma: no cover
         """Runs the functions on startup"""
         for handler in self.on_startup:
             if is_async_callable(handler):
-                await handler()
+                await handler()  # type: ignore
             else:
                 handler()
 
@@ -47,7 +43,7 @@ class AyncLifespanContextManager:  # pragma: no cover
         """Runs the functions on shutdown"""
         for handler in self.on_shutdown:
             if is_async_callable(handler):
-                await handler()
+                await handler()  # type: ignore
             else:
                 handler()
 
@@ -57,7 +53,7 @@ def handle_lifespan_events(
     on_shutdown: Optional[Sequence["LifeSpanHandler"]] = None,
     lifespan: Optional[Lifespan[Any]] = None,
 ) -> Any:  # pragma: no cover
-    """Handles with the lifespan events in the new Starlette format of lifespan.
+    """Handles with the lifespan events in the new Lilya format of lifespan.
     This adds a mask that keeps the old `on_startup` and `on_shutdown` events variable
     declaration for legacy and comprehension purposes and build the async context manager
     for the lifespan.

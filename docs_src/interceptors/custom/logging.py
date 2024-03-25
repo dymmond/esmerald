@@ -1,5 +1,6 @@
 from loguru import logger
-from starlette.types import Receive, Scope, Send
+
+from lilya.types import Receive, Scope, Send
 
 
 class LoggingInterceptor:

@@ -65,7 +65,7 @@ class CSRFConfig(BaseModel):
             """
         ),
     ] = "X-CSRFToken"
-    cookie_secure: Annotated[
+    secure: Annotated[
         bool,
         Doc(
             """
@@ -73,7 +73,7 @@ class CSRFConfig(BaseModel):
             """
         ),
     ] = False
-    cookie_httponly: Annotated[
+    httponly: Annotated[
         bool,
         Doc(
             """
@@ -81,7 +81,7 @@ class CSRFConfig(BaseModel):
             """
         ),
     ] = False
-    cookie_samesite: Annotated[
+    samesite: Annotated[
         Literal["lax", "strict", "none"],
         Doc(
             """
@@ -89,7 +89,7 @@ class CSRFConfig(BaseModel):
             """
         ),
     ] = "lax"
-    cookie_domain: Annotated[
+    domain: Annotated[
         Optional[str],
         Doc(
             """

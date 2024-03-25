@@ -1,21 +1,24 @@
 from .base import (
+    Error,
     FileResponse,
     HTMLResponse,
     JSONResponse,
-    PlainTextResponse,
+    LilyaResponse,
+    PlainText,
     Response,
-    StarletteResponse,
     StreamingResponse,
 )
 from .template import TemplateResponse
 
 __all__ = [
+    "Error",
     "FileResponse",
     "HTMLResponse",
     "JSONResponse",
-    "PlainTextResponse",
+    "PlainText",
+    "PlainText",
     "Response",
-    "StarletteResponse",
+    "LilyaResponse",
     "StreamingResponse",
     "TemplateResponse",
 ]
