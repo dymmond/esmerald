@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.0.0
+
+### Changed
+
+- Moved from beta v3 version to the official v3 of Esmerald fully supporting [Lilya](https://lilya.dev).
+
 ## 3.0.0-beta2
 
 ### Added
