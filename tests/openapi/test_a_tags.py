@@ -14,7 +14,7 @@ app = Esmerald(
     routes=[Gateway(handler=bar)],
     enable_openapi=True,
     tags=["test"],
-    settings_config=TestSettings,
+    settings_module=TestSettings,
 )
 
 

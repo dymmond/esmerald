@@ -46,7 +46,7 @@ def test_security_basic(auth):
         routes=[Gateway(handler=read_item), Gateway(handler=read_people)],
         enable_openapi=True,
         include_in_schema=True,
-        settings_config=TestSettings(),
+        settings_module=TestSettings(),
     ) as client:
         response = client.get("/openapi.json")
 

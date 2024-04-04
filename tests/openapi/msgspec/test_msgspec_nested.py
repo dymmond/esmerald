@@ -19,7 +19,7 @@ def user_with_pydantic(payload: AddressBook) -> None: ...
 
 def test_user_msgspec_openapi(test_client_factory):
     with create_client(
-        routes=[Gateway(handler=user_with_pydantic)], settings_config=TestSettings
+        routes=[Gateway(handler=user_with_pydantic)], settings_module=TestSettings
     ) as client:
         response = client.get("/openapi.json")
 

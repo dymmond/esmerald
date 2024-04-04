@@ -50,7 +50,7 @@ def test_child_nested_esmerald_disabled_openapi():
                 ),
             ),
         ],
-        settings_config=TestSettings,
+        settings_module=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -121,7 +121,7 @@ def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
             ),
             Gateway(handler=read_people),
         ],
-        settings_config=TestSettings(),
+        settings_module=TestSettings(),
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -192,7 +192,7 @@ def test_access_nested_child_esmerald_openapi_only(test_client_factory):
                 ),
             ),
         ],
-        settings_config=TestSettings,
+        settings_module=TestSettings,
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text
@@ -272,7 +272,7 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
                 ),
             ),
         ],
-        settings_config=TestSettings(),
+        settings_module=TestSettings(),
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text
@@ -350,7 +350,7 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_include_openapi_
                 ),
             ),
         ],
-        settings_config=TestSettings(),
+        settings_module=TestSettings(),
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text

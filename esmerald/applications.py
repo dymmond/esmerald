@@ -1,4 +1,3 @@
-import warnings
 from datetime import timezone as dtimezone
 from functools import cached_property
 from typing import (
@@ -144,22 +143,6 @@ class Esmerald(Lilya):
     def __init__(
         self: AppType,
         *,
-        settings_config: Annotated[
-            Optional["SettingsType"],
-            Doc(
-                """
-                Alternative settings parameter. This parameter is an alternative to
-                `ESMERALD_SETTINGS_MODULE` way of loading your settings into an Esmerald application.
-
-                Read more about the [settings module](https://esmerald.dev/application/settings/)
-                and how you can leverage it in your application.
-
-                !!! Warning
-                    This option will be deprecated in the version 2.9 of Esmerald. Please use
-                    `settings_module` instead.
-                """
-            ),
-        ] = None,
         settings_module: Annotated[
             Optional["SettingsType"],
             Doc(
@@ -1483,24 +1466,7 @@ class Esmerald(Lilya):
             ),
         ] = None,
     ) -> None:
-        assert (
-            settings_config is None or settings_module is None
-        ), "You can use `settings_module` or `settings_config` but not both."
-
-        if settings_config:
-            warnings.warn(
-                "The `settings_config` is deprecated, and will be removed in version 2.9.0. "  # noqa: E501
-                "Use `settings_module` instead.",  # noqa: E501
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
-        self.settings_config = None
-        self.settings_module = None
-
-        settings_module = settings_module or settings_config
-
-        if settings_module:
+        if self.settings_module is not None:
             if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_module, EsmeraldAPISettings
             ):

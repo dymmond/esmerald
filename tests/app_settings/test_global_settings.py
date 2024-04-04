@@ -30,7 +30,7 @@ class CorsAppSettings(EsmeraldAPISettings):
 
 
 def test_reload_false():
-    app = Esmerald(routes=[], settings_config=AppSettings)
+    app = Esmerald(routes=[], settings_module=AppSettings)
 
     assert app.default_settings.reload is True
 
@@ -39,13 +39,13 @@ def test_reload_false():
 
 
 def test_routes_empty():
-    app = Esmerald(routes=[], settings_config=AppSettings)
+    app = Esmerald(routes=[], settings_module=AppSettings)
 
     assert app.settings.routes == []
 
 
 def test_cors_config():
-    app = Esmerald(routes=[], settings_config=CorsAppSettings(), allow_origins=["*"])
+    app = Esmerald(routes=[], settings_module=CorsAppSettings(), allow_origins=["*"])
 
     assert app.default_settings.reload is True
 
@@ -58,10 +58,10 @@ def test_scheduler_class_raises_error(monkeypatch):
     monkeypatch.setattr(builtins, "__import__", monkey_import_importerror)
 
     with pytest.raises(ImportError):
-        Esmerald(routes=[], settings_config=SchedulerClassSettings)
+        Esmerald(routes=[], settings_module=SchedulerClassSettings)
 
 
 def test_scheduler_class():
-    app = Esmerald(routes=[], settings_config=SchedulerClassSettings)
+    app = Esmerald(routes=[], settings_module=SchedulerClassSettings)
 
     assert app.settings.scheduler_class == AsyncIOScheduler

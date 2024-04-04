@@ -32,7 +32,7 @@ def test_add_include_to_openapi(test_client_factory):
             Gateway(handler=read_people),
             Include("/child", routes=[Gateway(handler=read_item)]),
         ],
-        settings_config=TestSettings,
+        settings_module=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -104,7 +104,7 @@ def test_include_no_include_in_schema(test_client_factory):
             Gateway(handler=read_people),
             Include("/child", routes=[Gateway(handler=read_item)], include_in_schema=False),
         ],
-        settings_config=TestSettings(),
+        settings_module=TestSettings(),
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text

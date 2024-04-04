@@ -43,7 +43,7 @@ def test_external_app_not_include_in_schema(test_client_factory):
             Gateway(handler=read_people),
             Include("/child", app=WSGIMiddleware(flask_app)),
         ],
-        settings_config=TestSettings,
+        settings_module=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text

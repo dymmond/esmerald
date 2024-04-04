@@ -19,7 +19,7 @@ app = Esmerald(
     title="Custom title",
     summary="Summary",
     description="Description",
-    settings_config=TestSettings,
+    settings_module=TestSettings,
 )
 app.add_router(router=router)
 
@@ -63,7 +63,7 @@ def test_openapi_schema():
     }
 
 
-another_app = Esmerald(title="Esmerald", enable_openapi=True, settings_config=TestSettings)
+another_app = Esmerald(title="Esmerald", enable_openapi=True, settings_module=TestSettings)
 another_router = Router(routes=[Gateway(path="/people", handler=read_people)])
 another_app.add_router(router=another_router)
 

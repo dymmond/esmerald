@@ -21,7 +21,6 @@ to leverage those.
 There are two ways of using the settings object within an Esmerald application.
 
 * Using the **ESMERALD_SETTINGS_MODULE**
-* Using the **[settings_config](#the-settings_config)** *(deprecated)*
 * Using the **[settings_module](#the-settings_module)**
 
 Each one of them has particular use cases but they also work together is perfect harmony.
@@ -117,15 +116,6 @@ if nothing is provided then it will execute the application defaults.
 
 It is very simple, `ESMERALD_SETTINGS_MODULE` looks for the custom settings class created for the application
 and loads it in lazy mode.
-
-## The settings_config
-
-For consistency, this parameter will be deprecated and `settings_module` will be the official one
-to be used. Nothing changes for you except the parameter name. Please refer to [settings_module](#the-settings_module).
-
-!!! Warning
-    This property although still available to be used for backwards compatibility, it will be removed
-    from verion 2.9.0. Make sure you use [settings_module](#the-settings_module) instead.
 
 ## The settings_module
 

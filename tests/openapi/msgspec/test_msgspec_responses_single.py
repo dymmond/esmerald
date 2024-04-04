@@ -18,7 +18,7 @@ def user(payload: User) -> None: ...
 
 
 def test_user_msgspec_with_pydantic_openapi(test_client_factory):
-    with create_client(routes=[Gateway(handler=user)], settings_config=TestSettings) as client:
+    with create_client(routes=[Gateway(handler=user)], settings_module=TestSettings) as client:
         response = client.get("/openapi.json")
 
         assert response.json() == {

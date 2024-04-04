@@ -23,7 +23,7 @@ def test_openapi_schema():
         routes=[],
         enable_openapi=True,
         webhooks=[WebhookGateway(handler=new_payment)],
-        settings_config=TestSettings,
+        settings_module=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
 
