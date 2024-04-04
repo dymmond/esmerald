@@ -37,11 +37,7 @@ class EsmeraldLazySettings(LazyObject):
         is used the first time settings are needed, if the user hasn't
         configured settings manually.
         """
-        settings_module: str = os.environ.get(
-            ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
-        )
-
-        settings: Type["EsmeraldAPISettings"] = import_string(settings_module)
+        settings: Type["EsmeraldAPISettings"] = reload_settings()
 
         for setting, _ in settings().model_dump().items():
             assert setting.islower(), "%s should be in lowercase." % setting
