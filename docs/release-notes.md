@@ -60,6 +60,10 @@ corresponding value of the `title` according to the settings of the app that is 
 - Remove `settings_config` in favor of the `settings_module`.
 - Bump Lilya version to 0.3.3.
 
+### Fixed
+
+- Documentation references. [#PR 282](https://github.com/dymmond/esmerald/pull/282) by [@DJWOMS](https://github.com/DJWOMS)
+
 ## 3.0.0
 
 ### Changed
