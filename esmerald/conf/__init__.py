@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Optional, Type
 
 from lilya._internal._module_loading import import_string
@@ -9,6 +10,18 @@ if TYPE_CHECKING:
     from esmerald.conf.global_settings import EsmeraldAPISettings
 
 ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
+
+
+@lru_cache
+def reload_settings() -> Type["EsmeraldAPISettings"]:
+    """
+    Reloads the global settings.
+    """
+    settings_module: str = os.environ.get(
+        ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
+    )
+    settings: Type["EsmeraldAPISettings"] = import_string(settings_module)
+    return settings
 
 
 class EsmeraldLazySettings(LazyObject):
@@ -24,16 +37,20 @@ class EsmeraldLazySettings(LazyObject):
         is used the first time settings are needed, if the user hasn't
         configured settings manually.
         """
-        settings_module: str = os.environ.get(
-            ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
-        )
-
-        settings: Type["EsmeraldAPISettings"] = import_string(settings_module)
+        settings: Type["EsmeraldAPISettings"] = reload_settings()
 
         for setting, _ in settings().model_dump().items():
             assert setting.islower(), "%s should be in lowercase." % setting
 
         self._wrapped = settings()
+
+    def configure(self, override_settings: Type["EsmeraldAPISettings"]) -> None:
+        """
+        Making sure the settings are overriden by the settings_module
+        provided by a given application and therefore use it as the application
+        global.
+        """
+        self._wrapped = override_settings
 
     def __repr__(self: "EsmeraldLazySettings") -> str:
         # Hardcode the class name as otherwise it yields 'Settings'.

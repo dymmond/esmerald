@@ -87,9 +87,6 @@ class DisableOpenAPI(EsmeraldAPISettings):
 
 
 def test_settings_global(test_client_factory):
-    """
-    Tests settings are setup properly
-    """
     with create_client(
         app_name="my app",
         routes=[Gateway(handler=_request_settings), Gateway(handler=_app_settings)],
@@ -119,10 +116,6 @@ def test_settings_global_without_parameters(test_client_factory):
 
 
 def test_inner_settings_config(test_client_factory):
-    """
-    Test passing a settings config and being used with teh ESMERALD_SETTINGS_MODULE
-    """
-
     class AppSettings(DisableOpenAPI):
         app_name: str = "new app"
         allowed_hosts: List[str] = ["*", "*.testserver.com"]
@@ -149,10 +142,6 @@ def test_inner_settings_config(test_client_factory):
 
 
 def test_inner_settings_config_as_instance(test_client_factory):
-    """
-    Test passing a settings config and being used with teh ESMERALD_SETTINGS_MODULE
-    """
-
     class AppSettings(DisableOpenAPI):
         app_name: str = "new app"
         allowed_hosts: List[str] = ["*", "*.testserver.com"]
@@ -180,10 +169,6 @@ def test_inner_settings_config_as_instance(test_client_factory):
 
 
 def test_child_esmerald_independent_settings(test_client_factory):
-    """
-    Tests that a ChildEsmerald can have indepedent settings module
-    """
-
     class ChildSettings(DisableOpenAPI):
         app_name: str = "child app"
         secret_key: str = "child key"
@@ -210,9 +195,6 @@ def test_child_esmerald_independent_settings(test_client_factory):
 
 
 def test_child_esmerald_independent_cors_config(test_client_factory):
-    """
-    Tests that a ChildEsmerald can have indepedent settings module
-    """
     cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
@@ -248,10 +230,6 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
 
 
 def test_nested_child_esmerald_independent_settings(test_client_factory):
-    """
-    Tests that a nested ChildEsmerald can have indepedent settings module
-    """
-
     class NestedChildSettings(DisableOpenAPI):
         app_name: str = "nested child app"
         secret_key: str = "nested child key"
