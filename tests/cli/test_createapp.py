@@ -47,7 +47,7 @@ def _run_asserts():
     assert os.path.isfile("myapp/v1/__init__.py") is True
     assert os.path.isfile("myapp/v1/schemas.py") is True
     assert os.path.isfile("myapp/v1/urls.py") is True
-    assert os.path.isfile("myapp/v1/views.py") is True
+    assert os.path.isfile("myapp/v1/controllers.py") is True
     assert os.path.isfile("myapp/directives/__init__.py") is True
     assert os.path.isfile("myapp/directives/operations/__init__.py") is True
 
