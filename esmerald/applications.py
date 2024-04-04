@@ -1466,7 +1466,7 @@ class Esmerald(Lilya):
             ),
         ] = None,
     ) -> None:
-        if self.settings_module is not None:
+        if settings_module is not None:
             if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_module, EsmeraldAPISettings
             ):
