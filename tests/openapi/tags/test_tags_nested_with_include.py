@@ -13,7 +13,7 @@ async def bar() -> Dict[str, str]:
 app = Esmerald(
     routes=[Include("/api/v2", routes=[Include(routes=[Gateway(handler=bar)])], tags=["Include"])],
     enable_openapi=True,
-    settings_config=TestSettings,
+    settings_module=TestSettings,
 )
 
 

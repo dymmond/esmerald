@@ -72,7 +72,7 @@ Once the project is generated you should have a folder structure similar to this
     │       └── v1
     │           ├── __init__.py
     │           ├── urls.py
-    │           └── views.py
+    │           └── controllers.py
     ├── core
     │   ├── __init__.py
     │   │   └── __init__.cpython-39.pyc

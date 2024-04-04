@@ -196,7 +196,7 @@ By default, the `createapp` generates a python module with a `v1` sub-module tha
 * **schemas.py** - Empty file with a simple pydantic `BaseModel` import and where you can place any,
 as the import suggests, pydantic model to be used with the `accounts/v1`.
 * **urls.py** - You can place the urls of the views of your `accounts/v1`.
-* **views.py** - You can place all the handlers and views of your `accounts/v1`.
+* **controllers.py** - You can place all the handlers and views of your `accounts/v1`.
 
 A **tests** file is also generated suggesting that you could also add some specific application tests there.
 
@@ -227,7 +227,7 @@ What are we going to do?
 
 #### Create the view
 
-```python title="myproject/apps/accounts/v1/views.py"
+```python title="myproject/apps/accounts/v1/controllers.py"
 {!> ../docs_src/management/views.py !}
 ```
 

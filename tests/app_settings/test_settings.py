@@ -115,7 +115,7 @@ def test_settings_global_without_parameters(test_client_factory):
         assert app_settings.json() == "test_client"
 
 
-def test_inner_settings_config(test_client_factory):
+def test_inner_settings_module(test_client_factory):
     class AppSettings(DisableOpenAPI):
         app_name: str = "new app"
         allowed_hosts: List[str] = ["*", "*.testserver.com"]
@@ -141,7 +141,7 @@ def test_inner_settings_config(test_client_factory):
         assert isinstance(client.app.settings_module, EsmeraldAPISettings)
 
 
-def test_inner_settings_config_as_instance(test_client_factory):
+def test_inner_settings_module_as_instance(test_client_factory):
     class AppSettings(DisableOpenAPI):
         app_name: str = "new app"
         allowed_hosts: List[str] = ["*", "*.testserver.com"]

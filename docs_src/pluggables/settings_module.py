@@ -31,4 +31,4 @@ class AppSettings(EsmeraldAPISettings):
         return {"my-extension": Pluggable(MyExtension, config=my_config)}
 
 
-app = Esmerald(routes=[], settings_config=AppSettings)
+app = Esmerald(routes=[], settings_module=AppSettings)

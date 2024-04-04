@@ -33,7 +33,7 @@ def test_logger():
     def home() -> None:
         """"""
 
-    app = Esmerald(routes=[Gateway(handler=home)], settings_config=DevelopmentAppSettings)
+    app = Esmerald(routes=[Gateway(handler=home)], settings_module=DevelopmentAppSettings)
 
     client = EsmeraldTestClient(app)
 

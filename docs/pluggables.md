@@ -112,7 +112,7 @@ of the extension.
 ### Standalone object
 
 But, what if I don't want to use the [Extension](#extension) object for my pluggable? Is this
-possible? 
+possible?
 
 Short answer, yes, but this comes with limitations:
 
@@ -171,8 +171,8 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
 
-If you prefer, you can also use the [settings_config](./application/settings.md#the-settings_config).
+If you prefer, you can also use the [settings_module](./application/settings.md#the-settings_module).
 
 ```python hl_lines="34"
-{!> ../docs_src/pluggables/settings_config.py !}
+{!> ../docs_src/pluggables/settings_module.py !}
 ```

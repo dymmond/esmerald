@@ -242,7 +242,7 @@ This middleware has `settings` as optional parameter.
 
 RequestSettingsMiddleware adds two types of settings to the request, the `global_settings` where is
 the global Esmerald settings and the `app_settings` which corresponds to the
-[settings_config](../application/settings.md#the-settings_config), if any,
+[settings_module](../application/settings.md#the-settings_module), if any,
 passed to the Esmerald or ChildEsmerald instance.
 
 ```python hl_lines="6 8"

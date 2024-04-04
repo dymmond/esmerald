@@ -47,7 +47,7 @@ def test_add_middleware_to_openapi(test_client_factory):
             ),
         ],
         enable_openapi=True,
-        settings_config=TestSettings,
+        settings_module=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
