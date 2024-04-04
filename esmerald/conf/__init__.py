@@ -35,6 +35,14 @@ class EsmeraldLazySettings(LazyObject):
 
         self._wrapped = settings()
 
+    def configure(self, override_settings: Type["EsmeraldAPISettings"]) -> None:
+        """
+        Making sure the settings are overriden by the settings_module
+        provided by a given application and therefore use it as the application
+        global.
+        """
+        self._wrapped = override_settings
+
     def __repr__(self: "EsmeraldLazySettings") -> str:
         # Hardcode the class name as otherwise it yields 'Settings'.
         if self._wrapped is empty:

@@ -36,6 +36,7 @@ from esmerald.exception_handlers import (
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.interceptors.types import Interceptor
+from esmerald.middleware.app_settings import ApplicationSettingsMiddleware
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
 from esmerald.middleware.csrf import CSRFMiddleware
@@ -2417,6 +2418,7 @@ class Esmerald(Lilya):
             ]
             + self.user_middleware
             + [
+                DefineMiddleware(ApplicationSettingsMiddleware),
                 DefineMiddleware(
                     ExceptionMiddleware,
                     handlers=exception_handlers,
