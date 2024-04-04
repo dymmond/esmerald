@@ -95,4 +95,4 @@ def test_app_settings_middleware_nested_with_child_esmerald_and_global(test_clie
 
         response = client.get("/another-child/home")
 
-        assert response.json() == {"title": "Esmerald", "debug": False}
+        assert response.json() == {"title": "Esmerald", "debug": True}

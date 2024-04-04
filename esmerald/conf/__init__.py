@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Optional, Type
 
 from lilya._internal._module_loading import import_string
@@ -9,6 +10,18 @@ if TYPE_CHECKING:
     from esmerald.conf.global_settings import EsmeraldAPISettings
 
 ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
+
+
+@lru_cache
+def reload_settings() -> Type["EsmeraldAPISettings"]:
+    """
+    Reloads the global settings.
+    """
+    settings_module: str = os.environ.get(
+        ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
+    )
+    settings: Type["EsmeraldAPISettings"] = import_string(settings_module)
+    return settings
 
 
 class EsmeraldLazySettings(LazyObject):

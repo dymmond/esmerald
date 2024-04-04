@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from lilya.types import ASGIApp, Receive, Scope, Send
 
 from esmerald import settings
-from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.conf import reload_settings
 from esmerald.protocols.middleware import MiddlewareProtocol
 
 if TYPE_CHECKING:
@@ -23,6 +23,6 @@ class ApplicationSettingsMiddleware(MiddlewareProtocol):
         if getattr(app, "settings_module", None) is not None:
             settings.configure(app.settings)
         else:
-            app_settings = EsmeraldAPISettings()
-            settings.configure(app_settings)
+            app_settings = reload_settings()
+            settings.configure(app_settings())
         await self.app(scope, receive, send)

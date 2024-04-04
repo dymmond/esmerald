@@ -23,7 +23,7 @@ from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl, ValidationError
 from typing_extensions import Annotated, Doc
 
-from esmerald.conf import settings as esmerald_settings
+from esmerald.conf import reload_settings, settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
@@ -2534,6 +2534,14 @@ class Esmerald(Lilya):
                 scope["root_include_path"] = scope["route_root_path"]
         return scope
 
+    async def globalise_settings(self) -> None:
+        """
+        Making sure the global settings remain as is
+        after the request is done.
+        """
+        settings = reload_settings()
+        esmerald_settings.configure(settings())
+
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "lifespan":
             await self.router.lifespan(scope, receive, send)
@@ -2544,6 +2552,7 @@ class Esmerald(Lilya):
 
         scope["state"] = {}
         await super().__call__(scope, receive, send)
+        await self.globalise_settings()
 
     def route(
         self,
