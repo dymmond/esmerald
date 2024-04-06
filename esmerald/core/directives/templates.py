@@ -34,6 +34,7 @@ class TemplateDirective(BaseDirective):
         self.verbosity = options["verbosity"]
         self.with_deployment = options.get("with_deployment", False)
         self.deployment_folder_name = options.get("deployment_folder_name", None)
+        self.with_basic_controller = options.get("with_basic_controller", False)
 
         if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
             self.validate_name(name)
@@ -61,6 +62,8 @@ class TemplateDirective(BaseDirective):
             "esmerald_version": self.get_version(),
             "project_secret": options.get("secret_key"),
             "deployment_folder": self.deployment_folder_name,
+            "with_basic_controller": self.with_basic_controller,
+            "name": name,
         }
 
         template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_subdir)
