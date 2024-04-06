@@ -172,6 +172,11 @@ This is another directive that allows you to generate a scaffold for a possible 
 
     <sup>Default: `1`</sup>
 
+* **--with-basic-controller** - Flag indicating if the creation of an application should come with
+a basic controller example.
+
+    <sup>Default: `False`</sup>
+
 ```shell
 $ esmerald createapp <YOUR-APP-NAME>
 ```
