@@ -63,6 +63,7 @@ class TemplateDirective(BaseDirective):
             "project_secret": options.get("secret_key"),
             "deployment_folder": self.deployment_folder_name,
             "with_basic_controller": self.with_basic_controller,
+            "name": name,
         }
 
         template_dir = os.path.join(esmerald.__path__[0], "conf/directives", base_subdir)

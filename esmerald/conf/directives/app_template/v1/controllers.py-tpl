@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 
-class UserAPIView(APIView):
+class {{ name|capitalize }}APIView(APIView):
     """
     A user controller that defines the basic
     operations of the CRUD.
@@ -28,8 +28,8 @@ class UserAPIView(APIView):
         defined ones.
     """
 
-    path: str = "/users"
-    tags: list["str"] = ["User"]
+    path: str = "/{{ name|lower }}"
+    tags: list["str"] = ["{{ name|capitalize }}"]
     dependencies: "Dependencies" = {}
 
     @post("/")

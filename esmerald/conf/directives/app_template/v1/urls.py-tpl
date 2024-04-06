@@ -8,10 +8,10 @@ from esmerald import Include, Gateway
 route_patterns = [
 ]
 {% else %}
-from .controllers import UserAPIView
+from .controllers import {{ name|capitalize }}APIView
 
 
 route_patterns = [
-    Gateway(handler=UserAPIView)
+    Gateway(handler={{ name|capitalize }}APIView)
 ]
 {% endif %}
