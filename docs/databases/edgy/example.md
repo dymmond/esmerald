@@ -19,7 +19,7 @@ We will be using SQLite for this example but feel free to integrate with your da
 We will also be assuming the following:
 
 - Models are inside an `accounts/models.py`
-- Views/APIs are inside an `accounts/views.py`
+- Controllers/APIs are inside an `accounts/controllers.py`
 - The main application is inside an `app.py`
 - The [jwt_config](../../configurations/jwt.md#jwtconfig-and-application-settings)
 is inside your global [settings](../../application/settings.md).
@@ -43,7 +43,7 @@ that allows the creation of users in the system.
 This example won't cover corner cases like integrity in case of duplicates and so on as this is
 something that you can easily manage.
 
-```python title="accounts/views.py"
+```python title="accounts/controllers.py"
 {!> ../docs_src/databases/edgy/example/create_user.py !}
 ```
 
@@ -55,7 +55,7 @@ that also allow us to login and return the JWT access token.
 For this API to work, we need to guarantee the data being sent is valid, authenticate and then
 return the JWT token.
 
-```python title="accounts/views.py"
+```python title="accounts/controllers.py"
 {!> ../docs_src/databases/edgy/example/login.py !}
 ```
 
@@ -79,7 +79,7 @@ simply proceeds with the `authenticate` method where it will return the JWT for 
 Now it is time to create the api that will be returning the email of the logged in user when hit.
 The API is pretty much simple and clean.
 
-```python title="accounts/views.py"
+```python title="accounts/controllers.py"
 {!> ../docs_src/databases/edgy/example/home.py !}
 ```
 

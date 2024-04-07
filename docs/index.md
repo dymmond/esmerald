@@ -323,10 +323,10 @@ Those are special objects that allow all the magic of Esmerald to happen.
 
 Good design is always encouraged and Esmerald allows complex routing on any [level](./application/levels.md).
 
-### The handlers (views)
+### The handlers (controllers)
 
-```python title="src/myapp/accounts/views.py"
-{!> ../docs_src/routing/routes/include/views.py!}
+```python title="src/myapp/accounts/controllers.py"
+{!> ../docs_src/routing/routes/include/controllers.py!}
 ```
 
 If a `path` is not provided, defaults to `/`.

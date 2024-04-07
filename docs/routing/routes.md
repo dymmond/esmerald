@@ -94,8 +94,8 @@ All the parameters and defaults are available in the [Include Reference](../refe
 
 #### Using a different pattern
 
-```python title="src/myapp/accounts/views.py"
-{!> ../docs_src/routing/routes/include/views.py!}
+```python title="src/myapp/accounts/controllers.py"
+{!> ../docs_src/routing/routes/include/controllers.py!}
 ```
 
 ```python title="src/myapp/accounts/urls.py" hl_lines="5"

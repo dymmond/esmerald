@@ -54,7 +54,7 @@ The same is applied also to [exception handlers](./exception-handlers.md).
 Now let us imagine that we have a web application with one of the views. Something like this:
 
 ```python hl_lines="17"
-{!> ../docs_src/dependencies/views.py !}
+{!> ../docs_src/dependencies/controllers.py !}
 ```
 
 As you can notice, the `user_dao`` is injected automatically using the appropriate level of dependency injection.

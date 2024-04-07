@@ -225,7 +225,7 @@ Let's do an example using exactly what we previously generated and put the appli
 
 What are we going to do?
 
-* Add a *view* to the accounts.
+* Add a *controller* to the accounts.
 * Add the path to the `urls` of the accounts.
 * Add the `accounts` urls to the application urls.
 * Start the application.
@@ -233,7 +233,7 @@ What are we going to do?
 #### Create the view
 
 ```python title="myproject/apps/accounts/v1/controllers.py"
-{!> ../docs_src/management/views.py !}
+{!> ../docs_src/management/controllers.py !}
 ```
 
 Create a view to return the message `Welcome home!`.
