@@ -26,7 +26,7 @@ The routing is the same as declaring the routing for the handler with a simple p
 need to declare handler by handler. Since everything is inside an [APIView](#apiview)
 objects the handlers will be automatically routed by **Esmerald** with the joint [path](#apiview-path) given to class.
 
-```python title='views.py'
+```python title='controllers.py'
 {!> ../docs_src/routing/handlers/apiviews/apiview.py !}
 ```
 

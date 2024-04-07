@@ -103,7 +103,7 @@ for a given API.
 Let us assume a few things.
 
 * There is a `User` model inside an `accounts/models.py`.
-* The views are placed inside `accounts/views.py`.
+* The controllers are placed inside `accounts/controllers.py`.
 * We will be subclassing an exising [middleware](../databases/edgy/middleware.md) to make it easier.
 * The `middleware` is placed inside an `accounts/middleware.py`
 * The [JWTConfig](#jwtconfig) is inside a settings file already configured.
@@ -192,7 +192,7 @@ In the end, something like this:
 
 
 ```python
-{!> ../docs_src/configurations/jwt/claims/views.py!}
+{!> ../docs_src/configurations/jwt/claims/controllers.py!}
 ```
 
 As you can see, we now assembled everything. The `/auth/users` requires authentication to have
