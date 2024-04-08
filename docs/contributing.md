@@ -47,9 +47,16 @@ $ git clone https://github.com/YOUR-USERNAME/esmerald
 
 ### Install the project dependencies
 
+#### Linux, macOS
 ```shell
 $ cd esmerald
 $ scripts/install
+```
+
+#### Windows
+```shell
+$ cd esmerald
+$ scripts\win\install.ps1
 ```
 
 ### Enable pre-commit
