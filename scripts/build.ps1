@@ -14,6 +14,18 @@ elseif (Test-Path 'venv') {
 # Enable verbose output
 $VerbosePreference = "Continue"
 
+# Check if 'build' package is installed, if not, install it
+if (-not (Get-Module -ListAvailable -Name build)) {
+    Write-Host "Installing 'build' package..."
+    & "${PREFIX}pip" install build
+}
+
+# Check if 'twine' package is installed, if not, install it
+if (-not (Get-Module -ListAvailable -Name twine)) {
+    Write-Host "Installing 'twine' package..."
+    & "${PREFIX}pip" install twine
+}
+
 # Execute python -m build command using PREFIX
 & "${PREFIX}python" -m build
 
