@@ -7,7 +7,7 @@ if ($env:VIRTUAL_ENV -ne '') {
 }
 # Check if 'venv' directory exists
 elseif (Test-Path 'venv') {
-    $PREFIX = ".\venv\Scripts\"
+    $PREFIX = ".\.venv\Scripts\"
 }
 
 # Enable verbose output
