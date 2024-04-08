@@ -19,8 +19,20 @@ if ($env:VIRTUAL_ENV -ne $null) {
     $PIP = Join-Path $VENV "Scripts\pip.exe"
 }
 
-# Install or upgrade pip
-& $PYTHON -m pip install --upgrade pip
-
 # Install required packages
 & $PIP install -e .[dev,test,doc,templates,jwt,encoders,schedulers,ipython,ptpython]
+
+# Path to the activate script of the Python virtual environment
+$activateScript = ".\.venv\Scripts\Activate.ps1"
+
+# Check if the activate.ps1 file exists
+if (Test-Path $activateScript) {
+    # Run the activate script
+    . $activateScript
+    Write-Host "Virtual environment activated."
+} else {
+    Write-Host "Failed to find the activation script for the Python virtual environment."
+}
+
+# Install or upgrade pip
+& $PYTHON -m pip install --upgrade pip
