@@ -7,7 +7,7 @@ $VERSION = Select-String -Path $VERSION_FILE -Pattern '__version__' | ForEach-Ob
 Write-Host $VERSION
 
 Write-Host "Installing dependencies"
-pip install -U pip
+py -m pip install --upgrade pip
 pip install mkdocs mkautodoc mkdocs-material griffe-typingdoc mdx-include pyyaml mkdocs-markdownextradata-plugin mkdocstrings[python] httpx starlette lilya mike a2wsgi mkdocs-meta-descriptions-plugin
 
 Write-Host "Running version generator for version $VERSION"
