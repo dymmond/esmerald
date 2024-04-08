@@ -5,7 +5,7 @@ project.
 
 * Try Esmerald and [report bugs and issues](https://github.com/dymmond/esmerald/issues/new) you find.
 * [Implement new features](https://github.com/dymmond/esmerald/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-* Help othes by [reviewing pull requests](https://github.com/dymmond/esmerald/pulls)
+* Help others by [reviewing pull requests](https://github.com/dymmond/esmerald/pulls)
 * Help writing documentation
 * Use the discussions and actively participate on them.
 * Become an contributor by helping Esmerald growing and spread the words across small, medium, large or any company
@@ -47,17 +47,17 @@ $ git clone https://github.com/YOUR-USERNAME/esmerald
 
 ### Install the project dependencies
 
-#### Linux, macOS
-```shell
-$ cd esmerald
-$ scripts/install
-```
+=== "Linux, macOS"
+    ```shell 
+    $ cd esmerald
+    $ scripts/install
+    ```
 
-#### Windows
-```shell
-$ cd esmerald
-$ scripts\win\install.ps1
-```
+=== "Windows" 
+    ```powershell
+    $ cd esmerald
+    $ scripts\install.ps1
+    ```
 
 ### Enable pre-commit
 
@@ -71,24 +71,44 @@ $ pre-commit
 
 To run the tests, use:
 
-```shell
-$ scripts/test
-```
+=== "Linux, macOS"
+
+    ```shell
+    $ scripts/test
+    ```
+
+=== "Windows"
+
+    ```powershell
+    $ scripts\test.ps1
+    ```
 
 Because Esmerald uses pytest, any additional arguments will be passed. More info within the
 [pytest documentation](https://docs.pytest.org/en/latest/how-to/usage.html)
 
 For example, to run a single test_script:
 
-```shell
-$ scripts/test tests/test_apiviews.py
-```
+=== "Linux, macOS"
+    ```shell
+    $ scripts/test tests/test_apiviews.py
+    ```
+
+=== "Windows"
+    ```powershell
+    $ scripts\test tests\test_apiviews.py
+    ```
 
 To run the linting, use:
 
-```shell
-$ scripts/lint
-```
+=== "Linux, macOS"
+    ```shell
+    $ scripts/lint
+    ```
+
+=== "Windows"
+    ```powershell
+    $ scripts\lint.ps1
+    ```
 
 ### Documentation
 
@@ -96,23 +116,40 @@ Improving the documentation is quite easy and it is placed inside the `esmerald/
 
 To start the docs, run:
 
-```shell
-$ scripts/docs
-```
+=== "Linux, macOS"
+    ```shell
+    $ scripts/docs
+    ```
+
+=== "Windows"
+    ```powershell
+    $ scripts\docs.ps1
+    ```
 
 ## Building Esmerald
 
 To build a package locally, run:
 
-```shell
-$ scripts/build
-```
+=== "Linux, macOS"
+    ```shell
+    $ scripts/build
+    ```
+
+=== "Windows"
+    ```shell
+    $ scripts\build
+    ```
 
 Alternatively running:
 
-```
-$ scripts/install
-```
+=== "Linux, macOS"
+    ```
+    $ scripts/install
+    ```
+=== "Windows"
+    ```
+    $ scripts\install.ps1
+    ```
 
 It will install the requirements and create a local build in your virtual environment.
 
