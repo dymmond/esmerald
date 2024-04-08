@@ -7,6 +7,7 @@
 .scannerwork/
 .tox/
 .venv/
+venv/
 .vscode/
 __pycache__/
 virtualenv/
