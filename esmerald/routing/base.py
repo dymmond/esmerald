@@ -236,7 +236,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def starlette_response_handler(
+    def lilya_response_handler(
         self,
         cookies: "ResponseCookies",
         headers: Optional["ResponseHeaders"] = None,
@@ -435,7 +435,7 @@ class BaseResponseHandler:
                     headers=headers,
                 )
             elif is_class_and_subclass(self.handler_signature.return_annotation, LilyaResponse):
-                handler = self.starlette_response_handler(
+                handler = self.lilya_response_handler(
                     cookies=cookies,
                     headers=headers,
                 )
