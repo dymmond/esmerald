@@ -42,7 +42,42 @@ class BaseMiddleware:
         return _middleware
 
 
-class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
+class GatewayUtil:
+
+    def is_class_based(
+        self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]
+    ) -> bool:
+        return bool(is_class_and_subclass(handler, View) or isinstance(handler, View))
+
+    def is_handler(self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]) -> bool:
+        return bool(not is_class_and_subclass(handler, View) and not isinstance(handler, View))
+
+    def generate_operation_id(
+        self, name: Union[str, None], handler: Union["HTTPHandler", "WebSocketHandler", View]
+    ) -> str:
+        """
+        Generates an unique operation if for the handler.
+
+        We need to be able to handle with edge cases where
+        when a view does not defaults a path like `/format`,
+        a default name needs to be passed.
+        """
+        if self.is_class_based(handler.parent):
+            operation_id = (
+                handler.parent.__class__.__name__.lower() + f"_{name}" + handler.path_format
+            )
+        else:
+            operation_id = name + handler.path_format
+
+        operation_id = re.sub(r"\W", "_", operation_id)
+        methods = list(handler.methods)  # type: ignore
+
+        assert handler.methods  # type: ignore
+        operation_id = f"{operation_id}_{methods[0].lower()}"
+        return operation_id
+
+
+class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware, GatewayUtil):
     """
     `Gateway` object class used by Esmerald routes.
 
@@ -283,31 +318,19 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware):
             self.path
         )
 
-        if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
+        if self.is_handler(self.handler):  # type: ignore
             self.handler.name = self.name
 
             if not handler.operation_id:
-                handler.operation_id = self.generate_operation_id()
+                handler.operation_id = self.generate_operation_id(
+                    name=self.name, handler=self.handler  # type: ignore
+                )
 
     async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
         Handles the interception of messages and calls from the API.
-        if self._middleware:
-            self.is_middleware = True
         """
         await self.app(scope, receive, send)
-
-    def generate_operation_id(self) -> str:
-        """
-        Generates an unique operation if for the handler
-        """
-        operation_id = self.name + self.handler.path_format
-        operation_id = re.sub(r"\W", "_", operation_id)
-        methods = list(self.handler.methods)
-
-        assert self.handler.methods
-        operation_id = f"{operation_id}_{methods[0].lower()}"
-        return cast(str, operation_id)
 
 
 class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware):
@@ -508,7 +531,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
         await self.app(scope, receive, send)
 
 
-class WebhookGateway(LilyaPath, BaseInterceptorMixin):
+class WebhookGateway(LilyaPath, BaseInterceptorMixin, GatewayUtil):
     """
     `WebhookGateway` object class used by Esmerald routes.
 
@@ -648,20 +671,10 @@ class WebhookGateway(LilyaPath, BaseInterceptorMixin):
             self.path
         )
 
-        if not is_class_and_subclass(self.handler, View) and not isinstance(self.handler, View):
+        if self.is_handler(self.handler):  # type: ignore
             self.handler.name = self.name
 
             if not handler.operation_id:
-                handler.operation_id = self.generate_operation_id()
-
-    def generate_operation_id(self) -> str:
-        """
-        Generates an unique operation if for the handler
-        """
-        operation_id = self.name + self.handler.path_format
-        operation_id = re.sub(r"\W", "_", operation_id)
-        methods = list(self.handler.methods)
-
-        assert self.handler.methods
-        operation_id = f"{operation_id}_{methods[0].lower()}"
-        return cast(str, operation_id)
+                handler.operation_id = self.generate_operation_id(
+                    name=self.name, handler=self.handler  # type: ignore
+                )

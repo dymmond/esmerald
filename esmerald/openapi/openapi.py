@@ -130,6 +130,7 @@ def get_openapi_operation(
         operation.description = route.description
 
     operation_id = route.operation_id
+
     if operation_id in operation_ids:
         message = (
             f"Duplicate Operation ID {operation_id} for function " + f"{route.handler.__name__}"

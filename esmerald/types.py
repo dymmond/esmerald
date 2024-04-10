@@ -38,7 +38,7 @@ if TYPE_CHECKING:
     from esmerald.conf.global_settings import EsmeraldAPISettings  # noqa
     from esmerald.datastructures import Cookie, ResponseHeader, State  # noqa: TC004
     from esmerald.injector import Inject  # noqa
-    from esmerald.protocols.middleware import MiddlewareProtocol
+    from esmerald.protocols.middleware import MiddlewareProtocol  # noqs
     from esmerald.requests import Request  # noqa
     from esmerald.responses import Response  # noqa
     from esmerald.routing.apis.base import View  # noqa
