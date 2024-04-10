@@ -14,7 +14,7 @@ hide:
 ### Changed
 
 - Documentation improvements.
-- 
+
 ### Fixed
 
 - Typo in the create project directive urls file descripton.
