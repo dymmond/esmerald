@@ -58,9 +58,7 @@ class GatewayUtil:
         """
         Generates an unique operation if for the handler.
 
-        We need to be able to handle with edge cases where
-        when a view does not defaults a path like `/format`,
-        a default name needs to be passed.
+        We need to be able to handle with edge cases when a view does not default a path like `/format` and a default name needs to be passed when its a class based view.
         """
         if self.is_class_based(handler.parent):
             operation_id = (
