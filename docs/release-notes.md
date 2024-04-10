@@ -5,6 +5,21 @@ hide:
 
 # Release Notes
 
+## 3.1.1
+
+### Added
+
+- `--with-basic-controller` flag in `createapp` directive. [#PR 284](https://github.com/dymmond/esmerald/pull/284) by [@tarsil](https://github.com/tarsil).
+
+### Changed
+
+- Documentation improvements.
+
+### Fixed
+
+- Typo in the create project directive urls file descripton.
+- `operation_id` being generated to include the class based view name when coming from class based views handlers. [#PR 289](https://github.com/dymmond/esmerald/pull/289) by [@tarsil](https://github.com/tarsil).
+
 ## 3.1.0
 
 ### Added
