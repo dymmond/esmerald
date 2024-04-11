@@ -1,6 +1,6 @@
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pydantic.dataclasses import dataclass
 from pydantic.fields import AliasChoices, AliasPath, FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
