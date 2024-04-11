@@ -179,7 +179,7 @@ def get_openapi_operation_parameters(
         if field_info.examples is not None:
             parameter.example = json.dumps(field_info.examples)
         if field_info.deprecated:
-            parameter.deprecated = field_info.deprecated
+            parameter.deprecated = field_info.deprecated  # type: ignore
 
         parameters.append(parameter.model_dump(by_alias=True))
     return parameters
