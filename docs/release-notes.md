@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.1.2
+
+### Fixed
+
+- Regression with `typing_extensions`.
+
 ## 3.1.1
 
 ### Added
