@@ -36,7 +36,10 @@ from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import JSONResponse, Response
 from esmerald.routing.apis.base import View
-from esmerald.transformers.model import TransformerModel
+from esmerald.transformers.model import (
+    TransformerModel,
+    create_signature as transfomer_create_signature,
+)
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
@@ -141,7 +144,7 @@ class BaseSignature:
         dependencies = self.get_dependencies()
         signature_model = get_signature(self)
 
-        return TransformerModel.create_signature(
+        return transfomer_create_signature(
             signature_model=signature_model,
             dependencies=dependencies,
             path_parameters=self.path_parameters,
