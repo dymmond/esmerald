@@ -5,7 +5,11 @@ from typing import Any, List
 import pytest
 
 from esmerald import AsyncDAOProtocol
+from esmerald.encoders import MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.testclient import EsmeraldTestClient
+
+register_esmerald_encoder(PydanticEncoder)
+register_esmerald_encoder(MsgSpecEncoder)
 
 
 class FakeDAO(AsyncDAOProtocol):

@@ -1587,7 +1587,6 @@ class Esmerald(Lilya):
             security=security,
             redirect_slashes=self.redirect_slashes,
         )
-
         self.get_default_exception_handlers()
         self.register_default_encoders()
         self.user_middleware = self.build_user_middleware_stack()
