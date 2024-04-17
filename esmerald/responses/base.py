@@ -1,6 +1,15 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    NoReturn,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from lilya import status
 from lilya.responses import (
@@ -17,7 +26,7 @@ from lilya.responses import (
 from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
 from typing_extensions import Annotated, Doc
 
-from esmerald.encoders import json_encoder
+from esmerald.encoders import Encoder, json_encoder, register_esmerald_encoder
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -88,7 +97,7 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = MediaType.JSON,
         background: Annotated[
-            Optional[Union[BackgroundTask, BackgroundTasks]],
+            Optional[Union["BackgroundTask", "BackgroundTasks"]],
             Doc(
                 """
                 Any instance of a [BackgroundTask or BackgroundTasks](https://esmerald.dev/background-tasks/).
@@ -104,7 +113,7 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = None,
         cookies: Annotated[
-            Optional[ResponseCookies],
+            Optional["ResponseCookies"],
             Doc(
                 """
                 A sequence of `esmerald.datastructures.Cookie` objects.
@@ -131,7 +140,34 @@ class Response(LilyaResponse, Generic[T]):
                 """
             ),
         ] = None,
+        encoders: Annotated[
+            Union[Sequence[Encoder], None],
+            Doc(
+                """
+                A sequence of `esmerald.encoders.Encoder` type of objects to be used
+                by the response object directly.
+
+                **Example**
+
+                ```python
+                from esmerald import Response
+                from esmerald.encoders import PydanticEncoder, MsgSpecEncoder
+
+                response_cookies=[
+                    encoders=[PydanticEncoder, MsgSpecEncoder]
+                ]
+
+                Response(response_cookies=response_cookies)
+                ```
+                """
+            ),
+        ] = None,
     ) -> None:
+
+        self.custom_encoders = encoders or []
+        for encoder in self.custom_encoders:
+            register_esmerald_encoder(encoder)
+
         super().__init__(
             content=content,
             status_code=status_code,
@@ -142,13 +178,13 @@ class Response(LilyaResponse, Generic[T]):
         self.cookies = cookies or []
 
     @staticmethod
-    def transform(value: Any) -> dict[str, Any]:
+    def transform(value: Any) -> Dict[str, Any]:
         """
         The transformation of the data being returned.
 
         Supports all the default encoders from Lilya and custom from Esmerald.
         """
-        return cast(dict[str, Any], json_encoder(value))
+        return cast(Dict[str, Any], json_encoder(value))
 
     def make_response(self, content: Any) -> Union[bytes, str]:
         try:
