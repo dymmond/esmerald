@@ -1,8 +1,7 @@
-import dataclasses
-from dataclasses import is_dataclass
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
 
-import msgspec
 from lilya import status
 from lilya.responses import (
     Error as Error,
@@ -16,9 +15,9 @@ from lilya.responses import (
     StreamingResponse as StreamingResponse,  # noqa
 )
 from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
-from pydantic import BaseModel
 from typing_extensions import Annotated, Doc
 
+from esmerald.encoders import json_encoder
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -81,7 +80,7 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = status.HTTP_200_OK,
         media_type: Annotated[
-            Optional[Union["MediaType", str]],
+            Optional[Union[MediaType, str]],
             Doc(
                 """
                 The media type used in the response.
@@ -89,7 +88,7 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = MediaType.JSON,
         background: Annotated[
-            Optional[Union["BackgroundTask", "BackgroundTasks"]],
+            Optional[Union[BackgroundTask, BackgroundTasks]],
             Doc(
                 """
                 Any instance of a [BackgroundTask or BackgroundTasks](https://esmerald.dev/background-tasks/).
@@ -105,7 +104,7 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = None,
         cookies: Annotated[
-            Optional["ResponseCookies"],
+            Optional[ResponseCookies],
             Doc(
                 """
                 A sequence of `esmerald.datastructures.Cookie` objects.
@@ -143,19 +142,13 @@ class Response(LilyaResponse, Generic[T]):
         self.cookies = cookies or []
 
     @staticmethod
-    def transform(value: Any) -> Dict[str, Any]:
+    def transform(value: Any) -> dict[str, Any]:
         """
         The transformation of the data being returned.
 
-        It supports Pydantic models, `dataclasses` and `msgspec.Struct`.
+        Supports all the default encoders from Lilya and custom from Esmerald.
         """
-        if isinstance(value, BaseModel):
-            return value.model_dump()
-        if is_dataclass(value):
-            return dataclasses.asdict(value)
-        if isinstance(value, msgspec.Struct):
-            return msgspec.structs.asdict(value)
-        raise TypeError("unsupported type")  # pragma: no cover
+        return cast(dict[str, Any], json_encoder(value))
 
     def make_response(self, content: Any) -> Union[bytes, str]:
         try:
