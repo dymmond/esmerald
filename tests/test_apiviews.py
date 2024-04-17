@@ -4,6 +4,7 @@ import pytest
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from pydantic import BaseModel
 
+from esmerald.encoders import MsgSpecEncoder, PydanticEncoder
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.responses import Response
 from esmerald.routing.apis.views import APIView
@@ -13,6 +14,8 @@ from esmerald.routing.router import Include
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
 from tests.models import Individual, IndividualFactory
+
+encoders = [MsgSpecEncoder, PydanticEncoder]
 
 
 class MyView(APIView):
@@ -41,6 +44,7 @@ def test_can_generate_views(test_client_factory):
                 content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
+                encoders=encoders,
             ),
             Response[Individual],
         ),
@@ -89,6 +93,7 @@ def test_controller_http_method(
                 content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
+                encoders=encoders,
             ),
             Response[Individual],
         ),
@@ -139,6 +144,7 @@ def test_controller_http_method_with_include(
                 content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
+                encoders=encoders,
             ),
             Response[Individual],
         ),
@@ -194,6 +200,7 @@ def test_controller_http_method_with_nested_include(
                 content=IndividualFactory.build(),
                 status_code=HTTP_200_OK,
                 media_type=MediaType.JSON,
+                encoders=encoders,
             ),
             Response[Individual],
         ),
