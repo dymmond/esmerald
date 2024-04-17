@@ -2290,8 +2290,8 @@ class Esmerald(Lilya):
         The default Encoders are simple validation libraries like Pydantic/MsgSpec
         that out of the box, Esmerald will make sure it does understand them.
         """
-        self.register_encoder(PydanticEncoder())
-        self.register_encoder(MsgSpecEncoder())
+        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
+        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
 
     def build_routes_exception_handlers(
         self,
