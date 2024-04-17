@@ -36,16 +36,58 @@ class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
         self.dependencies = dependencies
 
 
-def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
-    merged_result = first_set.intersection(second_set)
-    difference = first_set.symmetric_difference(second_set)
+def _merge_difference_parameters(difference: Set[ParamSetting]) -> Set[ParamSetting]:
+    """
+    Merge difference parameters based on field alias and requirement.
+
+    Args:
+        difference (Set[ParamSetting]): Set of difference parameters.
+
+    Returns:
+        Set[ParamSetting]: Merged difference parameters.
+    """
+    merged_result = set()
+
     for parameter in difference:
         if parameter.is_required or not any(
             param.field_alias == parameter.field_alias and param.is_required
             for param in difference
         ):
             merged_result.add(parameter)
+
     return merged_result
+
+
+def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
+    """
+    Merge two sets of parameter settings.
+
+    Args:
+        first_set (Set[ParamSetting]): First set of parameter settings.
+        second_set (Set[ParamSetting]): Second set of parameter settings.
+
+    Returns:
+        Set[ParamSetting]: Merged set of parameter settings.
+    """
+    merged_result = first_set.intersection(second_set)
+    difference = first_set.symmetric_difference(second_set)
+
+    merged_result.update(_merge_difference_parameters(difference))
+
+    return merged_result
+
+
+def _get_default_value(field_info: FieldInfo) -> Any:
+    """
+    Get the default value from field information.
+
+    Args:
+        field_info (FieldInfo): Information about the field.
+
+    Returns:
+        Any: Default value of the field.
+    """
+    return field_info.default if field_info.default is not Undefined else None
 
 
 def create_parameter_setting(
@@ -55,11 +97,20 @@ def create_parameter_setting(
     path_parameters: Set[str],
 ) -> ParamSetting:
     """
-    Creates a setting definition for a parameter.
+    Create a setting definition for a parameter.
+
+    Args:
+        allow_none (bool): Flag indicating if None is allowed.
+        field_info (FieldInfo): Information about the field.
+        field_name (str): Name of the field.
+        path_parameters (Set[str]): Set of path parameters.
+
+    Returns:
+        ParamSetting: Parameter setting definition.
     """
     extra = cast("Dict[str, Any]", field_info.json_schema_extra) or {}
     is_required = extra.get(REQUIRED, True)
-    default_value = field_info.default if field_info.default is not Undefined else None
+    default_value = _get_default_value(field_info)
 
     field_alias = extra.get(ParamType.QUERY) or field_name
     param_type = getattr(field_info, "in_", ParamType.QUERY)
@@ -67,13 +118,12 @@ def create_parameter_setting(
 
     if field_name in path_parameters:
         field_alias = field_name
-        param_type = param_type.PATH
+        param_type = ParamType.PATH
         param = Path(default=default_value)
     elif extra.get(ParamType.HEADER):
         field_alias = extra[ParamType.HEADER]
         param_type = ParamType.HEADER
         param = Header(default=default_value)
-
     elif extra.get(ParamType.COOKIE):
         field_alias = extra[ParamType.COOKIE]
         param_type = ParamType.COOKIE
@@ -98,18 +148,45 @@ def create_parameter_setting(
     return param_settings
 
 
+def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> List[str]:
+    """
+    Get missing required parameters.
+
+    Args:
+        params (Any): Request parameters.
+        expected (Set[ParamSetting]): Set of expected parameters.
+
+    Returns:
+        List[str]: List of missing required parameters.
+    """
+    missing_params = []
+    for param in expected:
+        if param.is_required and param.field_alias not in params:
+            missing_params.append(param.field_alias)
+    return missing_params
+
+
 def get_request_params(params: Any, expected: Set[ParamSetting], url: URL) -> Any:
     """
     Gather the parameters from the request.
+
+    Args:
+        params (Any): Request parameters.
+        expected (Set[ParamSetting]): Set of expected parameters.
+        url (URL): The URL.
+
+    Returns:
+        Any: The gathered parameters.
+
+    Raises:
+        ValidationErrorException: If required parameters are missing.
     """
-    _params = []
-    for param in expected:
-        if param.is_required and param.field_alias not in params:
-            _params.append(param.field_alias)
-    if _params:
+    missing_params = _get_missing_required_params(params, expected)
+    if missing_params:
         raise ValidationErrorException(
-            f"Missing required parameter(s) {', '.join(_params)} for url {url}."
+            f"Missing required parameter(s) {', '.join(missing_params)} for URL {url}."
         )
+
     values = {
         param.field_name: params.get(param.field_alias, param.default_value) for param in expected
     }
@@ -133,7 +210,7 @@ def get_signature(value: Any) -> Type["EsmeraldSignature"]:
 
 def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
     if param.default_defined:
-        definition = (param.annotation, param.default)
+        definition = param.annotation, param.default
     elif not param.optional:
-        definition = (param.annotation, ...)
+        definition = param.annotation, ...
     return definition
