@@ -128,6 +128,7 @@ dev = [
     "autoflake>=1.4.0",
     "black==24.4.0",
     "ipdb",
+    "pdbpp",
     "isort>=5.0.6,<6.0.0",
     "flake8>=3.8.3,<8.0.0",
     "uvicorn[standard]>=0.24.0",

@@ -26,7 +26,7 @@ from lilya.responses import (
 from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
 from typing_extensions import Annotated, Doc
 
-from esmerald.encoders import Encoder, json_encoder, register_esmerald_encoder
+from esmerald.encoders import Encoder, json_encoder
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -164,16 +164,13 @@ class Response(LilyaResponse, Generic[T]):
         ] = None,
     ) -> None:
 
-        self.custom_encoders = encoders or []
-        for encoder in self.custom_encoders:
-            register_esmerald_encoder(encoder)
-
         super().__init__(
             content=content,
             status_code=status_code,
             headers=headers or {},
             media_type=media_type,
             background=cast("BackgroundTask", background),
+            encoders=encoders,
         )
         self.cookies = cookies or []
 
