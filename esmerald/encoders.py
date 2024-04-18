@@ -24,7 +24,7 @@ class MsgSpecEncoder(Encoder):
         When a `msgspec.Struct` is serialised,
         it will call this function.
         """
-        return msgspec.json.decode(msgspec.json.encode(obj), type=obj.__class__)
+        return msgspec.json.decode(msgspec.json.encode(obj))
 
 
 class PydanticEncoder(Encoder):
