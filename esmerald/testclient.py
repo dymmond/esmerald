@@ -77,7 +77,7 @@ class EsmeraldTestClient(TestClient):
 def create_client(
     routes: Union["APIGateHandler", List["APIGateHandler"]],
     *,
-    settings_module: Optional["SettingsType"] = None,
+    settings_module: Union[Optional["SettingsType"], Optional[str]] = None,
     debug: Optional[bool] = None,
     app_name: Optional[str] = None,
     title: Optional[str] = None,
