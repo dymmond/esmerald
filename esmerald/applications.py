@@ -14,6 +14,7 @@ from typing import (
     cast,
 )
 
+from lilya._internal._module_loading import import_string
 from lilya.apps import Lilya
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
@@ -28,6 +29,7 @@ from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
+from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
     pydantic_validation_error_handler,
@@ -144,7 +146,7 @@ class Esmerald(Lilya):
         self: AppType,
         *,
         settings_module: Annotated[
-            Optional["SettingsType"],
+            Union[Optional["SettingsType"], Optional[str]],
             Doc(
                 """
                 Alternative settings parameter. This parameter is an alternative to
@@ -1467,6 +1469,10 @@ class Esmerald(Lilya):
         ] = None,
     ) -> None:
         self.settings_module = None
+
+        if settings_module is not None and isinstance(settings_module, str):
+            settings_module = import_string(settings_module)
+
         if settings_module is not None:
             if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_module, EsmeraldAPISettings
@@ -1586,8 +1592,8 @@ class Esmerald(Lilya):
             security=security,
             redirect_slashes=self.redirect_slashes,
         )
-
         self.get_default_exception_handlers()
+        self.register_default_encoders()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.pluggable_stack = self.build_pluggable_stack()
@@ -2281,6 +2287,16 @@ class Esmerald(Lilya):
 
         self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
 
+    def register_default_encoders(self) -> None:
+        """
+        Registers the default encoders supported by Esmerald.
+
+        The default Encoders are simple validation libraries like Pydantic/MsgSpec
+        that out of the box, Esmerald will make sure it does understand them.
+        """
+        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
+        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
+
     def build_routes_exception_handlers(
         self,
         route: "RouteParent",
@@ -2544,6 +2560,12 @@ class Esmerald(Lilya):
 
     def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
         self.router.add_event_handler(event_type, func)
+
+    def register_encoder(self, encoder: Encoder[Any]) -> None:
+        """
+        Registers a Encoder into the list of predefined encoders of the system.
+        """
+        register_esmerald_encoder(encoder)
 
 
 class ChildEsmerald(Esmerald):
