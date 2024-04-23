@@ -14,6 +14,7 @@ from typing import (
     cast,
 )
 
+from lilya._internal._module_loading import import_string
 from lilya.apps import Lilya
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
@@ -145,7 +146,7 @@ class Esmerald(Lilya):
         self: AppType,
         *,
         settings_module: Annotated[
-            Optional["SettingsType"],
+            Union[Optional["SettingsType"], Optional[str]],
             Doc(
                 """
                 Alternative settings parameter. This parameter is an alternative to
@@ -1468,6 +1469,10 @@ class Esmerald(Lilya):
         ] = None,
     ) -> None:
         self.settings_module = None
+
+        if settings_module is not None and isinstance(settings_module, str):
+            settings_module = import_string(settings_module)
+
         if settings_module is not None:
             if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_module, EsmeraldAPISettings
