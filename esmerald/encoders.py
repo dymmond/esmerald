@@ -25,7 +25,13 @@ class Encoder(LilyaEncoder[T]):
         Function that checks if the function is
         an instance of a given type
         """
-        raise NotImplementedError("All Esmerald encoders must implement is)_type() method")
+        raise NotImplementedError("All Esmerald encoders must implement is_type() method")
+
+    def encode(self, annotation: Any, value: Any) -> Any:
+        """
+        Function that transforms the kwargs into a structure
+        """
+        raise NotImplementedError("All Esmerald encoders must implement encode() method")
 
 
 class MsgSpecEncoder(Encoder):
@@ -40,6 +46,9 @@ class MsgSpecEncoder(Encoder):
         """
         return msgspec.json.decode(msgspec.json.encode(obj))
 
+    def encode(self, annotation: Any, value: Any) -> Any:
+        return msgspec.json.decode(msgspec.json.encode(value), type=annotation)
+
 
 class PydanticEncoder(Encoder):
 
@@ -49,8 +58,16 @@ class PydanticEncoder(Encoder):
     def serialize(self, obj: BaseModel) -> dict[str, Any]:
         return obj.model_dump()
 
+    def encode(self, annotation: Any, value: Any) -> Any:
+        if isinstance(value, BaseModel):
+            return value
+        return annotation(**value)
+
 
 def register_esmerald_encoder(encoder: Encoder[Any]) -> None:
+    """
+    Registers an esmerald encoder into available Lilya encoders
+    """
     if not isinstance(encoder, Encoder) and not is_class_and_subclass(encoder, Encoder):  # type: ignore
         raise ImproperlyConfigured(f"{type(encoder)} must be a subclass of Encoder")
 

@@ -29,7 +29,7 @@ from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
-from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
+from esmerald.encoders import Encoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
     pydantic_validation_error_handler,
@@ -1593,7 +1593,6 @@ class Esmerald(Lilya):
             redirect_slashes=self.redirect_slashes,
         )
         self.get_default_exception_handlers()
-        self.register_default_encoders()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.pluggable_stack = self.build_pluggable_stack()
@@ -2286,16 +2285,6 @@ class Esmerald(Lilya):
         )
 
         self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
-
-    def register_default_encoders(self) -> None:
-        """
-        Registers the default encoders supported by Esmerald.
-
-        The default Encoders are simple validation libraries like Pydantic/MsgSpec
-        that out of the box, Esmerald will make sure it does understand them.
-        """
-        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
-        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
 
     def build_routes_exception_handlers(
         self,

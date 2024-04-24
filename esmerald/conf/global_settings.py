@@ -73,8 +73,8 @@ class EsmeraldAPISettings(BaseSettings):
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        register_esmerald_encoder(PydanticEncoder)
-        register_esmerald_encoder(MsgSpecEncoder)
+        register_esmerald_encoder(PydanticEncoder)  # type: ignore
+        register_esmerald_encoder(MsgSpecEncoder)  # type: ignore
 
     debug: Annotated[
         bool,
