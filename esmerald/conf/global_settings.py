@@ -12,6 +12,7 @@ from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.datastructures import Secret
+from esmerald.encoders import MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Pluggable
@@ -69,6 +70,11 @@ class EsmeraldAPISettings(BaseSettings):
         environment: Optional[str] = EnvironmentType.TESTING
     ```
     """
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        register_esmerald_encoder(PydanticEncoder)
+        register_esmerald_encoder(MsgSpecEncoder)
 
     debug: Annotated[
         bool,
