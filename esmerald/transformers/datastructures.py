@@ -55,12 +55,12 @@ class EsmeraldSignature(ArbitraryBaseModel):
                 values[key] = signature.field_value(key)
             return values
         except ValidationError as e:
-            raise cls.build_exception(connection, e) from e
-        except MsgspecValidationError as e:
-            raise cls.build_msgspec_exception(connection, e) from e
+            raise cls.build_base_system_exception(connection, e) from e
+        except Exception as e:
+            raise cls.build_encoder_exception(connection, e) from e
 
     @classmethod
-    def build_msgspec_exception(
+    def build_encoder_exception(
         cls, connection: Union[Request, WebSocket], exception: MsgspecValidationError
     ) -> ValidationErrorException:
         """
@@ -81,7 +81,7 @@ class EsmeraldSignature(ArbitraryBaseModel):
         return ValidationErrorException(detail=error_message, extra=[message])
 
     @classmethod
-    def build_exception(
+    def build_base_system_exception(
         cls, connection: Union[Request, WebSocket], exception: ValidationError
     ) -> Union[InternalServerError, ValidationErrorException]:
         server_errors = []
