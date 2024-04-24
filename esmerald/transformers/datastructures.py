@@ -2,7 +2,6 @@ import re
 from inspect import Parameter as InspectParameter, Signature
 from typing import Any, ClassVar, Dict, Optional, Set, Union
 
-from msgspec import ValidationError as MsgspecValidationError
 from orjson import loads
 from pydantic import ValidationError
 
@@ -61,8 +60,8 @@ class EsmeraldSignature(ArbitraryBaseModel):
 
     @classmethod
     def build_encoder_exception(
-        cls, connection: Union[Request, WebSocket], exception: MsgspecValidationError
-    ) -> ValidationErrorException:
+        cls, connection: Union[Request, WebSocket], exception: Exception
+    ) -> Exception:
         """
         Builds the exceptions for the message spec.
         """
