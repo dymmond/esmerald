@@ -22,6 +22,7 @@ from esmerald import Esmerald
             - add_child_esmerald
             - add_router
             - add_pluggable
+            - register_encoder
 
 ::: esmerald.ChildEsmerald
     options:
