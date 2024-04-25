@@ -126,7 +126,7 @@ test = [
 dev = [
     "a2wsgi>=1.10.0,<2",
     "autoflake>=1.4.0",
-    "black==24.4.0",
+    "black==24.4.1",
     "ipdb",
     "pdbpp",
     "isort>=5.0.6,<6.0.0",
