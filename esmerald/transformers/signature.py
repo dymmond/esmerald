@@ -16,6 +16,7 @@ from typing import (
 import msgspec
 from pydantic import create_model
 
+from esmerald.encoders import ENCODER_TYPES
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import ArbitraryExtraBaseModel
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, VALIDATION_NAMES
@@ -118,6 +119,39 @@ class SignatureFactory(ArbitraryExtraBaseModel):
                     msgpspec_structs[param.name] = param.annotation
         return msgpspec_structs
 
+    def handle_encoders(
+        self, parameters: Generator[Parameter, None, None] = None
+    ) -> Dict[str, Any]:
+        """
+        Handles the extraction of any of the passed encoders.
+        """
+        custom_encoders: Dict[str, Any] = {}
+
+        if parameters is None:
+            parameters = self.parameters
+
+        for param in parameters:
+            origin = get_origin(param.annotation)
+
+            for encoder in ENCODER_TYPES:
+                if not origin:
+                    if encoder.is_type(param.annotation):
+                        custom_encoders[param.name] = {
+                            "encoder": encoder,
+                            "annotation": param.annotation,
+                        }
+                    continue
+                else:
+                    arguments: List[Type[type]] = self.extract_arguments(param=param.annotation)
+
+                    if any(encoder.is_type(value) for value in arguments):
+                        custom_encoders[param.name] = {
+                            "encoder": encoder,
+                            "annotation": param.annotation,
+                        }
+                    continue
+        return custom_encoders
+
     def create_signature(self) -> Type[EsmeraldSignature]:
         """
         Creates the EsmeraldSignature based on the type of parameteres.
@@ -125,7 +159,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         This allows to understand if the msgspec is also available and allowed.
         """
         try:
-            msgpspec_structs: Dict[str, msgspec.Struct] = self.handle_msgspec_structs()
+            encoders: Dict[str, Any] = self.handle_encoders()
 
             for param in self.parameters:
                 self.validate_missing_dependency(param)
@@ -144,7 +178,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             )
             model.return_annotation = self.signature.return_annotation
             model.dependency_names = self.dependency_names
-            model.msgspec_structs = msgpspec_structs
+            model.encoders = encoders
             return model
         except TypeError as e:
             raise ImproperlyConfigured(  # pragma: no cover

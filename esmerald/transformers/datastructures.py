@@ -2,11 +2,10 @@ import re
 from inspect import Parameter as InspectParameter, Signature
 from typing import Any, ClassVar, Dict, Optional, Set, Union
 
-import msgspec
-from msgspec import ValidationError as MsgspecValidationError
 from orjson import loads
 from pydantic import ValidationError
 
+from esmerald.encoders import Encoder
 from esmerald.exceptions import ImproperlyConfigured, InternalServerError, ValidationErrorException
 from esmerald.parsers import ArbitraryBaseModel
 from esmerald.requests import Request
@@ -19,17 +18,25 @@ from esmerald.websockets import WebSocket
 class EsmeraldSignature(ArbitraryBaseModel):
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
-    msgspec_structs: ClassVar[Dict[str, msgspec.Struct]]
+    encoders: ClassVar[Dict[str, Any]]
 
     @classmethod
-    def parse_msgspec_structures(cls, kwargs: Any) -> Any:
+    def parse_encoders(cls, kwargs: Any) -> Any:
         """
-        Parses the kwargs for a possible msgspec Struct and instantiates it.
+        Parses the kwargs into a proper structure of the encoder
+        itself.
+
+        The encoders **must** be of Esmerald encoder or else
+        it will default to Lilya encoders.
+
+        Lilya encoders do not implement custom `encode()` functionality.
         """
-        for k, v in kwargs.items():
-            if k in cls.msgspec_structs:
-                kwargs[k] = msgspec.json.decode(
-                    msgspec.json.encode(v), type=cls.msgspec_structs[k]
+        for key, value in kwargs.items():
+            if key in cls.encoders:
+                encoder: "Encoder" = cls.encoders[key]["encoder"]
+                annotation = cls.encoders[key]["annotation"]
+                kwargs[key] = (
+                    encoder.encode(annotation, value) if isinstance(encoder, Encoder) else value
                 )
         return kwargs
 
@@ -38,8 +45,8 @@ class EsmeraldSignature(ArbitraryBaseModel):
         cls, connection: Union[Request, WebSocket], **kwargs: Any
     ) -> Any:
         try:
-            if cls.msgspec_structs:
-                kwargs = cls.parse_msgspec_structures(kwargs)
+            if cls.encoders:
+                kwargs = cls.parse_encoders(kwargs)
 
             signature = cls(**kwargs)
             values = {}
@@ -47,14 +54,14 @@ class EsmeraldSignature(ArbitraryBaseModel):
                 values[key] = signature.field_value(key)
             return values
         except ValidationError as e:
-            raise cls.build_exception(connection, e) from e
-        except MsgspecValidationError as e:
-            raise cls.build_msgspec_exception(connection, e) from e
+            raise cls.build_base_system_exception(connection, e) from e
+        except Exception as e:
+            raise cls.build_encoder_exception(connection, e) from e
 
     @classmethod
-    def build_msgspec_exception(
-        cls, connection: Union[Request, WebSocket], exception: MsgspecValidationError
-    ) -> ValidationErrorException:
+    def build_encoder_exception(
+        cls, connection: Union[Request, WebSocket], exception: Exception
+    ) -> Exception:
         """
         Builds the exceptions for the message spec.
         """
@@ -73,7 +80,7 @@ class EsmeraldSignature(ArbitraryBaseModel):
         return ValidationErrorException(detail=error_message, extra=[message])
 
     @classmethod
-    def build_exception(
+    def build_base_system_exception(
         cls, connection: Union[Request, WebSocket], exception: ValidationError
     ) -> Union[InternalServerError, ValidationErrorException]:
         server_errors = []

@@ -17,6 +17,7 @@ from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 
 from esmerald.applications import Esmerald
+from esmerald.encoders import Encoder
 from esmerald.utils.crypto import get_random_secret_key
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -123,6 +124,7 @@ def create_client(
     redirect_slashes: Optional[bool] = None,
     tags: Optional[List[str]] = None,
     webhooks: Optional[Sequence["WebhookGateway"]] = None,
+    encoders: Optional[Sequence[Encoder]] = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
         app=Esmerald(
@@ -167,6 +169,7 @@ def create_client(
             tags=tags,
             webhooks=webhooks,
             pluggables=pluggables,
+            encoders=encoders,
         ),
         base_url=base_url,
         backend=backend,
