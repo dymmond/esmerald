@@ -140,6 +140,7 @@ class Esmerald(Lilya):
         "timezone",
         "title",
         "version",
+        "encoders",
     )
 
     def __init__(
@@ -1083,6 +1084,46 @@ class Esmerald(Lilya):
                 """
             ),
         ] = None,
+        encoders: Annotated[
+            Sequence[Optional[Encoder]],
+            Doc(
+                """
+            A `list` of encoders to be used by the application once it
+            starts.
+
+            Returns:
+                List of encoders
+
+            **Example**
+
+            ```python
+            from typing import Any
+
+            from attrs import asdict, define, field, has
+            from esmerald.encoders import Encoder
+
+
+            class AttrsEncoder(Encoder):
+
+                def is_type(self, value: Any) -> bool:
+                    return has(value)
+
+                def serialize(self, obj: Any) -> Any:
+                    return asdict(obj)
+
+                def encode(self, annotation: Any, value: Any) -> Any:
+                    return annotation(**value)
+
+
+            class AppSettings(EsmeraldAPISettings):
+
+                @property
+                def encoders(self) -> Union[List[Encoder], None]:
+                    return [AttrsEncoder]
+            ```
+            """
+            ),
+        ] = None,
         exception_handlers: Annotated[
             Optional["ExceptionHandlerMap"],
             Doc(
@@ -1582,6 +1623,9 @@ class Esmerald(Lilya):
         ] = State()
         self.async_exit_config = esmerald_settings.async_exit_config
 
+        self.encoders = self.load_settings_value("encoders", encoders) or []
+        self._register_application_encoders()
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1593,13 +1637,19 @@ class Esmerald(Lilya):
             redirect_slashes=self.redirect_slashes,
         )
         self.get_default_exception_handlers()
-        self.register_default_encoders()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.pluggable_stack = self.build_pluggable_stack()
         self.template_engine = self.get_template_engine(self.template_config)
 
         self._configure()
+
+    def _register_application_encoders(self) -> None:
+        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
+        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
+
+        for encoder in self.encoders:
+            self.register_encoder(encoder)
 
     def _configure(self) -> None:
         """
@@ -2286,16 +2336,6 @@ class Esmerald(Lilya):
         )
 
         self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
-
-    def register_default_encoders(self) -> None:
-        """
-        Registers the default encoders supported by Esmerald.
-
-        The default Encoders are simple validation libraries like Pydantic/MsgSpec
-        that out of the box, Esmerald will make sure it does understand them.
-        """
-        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
-        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
 
     def build_routes_exception_handlers(
         self,
