@@ -107,6 +107,7 @@ nav:
       - Request: "requests.md"
       - Context: "context.md"
       - Responses: "responses.md"
+      - Encoders: "encoders.md"
       - MsgSpec: "msgspec.md"
       - Background Tasks: "background-tasks.md"
       - Lifespan Events: "lifespan-events.md"
