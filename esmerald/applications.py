@@ -29,7 +29,7 @@ from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
-from esmerald.encoders import Encoder, register_esmerald_encoder
+from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
     pydantic_validation_error_handler,
@@ -140,6 +140,7 @@ class Esmerald(Lilya):
         "timezone",
         "title",
         "version",
+        "encoders",
     )
 
     def __init__(
@@ -1083,6 +1084,46 @@ class Esmerald(Lilya):
                 """
             ),
         ] = None,
+        encoders: Annotated[
+            Sequence[Optional[Encoder]],
+            Doc(
+                """
+            A `list` of encoders to be used by the application once it
+            starts.
+
+            Returns:
+                List of encoders
+
+            **Example**
+
+            ```python
+            from typing import Any
+
+            from attrs import asdict, define, field, has
+            from esmerald.encoders import Encoder
+
+
+            class AttrsEncoder(Encoder):
+
+                def is_type(self, value: Any) -> bool:
+                    return has(value)
+
+                def serialize(self, obj: Any) -> Any:
+                    return asdict(obj)
+
+                def encode(self, annotation: Any, value: Any) -> Any:
+                    return annotation(**value)
+
+
+            class AppSettings(EsmeraldAPISettings):
+
+                @property
+                def encoders(self) -> Union[List[Encoder], None]:
+                    return [AttrsEncoder]
+            ```
+            """
+            ),
+        ] = None,
         exception_handlers: Annotated[
             Optional["ExceptionHandlerMap"],
             Doc(
@@ -1582,6 +1623,9 @@ class Esmerald(Lilya):
         ] = State()
         self.async_exit_config = esmerald_settings.async_exit_config
 
+        self.encoders = self.load_settings_value("encoders", encoders) or []
+        self._register_application_encoders()
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1599,6 +1643,13 @@ class Esmerald(Lilya):
         self.template_engine = self.get_template_engine(self.template_config)
 
         self._configure()
+
+    def _register_application_encoders(self) -> None:
+        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
+        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
+
+        for encoder in self.encoders:
+            self.register_encoder(encoder)
 
     def _configure(self) -> None:
         """

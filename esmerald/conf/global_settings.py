@@ -12,7 +12,7 @@ from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.datastructures import Secret
-from esmerald.encoders import MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
+from esmerald.encoders import Encoder
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Pluggable
@@ -70,11 +70,6 @@ class EsmeraldAPISettings(BaseSettings):
         environment: Optional[str] = EnvironmentType.TESTING
     ```
     """
-
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        register_esmerald_encoder(PydanticEncoder)  # type: ignore
-        register_esmerald_encoder(MsgSpecEncoder)  # type: ignore
 
     debug: Annotated[
         bool,
@@ -1424,6 +1419,45 @@ class EsmeraldAPISettings(BaseSettings):
         ```
         """
         return {}
+
+    @property
+    def encoders(self) -> Union[List[Encoder], None]:
+        """
+        A `list` of encoders to be used by the application once it
+        starts.
+
+        Returns:
+            List of encoders
+
+        **Example**
+
+        ```python
+        from typing import Any
+
+        from attrs import asdict, define, field, has
+        from esmerald.encoders import Encoder
+
+
+        class AttrsEncoder(Encoder):
+
+            def is_type(self, value: Any) -> bool:
+                return has(value)
+
+            def serialize(self, obj: Any) -> Any:
+                return asdict(obj)
+
+            def encode(self, annotation: Any, value: Any) -> Any:
+                return annotation(**value)
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def encoders(self) -> Union[List[Encoder], None]:
+                return [AttrsEncoder]
+        ```
+        """
+        return []
 
     def __hash__(self) -> int:
         values: Dict[str, Any] = {}
