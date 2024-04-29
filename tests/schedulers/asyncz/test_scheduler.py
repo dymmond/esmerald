@@ -81,14 +81,14 @@ def scheduler_tasks() -> Dict[str, str]:
     }
 
 
-@scheduler(name="task1", trigger=IntervalTrigger(seconds=1), max_intances=3, is_enabled=True)
+@scheduler(name="task1", trigger=IntervalTrigger(seconds=1), max_instances=3, is_enabled=True)
 def task_one():  # pragma: no cover
     value = 3
     logger.info(value)
     return 3
 
 
-@scheduler(name="task2", trigger=IntervalTrigger(seconds=3), max_intances=3, is_enabled=True)
+@scheduler(name="task2", trigger=IntervalTrigger(seconds=3), max_instances=3, is_enabled=True)
 def task_two():  # pragma: no cover
     value = 8
     logger.info(value)
