@@ -2,14 +2,14 @@
 
 Every application in a way or another needs settings for the uniqueness of the project itself.
 
-When the complexity of a project increases and there are settings spread across the codebase it is when the things
+When the complexity of a project increases and there are settings spread across the codebase, it is when the things
 start to get messy.
 
 One great framework, Django, has the settings in place but because of the legacy codebase and the complexity of almost
 20 years of development of the framework, those became a bit bloated and hard to maintain.
 
 Inspired by Django and by the experience of 99% of the developed applications using some sort of settings
-(by environment, by user...), Esmerald comes equiped to handle exactly with that natively and using
+(by environment, by user...), Esmerald comes equipped to handle exactly with that natively and using
 [Pydantic](https://pydantic-docs.helpmanual.io/visual_studio_code/#basesettings-and-ignoring-pylancepyright-errors)
 to leverage those.
 
@@ -23,11 +23,11 @@ There are two ways of using the settings object within an Esmerald application.
 * Using the **ESMERALD_SETTINGS_MODULE**
 * Using the **[settings_module](#the-settings_module)**
 
-Each one of them has particular use cases but they also work together is perfect harmony.
+Each one of them has particular use cases but they also work together in perfect harmony.
 
 ## EsmeraldAPISettings and the application
 
-When starting a Esmerald instance if no parameters are provided, it will automatically load the defaults from the
+When starting a Esmerald instance, if no parameters are provided, it will automatically load the defaults from the
 system settings object, the `EsmeraldAPISettings`.
 
 === "No parameters"
@@ -50,7 +50,7 @@ For that reason custom settings are needed.
 
 **All the custom settings should be inherited from the `EsmeraldAPISettings`**.
 
-Let's assume we have three environment for one application: `production`, `testing`, `development` and a base settings
+Let's assume we have three environments for one application: `production`, `testing`, `development` and a base settings
 file that contains common settings across the three environments.
 
 === "Base"
@@ -87,8 +87,7 @@ to each.
 
 ## Esmerald Settings Module
 
-Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment variable to execute any custom settings,
-if nothing is provided then it will execute the application defaults.
+Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment variable to execute any custom settings. If nothing is provided, then it will execute the application defaults.
 
 === "Without ESMERALD_SETTINGS_MODULE"
 
@@ -120,7 +119,7 @@ and loads it in lazy mode.
 ## The settings_module
 
 This is a great tool to make your Esmerald applications 100% independent and modular. There are cases
-where you simply want to plug an existing esmerald application into another and that same esmerald application
+where you simply want to plug an existing Esmerald application into another and that same Esmerald application
 already has unique settings and defaults.
 
 The `settings_module` is a parameter available in every single `Esmerald` instance as well as `ChildEsmerald`.
@@ -303,7 +302,7 @@ The application will:
 2. Will start with a middleware `HTTPSRedirectMiddleware`.
 
 Starting the application with the above settings will make sure that has an initial `HTTPSRedirectMiddleware` and `debug`
-set with values **but** what happens if you use the settings + parameters on instantiation?
+set with values, **but** what happens if you use the settings + parameters on instantiation?
 
 ```python
 from esmerald import Esmerald
@@ -321,7 +320,7 @@ values in the moment of instantiating an `Esmerald` object, those will become th
 
 **Declaring parameters in the instance will always precede the values from your settings**.
 
-The reason why you should be using settings it is because will make your codebase more organised and easier
+The reason why you should be using settings is because it will make your codebase more organised and easier
 to maintain.
 
 !!! Check

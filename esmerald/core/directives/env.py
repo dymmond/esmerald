@@ -31,7 +31,7 @@ class Scaffold:
 @dataclass
 class DirectiveEnv:
     """
-    Loads an arbitraty application into the object
+    Loads an arbitrary application into the object
     and returns the App.
     """
 
@@ -77,7 +77,9 @@ class DirectiveEnv:
         """
         return [directory.path for directory in os.scandir(path) if directory.is_dir()]
 
-    def _find_app_in_folder(self, path: Path, cwd: Path) -> typing.Union[Scaffold, None]:
+    def _find_app_in_folder(
+        self, path: Path, cwd: Path
+    ) -> typing.Union[Scaffold, None]:
         """
         Iterates inside the folder and looks up to the DISCOVERY_FILES.
         """

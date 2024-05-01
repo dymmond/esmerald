@@ -4,7 +4,7 @@ StaticFilesConfig is simple set of configurations that when passed enables the b
 When a StaticFilesConfig object is passed to an application instance, it will enable the static files serving.
 
 !!! Check
-    StaticFiles are considereed an `app` and they are pure Lilya app so using Lilya StaticFiles
+    StaticFiles are considered an `app` and they are pure Lilya app, so using Lilya StaticFiles
     will also work with Esmerald.
 
 ## StaticFilesConfig and application

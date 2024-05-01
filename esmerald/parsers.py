@@ -51,7 +51,7 @@ class BaseModelExtra(BaseModel):
 
 class ArbitraryBaseModel(BaseModel):
     """
-    ArbitratyBaseModel that allows arbitrary_types_allowed to be passed.
+    ArbitraryBaseModel that allows arbitrary_types_allowed to be passed.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

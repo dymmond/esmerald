@@ -5,9 +5,8 @@ The Router is the main object that links the whole Esmerald to the [Gateway](./r
 
 ## Router class
 
-The router class is composed by many attributes that are by default populated within the application but Esmerald
-also allows to add extra [custom routers](#custom-router) as well but another way is to add a
-[ChildEsmerald](#child-esmerald-application) app.
+The router class is composed by many attributes that are, by default, populated within the application. However, Esmerald
+also allows to add extra [custom routers](#custom-router), or alternatively, you can add a [ChildEsmerald](#child-esmerald-application) app.
 
 ```python
 {!> ../docs_src/routing/router/router_class.py!}
@@ -32,15 +31,15 @@ All the parameters and defaults are available in the [Router Reference](../refer
 ## Custom Router
 
 Let's assume there are specific **customer** submodules inside a `customers` dedicated file.
-There are two way of separating the routes within the application, using [Include](./routes.md#include),
+There are three ways of separating the routes within the application, using [Include](./routes.md#include),
 a [ChildEsmerald](#child-esmerald-application) or by creating another router. Let's focus on the latter.
 
 ```python hl_lines="28-35" title="/application/apps/routers/customers.py"
 {!> ../docs_src/routing/router/customers.py!}
 ```
 
-Above you create the `/application/apps/routers/customers.py` with all the information you need. It does not need
-to be in one file, you can have a entirely seperate package just to manage the customer, it is up to you.
+Above, you created the `/application/apps/routers/customers.py` with all the information you need. It does not need
+to be in one file, you can have a entirely separate package just to manage the customer, it is up to you.
 
 Now you need to add the new custom router into the main application.
 
@@ -98,13 +97,13 @@ You can add as many `ChildEsmerald` as you desire, there are no limits.
 {!> ../docs_src/routing/router/childesmerald/nested.py!}
 ```
 
-The example above, it is showing that you could even add the same application within nested includes and for each
-include you can add specific unique [permissions](../permissions.md), [middlewares](../middleware/middleware.md),
-[exception handlers](../exception-handlers.md) and [dependencies](../dependencies.md) which are available on each
-instance of the `Include`. The options are endeless.
+The example above shows that you could even add the same application within nested includes, and for each
+include, you can add specific unique [permissions](../permissions.md), [middlewares](../middleware/middleware.md),
+[exception handlers](../exception-handlers.md) and [dependencies](../dependencies.md), which are available on each
+instance of the `Include`. The options are endless.
 
 !!! Note
-    In terms of organisation, `ChildEsmerald` has a clean approach to the isolation of responsabilities and allow
+    In terms of organisation, `ChildEsmerald` has a clean approach to the isolation of responsabilities and allows
     treating every individual module separately and simply adding it in to the main application
     in the form of [Include](./routes.md#include).
 
@@ -134,12 +133,12 @@ The `Router` object has some available functionalities that can be useful.
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
-* **interceptors** - A list of [interceptors](../interceptors.md).
-or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a> as they are both converted
+* **interceptors** - A list of [interceptors](../interceptors.md)
+or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a>, as they are both converted
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
+* **exception_handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 
@@ -162,7 +161,7 @@ or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware<
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
+* **exception_handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 
@@ -187,7 +186,7 @@ or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware<
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](../dependencies.md) instances enable application level dependency
 injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
+* **exception_handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 * **include_in_schema** - Boolean if this ChildEsmerald should be included in the schema.
