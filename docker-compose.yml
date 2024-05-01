@@ -10,8 +10,6 @@ services:
       POSTGRES_DB: "esmerald"
     expose:
       - "5432"
-    volumes:
-      - "esmerald:/var/lib/postgresql/data"
     command: >-
         --jit=false
     ports:
@@ -33,8 +31,6 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongoadmin
       MONGO_INITDB_DATABASE: mongodb
-    volumes:
-        - "mongo_esmerald_db_data:/data/db"
     expose:
       - 27017
     ports:
@@ -52,9 +48,3 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: password
-
-volumes:
-  esmerald:
-    external: true
-  mongo_esmerald_db_data:
-      external: true
