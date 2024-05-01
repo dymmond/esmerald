@@ -14,7 +14,7 @@ async def close_database(): ...
 
 class TestingSettings(AppSettings):
     # the environment can be names to whatever you want.
-    environment: bool = EnvironmentType.TESTING
+    environment: str = EnvironmentType.TESTING
     debug: bool = True
     reload: bool = False
 

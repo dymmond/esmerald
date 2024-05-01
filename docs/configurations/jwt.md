@@ -53,7 +53,7 @@ token = Token(exp=..., iat=..., sub=...)
 
 The parameters are pretty standard from
 <a href="https://python-jose.readthedocs.io/en/latest/" target='_blank'>Python JOSE</a> so you can feel
-confortable with.
+comfortable with.
 
 ### Generate a Token (encode)
 
@@ -141,7 +141,7 @@ There is a lot here happening but basically what are we doing?
 
 * Checking for `token` in the header.
 * Checking if the `token_type` is of `access_token` (default name from the JWTConfig and can be whatever you want) and raises
-an exception if its not `access_token`.
+an exception if it's not `access_token`.
 * Returns the `AuthResult` object with the details of the retrieved user.
 
 The middleware also contains a wrapper called `AuthMiddleware`. This will be used later on in the views of the user.

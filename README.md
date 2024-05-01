@@ -185,11 +185,11 @@ custom or enterprise, fits within Esmerald ecosystem without scalability issues.
 ## Settings
 
 Like every other framework, when starting an application, a lot of [settings](./application/settings.md) can/need to be
-passed to the main object and this can be very dauting and hugly to maintain and see.
+passed to the main object and this can be very dauting and ugly to maintain and see.
 
 Esmerald comes with the
 [settings](./application/settings.md) in mind. A set of defaults that can be overridden by your very own settings
-module but not limited to it as you can still use the classic approach of passing everything into a
+module but not limited to it, as you can still use the classic approach of passing everything into a
 Esmerald instance directly when instantiating.
 
 **Example of classic approach**:
@@ -251,7 +251,7 @@ from esmerald import EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
 
 class Development(EsmeraldAPISettings):
-    app_name: bool = 'My app in dev'
+    app_name: str = 'My app in dev'
     environment: str = EnvironmentType.DEVELOPMENT
 
 ```
@@ -485,7 +485,7 @@ app = Esmerald(routes=[Include('src.urls')])
 
 ## Run the application
 
-As mentioned before, we recomment uvicorn for production but it's not mandatory.
+As mentioned before, we recommend uvicorn for production but it's not mandatory.
 
 **Using uvicorn**:
 

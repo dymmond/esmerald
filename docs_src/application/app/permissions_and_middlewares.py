@@ -99,7 +99,7 @@ child_esmerald = ChildEsmerald(
 )
 
 jwt_config = JWTConfig(
-    signing_key=settings.secret_key_key_key,
+    signing_key=settings.secret_key,
 )
 
 
