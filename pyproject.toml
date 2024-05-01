@@ -97,7 +97,6 @@ test = [
 ]
 
 dev = [
-    "a2wsgi>=1.10.0,<2",
     # includes watchfiles
     "uvicorn[standard]>=0.24.0",
 ]
