@@ -102,7 +102,6 @@ nav:
       - Exceptions: "exceptions.md"
       - Exception Handlers: "exception-handlers.md"
       - Pluggables: "pluggables.md"
-      - Datastructures: "datastructures.md"
       - Password Hashers: "password-hashers.md"
       - Request: "requests.md"
       - Context: "context.md"

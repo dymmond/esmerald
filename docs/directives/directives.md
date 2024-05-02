@@ -473,7 +473,7 @@ some of the options to see how it would look like.
 
 !!! Warning
     The following examples and explanations will be using the [auto discovery](./discovery.md#auto-discovery)
-    approach but the [--app and environment variables](./discovery.md##environment-variables)
+    approach but the [--app and environment variables](./discovery.md#environment-variables)
     is equally valid and works in the same way.
 
 ###### Run on a different port

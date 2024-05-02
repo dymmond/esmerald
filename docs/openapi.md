@@ -23,7 +23,7 @@ what and how to use it.
 
 ### How to use it
 
-There are many things you can do with the OpenAPI, from simple calls to [authentication](#authentication-in-docs)
+There are many things you can do with the OpenAPI, from simple calls to [authentication](#authentication-in-documentation)
 using the docs.
 
 Let us assume we have some apis for a `user` that will handle simple CRUD that belongs to a `blog`

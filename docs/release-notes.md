@@ -733,7 +733,7 @@ January 22, 2023
 - New `File` and `Form` params to Esmerald.
 - Add new `Injects` as parameter function.
 - Add new `ArbitraryHashableBaseModel` to handle the `Inject` with arbitrary types.
-- Add new [settings_config](./application/settings.md#the-settings_config) parameter. [#40](https://github.com/dymmond/esmerald/pull/40).
+- Add new [settings_config](./application/settings.md#the-settings_module) parameter. [#40](https://github.com/dymmond/esmerald/pull/40).
 
 ### Changed
 

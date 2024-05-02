@@ -14,7 +14,7 @@ Before reading this section, you should get familiar with the ways Esmerald hand
 of the applications.
 
 The following examples and explanations will be using the [auto discovery](./discovery.md#auto-discovery)
-but [--app and environment variables](./discovery.md##environment-variables) approach but the
+but [--app and environment variables](./discovery.md#environment-variables) approach but the
 is equally valid and works in the same way.
 
 ## How does it work
@@ -66,7 +66,7 @@ $ esmerald shell
 $ esmerald shell --kernel ptpython
 ```
 
-#### With [--app and environment variables](./discovery.md##environment-variables)
+#### With [--app and environment variables](./discovery.md#environment-variables)
 
 **--app**
 
