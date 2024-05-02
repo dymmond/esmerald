@@ -28,3 +28,5 @@ target/
 .python-version
 coverage.*
 example.sqlite
+docker-compose.override.yml
+compose.override.yml
