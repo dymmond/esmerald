@@ -46,7 +46,7 @@ in succession.
 
     <sup>Default: `undefined`</sup>
 
-* **store** - The alias of the [store](#stores) to store the task in.
+* **store** - The alias of the [store](#stores-executors-and-other-configurations) to store the task in.
 
     <sup>Default: `None`</sup>
 

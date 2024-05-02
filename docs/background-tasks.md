@@ -24,19 +24,7 @@ different ways:
 
 When via handlers, this means passing a background task via get, put, post, delete or route.
 
-There are also two ways of passing via handlers:
-
-- [Background Tasks](#background-tasks)
-    - [How to use](#how-to-use)
-    - [Via handlers](#via-handlers)
-        - [Using a single instance](#using-a-single-instance)
-        - [Using a list](#using-a-list)
-    - [Via response](#via-response)
-        - [Using a single instance](#using-a-single-instance-1)
-        - [Using a list](#using-a-list-1)
-        - [Using the add\_task](#using-the-add_task)
-    - [Technical information](#technical-information)
-    - [API Reference](#api-reference)
+There are also two ways of passing via handlers.
 
 ### Using a single instance
 

@@ -91,7 +91,7 @@ The `Token.decode` returns a [Token](#token-model) object.
 ### The claims
 
 The `**claims` can be very useful mostly if you want to generate tokens for `access` and `refresh`.
-When using the `claims` you can simply pass any extra parameter that once [decoded](#decode-a-token-encode)
+When using the `claims` you can simply pass any extra parameter that once [decoded](#decode-a-token-decode)
 it will be available to you to manipulate.
 
 The [database integrations](../databases/edgy/example.md) shows an example how to do this simple
