@@ -5,6 +5,15 @@ hide:
 
 # Release Notes
 
+## 3.1.3
+
+### Changed
+
+- Internal support for `hatch` and removed the need for a `Makefile`.
+- Internals for Directives. [#308](https://github.com/dymmond/esmerald/pull/308) by [@devkral](https://github.com/devkral).
+- Documentation references and refinements [#311](https://github.com/dymmond/esmerald/pull/311) by [@paolodina](https://github.com/paolodina).
+- `WSGIMiddleware` is now pointing to Lilya.
+
 ## 3.1.2
 
 ### Fixed
