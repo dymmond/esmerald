@@ -65,6 +65,10 @@ $ hatch env create test
 $ hatch env create docs
 ```
 
+!!! Tip
+    This is the recommended way but if you still feel you want your own virtual environment and
+    all the packages installed there, you can always run `scripts/install`.
+
 ### Enable pre-commit
 
 The project comes with a pre-commit hook configuration. To enable it, just run inside the clone:
