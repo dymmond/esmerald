@@ -7,7 +7,7 @@ class ChildEsmeraldSettings(EsmeraldAPISettings):
     secret_key: str = "a child secret"
 
 
-## Create a ChildEsmerald application
+# Create a ChildEsmerald application
 child_app = ChildEsmerald(routes=[...], settings_module=ChildEsmeraldSettings)
 
 # Create an Esmerald application

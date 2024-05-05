@@ -14,7 +14,7 @@ async def close_database(): ...
 
 class ProductionSettings(AppSettings):
     # the environment can be names to whatever you want.
-    environment: bool = EnvironmentType.PRODUCTION
+    environment: str = EnvironmentType.PRODUCTION
     debug: bool = True
     reload: bool = False
 

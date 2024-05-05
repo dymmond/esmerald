@@ -5,6 +5,36 @@ hide:
 
 # Release Notes
 
+## 3.1.3
+
+### Changed
+
+- Internal support for `hatch` and removed the need for a `Makefile`.
+- Internals for Directives. [#308](https://github.com/dymmond/esmerald/pull/308) by [@devkral](https://github.com/devkral).
+- Documentation references and refinements [#311](https://github.com/dymmond/esmerald/pull/311) by [@paolodina](https://github.com/paolodina).
+- `WSGIMiddleware` is now pointing to Lilya.
+
+## 3.1.2
+
+### Fixed
+
+- Regression with `typing_extensions`.
+
+## 3.1.1
+
+### Added
+
+- `--with-basic-controller` flag in `createapp` directive. [#PR 284](https://github.com/dymmond/esmerald/pull/284) by [@tarsil](https://github.com/tarsil).
+
+### Changed
+
+- Documentation improvements.
+
+### Fixed
+
+- Typo in the create project directive urls file descripton.
+- `operation_id` being generated to include the class based view name when coming from class based views handlers. [#PR 289](https://github.com/dymmond/esmerald/pull/289) by [@tarsil](https://github.com/tarsil).
+
 ## 3.1.0
 
 ### Added
@@ -712,7 +742,7 @@ January 22, 2023
 - New `File` and `Form` params to Esmerald.
 - Add new `Injects` as parameter function.
 - Add new `ArbitraryHashableBaseModel` to handle the `Inject` with arbitrary types.
-- Add new [settings_config](./application/settings.md#the-settings_config) parameter. [#40](https://github.com/dymmond/esmerald/pull/40).
+- Add new [settings_config](./application/settings.md#the-settings_module) parameter. [#40](https://github.com/dymmond/esmerald/pull/40).
 
 ### Changed
 

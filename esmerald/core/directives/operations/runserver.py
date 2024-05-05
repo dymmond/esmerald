@@ -77,8 +77,8 @@ def runserver(
 
     Alternatively, if none is passed, Esmerald will perform the application discovery.
 
-    It is strongly advised not to run this command in any pther environment but developmentyping.
-    This was designed to facilitate the development environment and should not be used in pr
+    It is strongly advised not to run this command in any other environment but development.
+    This was designed to facilitate the development environment and should not be used in production.
 
     How to run: `esmerald runserver`
     """
@@ -93,12 +93,15 @@ def runserver(
     try:
         import uvicorn
     except ImportError:
-        raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald.") from None
+        raise DirectiveError(
+            detail="Uvicorn needs to be installed to run Esmerald."
+        ) from None
 
     app = env.app
     settings = app.settings
     message = terminal.write_info(
-        f"Starting {settings.environment} server @ {host}", colour=OutputColour.BRIGHT_CYAN
+        f"Starting {settings.environment} server @ {host}",
+        colour=OutputColour.BRIGHT_CYAN,
     )
     terminal.rule(message, align="center")
 

@@ -21,11 +21,11 @@ async def close_database(): ...
 
 class DevelopmentSettings(AppSettings):
     # the environment can be names to whatever you want.
-    environment: bool = EnvironmentType.DEVELOPMENT
+    environment: str = EnvironmentType.DEVELOPMENT
     debug: bool = True
     reload: bool = True
 
-    def __init__(self, *args: Any, **kwds: Any) -> Any:
+    def __init__(self, *args: Any, **kwds: Any):
         super().__init__(*args, **kwds)
         logging_level = logging.DEBUG if self.debug else logging.INFO
         loggers = ("uvicorn.asgi", "uvicorn.access", "esmerald")

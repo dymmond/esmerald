@@ -36,7 +36,10 @@ from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses import JSONResponse, Response
 from esmerald.routing.apis.base import View
-from esmerald.transformers.model import TransformerModel
+from esmerald.transformers.model import (
+    TransformerModel,
+    create_signature as transfomer_create_signature,
+)
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
@@ -141,7 +144,7 @@ class BaseSignature:
         dependencies = self.get_dependencies()
         signature_model = get_signature(self)
 
-        return TransformerModel.create_signature(
+        return transfomer_create_signature(
             signature_model=signature_model,
             dependencies=dependencies,
             path_parameters=self.path_parameters,
@@ -236,7 +239,7 @@ class BaseResponseHandler:
 
         return response_content
 
-    def starlette_response_handler(
+    def lilya_response_handler(
         self,
         cookies: "ResponseCookies",
         headers: Optional["ResponseHeaders"] = None,
@@ -435,7 +438,7 @@ class BaseResponseHandler:
                     headers=headers,
                 )
             elif is_class_and_subclass(self.handler_signature.return_annotation, LilyaResponse):
-                handler = self.starlette_response_handler(
+                handler = self.lilya_response_handler(
                     cookies=cookies,
                     headers=headers,
                 )

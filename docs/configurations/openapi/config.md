@@ -1,6 +1,6 @@
 # OpenAPIConfig
 
-OpenAPIConfig is a simple configuration with basic fields for the auto-genmerated documentation from Esmerald.
+OpenAPIConfig is a simple configuration with basic fields for the auto-generated documentation from Esmerald.
 
 Prior to version 2, there were two pieces for the documentation but now it is simplified with a simple
 one.
@@ -19,7 +19,7 @@ is up to you.
 
 ## OpenAPIConfig and application
 
-The `OpenAPIConfig` contains a bunch of simple fields that are needed to to serve the documentation
+The `OpenAPIConfig` contains a bunch of simple fields that are needed to serve the documentation
 and those can be easily overwritten.
 
 Currently, by default, the URL for the documentation are:
@@ -43,13 +43,13 @@ It is very simple actually.
 This will create your own `OpenAPIConfig` and pass it to the Esmerald application but what about changing the current
 default `/docs` path?
 
-Let's use a an example for clarification.
+Let's use an example for clarification.
 
 ```python
 {!> ../docs_src/configurations/openapi/apiview.py !}
 ```
 
-From now on the url to access the `swagger` and `redoc` will be:
+From now on the url to access `swagger`, `redoc` and `stoplight` will be:
 
 * **Swagger** - `/another-url/swagger`.
 * **Redoc** - `/another-url/redoc`.

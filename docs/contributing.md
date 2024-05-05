@@ -45,70 +45,62 @@ After, clone your fork with the follow command replacing `YOUR-USERNAME` with yo
 $ git clone https://github.com/YOUR-USERNAME/esmerald
 ```
 
+Esmerald also uses [hatch](https://hatch.pypa.io/latest/) for its development, testing and release cycles.
+
+Please make sure you run:
+
+```shell
+$ pip install hatch
+```
+
 ### Install the project dependencies
 
-=== "Linux, macOS"
-    ```shell 
-    $ cd esmerald
-    $ scripts/install
-    ```
+Not necessary because the dependencies are automatically installed by hatch.
+But if environments should be pre-initialized it can be done with `hatch env`
 
-=== "Windows" 
-    ```powershell
-    $ cd esmerald
-    $ scripts\install.ps1
-    ```
+```shell
+$ cd esmerald
+$ hatch env create
+$ hatch env create test
+$ hatch env create docs
+```
+
+!!! Tip
+    This is the recommended way but if you still feel you want your own virtual environment and
+    all the packages installed there, you can always run `scripts/install`.
 
 ### Enable pre-commit
 
 The project comes with a pre-commit hook configuration. To enable it, just run inside the clone:
 
 ```shell
-$ pre-commit
+$ pre-commit install
 ```
 
 ### Run the tests
 
 To run the tests, use:
 
-=== "Linux, macOS"
 
-    ```shell
-    $ scripts/test
-    ```
-
-=== "Windows"
-
-    ```powershell
-    $ scripts\test.ps1
-    ```
+```shell
+$ hatch run test:test
+```
 
 Because Esmerald uses pytest, any additional arguments will be passed. More info within the
 [pytest documentation](https://docs.pytest.org/en/latest/how-to/usage.html)
 
 For example, to run a single test_script:
 
-=== "Linux, macOS"
-    ```shell
-    $ scripts/test tests/test_apiviews.py
-    ```
-
-=== "Windows"
-    ```powershell
-    $ scripts\test tests\test_apiviews.py
-    ```
+```shell
+$ hatch run test:test tests/test_apiviews.py
+```
 
 To run the linting, use:
 
-=== "Linux, macOS"
-    ```shell
-    $ scripts/lint
-    ```
 
-=== "Windows"
-    ```powershell
-    $ scripts\lint.ps1
-    ```
+```shell
+$ hatch run lint
+```
 
 ### Documentation
 
@@ -116,40 +108,27 @@ Improving the documentation is quite easy and it is placed inside the `esmerald/
 
 To start the docs, run:
 
-=== "Linux, macOS"
-    ```shell
-    $ scripts/docs
-    ```
 
-=== "Windows"
-    ```powershell
-    $ scripts\docs.ps1
-    ```
+```shell
+$ hatch run docs:serve
+```
 
 ## Building Esmerald
 
 To build a package locally, run:
 
-=== "Linux, macOS"
-    ```shell
-    $ scripts/build
-    ```
 
-=== "Windows"
-    ```shell
-    $ scripts\build
-    ```
+```shell
+$ hatch build
+```
+
 
 Alternatively running:
 
-=== "Linux, macOS"
-    ```
-    $ scripts/install
-    ```
-=== "Windows"
-    ```
-    $ scripts\install.ps1
-    ```
+
+```shell
+$ hatch shell
+```
 
 It will install the requirements and create a local build in your virtual environment.
 

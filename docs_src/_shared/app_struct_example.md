@@ -14,7 +14,7 @@
 │   │   │       ├── __init__.py
 │   │   │       ├── schemas.py
 │   │   │       ├── urls.py
-│   │   │       └── views.py
+│   │   │       └── controllers.py
 │   │   └── __init__.py
 │   ├── configs
 │   │   ├── development

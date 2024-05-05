@@ -59,7 +59,7 @@ def test_add_include_to_openapi(test_client_factory, value):
                     "get": {
                         "summary": "Read Item",
                         "description": "Read an item",
-                        "operationId": "read_item_item_get",
+                        "operationId": "myapi_read_item_item_get",
                         "responses": {
                             "200": {
                                 "description": "The SKU information of an item",
@@ -154,6 +154,6 @@ def test_include_no_include_in_schema(test_client_factory, value):
                         },
                         "deprecated": False,
                     }
-                },
+                }
             },
         }

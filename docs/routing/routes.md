@@ -9,12 +9,12 @@ components and packages and imported also inside complex design systems.
 Esmerald handles with those cases without any kind of issues at all.
 
 Lilya routing system alone wasn't enough to serve all the complexities and cases for all sort of
-different APIs and systems so Esmerald created its own.
+different APIs and systems, so Esmerald created its own.
 
 ## Gateway
 
-A Gateway is an extension of the Route really but adds their own logic and handling capabilities as well as its own
-validations without compromising the core.
+A Gateway is an extension of the Route, really, but adds its own logic and handling capabilities, as well as its own
+validations, without compromising the core.
 
 ### Gateway and application
 
@@ -64,7 +64,7 @@ and feature and allows:
 6. Less human lead bugs.
 
 !!! Warning
-    Includes **DO NOT** take path parameters. E.g.: `Include('/{name:path}, routes=[...])`.
+    Includes **DO NOT** take path parameters. E.g.: `Include('/include/{id:int}, routes=[...])`.
 
 ### Include and application
 

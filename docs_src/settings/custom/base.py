@@ -10,7 +10,7 @@ from lilya.middleware import DefineMiddleware
 class AppSettings(EsmeraldAPISettings):
     # The default is already production but for this example
     # we set again the variable
-    environment: bool = EnvironmentType.PRODUCTION
+    environment: str = EnvironmentType.PRODUCTION
     debug: bool = False
     reload: bool = False
 

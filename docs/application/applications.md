@@ -27,7 +27,7 @@ of its functionality.
 
 Because the swagger and redoc can only do so much, for example with the
 `username = request.path_params["username"]` **you won't be able to test it via docs**.
-**The best way of doing it is by calling the API directly via any prefered client or browser.**
+**The best way of doing it is by calling the API directly via any preferred client or browser.**
 
 In other words, the path param can be captured using the Request.path_params, but cannot be tested from the Swagger UI.
 
@@ -50,12 +50,12 @@ Via Insomnia:
 
 ### Instantiating the application
 
-Creating an appliation instance can be done in different ways and with a great plus of using the
+Creating an application instance can be done in different ways and with a great plus of using the
 [settings](./settings.md) for a cleaner approach.
 
 **Parameters**:
 
-* **debug** - Boolean indicating if a debug tracebacks should be returns on errors. Basically, debug mode,
+* **debug** - Boolean indicating if debug tracebacks should be returned on errors. Basically, debug mode,
 very useful for development.
 * **title** - The title for the application. Used for OpenAPI.
 * **app_name** - The application name. Used also for OpenAPI.
@@ -83,7 +83,7 @@ or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware<
 internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
 * **dependencies** - A dictionary of string and [Inject](.././dependencies.md) instances enable application level dependency
 injection.
-* **exception handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
+* **exception_handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 * **csrf_config** - If [CSRFConfig](../configurations/csrf.md) is set it will enable the CSRF built-in middleware.
@@ -96,7 +96,7 @@ application static files configuration.
 engine from the configuration object.
 * **session_config** - If [SessionConfig](../configurations/session.md) is set it will enable the session
 built-in middleware.
-* **response_class** - Custom subclass of [Response](../responses.md) to be used as application application response
+* **response_class** - Custom subclass of [Response](../responses.md) to be used as application response
 class.
 * **response_cookies** - List of [cookie](../datastructures.md) objects.
 * **response_headers** - Mapping dictionary of header objects.
@@ -105,14 +105,14 @@ class.
 * **scheduler_tasks** - A python dictionary with key and pair values as strings mapping the [scheduler tasks](../scheduler/scheduler.md).
 * **scheduler_configurations** - A python dictionary with key and pair values as strings mapping the
 extra configuations of [scheduler tasks](../scheduler/handler.md).
-* **enable_scheduler** - Flag indicating if the appliaction `scheduler` should be enabled or not. Defaults to `False`.
+* **enable_scheduler** - Flag indicating if the application `scheduler` should be enabled or not. Defaults to `False`.
 * **timezone** - The application default timezone. Defaults to `UTC`.
 * **on_shutdown** - A list of callables to run on application shutdown. Shutdown handler callables do not take any
 arguments, and may be be either standard functions, or async functions.
 
 * **on_startup** - A list of callables to run on application startup. Startup handler callables do not take any
 arguments, and may be be either standard functions, or async functions.
-* **lifepan** - The lifespan context function is a newer style that replaces on_startup / on_shutdown handlers.
+* **lifespan** - The lifespan context function is a newer style that replaces on_startup / on_shutdown handlers.
 Use one or the other, not both.
 * **tags** - List of tags to include in the OpenAPI schema.
 * **include_in_schema** - Boolean flag to indicate if should be schema included or not.
@@ -149,7 +149,7 @@ To access the application settings there are different ways:
 
 ### State and application instance
 
-You can store arbitraty extra state on the application instance using the [State](../datastructures.md) instance.
+You can store arbitrary extra state on the application instance using the [State](../datastructures.md) instance.
 
 Example:
 

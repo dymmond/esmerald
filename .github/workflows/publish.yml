@@ -18,13 +18,13 @@ jobs:
       - uses: "actions/setup-python@v5"
         with:
           python-version: 3.8
-      - name: "Install dependencies"
-        run: "scripts/install"
       - name: Install build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: pip install build twine
+        run: pip install hatch
       - name: "Build package"
-        run: "scripts/build"
+        run: "hatch build"
+      - name: "Build docs"
+        run: "hatch run docs:build"
       - name: "Publish to PyPI"
         run: "scripts/release"
         env:
