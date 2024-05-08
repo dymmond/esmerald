@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 3.1.4
+
+### Fixed
+
+- AsyncExitMiddleware raisng exception.
+- OpenAPI error when generating the parameters with dependencies.
+- OpenAPI security schemes.
+
 ## 3.1.3
 
 ### Changed
