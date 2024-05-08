@@ -1,7 +1,7 @@
-from inspect import getmro
-from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, cast
+from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union
 
 from lilya import status
+
 from lilya.exceptions import HTTPException as LilyaException
 from lilya.middleware.exceptions import ExceptionMiddleware as LilyaExceptionMiddleware
 from lilya.responses import Response as LilyaResponse
@@ -142,16 +142,14 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
         exception_handlers: ExceptionHandlerMap,
         exc: Exception,
     ) -> Union[ExceptionHandler, None]:
+        status_code = (
+            exc.status_code
+            if isinstance(exc, LilyaException)
+            else status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
         if not exception_handlers:
             return None
 
-        if not isinstance(exc, HTTPException) and exc.__class__ in exception_handlers:
-            return exception_handlers[exc.__class__]
-
-        if isinstance(exc, HTTPException) and exc.__class__ in exception_handlers:
-            return exception_handlers[exc.__class__]
-
-        for klass in getmro(type(exc)):
-            if klass in exception_handlers:
-                return exception_handlers[cast("Type[Exception]", exc)]
-        return None
+        return self.exception_handlers.get(status_code) or self.exception_handlers.get(
+            exc.__class__
+        )
