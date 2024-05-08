@@ -1,4 +1,5 @@
 from contextlib import AsyncExitStack
+from traceback import print_exception
 from typing import Optional
 
 from lilya.types import ASGIApp, Receive, Scope, Send
@@ -8,16 +9,23 @@ from esmerald.protocols.middleware import MiddlewareProtocol
 
 
 class AsyncExitStackMiddleware(MiddlewareProtocol):
-    def __init__(self, app: "ASGIApp", config: "AsyncExitConfig"):
+    def __init__(
+        self,
+        app: "ASGIApp",
+        config: "AsyncExitConfig",
+        debug: bool = False,
+    ):
         """AsyncExitStack Middleware class.
 
         Args:
             app: The 'next' ASGI app to call.
             config: The AsyncExitConfig instance.
+            debug: If the application should print the stack track on any error.
         """
         super().__init__(app)
         self.app = app
         self.config = config
+        self.debug = debug
 
     async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         if not AsyncExitStack:
@@ -30,5 +38,6 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
                 await self.app(scope, receive, send)
             except Exception as e:
                 exception = e
-        if exception:
+        if exception and self.debug:
+            print_exception(exception)
             raise exception

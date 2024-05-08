@@ -18,6 +18,7 @@ async def http_exception_handler(
     """
     Default exception handler for LilyaHTTPException and Esmerald HTTPException.
     """
+
     extra = getattr(exc, "extra", None)
     headers = getattr(exc, "headers", None)
 

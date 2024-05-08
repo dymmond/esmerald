@@ -2391,7 +2391,11 @@ class Esmerald(Lilya):
                     handlers=exception_handlers,
                     debug=debug,
                 ),
-                DefineMiddleware(AsyncExitStackMiddleware, config=self.async_exit_config),
+                DefineMiddleware(
+                    AsyncExitStackMiddleware,
+                    config=self.async_exit_config,
+                    debug=debug,
+                ),
             ]
         )
 
