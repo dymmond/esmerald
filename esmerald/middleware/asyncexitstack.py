@@ -30,6 +30,5 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
                 await self.app(scope, receive, send)
             except Exception as e:
                 exception = e
-                raise e
         if exception:
             raise exception

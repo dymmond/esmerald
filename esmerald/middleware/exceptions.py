@@ -1,7 +1,9 @@
-from inspect import getmro
-from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union, cast
+from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union
 
 from lilya import status
+
+# from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
+from lilya._internal._exception_handlers import wrap_app_handling_exceptions
 from lilya.exceptions import HTTPException as LilyaException
 from lilya.middleware.exceptions import ExceptionMiddleware as LilyaExceptionMiddleware
 from lilya.responses import Response as LilyaResponse
@@ -11,7 +13,6 @@ from pydantic import BaseModel
 from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
 from esmerald.exceptions import HTTPException, WebSocketException
-from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
 from esmerald.middleware.errors import ServerErrorMiddleware
 from esmerald.requests import Request
 from esmerald.responses import Response
@@ -142,16 +143,14 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
         exception_handlers: ExceptionHandlerMap,
         exc: Exception,
     ) -> Union[ExceptionHandler, None]:
+        status_code = (
+            exc.status_code
+            if isinstance(exc, LilyaException)
+            else status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
         if not exception_handlers:
             return None
 
-        if not isinstance(exc, HTTPException) and exc.__class__ in exception_handlers:
-            return exception_handlers[exc.__class__]
-
-        if isinstance(exc, HTTPException) and exc.__class__ in exception_handlers:
-            return exception_handlers[exc.__class__]
-
-        for klass in getmro(type(exc)):
-            if klass in exception_handlers:
-                return exception_handlers[cast("Type[Exception]", exc)]
-        return None
+        return self.exception_handlers.get(status_code) or self.exception_handlers.get(
+            exc.__class__
+        )
