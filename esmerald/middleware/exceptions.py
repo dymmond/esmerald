@@ -2,8 +2,6 @@ from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union
 
 from lilya import status
 
-# from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
-from lilya._internal._exception_handlers import wrap_app_handling_exceptions
 from lilya.exceptions import HTTPException as LilyaException
 from lilya.middleware.exceptions import ExceptionMiddleware as LilyaExceptionMiddleware
 from lilya.responses import Response as LilyaResponse
@@ -13,6 +11,7 @@ from pydantic import BaseModel
 from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
 from esmerald.exceptions import HTTPException, WebSocketException
+from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
 from esmerald.middleware.errors import ServerErrorMiddleware
 from esmerald.requests import Request
 from esmerald.responses import Response
