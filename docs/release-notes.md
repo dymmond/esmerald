@@ -9,7 +9,7 @@ hide:
 
 ### Fixed
 
-- AsyncExitMiddleware raisng exception.
+- AsyncExitMiddleware raising exception.
 - OpenAPI error when generating the parameters with dependencies.
 - OpenAPI security schemes.
 
