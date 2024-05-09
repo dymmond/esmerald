@@ -311,9 +311,11 @@ class View:
 
             if self.exception_handlers:
                 route_handler.exception_handlers = self.get_exception_handlers(route_handler)  # type: ignore
+
             if self.tags or []:  # pragma: no cover
                 for tag in reversed(self.tags):
                     route_handler.tags.insert(0, tag)
+
             route_handlers.append(route_handler)
 
         return route_handlers
