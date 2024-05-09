@@ -1,3 +1,4 @@
+import traceback
 from contextlib import AsyncExitStack
 from typing import Optional
 
@@ -38,8 +39,8 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
             except Exception as e:
                 exception = e
 
-        # if exception and self.debug:
-        #     print_exception(exception)
+        if exception and self.debug:
+            traceback.print_exception(exception, exception, exception.__traceback__)  # type: ignore
 
         if exception:
             raise exception
