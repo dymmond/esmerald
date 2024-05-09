@@ -8,6 +8,7 @@ from lilya._internal._path import clean_path
 from lilya.middleware import DefineMiddleware
 from lilya.routing import BasePath
 from lilya.status import HTTP_422_UNPROCESSABLE_ENTITY
+from lilya.transformers import TRANSFORMER_TYPES
 from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
@@ -46,8 +47,12 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
     """Gets all the neded params of the request and route"""
     path_params = [param.field_info for param in route.transformer.get_path_params()]
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
-    query_params = [param.field_info for param in route.transformer.get_query_params()]
     header_params = [param.field_info for param in route.transformer.get_header_params()]
+
+    query_params = []
+    for param in route.transformer.get_query_params():
+        if param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys():
+            query_params.append(param.field_info)
 
     return path_params + query_params + cookie_params + header_params
 
@@ -181,7 +186,7 @@ def get_openapi_operation_parameters(
         if field_info.deprecated:
             parameter.deprecated = field_info.deprecated  # type: ignore
 
-        parameters.append(parameter.model_dump(by_alias=True))
+        parameters.append(parameter.model_dump(by_alias=True, exclude_none=True))
     return parameters
 
 

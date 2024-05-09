@@ -23,8 +23,6 @@ jobs:
         run: pip install hatch
       - name: "Build package"
         run: "hatch build"
-      - name: "Build docs"
-        run: "hatch run docs:build"
       - name: "Publish to PyPI"
         run: "scripts/release"
         env:
