@@ -1,5 +1,4 @@
 from contextlib import AsyncExitStack
-from traceback import print_exception
 from typing import Optional
 
 from lilya.types import ASGIApp, Receive, Scope, Send
@@ -39,8 +38,8 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
             except Exception as e:
                 exception = e
 
-        if exception and self.debug:
-            print_exception(exception)
+        # if exception and self.debug:
+        #     print_exception(exception)
 
         if exception:
             raise exception
