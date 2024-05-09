@@ -20,7 +20,7 @@ class AsyncExitStackMiddleware(MiddlewareProtocol):
         Args:
             app: The 'next' ASGI app to call.
             config: The AsyncExitConfig instance.
-            debug: If the application should print the stack track on any error.
+            debug: If the application should print the stack trace on any error.
         """
         super().__init__(app)
         self.app = app
