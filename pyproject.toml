@@ -161,8 +161,7 @@ build = "mkdocs build"
 serve = "mkdocs serve --dev-addr localhost:8000"
 
 [tool.hatch.envs.test]
-features = ["all"]
-dependencies = ['esmerald[testing]']
+features = ["all", "testing"]
 
 [tool.hatch.envs.test.scripts]
 # needs docker services running
