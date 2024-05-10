@@ -161,13 +161,12 @@ build = "mkdocs build"
 serve = "mkdocs serve --dev-addr localhost:8000"
 
 [tool.hatch.envs.test]
-features = ["all"]
-dependencies = ['esmerald[testing]']
+features = ["all", "testing"]
 
 [tool.hatch.envs.test.scripts]
 # needs docker services running
 test = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args}"
-coverage = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=asyncz --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
+coverage = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
 check_types = "mypy -p esmerald"
 
 [tool.hatch.envs.hatch-test]
