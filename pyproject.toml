@@ -124,7 +124,7 @@ testing = [
     "mongoz>=0.6.0",
 
     # types
-    "types-ujson==5.9.0.0",
+    "types-ujson==5.10.0.20240515",
     "types-orjson==3.6.2",
 ]
 
