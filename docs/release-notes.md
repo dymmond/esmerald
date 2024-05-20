@@ -11,7 +11,7 @@ hide:
 
 This change was supposed to be shipped in the version [3.1.4](#314) but it missed the release.
 
-- Printing the stack trace when an Esmerald application is in `debug=True` provinding a deeper
+- Printing the stack trace when an Esmerald application is in `debug=True` providing a deeper
 level of understanding the source of the errors.
 
 ## 3.1.4

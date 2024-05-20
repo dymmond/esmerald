@@ -1,6 +1,10 @@
-from functools import cached_property
-from typing import Any, Dict, List, cast, get_args
+import inspect
+from functools import cached_property, lru_cache
+from typing import Any, Dict, List, _GenericAlias, cast, get_args
 
+from pydantic import BaseModel, create_model
+
+from esmerald.encoders import ENCODER_TYPES
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
@@ -8,10 +12,44 @@ from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.models import create_field_model
 
 
-class FieldInfoMixin:
+@lru_cache
+def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
+    """
+    Converts any annotation of the body into a Pydantic
+    base model.
+
+    This is used for OpenAPI representation purposes only.
+
+    Esmerald will try internally to convert the model into a Pydantic BaseModel,
+    this will serve as representation of the model in the documentation but internally,
+    it will use the native type to validate the data being sent and parsed in the
+    payload/data field.
+    """
+    annotation_args = get_args(field_annotation)
+    if isinstance(field_annotation, _GenericAlias):
+        annotations = tuple(convert_annotation_to_pydantic_model(arg) for arg in annotation_args)
+        field_annotation.__args__ = annotations
+        return field_annotation
+
+    if (
+        not isinstance(field_annotation, BaseModel)
+        and any(encoder.is_type(field_annotation) for encoder in ENCODER_TYPES)
+        and inspect.isclass(field_annotation)
+    ):
+        field_definitions: Dict[str, Any] = {}
+
+        for name, annotation in field_annotation.__annotations__.items():
+            field_definitions[name] = (annotation, ...)
+        return create_model(field_annotation.__name__, **field_definitions)
+    return field_annotation
+
+
+class OpenAPIFieldInfoMixin:
     """
     Used for validating model fields necessary for the
-    OpenAPI parsing.
+    OpenAPI parsing only.
+
+    Don't use this anywhere else.
     """
 
     @cached_property
@@ -32,7 +70,7 @@ class FieldInfoMixin:
                 )
 
                 responses[status_code] = ResponseParam(
-                    annotation=annotation,
+                    annotation=convert_annotation_to_pydantic_model(annotation),
                     description=response.description,
                     alias=model.__name__,
                 )
@@ -59,6 +97,9 @@ class FieldInfoMixin:
                     setattr(body, key, getattr(data, key, None))
             else:
                 body = data
+
+            # Check the annotation type
+            body.annotation = convert_annotation_to_pydantic_model(body.annotation)  # type: ignore
 
             if not body.title:
                 body.title = f"Body_{self.operation_id}"

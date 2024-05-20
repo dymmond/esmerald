@@ -77,15 +77,7 @@ def test_openapi_schema_tags_pydantic(test_client_factory):
                             "description": "Additional response",
                             "content": {
                                 "application/json": {
-                                    "schema": {
-                                        "properties": {
-                                            "detail": {"type": "string"},
-                                            "code": {"type": "integer"},
-                                        },
-                                        "type": "object",
-                                        "required": ["detail", "code"],
-                                        "title": "Msgspecerror",
-                                    }
+                                    "schema": {"$ref": "#/components/schemas/MsgSpecError"}
                                 }
                             },
                         },
@@ -97,7 +89,10 @@ def test_openapi_schema_tags_pydantic(test_client_factory):
         "components": {
             "schemas": {
                 "MsgSpecError": {
-                    "properties": {"detail": {"type": "string"}, "code": {"type": "integer"}},
+                    "properties": {
+                        "detail": {"type": "string", "title": "Detail"},
+                        "code": {"type": "integer", "title": "Code"},
+                    },
                     "type": "object",
                     "required": ["detail", "code"],
                     "title": "MsgSpecError",
