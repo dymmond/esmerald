@@ -1,4 +1,4 @@
-from typing import List, Optional, Type, Union
+from typing import Any, List, Optional, Type, Union
 
 from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
@@ -35,7 +35,14 @@ class OpenAPIResponse(BaseModel):
     """
 
     model: Annotated[
-        Union[Type[BaseModel], List[Type[BaseModel]], Type[Struct], List[Type[Struct]]],
+        Union[
+            Type[BaseModel],
+            List[Type[BaseModel]],
+            Type[Struct],
+            List[Type[Struct]],
+            Type[Any],
+            List[Type[Any]],
+        ],
         Doc(
             """
             A `pydantic.BaseModel` type of object of a `list` of
@@ -93,8 +100,22 @@ class OpenAPIResponse(BaseModel):
     @field_validator("model", mode="before")
     def validate_model(
         cls,
-        model: Union[Type[BaseModel], List[Type[BaseModel]], Type[Struct], List[Type[Struct]]],
-    ) -> Union[Type[BaseModel], List[Type[BaseModel]], Type[Struct], List[Type[Struct]]]:
+        model: Union[
+            Type[BaseModel],
+            List[Type[BaseModel]],
+            Type[Struct],
+            List[Type[Struct]],
+            Type[Any],
+            List[Type[Any]],
+        ],
+    ) -> Union[
+        Type[BaseModel],
+        List[Type[BaseModel]],
+        Type[Struct],
+        List[Type[Struct]],
+        Type[Any],
+        List[Type[Any]],
+    ]:
         if isinstance(model, list) and len(model) > 1:
             raise ValueError(
                 "The representation of a list of models in OpenAPI can only be a total of one. Example: OpenAPIResponse(model=[MyModel])."
