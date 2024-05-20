@@ -43,23 +43,7 @@ def test_user_msgspec_openapi(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "application/json": {
-                                    "schema": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "exclusiveMinimum": 0.0,
-                                            },
-                                            "email": {
-                                                "type": "string",
-                                                "maxLength": 100,
-                                                "minLength": 5,
-                                                "pattern": "[^@]+@[^@]+\\.[^@]+",
-                                            },
-                                        },
-                                        "type": "object",
-                                        "required": ["id", "email"],
-                                        "title": "Body_user__post",
-                                    }
+                                    "schema": {"$ref": "#/components/schemas/Comment"}
                                 }
                             },
                             "required": True,
@@ -88,13 +72,8 @@ def test_user_msgspec_openapi(test_client_factory):
                 "schemas": {
                     "Comment": {
                         "properties": {
-                            "id": {"type": "integer", "exclusiveMinimum": 0.0},
-                            "email": {
-                                "type": "string",
-                                "maxLength": 100,
-                                "minLength": 5,
-                                "pattern": "[^@]+@[^@]+\\.[^@]+",
-                            },
+                            "id": {"type": "integer", "title": "Id"},
+                            "email": {"type": "string", "title": "Email"},
                         },
                         "type": "object",
                         "required": ["id", "email"],

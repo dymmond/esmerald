@@ -22,7 +22,6 @@ def test_user_msgspec_openapi(test_client_factory):
         routes=[Gateway(handler=user_with_pydantic)], settings_module=TestSettings
     ) as client:
         response = client.get("/openapi.json")
-
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
@@ -41,14 +40,7 @@ def test_user_msgspec_openapi(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "application/json": {
-                                    "schema": {
-                                        "properties": {
-                                            "address": {"$ref": "#/components/schemas/Address"}
-                                        },
-                                        "type": "object",
-                                        "required": ["address"],
-                                        "title": "Body_user_with_pydantic__post",
-                                    }
+                                    "schema": {"$ref": "#/components/schemas/AddressBook"}
                                 }
                             },
                             "required": True,
@@ -72,14 +64,15 @@ def test_user_msgspec_openapi(test_client_factory):
             },
             "components": {
                 "schemas": {
-                    "Address": {
-                        "properties": {"name": {"type": "string"}},
-                        "type": "object",
-                        "required": ["name"],
-                        "title": "Address",
-                    },
                     "AddressBook": {
-                        "properties": {"address": {"$ref": "#/components/schemas/Address"}},
+                        "properties": {
+                            "address": {
+                                "properties": {"name": {"type": "string"}},
+                                "type": "object",
+                                "required": ["name"],
+                                "title": "Address",
+                            }
+                        },
                         "type": "object",
                         "required": ["address"],
                         "title": "AddressBook",
