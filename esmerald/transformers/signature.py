@@ -123,39 +123,6 @@ class SignatureFactory(ArbitraryExtraBaseModel):
                     continue
         return custom_encoders
 
-    def handle_encoders(
-        self, parameters: Generator[Parameter, None, None] = None
-    ) -> Dict[str, Any]:
-        """
-        Handles the extraction of any of the passed encoders.
-        """
-        custom_encoders: Dict[str, Any] = {}
-
-        if parameters is None:
-            parameters = self.parameters
-
-        for param in parameters:
-            origin = get_origin(param.annotation)
-
-            for encoder in ENCODER_TYPES:
-                if not origin:
-                    if encoder.is_type(param.annotation):
-                        custom_encoders[param.name] = {
-                            "encoder": encoder,
-                            "annotation": param.annotation,
-                        }
-                    continue
-                else:
-                    arguments: List[Type[type]] = self.extract_arguments(param=param.annotation)
-
-                    if any(encoder.is_type(value) for value in arguments):
-                        custom_encoders[param.name] = {
-                            "encoder": encoder,
-                            "annotation": param.annotation,
-                        }
-                    continue
-        return custom_encoders
-
     def create_signature(self) -> Type[EsmeraldSignature]:
         """
         Creates the EsmeraldSignature based on the type of parameters.
