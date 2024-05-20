@@ -27,7 +27,6 @@ def user(payload: BaseUser) -> None: ...
 def test_user_msgspec_with_pydantic_openapi(test_client_factory):
     with create_client(routes=[Gateway(handler=user)], settings_module=TestSettings) as client:
         response = client.get("/openapi.json")
-
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
@@ -58,20 +57,7 @@ def test_user_msgspec_with_pydantic_openapi(test_client_factory):
                                 "content": {
                                     "application/json": {
                                         "schema": {
-                                            "items": {
-                                                "properties": {
-                                                    "name": {"type": "string"},
-                                                    "email": {
-                                                        "anyOf": [
-                                                            {"type": "string"},
-                                                            {"type": "null"},
-                                                        ]
-                                                    },
-                                                },
-                                                "type": "object",
-                                                "required": ["name"],
-                                                "title": "User",
-                                            },
+                                            "items": {"$ref": "#/components/schemas/User"},
                                             "type": "array",
                                             "title": "User",
                                         }
@@ -124,11 +110,14 @@ def test_user_msgspec_with_pydantic_openapi(test_client_factory):
                     },
                     "User": {
                         "properties": {
-                            "name": {"type": "string"},
-                            "email": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                            "name": {"type": "string", "title": "Name"},
+                            "email": {
+                                "anyOf": [{"type": "string"}, {"type": "null"}],
+                                "title": "Email",
+                            },
                         },
                         "type": "object",
-                        "required": ["name"],
+                        "required": ["name", "email"],
                         "title": "User",
                     },
                     "ValidationError": {
