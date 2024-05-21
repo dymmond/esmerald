@@ -1,6 +1,6 @@
 import random
 import string
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import AsyncGenerator
 from uuid import uuid4
 
@@ -52,7 +52,7 @@ def generate_user_token(user: User, time=None):
     Generates a user token
     """
     if not time:
-        later = datetime.now() + timedelta(minutes=20)
+        later = datetime.now(UTC) + timedelta(minutes=20)
     else:
         later = time
 
@@ -89,7 +89,7 @@ class BackendAuthentication(BaseModel):
             is_password_valid = await user.check_password(self.password)
             if is_password_valid and self.user_can_authenticate(user):
                 # Using the access_token_lifetime from the JWT config directly
-                time = datetime.now() + jwt_config.access_token_lifetime
+                time = datetime.now(UTC) + jwt_config.access_token_lifetime
                 return self.generate_user_token(user, time=time)
 
     def user_can_authenticate(self, user):
@@ -104,7 +104,7 @@ class BackendAuthentication(BaseModel):
         Generates a user token
         """
         if not time:
-            later = datetime.now() + timedelta(minutes=20)
+            later = datetime.now(UTC) + timedelta(minutes=20)
         else:
             later = time
 
@@ -192,7 +192,7 @@ async def test_cannot_access_endpoint_without_header(test_client_factory, async_
 
 
 async def test_cannot_access_endpoint_with_invalid_header(test_client_factory, async_client):
-    time = datetime.now() + timedelta(seconds=1)
+    time = datetime.now(UTC) + timedelta(seconds=1)
     token = await get_user_and_token(time=time)
 
     with create_client(
@@ -205,7 +205,7 @@ async def test_cannot_access_endpoint_with_invalid_header(test_client_factory, a
 
 
 async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, async_client):
-    time = datetime.now() + timedelta(seconds=1)
+    time = datetime.now(UTC) + timedelta(seconds=1)
     token = await get_user_and_token(time=time)
 
     with create_client(
@@ -222,7 +222,7 @@ async def test_cannot_access_endpoint_with_invalid_token(test_client_factory, as
 async def test_cannot_access_endpoint_with_invalid_token_on_handler(
     test_client_factory, async_client
 ):
-    time = datetime.now() + timedelta(seconds=1)
+    time = datetime.now(UTC) + timedelta(seconds=1)
     token = await get_user_and_token(time=time)
 
     response = await async_client.get(
@@ -232,7 +232,7 @@ async def test_cannot_access_endpoint_with_invalid_token_on_handler(
 
 
 async def test_can_access_endpoint_with_valid_token(test_client_factory, async_client):
-    time = datetime.now() + timedelta(minutes=20)
+    time = datetime.now(UTC) + timedelta(minutes=20)
     token = await get_user_and_token(time=time)
 
     response = await async_client.get(
