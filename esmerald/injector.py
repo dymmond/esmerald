@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 
 from esmerald.core.di.provider import load_provider
 from esmerald.parsers import ArbitraryHashableBaseModel
-from esmerald.transformers.datastructures import Signature
+from esmerald.transformers.signature import Signature
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable
 

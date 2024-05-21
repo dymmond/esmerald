@@ -7,7 +7,7 @@ from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
-from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
+from esmerald.transformers.signature import EsmeraldSignature as SignatureModel
 from esmerald.transformers.utils import (
     Dependency,
     ParamSetting,

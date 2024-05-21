@@ -13,7 +13,7 @@ from esmerald.utils.constants import REQUIRED
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
-    from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
+    from esmerald.transformers.signature import EsmeraldSignature, Parameter
     from esmerald.types import ConnectionType
 
 
