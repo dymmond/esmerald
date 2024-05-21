@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 
 from esmerald.core.di.provider import load_provider
 from esmerald.parsers import ArbitraryHashableBaseModel
-from esmerald.transformers.signature import EsmeraldSignature
+from esmerald.transformers.signature import SignatureModel
 from esmerald.typing import Void
 from esmerald.utils.helpers import is_async_callable
 
@@ -56,7 +56,7 @@ class Inject(ArbitraryHashableBaseModel):
     def __init__(self, dependency: "AnyCallable", use_cache: bool = False, **kwargs: Any):
         super().__init__(**kwargs)
         self.dependency = dependency
-        self.signature_model: Optional["Type[EsmeraldSignature]"] = None
+        self.signature_model: Optional["Type[SignatureModel]"] = None
         self.use_cache = use_cache
         self.value: Any = Void
 

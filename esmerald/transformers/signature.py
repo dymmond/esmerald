@@ -66,7 +66,7 @@ class Parameter(ArbitraryBaseModel):
         return self.default not in UNDEFINED
 
 
-class EsmeraldSignature(ArbitraryBaseModel):
+class SignatureModel(ArbitraryBaseModel):
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
     encoders: ClassVar[Dict[str, Any]]
@@ -253,9 +253,9 @@ class SignatureFactory(ArbitraryExtraBaseModel):
                     continue
         return custom_encoders
 
-    def create_signature(self) -> Type[EsmeraldSignature]:
+    def create_signature(self) -> Type[SignatureModel]:
         """
-        Creates the EsmeraldSignature based on the type of parameters.
+        Creates the SignatureModel based on the type of parameters.
 
         This allows to understand if the msgspec is also available and allowed.
         """
@@ -272,9 +272,9 @@ class SignatureFactory(ArbitraryExtraBaseModel):
                     continue
                 self.field_definitions[param.name] = get_field_definition_from_param(param)
 
-            model: Type["EsmeraldSignature"] = create_model(
+            model: Type["SignatureModel"] = create_model(
                 self.fn_name + "_signature",
-                __base__=EsmeraldSignature,
+                __base__=SignatureModel,
                 **self.field_definitions,
             )
             model.return_annotation = self.signature.return_annotation
