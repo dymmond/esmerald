@@ -266,6 +266,9 @@ class TransformerModel(ArbitraryExtraBaseModel):
             headers={ParamSetting(**param) for param in data.get("headers", [])},
             path_params={ParamSetting(**param) for param in data.get("path_params", [])},
             query_params={ParamSetting(**param) for param in data.get("query_params", [])},
+            query_param_names={
+                ParamSetting(**param) for param in data.get("query_param_names", [])
+            },
             reserved_kwargs=set(data.get("reserved_kwargs", [])),
             is_optional=data.get("is_optional", False),
         )
@@ -491,8 +494,8 @@ def _get_form_data(
         Optional[Tuple[EncodingType, FieldInfo]]: Tuple containing media type and data
         field information, or None if not found.
     """
-    data_field = signature_model.model_fields.get("data") or signature_model.model_fields.get(
-        "payload"
+    data_field = signature_model.model_fields.get(DATA) or signature_model.model_fields.get(
+        PAYLOAD
     )
     if data_field:
         extra = getattr(data_field, "json_schema_extra", None) or {}
@@ -560,15 +563,15 @@ def create_signature(
     )
 
     is_optional = False
-    if "data" in reserved_kwargs and "payload" in reserved_kwargs:
+    if DATA in reserved_kwargs and PAYLOAD in reserved_kwargs:
         raise ImproperlyConfigured("Only 'data' or 'payload' must be provided but not both.")
 
-    if "data" in reserved_kwargs:
-        is_optional = is_field_optional(signature_model.model_fields["data"])
-    elif "payload" in reserved_kwargs:
-        is_optional = is_field_optional(signature_model.model_fields["payload"])
+    if DATA in reserved_kwargs:
+        is_optional = is_field_optional(signature_model.model_fields[DATA])
+    elif PAYLOAD in reserved_kwargs:
+        is_optional = is_field_optional(signature_model.model_fields[PAYLOAD])
 
-    query_param_names = set()
+    query_param_names: Set[ParamSetting] = set()
     return TransformerModel(
         form_data=form_data,
         dependencies=_dependencies,
@@ -620,9 +623,9 @@ def _update_parameters_with_dependency(
     cookies = merge_sets(cookies, dependency_model.cookies)
     headers = merge_sets(headers, dependency_model.headers)
 
-    if "data" in reserved_kwargs and "data" in dependency_model.reserved_kwargs:
+    if DATA in reserved_kwargs and DATA in dependency_model.reserved_kwargs:
         validate_data(form_data, dependency_model)
-    elif "payload" in reserved_kwargs and "payload" in dependency_model.reserved_kwargs:
+    elif PAYLOAD in reserved_kwargs and PAYLOAD in dependency_model.reserved_kwargs:
         validate_data(form_data, dependency_model)
     reserved_kwargs.update(dependency_model.reserved_kwargs)
 
