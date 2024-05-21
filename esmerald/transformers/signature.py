@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 object_setattr = object.__setattr__
 
 
-def is_server_error(error: Any, klass: "SignatureModel") -> bool:
+def is_server_error(error: Any, klass: Type["SignatureModel"]) -> bool:
     """
     Determines if the given error is classified as a server error.
 
@@ -52,6 +52,26 @@ def is_server_error(error: Any, klass: "SignatureModel") -> bool:
 
 
 class Parameter(ArbitraryBaseModel):
+    """
+    Represents a function parameter with associated metadata.
+
+    Attributes:
+        annotation (Optional[Any]): Type annotation of the parameter.
+        default (Optional[Any]): Default value of the parameter.
+        name (Optional[str]): Name of the parameter.
+        optional (Optional[bool]): Indicates if the parameter is optional.
+        fn_name (Optional[str]): Name of the function to which the parameter belongs.
+        param_name (Optional[str]): Name of the parameter.
+        parameter (Optional[InspectParameter]): Original inspect parameter object.
+
+    Raises:
+        ImproperlyConfigured: If the parameter lacks a type annotation.
+
+    Notes:
+        - The `annotation` attribute is set from the `parameter.annotation`.
+        - `default_defined` property checks if a default value is defined for the parameter.
+    """
+
     annotation: Optional[Any] = None
     default: Optional[Any] = None
     name: Optional[str] = None
@@ -64,9 +84,9 @@ class Parameter(ArbitraryBaseModel):
         self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
-        if parameter.annotation is InspectSignature.empty:
-            raise ImproperlyConfigured(  # pragma: no cover
-                f"The parameter name {param_name} from {fn_name} does not have a type annotation. "
+        if parameter.annotation is InspectParameter.empty:
+            raise ImproperlyConfigured(
+                f"The parameter '{param_name}' from '{fn_name}' does not have a type annotation. "
                 "If it should receive any value, use 'Any' as type."
             )
         self.annotation = parameter.annotation
@@ -77,13 +97,36 @@ class Parameter(ArbitraryBaseModel):
 
     @property
     def default_defined(self) -> bool:
-        return self.default not in UNDEFINED
+        """
+        Checks if a default value is defined for the parameter.
+
+        Returns:
+            bool: True if a default value is defined, False otherwise.
+        """
+        return bool(self.default not in UNDEFINED)
 
 
 class SignatureModel(ArbitraryBaseModel):
+    """
+    Represents a signature model for function signatures.
+
+    Attributes:
+        dependency_names (ClassVar[Set[str]]): Class variable holding a set of dependency names.
+            This attribute is used to store names of dependencies required by the function signature.
+        return_annotation (ClassVar[Any]): Class variable holding the return annotation type.
+            This attribute represents the type annotation indicating the expected return type of the signature.
+        encoders (ClassVar[Dict[str, "Encoder"]]): Class variable holding a dictionary of encoders.
+            This attribute stores encoder instances associated with parameter names,
+            allowing customized encoding and decoding of function parameters.
+
+    Note:
+        - `dependency_names` and `return_annotation` are intended to be set statically for the class.
+        - `encoders` should be populated dynamically with encoder instances as needed.
+    """
+
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
-    encoders: ClassVar[Dict[str, "Encoder"]]
+    encoders: ClassVar[Dict["Encoder", Any]]
 
     @classmethod
     def parse_encoders(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
@@ -119,8 +162,8 @@ class SignatureModel(ArbitraryBaseModel):
 
         for key, value in kwargs.items():
             if key in cls.encoders:
-                encoder_info: "Encoder" = cls.encoders[key]
-                encoder = encoder_info["encoder"]
+                encoder_info: Dict[str, "Encoder"] = cls.encoders[key]  # type: ignore
+                encoder: "Encoder" = encoder_info["encoder"]
                 annotation = encoder_info["annotation"]
                 kwargs[key] = encode_value(encoder, annotation, value)
 
@@ -190,7 +233,7 @@ class SignatureModel(ArbitraryBaseModel):
                 keys = list(match.groups())
                 return {keys[0]: str(exception).split(" - ")[0]}
             else:
-                return str(exception)
+                return str(exception)  # type: ignore
 
         try:
             method, url = get_connection_info(connection)
@@ -205,7 +248,7 @@ class SignatureModel(ArbitraryBaseModel):
     @classmethod
     def build_base_system_exception(
         cls, connection: Union[Request, WebSocket], exception: ValidationError
-    ) -> Union["InternalServerError", "ValidationErrorException"]:
+    ) -> Union["InternalServerError", "ValidationErrorException", "Exception"]:
         """
         Constructs a system exception based on validation errors, categorizing them
         as server or client errors, and providing detailed context.
@@ -258,7 +301,37 @@ class SignatureModel(ArbitraryBaseModel):
 
 
 class SignatureFactory(ArbitraryExtraBaseModel):
+    """
+    Factory class for creating a signature model based on a callable function.
+
+    Attributes:
+        fn (AnyCallable): The callable function or method.
+        signature (InspectSignature): Signature object obtained from inspecting `fn`.
+        fn_name (str): Name of the function.
+        defaults (Dict[str, Any]): Dictionary holding default values for function parameters.
+        dependency_names (Set[str]): Set of dependency names required by the function.
+        field_definitions (Dict[Any, Any]): Dictionary holding field definitions for the signature model.
+
+    Raises:
+        ImproperlyConfigured: If there is an error during signature creation.
+
+    Notes:
+        - The `fn_name` defaults to "anonymous" if the function lacks a `__name__` attribute.
+        - `field_definitions` is used to define fields for the signature model.
+    """
+
     def __init__(self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: Any) -> None:
+        """
+        Initializes a SignatureFactory instance.
+
+        Args:
+            fn (AnyCallable): The callable function or method.
+            dependency_names (Set[str]): Set of dependency names required by the function.
+            **kwargs: Additional keyword arguments passed to ArbitraryExtraBaseModel constructor.
+
+        Raises:
+            ImproperlyConfigured: If there is an error during signature creation.
+        """
         super().__init__(**kwargs)
         self.fn = fn
         self.signature = InspectSignature.from_callable(self.fn)
@@ -466,5 +539,5 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         )
         model.return_annotation = self.signature.return_annotation
         model.dependency_names = self.dependency_names
-        model.encoders = encoders
+        model.encoders = encoders  # type: ignore
         return model
