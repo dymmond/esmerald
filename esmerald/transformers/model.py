@@ -229,8 +229,10 @@ class TransformerModel(ArbitraryExtraBaseModel):
             kwargs[_dependency.key] = await self.get_dependencies(
                 dependency=_dependency, connection=connection, **kwargs
             )
-        dependency_kwargs = signature_model(**kwargs)
-        return dependency_kwargs
+        dependency_kwargs = signature_model.parse_values_for_connection(
+            connection=connection, **kwargs
+        )
+        return await dependency.inject(**dependency_kwargs)
 
     def to_dict(self) -> Dict[str, Any]:
         """
