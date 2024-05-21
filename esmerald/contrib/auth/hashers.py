@@ -26,7 +26,7 @@ def is_password_usable(encoded: Optional[str]) -> bool:
     return encoded is None or not encoded.startswith(UNUSABLE_PASSWORD_PREFIX)
 
 
-def check_password(
+async def check_password(
     password: str,
     encoded: str,
     setter: Callable[..., Any] = None,
@@ -54,7 +54,7 @@ def check_password(
     is_correct: bool = hasher_handler.hasher.verify(password, encoded)
 
     if setter and is_correct and must_update:
-        setter(password)
+        await setter(password)
     return is_correct
 
 

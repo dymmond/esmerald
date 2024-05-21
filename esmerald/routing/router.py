@@ -63,8 +63,8 @@ from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseInterceptorMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.model import TransformerModel
+from esmerald.transformers.signature import SignatureModel
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET

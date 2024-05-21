@@ -1645,6 +1645,14 @@ class Esmerald(Lilya):
         self._configure()
 
     def _register_application_encoders(self) -> None:
+        """
+        Registers the default Esmerald encoders.
+
+        This allows backwards compatibility with the previous
+        versions of Esmerald supporting Pydantic and MsgSpec by default.
+
+        This way, the support still remains but using the Lilya Encoders.
+        """
         self.register_encoder(cast(Encoder[Any], PydanticEncoder))
         self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
 

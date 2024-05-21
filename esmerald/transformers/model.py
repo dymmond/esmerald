@@ -7,7 +7,7 @@ from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
-from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
+from esmerald.transformers.signature import SignatureModel
 from esmerald.transformers.utils import (
     Dependency,
     ParamSetting,
@@ -30,6 +30,21 @@ MappingUnion = Mapping[Union[int, str], Any]
 
 
 class TransformerModel(ArbitraryExtraBaseModel):
+    """
+    Represents a transformer model with parameters and dependencies.
+
+    Attributes:
+        cookies (Set[ParamSetting]): Set of cookie parameters.
+        dependencies (Set[Dependency]): Set of dependencies.
+        form_data (Optional[Tuple[EncodingType, FieldInfo]]): Optional form data information.
+        headers (Set[ParamSetting]): Set of header parameters.
+        path_params (Set[ParamSetting]): Set of path parameters.
+        query_params (Set[ParamSetting]): Set of query parameters.
+        reserved_kwargs (Set[str]): Set of reserved keyword arguments.
+        has_kwargs (bool): Flag indicating if any kwargs are present.
+        is_optional (bool): Flag indicating if the model is optional.
+    """
+
     def __init__(
         self,
         cookies: Set[ParamSetting],
@@ -43,6 +58,20 @@ class TransformerModel(ArbitraryExtraBaseModel):
         is_optional: bool,
         **kwargs: Any,
     ):
+        """
+        Initialize a TransformerModel instance.
+
+        Args:
+            cookies (Set[ParamSetting]): Set of cookie parameters.
+            dependencies (Set[Dependency]): Set of dependencies.
+            form_data (Optional[Tuple[EncodingType, FieldInfo]]): Optional form data information.
+            headers (Set[ParamSetting]): Set of header parameters.
+            path_params (Set[ParamSetting]): Set of path parameters.
+            query_params (Set[ParamSetting]): Set of query parameters.
+            reserved_kwargs (Set[str]): Set of reserved keyword arguments.
+            is_optional (bool): Flag indicating if the model is optional.
+            **kwargs (Any): Additional keyword arguments.
+        """
         super().__init__(**kwargs)
         self.cookies = cookies
         self.dependencies = dependencies
@@ -64,15 +93,39 @@ class TransformerModel(ArbitraryExtraBaseModel):
         self.is_optional = is_optional
 
     def get_cookie_params(self) -> Set[ParamSetting]:
+        """
+        Get cookie parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of cookie parameters.
+        """
         return self.cookies
 
     def get_path_params(self) -> Set[ParamSetting]:
+        """
+        Get path parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of path parameters.
+        """
         return self.path_params
 
     def get_query_params(self) -> Set[ParamSetting]:
+        """
+        Get query parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of query parameters.
+        """
         return self.query_params
 
     def get_header_params(self) -> Set[ParamSetting]:
+        """
+        Get header parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of header parameters.
+        """
         return self.headers
 
     def to_kwargs(
@@ -81,6 +134,183 @@ class TransformerModel(ArbitraryExtraBaseModel):
         handler: Union["HTTPHandler", "WebSocketHandler"] = None,
     ) -> Any:
         connection_params = {}
+        for key, value in connection.query_params.items():
+            if key not in self.query_param_names and len(value) == 1:
+                value = value[0]
+                connection_params[key] = value
+
+        query_params = get_request_params(
+            params=cast("MappingUnion", connection.query_params),
+            expected=self.query_params,
+            url=connection.url,
+        )
+        path_params = get_request_params(
+            params=cast("MappingUnion", connection.path_params),
+            expected=self.path_params,
+            url=connection.url,
+        )
+        headers = get_request_params(
+            params=cast("MappingUnion", connection.headers),
+            expected=self.headers,
+            url=connection.url,
+        )
+        cookies = get_request_params(
+            params=cast("MappingUnion", connection.cookies),
+            expected=self.cookies,
+            url=connection.url,
+        )
+
+        if not self.reserved_kwargs:
+            return {**query_params, **path_params, **headers, **cookies}
+
+        return self.handle_reserved_kwargs(
+            connection=connection,
+            connection_params=connection_params,
+            path_params=path_params,
+            query_params=query_params,
+            headers=headers,
+            cookies=cookies,
+            handler=handler,
+        )
+
+    async def get_request_data(self, request: Request) -> Any:
+        """
+        Get request data asynchronously.
+
+        Args:
+            request (Request): HTTP Request object.
+
+        Returns:
+            Any: Parsed form data or JSON payload.
+        """
+        if not self.form_data:
+            return await request.json()
+
+        media_type, field = self.form_data
+        form_data = await request.form()
+        parsed_form = parse_form_data(media_type, form_data, field)
+        return parsed_form if parsed_form or not self.is_optional else None
+
+    def get_request_context(
+        self, handler: Union["HTTPHandler", "WebSocketHandler"], request: Request
+    ) -> Context:
+        """
+        Get request context.
+
+        Args:
+            handler (Union[HTTPHandler, WebSocketHandler]): HTTP or WebSocket handler.
+            request (Request): HTTP Request object.
+
+        Returns:
+            Context: Context object containing handler and request information.
+        """
+        return Context(__handler__=handler, __request__=request)
+
+    async def get_dependencies(
+        self, dependency: Dependency, connection: Union["WebSocket", Request], **kwargs: Any
+    ) -> Any:
+        """
+        Get dependencies asynchronously.
+
+        Args:
+            dependency (Dependency): Dependency object.
+            connection (Union[WebSocket, Request]): WebSocket or HTTP Request object.
+            **kwargs (Any): Additional keyword arguments.
+
+        Returns:
+            Any: Dependencies resolved from the connection and dependencies.
+        """
+        signature_model = get_signature(dependency.inject)
+        for _dependency in dependency.dependencies:
+            kwargs[_dependency.key] = await self.get_dependencies(
+                dependency=_dependency, connection=connection, **kwargs
+            )
+        dependency_kwargs = signature_model.parse_values_for_connection(
+            connection=connection, **kwargs
+        )
+        return await dependency.inject(**dependency_kwargs)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert TransformerModel instance to dictionary.
+
+        Returns:
+            Dict[str, Any]: Dictionary representation of TransformerModel instance.
+        """
+        return {
+            "cookies": [param.dict() for param in self.cookies],
+            "dependencies": [dep.dict() for dep in self.dependencies],
+            "form_data": self.form_data,
+            "headers": [param.dict() for param in self.headers],
+            "path_params": [param.dict() for param in self.path_params],
+            "query_params": [param.dict() for param in self.query_params],
+            "reserved_kwargs": list(self.reserved_kwargs),
+            "is_optional": self.is_optional,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "TransformerModel":
+        """
+        Create TransformerModel instance from dictionary.
+
+        Args:
+            data (Dict[str, Any]): Dictionary containing TransformerModel attributes.
+
+        Returns:
+            TransformerModel: TransformerModel instance created from dictionary.
+        """
+        return cls(
+            cookies={ParamSetting(**param) for param in data.get("cookies", [])},
+            dependencies={Dependency(**dep) for dep in data.get("dependencies", [])},
+            form_data=data.get("form_data"),
+            headers={ParamSetting(**param) for param in data.get("headers", [])},
+            path_params={ParamSetting(**param) for param in data.get("path_params", [])},
+            query_params={ParamSetting(**param) for param in data.get("query_params", [])},
+            query_param_names={
+                ParamSetting(**param) for param in data.get("query_param_names", [])
+            },
+            reserved_kwargs=set(data.get("reserved_kwargs", [])),
+            is_optional=data.get("is_optional", False),
+        )
+
+    def merge_with(self, other: "TransformerModel") -> "TransformerModel":
+        """
+        Merge with another TransformerModel instance.
+
+        Args:
+            other (TransformerModel): Another TransformerModel instance to merge with.
+
+        Returns:
+            TransformerModel: Merged TransformerModel instance.
+        """
+        return TransformerModel(
+            cookies=merge_sets(self.cookies, other.cookies),
+            dependencies=merge_sets(self.dependencies, other.dependencies),  # type: ignore
+            form_data=self.form_data if self.form_data == other.form_data else None,
+            headers=merge_sets(self.headers, other.headers),
+            path_params=merge_sets(self.path_params, other.path_params),
+            query_params=merge_sets(self.query_params, other.query_params),
+            query_param_names=merge_sets(self.query_param_names, other.query_param_names),
+            reserved_kwargs=self.reserved_kwargs.union(other.reserved_kwargs),
+            is_optional=self.is_optional or other.is_optional,
+        )
+
+    def _get_request_params(
+        self,
+        connection: Union["WebSocket", "Request"],
+        handler: Union["HTTPHandler", "WebSocketHandler"] = None,
+    ) -> Any:
+        """
+        Get request parameters.
+
+        Args:
+            connection (Union["WebSocket", "Request"]): Connection object.
+            handler (Union["HTTPHandler", "WebSocketHandler"], optional): Handler object. Defaults to None.
+
+        Returns:
+            Any: Request parameters.
+        """
+        connection_params: Dict[str, Any] = {}
         for key, value in connection.query_params.items():
             if key not in self.query_param_names and len(value) == 1:
                 value = value[0]
@@ -130,6 +360,21 @@ class TransformerModel(ArbitraryExtraBaseModel):
         cookies: Any,
         handler: Optional[Any] = None,
     ) -> Any:
+        """
+        Handle reserved keyword arguments.
+
+        Args:
+            connection (Union["WebSocket", "Request"]): Connection object.
+            connection_params (Any): Connection parameters.
+            path_params (Any): Path parameters.
+            query_params (Any): Query parameters.
+            headers (Any): Headers.
+            cookies (Any): Cookies.
+            handler (Optional[Any], optional): Handler object. Defaults to None.
+
+        Returns:
+            Any: Reserved keyword arguments.
+        """
         reserved_kwargs: Any = {}
         if DATA in self.reserved_kwargs:
             reserved_kwargs[DATA] = self.get_request_data(request=cast("Request", connection))
@@ -156,42 +401,18 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         return {**reserved_kwargs, **path_params, **query_params, **headers, **cookies}
 
-    async def get_request_data(self, request: "Request") -> Any:
-        # Fast exit principle
-        if not self.form_data:
-            return await request.json()
-
-        media_type, field = self.form_data
-        form_data = await request.form()
-        parsed_form = parse_form_data(media_type, form_data, field)
-        return parsed_form if parsed_form or not self.is_optional else None
-
-    def get_request_context(
-        self, handler: Union["HTTPHandler", "WebSocketHandler"], request: "Request"
-    ) -> Context:
-        """
-        Generates the context of the handler where additional information can be provided and passed properly.
-        """
-        return Context(__handler__=handler, __request__=request)
-
-    async def get_dependencies(
-        self,
-        dependency: "Dependency",
-        connection: Union["WebSocket", "Request"],
-        **kwargs: Any,
-    ) -> Any:
-        signature_model = get_signature(dependency.inject)
-        for _dependency in dependency.dependencies:
-            kwargs[_dependency.key] = await self.get_dependencies(
-                dependency=_dependency, connection=connection, **kwargs
-            )
-        dependency_kwargs = signature_model.parse_values_for_connection(
-            connection=connection, **kwargs
-        )
-        return await dependency.inject(**dependency_kwargs)
-
 
 def dependency_tree(key: str, dependencies: "Dependencies") -> Dependency:
+    """
+    Recursively build a dependency tree starting from a given key.
+
+    Args:
+        key (str): Key of the dependency to start building from.
+        dependencies (Dependencies): Dictionary of dependencies.
+
+    Returns:
+        Dependency: Constructed dependency tree starting from the specified key.
+    """
     inject = dependencies[key]
     dependency_keys = [key for key in get_signature(inject).model_fields if key in dependencies]
     return Dependency(
@@ -205,37 +426,30 @@ def dependency_tree(key: str, dependencies: "Dependencies") -> Dependency:
 
 def get_parameter_settings(
     path_parameters: Set[str], dependencies: Dict[str, Any], signature_fields: Dict[str, Any]
-) -> Tuple[Set[ParamSetting], Set["Dependency"]]:
+) -> Tuple[Set[ParamSetting], Set[Dependency]]:
     """
-    Get parameter settings and dependencies for given inputs.
+    Get parameter settings and dependencies based on input data.
 
     Args:
-        path_parameters (set): Set of path parameters.
-        dependencies (dict): Dependency information.
-        signature_fields (dict): Dictionary containing field information.
+        path_parameters (Set[str]): Set of path parameters.
+        dependencies (Dict[str, Any]): Dictionary of dependencies.
+        signature_fields (Dict[str, Any]): Dictionary containing field information.
 
     Returns:
-        tuple: A tuple containing sets of parameter settings and dependencies.
+        Tuple[Set[ParamSetting], Set[Dependency]]: Tuple containing sets of parameter settings
+        and dependencies.
     """
-
-    # Set to store dependencies
-    _dependencies: Any = set()
-
-    # Set to store ignored keys
+    _dependencies: Set[Dependency] = set()
     ignored_keys = {
         *RESERVED_KWARGS,
         *(dependency.key for dependency in _dependencies),
     }
+    parameter_definitions: Set[ParamSetting] = set()
 
-    # Set to store parameter definitions
-    parameter_definitions = set()
-
-    # Iterate through dependencies to add relevant dependencies
     for key in dependencies:
         if key in signature_fields:
             _dependencies.add(dependency_tree(key=key, dependencies=dependencies))
 
-    # Iterate through signature fields to create parameter settings
     for field_name, model_field in signature_fields.items():
         if field_name not in ignored_keys:
             allow_none = getattr(model_field, "allow_none", True)
@@ -247,24 +461,6 @@ def get_parameter_settings(
                     path_parameters=path_parameters,
                 )
             )
-
-    # Filter out ignored keys and create parameter settings
-    filtered = [
-        (field_name, model_field)
-        for field_name, model_field in signature_fields.items()
-        if field_name not in ignored_keys
-    ]
-    for field_name, model_field in filtered:
-        signature_field = model_field
-        allow_none = getattr(signature_field, "allow_none", True)
-        parameter_definitions.add(
-            create_parameter_setting(
-                allow_none=allow_none,
-                field_name=field_name,
-                field_info=signature_field,
-                path_parameters=path_parameters,
-            )
-        )
 
     return parameter_definitions, _dependencies
 
@@ -286,8 +482,8 @@ def _filter_param_settings_by_type(
 
 
 def _get_form_data(
-    signature_model: Type[SignatureModel],
-) -> Optional[Tuple["EncodingType", "FieldInfo"]]:
+    signature_model: Type["SignatureModel"],
+) -> Optional[Tuple[EncodingType, FieldInfo]]:
     """
     Get form data from the signature model.
 
@@ -295,7 +491,8 @@ def _get_form_data(
         signature_model (Type[SignatureModel]): The signature model.
 
     Returns:
-        Optional[Tuple[str, Any]]: Tuple containing media type and data field, or None.
+        Optional[Tuple[EncodingType, FieldInfo]]: Tuple containing media type and data
+        field information, or None if not found.
     """
     data_field = signature_model.model_fields.get(DATA) or signature_model.model_fields.get(
         PAYLOAD
@@ -309,7 +506,7 @@ def _get_form_data(
 
 
 def create_signature(
-    signature_model: Type[SignatureModel],
+    signature_model: Type["SignatureModel"],
     dependencies: "Dependencies",
     path_parameters: Set[str],
 ) -> "TransformerModel":
@@ -345,9 +542,8 @@ def create_signature(
     cookies = _filter_param_settings_by_type(param_settings, ParamType.COOKIE)
     headers = _filter_param_settings_by_type(param_settings, ParamType.HEADER)
 
-    form_data: Union[Tuple["EncodingType", "FieldInfo"], None] = _get_form_data(signature_model)
+    form_data = _get_form_data(signature_model)
 
-    # Update parameters
     (
         path_params,
         query_params,
@@ -371,11 +567,11 @@ def create_signature(
         raise ImproperlyConfigured("Only 'data' or 'payload' must be provided but not both.")
 
     if DATA in reserved_kwargs:
-        is_optional = is_field_optional(signature_model.model_fields["data"])
+        is_optional = is_field_optional(signature_model.model_fields[DATA])
     elif PAYLOAD in reserved_kwargs:
-        is_optional = is_field_optional(signature_model.model_fields["payload"])
+        is_optional = is_field_optional(signature_model.model_fields[PAYLOAD])
 
-    query_param_names: Any = set()
+    query_param_names: Set[ParamSetting] = set()
     return TransformerModel(
         form_data=form_data,
         dependencies=_dependencies,
@@ -390,7 +586,7 @@ def create_signature(
 
 
 def _update_parameters_with_dependency(
-    dependency: "Dependency",
+    dependency: Dependency,
     global_dependencies: "Dependencies",
     path_params: Any,
     query_params: Any,
@@ -438,7 +634,7 @@ def _update_parameters_with_dependency(
 
 def update_parameters(
     global_dependencies: "Dependencies",
-    local_dependencies: Set["Dependency"],
+    local_dependencies: Set[Dependency],
     path_params: Any,
     query_params: Any,
     cookies: Any,
@@ -484,8 +680,21 @@ def update_parameters(
 
 def validate_data(
     form_data: Optional[Tuple[EncodingType, FieldInfo]],
-    dependency_model: "TransformerModel",
-) -> None:  # pragma: no cover
+    dependency_model: TransformerModel,
+) -> None:
+    """
+    Validate compatibility of form data
+    between two models.
+
+    Args:
+        form_data (Optional[Tuple[EncodingType, FieldInfo]]): Form data tuple containing
+            media type and data field information, or None.
+        dependency_model (TransformerModel): Transformer model to validate against.
+
+    Raises:
+        ImproperlyConfigured: If dependencies have incompatible form-data encoding or
+            incompatible 'data' kwarg types.
+    """
     if form_data and dependency_model.form_data:
         media_type, _ = form_data
         dependency_media_type, _ = dependency_model.form_data
@@ -494,20 +703,18 @@ def validate_data(
                 "Dependencies have incompatible form-data encoding. "
                 "They should both be the same. Either url-encoded or multi-part."
             )
-    if (
-        (form_data and not dependency_model.form_data)
-        or not form_data
-        and dependency_model.form_data
+    if (form_data and not dependency_model.form_data) or (
+        not form_data and dependency_model.form_data
     ):
         raise ImproperlyConfigured(
-            "Dependencies haev incompativle 'data' kwarg types. "
+            "Dependencies have incompatible 'data' kwarg types. "
             "One expects JSON and the other expects form-data."
         )
 
 
 def _get_names_from_model_fields(model_fields: Dict[str, FieldInfo]) -> Set[str]:
     """
-    Extract names from model fields.
+    Extract names from model fields that have additional metadata relevant for parameters.
 
     Args:
         model_fields (Dict[str, FieldInfo]): Dictionary of model fields.
@@ -518,7 +725,7 @@ def _get_names_from_model_fields(model_fields: Dict[str, FieldInfo]) -> Set[str]
     names = set()
     for key, value in model_fields.items():
         if value.json_schema_extra is not None:
-            extra = cast("Dict[str, Any]", value.json_schema_extra)
+            extra = cast(Dict[str, Any], value.json_schema_extra)
             if (
                 extra.get(ParamType.QUERY)
                 or extra.get(ParamType.HEADER)
@@ -529,14 +736,14 @@ def _get_names_from_model_fields(model_fields: Dict[str, FieldInfo]) -> Set[str]
 
 
 def _check_ambiguity_in_kwargs(
-    path_parameters: Set[str], dependencies: "Dependencies", model_fields: Dict[str, FieldInfo]
+    path_parameters: Set[str], dependencies: Dict[str, Any], model_fields: Dict[str, FieldInfo]
 ) -> None:
     """
-    Check ambiguity in keyword argument resolution.
+    Check for ambiguity in keyword argument resolution.
 
     Args:
         path_parameters (Set[str]): Set of path parameters.
-        dependencies (Dependencies): Dependency information.
+        dependencies (Dict[str, Any]): Dependency information.
         model_fields (Dict[str, FieldInfo]): Dictionary of model fields.
 
     Raises:
@@ -559,15 +766,15 @@ def _check_ambiguity_in_kwargs(
 
 def validate_kwargs(
     path_parameters: Set[str],
-    dependencies: "Dependencies",
+    dependencies: Dict[str, Any],
     model_fields: Dict[str, FieldInfo],
 ) -> None:
     """
-    Validate keyword arguments.
+    Validate keyword arguments for parameter and dependency definitions.
 
     Args:
         path_parameters (Set[str]): Set of path parameters.
-        dependencies (Dependencies): Dependency information.
+        dependencies (Dict[str, Any]): Dependency information.
         model_fields (Dict[str, FieldInfo]): Dictionary of model fields.
 
     Raises:
