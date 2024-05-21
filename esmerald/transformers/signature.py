@@ -191,7 +191,6 @@ class SignatureModel(ArbitraryBaseModel):
         try:
             if cls.encoders:
                 kwargs = cls.parse_encoders(kwargs)
-
             signature = cls(**kwargs)
             values = {}
             for key in cls.model_fields:
