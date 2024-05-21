@@ -25,13 +25,20 @@ class Encoder(LilyaEncoder[T]):
         Function that checks if the function is
         an instance of a given type
         """
-        raise NotImplementedError("All Esmerald encoders must implement is_type() method")
+        raise NotImplementedError("All Esmerald encoders must implement is_type() method.")
+
+    def serialize(self, obj: Any) -> Any:
+        """
+        Function that transforms a data structure into a serializable
+        object.
+        """
+        raise NotImplementedError("All Esmerald encoders must implement serialize() method.")
 
     def encode(self, annotation: Any, value: Any) -> Any:
         """
         Function that transforms the kwargs into a structure
         """
-        raise NotImplementedError("All Esmerald encoders must implement encode() method")
+        raise NotImplementedError("All Esmerald encoders must implement encode() method.")
 
 
 class MsgSpecEncoder(Encoder):

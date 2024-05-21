@@ -229,6 +229,7 @@ class SignatureModel(ArbitraryBaseModel):
             """
             error_pattern = re.compile(r"`\$\.(.+)`$")
             match = error_pattern.search(str(exception))
+
             if match:
                 keys = list(match.groups())
                 return {keys[0]: str(exception).split(" - ")[0]}
