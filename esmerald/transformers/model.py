@@ -54,6 +54,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         path_params: Set[ParamSetting],
         query_params: Set[ParamSetting],
         reserved_kwargs: Set[str],
+        query_param_names: Set[ParamSetting],
         is_optional: bool,
         **kwargs: Any,
     ):
@@ -79,6 +80,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         self.path_params = path_params
         self.query_params = query_params
         self.reserved_kwargs = reserved_kwargs
+        self.query_param_names = query_param_names
         self.has_kwargs = (
             cookies
             or dependencies
@@ -128,38 +130,32 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
     def to_kwargs(
         self,
-        connection: Union["WebSocket", Request],
+        connection: Union["WebSocket", "Request"],
         handler: Union["HTTPHandler", "WebSocketHandler"] = None,
     ) -> Any:
-        """
-        Convert TransformerModel instance to keyword arguments.
-
-        Args:
-            connection (Union[WebSocket, Request]): WebSocket or HTTP Request object.
-            handler (Union[HTTPHandler, WebSocketHandler], optional): Optional handler object.
-
-        Returns:
-            Any: Keyword arguments generated from TransformerModel instance.
-        """
-        connection_params: Dict[str, Any] = {}
+        connection_params = {}
+        for key, value in connection.query_params.items():
+            if key not in self.query_param_names and len(value) == 1:
+                value = value[0]
+                connection_params[key] = value
 
         query_params = get_request_params(
-            params=cast(MappingUnion, connection.query_params),
+            params=cast("MappingUnion", connection.query_params),
             expected=self.query_params,
             url=connection.url,
         )
         path_params = get_request_params(
-            params=cast(MappingUnion, connection.path_params),
+            params=cast("MappingUnion", connection.path_params),
             expected=self.path_params,
             url=connection.url,
         )
         headers = get_request_params(
-            params=cast(MappingUnion, connection.headers),
+            params=cast("MappingUnion", connection.headers),
             expected=self.headers,
             url=connection.url,
         )
         cookies = get_request_params(
-            params=cast(MappingUnion, connection.cookies),
+            params=cast("MappingUnion", connection.cookies),
             expected=self.cookies,
             url=connection.url,
         )
@@ -291,6 +287,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
             headers=merge_sets(self.headers, other.headers),
             path_params=merge_sets(self.path_params, other.path_params),
             query_params=merge_sets(self.query_params, other.query_params),
+            query_param_names=merge_sets(self.query_param_names, other.query_param_names),
             reserved_kwargs=self.reserved_kwargs.union(other.reserved_kwargs),
             is_optional=self.is_optional or other.is_optional,
         )
@@ -311,6 +308,10 @@ class TransformerModel(ArbitraryExtraBaseModel):
             Any: Request parameters.
         """
         connection_params: Dict[str, Any] = {}
+        for key, value in connection.query_params.items():
+            if key not in self.query_param_names and len(value) == 1:
+                value = value[0]
+                connection_params[key] = value
 
         query_params = get_request_params(
             params=cast("MappingUnion", connection.query_params),
@@ -567,6 +568,7 @@ def create_signature(
     elif "payload" in reserved_kwargs:
         is_optional = is_field_optional(signature_model.model_fields["payload"])
 
+    query_param_names = set()
     return TransformerModel(
         form_data=form_data,
         dependencies=_dependencies,
@@ -575,6 +577,7 @@ def create_signature(
         cookies=cookies,
         headers=headers,
         reserved_kwargs=reserved_kwargs,
+        query_param_names=query_param_names,
         is_optional=is_optional,
     )
 
