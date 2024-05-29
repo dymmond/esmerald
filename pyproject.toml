@@ -44,7 +44,7 @@ dependencies = [
     "click>=8.1.4,<9.0.0",
     "itsdangerous>=2.1.2,<3.0.0",
     "jinja2>=3.1.2,<4.0.0",
-    "lilya>=0.7.1",
+    "lilya>=0.7.2",
     "loguru>=0.7.0,<0.8.0",
     "pydantic>=2.5.3,<3.0.0",
     "pydantic-settings>=2.0.0,<3.0.0",
@@ -137,7 +137,7 @@ clean_pyc = "find . -type f -name \"*.pyc\" -delete"
 clean_pyi = "find . -type f -name \"*.pyi\" -delete"
 clean_pycache = "find . -type d -name \"*__pycache__*\" -delete"
 build_with_check = "hatch build; twine check dist/*"
-lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}"
+lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}; hatch run test:check_types"
 
 
 [tool.hatch.envs.docs]
