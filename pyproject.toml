@@ -137,7 +137,7 @@ clean_pyc = "find . -type f -name \"*.pyc\" -delete"
 clean_pyi = "find . -type f -name \"*.pyi\" -delete"
 clean_pycache = "find . -type d -name \"*__pycache__*\" -delete"
 build_with_check = "hatch build; twine check dist/*"
-lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}"
+lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}; hatch run test:check_types"
 
 
 [tool.hatch.envs.docs]

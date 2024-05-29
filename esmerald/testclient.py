@@ -46,7 +46,7 @@ if TYPE_CHECKING:  # pragma: no cover
     )
 
 
-class EsmeraldTestClient(TestClient):
+class EsmeraldTestClient(TestClient):  # type: ignore
     app: Esmerald
 
     def __init__(
