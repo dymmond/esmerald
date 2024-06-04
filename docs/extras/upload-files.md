@@ -108,7 +108,7 @@ as well.
 ### File from params
 
 The file used with the [example](#single-file-upload-1) as param is not a datastructure but a `FieldInfo` so it cannot
-be used to set and create a new `file` like the one from [File in datastructures](../datastructures.md).
+be used to set and create a new `file` like the one from *File in datastructures*.
 
 To import it:
 
