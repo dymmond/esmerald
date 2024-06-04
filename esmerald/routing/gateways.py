@@ -9,7 +9,7 @@ from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.routing.apis.base import View
-from esmerald.routing.base import BaseInterceptorMixin
+from esmerald.routing.base import Dispatcher
 from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string
 
@@ -75,7 +75,7 @@ class GatewayUtil:
         return operation_id
 
 
-class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware, GatewayUtil):
+class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
     """
     `Gateway` object class used by Esmerald routes.
 
@@ -331,7 +331,7 @@ class Gateway(LilyaPath, BaseInterceptorMixin, BaseMiddleware, GatewayUtil):
         await self.app(scope, receive, send)
 
 
-class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware):
+class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
     """
     `WebSocketGateway` object class used by Esmerald routes.
 
@@ -529,7 +529,7 @@ class WebSocketGateway(LilyaWebSocketPath, BaseInterceptorMixin, BaseMiddleware)
         await self.app(scope, receive, send)
 
 
-class WebhookGateway(LilyaPath, BaseInterceptorMixin, GatewayUtil):
+class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
     """
     `WebhookGateway` object class used by Esmerald routes.
 
