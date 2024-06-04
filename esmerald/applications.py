@@ -1745,13 +1745,24 @@ class Esmerald(Lilya):
     def activate_scheduler(self) -> None:
         """
         Makes sure the scheduler is accessible.
+
+        This method checks if the necessary scheduler modules are installed. If not, it raises an ImportError
+        with instructions on how to install the scheduler. It then initializes the scheduler with the specified
+        parameters or defaults to using the AsyncIOScheduler class.
+
+        :raises ImportError: If the scheduler modules are not installed.
         """
         try:
             from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
+            from asyncz.schedulers import AsyncIOScheduler
         except ImportError as e:
             raise ImportError(
                 "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
             ) from e
+
+        # Defaulting the scheduler class to AsyncIOScheduler
+        if self.scheduler_class is None:
+            self.scheduler_class = AsyncIOScheduler
 
         self.scheduler = EsmeraldScheduler(
             app=self,
