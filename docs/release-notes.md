@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.2.1
+
+### Changed
+
+- `Context` is not inheriting directly from Lilya.
+
+### Fixed
+
+- The default `scheduler_class` internal settings validation.
+
 ## 3.2.0
 
 ### Added
