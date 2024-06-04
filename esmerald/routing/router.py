@@ -60,7 +60,7 @@ from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing._internal import OpenAPIFieldInfoMixin
 from esmerald.routing.apis.base import View
-from esmerald.routing.base import BaseInterceptorMixin
+from esmerald.routing.base import Dispatcher
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.transformers.model import TransformerModel
@@ -997,7 +997,7 @@ class Router(BaseRouter):
         self.routes.append(websocket_gateway)
 
 
-class HTTPHandler(BaseInterceptorMixin, OpenAPIFieldInfoMixin, LilyaPath):
+class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
     __slots__ = (
         "path",
         "_interceptors",
@@ -1319,7 +1319,7 @@ class HTTPHandler(BaseInterceptorMixin, OpenAPIFieldInfoMixin, LilyaPath):
         self.validate_reserved_kwargs()
 
     async def to_response(self, app: "Esmerald", data: Any) -> LilyaResponse:
-        response_handler = self.get_response_handler()
+        response_handler = self.get_response_for_handler()
         return await response_handler(app=app, data=data)  # type: ignore[call-arg]
 
 
@@ -1416,7 +1416,7 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin, LilyaPath):
         self.path = path
 
 
-class WebSocketHandler(BaseInterceptorMixin, LilyaWebSocketPath):
+class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
     """
     Websocket handler object representation.
     """
