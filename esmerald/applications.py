@@ -918,7 +918,7 @@ class Esmerald(Lilya):
                     enable_scheduler=True,
                     scheduler_tasks={
                         "collect_market_data": "accounts.tasks",
-                        "send_email_newsletter": "accounts.tasks",
+                        "send_newsletter": "accounts.tasks",
                     },
                 )
                 ```
@@ -1565,13 +1565,13 @@ class Esmerald(Lilya):
         self.response_class = self.load_settings_value("response_class", response_class)
         self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
         self.response_headers = self.load_settings_value("response_headers", response_headers)
+        self.enable_scheduler = self.load_settings_value(
+            "enable_scheduler", enable_scheduler, is_boolean=True
+        )
         self.scheduler_class = self.load_settings_value("scheduler_class", scheduler_class)
         self.scheduler_tasks = self.load_settings_value("scheduler_tasks", scheduler_tasks) or {}
         self.scheduler_configurations = (
             self.load_settings_value("scheduler_configurations", scheduler_configurations) or {}
-        )
-        self.enable_scheduler = self.load_settings_value(
-            "enable_scheduler", enable_scheduler, is_boolean=True
         )
         self.timezone = self.load_settings_value("timezone", timezone)
         self.root_path = self.load_settings_value("root_path", root_path)
