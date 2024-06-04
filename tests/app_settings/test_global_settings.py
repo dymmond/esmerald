@@ -3,7 +3,6 @@ import sys
 from typing import List
 
 import pytest
-from asyncz.schedulers import AsyncIOScheduler
 
 from esmerald import CORSConfig, Esmerald, EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
@@ -64,4 +63,4 @@ def test_scheduler_class_raises_error(monkeypatch):
 def test_scheduler_class():
     app = Esmerald(routes=[], settings_module=SchedulerClassSettings)
 
-    assert app.settings.scheduler_class == AsyncIOScheduler
+    assert app.settings.scheduler_class is None

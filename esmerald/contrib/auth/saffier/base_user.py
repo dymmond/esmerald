@@ -51,7 +51,7 @@ class AbstractUser(saffier.Model):
             self._password = None
             await self.update(password=self.password)
 
-        return check_password(raw_password, str(self.password), setter)
+        return await check_password(raw_password, str(self.password), setter)
 
     async def set_unusable_password(self) -> None:
         # Set a value that will never be a valid hash

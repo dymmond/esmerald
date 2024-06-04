@@ -5,6 +5,6 @@ app = Esmerald(
     enable_scheduler=True,
     scheduler_tasks={
         "collect_market_data": "accounts.tasks",
-        "send_email_newsletter": "accounts.tasks",
+        "send_newsletter": "accounts.tasks",
     },
 )

@@ -5,6 +5,34 @@ hide:
 
 # Release Notes
 
+## 3.2.1
+
+### Changed
+
+- `Context` is not inheriting directly from Lilya.
+
+### Fixed
+
+- The default `scheduler_class` internal settings validation.
+
+## 3.2.0
+
+### Added
+
+- `settings_module` also supports import as string.
+- New `encoders` to Esmerald settings and instance parameters.
+- New `register_encoder` encoder in any Esmerald and ChildEsmerald instances.
+- New `encoders` to Esmerald responses. This allows to use any Response as ASGI application.
+with unique custom encoders.
+- [Encoders](./encoders.md) documentation.
+
+### Changed
+
+- Internal refactor of the `classmethods` of the `TransformerModel`. The class methods
+are now normal python functions.
+- Unifying the transformers in the signature model.
+- Rename `EsmeraldSignature` to `SignatureModel`.
+
 ## 3.1.5
 
 ### Added

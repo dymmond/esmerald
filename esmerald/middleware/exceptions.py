@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union
 
 from lilya import status
-
 from lilya.exceptions import HTTPException as LilyaException
 from lilya.middleware.exceptions import ExceptionMiddleware as LilyaExceptionMiddleware
 from lilya.responses import Response as LilyaResponse

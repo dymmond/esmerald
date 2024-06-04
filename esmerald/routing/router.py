@@ -58,13 +58,13 @@ from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.openapi.utils import is_status_code_allowed
 from esmerald.requests import Request
 from esmerald.responses import Response
-from esmerald.routing._internal import FieldInfoMixin
+from esmerald.routing._internal import OpenAPIFieldInfoMixin
 from esmerald.routing.apis.base import View
 from esmerald.routing.base import BaseInterceptorMixin
 from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from esmerald.transformers.datastructures import EsmeraldSignature as SignatureModel
 from esmerald.transformers.model import TransformerModel
+from esmerald.transformers.signature import SignatureModel
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
@@ -997,7 +997,7 @@ class Router(BaseRouter):
         self.routes.append(websocket_gateway)
 
 
-class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
+class HTTPHandler(BaseInterceptorMixin, OpenAPIFieldInfoMixin, LilyaPath):
     __slots__ = (
         "path",
         "_interceptors",
@@ -1323,7 +1323,7 @@ class HTTPHandler(BaseInterceptorMixin, FieldInfoMixin, LilyaPath):
         return await response_handler(app=app, data=data)  # type: ignore[call-arg]
 
 
-class WebhookHandler(HTTPHandler, FieldInfoMixin, LilyaPath):
+class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin, LilyaPath):
     """
     Base for a webhook handler.
     """

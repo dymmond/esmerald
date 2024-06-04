@@ -9,15 +9,10 @@ from typing_extensions import Annotated, Doc
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
-from esmerald.config import (
-    CORSConfig,
-    CSRFConfig,
-    OpenAPIConfig,
-    SessionConfig,
-    StaticFilesConfig,
-)
+from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.datastructures import Secret
+from esmerald.encoders import Encoder
 from esmerald.interceptors.types import Interceptor
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Pluggable
@@ -1022,20 +1017,8 @@ class EsmeraldAPISettings(BaseSettings):
             documentation and how to make it happen.
 
         **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
-
-        Default:
-            AsyncIOScheduler
         """
-        if not self.enable_scheduler:
-            return None
-
-        try:
-            from asyncz.schedulers import AsyncIOScheduler
-        except ImportError as e:
-            raise ImportError(
-                "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
-            ) from e
-        return AsyncIOScheduler
+        return None
 
     @property
     def scheduler_tasks(self) -> Dict[str, str]:
@@ -1424,6 +1407,45 @@ class EsmeraldAPISettings(BaseSettings):
         ```
         """
         return {}
+
+    @property
+    def encoders(self) -> Union[List[Encoder], None]:
+        """
+        A `list` of encoders to be used by the application once it
+        starts.
+
+        Returns:
+            List of encoders
+
+        **Example**
+
+        ```python
+        from typing import Any
+
+        from attrs import asdict, define, field, has
+        from esmerald.encoders import Encoder
+
+
+        class AttrsEncoder(Encoder):
+
+            def is_type(self, value: Any) -> bool:
+                return has(value)
+
+            def serialize(self, obj: Any) -> Any:
+                return asdict(obj)
+
+            def encode(self, annotation: Any, value: Any) -> Any:
+                return annotation(**value)
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def encoders(self) -> Union[List[Encoder], None]:
+                return [AttrsEncoder]
+        ```
+        """
+        return []
 
     def __hash__(self) -> int:
         values: Dict[str, Any] = {}

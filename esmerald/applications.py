@@ -14,6 +14,7 @@ from typing import (
     cast,
 )
 
+from lilya._internal._module_loading import import_string
 from lilya.apps import Lilya
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
@@ -28,6 +29,7 @@ from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.datastructures import State
+from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
     pydantic_validation_error_handler,
@@ -138,13 +140,14 @@ class Esmerald(Lilya):
         "timezone",
         "title",
         "version",
+        "encoders",
     )
 
     def __init__(
         self: AppType,
         *,
         settings_module: Annotated[
-            Optional["SettingsType"],
+            Union[Optional["SettingsType"], Optional[str]],
             Doc(
                 """
                 Alternative settings parameter. This parameter is an alternative to
@@ -915,7 +918,7 @@ class Esmerald(Lilya):
                     enable_scheduler=True,
                     scheduler_tasks={
                         "collect_market_data": "accounts.tasks",
-                        "send_email_newsletter": "accounts.tasks",
+                        "send_newsletter": "accounts.tasks",
                     },
                 )
                 ```
@@ -1079,6 +1082,46 @@ class Esmerald(Lilya):
                 )
                 ```
                 """
+            ),
+        ] = None,
+        encoders: Annotated[
+            Sequence[Optional[Encoder]],
+            Doc(
+                """
+            A `list` of encoders to be used by the application once it
+            starts.
+
+            Returns:
+                List of encoders
+
+            **Example**
+
+            ```python
+            from typing import Any
+
+            from attrs import asdict, define, field, has
+            from esmerald.encoders import Encoder
+
+
+            class AttrsEncoder(Encoder):
+
+                def is_type(self, value: Any) -> bool:
+                    return has(value)
+
+                def serialize(self, obj: Any) -> Any:
+                    return asdict(obj)
+
+                def encode(self, annotation: Any, value: Any) -> Any:
+                    return annotation(**value)
+
+
+            class AppSettings(EsmeraldAPISettings):
+
+                @property
+                def encoders(self) -> Union[List[Encoder], None]:
+                    return [AttrsEncoder]
+            ```
+            """
             ),
         ] = None,
         exception_handlers: Annotated[
@@ -1467,6 +1510,10 @@ class Esmerald(Lilya):
         ] = None,
     ) -> None:
         self.settings_module = None
+
+        if settings_module is not None and isinstance(settings_module, str):
+            settings_module = import_string(settings_module)
+
         if settings_module is not None:
             if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_module, EsmeraldAPISettings
@@ -1518,13 +1565,13 @@ class Esmerald(Lilya):
         self.response_class = self.load_settings_value("response_class", response_class)
         self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
         self.response_headers = self.load_settings_value("response_headers", response_headers)
+        self.enable_scheduler = self.load_settings_value(
+            "enable_scheduler", enable_scheduler, is_boolean=True
+        )
         self.scheduler_class = self.load_settings_value("scheduler_class", scheduler_class)
         self.scheduler_tasks = self.load_settings_value("scheduler_tasks", scheduler_tasks) or {}
         self.scheduler_configurations = (
             self.load_settings_value("scheduler_configurations", scheduler_configurations) or {}
-        )
-        self.enable_scheduler = self.load_settings_value(
-            "enable_scheduler", enable_scheduler, is_boolean=True
         )
         self.timezone = self.load_settings_value("timezone", timezone)
         self.root_path = self.load_settings_value("root_path", root_path)
@@ -1576,6 +1623,9 @@ class Esmerald(Lilya):
         ] = State()
         self.async_exit_config = esmerald_settings.async_exit_config
 
+        self.encoders = self.load_settings_value("encoders", encoders) or []
+        self._register_application_encoders()
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1586,7 +1636,6 @@ class Esmerald(Lilya):
             security=security,
             redirect_slashes=self.redirect_slashes,
         )
-
         self.get_default_exception_handlers()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
@@ -1594,6 +1643,21 @@ class Esmerald(Lilya):
         self.template_engine = self.get_template_engine(self.template_config)
 
         self._configure()
+
+    def _register_application_encoders(self) -> None:
+        """
+        Registers the default Esmerald encoders.
+
+        This allows backwards compatibility with the previous
+        versions of Esmerald supporting Pydantic and MsgSpec by default.
+
+        This way, the support still remains but using the Lilya Encoders.
+        """
+        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
+        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
+
+        for encoder in self.encoders:
+            self.register_encoder(encoder)
 
     def _configure(self) -> None:
         """
@@ -1681,13 +1745,24 @@ class Esmerald(Lilya):
     def activate_scheduler(self) -> None:
         """
         Makes sure the scheduler is accessible.
+
+        This method checks if the necessary scheduler modules are installed. If not, it raises an ImportError
+        with instructions on how to install the scheduler. It then initializes the scheduler with the specified
+        parameters or defaults to using the AsyncIOScheduler class.
+
+        :raises ImportError: If the scheduler modules are not installed.
         """
         try:
             from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
+            from asyncz.schedulers import AsyncIOScheduler
         except ImportError as e:
             raise ImportError(
                 "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
             ) from e
+
+        # Defaulting the scheduler class to AsyncIOScheduler
+        if self.scheduler_class is None:
+            self.scheduler_class = AsyncIOScheduler
 
         self.scheduler = EsmeraldScheduler(
             app=self,
@@ -2548,6 +2623,12 @@ class Esmerald(Lilya):
 
     def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
         self.router.add_event_handler(event_type, func)
+
+    def register_encoder(self, encoder: Encoder[Any]) -> None:
+        """
+        Registers a Encoder into the list of predefined encoders of the system.
+        """
+        register_esmerald_encoder(encoder)
 
 
 class ChildEsmerald(Esmerald):

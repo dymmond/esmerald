@@ -1,8 +1,16 @@
-import dataclasses
-from dataclasses import is_dataclass
-from typing import TYPE_CHECKING, Any, Dict, Generic, NoReturn, Optional, TypeVar, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    NoReturn,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+    cast,
+)
 
-import msgspec
 from lilya import status
 from lilya.responses import (
     Error as Error,
@@ -16,9 +24,9 @@ from lilya.responses import (
     StreamingResponse as StreamingResponse,  # noqa
 )
 from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
-from pydantic import BaseModel
 from typing_extensions import Annotated, Doc
 
+from esmerald.encoders import Encoder, json_encoder
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -81,7 +89,7 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = status.HTTP_200_OK,
         media_type: Annotated[
-            Optional[Union["MediaType", str]],
+            Optional[Union[MediaType, str]],
             Doc(
                 """
                 The media type used in the response.
@@ -132,13 +140,37 @@ class Response(LilyaResponse, Generic[T]):
                 """
             ),
         ] = None,
+        encoders: Annotated[
+            Union[Sequence[Encoder], None],
+            Doc(
+                """
+                A sequence of `esmerald.encoders.Encoder` type of objects to be used
+                by the response object directly.
+
+                **Example**
+
+                ```python
+                from esmerald import Response
+                from esmerald.encoders import PydanticEncoder, MsgSpecEncoder
+
+                response_cookies=[
+                    encoders=[PydanticEncoder, MsgSpecEncoder]
+                ]
+
+                Response(response_cookies=response_cookies)
+                ```
+                """
+            ),
+        ] = None,
     ) -> None:
+
         super().__init__(
             content=content,
             status_code=status_code,
             headers=headers or {},
             media_type=media_type,
             background=cast("BackgroundTask", background),
+            encoders=encoders,
         )
         self.cookies = cookies or []
 
@@ -147,15 +179,9 @@ class Response(LilyaResponse, Generic[T]):
         """
         The transformation of the data being returned.
 
-        It supports Pydantic models, `dataclasses` and `msgspec.Struct`.
+        Supports all the default encoders from Lilya and custom from Esmerald.
         """
-        if isinstance(value, BaseModel):
-            return value.model_dump()
-        if is_dataclass(value):
-            return dataclasses.asdict(value)
-        if isinstance(value, msgspec.Struct):
-            return msgspec.structs.asdict(value)
-        raise TypeError("unsupported type")  # pragma: no cover
+        return cast(Dict[str, Any], json_encoder(value))
 
     def make_response(self, content: Any) -> Union[bytes, str]:
         try:

@@ -65,20 +65,7 @@ def test_user_msgspec_openapi(test_client_factory):
                         "requestBody": {
                             "content": {
                                 "application/json": {
-                                    "schema": {
-                                        "properties": {
-                                            "name": {"type": "string"},
-                                            "email": {
-                                                "anyOf": [
-                                                    {"type": "string"},
-                                                    {"type": "null"},
-                                                ]
-                                            },
-                                        },
-                                        "type": "object",
-                                        "required": ["name"],
-                                        "title": "Body_user__post",
-                                    }
+                                    "schema": {"$ref": "#/components/schemas/User"}
                                 }
                             },
                             "required": True,
@@ -118,11 +105,14 @@ def test_user_msgspec_openapi(test_client_factory):
                     },
                     "User": {
                         "properties": {
-                            "name": {"type": "string"},
-                            "email": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+                            "name": {"type": "string", "title": "Name"},
+                            "email": {
+                                "anyOf": [{"type": "string"}, {"type": "null"}],
+                                "title": "Email",
+                            },
                         },
                         "type": "object",
-                        "required": ["name"],
+                        "required": ["name", "email"],
                         "title": "User",
                     },
                     "ValidationError": {

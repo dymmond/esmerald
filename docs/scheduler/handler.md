@@ -38,7 +38,7 @@ in succession.
 
     <sup>Default: `undefined`</sup>
 
-* **max_intances** - The maximum number of concurrently running instances allowed for this task.
+* **max_instances** - The maximum number of concurrently running instances allowed for this task.
 
     <sup>Default: `undefined`</sup>
 

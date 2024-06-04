@@ -13,7 +13,7 @@ from esmerald.utils.constants import REQUIRED
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
-    from esmerald.transformers.datastructures import EsmeraldSignature, Parameter
+    from esmerald.transformers.signature import Parameter, SignatureModel
     from esmerald.types import ConnectionType
 
 
@@ -201,9 +201,9 @@ def get_connection_info(connection: "ConnectionType") -> Tuple[str, "URL"]:
     return method, connection.url
 
 
-def get_signature(value: Any) -> Type["EsmeraldSignature"]:
+def get_signature(value: Any) -> Type["SignatureModel"]:
     try:
-        return cast("Type[EsmeraldSignature]", value.signature_model)
+        return cast("Type[SignatureModel]", value.signature_model)
     except AttributeError as exc:
         raise ImproperlyConfigured(f"The 'signature' attribute for {value} is not set.") from exc
 

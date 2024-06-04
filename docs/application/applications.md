@@ -98,7 +98,7 @@ engine from the configuration object.
 built-in middleware.
 * **response_class** - Custom subclass of [Response](../responses.md) to be used as application response
 class.
-* **response_cookies** - List of [cookie](../datastructures.md) objects.
+* **response_cookies** - List of cookie objects.
 * **response_headers** - Mapping dictionary of header objects.
 * **scheduler_class** - A [scheduler]('../scheduler/scheduler.md') class used for the application tasks. Defaults to
 `AsyncIOScheduler`.
@@ -149,7 +149,7 @@ To access the application settings there are different ways:
 
 ### State and application instance
 
-You can store arbitrary extra state on the application instance using the [State](../datastructures.md) instance.
+You can store arbitrary extra state on the application instance using the State instance.
 
 Example:
 
