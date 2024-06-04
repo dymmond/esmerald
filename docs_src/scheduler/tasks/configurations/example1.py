@@ -11,7 +11,7 @@ logging.getLogger("esmerald").setLevel(logging.DEBUG)
 @scheduler(
     name="collect_data",
     trigger=IntervalTrigger(hours=12),
-    max_intances=3,
+    max_instances=3,
     store="mongo",
     executor="default",
 )
@@ -23,7 +23,7 @@ def collect_market_data():
 @scheduler(
     name="collect_data",
     trigger=IntervalTrigger(hours=12),
-    max_intances=3,
+    max_instances=3,
     store="default",
     executor="processpoll",
 )

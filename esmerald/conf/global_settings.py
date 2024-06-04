@@ -9,13 +9,7 @@ from typing_extensions import Annotated, Doc
 
 from esmerald import __version__
 from esmerald.conf.enums import EnvironmentType
-from esmerald.config import (
-    CORSConfig,
-    CSRFConfig,
-    OpenAPIConfig,
-    SessionConfig,
-    StaticFilesConfig,
-)
+from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.datastructures import Secret
 from esmerald.encoders import Encoder
@@ -1027,9 +1021,6 @@ class EsmeraldAPISettings(BaseSettings):
         Default:
             AsyncIOScheduler
         """
-        if not self.enable_scheduler:
-            return None
-
         try:
             from asyncz.schedulers import AsyncIOScheduler
         except ImportError as e:
