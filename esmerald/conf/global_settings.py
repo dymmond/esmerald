@@ -1017,17 +1017,8 @@ class EsmeraldAPISettings(BaseSettings):
             documentation and how to make it happen.
 
         **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
-
-        Default:
-            AsyncIOScheduler
         """
-        try:
-            from asyncz.schedulers import AsyncIOScheduler
-        except ImportError as e:
-            raise ImportError(
-                "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
-            ) from e
-        return AsyncIOScheduler
+        return None
 
     @property
     def scheduler_tasks(self) -> Dict[str, str]:
