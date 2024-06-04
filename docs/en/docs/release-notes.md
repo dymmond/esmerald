@@ -5,6 +5,15 @@ hide:
 
 # Release Notes
 
+## 3.2.2
+
+These changes were missed from the version 3.2.1
+
+### Changed
+
+- Updated the default scheduler class to be in the configuration.
+- Internal Dispatcher implemented for the routing and response handlers update.
+
 ## 3.2.1
 
 ### Changed
