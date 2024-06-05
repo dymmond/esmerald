@@ -12,6 +12,7 @@ import mkdocs.commands.serve
 import mkdocs.config
 import mkdocs.utils
 
+
 import yaml
 
 
@@ -25,7 +26,7 @@ docs_path = Path("docs")
 en_docs_path = Path("docs/en")
 en_config_path: Path = en_docs_path / mkdocs_name
 site_path = Path("site").absolute()
-# build_site_path = Path("site_build").absolute()
+build_site_path = Path("site_build").absolute()
 
 
 @click.group()
@@ -87,6 +88,42 @@ def update_config() -> None:
     )
 
 
+def build_site(lang: str = "en") -> None:
+    config_file_path = os.path.abspath(
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs", lang, "mkdocs.yml")
+    )
+    subprocess.run(["mkdocs", "build", "-f", config_file_path], check=True)
+
+
+
+# def build_language(lang: str = "en") -> None:
+#     config_file_path = os.path.abspath(
+#         os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs", lang, "mkdocs.yml")
+#     )
+#     lang_path: Path = Path(f"docs/{lang}")
+#
+#     if not lang_path.is_dir():
+#         click.echo(f"The language translation doesn't seem to exist yet: {lang}")
+#         raise click.Abort()
+#     click.echo(f"Building docs for: {lang}")
+#     build_site_dist_path = build_site_path / lang
+#     if lang == "en":
+#         dist_path = site_path
+#     else:
+#         dist_path = site_path / lang
+#         shutil.rmtree(dist_path, ignore_errors=True)
+#     current_dir = os.getcwd()
+#     os.chdir(lang_path)
+#     shutil.rmtree(build_site_dist_path, ignore_errors=True)
+#     # subprocess.run(["mkdocs", "build", "--site-dir", build_site_dist_path], check=True)
+#
+#     subprocess.run(["mkdocs", "build", "-f", config_file_path, "--site-dir", build_site_dist_path], check=True)
+#
+#     shutil.copytree(build_site_dist_path, dist_path, dirs_exist_ok=True)
+#     os.chdir(current_dir)
+#     click.echo(click.style(f"Successfully built docs for: {lang}", fg="green"))
+
+
 @cli.command()
 @click.option("-l", "--lang")
 def new_lang(lang: str):
@@ -120,29 +157,8 @@ def build_lang(lang: str) -> None:
     """
     Build the docs for a language.
     """
-    lang_path: Path = Path("docs") / lang
-    if not lang_path.is_dir():
-        click.echo(f"The language translation doesn't seem to exist yet: {lang}")
-        raise click.Abort()
-    click.echo(f"Building docs for: {lang}")
-    build_site_dist_path = site_path / lang
-    if lang == "en":
-        dist_path = site_path
-        # Don't remove en dist_path as it might already contain other languages.
-        # When running build_all(), that function already removes site_path.
-        # All this is only relevant locally, on GitHub Actions all this is done through
-        # artifacts and multiple workflows, so it doesn't matter if directories are
-        # removed or not.
-    else:
-        dist_path = site_path / lang
-        shutil.rmtree(dist_path, ignore_errors=True)
-    current_dir = os.getcwd()
-    os.chdir(lang_path)
-    shutil.rmtree(build_site_dist_path, ignore_errors=True)
-    subprocess.run(["mkdocs", "build", "--site-dir", build_site_dist_path], check=True)
-    shutil.copytree(build_site_dist_path, dist_path, dirs_exist_ok=True)
-    os.chdir(current_dir)
-    click.secho(click.style(f"Successfully built docs for: {lang}", fg="green"))
+    # build_language(lang)
+    build_site(lang)
 
 
 @cli.command()
@@ -156,8 +172,10 @@ def build_all() -> None:
     cpu_count = os.cpu_count() or 1
     process_pool_size = cpu_count
     click.echo(f"Using process pool size: {process_pool_size}")
-    with Pool(process_pool_size) as p:
-        p.map(build_lang, langs)
+    for lang in langs:
+        build_site(lang)
+    # with Pool(process_pool_size) as p:
+    #     p.map(build_lang, langs)
 
 
 @cli.command()

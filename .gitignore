@@ -16,6 +16,7 @@ dist/
 node_modules/
 results/
 site/
+site_build/
 target/
 
 # files

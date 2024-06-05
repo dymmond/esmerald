@@ -2,10 +2,11 @@ site_name: Esmerald
 site_url: https://esmerald.dev
 site_description: 🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀
 site_dir: ../../site
+docs_dir: docs
 
 theme:
   name: material
-  custom_dir: ../en/overrides
+  custom_dir: "../en/overrides"
   language: en
   palette:
   - scheme: default
@@ -38,7 +39,6 @@ theme:
 repo_name: dymmond/esmerald
 repo_url: https://github.com/dymmond/esmerald
 edit_uri: ''
-
 plugins:
 - search
 - meta-descriptions:
@@ -73,7 +73,6 @@ plugins:
           signature_crossrefs: true
           show_symbol_type_heading: true
           show_symbol_type_toc: true
-
 markdown_extensions:
 - attr_list
 - toc:
@@ -90,7 +89,6 @@ markdown_extensions:
 - pymdownx.tabbed:
     alternate_style: true
 - md_in_html
-
 nav:
 - Esmerald: index.md
 - Application:
@@ -244,3 +242,5 @@ extra:
     name: en - English
   - link: /ru/
     name: ru - русский язык
+  - link: /em/
+    name: 😉
