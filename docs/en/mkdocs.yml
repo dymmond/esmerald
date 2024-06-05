@@ -3,10 +3,9 @@ site_url: https://esmerald.dev
 site_description: 🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀
 site_dir: ../../site
 docs_dir: docs
-
 theme:
   name: material
-  custom_dir: "../en/overrides"
+  custom_dir: ../en/overrides
   language: en
   palette:
   - scheme: default
