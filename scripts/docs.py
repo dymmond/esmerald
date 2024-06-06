@@ -101,9 +101,6 @@ def get_updated_config_content() -> Dict[str, Any]:
         use_name = f"{code} - {local_language_names[code]}"
         new_alternate.append({"link": url, "name": use_name})
 
-    # Add emoji language link
-    new_alternate.append({"link": "/em/", "name": "😉"})
-
     # Update the configuration with the new alternate links
     config["extra"]["alternate"] = new_alternate
 
