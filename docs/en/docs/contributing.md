@@ -317,7 +317,6 @@ Make sure you run the build-all command first.
 Serving at: http://127.0.0.1:8008
 ```
 
-
 ## Building Esmerald
 
 To build a package locally, run:
