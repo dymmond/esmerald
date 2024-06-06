@@ -1626,6 +1626,9 @@ class Esmerald(Lilya):
         self.encoders = self.load_settings_value("encoders", encoders) or []
         self._register_application_encoders()
 
+        if self.enable_scheduler:
+            self.activate_scheduler()
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1672,9 +1675,6 @@ class Esmerald(Lilya):
                 static_route = Include(path=config.path, app=config.to_app())
                 self.router.validate_root_route_parent(static_route)
                 self.router.routes.append(static_route)
-
-        if self.enable_scheduler:
-            self.activate_scheduler()
 
         self.create_webhooks_signature_model(self.webhooks)
         self.activate_openapi()
