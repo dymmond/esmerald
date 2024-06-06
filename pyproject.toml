@@ -161,12 +161,13 @@ lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}; hatch 
 features = ["all", "docs"]
 
 [tool.hatch.envs.docs.scripts]
-build = "scripts/docs.py build-all"
-build_lang = "scripts/docs.py build --lang {args}"
-serve = "scripts/docs.py live"
-dev = "scripts/docs.py serve"
-serve_lang = "scripts/docs.py live --lang {args}"
-new_lang = "scripts/docs.py new-lang --lang {args}"
+update_languages = "scripts/docs.py update-languages"
+build = "hatch run docs:update_languages; scripts/docs.py build-all"
+build_lang = "hatch run docs:update_languages; scripts/docs.py build --lang {args}"
+serve = "hatch run docs:update_languages; scripts/docs.py live"
+dev = "hatch run docs:update_languages; scripts/docs.py serve"
+serve_lang = "hatch run docs:update_languages; scripts/docs.py live --lang {args}"
+new_lang = "hatch run docs:update_languages; scripts/docs.py new-lang --lang {args}"
 
 [tool.hatch.envs.test]
 features = ["all", "testing"]

@@ -6,230 +6,232 @@ theme:
   custom_dir: ../en/overrides
   language: en
   palette:
-    - scheme: default
-      primary: green
-      accent: orange
-      media: "(prefers-color-scheme: light)"
-      toggle:
-        icon: material/lightbulb
-        name: Switch to dark mode
-    - scheme: slate
-      media: "(prefers-color-scheme: dark)"
-      primary: green
-      accent: orange
-      toggle:
-        icon: material/lightbulb-outline
-        name: Switch to light mode
+  - scheme: default
+    primary: green
+    accent: orange
+    media: '(prefers-color-scheme: light)'
+    toggle:
+      icon: material/lightbulb
+      name: Switch to dark mode
+  - scheme: slate
+    media: '(prefers-color-scheme: dark)'
+    primary: green
+    accent: orange
+    toggle:
+      icon: material/lightbulb-outline
+      name: Switch to light mode
   favicon: statics/images/favicon.ico
   logo: statics/images/logo-white.svg
   features:
-    - search.suggest
-    - search.highlight
-    - content.tabs.link
-    - content.code.copy
-    - content.code.annotate
-    - content.tooltips
-    - content.code.select
-    - navigation.indexes
-    - navigation.path
-    - navigation.tabs
+  - search.suggest
+  - search.highlight
+  - content.tabs.link
+  - content.code.copy
+  - content.code.annotate
+  - content.tooltips
+  - content.code.select
+  - navigation.indexes
+  - navigation.path
+  - navigation.tabs
 repo_name: dymmond/esmerald
 repo_url: https://github.com/dymmond/esmerald
-edit_uri: ""
+edit_uri: ''
 plugins:
-  - search
-  - meta-descriptions:
-      export_csv: false
-      quiet: false
-      enable_checks: false
-      min_length: 50
-      max_length: 160
-      trim: false
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            extensions:
-              - griffe_typingdoc
-            show_root_heading: true
-            show_if_no_docstring: true
-            preload_modules:
-              - httpx
-              - lilya
-              - a2wsgi
-            inherited_members: true
-            members_order: source
-            separate_signature: true
-            unwrap_annotated: true
-            filters:
-              - "!^_"
-            merge_init_into_class: true
-            docstring_section_style: spacy
-            signature_crossrefs: true
-            show_symbol_type_heading: true
-            show_symbol_type_toc: true
+- search
+- meta-descriptions:
+    export_csv: false
+    quiet: false
+    enable_checks: false
+    min_length: 50
+    max_length: 160
+    trim: false
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          extensions:
+          - griffe_typingdoc
+          show_root_heading: true
+          show_if_no_docstring: true
+          preload_modules:
+          - httpx
+          - lilya
+          - a2wsgi
+          inherited_members: true
+          members_order: source
+          separate_signature: true
+          unwrap_annotated: true
+          filters:
+          - '!^_'
+          merge_init_into_class: true
+          docstring_section_style: spacy
+          signature_crossrefs: true
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
 markdown_extensions:
-  - attr_list
-  - toc:
-      permalink: true
-  - mdx_include:
-      base_path: docs
-  - admonition
-  - extra
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format ""
-  - pymdownx.tabbed:
-      alternate_style: true
-  - md_in_html
+- attr_list
+- toc:
+    permalink: true
+- mdx_include:
+    base_path: docs
+- admonition
+- extra
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format ''
+- pymdownx.tabbed:
+    alternate_style: true
+- md_in_html
 nav:
-  - Esmerald: index.md
+- Esmerald: index.md
+- Application:
+  - Esmerald: application/applications.md
+  - Levels: application/levels.md
+  - Settings: application/settings.md
+  - Configurations:
+    - CORSConfig: configurations/cors.md
+    - CSRFConfig: configurations/csrf.md
+    - SessionConfig: configurations/session.md
+    - StaticFilesConfig: configurations/staticfiles.md
+    - TemplateConfig: configurations/template.md
+    - JWTConfig: configurations/jwt.md
+    - OpenAPIConfig: configurations/openapi/config.md
+- Features:
+  - Routing:
+    - Router: routing/router.md
+    - Routes: routing/routes.md
+    - Handlers: routing/handlers.md
+    - APIView: routing/apiview.md
+    - OpenAPI Specific:
+      - Webhooks: routing/webhooks.md
+  - Interceptors: interceptors.md
+  - Permissions: permissions.md
+  - Middleware: middleware/middleware.md
+  - Dependencies: dependencies.md
+  - Exceptions: exceptions.md
+  - Exception Handlers: exception-handlers.md
+  - Pluggables: pluggables.md
+  - Password Hashers: password-hashers.md
+  - Request: requests.md
+  - Context: context.md
+  - Responses: responses.md
+  - Encoders: encoders.md
+  - MsgSpec: msgspec.md
+  - Background Tasks: background-tasks.md
+  - Lifespan Events: lifespan-events.md
+  - Protocols: protocols.md
+  - Scheduler:
+    - Asyncz:
+      - Scheduler: scheduler/scheduler.md
+      - Handler: scheduler/handler.md
+  - Management & Directives:
+    - Application Discovery: directives/discovery.md
+    - Directives: directives/directives.md
+    - Custom Directives: directives/custom-directives.md
+    - Shell: directives/shell.md
+- Database Integrations:
+  - Saffier:
+    - Motivation: databases/saffier/motivation.md
+    - Models: databases/saffier/models.md
+    - Middleware:
+      - JWT: databases/saffier/middleware.md
+      - Example: databases/saffier/example.md
+  - Edgy:
+    - Motivation: databases/edgy/motivation.md
+    - Models: databases/edgy/models.md
+    - Middleware:
+      - JWT: databases/edgy/middleware.md
+      - Example: databases/edgy/example.md
+  - Mongoz:
+    - Motivation: databases/mongoz/motivation.md
+    - Documents: databases/mongoz/documents.md
+    - Middleware:
+      - JWT: databases/mongoz/middleware.md
+      - Example: databases/mongoz/example.md
+- OpenAPI: openapi.md
+- Extras:
+  - Extra, Advanced & Useful:
+    - Request Data: extras/request-data.md
+    - Upload Files: extras/upload-files.md
+    - Form: extras/forms.md
+    - Body: extras/body-fields.md
+    - Body: extras/body-fields.md
+    - Headers: extras/header-fields.md
+    - Cookies: extras/cookie-fields.md
+  - WSGI Frameworks: wsgi.md
+  - Test Client: testclient.md
+  - Deployment:
+    - Intro: deployment/intro.md
+    - Using docker: deployment/docker.md
+  - Third Party Packages: external.md
+- API Reference:
+  - references/index.md
+  - Esmerald: references/esmerald.md
   - Application:
-      - Esmerald: application/applications.md
-      - Levels: application/levels.md
-      - Settings: application/settings.md
-      - Configurations:
-          - CORSConfig: configurations/cors.md
-          - CSRFConfig: configurations/csrf.md
-          - SessionConfig: configurations/session.md
-          - StaticFilesConfig: configurations/staticfiles.md
-          - TemplateConfig: configurations/template.md
-          - JWTConfig: configurations/jwt.md
-          - OpenAPIConfig: configurations/openapi/config.md
-  - Features:
-      - Routing:
-          - Router: routing/router.md
-          - Routes: routing/routes.md
-          - Handlers: routing/handlers.md
-          - APIView: routing/apiview.md
-          - OpenAPI Specific:
-              - Webhooks: routing/webhooks.md
-      - Interceptors: interceptors.md
-      - Permissions: permissions.md
-      - Middleware: middleware/middleware.md
-      - Dependencies: dependencies.md
-      - Exceptions: exceptions.md
-      - Exception Handlers: exception-handlers.md
-      - Pluggables: pluggables.md
-      - Password Hashers: password-hashers.md
-      - Request: requests.md
-      - Context: context.md
-      - Responses: responses.md
-      - Encoders: encoders.md
-      - MsgSpec: msgspec.md
-      - Background Tasks: background-tasks.md
-      - Lifespan Events: lifespan-events.md
-      - Protocols: protocols.md
-      - Scheduler:
-          - Asyncz:
-              - Scheduler: scheduler/scheduler.md
-              - Handler: scheduler/handler.md
-      - Management & Directives:
-          - Application Discovery: directives/discovery.md
-          - Directives: directives/directives.md
-          - Custom Directives: directives/custom-directives.md
-          - Shell: directives/shell.md
-  - Database Integrations:
-      - Saffier:
-          - Motivation: databases/saffier/motivation.md
-          - Models: databases/saffier/models.md
-          - Middleware:
-              - JWT: databases/saffier/middleware.md
-              - Example: databases/saffier/example.md
-      - Edgy:
-          - Motivation: databases/edgy/motivation.md
-          - Models: databases/edgy/models.md
-          - Middleware:
-              - JWT: databases/edgy/middleware.md
-              - Example: databases/edgy/example.md
-      - Mongoz:
-          - Motivation: databases/mongoz/motivation.md
-          - Documents: databases/mongoz/documents.md
-          - Middleware:
-              - JWT: databases/mongoz/middleware.md
-              - Example: databases/mongoz/example.md
-  - OpenAPI: openapi.md
-  - Extras:
-      - Extra, Advanced & Useful:
-          - Request Data: extras/request-data.md
-          - Upload Files: extras/upload-files.md
-          - Form: extras/forms.md
-          - Body: extras/body-fields.md
-          - Body: extras/body-fields.md
-          - Headers: extras/header-fields.md
-          - Cookies: extras/cookie-fields.md
-      - WSGI Frameworks: wsgi.md
-      - Test Client: testclient.md
-      - Deployment:
-          - Intro: deployment/intro.md
-          - Using docker: deployment/docker.md
-      - Third Party Packages: external.md
-  - API Reference:
-      - references/index.md
-      - Esmerald: references/esmerald.md
-      - Application:
-          - Settings: references/application/settings.md
-      - Configurations:
-          - CORSConfig: references/configurations/cors.md
-          - CSRFConfig: references/configurations/csrf.md
-          - SessionConfig: references/configurations/session.md
-          - StaticFilesConfig: references/configurations/static_files.md
-          - TemplateConfig: references/configurations/template.md
-          - JWTConfig: references/configurations/jwt.md
-          - OpenAPIConfig: references/configurations/openapi.md
-      - Background: references/background.md
-      - Routing:
-          - Router: references/routing/router.md
-          - Gateway: references/routing/gateway.md
-          - WebSocketGateway: references/routing/websocketgateway.md
-          - WebhookGateway: references/routing/webhookgateway.md
-          - Include: references/routing/include.md
-          - View: references/routing/view.md
-          - Handlers: references/routing/handlers.md
-      - Interceptors: references/interceptors.md
-      - Permissions: references/permissions.md
-      - Middleware:
-          - BaseAuthMiddleware: references/middleware/baseauth.md
-          - Avaliable Middlewares: references/middleware/middlewares.md
-      - Pluggables: references/pluggables.md
-      - Exceptions: references/exceptions.md
-      - Request: references/request.md
-      - Context: references/context.md
-      - Responses:
-          - Response: references/responses/response.md
-          - JSONResponse: references/responses/json-response.md
-          - TemplateResponse: references/responses/template-response.md
-          - ORJSONResponse: references/responses/orjson-response.md
-          - UJSONResponse: references/responses/ujson-response.md
-          - JSON: references/responses/json.md
-          - File: references/responses/file.md
-          - Redirect: references/responses/redirect.md
-          - Stream: references/responses/stream.md
-          - Template: references/responses/template.md
-          - OrJSON: references/responses/orjson.md
-          - UJSON: references/responses/ujson.md
-          - OpenAPIResponse: references/responses/openapi-response.md
-      - WebSocket: references/websockets.md
-      - Dependency Injection: references/injector.md
-      - UploadFile: references/uploadfile.md
-      - Status Code: references/status-codes.md
-      - Test Client: references/test-client.md
-  - About:
-      - Esmerald People: esmerald-people.md
-      - Examples & Scaffolds: examples.md
-      - Contributing: contributing.md
-      - Sponsorship: sponsorship.md
-      - Vendors: vendors.md
-  - Release Notes: release-notes.md
+    - Settings: references/application/settings.md
+  - Configurations:
+    - CORSConfig: references/configurations/cors.md
+    - CSRFConfig: references/configurations/csrf.md
+    - SessionConfig: references/configurations/session.md
+    - StaticFilesConfig: references/configurations/static_files.md
+    - TemplateConfig: references/configurations/template.md
+    - JWTConfig: references/configurations/jwt.md
+    - OpenAPIConfig: references/configurations/openapi.md
+  - Background: references/background.md
+  - Routing:
+    - Router: references/routing/router.md
+    - Gateway: references/routing/gateway.md
+    - WebSocketGateway: references/routing/websocketgateway.md
+    - WebhookGateway: references/routing/webhookgateway.md
+    - Include: references/routing/include.md
+    - View: references/routing/view.md
+    - Handlers: references/routing/handlers.md
+  - Interceptors: references/interceptors.md
+  - Permissions: references/permissions.md
+  - Middleware:
+    - BaseAuthMiddleware: references/middleware/baseauth.md
+    - Avaliable Middlewares: references/middleware/middlewares.md
+  - Pluggables: references/pluggables.md
+  - Exceptions: references/exceptions.md
+  - Request: references/request.md
+  - Context: references/context.md
+  - Responses:
+    - Response: references/responses/response.md
+    - JSONResponse: references/responses/json-response.md
+    - TemplateResponse: references/responses/template-response.md
+    - ORJSONResponse: references/responses/orjson-response.md
+    - UJSONResponse: references/responses/ujson-response.md
+    - JSON: references/responses/json.md
+    - File: references/responses/file.md
+    - Redirect: references/responses/redirect.md
+    - Stream: references/responses/stream.md
+    - Template: references/responses/template.md
+    - OrJSON: references/responses/orjson.md
+    - UJSON: references/responses/ujson.md
+    - OpenAPIResponse: references/responses/openapi-response.md
+  - WebSocket: references/websockets.md
+  - Dependency Injection: references/injector.md
+  - UploadFile: references/uploadfile.md
+  - Status Code: references/status-codes.md
+  - Test Client: references/test-client.md
+- About:
+  - Esmerald People: esmerald-people.md
+  - Examples & Scaffolds: examples.md
+  - Contributing: contributing.md
+  - Sponsorship: sponsorship.md
+  - Vendors: vendors.md
+- Release Notes: release-notes.md
 extra_css:
-  - statics/css/extra.css
-  - statics/css/custom.css
+- statics/css/extra.css
+- statics/css/custom.css
 extra:
   analytics:
     provider: google
     property: G-CNBVBB90NT
   alternate:
-    - link: /
-      name: en - English
+  - link: /
+    name: en - English
+  - link: /em/
+    name: 😉
