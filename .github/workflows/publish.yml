@@ -31,4 +31,3 @@ jobs:
       - name: "Deploy docs"
         run: |
           curl -X POST '${{ secrets.DEPLOY_DOCS }}'
-          curl -X POST '${{ secrets.DEPLOY_DOCS_v2 }}'
