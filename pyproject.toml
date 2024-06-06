@@ -138,7 +138,7 @@ docs = [
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.25",
     "mdx-include>=1.4.2",
-    "mkdocs-markdownextradata-plugin>=0.2.5",
+    "mkdocs-macros-plugin>=0.4.0",
     "mkdocs-meta-descriptions-plugin>=2.3.0",
     "mkdocstrings[python]>=0.23.0",
     "pyyaml>=6.0",
@@ -157,13 +157,13 @@ lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}; hatch 
 
 
 [tool.hatch.envs.docs]
-detached = true
-skip-install = true
-features = ["docs"]
+features = ["all", "docs"]
 
 [tool.hatch.envs.docs.scripts]
-build = "mkdocs build"
-serve = "mkdocs serve --dev-addr localhost:8000"
+build = "scripts/docs.py build-all"
+build_lang = "scripts/docs.py build --lang {args}"
+serve = "scripts/docs.py live"
+serve_lang = "scripts/docs.py live --lang {args}"
 
 [tool.hatch.envs.test]
 features = ["all", "testing"]

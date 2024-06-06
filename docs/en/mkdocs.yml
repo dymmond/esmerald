@@ -1,8 +1,6 @@
 site_name: Esmerald
 site_url: https://esmerald.dev
 site_description: 🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀
-site_dir: ../../site
-# docs_dir: docs
 theme:
   name: material
   custom_dir: ../en/overrides
@@ -47,8 +45,6 @@ plugins:
       min_length: 50
       max_length: 160
       trim: false
-  - markdownextradata:
-      data: data
   - mkdocstrings:
       handlers:
         python:
@@ -237,7 +233,3 @@ extra:
   alternate:
     - link: /
       name: en - English
-    - link: /ru/
-      name: ru - русский язык
-    - link: /em/
-      name: 😉

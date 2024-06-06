@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from multiprocessing import Pool
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -16,66 +17,113 @@ import yaml
 mkdocs_name = "mkdocs.yml"
 
 missing_translation_snippet = """
-{! ../../../docs/missing-translation.md!}
+{!../../../docs/missing-translation.md!}
 """
 
 docs_path = Path("docs")
 en_docs_path = Path("docs/en")
 en_config_path: Path = en_docs_path / mkdocs_name
 site_path = Path("site").absolute()
-build_site_path = Path("site_build").absolute()
+
+site_lang: str = "site_lang"
+build_site_path = Path(site_lang).absolute()
 
 
 @click.group()
-def cli():
-    pass
+def cli(): ...
 
 
 def get_en_config() -> Dict[str, Any]:
+    """
+    Get the English configuration from the specified file.
+
+    Returns:
+        A dictionary containing the English configuration.
+    """
     return mkdocs.utils.yaml_load(en_config_path.read_text(encoding="utf-8"))
 
 
 def get_lang_paths() -> List[Path]:
+    """
+    Returns a sorted list of paths to language files.
+
+    Returns:
+        List[Path]: A sorted list of paths to language files.
+    """
     return sorted(docs_path.iterdir())
 
 
 def complete_existing_lang(incomplete: str):
-    lang_path: Path
+    """
+    Generate a list of existing languages that start with the given incomplete string.
+
+    Args:
+        incomplete (str): The incomplete string to match against.
+
+    Yields:
+        str: The names of the existing languages that start with the given incomplete string.
+    """
     for lang_path in get_lang_paths():
         if lang_path.is_dir() and lang_path.name.startswith(incomplete):
             yield lang_path.name
 
 
 def get_updated_config_content() -> Dict[str, Any]:
+    """
+    Get the updated configuration content with alternate language links.
+
+    Returns:
+        Dict[str, Any]: The updated configuration content.
+    """
     config = get_en_config()
     languages = [{"en": "/"}]
     new_alternate: List[Dict[str, str]] = []
-    # Language names sourced from https://quickref.me/iso-639-1
-    # Contributors may wish to update or change these, e.g. to fix capitalization.
+
+    # Load local language names from language_names.yml
     language_names_path = Path(__file__).parent / "../docs/language_names.yml"
     local_language_names: Dict[str, str] = mkdocs.utils.yaml_load(
         language_names_path.read_text(encoding="utf-8")
     )
+
+    # Add alternate language links to the configuration
     for lang_path in get_lang_paths():
         if lang_path.name in {"en", "em"} or not lang_path.is_dir():
             continue
         code = lang_path.name
         languages.append({code: f"/{code}/"})
+
     for lang_dict in languages:
         code = list(lang_dict.keys())[0]
         url = lang_dict[code]
         if code not in local_language_names:
-            print(f"Missing language name for: {code}, " "update it in docs/language_names.yml")
+            print(f"Missing language name for: {code}, update it in docs/language_names.yml")
             raise click.Abort()
         use_name = f"{code} - {local_language_names[code]}"
         new_alternate.append({"link": url, "name": use_name})
+
+    # Add emoji language link
     new_alternate.append({"link": "/em/", "name": "😉"})
+
+    # Update the configuration with the new alternate links
     config["extra"]["alternate"] = new_alternate
+
     return config
 
 
 def update_config() -> None:
+    """
+    Update the configuration file with the updated content.
+
+    This function reads the English configuration file, generates the updated content
+    with alternate language links, and writes it back to the file.
+
+    Returns:
+        None
+    """
+    # Read the English configuration file
     config = get_updated_config_content()
+
+    # Write the updated content to the file
     en_config_path.write_text(
         yaml.dump(config, sort_keys=False, width=200, allow_unicode=True),
         encoding="utf-8",
@@ -83,10 +131,31 @@ def update_config() -> None:
 
 
 def build_site(lang: str = "en") -> None:
-    config_file_path = os.path.abspath(
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs", lang, "mkdocs.yml")
-    )
-    subprocess.run(["mkdocs", "build", "-f", config_file_path], check=True)
+    """
+    Build the documentation site for a specific language.
+
+    Args:
+        lang (str): The language code. Defaults to "en".
+
+    Returns:
+        None
+    """
+    lang_path = Path("docs") / lang
+    if not lang_path.is_dir():
+        click.echo(f"Language not found: {lang}")
+        raise click.Abort()
+
+    click.echo(f"Building site for: {lang}")
+    build_site_dist_path = build_site_path / lang
+    dist_path = site_path if lang == "en" else site_path / lang
+
+    current_dir = os.getcwd()
+    os.chdir(lang_path)
+    shutil.rmtree(build_site_dist_path, ignore_errors=True)
+    subprocess.run(["mkdocs", "build", "--site-dir", build_site_dist_path], check=True)
+    shutil.copytree(build_site_dist_path, dist_path, dirs_exist_ok=True)
+    os.chdir(current_dir)
+    click.echo(f"Built site for: {lang}")
 
 
 @cli.command()
@@ -94,6 +163,15 @@ def build_site(lang: str = "en") -> None:
 def new_lang(lang: str):
     """
     Generate a new docs translation directory for the language LANG.
+
+    Args:
+        lang (str): The language code.
+
+    Raises:
+        click.Abort: If the language directory already exists.
+
+    Returns:
+        None
     """
     new_path: Path = Path("docs") / lang
     if new_path.exists():
@@ -102,7 +180,8 @@ def new_lang(lang: str):
     new_path.mkdir()
     new_config_path: Path = Path(new_path) / mkdocs_name
     new_config_path.write_text(
-        f"INHERIT: ../en/mkdocs.yml\nsite_dir: '../../site/{lang}'\n", encoding="utf-8"
+        f"INHERIT: ../en/mkdocs.yml\nsite_dir: '../../{site_lang}/{lang}'\n",
+        encoding="utf-8",
     )
     new_config_docs_path: Path = new_path / "docs"
     new_config_docs_path.mkdir()
@@ -116,28 +195,37 @@ def new_lang(lang: str):
 
 
 @cli.command()
-@click.option("--lang", "-l", default="en")
+@click.option("-l", "--lang", default="en")
 def build_lang(lang: str) -> None:
     """
     Build the docs for a language.
     """
-    # build_language(lang)
     build_site(lang)
 
 
 @cli.command()
 def build_all() -> None:
     """
-    Build mkdocs site for en, and then build each language inside, end result is located
-    at directory ./site/ with each language inside.
+    Build mkdocs site for each language, resulting in a directory structure
+    with each language inside the ./site/ directory.
     """
+    # Remove the existing site directory
     shutil.rmtree(site_path, ignore_errors=True)
-    langs = [lang.name for lang in get_lang_paths() if lang.is_dir()]
+
+    # Get a list of all language paths
+    lang_paths = [lang.name for lang in get_lang_paths() if lang.is_dir()]
+
+    # Get the number of available CPUs
     cpu_count = os.cpu_count() or 1
+
+    # Set the process pool size to the number of CPUs
     process_pool_size = cpu_count
     click.echo(f"Using process pool size: {process_pool_size}")
-    for lang in langs:
-        build_site(lang)
+
+    # Create a process pool
+    with Pool(process_pool_size) as pool:
+        # Build the site for each language in parallel
+        pool.map(build_site, lang_paths)
 
 
 @cli.command()
@@ -149,45 +237,67 @@ def update_languages() -> None:
 
 
 @cli.command()
-def serve() -> None:
+@click.option("-p", "--port", default=8000, help="The port to serve the documentation")
+def serve(port: int) -> None:
     """
-    A quick server to preview a built site with translations.
-    For development, prefer the command live (or just mkdocs serve).
-    This is here only to preview a site with translations already built.
-    Make sure you run the build-all command first.
+    Serve a built site with translations.
+
+    This command is used to preview a site with translations that have already been built.
+    It starts a simple server to serve the site on the specified port.
+
+    Args:
+        port (int): The port number to serve the documentation. Defaults to 8000.
+
+    Returns:
+        None
     """
     click.echo("Warning: this is a very simple server.")
     click.echo("For development, use the command live instead.")
     click.echo("This is here only to preview a site with translations already built.")
     click.echo("Make sure you run the build-all command first.")
     os.chdir("site")
-    server_address = ("", 8000)
+    server_address = ("", port)
     server = HTTPServer(server_address, SimpleHTTPRequestHandler)
-    click.echo("Serving at: http://127.0.0.1:8000")
+    click.echo(f"Serving at: http://127.0.0.1:{port}")
     server.serve_forever()
 
 
 @cli.command()
-@click.option("-l", "--lang", default="en", help="lang")
-def live(lang: str) -> None:
+@click.option("-l", "--lang", default="en", help="The language code. Defaults to 'en'.")
+@click.option(
+    "-p", "--port", default=8000, help="The port to serve the documentation. Defaults to 8000."
+)
+def live(lang: str, port: int) -> None:
     """
-    Serve with livereload a docs site for a specific language.
+    Serve a docs site with livereload for a specific language.
 
-    This only shows the actual translated files, not the placeholders created with
-    build-all.
+    This command starts a server with livereload to serve the translated files for a specific language.
+    It only shows the actual translated files, not the placeholders created with build-all.
 
-    Takes an optional LANG argument with the name of the language to serve, by default en.
+    Args:
+        lang (str): The language code. Defaults to 'en'.
+        port (int): The port number to serve the documentation. Defaults to 8000.
+
+    Returns:
+        None
     """
     click.echo("Warning: this is a very simple server.")
     lang_path: Path = docs_path / lang
     os.chdir(lang_path)
-    mkdocs.commands.serve.serve(dev_addr="127.0.0.1:8000")
+    mkdocs.commands.serve.serve(dev_addr=f"127.0.0.1:{port}")
 
 
 @cli.command()
 def verify_config() -> None:
     """
-    Verify main mkdocs.yml content to make sure it uses the latest language names.
+    Verify the main mkdocs.yml content to ensure it uses the latest language names.
+
+    This function compares the current English configuration with the updated configuration
+    that includes the latest language names. If they are different, it raises an error
+    and prompts the user to update the language names in the language_names.yml file.
+
+    Returns:
+        None
     """
     click.echo("Verifying mkdocs.yml")
     config = get_en_config()
@@ -195,9 +305,8 @@ def verify_config() -> None:
     if config != updated_config:
         click.secho(
             click.style(
-                "docs/en/mkdocs.yml outdated from docs/language_names.yml, "
-                "update language_names.yml and run "
-                "python ./scripts/docs.py update-languages",
+                "docs/en/mkdocs.yml is outdated from docs/language_names.yml. "
+                "Please update language_names.yml and run 'python ./scripts/docs.py update-languages'.",
                 fg="red",
             )
         )

@@ -17,6 +17,7 @@ node_modules/
 results/
 site/
 site_build/
+site_lang/
 target/
 
 # files
