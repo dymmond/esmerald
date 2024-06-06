@@ -106,26 +106,27 @@ $ hatch run lint
 
 Improving the documentation is quite easy and it is placed inside the `esmerald/docs` folder.
 
-[//]: # (To start the docs, run:)
-[//]: # (```shell)
+To build all the documentation:
 
-[//]: # ($ hatch run docs:serve)
+```shell
+$ hatch run docs:build
+```
 
-[//]: # (```)
-
-### Docs live
+### Docs live (serving the docs)
 
 During local development, there is a script that builds the site and checks for any changes, live-reloading:
 
-<div class="termy">
-
 ```shell
-$ python ./scripts/docs.py live
+$ hatch run docs:serve
 ```
 
-</div>
+It will serve the documentation on `http://localhost:8000`.
 
-It will serve the documentation on `http://127.0.0.1:8000`.
+If you wish to serve on a different port:
+
+```shell
+$ hatch run docs:serve -p <PORT-NUMBER>
+```
 
 That way, you can edit the documentation/source files and see the changes live.
 
@@ -162,7 +163,6 @@ In most of the cases, these blocks of code are actual complete applications that
 In fact, those blocks of code are not written inside the Markdown, they are Python files in the `./docs_src/` directory.
 
 And those Python files are included/injected in the documentation when generating the site.
-
 
 ### Translations
 
@@ -202,7 +202,7 @@ Now run the live server for the docs in Spanish:
 
 ```shell
 // Use the command "live" and pass the language code as a CLI argument
-$ python ./scripts/docs.py live es
+$ hatch run docs:serve_lang es
 ```
 
 </div>
@@ -257,16 +257,12 @@ Checking the link from above, the code for "Creole" is `ht`.
 
 The next step is to run the script to generate a new translation directory:
 
-<div class="termy">
-
 ```shell
 // Use the command new-lang, pass the language code as a CLI argument
-$ python ./scripts/docs.py new-lang ht
+$ hatch run docs:new_lang ht
 
 Successfully initialized: docs/ht
 ```
-
-</div>
 
 Now you can check in your code editor the newly created directory `docs/ht/`.
 
@@ -274,7 +270,7 @@ That command created a file `docs/ht/mkdocs.yml` with a simple config that inher
 
 ```yaml
 INHERIT: ../en/mkdocs.yml
-site_dir: '../../site/ht'
+site_dir: '../../site_lang/ht'
 ```
 
 !!! tip
@@ -297,14 +293,14 @@ To do that, first build all the docs:
 
 ```shell
 // Use the command "build-all", this will take a bit
-$ python ./scripts/docs.py build-all
+$ hatch run docs:build
 ```
 
 You can also collect documentation for one language
 
 ```shell
 // Use the command "build-lang", this will take a bit
-$ python ./scripts/docs.py build-lang -l your_lang
+$ hatch run docs:build_lang your_lang
 ```
 
 This builds all those independent MkDocs sites for each language, combines them, and generates the final output at `./site/`.
@@ -313,7 +309,7 @@ Then you can serve that with the command `serve`:
 
 ```shell
 // Use the command "serve" after running "build-all" or "build-lang -l your_lang"
-$ python ./scripts/docs.py serve
+$ hatch run docs:dev
 
 Warning: this is a very simple server. For development, use mkdocs serve instead.
 This is here only to preview a site with translations already built.
