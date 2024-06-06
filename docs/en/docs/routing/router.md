@@ -9,7 +9,7 @@ The router class is composed by many attributes that are, by default, populated 
 also allows to add extra [custom routers](#custom-router), or alternatively, you can add a [ChildEsmerald](#child-esmerald-application) app.
 
 ```python
-{!> ../docs_src/routing/router/router_class.py!}
+{!> ../../../docs_src/routing/router/router_class.py!}
 ```
 
 The main `Router` class is instantiated within the `Esmerald` application with the given routes and the application
@@ -35,7 +35,7 @@ There are three ways of separating the routes within the application, using [Inc
 a [ChildEsmerald](#child-esmerald-application) or by creating another router. Let's focus on the latter.
 
 ```python hl_lines="28-35" title="/application/apps/routers/customers.py"
-{!> ../docs_src/routing/router/customers.py!}
+{!> ../../../docs_src/routing/router/customers.py!}
 ```
 
 Above, you created the `/application/apps/routers/customers.py` with all the information you need. It does not need
@@ -44,7 +44,7 @@ to be in one file, you can have a entirely separate package just to manage the c
 Now you need to add the new custom router into the main application.
 
 ```python hl_lines="1 6" title="/application/app.py"
-{!> ../docs_src/routing/router/app.py!}
+{!> ../../../docs_src/routing/router/app.py!}
 ```
 
 This simple and your router is added to the main **Esmerald** application.
@@ -76,7 +76,7 @@ This is not a limitation or a bug, in fact it is intentional as we want to prese
 Let's use the same example used in the [custom routers](#custom-router) with the customers specific routes and rules.
 
 ```python hl_lines="28-40" title="/application/apps/routers/customers.py"
-{!> ../docs_src/routing/router/childesmerald/customers.py!}
+{!> ../../../docs_src/routing/router/childesmerald/customers.py!}
 ```
 
 Since the `ChildEsmerald` is a representation of an [Esmerald](../application/applications.md) class, we can pass
@@ -88,13 +88,13 @@ You can add as many `ChildEsmerald` as you desire, there are no limits.
 **Now in the main application**:
 
 ```python hl_lines="5" title="/application/app.py"
-{!> ../docs_src/routing/router/childesmerald/app.py!}
+{!> ../../../docs_src/routing/router/childesmerald/app.py!}
 ```
 
 * **Adding nested applications**
 
 ```python hl_lines="9 13-14" title="/application/app.py"
-{!> ../docs_src/routing/router/childesmerald/nested.py!}
+{!> ../../../docs_src/routing/router/childesmerald/nested.py!}
 ```
 
 The example above shows that you could even add the same application within nested includes, and for each
@@ -121,7 +121,7 @@ The `Router` object has some available functionalities that can be useful.
 ### add_route()
 
 ```python
-{!> ../docs_src/routing/router/add_route.py!}
+{!> ../../../docs_src/routing/router/add_route.py!}
 ```
 
 #### Parameters
@@ -145,7 +145,7 @@ functions on an application top level. Exception handler callables should be of 
 ### add_websocket_route()
 
 ```python
-{!> ../docs_src/routing/router/add_websocket_route.py!}
+{!> ../../../docs_src/routing/router/add_websocket_route.py!}
 ```
 
 #### Parameters
@@ -168,7 +168,7 @@ functions on an application top level. Exception handler callables should be of 
 ### add_child_esmerald()
 
 ```python
-{!> ../docs_src/routing/router/add_child_esmerald.py!}
+{!> ../../../docs_src/routing/router/add_child_esmerald.py!}
 ```
 
 #### Parameters

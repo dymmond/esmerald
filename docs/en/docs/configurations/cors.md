@@ -16,13 +16,13 @@ When a CORSConfig object is passed to an application instance, it will automatic
 To use the CORSConfig in an application instance.
 
 ```python hl_lines="4 7"
-{!> ../docs_src/configurations/cors/example1.py!}
+{!> ../../../docs_src/configurations/cors/example1.py!}
 ```
 
 Another example
 
 ```python hl_lines="4-6 9"
-{!> ../docs_src/configurations/cors/example2.py!}
+{!> ../../../docs_src/configurations/cors/example2.py!}
 ```
 
 ## Parameters
@@ -34,7 +34,7 @@ All the parameters and defaults are available in the [CORSConfig Reference](../r
 The CORSConfig can be done directly via [application instantiation](#corsconfig-and-application) but also via settings.
 
 ```python
-{!> ../docs_src/configurations/cors/settings.py!}
+{!> ../../../docs_src/configurations/cors/settings.py!}
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.

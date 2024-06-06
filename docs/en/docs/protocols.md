@@ -38,7 +38,7 @@ Let's imagine you need one handler that manages the creation of a user. Your app
 * `The handler`. What you will be calling.
 
 ```python
-{!> ../docs_src/protocols/example1.py !}
+{!> ../../../docs_src/protocols/example1.py !}
 ```
 
 !!! Check
@@ -77,7 +77,7 @@ Esmerald `DAO`/`AsyncDAO` comes with five operations that must be implemented wh
 Let's see how it would look if you were using a `DAO`.
 
 ```python
-{!> ../docs_src/protocols/syncdao.py !}
+{!> ../../../docs_src/protocols/syncdao.py !}
 ```
 
 Although it looks like "more work", in fact you are separating what the handler should be doing from what a business

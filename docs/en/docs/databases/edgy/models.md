@@ -16,7 +16,7 @@ initial configuration.
 Extenting the existing `User` model is as simple as this:
 
 ```python hl_lines="17 32"
-{!> ../docs_src/databases/edgy/models.py !}
+{!> ../../../docs_src/databases/edgy/models.py !}
 ```
 
 This is a clean way of declaring the models and using the Edgy docs, you can easily understand
@@ -40,13 +40,13 @@ with Edgy.
 === "settings.py"
 
     ```python hl_lines="10-12"
-    {!> ../docs_src/databases/edgy/settings/settings.py !}
+    {!> ../../../docs_src/databases/edgy/settings/settings.py !}
     ```
 
 === "models.py"
 
     ```python hl_lines="17 32"
-    {!> ../docs_src/databases/edgy/settings/models.py !}
+    {!> ../../../docs_src/databases/edgy/settings/models.py !}
     ```
 
 You simply isolated your common database connection and registry inside the globally accessible
@@ -80,19 +80,19 @@ functionality applied to it is already something that would require some extra t
 **create_user**
 
 ```python
-{!> ../docs_src/databases/edgy/create_user.py !}
+{!> ../../../docs_src/databases/edgy/create_user.py !}
 ```
 
 **create_superuser**
 
 ```python
-{!> ../docs_src/databases/edgy/create_superuser.py !}
+{!> ../../../docs_src/databases/edgy/create_superuser.py !}
 ```
 
 **check_password**
 
 ```python hl_lines="28"
-{!> ../docs_src/databases/edgy/check_password.py !}
+{!> ../../../docs_src/databases/edgy/check_password.py !}
 ```
 
 Because you are using the `User` provided by Esmerald, the same object is also prepared to validate
@@ -102,7 +102,7 @@ same principle.
 **set_password**
 
 ```python hl_lines="28"
-{!> ../docs_src/databases/edgy/set_password.py !}
+{!> ../../../docs_src/databases/edgy/set_password.py !}
 ```
 
 The same for setting passwords. The `User` already contains the functionality to set a password of
@@ -144,7 +144,7 @@ You can always override the property `password_hashers` in your
 [custom settings](../../application/settings.md#custom-settings) and use your own.
 
 ```python
-{!> ../docs_src/databases/edgy/hashers.py !}
+{!> ../../../docs_src/databases/edgy/hashers.py !}
 ```
 
 ## Migrations

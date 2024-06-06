@@ -3,7 +3,7 @@
 What are these directives? In simple terms, those are special `command-line` scripts that run special
 pieces of code for **Esmerald**.
 
-{!> ../docs_src/_shared/autodiscovery.md !}
+{!> ../../../docs_src/_shared/autodiscovery.md !}
 
 ## Built-in Esmerald directives
 
@@ -192,7 +192,7 @@ $ esmerald createapp accounts
 
 You should have a folder called `accounts` with a similar structure to this:
 
-{!> ../docs_src/_shared/app_struct_example.md !}
+{!> ../../../docs_src/_shared/app_struct_example.md !}
 
 As you can see, `myproject/apps` contains an app called `accounts`.
 
@@ -221,7 +221,7 @@ Let's do an example using exactly what we previously generated and put the appli
 
 **The current structure**:
 
-{!> ../docs_src/_shared/app_struct_example.md !}
+{!> ../../../docs_src/_shared/app_struct_example.md !}
 
 What are we going to do?
 
@@ -233,7 +233,7 @@ What are we going to do?
 #### Create the view
 
 ```python title="myproject/apps/accounts/v1/controllers.py"
-{!> ../docs_src/management/controllers.py !}
+{!> ../../../docs_src/management/controllers.py !}
 ```
 
 Create a view to return the message `Welcome home!`.
@@ -243,7 +243,7 @@ Create a view to return the message `Welcome home!`.
 Now it is time to add the newly created view to the urls of the accounts.
 
 ```python title="myproject/apps/accounts/v1/urls.py"
-{!> ../docs_src/management/urls.py !}
+{!> ../../../docs_src/management/urls.py !}
 ```
 
 #### Add the accounts urls to the application urls
@@ -254,7 +254,7 @@ urls.
 Let's update the `myproject/urls.py`.
 
 ```python title="myproject/urls.py"
-{!> ../docs_src/management/app_urls.py !}
+{!> ../../../docs_src/management/app_urls.py !}
 ```
 
 And that is it! The application is assembled and you can now [start the application](#start-the-application).
@@ -360,7 +360,7 @@ $ esmerald createdeployment myproject
 
 You should have a folder called `deployment` with a similar structure to this:
 
-{!> ../docs_src/_shared/deployment_struct_example.md !}
+{!> ../../../docs_src/_shared/deployment_struct_example.md !}
 
 As you can see, all of the minimum files for your project are generated inside a default `deployment/`
 folder and ready to be used saving you a tremendous amount of time.
@@ -380,7 +380,7 @@ $ esmerald createdeployment myproject --deployment-folder-name deploy
 
 Once the directive runs, You should have a folder called `deploy` with a similar structure to this:
 
-{!> ../docs_src/_shared/deploy_struct_example.md !}
+{!> ../../../docs_src/_shared/deploy_struct_example.md !}
 
 #### Run the Dockerfile
 

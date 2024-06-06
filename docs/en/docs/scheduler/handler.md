@@ -139,7 +139,7 @@ Triggers when current time matches all specified time constraits. Very similar t
 * **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most
 
 ```python
-{!> ../docs_src/scheduler/tasks/triggers/cron.py !}
+{!> ../../../docs_src/scheduler/tasks/triggers/cron.py !}
 ```
 
 ### IntervalTrigger
@@ -159,7 +159,7 @@ Triggers on specified intervals, starting on `start_date` if specified or `datet
 * **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most
 
 ```python
-{!> ../docs_src/scheduler/tasks/triggers/interval.py !}
+{!> ../../../docs_src/scheduler/tasks/triggers/interval.py !}
 ```
 
 ### DateTrigger
@@ -172,7 +172,7 @@ Triggers once on the given datetime. If `run_date` is left empty, current time i
 * **timezone** (*datetime*.*tzinfo*|*str*) – Time zone for run_date if it doesn’t have one already.
 
 ```python
-{!> ../docs_src/scheduler/tasks/triggers/date.py !}
+{!> ../../../docs_src/scheduler/tasks/triggers/date.py !}
 ```
 
 ### OrTrigger
@@ -186,7 +186,7 @@ The trigger is considered finished when all the given triggers have finished the
 * **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most.
 
 ```python
-{!> ../docs_src/scheduler/tasks/triggers/or.py !}
+{!> ../../../docs_src/scheduler/tasks/triggers/or.py !}
 ```
 
 ### AndTrigger
@@ -200,7 +200,7 @@ The trigger is considered to be finished when any of the given triggers has fini
 * **jitter** (*int*|*None*) – Delay the task execution by jitter seconds at most.
 
 ```python
-{!> ../docs_src/scheduler/tasks/triggers/and.py !}
+{!> ../../../docs_src/scheduler/tasks/triggers/and.py !}
 ```
 
 !!! Note
@@ -217,13 +217,13 @@ Esmerald allows to pass those configurations via application instantiation or vi
 ### Via application instantiation
 
 ```python
-{!> ../docs_src/scheduler/tasks/configurations/app.py !}
+{!> ../../../docs_src/scheduler/tasks/configurations/app.py !}
 ```
 
 ### Via application settings
 
 ```python
-{!> ../docs_src/scheduler/tasks/configurations/settings.py !}
+{!> ../../../docs_src/scheduler/tasks/configurations/settings.py !}
 ```
 
 Start the application with the new settings.
@@ -245,7 +245,7 @@ When creating a task and using the `scheduler` one of the parameters is the `sto
 From the [example](#via-application-instantiation) you have new task stores and executors and those can be passed:
 
 ```python hl_lines="15-16 27-28"
-{!> ../docs_src/scheduler/tasks/configurations/example1.py !}
+{!> ../../../docs_src/scheduler/tasks/configurations/example1.py !}
 ```
 
 !!! Tip

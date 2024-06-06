@@ -33,13 +33,13 @@ system settings object, the `EsmeraldAPISettings`.
 === "No parameters"
 
     ```python hl_lines="4"
-    {!> ../docs_src/settings/app/no_parameters.py!}
+    {!> ../../../docs_src/settings/app/no_parameters.py!}
     ```
 
 === "With Parameters"
 
     ```python hl_lines="6"
-    {!> ../docs_src/settings/app/with_parameters.py!}
+    {!> ../../../docs_src/settings/app/with_parameters.py!}
     ```
 
 ## Custom settings
@@ -56,25 +56,25 @@ file that contains common settings across the three environments.
 === "Base"
 
     ```python
-    {!> ../docs_src/settings/custom/base.py!}
+    {!> ../../../docs_src/settings/custom/base.py!}
     ```
 
 === "Development"
 
     ```python
-    {!> ../docs_src/settings/custom/development.py!}
+    {!> ../../../docs_src/settings/custom/development.py!}
     ```
 
 === "Testing"
 
     ```python
-    {!> ../docs_src/settings/custom/testing.py!}
+    {!> ../../../docs_src/settings/custom/testing.py!}
     ```
 
 === "Production"
 
     ```python
-    {!> ../docs_src/settings/custom/production.py!}
+    {!> ../../../docs_src/settings/custom/production.py!}
     ```
 
 What just happened?
@@ -134,7 +134,7 @@ is thrown.
 The reason why the above is to keep the integrity of the application and settings.
 
 ```python hl_lines="22"
-{!> ../docs_src/application/settings/settings_config/example2.py !}
+{!> ../../../docs_src/application/settings/settings_config/example2.py !}
 ```
 
 Is this simple, literally, Esmerald simplifies the way you can manipulate settings on each level
@@ -153,7 +153,7 @@ anything else. Let us imagine the following:
 * A ChildEsmerald with a specific set of configurations unique to it.
 
 ```python hl_lines="11"
-{!> ../docs_src/application/settings/settings_config/example1.py !}
+{!> ../../../docs_src/application/settings/settings_config/example1.py !}
 ```
 
 **What is happenening here?**
@@ -196,19 +196,19 @@ Let us also assume you have all the settings inside a `src/configs` directory.
 **Create a configuration to be used by the ESMERALD_SETTINGS_MODULE**
 
 ```python title="src/configs/main_settings.py"
-{!> ../docs_src/application/settings/settings_config/main_settings.py !}
+{!> ../../../docs_src/application/settings/settings_config/main_settings.py !}
 ```
 
 **Create a configuration to be used by the setting_config**
 
 ```python title="src/configs/app_settings.py"
-{!> ../docs_src/application/settings/settings_config/app_settings.py !}
+{!> ../../../docs_src/application/settings/settings_config/app_settings.py !}
 ```
 
 **Create an Esmerald instance**
 
 ```python title="src/app.py" hl_lines="14"
-{!> ../docs_src/application/settings/settings_config/app.py !}
+{!> ../../../docs_src/application/settings/settings_config/app.py !}
 ```
 
 Now we can start the server using the `AppSettings` as global and `InstanceSettings` being passed
@@ -251,19 +251,19 @@ To access the application settings there are different ways:
 === "Within the application request"
 
     ```python hl_lines="6"
-    {!> ../docs_src/settings/access/within_app.py!}
+    {!> ../../../docs_src/settings/access/within_app.py!}
     ```
 
 === "From the global settings"
 
     ```python hl_lines="1 6"
-    {!> ../docs_src/settings/access/global.py!}
+    {!> ../../../docs_src/settings/access/global.py!}
     ```
 
 === "From the conf settings"
 
     ```python hl_lines="2 7"
-    {!> ../docs_src/settings/access/conf.py!}
+    {!> ../../../docs_src/settings/access/conf.py!}
     ```
 
 !!! info

@@ -326,7 +326,7 @@ Good design is always encouraged and Esmerald allows complex routing on any [lev
 ### The handlers (controllers)
 
 ```python title="src/myapp/accounts/controllers.py"
-{!> ../docs_src/routing/routes/include/controllers.py!}
+{!> ../../../docs_src/routing/routes/include/controllers.py!}
 ```
 
 If a `path` is not provided, defaults to `/`.
@@ -364,13 +364,13 @@ namespace unless a different `pattern` is specified.
 === "Importing using namespace"
 
     ```python title='src/urls.py' hl_lines="3"
-    {!> ../docs_src/routing/routes/include/app/urls.py!}
+    {!> ../../../docs_src/routing/routes/include/app/urls.py!}
     ```
 
 === "Importing using routes"
 
     ```python title='src/myapp/urls.py' hl_lines="5"
-    {!> ../docs_src/routing/routes/include/routes_list.py!}
+    {!> ../../../docs_src/routing/routes/include/routes_list.py!}
     ```
 
 If a `path` is not provided, defaults to `/`.
@@ -378,13 +378,13 @@ If a `path` is not provided, defaults to `/`.
 #### Using a different pattern
 
 ```python title="src/myapp/accounts/urls.py" hl_lines="5"
-{!> ../docs_src/routing/routes/include/different_pattern.py!}
+{!> ../../../docs_src/routing/routes/include/different_pattern.py!}
 ```
 
 === "Importing using namespace"
 
     ```python title='src/myapp/urls.py' hl_lines="3"
-    {!> ../docs_src/routing/routes/include/namespace.py!}
+    {!> ../../../docs_src/routing/routes/include/namespace.py!}
     ```
 
 ## Include and Esmerald
@@ -395,11 +395,11 @@ of objects to be passed into one single object. This can be particulary useful t
 **Example**:
 
 ```python title='src/urls.py' hl_lines="3"
-{!> ../docs_src/routing/routes/include/app/urls.py!}
+{!> ../../../docs_src/routing/routes/include/app/urls.py!}
 ```
 
 ```python title='src/app.py' hl_lines="3"
-{!> ../docs_src/routing/routes/include/app/app.py!}
+{!> ../../../docs_src/routing/routes/include/app/app.py!}
 ```
 
 ## Run the application

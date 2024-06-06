@@ -23,13 +23,13 @@ $ pip install esmerald[templates]
 To use the TemplateConfig in an application instance.
 
 ```python hl_lines="4-5 9"
-{!> ../docs_src/configurations/template/example1.py!}
+{!> ../../../docs_src/configurations/template/example1.py!}
 ```
 
 Another example
 
 ```python hl_lines="4-5 9"
-{!> ../docs_src/configurations/template/example2.py!}
+{!> ../../../docs_src/configurations/template/example2.py!}
 ```
 
 ## Parameters
@@ -42,7 +42,7 @@ The TemplateConfig can be done directly via [application instantiation](#templat
 but also via settings.
 
 ```python
-{!> ../docs_src/configurations/template/settings.py!}
+{!> ../../../docs_src/configurations/template/settings.py!}
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
@@ -53,5 +53,5 @@ Esmerald automatically provides the `url_for` when using the jinja template syst
 you can do something like this:
 
 ```jinja
-{!> ../docs_src/_shared/jinja.html!}
+{!> ../../../docs_src/_shared/jinja.html!}
 ```

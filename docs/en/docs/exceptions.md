@@ -113,7 +113,7 @@ work for generic and internal processing you might face an issue when it comes t
 unique to your application type of exception. This is very simple and also very possible.
 
 ```python
-{!> ../docs_src/exceptions/custom_exception.py !}
+{!> ../../../docs_src/exceptions/custom_exception.py !}
 ```
 
 The example above of course is forced to be like that for illustration purposes to raise the custom exception as the
@@ -126,7 +126,7 @@ Currently by default, every Esmerald application starts with `ImproperlyConfigur
 to make sure everything is covered accordingly but this does not necessarily mean that this can't be changed.
 
 ```python hl_lines="18 42 61-62"
-{!> ../docs_src/exceptions/overriding.py !}
+{!> ../../../docs_src/exceptions/overriding.py !}
 ```
 
 This will make sure that the application defaults will have a your exception_handler instead of the main application.

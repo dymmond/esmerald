@@ -24,25 +24,25 @@ The permissions can also be `async` in case you need to run awaitables.
 **An example of a permission for an user admin**.
 
 ```python
-{!> ../docs_src/permissions/permissions.py !}
+{!> ../../../docs_src/permissions/permissions.py !}
 ```
 
 **An example of a permission for an user admin with async**.
 
 ```python hl_lines="25"
-{!> ../docs_src/permissions/async/permissions.py !}
+{!> ../../../docs_src/permissions/async/permissions.py !}
 ```
 
 **An example of a permission for a project**
 
 ```python
-{!> ../docs_src/permissions/simple_permissions.py !}
+{!> ../../../docs_src/permissions/simple_permissions.py !}
 ```
 
 **An example of a permission for a project with async**
 
 ```python hl_lines="10"
-{!> ../docs_src/permissions/async/simple_permissions.py !}
+{!> ../../../docs_src/permissions/async/simple_permissions.py !}
 ```
 
 ## Esmerald and permissions
@@ -76,7 +76,7 @@ part the `is_user_authenticated` needs to be implemented.
 To use the `IsAdminUser`, `IsAuthenticated` and `IsAuthenticatedOrReadOnly` is as simple as the example below.
 
 ```python hl_lines="33 35 42"
-{!> ../docs_src/permissions/admin.py !}
+{!> ../../../docs_src/permissions/admin.py !}
 ```
 
 1. The main app `Esmerald` has an `AllowAny` permission for the top level

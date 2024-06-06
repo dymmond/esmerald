@@ -37,7 +37,7 @@ All the parameters and defaults are available in the [OpenAPIConfig Reference](.
 It is very simple actually.
 
 ```python hl_lines="4 12"
-{!> ../docs_src/configurations/openapi/example1.py !}
+{!> ../../../docs_src/configurations/openapi/example1.py !}
 ```
 
 This will create your own `OpenAPIConfig` and pass it to the Esmerald application but what about changing the current
@@ -46,7 +46,7 @@ default `/docs` path?
 Let's use an example for clarification.
 
 ```python
-{!> ../docs_src/configurations/openapi/apiview.py !}
+{!> ../../../docs_src/configurations/openapi/apiview.py !}
 ```
 
 From now on the url to access `swagger`, `redoc` and `stoplight` will be:
@@ -61,7 +61,7 @@ As per normal Esmerald standard of configurations, it is also possible to enable
 settings.
 
 ```python
-{!> ../docs_src/configurations/openapi/settings.py !}
+{!> ../../../docs_src/configurations/openapi/settings.py !}
 ```
 
 Start the server with your custom settings.

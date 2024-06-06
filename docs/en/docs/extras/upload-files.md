@@ -52,7 +52,7 @@ These types are the ones that shall be passed to `Body(media_type=...)`.
 Uploading a single file, you need to type the `data` as [UploadFile](#uploadfile).
 
 ```python
-{!> ../docs_src/extras/upload/single_file.py !}
+{!> ../../../docs_src/extras/upload/single_file.py !}
 ```
 
 ## List files upload
@@ -60,7 +60,7 @@ Uploading a single file, you need to type the `data` as [UploadFile](#uploadfile
 In a similar way, you can also access the files as a list.
 
 ```python
-{!> ../docs_src/extras/upload/as_list.py !}
+{!> ../../../docs_src/extras/upload/as_list.py !}
 ```
 
 ## Using the File
@@ -76,7 +76,7 @@ Let us see how it looks now using `File` instead of `Body` for the uploads.
 Uploading a single file, you need to type the `data` as [UploadFile](#uploadfile).
 
 ```python hl_lines="6"
-{!> ../docs_src/extras/upload/single.py !}
+{!> ../../../docs_src/extras/upload/single.py !}
 ```
 
 ### List files upload
@@ -84,7 +84,7 @@ Uploading a single file, you need to type the `data` as [UploadFile](#uploadfile
 In a similar way, you can also access the files as a list.
 
 ```python hl_lines="8"
-{!> ../docs_src/extras/upload/file_as_list.py !}
+{!> ../../../docs_src/extras/upload/file_as_list.py !}
 ```
 
 ### Important
@@ -93,7 +93,7 @@ Since `Body` or `Field` are Pydantic fields (sort of), that also means you can s
 the maximum number of items to be sent in a list for the upload.
 
 ```python hl_lines="8"
-{!> ../docs_src/extras/upload/file_as_list_max.py !}
+{!> ../../../docs_src/extras/upload/file_as_list_max.py !}
 ```
 
 This means that the maximum number of files allowed for upload using the a list is three. If the

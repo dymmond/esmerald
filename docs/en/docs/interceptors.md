@@ -57,13 +57,13 @@ We will be creating:
 **The logging interceptor**
 
 ```python
-{!> ../docs_src/interceptors/logging.py !}
+{!> ../../../docs_src/interceptors/logging.py !}
 ```
 
 **The application with handlers and applying the interceptor**
 
 ```python hl_lines="11"
-{!> ../docs_src/interceptors/app.py !}
+{!> ../../../docs_src/interceptors/app.py !}
 ```
 
 ## Custom interceptor
@@ -76,13 +76,13 @@ Let us see how it would look like the same app with a custom interceptor then.
 **The logging interceptor**
 
 ```python hl_lines="7"
-{!> ../docs_src/interceptors/custom/logging.py !}
+{!> ../../../docs_src/interceptors/custom/logging.py !}
 ```
 
 **The application with handlers and applying the interceptor**
 
 ```python hl_lines="11"
-{!> ../docs_src/interceptors/app.py !}
+{!> ../../../docs_src/interceptors/app.py !}
 ```
 
 It is very similar correct? Yes but the main difference here happens within the
@@ -113,13 +113,13 @@ you can get the idea of it.
 **RequestParamInterceptor**
 
 ```python
-{!> ../docs_src/interceptors/request_interceptor.py !}
+{!> ../../../docs_src/interceptors/request_interceptor.py !}
 ```
 
 **CookieInterceptor**
 
 ```python
-{!> ../docs_src/interceptors/cookie_interceptor.py !}
+{!> ../../../docs_src/interceptors/cookie_interceptor.py !}
 ```
 
 **The application**
@@ -128,7 +128,7 @@ The application calling both interceptors on different levels, the `app` level a
 level.
 
 ```python hl_lines="12-13"
-{!> ../docs_src/interceptors/app_with_levels.py !}
+{!> ../../../docs_src/interceptors/app_with_levels.py !}
 ```
 
 The same logic can algo be applied to [Include](./routing/routes.md#include) and
@@ -146,14 +146,14 @@ For example, using the example from before, adding `RequestParamInterceptor` on 
 an Esmerald app and adding the `CookieInterceptor` in the ChildEsmerald will work separately.
 
 ```python hl_lines="17 22"
-{!> ../docs_src/interceptors/child.py !}
+{!> ../../../docs_src/interceptors/child.py !}
 ```
 
 The `RequestParamInterceptor` will work for the routes of the Esmerald and subsequent chilren,
 the ChildEsmerald, which means, you can also achieve the same result by doing this:
 
 ```python hl_lines="17"
-{!> ../docs_src/interceptors/child_shared.py !}
+{!> ../../../docs_src/interceptors/child_shared.py !}
 ```
 
 !!! Tip
@@ -167,7 +167,7 @@ To add interceptors to the main application as defaults, the way of doing it is 
 parameters when creating the application.
 
 ```python hl_lines="13"
-{!> ../docs_src/interceptors/interceptors_and_app.py !}
+{!> ../../../docs_src/interceptors/interceptors_and_app.py !}
 ```
 
 ## Interceptors and settings module
@@ -178,13 +178,13 @@ directly when creating the Esmerald intance. A cleaner way of doing it.
 **settings.py**
 
 ```python
-{!> ../docs_src/interceptors/settings.py !}
+{!> ../../../docs_src/interceptors/settings.py !}
 ```
 
 **app.py**
 
 ```python
-{!> ../docs_src/interceptors/clean_app.py !}
+{!> ../../../docs_src/interceptors/clean_app.py !}
 ```
 
 With the `settings` and the `app` created you can simply start the server and pass the newly

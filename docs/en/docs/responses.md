@@ -42,13 +42,13 @@ This will allow you to use the [OrJSON](#orjson) and [UJSON](#ujson) as well as 
 Classic and generic `Response` that fits almost every single use case out there.
 
 ```python
-{!> ../docs_src/responses/response.py !}
+{!> ../../../docs_src/responses/response.py !}
 ```
 
 **Or a unique custom response**:
 
 ```python
-{!> ../docs_src/responses/custom.py !}
+{!> ../../../docs_src/responses/custom.py !}
 ```
 
 Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
@@ -64,7 +64,7 @@ The classic JSON response for 99% of the responses used nowaday. The `JSON` retu
 `JSONResponse`.
 
 ```python
-{!> ../docs_src/responses/json.py !}
+{!> ../../../docs_src/responses/json.py !}
 ```
 
 ## API Reference
@@ -94,7 +94,7 @@ Check out the [API Reference for JSONResponse](./references/responses/json-respo
 Super fast JSON serialization/deserialization response.
 
 ```python
-{!> ../docs_src/responses/orjson.py !}
+{!> ../../../docs_src/responses/orjson.py !}
 ```
 
 !!! Warning
@@ -124,7 +124,7 @@ Check out the [API Reference for ORJSONResponse](./references/responses/orjson-r
 Another super fast JSON serialization/deserialization response.
 
 ```python
-{!> ../docs_src/responses/ujson.py !}
+{!> ../../../docs_src/responses/ujson.py !}
 ```
 
 !!! Warning
@@ -157,7 +157,7 @@ As the name suggests, it is the response used to render HTML templates.
 This response returns a `TemplateResponse`.
 
 ```python
-{!> ../docs_src/responses/template.py !}
+{!> ../../../docs_src/responses/template.py !}
 ```
 
 ## API Reference
@@ -171,7 +171,7 @@ As the name indicates, it is the response used to redirect to another endpoint/p
 This response returns a `ResponseRedirect`.
 
 ```python
-{!> ../docs_src/responses/redirect.py !}
+{!> ../../../docs_src/responses/redirect.py !}
 ```
 
 ## API Reference
@@ -183,7 +183,7 @@ Check out the [API Reference for Redirect](./references/responses/redirect.md) f
 The File response sends a file. This response returns a `FileResponse`.
 
 ```python
-{!> ../docs_src/responses/file.py !}
+{!> ../../../docs_src/responses/file.py !}
 ```
 
 ## API Reference
@@ -195,7 +195,7 @@ Check out the [API Reference for File](./references/responses/file.md) for more 
 The Stream response uses the `StreamResponse`.
 
 ```python
-{!> ../docs_src/responses/stream.py !}
+{!> ../../../docs_src/responses/stream.py !}
 ```
 
 ## API Reference
@@ -225,7 +225,7 @@ Let us use an example to be more clear. This example is applied to `JSON`, `UJSO
 ### Status code without declaring in the handler
 
 ```python
-{!> ../docs_src/responses/status_direct.py !}
+{!> ../../../docs_src/responses/status_direct.py !}
 ```
 
 In this example, the returned status code will be `202 Accepted` as it was declared directly in the
@@ -234,7 +234,7 @@ response and not in the handler.
 ### Status code declared in the handler
 
 ```python
-{!> ../docs_src/responses/status_handler.py !}
+{!> ../../../docs_src/responses/status_handler.py !}
 ```
 
 In this example, the returned status code will also be `202 Accepted` as it was declared directly
@@ -245,7 +245,7 @@ in the handler response and not in the handler.
 Now what happens if we declare the status_code in both?
 
 ```python
-{!> ../docs_src/responses/status_both.py !}
+{!> ../../../docs_src/responses/status_both.py !}
 ```
 
 This **will return 202 Accepted** and not `201 Created` and the reason for that is because the
@@ -396,7 +396,7 @@ There are other responses you can have that does not necessessarily have to be t
 unique and you might want to return directly a `string`, a `dict`, an `integer`, a `list` or whatever you want.
 
 ```python
-{!> ../docs_src/responses/others.py !}
+{!> ../../../docs_src/responses/others.py !}
 ```
 ### Example
 
@@ -405,23 +405,23 @@ Below we have a few examples of possible responses recognised by Esmerald automa
 **Pydantic model**
 
 ```python hl_lines="13 24 27"
-{!> ../docs_src/extras/form/model.py !}
+{!> ../../../docs_src/extras/form/model.py !}
 ```
 
 **Pydantic dataclass**
 
 ```python hl_lines="14 25 28"
-{!> ../docs_src/extras/form/pydantic_dc.py !}
+{!> ../../../docs_src/extras/form/pydantic_dc.py !}
 ```
 
 **Python dataclass**
 
 ```python hl_lines="15 26 29"
-{!> ../docs_src/extras/form/dataclass.py !}
+{!> ../../../docs_src/extras/form/dataclass.py !}
 ```
 
 **MsgSpec**
 
 ```python
-{!> ../docs_src/responses/msgspec.py !}
+{!> ../../../docs_src/responses/msgspec.py !}
 ```

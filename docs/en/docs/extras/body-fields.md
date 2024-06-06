@@ -6,7 +6,7 @@ documentation for the request body schema or how to control its validation.
 The simplest way is by importing the `Body` object from Esmerald.
 
 ```python hl_lines="13"
-{!> ../docs_src/extras/body/body_object.py !}
+{!> ../../../docs_src/extras/body/body_object.py !}
 ```
 
 ## URL Enconded
@@ -17,7 +17,7 @@ As [explained here](./request-data.md#request-data), the handler is expecting a 
 you can pass more details about the body.
 
 ```python
-{!> ../docs_src/extras/body/url_encoded.py !}
+{!> ../../../docs_src/extras/body/url_encoded.py !}
 ```
 
 There are different `media_types` that can be used.
@@ -31,7 +31,7 @@ All of those are standards in most of the frameworks out there.
 **Another example**:
 
 ```python
-{!> ../docs_src/extras/body/multipart.py !}
+{!> ../../../docs_src/extras/body/multipart.py !}
 ```
 
 ### Important

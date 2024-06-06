@@ -52,7 +52,7 @@ if the object of type X is an instance or a subclass of that same type.
 This is what currently Esmerald is doing for Pydantic and MsgSpec.
 
 ```python
-{!> ../docs_src/encoders/is_type.py !}
+{!> ../../../docs_src/encoders/is_type.py !}
 ```
 
 As you can see, this is how we check and verify if an object of type `BaseModel` and `Struct` are
@@ -68,7 +68,7 @@ Quite simple and intuitive.
 #### Example
 
 ```python
-{!> ../docs_src/encoders/serialize.py !}
+{!> ../../../docs_src/encoders/serialize.py !}
 ```
 
 ### encode
@@ -81,7 +81,7 @@ For example, a dictionary into Pydantic models or MsgSpec Structs.
 #### Example
 
 ```python
-{!> ../docs_src/encoders/encode.py !}
+{!> ../../../docs_src/encoders/encode.py !}
 ```
 
 ### The flexibility
@@ -101,7 +101,7 @@ It is in fact very simple as well, following the previous steps and explanations
 like this:
 
 ```python
-{!> ../docs_src/encoders/custom.py !}
+{!> ../../../docs_src/encoders/custom.py !}
 ```
 
 Do you see any differences compared to `Pydantic` and `MsgSpec`?
@@ -141,7 +141,7 @@ Like everything in Esmerald, you can use the settings for basically everything i
 Let us use the example of the [custom encoder](#custom-encoders) `AttrsEncoder`.
 
 ```python
-{!> ../docs_src/encoders/via_settings.py !}
+{!> ../../../docs_src/encoders/via_settings.py !}
 ```
 
 #### Via Instance
@@ -149,7 +149,7 @@ Let us use the example of the [custom encoder](#custom-encoders) `AttrsEncoder`.
 Classic approach and also available in any Esmerald or ChildEsmerald instance.
 
 ```python
-{!> ../docs_src/encoders/via_instance.py !}
+{!> ../../../docs_src/encoders/via_instance.py !}
 ```
 
 #### Adding an encoder via app instance function
@@ -160,7 +160,7 @@ to use it without understanding the ramifications, mostly if you have handlers r
 object type that needs the encoder to be available before assembling the routing system.
 
 ```python
-{!> ../docs_src/encoders/via_func.py !}
+{!> ../../../docs_src/encoders/via_func.py !}
 ```
 
 ### Notes

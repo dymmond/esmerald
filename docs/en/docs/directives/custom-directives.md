@@ -4,7 +4,7 @@ Having [built-in directives](./directives.md) from Esmerald is great as it gives
 niceties for your project but having **custom directives** is what really powers up your
 application and takes it to another level.
 
-{!> ../docs_src/_shared/autodiscovery.md !}
+{!> ../../../docs_src/_shared/autodiscovery.md !}
 
 ## What is a custom directive?
 
@@ -114,7 +114,7 @@ from esmerald.core.directives import BaseDirective
 **Create the Directive class**
 
 ```python hl_lines="4 7"
-{!> ../docs_src/directives/base.py !}
+{!> ../../../docs_src/directives/base.py !}
 ```
 
 Every single custom directive created **should be called Directive** and **must inherit** from the
@@ -201,13 +201,13 @@ When calling a `Directive`, `esmerald` will execute the `handle()` and run the a
 === "Sync"
 
     ```python hl_lines="15"
-    {!> ../docs_src/directives/sync_handler.py !}
+    {!> ../../../docs_src/directives/sync_handler.py !}
     ```
 
 === "Async"
 
     ```python hl_lines="15"
-    {!> ../docs_src/directives/async_handler.py !}
+    {!> ../../../docs_src/directives/async_handler.py !}
     ```
 
 As you can see, Esmerald Directives also allow `async` and `sync` type of functions. This can be
@@ -219,7 +219,7 @@ This is the place where you add any argument needed to run your custom directive
 are `argparse` related arguments so the syntax should be familiar.
 
 ```python
-{!> ../docs_src/directives/arguments.py !}
+{!> ../../../docs_src/directives/arguments.py !}
 ```
 
 As you can see, the Directive has five parameters and all of them required.
@@ -366,7 +366,7 @@ as this will make the example simpler.
 ### The application entrypoint
 
 ```python title="myproject/main.py"
-{!> ../docs_src/directives/example/app.py !}
+{!> ../../../docs_src/directives/example/app.py !}
 ```
 
 The connection string should be replaced with whatever is your detail.
@@ -378,7 +378,7 @@ the directive shall be inside a `directives/operations` package.
 
 
 ```python title="myproject/directives/operations/createsuperuser.py"
-{!> ../docs_src/directives/example/createsuperuser.py !}
+{!> ../../../docs_src/directives/example/createsuperuser.py !}
 ```
 
 And this should be it. We now have a `createsuperuser` and an application and now we can run

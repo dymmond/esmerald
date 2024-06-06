@@ -12,19 +12,19 @@ When a StaticFilesConfig object is passed to an application instance, it will en
 To use the StaticFilesConfig in an application instance.
 
 ```python hl_lines="3 9"
-{!> ../docs_src/configurations/staticfiles/example1.py!}
+{!> ../../../docs_src/configurations/staticfiles/example1.py!}
 ```
 
 Another example
 
 ```python hl_lines="3 10"
-{!> ../docs_src/configurations/staticfiles/example2.py!}
+{!> ../../../docs_src/configurations/staticfiles/example2.py!}
 ```
 
 **With Packages and directory**:
 
 ```python hl_lines="3 9"
-{!> ../docs_src/configurations/staticfiles/example3.py!}
+{!> ../../../docs_src/configurations/staticfiles/example3.py!}
 ```
 
 ## Parameters
@@ -37,7 +37,7 @@ The StaticFilesConfig can be done directly via [application instantiation](#stat
 but also via settings.
 
 ```python
-{!> ../docs_src/configurations/staticfiles/settings.py!}
+{!> ../../../docs_src/configurations/staticfiles/settings.py!}
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.

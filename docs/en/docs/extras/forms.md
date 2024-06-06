@@ -12,7 +12,7 @@ The Form is a simple and cleaner shortcut for it.
 The simplest way is by importing the `Form` object from Esmerald.
 
 ```python hl_lines="7"
-{!> ../docs_src/extras/form/form_object.py !}
+{!> ../../../docs_src/extras/form/form_object.py !}
 ```
 
 You can also import via:
@@ -40,7 +40,7 @@ requests for explanatory purposes.
 ### Sending as dictionary
 
 ```python hl_lines="9 20 23"
-{!> ../docs_src/extras/form/as_dict.py !}
+{!> ../../../docs_src/extras/form/as_dict.py !}
 ```
 
 As you can see, we declared the return signature to be `Dict[str, str]` and the `data` payload to
@@ -52,7 +52,7 @@ do.
 What if you want to type as a dataclass and return it in your response?
 
 ```python hl_lines="15 26 29"
-{!> ../docs_src/extras/form/dataclass.py !}
+{!> ../../../docs_src/extras/form/dataclass.py !}
 ```
 
 The way the payload is sent to the API will always be the same no matter what, what is important
@@ -66,7 +66,7 @@ A Pydantic dataclass is the same as a normal python dataclass in the end but wit
 extras from Pydantic but for Esmerald, it is the same.
 
 ```python hl_lines="14 25 28"
-{!> ../docs_src/extras/form/pydantic_dc.py !}
+{!> ../../../docs_src/extras/form/pydantic_dc.py !}
 ```
 
 ### Pydantic model
@@ -75,7 +75,7 @@ What if we want to type and return as a Pydantic model? Well, it behaves exactly
 dataclasses.
 
 ```python hl_lines="13 24 27"
-{!> ../docs_src/extras/form/model.py !}
+{!> ../../../docs_src/extras/form/model.py !}
 ```
 
 ## Notes

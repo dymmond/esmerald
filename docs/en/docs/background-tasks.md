@@ -32,7 +32,7 @@ This is probably the most common use case where you simply need to execute one b
 receiving the request, for example, sending an email notification.
 
 ```python hl_lines="18"
-{!> ../docs_src/background_tasks/via_handlers.py !}
+{!> ../../../docs_src/background_tasks/via_handlers.py !}
 ```
 
 This is of course something quite small as an example but it illustrates how you could use the
@@ -43,7 +43,7 @@ handlers to pass a background task from there.
 Of course there is also the situation where more than one background task needs to happen.
 
 ```python hl_lines="27-32"
-{!> ../docs_src/background_tasks/via_list.py !}
+{!> ../../../docs_src/background_tasks/via_list.py !}
 ```
 
 ## Via response
@@ -59,7 +59,7 @@ In the same way you created a singe background task for the handlers, in the res
 similar way.
 
 ```python hl_lines="22-26"
-{!> ../docs_src/background_tasks/response/via_handlers.py !}
+{!> ../../../docs_src/background_tasks/response/via_handlers.py !}
 ```
 
 ### Using a list
@@ -68,7 +68,7 @@ The same happens when executing more than one background task and when more than
 needed.
 
 ```python hl_lines="30-39"
-{!> ../docs_src/background_tasks/response/via_list.py !}
+{!> ../../../docs_src/background_tasks/response/via_list.py !}
 ```
 
 ### Using the add_task
@@ -77,7 +77,7 @@ Another way of adding multiple tasks is by using the `add_tasks` function provid
 `BackgroundTasks` object.
 
 ```python hl_lines="28-32"
-{!> ../docs_src/background_tasks/response/add_tasks.py !}
+{!> ../../../docs_src/background_tasks/response/add_tasks.py !}
 ```
 
 The `.add_task()` receives as arguments:

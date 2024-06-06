@@ -76,7 +76,7 @@ Let's use:
 Let's start with a simple, single file application just to send an hello world.
 
 ```python title='app/main.py'
-{!> ../docs_src/deployment/app.py !}
+{!> ../../../docs_src/deployment/app.py !}
 ```
 
 ### Nginx
@@ -88,7 +88,7 @@ You find more details about Nginx but exploring [their documentation](https://ww
 Let's start by building our simple nginx application.
 
 ```nginx
-{!> ../docs_src/deployment/nginx.conf !}
+{!> ../../../docs_src/deployment/nginx.conf !}
 ```
 
 We have created a simple `nginx` configuration with some level of security to make sure we protect the application
@@ -104,7 +104,7 @@ on a UNIX-like operating systems.
 Now it is time to create a supervisor configuration.
 
 ```ini
-{!> ../docs_src/deployment/supervisor.conf !}
+{!> ../../../docs_src/deployment/supervisor.conf !}
 ```
 
 It looks complex and big but let's translate what this configuration is actually doing.
@@ -222,11 +222,11 @@ available in production for many reasons.
 To disable the documentation for being generated you can simply use the internal flag `enable_openapi`.
 
 ```python hl_lines="21"
-{!> ../docs_src/deployment/flag.py !}
+{!> ../../../docs_src/deployment/flag.py !}
 ```
 
 Or do it via your [custom settings](../application/settings.md#custom-settings)
 
 ```python
-{!> ../docs_src/deployment/settings.py !}
+{!> ../../../docs_src/deployment/settings.py !}
 ```

@@ -32,7 +32,7 @@ First, we need to create a model that will be storing the users in the system. W
 defaulting to the one model provided by Esmerald out-of-the-box.
 
 ```python title="accounts/models.py"
-{!> ../docs_src/databases/edgy/example/create_model.py !}
+{!> ../../../docs_src/databases/edgy/example/create_model.py !}
 ```
 
 ## Create user API
@@ -44,7 +44,7 @@ This example won't cover corner cases like integrity in case of duplicates and s
 something that you can easily manage.
 
 ```python title="accounts/controllers.py"
-{!> ../docs_src/databases/edgy/example/create_user.py !}
+{!> ../../../docs_src/databases/edgy/example/create_user.py !}
 ```
 
 ## Login API
@@ -56,7 +56,7 @@ For this API to work, we need to guarantee the data being sent is valid, authent
 return the JWT token.
 
 ```python title="accounts/controllers.py"
-{!> ../docs_src/databases/edgy/example/login.py !}
+{!> ../../../docs_src/databases/edgy/example/login.py !}
 ```
 
 Ooof! There is a lot going on here right? Well, yes but this is also intentional. The `login`
@@ -80,7 +80,7 @@ Now it is time to create the api that will be returning the email of the logged 
 The API is pretty much simple and clean.
 
 ```python title="accounts/controllers.py"
-{!> ../docs_src/databases/edgy/example/home.py !}
+{!> ../../../docs_src/databases/edgy/example/home.py !}
 ```
 
 ## Assemble the APIs
@@ -88,7 +88,7 @@ The API is pretty much simple and clean.
 Now it the time where we assemble everything in one place and create our Esmerald application.
 
 ```python title="app.py"
-{!> ../docs_src/databases/edgy/example/assemble.py !}
+{!> ../../../docs_src/databases/edgy/example/assemble.py !}
 ```
 
 Did you notice the import of the `JWTAuthMiddleware` is inside the
@@ -133,7 +133,7 @@ For this will be using `httpx` but you are free to use whatever client you prefe
 3. Access the home `/`.
 
 ```python
-{!> ../docs_src/databases/edgy/example/access.py !}
+{!> ../../../docs_src/databases/edgy/example/access.py !}
 ```
 
 Did you notice the `Authorization` in the `headers`? Well that is because the default `api_key_header`

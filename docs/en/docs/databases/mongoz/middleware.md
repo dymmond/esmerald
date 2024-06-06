@@ -25,13 +25,13 @@ There are different ways of calling this middleware in any Esmerald application.
 ### Via settings
 
 ```python
-{!> ../docs_src/databases/mongoz/jwt/settings.py!}
+{!> ../../../docs_src/databases/mongoz/jwt/settings.py!}
 ```
 
 ### Via application instantiation
 
 ```python
-{!> ../docs_src/databases/mongoz/middleware/example1.py !}
+{!> ../../../docs_src/databases/mongoz/middleware/example1.py !}
 ```
 
 ### Via overriding the JWTAuthMiddleware
@@ -39,13 +39,13 @@ There are different ways of calling this middleware in any Esmerald application.
 === "Via app instance"
 
     ```python
-    {!> ../docs_src/databases/mongoz/middleware/example2.py !}
+    {!> ../../../docs_src/databases/mongoz/middleware/example2.py !}
     ```
 
 === "Via app settings"
 
     ```python
-    {!> ../docs_src/databases/mongoz/middleware/example3.py !}
+    {!> ../../../docs_src/databases/mongoz/middleware/example3.py !}
     ```
 
-{!> ../docs_src/_shared/databases_important_note.md !}
+{!> ../../../docs_src/_shared/databases_important_note.md !}

@@ -31,7 +31,7 @@ You can always override the property `password_hashers` in your
 [custom settings](./application/settings.md#custom-settings) and use your own.
 
 ```python
-{!> ../docs_src/databases/saffier/hashers.py !}
+{!> ../../../docs_src/databases/saffier/hashers.py !}
 ```
 
 ## Current supported hashing

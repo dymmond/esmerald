@@ -135,7 +135,7 @@ When you create an **Esmerald** application, as mentioned before, there is a `we
 that you use to define your application `webhooks`, in a similar way you define the `routes`.
 
 ```python hl_lines="6 21 16 28"
-{!> ../docs_src/routing/webhooks/example.py !}
+{!> ../../../docs_src/routing/webhooks/example.py !}
 ```
 
 Note how the `whpost` and `post` are declared inside the `webhooks` and `routes` respectively,
@@ -149,7 +149,7 @@ Since Esmerald supports class based views, that also means you can also use them
 webhooks.
 
 ```python
-{!> ../docs_src/routing/webhooks/cbv.py !}
+{!> ../../../docs_src/routing/webhooks/cbv.py !}
 ```
 
 ## Important

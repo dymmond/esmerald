@@ -18,7 +18,7 @@ and special one for special circumstances.
 ### GET
 
 ```python hl_lines="4 9 14"
-{!> ../docs_src/routing/handlers/get.py !}
+{!> ../../../docs_src/routing/handlers/get.py !}
 ```
 
 **Default status code**: `200`
@@ -30,7 +30,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### POST
 
 ```python hl_lines="11 17"
-{!> ../docs_src/routing/handlers/post.py !}
+{!> ../../../docs_src/routing/handlers/post.py !}
 ```
 
 **Default status code**: `201`
@@ -42,7 +42,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### PUT
 
 ```python hl_lines="4 9"
-{!> ../docs_src/routing/handlers/put.py !}
+{!> ../../../docs_src/routing/handlers/put.py !}
 ```
 
 **Default status code**: `200`
@@ -54,7 +54,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### PATCH
 
 ```python hl_lines="4 9"
-{!> ../docs_src/routing/handlers/patch.py !}
+{!> ../../../docs_src/routing/handlers/patch.py !}
 ```
 
 **Default status code**: `200`
@@ -66,7 +66,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### DELETE
 
 ```python hl_lines="4 10"
-{!> ../docs_src/routing/handlers/delete.py !}
+{!> ../../../docs_src/routing/handlers/delete.py !}
 ```
 
 **Default status code**: `204`
@@ -78,7 +78,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### Route
 
 ```python hl_lines="4 9 14 19"
-{!> ../docs_src/routing/handlers/route.py !}
+{!> ../../../docs_src/routing/handlers/route.py !}
 ```
 
 **Default status code**: `200`
@@ -91,7 +91,7 @@ writing two different functions with roughly the same logic can be avoided by us
 Example:
 
 ```python hl_lines="4"
-{!> ../docs_src/routing/handlers/route_example1.py !}
+{!> ../../../docs_src/routing/handlers/route_example1.py !}
 ```
 
 There are also three more **unique** and exotic ones:
@@ -103,7 +103,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### HEAD
 
 ```python hl_lines="4 9 14"
-{!> ../docs_src/routing/handlers/head.py !}
+{!> ../../../docs_src/routing/handlers/head.py !}
 ```
 
 **Default status code**: `200`
@@ -115,7 +115,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### OPTIONS
 
 ```python hl_lines="4 9 14"
-{!> ../docs_src/routing/handlers/options.py !}
+{!> ../../../docs_src/routing/handlers/options.py !}
 ```
 
 **Default status code**: `200`
@@ -127,7 +127,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 ### TRACE
 
 ```python hl_lines="4 9 14"
-{!> ../docs_src/routing/handlers/trace.py !}
+{!> ../../../docs_src/routing/handlers/trace.py !}
 ```
 
 **Default status code**: `200`
@@ -155,7 +155,7 @@ needs usually to be constantly opened.
 ### WebSocket
 
 ```python hl_lines="5 12 19 26 33"
-{!> ../docs_src/routing/handlers/websocket.py !}
+{!> ../../../docs_src/routing/handlers/websocket.py !}
 ```
 
 #### Parameters

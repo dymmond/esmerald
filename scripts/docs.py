@@ -1,25 +1,22 @@
+#!/usr/bin/env python
 import os
 import shutil
 import subprocess
-import click
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from multiprocessing import Pool
 from pathlib import Path
 from typing import Any, Dict, List
 
+import click
 import mkdocs.commands.build
 import mkdocs.commands.serve
 import mkdocs.config
 import mkdocs.utils
-
-
 import yaml
-
 
 mkdocs_name = "mkdocs.yml"
 
 missing_translation_snippet = """
-{!../../../docs/missing-translation.md!}
+{! ../../../docs/missing-translation.md!}
 """
 
 docs_path = Path("docs")
@@ -68,10 +65,7 @@ def get_updated_config_content() -> Dict[str, Any]:
         code = list(lang_dict.keys())[0]
         url = lang_dict[code]
         if code not in local_language_names:
-            print(
-                f"Missing language name for: {code}, "
-                "update it in docs/language_names.yml"
-            )
+            print(f"Missing language name for: {code}, " "update it in docs/language_names.yml")
             raise click.Abort()
         use_name = f"{code} - {local_language_names[code]}"
         new_alternate.append({"link": url, "name": use_name})
@@ -95,35 +89,6 @@ def build_site(lang: str = "en") -> None:
     subprocess.run(["mkdocs", "build", "-f", config_file_path], check=True)
 
 
-
-# def build_language(lang: str = "en") -> None:
-#     config_file_path = os.path.abspath(
-#         os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs", lang, "mkdocs.yml")
-#     )
-#     lang_path: Path = Path(f"docs/{lang}")
-#
-#     if not lang_path.is_dir():
-#         click.echo(f"The language translation doesn't seem to exist yet: {lang}")
-#         raise click.Abort()
-#     click.echo(f"Building docs for: {lang}")
-#     build_site_dist_path = build_site_path / lang
-#     if lang == "en":
-#         dist_path = site_path
-#     else:
-#         dist_path = site_path / lang
-#         shutil.rmtree(dist_path, ignore_errors=True)
-#     current_dir = os.getcwd()
-#     os.chdir(lang_path)
-#     shutil.rmtree(build_site_dist_path, ignore_errors=True)
-#     # subprocess.run(["mkdocs", "build", "--site-dir", build_site_dist_path], check=True)
-#
-#     subprocess.run(["mkdocs", "build", "-f", config_file_path, "--site-dir", build_site_dist_path], check=True)
-#
-#     shutil.copytree(build_site_dist_path, dist_path, dirs_exist_ok=True)
-#     os.chdir(current_dir)
-#     click.echo(click.style(f"Successfully built docs for: {lang}", fg="green"))
-
-
 @cli.command()
 @click.option("-l", "--lang")
 def new_lang(lang: str):
@@ -137,8 +102,7 @@ def new_lang(lang: str):
     new_path.mkdir()
     new_config_path: Path = Path(new_path) / mkdocs_name
     new_config_path.write_text(
-        f"INHERIT: ../en/mkdocs.yml\nsite_dir: '../../site/{lang}'\n",
-        encoding="utf-8"
+        f"INHERIT: ../en/mkdocs.yml\nsite_dir: '../../site/{lang}'\n", encoding="utf-8"
     )
     new_config_docs_path: Path = new_path / "docs"
     new_config_docs_path.mkdir()
@@ -174,8 +138,6 @@ def build_all() -> None:
     click.echo(f"Using process pool size: {process_pool_size}")
     for lang in langs:
         build_site(lang)
-    # with Pool(process_pool_size) as p:
-    #     p.map(build_lang, langs)
 
 
 @cli.command()
@@ -206,7 +168,7 @@ def serve() -> None:
 
 
 @cli.command()
-@click.option("-l", "--lang", default="en", help='lang')
+@click.option("-l", "--lang", default="en", help="lang")
 def live(lang: str) -> None:
     """
     Serve with livereload a docs site for a specific language.
@@ -231,15 +193,17 @@ def verify_config() -> None:
     config = get_en_config()
     updated_config = get_updated_config_content()
     if config != updated_config:
-        click.secho(click.style(
-            f"docs/en/mkdocs.yml outdated from docs/language_names.yml, "
-            "update language_names.yml and run "
-            "python ./scripts/docs.py update-languages",
-            fg="red")
+        click.secho(
+            click.style(
+                "docs/en/mkdocs.yml outdated from docs/language_names.yml, "
+                "update language_names.yml and run "
+                "python ./scripts/docs.py update-languages",
+                fg="red",
+            )
         )
         raise click.Abort()
     click.echo("Valid mkdocs.yml ✅")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

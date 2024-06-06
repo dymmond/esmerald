@@ -37,7 +37,7 @@ project.
 The APIs look like this:
 
 ```python
-{!> ../docs_src/openapi/apis.py !}
+{!> ../../../docs_src/openapi/apis.py !}
 ```
 
 The `daos` and `schemas` are simply placed in different files but you get the gist of it.
@@ -174,13 +174,13 @@ async def users(request: Request) -> List[UserOut]:
 **Without instantiating the object.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/basic/basic.py !}
+{!> ../../../docs_src/openapi/basic/basic.py !}
 ```
 
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/basic/basic_inst.py !}
+{!> ../../../docs_src/openapi/basic/basic_inst.py !}
 ```
 
 #### Bearer
@@ -188,13 +188,13 @@ async def users(request: Request) -> List[UserOut]:
 **Without instantiating the object.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/bearer/basic.py !}
+{!> ../../../docs_src/openapi/bearer/basic.py !}
 ```
 
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/bearer/basic_inst.py !}
+{!> ../../../docs_src/openapi/bearer/basic_inst.py !}
 ```
 
 #### Digest
@@ -202,13 +202,13 @@ async def users(request: Request) -> List[UserOut]:
 **Without instantiating the object.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/digest/basic.py !}
+{!> ../../../docs_src/openapi/digest/basic.py !}
 ```
 
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/digest/basic_inst.py !}
+{!> ../../../docs_src/openapi/digest/basic_inst.py !}
 ```
 
 #### APIKeyInHeader
@@ -216,7 +216,7 @@ async def users(request: Request) -> List[UserOut]:
 **Without instantiating the object.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/api_header/basic.py !}
+{!> ../../../docs_src/openapi/api_header/basic.py !}
 ```
 
 This example does not do too much since you are not specifying the `name` of the header to be passed.
@@ -224,7 +224,7 @@ This example does not do too much since you are not specifying the `name` of the
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/api_header/basic_inst.py !}
+{!> ../../../docs_src/openapi/api_header/basic_inst.py !}
 ```
 
 This now **should be the way** of declaring it there the name is `X_TOKEN_API` and this will
@@ -235,7 +235,7 @@ automatically added in your API calls that declare it.
 **Without instantiating the object.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/api_cookie/basic.py !}
+{!> ../../../docs_src/openapi/api_cookie/basic.py !}
 ```
 
 This example does not do too much since you are not specifying the `name` of the cookie to be passed.
@@ -243,7 +243,7 @@ This example does not do too much since you are not specifying the `name` of the
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/api_cookie/basic_inst.py !}
+{!> ../../../docs_src/openapi/api_cookie/basic_inst.py !}
 ```
 
 This now **should be the way** of declaring it there the name is `X_COOKIE_API` and this will
@@ -254,7 +254,7 @@ automatically added in your API calls that declare it.
 **Without instantiating the object.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/api_query/basic.py !}
+{!> ../../../docs_src/openapi/api_query/basic.py !}
 ```
 
 This example does not do too much since you are not specifying the `name` of the query parameter to be passed.
@@ -262,7 +262,7 @@ This example does not do too much since you are not specifying the `name` of the
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/api_query/basic_inst.py !}
+{!> ../../../docs_src/openapi/api_query/basic_inst.py !}
 ```
 
 This now **should be the way** of declaring it there the name is `X_QUERY_API` and this will
@@ -327,7 +327,7 @@ are needed.
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/oauth2/basic_inst.py !}
+{!> ../../../docs_src/openapi/oauth2/basic_inst.py !}
 ```
 
 #### OpenIdConnect
@@ -340,7 +340,7 @@ This MUST be in the form of a URL. The OpenID Connect standard requires the use 
 **As an instance in case you need to pass extra parameters.**
 
 ```python hl_lines="5 20"
-{!> ../docs_src/openapi/openid_connect/basic_inst.py !}
+{!> ../../../docs_src/openapi/openid_connect/basic_inst.py !}
 ```
 
 ### Combine them all
@@ -348,7 +348,7 @@ This MUST be in the form of a URL. The OpenID Connect standard requires the use 
 Is it possible to have more than one type in the APIs? **Of course!**.
 
 ```python hl_lines="24-31"
-{!> ../docs_src/openapi/all.py !}
+{!> ../../../docs_src/openapi/all.py !}
 ```
 
 ## Check the documentation
@@ -364,7 +364,7 @@ have.
 Let us see how it would look like if we have `APIKeyInHeader`, `APIKeyInCookie` and `APIKeyInQuery`.
 
 ```python
-{!> ../docs_src/openapi/simple.py !}
+{!> ../../../docs_src/openapi/simple.py !}
 ```
 
 You should see something like this when `Authorize` is called.

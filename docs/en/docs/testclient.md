@@ -18,7 +18,7 @@ Check the [API Reference for the test client](./references/test-client.md) to un
 ## The test client
 
 ```python
-{!> ../docs_src/testclient/example1.py !}
+{!> ../../../docs_src/testclient/example1.py !}
 ```
 
 The test client is very similar to its original as it extends it and adds extra unique and specifics for `Esmerald`
@@ -27,13 +27,13 @@ and therefore the same examples and use cases will work.
 You can use any of the `httpx` standard API like authentication, session cookies and file uploads.
 
 ```python
-{!> ../docs_src/testclient/example2.py !}
+{!> ../../../docs_src/testclient/example2.py !}
 ```
 
 And like Lilya, the same example to send files with `EsmeraldTestClient`.
 
 ```python
-{!> ../docs_src/testclient/example3.py !}
+{!> ../../../docs_src/testclient/example3.py !}
 ```
 
 `httpx` is a great library created by the same author of `Django Rest Framework`.
@@ -57,7 +57,7 @@ The framework also brings a ready to use functionality to be used as context man
 This function is prepared to be used as a context manager for your tests and ready to use at any given time.
 
 ```python
-{!> ../docs_src/testclient/example4.py !}
+{!> ../../../docs_src/testclient/example4.py !}
 ```
 
 The tests work with both `sync` and `async` functions.

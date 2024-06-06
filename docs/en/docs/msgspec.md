@@ -93,7 +93,7 @@ In a nutshell, it is exactly the same as you would normally do if you were creat
 base model or a datastructure to be used within your application.
 
 ```python
-{!> ../docs_src/msgspec/nutshell.py !}
+{!> ../../../docs_src/msgspec/nutshell.py !}
 ```
 
 Simple, right? Yes and there is a lot going here.
@@ -119,7 +119,7 @@ which means you can implement as many validations as you want as you would norma
 using `msgspec`.
 
 ```python
-{!> ../docs_src/msgspec/validations.py !}
+{!> ../../../docs_src/msgspec/validations.py !}
 ```
 
 And just like that, you are now using `msgspec` and all of its power within **Esmerald**.
@@ -130,7 +130,7 @@ As mentioned before, importing from `esmerald.datastructures.msgspec.Struct` sho
 for Esmerald to use it without any issues but you can still use the normal `msgspec.Struct` as well.
 
 ```python
-{!> ../docs_src/msgspec/no_import.py !}
+{!> ../../../docs_src/msgspec/no_import.py !}
 ```
 
 Now this is possible and it will work as normal but **it comes with limitations**. When accessing
@@ -146,7 +146,7 @@ Well, this is now what you can do already with `msgspec` and not directly relate
 for example purposes, let us see how it would look like it having a nested `Struct`.
 
 ```python
-{!> ../docs_src/msgspec/nested.py !}
+{!> ../../../docs_src/msgspec/nested.py !}
 ```
 
 One possible [payload](./extras/request-data.md#the-payload-field) would be:
@@ -181,7 +181,7 @@ what people want so Esmerald offers that possibility **but not the other way aro
 Let us see how it would look like having both working side by side.
 
 ```python hl_lines="4 8 14 19"
-{!> ../docs_src/msgspec/mixed.py !}
+{!> ../../../docs_src/msgspec/mixed.py !}
 ```
 
 This works perfectly well and the payload is still like this:
@@ -219,7 +219,7 @@ Well, as mentioned before, in the same way you would normally do. You can also u
 Let us see the previous example again.
 
 ```python
-{!> ../docs_src/msgspec/nutshell.py !}
+{!> ../../../docs_src/msgspec/nutshell.py !}
 ```
 
 This will generate a simple OpenAPI documentation using the `Struct`.
@@ -233,19 +233,19 @@ What if you want to create `OpenAPIResponse` objects? Well, there are also three
 ### As a single object
 
 ```python hl_lines="27 28"
-{!> ../docs_src/msgspec/openapi/single.py !}
+{!> ../../../docs_src/msgspec/openapi/single.py !}
 ```
 
 ### As a list
 
 ```python hl_lines="21"
-{!> ../docs_src/msgspec/openapi/list.py !}
+{!> ../../../docs_src/msgspec/openapi/list.py !}
 ```
 
 ### Mixing with Pydantic
 
 ```python hl_lines="27"
-{!> ../docs_src/msgspec/openapi/mixing.py !}
+{!> ../../../docs_src/msgspec/openapi/mixing.py !}
 ```
 
 ## Notes

@@ -20,7 +20,7 @@ $ pip install esmerald[jwt]
 To use the JWTConfig with a middleware.
 
 ```python hl_lines="5 8-10 12"
-{!> ../docs_src/configurations/jwt/example1.py!}
+{!> ../../../docs_src/configurations/jwt/example1.py!}
 ```
 
 !!! info
@@ -36,7 +36,7 @@ All the parameters and defaults are available in the [JWTConfig Reference](../re
 The JWTConfig can be done directly via [application instantiation](#jwtconfig-and-application) but also via settings.
 
 ```python
-{!> ../docs_src/configurations/jwt/settings.py!}
+{!> ../../../docs_src/configurations/jwt/settings.py!}
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
@@ -119,7 +119,7 @@ or `refresh` or whatever you need to have that can be used in and for your claim
 Something like this:
 
 ```python
-{!> ../docs_src/configurations/jwt/claims/token.py!}
+{!> ../../../docs_src/configurations/jwt/claims/token.py!}
 ```
 
 This will be particularly useful in the next steps as we will be using the `token_type` to distinguish
@@ -134,7 +134,7 @@ This middleware will serve **only for access** the APIs **and not for refreshing
     Feel free to build your own, this is for explanation purposes.
 
 ```python
-{!> ../docs_src/configurations/jwt/claims/middleware.py!}
+{!> ../../../docs_src/configurations/jwt/claims/middleware.py!}
 ```
 
 There is a lot here happening but basically what are we doing?
@@ -155,7 +155,7 @@ This is where we will place the logic that handles the authentication and refres
     to make it simpler to explain and query.
 
 ```python
-{!> ../docs_src/configurations/jwt/claims/backends.py!}
+{!> ../../../docs_src/configurations/jwt/claims/backends.py!}
 ```
 
 Quite a lot of code, right? Well yes but it is mostly logic used for authenticate and refresh the existing
@@ -192,7 +192,7 @@ In the end, something like this:
 
 
 ```python
-{!> ../docs_src/configurations/jwt/claims/controllers.py!}
+{!> ../../../docs_src/configurations/jwt/claims/controllers.py!}
 ```
 
 As you can see, we now assembled everything. The `/auth/users` requires authentication to have

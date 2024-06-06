@@ -17,7 +17,7 @@ When sending a payload to the backend to be validated, the handler needs to have
 it will not be possible to process the information and/or will not be recognised.
 
 ```python hl_lines="12"
-{!> ../docs_src/extras/request_data/data_field.py !}
+{!> ../../../docs_src/extras/request_data/data_field.py !}
 ```
 
 Fundamentally the `data` field is what holds the information about the sent payload data into the server.
@@ -31,7 +31,7 @@ Fundamentally is an alternative to `data` but does exactly the same. If you are 
 the concept of `payload` then this is for you.
 
 ```python hl_lines="12"
-{!> ../docs_src/extras/request_payload/data_field.py !}
+{!> ../../../docs_src/extras/request_payload/data_field.py !}
 ```
 
 ## Nested models
@@ -41,13 +41,13 @@ You can also do nested models for the `data` or `payload` to be processed.
 === "data"
 
     ```python hl_lines="6 16 20"
-    {!> ../docs_src/extras/request_data/nested_models.py !}
+    {!> ../../../docs_src/extras/request_data/nested_models.py !}
     ```
 
 === "payload"
 
     ```python hl_lines="6 16 20"
-    {!> ../docs_src/extras/request_payload/nested_models.py !}
+    {!> ../../../docs_src/extras/request_payload/nested_models.py !}
     ```
 
 
@@ -77,13 +77,13 @@ That can be achieved by using the typing `Optional` to make it not mandatory.
 === "data"
 
     ```python hl_lines="9-10 16"
-    {!> ../docs_src/extras/request_data/not_mandatory.py !}
+    {!> ../../../docs_src/extras/request_data/not_mandatory.py !}
     ```
 
 === "payload"
 
     ```python hl_lines="9-10 16"
-    {!> ../docs_src/extras/request_payload/not_mandatory.py !}
+    {!> ../../../docs_src/extras/request_payload/not_mandatory.py !}
     ```
 
 The `address` is not mandatory to be send in the payload and therefore it can be done like this:
@@ -117,13 +117,13 @@ Since Esmerald uses pydantic, you can take advantage of it.
 === "data"
 
     ```python hl_lines="9 11-12"
-    {!> ../docs_src/extras/request_data/validation.py !}
+    {!> ../../../docs_src/extras/request_data/validation.py !}
     ```
 
 === "payload"
 
     ```python hl_lines="9 11-12"
-    {!> ../docs_src/extras/request_payload/validation.py !}
+    {!> ../../../docs_src/extras/request_payload/validation.py !}
     ```
 
 Since pydantic runs the validations internally, you will have the errors thrown if something is missing.
@@ -151,13 +151,13 @@ own.
 === "data"
 
 ```python
-{!> ../docs_src/extras/request_data/custom_validation.py !}
+{!> ../../../docs_src/extras/request_data/custom_validation.py !}
 ```
 
 === "payload"
 
     ```python
-    {!> ../docs_src/extras/request_payload/custom_validation.py !}
+    {!> ../../../docs_src/extras/request_payload/custom_validation.py !}
     ```
 
 ## Summary

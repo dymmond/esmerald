@@ -15,37 +15,37 @@ compared to other giants like Django.
 === "Simple Routing"
 
     ```python hl_lines="1 6 9 24"
-    {!> ../docs_src/wsgi/simple_routing.py!}
+    {!> ../../../docs_src/wsgi/simple_routing.py!}
     ```
 
 === "Nested Routing"
 
     ```python hl_lines="1 6 9 26"
-    {!> ../docs_src/wsgi/nested_routing.py!}
+    {!> ../../../docs_src/wsgi/nested_routing.py!}
     ```
 
 === "Complex Routing"
 
     ```python hl_lines="1 6-7 10 16 37 51"
-    {!> ../docs_src/wsgi/complex_routing.py!}
+    {!> ../../../docs_src/wsgi/complex_routing.py!}
     ```
 
 === "Multiple Flask"
 
     ```python hl_lines="1 6-7 10 22 33-34"
-    {!> ../docs_src/wsgi/multiple.py!}
+    {!> ../../../docs_src/wsgi/multiple.py!}
     ```
 
 === "Esmerald"
 
     ```python hl_lines="1 6-7 10 22 31-32 36"
-    {!> ../docs_src/wsgi/esmerald.py!}
+    {!> ../../../docs_src/wsgi/esmerald.py!}
     ```
 
 === "ChildEsmerald"
 
     ```python hl_lines="1 6-7 10 22 31-32 36"
-    {!> ../docs_src/wsgi/childesmerald.py!}
+    {!> ../../../docs_src/wsgi/childesmerald.py!}
     ```
 
 You already get the idea, the integrations are endeless!

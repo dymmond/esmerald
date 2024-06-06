@@ -69,7 +69,7 @@ the `enable_scheduler = True`, the scheduler will not start.
 The default behaviour is `enable_scheduler = False`.
 
 ```python hl_lines="10"
-{!> ../docs_src/scheduler/scheduler.py !}
+{!> ../../../docs_src/scheduler/scheduler.py !}
 ```
 
 ### Enabling the scheduler via settings
@@ -78,7 +78,7 @@ As mentioned in this documentation, Esmerald is unique with [settings](../applic
 the `enable_scheduler` can also be set to `True`/`False` there.
 
 ```python hl_lines="7"
-{!> ../docs_src/scheduler/scheduler_settings.py !}
+{!> ../../../docs_src/scheduler/scheduler_settings.py !}
 ```
 
 ```shell
@@ -106,7 +106,7 @@ Once the tasks are created, you need to pass that same information to your Esmer
     There are more details about [how to create tasks](./handler.md) in the next section.
 
 ```python title="accounts/tasks.py"
-{!> ../docs_src/scheduler/tasks/example1.py !}
+{!> ../../../docs_src/scheduler/tasks/example1.py !}
 ```
 
 There are two tasks created, the `collect_market_data` and `send_newsletter` which are placed inside a
@@ -116,13 +116,13 @@ Now it is time to tell the application to activate the scheduler and run the tas
 into the `scheduler` handler.
 
 ```python hl_lines="5-9"
-{!> ../docs_src/scheduler/tasks/app_scheduler.py !}
+{!> ../../../docs_src/scheduler/tasks/app_scheduler.py !}
 ```
 
 **Or from the settings file**:
 
 ```python hl_lines="7 10-14"
-{!> ../docs_src/scheduler/tasks/from_settings.py !}
+{!> ../../../docs_src/scheduler/tasks/from_settings.py !}
 ```
 
 Start the server with the newly created settings.

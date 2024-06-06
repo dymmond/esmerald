@@ -35,7 +35,7 @@ and hooks them into your Esmerald application and executes the [extend](#extend)
 starting the system.
 
 ```python hl_lines="27 29"
-{!> ../docs_src/pluggables/pluggable.py !}
+{!> ../../../docs_src/pluggables/pluggable.py !}
 ```
 
 It is this simple but is it the only way to add a pluggable into the system? **Short answser is no**.
@@ -59,7 +59,7 @@ Esmerald looks for when looking up for pluggables for your application and execu
 Think of the `extend` as the `init_app` of Flask but enforced as a pattern for Esmerald.
 
 ```python hl_lines="7 13"
-{!> ../docs_src/pluggables/extension.py !}
+{!> ../../../docs_src/pluggables/extension.py !}
 ```
 
 ### extend()
@@ -90,7 +90,7 @@ The `app` parameter is automatically injected by Esmerald and does not need to b
 parameter if needed
 
 ```python hl_lines="27 29"
-{!> ../docs_src/pluggables/pluggable.py !}
+{!> ../../../docs_src/pluggables/pluggable.py !}
 ```
 
 You can access all the pluggables of your application via `app.pluggables` at any given time.
@@ -106,7 +106,7 @@ simply just use the [Extension](#extension) class or even your own since you **a
 of the extension.
 
 ```python hl_lines="25 42-43"
-{!> ../docs_src/pluggables/manual.py !}
+{!> ../../../docs_src/pluggables/manual.py !}
 ```
 
 ### Standalone object
@@ -120,7 +120,7 @@ Short answer, yes, but this comes with limitations:
 * You **will always need** to start it manually.
 
 ```python hl_lines="9 25 42-43"
-{!> ../docs_src/pluggables/standalone.py !}
+{!> ../../../docs_src/pluggables/standalone.py !}
 ```
 
 ## Important notes
@@ -145,7 +145,7 @@ Let us see how it would look like if you had a pluggable where the goal was to a
 into the current applications being plugged.
 
 ```python hl_lines="33"
-{!> ../docs_src/pluggables/child_esmerald.py !}
+{!> ../../../docs_src/pluggables/child_esmerald.py !}
 ```
 
 Crazy dynamic, isn't it? So clean and so simple that you can do whatever you desire with Esmerald.
@@ -156,7 +156,7 @@ Like almost everything in Esmerald, you can also add the [Pluggables](#pluggable
 [settings](./application/settings.md) instead of adding when you instantiate the application.
 
 ```python hl_lines="29-31"
-{!> ../docs_src/pluggables/settings.py !}
+{!> ../../../docs_src/pluggables/settings.py !}
 ```
 
 And simply start the application.
@@ -174,5 +174,5 @@ INFO:     Application startup complete.
 If you prefer, you can also use the [settings_module](./application/settings.md#the-settings_module).
 
 ```python hl_lines="34"
-{!> ../docs_src/pluggables/settings_module.py !}
+{!> ../../../docs_src/pluggables/settings_module.py !}
 ```

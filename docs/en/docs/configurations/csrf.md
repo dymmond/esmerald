@@ -12,13 +12,13 @@ When a CSRFConfig object is passed to an application instance, it will automatic
 To use the CSRFConfig in an application instance.
 
 ```python hl_lines="4-5 8"
-{!> ../docs_src/configurations/csrf/example1.py!}
+{!> ../../../docs_src/configurations/csrf/example1.py!}
 ```
 
 Another example
 
 ```python hl_lines="4 7"
-{!> ../docs_src/configurations/csrf/example2.py!}
+{!> ../../../docs_src/configurations/csrf/example2.py!}
 ```
 
 ## Parameters
@@ -30,7 +30,7 @@ All the parameters and defaults are available in the [CSRFConfig Reference](../r
 The CSRFConfig can be done directly via [application instantiation](#csrfconfig-and-application) but also via settings.
 
 ```python
-{!> ../docs_src/configurations/csrf/settings.py!}
+{!> ../../../docs_src/configurations/csrf/settings.py!}
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.

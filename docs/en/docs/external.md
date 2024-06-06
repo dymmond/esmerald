@@ -13,7 +13,7 @@ working solutions built by great minds.
 Great framework with great documentation and great examples how to use it.
 
 ```python
-{!> ../docs_src/external_packages/ariadne.py !}
+{!> ../../../docs_src/external_packages/ariadne.py !}
 ```
 
 The documentation can be found <a href="https://ariadnegraphql.org/docs/intro" target="_blank">here</a>.

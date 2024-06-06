@@ -12,13 +12,13 @@ When a SessionConfig object is passed to an application instance, it will automa
 To use the SessionConfig in an application instance.
 
 ```python hl_lines="4 7"
-{!> ../docs_src/configurations/session/example1.py!}
+{!> ../../../docs_src/configurations/session/example1.py!}
 ```
 
 Another example
 
 ```python hl_lines="4-5 8"
-{!> ../docs_src/configurations/session/example2.py!}
+{!> ../../../docs_src/configurations/session/example2.py!}
 ```
 
 ## Parameters
@@ -30,7 +30,7 @@ All the parameters and defaults are available in the [SessionConfig Reference](.
 The SessionConfig can be done directly via [application instantiation](#sessionconfig-and-application) but also via settings.
 
 ```python
-{!> ../docs_src/configurations/session/settings.py!}
+{!> ../../../docs_src/configurations/session/settings.py!}
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.

@@ -8,7 +8,7 @@ An Esmerald application is composed by levels and those levels can be [Gateway](
 There are some levels in the application, let's use an example.
 
 ```python
-{!> ../docs_src/application/app/levels.py !}
+{!> ../../../docs_src/application/app/levels.py !}
 ```
 
 **Levels**:
@@ -24,7 +24,7 @@ You can create as many levels as you desire. From nested includes to
 ## With a ChildEsmerald
 
 ```python hl_lines="50 59"
-{!> ../docs_src/application/app/child_esmerald_level.py !}
+{!> ../../../docs_src/application/app/child_esmerald_level.py !}
 ```
 
 **Levels**:
@@ -60,7 +60,7 @@ In other words, you **don't need** to create/repeat the same permissions and mid
 every instance. They can be applied **globally** from the top main `Esmerald` object.
 
 ```python hl_lines="99-101 108 115 119-120"
-{!> ../docs_src/application/app/permissions_and_middlewares.py !}
+{!> ../../../docs_src/application/app/permissions_and_middlewares.py !}
 ```
 
 ### Notes

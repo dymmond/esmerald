@@ -8,19 +8,19 @@ of its functionality.
 === "In a nutshell"
 
     ```python
-    {!> ../docs_src/application/app/nutshell.py !}
+    {!> ../../../docs_src/application/app/nutshell.py !}
     ```
 
 === "Another way"
 
     ```python
-    {!> ../docs_src/application/app/another_way.py!}
+    {!> ../../../docs_src/application/app/another_way.py!}
     ```
 
 === "With Include"
 
     ```python
-    {!> ../docs_src/application/app/with_include.py!}
+    {!> ../../../docs_src/application/app/with_include.py!}
     ```
 
 ### Quick note
@@ -132,19 +132,19 @@ To access the application settings there are different ways:
 === "Within the application request"
 
     ```python hl_lines="6"
-    {!> ../docs_src/application/settings/within_app_request.py!}
+    {!> ../../../docs_src/application/settings/within_app_request.py!}
     ```
 
 === "From the global settings"
 
     ```python hl_lines="1 6"
-    {!> ../docs_src/application/settings/global_settings.py!}
+    {!> ../../../docs_src/application/settings/global_settings.py!}
     ```
 
 === "From the conf settings"
 
     ```python hl_lines="2 7"
-    {!> ../docs_src/application/settings/conf_settings.py!}
+    {!> ../../../docs_src/application/settings/conf_settings.py!}
     ```
 
 ### State and application instance
@@ -154,7 +154,7 @@ You can store arbitrary extra state on the application instance using the State 
 Example:
 
 ```python hl_lines="6"
-{!> ../docs_src/application/others/app_state.py!}
+{!> ../../../docs_src/application/others/app_state.py!}
 ```
 
 ## Accessing the application instance
@@ -164,7 +164,7 @@ The application instance can be access via `request` when it is available.
 Example:
 
 ```python hl_lines="6"
-{!> ../docs_src/application/others/access_app_instance.py!}
+{!> ../../../docs_src/application/others/access_app_instance.py!}
 ```
 
 ## Accessing the state from the application instance
@@ -174,5 +174,5 @@ The state can be access via `request` when it is available.
 Example:
 
 ```python hl_lines="7 11"
-{!> ../docs_src/application/others/access_state_from_app.py!}
+{!> ../../../docs_src/application/others/access_state_from_app.py!}
 ```

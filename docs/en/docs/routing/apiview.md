@@ -7,7 +7,7 @@ the life of those who like OOP.
 ## APIView class
 
 ```python
-{!> ../docs_src/routing/handlers/apiviews/apiview.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/apiview.py !}
 ```
 
 The APIView uses the Esmerald [handlers](./handlers.md) to create the "view" itself but also acts as the `parent`
@@ -27,11 +27,11 @@ need to declare handler by handler. Since everything is inside an [APIView](#api
 objects the handlers will be automatically routed by **Esmerald** with the joint [path](#apiview-path) given to class.
 
 ```python title='controllers.py'
-{!> ../docs_src/routing/handlers/apiviews/apiview.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/apiview.py !}
 ```
 
 ```python title='app.py' hl_lines="3 5"
-{!> ../docs_src/routing/handlers/apiviews/routing.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/routing.py !}
 ```
 
 ## APIView path
@@ -49,7 +49,7 @@ APIView is no different from the handlers, really. The same rules for the routin
 [path param](./routes.md#path-parameters).
 
 ```python title='app.py' hl_lines="5 15"
-{!> ../docs_src/routing/handlers/apiviews/path_params.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/path_params.py !}
 ```
 
 ## Websockets and handlers
@@ -58,7 +58,7 @@ The APIView also allows the mix of both [HTTP handlers](./handlers.md#http-handl
 [WebSocket handlers](./handlers.md#websocket-handler)
 
 ```python title='app.py' hl_lines="15 19 26"
-{!> ../docs_src/routing/handlers/apiviews/mix.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/mix.py !}
 ```
 
 ## Constraints
@@ -107,7 +107,7 @@ will be raised.
 Let us see what this means.
 
 ```python hl_lines="13-14"
-{!> ../docs_src/routing/generics/important.py !}
+{!> ../../../docs_src/routing/generics/important.py !}
 ```
 
 As you can see, the handler `post()` does not match the function name `get`. **It should always match**.
@@ -132,7 +132,7 @@ from esmerald import SimpleAPIView
 #### Example
 
 ```python
-{!> ../docs_src/routing/generics/simple_api_view.py !}
+{!> ../../../docs_src/routing/generics/simple_api_view.py !}
 ```
 
 ### ReadAPIView
@@ -148,7 +148,7 @@ from esmerald.routing.apis.generics import ReadAPIView
 #### Example
 
 ```python
-{!> ../docs_src/routing/generics/read_api_view.py !}
+{!> ../../../docs_src/routing/generics/read_api_view.py !}
 ```
 
 ### CreateAPIView
@@ -164,7 +164,7 @@ from esmerald.routing.apis.generics import CreateAPIView
 #### Example
 
 ```python
-{!> ../docs_src/routing/generics/create_api_view.py !}
+{!> ../../../docs_src/routing/generics/create_api_view.py !}
 ```
 
 ### DeleteAPIView
@@ -180,7 +180,7 @@ from esmerald.routing.apis.generics import DeleteAPIView
 #### Example
 
 ```python
-{!> ../docs_src/routing/generics/delete_api_view.py !}
+{!> ../../../docs_src/routing/generics/delete_api_view.py !}
 ```
 
 ### Combining all in one
@@ -188,7 +188,7 @@ from esmerald.routing.apis.generics import DeleteAPIView
 What if you want to combine them all? Of course you also can.
 
 ```python
-{!> ../docs_src/routing/generics/combine.py !}
+{!> ../../../docs_src/routing/generics/combine.py !}
 ```
 
 **Combining them all is the same as using the [SimpleAPIView](#simpleapiview)**.
@@ -211,7 +211,7 @@ from esmerald.routing.apis.generics import ListAPIView
 #### Example
 
 ```python hl_lines="9 13 17 21"
-{!> ../docs_src/routing/generics/list_api.py !}
+{!> ../../../docs_src/routing/generics/list_api.py !}
 ```
 
 This is another generic that follows the same rules of the [SimpleAPIView](#simpleapiview), which
@@ -219,7 +219,7 @@ means, if you want to add `extra` functions such as a `read_item()` or anything 
 follow the [extra allowed](#extra_allowed) principle.
 
 ```python hl_lines="8 23"
-{!> ../docs_src/routing/generics/list_api_extra.py !}
+{!> ../../../docs_src/routing/generics/list_api_extra.py !}
 ```
 
 ### extra_allowed
@@ -233,7 +233,7 @@ This means that if you want to add a `read_item()` function to any of the
 generics you also do it easily.
 
 ```python hl_lines="13 28"
-{!> ../docs_src/routing/generics/allowed.py !}
+{!> ../../../docs_src/routing/generics/allowed.py !}
 ```
 
 As you can see, to make it happen you would need to declare the function name inside the

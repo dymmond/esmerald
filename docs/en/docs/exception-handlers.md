@@ -15,7 +15,7 @@ being raised on different levels but **different exception handlers** handling t
 **the last one takes the priority**.
 
 ```python hl_lines="15 31 59-61 66-68"
-{!> ../docs_src/exception_handlers/precedent.py !}
+{!> ../../../docs_src/exception_handlers/precedent.py !}
 ```
 
 ### What is happening
@@ -27,7 +27,7 @@ every `ValidationErrorException` being raised in the application it will be hand
 The Gateway having its own exception handler to manage the `ValidationErrorException` takes precedent when the
 endpoint is called and the exception is raised.
 
-{! ../docs_src/_shared/exceptions.md !}
+{! ../../../docs_src/_shared/exceptions.md !}
 
 The same is applied also to [dependencies](./dependencies.md).
 
@@ -41,7 +41,7 @@ an handler.
 For example.
 
 ```python
-{!> ../docs_src/exception_handlers/example.py !}
+{!> ../../../docs_src/exception_handlers/example.py !}
 ```
 
 This example is a not usual at all but it serves to show where an exception is raised.
@@ -58,19 +58,19 @@ from esmerald.exception_handlers import value_error_handler
 How it would look like the previous example using this custom exception handler?
 
 ```python hl_lines="21-23"
-{!> ../docs_src/exception_handlers/example_use.py !}
+{!> ../../../docs_src/exception_handlers/example_use.py !}
 ```
 
 Or if you prefer to place it on a Gateway level.
 
 ```python hl_lines="22-25"
-{!> ../docs_src/exception_handlers/example_use_gateway.py !}
+{!> ../../../docs_src/exception_handlers/example_use_gateway.py !}
 ```
 
 Or even specific only to the handler itself.
 
 ```python hl_lines="14-16"
-{!> ../docs_src/exception_handlers/example_use_handler.py !}
+{!> ../../../docs_src/exception_handlers/example_use_handler.py !}
 ```
 
 As you can see, you can use this exception handler directly or as usual, you can create one of

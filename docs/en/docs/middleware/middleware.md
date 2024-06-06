@@ -18,7 +18,7 @@ application.
     Lilya has some great documentation <a href="https://www.lilya.dev/middleware/" target='_blank'>here</a>.
 
 ```python
-{!> ../docs_src/middleware/starlette_middleware.py !}
+{!> ../../../docs_src/middleware/starlette_middleware.py !}
 ```
 
 The example above is for illustration purposes only as those middlewares are already in place based on specific
@@ -35,7 +35,7 @@ which forces a certain structure to happen and since **Esmerald** likes configur
 using a protocol helps enforcing that and allows a better design.
 
 ```python
-{!> ../docs_src/middleware/protocols.py !}
+{!> ../../../docs_src/middleware/protocols.py !}
 ```
 
 ### MiddlewareProtocol
@@ -59,7 +59,7 @@ Enforcing this protocol also aligns with writing
 ### Quick sample
 
 ```python
-{!> ../docs_src/middleware/sample.py !}
+{!> ../../../docs_src/middleware/sample.py !}
 ```
 
 ## MiddlewareProtocol and the application
@@ -72,13 +72,13 @@ To add middlewares to the application is very simple.
 === "Application level"
 
     ```python
-    {!> ../docs_src/middleware/adding_middleware.py !}
+    {!> ../../../docs_src/middleware/adding_middleware.py !}
     ```
 
 === "Any other level"
 
     ```python
-    {!> ../docs_src/middleware/any_other_level.py !}
+    {!> ../../../docs_src/middleware/any_other_level.py !}
     ```
 
 ### Quick note
@@ -112,7 +112,7 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
 ### Example of a JWT middleware class
 
 ```python title='/src/middleware/jwt.py'
-{!> ../docs_src/middleware/auth_middleware_example.py !}
+{!> ../../../docs_src/middleware/auth_middleware_example.py !}
 ```
 
 1. Import the `BaseAuthMiddleware` and `AuthResult` from `esmerald.middleware.authentication`.
@@ -169,7 +169,7 @@ As mentioned in the [settings](../application/settings.md) document, the middlew
 to use to start an Esmerald application.
 
 ```python title='src/configs/live.py'
-{!> ../docs_src/middleware/settings.py !}
+{!> ../../../docs_src/middleware/settings.py !}
 ```
 
 **Start the application with the new settings**
@@ -219,7 +219,7 @@ The default parameters used by the CSRFMiddleware implementation are restrictive
 ways of using this middleware depending of the taste.
 
 ```python
-{!> ../docs_src/middleware/available/csrf.py !}
+{!> ../../../docs_src/middleware/available/csrf.py !}
 ```
 
 ### CORSMiddleware
@@ -228,7 +228,7 @@ The default parameters used by the CORSMiddleware implementation are restrictive
 ways of using this middleware depending of the taste.
 
 ```python
-{!> ../docs_src/middleware/available/cors.py !}
+{!> ../../../docs_src/middleware/available/cors.py !}
 ```
 
 ### RequestSettingsMiddleware
@@ -246,7 +246,7 @@ the global Esmerald settings and the `app_settings` which corresponds to the
 passed to the Esmerald or ChildEsmerald instance.
 
 ```python hl_lines="6 8"
-{!> ../docs_src/middleware/available/request_settings_middleware.py !}
+{!> ../../../docs_src/middleware/available/request_settings_middleware.py !}
 ```
 
 ### SessionMiddleware
@@ -254,7 +254,7 @@ passed to the Esmerald or ChildEsmerald instance.
 Adds signed cookie-based HTTP sessions. Session information is readable but not modifiable.
 
 ```python
-{!> ../docs_src/middleware/available/sessions.py !}
+{!> ../../../docs_src/middleware/available/sessions.py !}
 ```
 
 ### HTTPSRedirectMiddleware
@@ -263,7 +263,7 @@ Like Lilya, enforces that all incoming requests must either be https or wss. Any
 the secure schemes instead.
 
 ```python
-{!> ../docs_src/middleware/available/https.py !}
+{!> ../../../docs_src/middleware/available/https.py !}
 ```
 
 ### TrustedHostMiddleware
@@ -271,7 +271,7 @@ the secure schemes instead.
 Enforces all requests to have a correct set `Host` header in order to protect against heost header attacks.
 
 ```python
-{!> ../docs_src/middleware/available/trusted_hosts.py !}
+{!> ../../../docs_src/middleware/available/trusted_hosts.py !}
 ```
 
 ### GZipMiddleware
@@ -279,7 +279,7 @@ Enforces all requests to have a correct set `Host` header in order to protect ag
 Like Lilya, it handles GZip responses for any request that includes "gzip" in the Accept-Encoding header.
 
 ```python
-{!> ../docs_src/middleware/available/gzip.py !}
+{!> ../../../docs_src/middleware/available/gzip.py !}
 ```
 
 ### WSGIMiddleware
@@ -288,7 +288,7 @@ A middleware class in charge of converting a WSGI application into an ASGI one. 
 in the [WSGI Frameworks](../wsgi.md) section.
 
 ```python
-{!> ../docs_src/middleware/available/wsgi.py !}
+{!> ../../../docs_src/middleware/available/wsgi.py !}
 ```
 
 ### Other middlewares

@@ -28,7 +28,7 @@ All the parameters and defaults are available in the [Gateway Reference](../refe
 === "In a nutshell"
 
     ```python hl_lines="9"
-    {!> ../docs_src/routing/routes/gateway_nutshell.py!}
+    {!> ../../../docs_src/routing/routes/gateway_nutshell.py!}
     ```
 
 ## WebSocketGateway
@@ -48,7 +48,7 @@ All the parameters and defaults are available in the [WebSocketGateway Reference
 === "In a nutshell"
 
     ```python hl_lines="15"
-    {!> ../docs_src/routing/routes/websocket_nutshell.py!}
+    {!> ../../../docs_src/routing/routes/websocket_nutshell.py!}
     ```
 
 ## Include
@@ -83,29 +83,29 @@ All the parameters and defaults are available in the [Include Reference](../refe
 === "Importing using namespace"
 
     ```python title='myapp/urls.py' hl_lines="3"
-    {!> ../docs_src/routing/routes/include/with_namespace.py!}
+    {!> ../../../docs_src/routing/routes/include/with_namespace.py!}
     ```
 
 === "Importing using routes list"
 
     ```python title='src/myapp/urls.py' hl_lines="5"
-    {!> ../docs_src/routing/routes/include/routes_list.py!}
+    {!> ../../../docs_src/routing/routes/include/routes_list.py!}
     ```
 
 #### Using a different pattern
 
 ```python title="src/myapp/accounts/controllers.py"
-{!> ../docs_src/routing/routes/include/controllers.py!}
+{!> ../../../docs_src/routing/routes/include/controllers.py!}
 ```
 
 ```python title="src/myapp/accounts/urls.py" hl_lines="5"
-{!> ../docs_src/routing/routes/include/different_pattern.py!}
+{!> ../../../docs_src/routing/routes/include/different_pattern.py!}
 ```
 
 === "Importing using namespace"
 
     ```python title='src/myapp/urls.py' hl_lines="3"
-    {!> ../docs_src/routing/routes/include/namespace.py!}
+    {!> ../../../docs_src/routing/routes/include/namespace.py!}
     ```
 
 #### Include and application instance
@@ -117,11 +117,11 @@ Esmerald object as well.
 **Example**:
 
 ```python title='src/urls.py' hl_lines="3"
-{!> ../docs_src/routing/routes/include/app/urls.py!}
+{!> ../../../docs_src/routing/routes/include/app/urls.py!}
 ```
 
 ```python title='src/app.py' hl_lines="3"
-{!> ../docs_src/routing/routes/include/app/app.py!}
+{!> ../../../docs_src/routing/routes/include/app/app.py!}
 ```
 
 ## Nested Routes
@@ -131,13 +131,13 @@ When complexity increses and the level of routes increases as well, `Include` al
 === "Simple Nested"
 
     ```python hl_lines="9"
-    {!> ../docs_src/routing/routes/include/nested/simple.py!}
+    {!> ../../../docs_src/routing/routes/include/nested/simple.py!}
     ```
 
 === "Complex Nested Routes"
 
     ```python hl_lines="10-41"
-    {!> ../docs_src/routing/routes/include/nested/complex.py!}
+    {!> ../../../docs_src/routing/routes/include/nested/complex.py!}
     ```
 
 `Include` supports as many nested routes with different paths and Gateways, WebSocketGateways and Includes as you
@@ -158,7 +158,7 @@ to dependencies.
 If you decide to do this:
 
 ```python hl_lines="5 6"
-{!> ../docs_src/routing/routes/careful/example1.py!}
+{!> ../../../docs_src/routing/routes/careful/example1.py!}
 ```
 
 **Be careful!**
@@ -175,7 +175,7 @@ completely the `accounts.v1.urls`.
 **One possible solution**:
 
 ```python hl_lines="5 6"
-{!> ../docs_src/routing/routes/solution1.py !}
+{!> ../../../docs_src/routing/routes/solution1.py !}
 ```
 
 The same is applied to the nested routes [nested routes](#application-routes).
@@ -183,13 +183,13 @@ The same is applied to the nested routes [nested routes](#application-routes).
 Example:
 
 ```python hl_lines="5-12"
-{!> ../docs_src/routing/routes/solution2.py !}
+{!> ../../../docs_src/routing/routes/solution2.py !}
 ```
 
 Another Example:
 
 ```python hl_lines="18-33"
-{!> ../docs_src/routing/routes/solution3.py !}
+{!> ../../../docs_src/routing/routes/solution3.py !}
 ```
 
 The path is `/` for both `src.urls` and `accounts.v1.urls` and unique with their prefixes.
@@ -219,7 +219,7 @@ routes are listed before general cases.
 Example:
 
 ```python
-{!> ../docs_src/routing/routes/routes_priority.py !}
+{!> ../../../docs_src/routing/routes/routes_priority.py !}
 ```
 
 !!! warning
@@ -272,7 +272,7 @@ If a need for a different transformer that is not defined or available, you can 
 example as Lilya since it works with **Esmerald**.
 
 ```python
-{!> ../docs_src/routing/routes/converter_example.py !}
+{!> ../../../docs_src/routing/routes/converter_example.py !}
 ```
 
 With the custom transformer created you can now use it.
@@ -300,7 +300,7 @@ from the parent to the very handler and the same is applied to [exception handle
 [dependencies](../dependencies.md) and [permissions](../permissions.md).
 
 ```python hl_lines="23 29-30"
-{!> ../docs_src/routing/routes/middleware.py !}
+{!> ../../../docs_src/routing/routes/middleware.py !}
 ```
 
 The above example illustrates the various levels where a middleware can be implemented and because it follows an
@@ -316,7 +316,7 @@ More than one middleware can be added to each list.
 #### Exception Handlers
 
 ```python hl_lines="19 28-30 33"
-{!> ../docs_src/routing/routes/exception_handlers.py !}
+{!> ../../../docs_src/routing/routes/exception_handlers.py !}
 ```
 
 The above example illustrates the various levels where the exception handlers can be implemented and follows a
@@ -332,7 +332,7 @@ More than one exception handler can be added to each mapping.
 #### Dependencies
 
 ```python hl_lines="16 22 23"
-{!> ../docs_src/routing/routes/dependencies.py !}
+{!> ../../../docs_src/routing/routes/dependencies.py !}
 ```
 
 The above example illustrates the various levels where the dependencies can be implemented and follows an
@@ -352,7 +352,7 @@ system, that can be done in the cleanest way possible. More on [permissions](../
 to use them.
 
 ```python hl_lines="14 19 33 35"
-{!> ../docs_src/routing/routes/permissions.py !}
+{!> ../../../docs_src/routing/routes/permissions.py !}
 ```
 
 The above example illustrates the various levels where the permissions can be implemented and follows an
