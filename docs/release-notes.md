@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.2.3
+
+### Changed
+
+- `EsmeraldScheduler` integration with Asyncz is not assembled before the configuration of the routing,
+allowing multiple events to be triggered without overriding.
+
 ## 3.2.2
 
 These changes were missed from the version 3.2.1
