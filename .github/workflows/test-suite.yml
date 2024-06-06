@@ -5,8 +5,12 @@ on:
   push:
     branches:
       - "**"
+    paths-ignore:
+      - "docs/**"
   pull_request:
     branches: ["main"]
+    paths-ignore:
+      - "docs/**"
   schedule:
     - cron: "0 0 * * *"
 
