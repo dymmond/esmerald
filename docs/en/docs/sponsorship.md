@@ -45,7 +45,7 @@ sponsor for Esmerald.
 
 ## ⚙️ Sponsor the tools that made Esmerald possible
 
-As you have seen in the documentation, Esmerald stands on the shoulders of giants, Starlette and Pydantic.
+As you have seen in the documentation, Esmerald stands on the shoulders of giants, Starlette (initially) and Pydantic.
 Although Esmerald is not longer on top of Starlette, for a very long time it was and they deserve all the help
 they can get.
 

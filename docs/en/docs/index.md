@@ -39,7 +39,7 @@ Esmerald is a modern, powerful, flexible, high performant web framework designed
 but also full scalable applications from the smallest to enterprise level.
 
 Esmerald is designed to build with python 3.8+ based on standard python type hints and on the top of
-the heavily known [Starlette](https://github.com/encode/starlette) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
+the heavily known [Lilya](https://github.com/dymmond/lilya) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
 !!! Success
     **The official supported version is always the latest released**.
@@ -62,9 +62,9 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 * python 3.8+
 
-Esmerald wouldn't be possible without two colossals:
+Esmerald wouldn't be possible without at least these two:
 
-* <a href="https://www.starlette.io/" class="external-link" target="_blank">Starlette</a>
+* <a href="https://lilya.dev/" class="external-link" target="_blank">Lilya</a>
 * <a href="https://pydantic-docs.helpmanual.io/" class="external-link" target="_blank">Pydantic</a>
 
 ## Installation
@@ -153,7 +153,7 @@ example.
 
 ## Key Features
 
-* **Fluid and Fast**: Thanks to Starlette and Pydantic/msgpec.
+* **Fluid and Fast**: Thanks to Lilya and Pydantic/msgpec.
 * **Fast to develop**: Thanks to the simplicity of design, the development times can be reduced exponentially.
 * **Intuitive**: If you are used to the other frameworks, Esmerald is a no brainer to develop.
 * **Easy**: Developed with design in mind and easy learning.
@@ -172,16 +172,16 @@ distribute them.
 * **ODM Support**: Native support for [Mongoz][mongoz_odm].
 * **APIView**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJON support.
-* **Lifespan**: Support for the newly Starlette lifespan.
+* **Lifespan**: Support for the newly Lilya lifespan.
 * **Dependency Injection**: Like any other great framework out there.
 * **Scheduler**: Yes, that's right, we come with a scheduler for those background tasks.
 * **Simplicity from settings**: Yes, we have a way to make the code even cleaner by introducing settings
 based systems.
 * **msgspec** - Support for `msgspec`.
 
-## Relation to Starlette and other frameworks
+## Relation to Lilya and other frameworks
 
-Esmerald uses Starlette under the hood. The reason behind this decison comes with the fact that performance is there
+Esmerald uses Lilya under the hood. The reason behind this decison comes with the fact that performance is there
 and no issues with routing.
 
 Once the application is up, all the routes are mounted and therefore the url paths are defined.
@@ -268,14 +268,12 @@ class Development(EsmeraldAPISettings):
 Assuming your Esmerald app is inside an `src/app.py`.
 
 ```console
-
 ESMERALD_SETTINGS_MODULE='myapp.settings.Development' python -m src.app.py
-
 ```
 
 ## Gateway, WebSocketGateway and Include
 
-Starlette offers the Route classes for simple path assignments but this is also very limiting if something more
+Lilya offers the 'Path' classes for simple path assignments but this is also very limiting if something more
 complex in mind. Esmerald extends that functionality and adds some `flair` and levels up by having the
 [Gateway](./routing/routes.md#gateway), [WebSocketGateway](./routing/routes.md#websocketgateway)
 and [Include](./routing/routes.md#include).
