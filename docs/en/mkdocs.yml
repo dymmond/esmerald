@@ -85,72 +85,77 @@ markdown_extensions:
     alternate_style: true
 - md_in_html
 nav:
-- Esmerald: index.md
+- index.md
 - Application:
+  - application/index.md
   - Esmerald: application/applications.md
-  - Levels: application/levels.md
-  - Settings: application/settings.md
+  - application/levels.md
+  - application/settings.md
   - Configurations:
-    - CORSConfig: configurations/cors.md
-    - CSRFConfig: configurations/csrf.md
-    - SessionConfig: configurations/session.md
-    - StaticFilesConfig: configurations/staticfiles.md
-    - TemplateConfig: configurations/template.md
-    - JWTConfig: configurations/jwt.md
-    - OpenAPIConfig: configurations/openapi/config.md
+    - configurations/index.md
+    - configurations/cors.md
+    - configurations/csrf.md
+    - configurations/session.md
+    - configurations/staticfiles.md
+    - configurations/template.md
+    - configurations/jwt.md
+    - configurations/openapi/config.md
 - Features:
+  - features/index.md
   - Routing:
-    - Router: routing/router.md
-    - Routes: routing/routes.md
-    - Handlers: routing/handlers.md
-    - APIView: routing/apiview.md
-    - OpenAPI Specific:
-      - Webhooks: routing/webhooks.md
-  - Interceptors: interceptors.md
-  - Permissions: permissions.md
-  - Middleware: middleware/middleware.md
-  - Dependencies: dependencies.md
-  - Exceptions: exceptions.md
-  - Exception Handlers: exception-handlers.md
-  - Pluggables: pluggables.md
-  - Password Hashers: password-hashers.md
-  - Request: requests.md
-  - Context: context.md
-  - Responses: responses.md
-  - Encoders: encoders.md
-  - MsgSpec: msgspec.md
-  - Background Tasks: background-tasks.md
-  - Lifespan Events: lifespan-events.md
-  - Protocols: protocols.md
-  - Scheduler:
+    - routing/index.md
+    - routing/router.md
+    - routing/routes.md
+    - routing/handlers.md
+    - routing/apiview.md
+    - routing/webhooks.md
+  - interceptors.md
+  - permissions.md
+  - middleware/middleware.md
+  - dependencies.md
+  - exceptions.md
+  - exception-handlers.md
+  - pluggables.md
+  - password-hashers.md
+  - requests.md
+  - context.md
+  - responses.md
+  - encoders.md
+  - msgspec.md
+  - background-tasks.md
+  - lifespan-events.md
+  - protocols.md
+  - scheduler/index.md:
     - Asyncz:
-      - Scheduler: scheduler/scheduler.md
-      - Handler: scheduler/handler.md
+      - scheduler/scheduler.md
+      - scheduler/handler.md
   - Management & Directives:
-    - Application Discovery: directives/discovery.md
-    - Directives: directives/directives.md
-    - Custom Directives: directives/custom-directives.md
-    - Shell: directives/shell.md
+    - scheduler/index.md
+    - directives/discovery.md
+    - directives/directives.md
+    - directives/custom-directives.md
+    - directives/shell.md
 - Database Integrations:
+  - databases/index.md
   - Saffier:
-    - Motivation: databases/saffier/motivation.md
-    - Models: databases/saffier/models.md
+    - databases/saffier/motivation.md
+    - databases/saffier/models.md
     - Middleware:
-      - JWT: databases/saffier/middleware.md
-      - Example: databases/saffier/example.md
+      - databases/saffier/middleware.md
+      - databases/saffier/example.md
   - Edgy:
-    - Motivation: databases/edgy/motivation.md
-    - Models: databases/edgy/models.md
+    - databases/edgy/motivation.md
+    - databases/edgy/models.md
     - Middleware:
-      - JWT: databases/edgy/middleware.md
-      - Example: databases/edgy/example.md
+      - databases/edgy/middleware.md
+      - databases/edgy/example.md
   - Mongoz:
-    - Motivation: databases/mongoz/motivation.md
-    - Documents: databases/mongoz/documents.md
+    - databases/mongoz/motivation.md
+    - databases/mongoz/documents.md
     - Middleware:
-      - JWT: databases/mongoz/middleware.md
-      - Example: databases/mongoz/example.md
-- OpenAPI: openapi.md
+      - databases/mongoz/middleware.md
+      - databases/mongoz/example.md
+- openapi.md
 - Extras:
   - Extra, Advanced & Useful:
     - Request Data: extras/request-data.md
@@ -233,3 +238,5 @@ extra:
   alternate:
   - link: /
     name: en - English
+hooks:
+- ../../scripts/hooks.py
