@@ -1,4 +1,4 @@
-# Middleware
+# JWT
 
 As part of the support, Esmerald developed an authentication middleware using python-jose allowing JWT integration
 with the current [supported documents](./documents.md#user).
