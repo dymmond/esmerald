@@ -198,14 +198,10 @@ In the case of Spanish, the 2-letter code is `es`. So, the directory for Spanish
 
 Now run the live server for the docs in Spanish:
 
-<div class="termy">
-
 ```shell
 // Use the command "live" and pass the language code as a CLI argument
 $ hatch run docs:serve_lang es
 ```
-
-</div>
 
 !!! tip
     Alternatively, you can perform the same steps that scripts does manually.
@@ -303,18 +299,18 @@ You can also collect documentation for one language
 $ hatch run docs:build_lang your_lang
 ```
 
-This builds all those independent MkDocs sites for each language, combines them, and generates the final output at `./site/`.
+This builds all those independent MkDocs sites for each language, combines them, and generates the final output at `./site_lang/`.
 
 Then you can serve that with the command `serve`:
 
 ```shell
-// Use the command "serve" after running "build-all" or "build-lang -l your_lang"
+// Use the command "dev" after running "build-all" or "build-lang -l your_lang"
 $ hatch run docs:dev
 
 Warning: this is a very simple server. For development, use mkdocs serve instead.
 This is here only to preview a site with translations already built.
 Make sure you run the build-all command first.
-Serving at: http://127.0.0.1:8008
+Serving at: http://127.0.0.1:8000
 ```
 
 ## Building Esmerald
