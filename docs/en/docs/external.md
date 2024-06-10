@@ -1,4 +1,4 @@
-# Third Party Packages & Integrations
+# Third Party Packages
 
 Esmerald being an ASGI framework that also support WSGI through [WSGIMiddleware](./wsgi.md) also allows the integrations
 with third parties and their packages and frameworks.
