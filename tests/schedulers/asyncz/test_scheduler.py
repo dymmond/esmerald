@@ -14,6 +14,7 @@ from asyncz.triggers.base import BaseTrigger
 from loguru import logger
 
 from esmerald import Esmerald
+from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 from esmerald.exceptions import ImproperlyConfigured
 
 
@@ -95,10 +96,13 @@ def task_two():  # pragma: no cover
     return 8
 
 
+scheduler_config = AsynczConfig(tasks=scheduler_tasks())
+
+
 def test_esmerald_starts_scheduler():
-    app = Esmerald(scheduler_class=AsyncIOScheduler, scheduler_tasks=scheduler_tasks())
-    assert app.scheduler_tasks == scheduler_tasks()
-    assert app.scheduler_class == AsyncIOScheduler
+    app = Esmerald(scheduler_config=scheduler_config)
+    assert app.scheduler_config.tasks == scheduler_tasks()
+    assert app.scheduler_config.scheduler_class == AsyncIOScheduler
 
 
 @pytest.fixture
@@ -147,14 +151,16 @@ def scheduler_class(monkeypatch):
     ids=["ini-style", "yaml-style"],
 )
 def test_esmerald_scheduler_configurations(scheduler_class, global_config):
+
+    scheduler_config = AsynczConfig(
+        tasks=scheduler_tasks(), scheduler_class=scheduler_class, configurations=global_config
+    )
     app = Esmerald(
-        scheduler_class=scheduler_class,
-        scheduler_tasks=scheduler_tasks(),
-        scheduler_configurations=global_config,
+        scheduler_config=scheduler_config,
         enable_scheduler=True,
     )
 
-    app.scheduler_class._setup.assert_called_once_with(
+    app.scheduler_config.scheduler_class._setup.assert_called_once_with(
         {
             "timezone": "UTC",
             "task_defaults": {
@@ -184,9 +190,9 @@ def test_raise_exception_on_tasks_key(scheduler_class):
     }
 
     with pytest.raises(ImproperlyConfigured):
+        scheduler_config = AsynczConfig(scheduler_class=scheduler_class, tasks=tasks)
         Esmerald(
-            scheduler_class=scheduler_class,
-            scheduler_tasks=tasks,
+            scheduler_config=scheduler_config,
             enable_scheduler=True,
         )
 
@@ -201,8 +207,8 @@ def test_raise_exception_on_tasks_value(scheduler_class):
     }
 
     with pytest.raises(ImproperlyConfigured):
+        scheduler_config = AsynczConfig(scheduler_class=scheduler_class, tasks=tasks)
         Esmerald(
-            scheduler_class=scheduler_class,
-            scheduler_tasks=tasks,
+            scheduler_config=scheduler_config,
             enable_scheduler=True,
         )

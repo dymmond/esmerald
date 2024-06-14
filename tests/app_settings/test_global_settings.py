@@ -6,6 +6,7 @@ import pytest
 
 from esmerald import CORSConfig, Esmerald, EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
+from esmerald.exceptions import ImproperlyConfigured
 
 real_import = builtins.__import__
 
@@ -56,11 +57,11 @@ def test_scheduler_class_raises_error(monkeypatch):
     monkeypatch.delitem(sys.modules, "asyncz", raising=False)
     monkeypatch.setattr(builtins, "__import__", monkey_import_importerror)
 
-    with pytest.raises(ImportError):
+    with pytest.raises(ImproperlyConfigured):
         Esmerald(routes=[], settings_module=SchedulerClassSettings)
 
 
-def test_scheduler_class():
-    app = Esmerald(routes=[], settings_module=SchedulerClassSettings)
+def test_scheduler_config():
 
-    assert app.settings.scheduler_class is None
+    with pytest.raises(ImproperlyConfigured):
+        Esmerald(routes=[], settings_module=SchedulerClassSettings)
