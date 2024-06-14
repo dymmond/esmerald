@@ -1,7 +1,8 @@
 from esmerald import Esmerald
+from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
-scheduler_configurations = (
-    {
+scheduler_config = AsynczConfig(
+    configurations={
         "asyncz.stores.mongo": {"type": "mongodb"},
         "asyncz.stores.default": {"type": "redis", "database": "0"},
         "asyncz.executors.threadpool": {
@@ -15,8 +16,8 @@ scheduler_configurations = (
     },
 )
 
+
 app = Esmerald(
     enable_scheduler=True,
-    scheduler_tasks=...,
-    scheduler_configurations=scheduler_configurations,
+    scheduler_config=scheduler_config,
 )

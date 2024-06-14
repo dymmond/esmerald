@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 
-from asyncz.schedulers import AsyncIOScheduler
-
 from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
 if TYPE_CHECKING:
     from esmerald.types import SchedulerType
@@ -14,8 +13,8 @@ class EsmeraldSettings(EsmeraldAPISettings):
     secret_key: str = "a child secret"
 
     @property
-    def scheduler_class(self) -> "SchedulerType":
-        return AsyncIOScheduler
+    def scheduler_config(self) -> AsynczConfig:
+        return AsynczConfig()
 
 
 # Create an Esmerald application

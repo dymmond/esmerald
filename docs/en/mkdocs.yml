@@ -99,6 +99,7 @@ nav:
     - configurations/staticfiles.md
     - configurations/template.md
     - configurations/jwt.md
+    - configurations/scheduler.md
     - configurations/openapi/config.md
 - Features:
   - features/index.md
@@ -125,12 +126,13 @@ nav:
   - background-tasks.md
   - lifespan-events.md
   - protocols.md
-  - scheduler/index.md:
+  - Scheduler:
+    - scheduler/index.md
     - Asyncz:
       - scheduler/scheduler.md
       - scheduler/handler.md
   - Management & Directives:
-    - scheduler/index.md
+    - directives/index.md
     - directives/discovery.md
     - directives/directives.md
     - directives/custom-directives.md

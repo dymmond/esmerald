@@ -13,11 +13,10 @@ Esmerald uses `asyncz` for this integration. You can install by running:
 $ pip install esmerald[schedulers]
 ```
 
-## EsmeraldScheduler
+## AsynczConfig
 
-The `EsmeraldScheduler` is the main object that manages the internal scheduler of `Esmerald` expecting:
+The `AsynczConfig` is the main object that manages the internal scheduler of `Esmerald` with asyncz expecting:
 
-* `app` - The Esmerald application. Automatically passed upon creating an Esmerald instance.
 * `scheduler_class` - An instance of the `Asyncz` schedule type. Passed via `scheduler_class`.
 
     <sup>Default: `AsyncIOScheduler`</sup>
@@ -33,12 +32,10 @@ The `EsmeraldScheduler` is the main object that manages the internal scheduler o
 
 * `configurations` - A python dictionary containing some extra configurations for the scheduler.
 Passed via `scheduler_configurations`.
+* `kwargs` - Any keyword argument that can be passed and injected into the `scheduler_class`.
 
 Since `Esmerald` is an `ASGI` framework, it is already provided a default scheduler class that works alongside with
 the application, the `AsyncIOScheduler`.
-
-If a `scheduler_class` is not provided while the `enable_scheduler` is true, it will raise an error 500
-[ImproperlyConfigured](../exceptions.md#improperlyconfigured).
 
 !!! Note
     This is for representation and explanation purposes as the EsmeraldScheduler cannot be instantiated,
@@ -46,20 +43,28 @@ If a `scheduler_class` is not provided while the `enable_scheduler` is true, it 
 
 ```python hl_lines="4"
 from esmerald import Esmerald
-from asyncz.schedulers import AsyncIOScheduler
+from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
-app = Esmerald(scheduler_class=AsyncIOScheduler)
+app = Esmerald(scheduler_config=AsynczConfig())
 ```
 
-You can have your own scheduler class as long as it is compatible with Esmerald, meaning, ASGI.
+You can have your own scheduler config class as well, check the [SchedulerConfig](../configurations/scheduler.md#how-to-use-it)
+for more information.
 
 !!! warning
     Anything else that does not work with `AsyncIO` is very likely also not to work with Esmerald.
 
-## EsmeraldScheduler and the application
+## AsynczConfig and the application
 
-The `EsmeraldScheduler` class is not accessible in any part of the application and it is instantiated when an `Esmerald`
-application is created and the parameters are automatically provided.
+This is the default Esmerald integration with Asyncz and the class can be accessed via:
+
+```python
+from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+```
+
+Because this is an Esmerald offer, you can always implement your own version if you don't like the way Esmerald handles
+the Asyncz default integration and adapt to your own needs. This is thanks to the [SchedulerConfig](../configurations/scheduler.md#how-to-use-it)
+from where AsynczConfig is derived.
 
 ### Enabling the scheduler
 
@@ -115,13 +120,13 @@ There are two tasks created, the `collect_market_data` and `send_newsletter` whi
 Now it is time to tell the application to activate the scheduler and run the tasks based on the settings provided
 into the `scheduler` handler.
 
-```python hl_lines="5-9"
+```python hl_lines="6-10"
 {!> ../../../docs_src/scheduler/tasks/app_scheduler.py !}
 ```
 
 **Or from the settings file**:
 
-```python hl_lines="7 10-14"
+```python hl_lines="6 10-14"
 {!> ../../../docs_src/scheduler/tasks/from_settings.py !}
 ```
 

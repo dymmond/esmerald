@@ -17,6 +17,7 @@ from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 
 from esmerald.applications import Esmerald
+from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.encoders import Encoder
 from esmerald.utils.crypto import get_random_secret_key
 
@@ -40,7 +41,6 @@ if TYPE_CHECKING:  # pragma: no cover
         ExceptionHandlerMap,
         LifeSpanHandler,
         Middleware,
-        SchedulerType,
         SettingsType,
         TemplateConfig,
     )
@@ -108,9 +108,7 @@ def create_client(
     on_startup: Optional[List["LifeSpanHandler"]] = None,
     cors_config: Optional["CORSConfig"] = None,
     session_config: Optional["SessionConfig"] = None,
-    scheduler_class: Optional["SchedulerType"] = None,
-    scheduler_tasks: Optional[Dict[str, str]] = None,
-    scheduler_configurations: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
+    scheduler_config: Optional[SchedulerConfig] = None,
     enable_scheduler: bool = None,
     enable_openapi: bool = True,
     include_in_schema: bool = True,
@@ -154,9 +152,7 @@ def create_client(
             on_shutdown=on_shutdown,
             on_startup=on_startup,
             cors_config=cors_config,
-            scheduler_class=scheduler_class,
-            scheduler_tasks=scheduler_tasks,
-            scheduler_configurations=scheduler_configurations,
+            scheduler_config=scheduler_config,
             enable_scheduler=enable_scheduler,
             static_files_config=static_files_config,
             template_config=template_config,

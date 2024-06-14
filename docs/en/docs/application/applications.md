@@ -100,12 +100,8 @@ built-in middleware.
 class.
 * **response_cookies** - List of cookie objects.
 * **response_headers** - Mapping dictionary of header objects.
-* **scheduler_class** - A [scheduler]('../scheduler/scheduler.md') class used for the application tasks. Defaults to
-`AsyncIOScheduler`.
-* **scheduler_tasks** - A python dictionary with key and pair values as strings mapping the [scheduler tasks](../scheduler/scheduler.md).
-* **scheduler_configurations** - A python dictionary with key and pair values as strings mapping the
+* **scheduler_config** - A [SchedulerConfig](../configurations/scheduler.md) class used for the application scheduler.
 extra configuations of [scheduler tasks](../scheduler/handler.md).
-* **enable_scheduler** - Flag indicating if the application `scheduler` should be enabled or not. Defaults to `False`.
 * **timezone** - The application default timezone. Defaults to `UTC`.
 * **on_shutdown** - A list of callables to run on application shutdown. Shutdown handler callables do not take any
 arguments, and may be be either standard functions, or async functions.

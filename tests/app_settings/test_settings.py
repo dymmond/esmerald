@@ -44,7 +44,7 @@ def test_main_settings():
         assert client.app.settings.response_cookies == settings.response_cookies
         assert client.app.settings.tags == settings.tags
         assert client.app.settings.include_in_schema == settings.include_in_schema
-        assert client.app.settings.scheduler_class == settings.scheduler_class
+        assert client.app.settings.scheduler_config == settings.scheduler_config
         assert client.app.settings.reload == settings.reload
         assert client.app.settings.password_hashers == settings.password_hashers
         assert client.app.settings.csrf_config == settings.csrf_config
