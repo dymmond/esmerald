@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.2.5
+
+### Fixed
+
+- Added missing options into get_scheduler of AsynczConfig.
+
 ## 3.2.4
 
 ### Added
