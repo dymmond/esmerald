@@ -61,6 +61,7 @@ class AsynczConfig(SchedulerConfig):
             scheduler=self.scheduler_class,
             timezone=self.timezone,
             configurations=self.configurations,
+            **self.options
         )
 
         self.register_tasks(tasks=self.tasks)
