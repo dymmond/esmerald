@@ -5,6 +5,58 @@ hide:
 
 # Release Notes
 
+## 3.2.4
+
+### Added
+
+!!! danger
+	This new version deprecates an old style declaring the scheduler for Esmerald.
+	There is a new [SchedulerConfig](./configurations/scheduler.md).
+
+- New [SchedulerConfig](./configurations/scheduler.md) interface for Esmerald schedulers and
+custom schedulers.
+- New [AsynczConfig]() that implements the configuration for Asyncz scheduler.
+- New `scheduler_config` parameter to Esmerald and EsmeraldAPISettings.
+
+### Changed
+
+- Deprecate `scheduler_class`, `scheduler_configurations` and `scheduler_tasks`
+in favour of the new [SchedulerConfig](./configurations/scheduler.md) approach.
+- Deprecate the use of the `EsmeraldScheduler`.
+
+#### Breaking changes
+
+You must update the imports to be:
+
+From:
+
+```python
+from asyncz.contrib.esmerald.decorator import scheduler
+```
+
+To:
+
+```python
+from esmerald.contrib.schedulers.asyncz.decorator import scheduler
+```
+
+Check the documentation about the [Scheduler](https://www.esmerald.dev/scheduler/scheduler/), [handlers](https://www.esmerald.dev/scheduler/handler/) and the [SchedulerConfig](./configurations/scheduler.md) to
+see how to update your current project to the new version with the minimum disruption.
+
+This change should not break existing functionality, instead, its just an update to make it more modular.
+There is an [example](https://github.com/dymmond/scheduler-example) how to simply use this.
+
+### Fixed
+
+- Added missing options `--settings` into the `runserver` directive.
+
+## 3.2.3
+
+### Changed
+
+- `EsmeraldScheduler` integration with Asyncz is not assembled before the configuration of the routing,
+allowing multiple events to be triggered without overriding.
+
 ## 3.2.2
 
 These changes were missed from the version 3.2.1
