@@ -61,7 +61,6 @@ from esmerald.responses import Response
 from esmerald.routing._internal import OpenAPIFieldInfoMixin
 from esmerald.routing.apis.base import View
 from esmerald.routing.base import Dispatcher
-from esmerald.routing.events import handle_lifespan_events
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.transformers.model import TransformerModel
 from esmerald.transformers.signature import SignatureModel
@@ -508,15 +507,13 @@ class BaseRouter(LilyaRouter):
             on_startup is None and on_shutdown is None
         ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
-        self.esmerald_lifespan = handle_lifespan_events(
-            on_startup=on_startup, on_shutdown=on_shutdown, lifespan=lifespan
-        )
-
         super().__init__(
             redirect_slashes=redirect_slashes,
             routes=routes,
             default=default,
-            lifespan=self.esmerald_lifespan,
+            lifespan=lifespan,
+            on_shutdown=on_shutdown,
+            on_startup=on_startup,
         )
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)

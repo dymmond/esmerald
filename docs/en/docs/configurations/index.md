@@ -9,3 +9,4 @@ You can find all the configurations used/available to Esmerald.
 5. [StaticFilesConfig](./staticfiles.md)
 6. [TemplateConfig](./template.md)
 7. [OpenAPIConfig](./openapi/config.md)
+8. [SchedulerConfig](./scheduler.md)

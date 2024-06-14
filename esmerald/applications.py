@@ -1693,6 +1693,9 @@ class Esmerald(Lilya):
                 "It cannot start the scheduler if there is no scheduler_config declared."
             )
 
+        if self.lifespan is not None:
+            return None
+
         if self.on_startup is not None:
             self.on_startup.append(self.scheduler_config.start)
         else:
