@@ -46,5 +46,5 @@ class TestConfig(TestSettings):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @property
-    def scheduler_class(self) -> None:
+    def scheduler_config(self) -> None:
         """"""

@@ -1,18 +1,17 @@
 from typing import Dict, Union
 
 from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
 
 class AppSettings(EsmeraldAPISettings):
     enable_scheduler: bool = True
 
     @property
-    def scheduler_tasks(self) -> Dict[str, str]: ...
-
-    @property
-    def scheduler_configurations(self) -> Dict[str, Union[str, Dict[str, str]]]:
-        return (
-            {
+    def scheduler_config(self) -> AsynczConfig:
+        return AsynczConfig(
+            tasks=...,
+            configurations={
                 "asyncz.stores.mongo": {"type": "mongodb"},
                 "asyncz.stores.default": {"type": "redis", "database": "0"},
                 "asyncz.executors.threadpool": {
