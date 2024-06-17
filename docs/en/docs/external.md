@@ -29,3 +29,5 @@ and designing the how to? Dymmond provides you with an out of the box solution f
 Esmerald Simple JWT.
 
 ## [Esmerald Simple JWT](https://esmerald-simple-jwt.dymmond.com/)
+
+## [Esmerald using the scheduler](https://github.com/dymmond/scheduler-example)
