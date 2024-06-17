@@ -20,6 +20,7 @@ def create_folders():
         pass
     try:
         shutil.rmtree("myproject")
+        shutil.rmtree("simple/myproject")
     except OSError:
         pass
     try:
@@ -35,6 +36,7 @@ def create_folders():
         pass
     try:
         shutil.rmtree("myproject")
+        shutil.rmtree("simple/myproject")
     except OSError:
         pass
     try:
@@ -61,26 +63,22 @@ async def rollback_transactions():
 
 
 def generate():
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject --simple")
     assert ss == 0
 
-    os.chdir("myproject/myproject/apps")
-
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
+    os.chdir("myproject/myproject/")
 
 
 async def test_custom_directive(create_folders):
-    original_path = os.getcwd()
+    original_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    generate()
     users = await User.query.all()
 
     assert len(users) == 0
 
-    # Generate the files
-
     # Back to starting point
     os.chdir(original_path)
+    os.makedirs("myproject/myproject/apps/myapp/directives/operations/")
 
     # Copy the createsuperuser custom directive
     shutil.copyfile(
