@@ -76,6 +76,9 @@ This is a simple directive that generates a folder structure with some files for
 
     <sup>Default: `deployment/`</sup>
 
+* **--simple** - Generates a project with a simple structure without too much complications. Useful to quick start your
+projects.
+
 * **-v/--verbosity** - `1` for none and `2` displays all generated files.
 
     <sup>Default: `1`</sup>

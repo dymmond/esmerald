@@ -1,0 +1,3 @@
+esmerald>={{ esmerald_version }}
+gunicorn
+uvicorn

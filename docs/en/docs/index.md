@@ -46,12 +46,12 @@ the heavily known [Lilya](https://github.com/dymmond/lilya) and [Pydantic](https
 
 ## Motivation
 
-There are great frameworks out there like FastAPI, Starlite, Flama, Flask, Django... All of them solving majority
+There are great frameworks out there like FastAPI, Flama, Flask, Django... All of them solving majority
 of the current day-to-day problems of 99% of the applications but leaving the 1% that is usually around structure
 and design/business without to much to do.
 
 Esmerald got the inspiration from those great frameworks out there and was built with all the known amazing
-features but with business in mind as well. [Starlite](./vendors.md#starlite), for example, gave the inspiration for
+features but with business in mind as well. Starlite, for example, at the very beginning, gave the inspiration for
 the transformers and for the Signature models, something very useful that helped Esmerald integerating with pydantic.
 FastAPI gave the inspiration for API designing, Django for the permissions, Flask for the simplicity, NestJS for the
 controllers and the list goes on.
@@ -128,13 +128,15 @@ $ pip install esmerald[ptpython] # ptpython shell
     or feel like it is not a problem using these directives. If you do not feel comfortable yet to use this,
     please continue reading the documentation and learning more about Esmerald.
 
-If you wish to start an Esmerald project with a default suggested structure.
+If you wish to start an Esmerald project with a simple suggested structure.
 
 ```shell
-esmerald createproject <YOUR-PROJECT-NAME>
+esmerald createproject <YOUR-PROJECT-NAME> --simple
 ```
 
-This will generate a scaffold for your project with some pre-defined files in a simple fashion.
+This will generate a scaffold for your project with some pre-defined files in a simple fashion with a simple ready to
+go Esmerald application.
+
 This will also generate a file for the tests using the EsmeraldTestClient, so make sure you run:
 
 ```shell
