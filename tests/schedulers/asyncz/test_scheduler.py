@@ -3,7 +3,6 @@ from typing import Any, Dict, List, Optional, Union
 from unittest.mock import MagicMock
 
 import pytest
-from asyncz.contrib.esmerald.decorator import scheduler
 from asyncz.executors.base import BaseExecutor
 from asyncz.schedulers import AsyncIOScheduler
 from asyncz.schedulers.base import BaseScheduler
@@ -15,6 +14,7 @@ from loguru import logger
 
 from esmerald import Esmerald
 from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from esmerald.contrib.schedulers.asyncz.decorator import scheduler
 from esmerald.exceptions import ImproperlyConfigured
 
 
