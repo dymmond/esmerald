@@ -1,30 +1,30 @@
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 from asyncz.triggers.types import TriggerType
 
 from esmerald.contrib.schedulers.asyncz.config import Task
 
 
-class scheduler(Task):
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        trigger: Optional[TriggerType] = None,
-        id: Optional[str] = None,
-        mistrigger_grace_time: Optional[int] = None,
-        coalesce: Optional[bool] = None,
-        max_instances: Optional[int] = None,
-        next_run_time: Optional[datetime] = None,
-        store: Optional[str] = "default",
-        executor: Optional[str] = "default",
-        replace_existing: bool = True,
-        extra_args: Optional[Any] = None,
-        extra_kwargs: Optional[Dict[str, Any]] = None,
-        is_enabled: bool = True,
-    ) -> None:
-        super().__init__(
+def scheduler(
+    *,
+    name: Optional[str] = None,
+    trigger: Optional[TriggerType] = None,
+    id: Optional[str] = None,
+    mistrigger_grace_time: Optional[int] = None,
+    coalesce: Optional[bool] = None,
+    max_instances: Optional[int] = None,
+    next_run_time: Optional[datetime] = None,
+    store: Optional[str] = "default",
+    executor: Optional[str] = "default",
+    replace_existing: bool = True,
+    extra_args: Optional[Any] = None,
+    extra_kwargs: Optional[Dict[str, Any]] = None,
+    is_enabled: bool = True,
+) -> "Task":
+
+    def wrapper(func: Any) -> Task:
+        task = Task(
             name=name,
             trigger=trigger,
             id=id,
@@ -39,3 +39,7 @@ class scheduler(Task):
             kwargs=extra_kwargs,
             is_enabled=is_enabled,
         )
+        task.fn = func
+        return task
+
+    return cast(Task, wrapper)
