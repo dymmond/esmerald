@@ -61,7 +61,7 @@ class AsynczConfig(SchedulerConfig):
             scheduler=self.scheduler_class,
             timezone=self.timezone,
             configurations=self.configurations,
-            **self.options
+            **self.options,
         )
 
         self.register_tasks(tasks=self.tasks)
@@ -214,11 +214,3 @@ class Task:
             )
         except Exception as e:
             raise ImproperlyConfigured(str(e)) from e
-
-    def __call__(self, fn: Any) -> Any:
-        """
-        Tricking the object into think it's being instantiated by in reality
-        is just returning itself.
-        """
-        self.fn = fn
-        return self
