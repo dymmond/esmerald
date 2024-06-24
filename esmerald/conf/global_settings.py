@@ -637,7 +637,7 @@ class EsmeraldAPISettings(BaseSettings):
         Optional[str],
         Doc(
             """
-            String default URL where the Stoplight Javascript is located
+            String default URL where the RapiDoc Javascript is located
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
