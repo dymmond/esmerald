@@ -5,6 +5,7 @@ from pydantic import AnyUrl, BaseModel
 from typing_extensions import Annotated, Doc
 
 from esmerald.openapi.docs import (
+    get_rapidoc_ui_html,
     get_redoc_html,
     get_stoplight_html,
     get_swagger_ui_html,
@@ -237,6 +238,8 @@ class OpenAPIConfig(BaseModel):
         Optional[str],
         Doc(
             """
+            Boolean flag indicating if the google fonts shall be used
+            in the ReDoc OpenAPI Documentation.
             """
         ),
     ] = None
@@ -307,6 +310,39 @@ class OpenAPIConfig(BaseModel):
         Doc(
             """
             String default URL where the Stoplight favicon is located
+            and used within OpenAPI documentation,
+
+            Example: `https://esmerald.dev/statics/images/favicon.ico`.
+            """
+        ),
+    ] = None
+    rapidoc_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Rapidoc documentation
+            shall be accessed in the application.
+
+            Example: `/docs/rapidoc`.
+            """
+        ),
+    ] = None
+    rapidoc_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the Stoplight Javascript is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = None
+    rapidoc_favicon_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the RapiDoc favicon is located
             and used within OpenAPI documentation,
 
             Example: `https://esmerald.dev/statics/images/favicon.ico`.
@@ -454,6 +490,29 @@ class OpenAPIConfig(BaseModel):
             app.add_route(
                 path="/",
                 handler=stoplight_html,
+                include_in_schema=False,
+                activate_openapi=False,
+            )
+
+        if self.openapi_url and self.rapidoc_url:
+
+            @get(self.rapidoc_url)  # type: ignore
+            async def rapidoc_html(
+                request: Request,
+            ) -> HTMLResponse:  # pragma: no cover
+                root_path = request.scope.get("root_path", "").rstrip("/")
+                openapi_url = root_path + self.openapi_url
+
+                return get_rapidoc_ui_html(
+                    openapi_url=openapi_url,
+                    title=self.title + " - RapiDoc",
+                    rapidoc_js_url=self.rapidoc_js_url,
+                    rapidoc_favicon_url=self.rapidoc_favicon_url,
+                )
+
+            app.add_route(
+                path="/",
+                handler=rapidoc_html,
                 include_in_schema=False,
                 activate_openapi=False,
             )

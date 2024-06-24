@@ -237,3 +237,36 @@ def get_swagger_ui_oauth2_redirect_html() -> HTMLResponse:
     </html>
         """
     return HTMLResponse(content=html)
+
+
+def get_rapidoc_ui_html(
+    *,
+    openapi_url: str,
+    title: str,
+    rapidoc_js_url: str,
+    rapidoc_favicon_url: str,
+    style: str = "body { margin: 0; padding: 0 }",
+) -> HTMLResponse:  # pragma: no cover
+    """Renders the new stoplight openapi docs"""
+    print(rapidoc_favicon_url)
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>{title}</title>
+            <link rel="shortcut icon" href="{rapidoc_favicon_url}">
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <script src="{rapidoc_js_url}" crossorigin></script>
+            <style>{style}</style>
+    """
+    html += f"""
+        <body>
+            <noscript>
+                Rapidoc requires Javascript to function. Please enable it to browse the documentation.
+            </noscript>
+            <rapi-doc spec-url="{openapi_url}" />
+        </body>
+    </html>
+    """
+    return HTMLResponse(html)
