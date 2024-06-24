@@ -27,6 +27,7 @@ Currently, by default, the URL for the documentation are:
 * **Swagger** - `/docs/swagger`.
 * **Redoc** - `/docs/redoc`.
 * **Stoplight** - `/docs/elements`.
+* **Rapidoc** - `/docs/rapidoc`.
 
 ## Parameters
 
