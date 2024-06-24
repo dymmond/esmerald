@@ -11,6 +11,7 @@ API docs in three different ways:
 * **Swagger** - Defaults to `/docs/swagger`.
 * **Redoc** - Defaults to `/docs/redoc`.
 * **Stoplight** - Defaults to `/docs/elements`.
+* **Rapidoc** - `/docs/rapidoc`.
 
 !!! Tip
     See the [OpenAPIConfig](./configurations/openapi/config.md) for more details how to take

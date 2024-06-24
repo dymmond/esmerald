@@ -212,6 +212,8 @@ and you can acess via:
 
 * [http://127.0.0.1/swagger](http://127.0.0.1/docs/swagger)
 * [http://127.0.0.1/redoc](http://127.0.0.1/docs/redoc)
+* [http://127.0.0.1/elements](http://127.0.0.1/docs/elements)
+* [http://127.0.0.1/rapidoc](http://127.0.0.1/docs/rapidoc)
 
 
 ### Documentation in production

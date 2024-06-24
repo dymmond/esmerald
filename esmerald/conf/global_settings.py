@@ -622,6 +622,39 @@ class EsmeraldAPISettings(BaseSettings):
             """
         ),
     ] = "https://esmerald.dev/statics/images/favicon.ico"
+    rapidoc_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Rapidoc documentation
+            shall be accessed in the application.
+
+            Example: `/docs/rapidoc`.
+            """
+        ),
+    ] = "/docs/rapidoc"
+    rapidoc_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the RapiDoc Javascript is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc-min.js"
+    rapidoc_favicon_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the RapiDoc favicon is located
+            and used within OpenAPI documentation,
+
+            Example: `https://esmerald.dev/statics/images/favicon.ico`.
+            """
+        ),
+    ] = "https://esmerald.dev/statics/images/favicon.ico"
 
     # Model configuration
     model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
@@ -967,6 +1000,9 @@ class EsmeraldAPISettings(BaseSettings):
             stoplight_js_url=self.stoplight_js_url,
             stoplight_url=self.stoplight_url,
             stoplight_favicon_url=self.stoplight_favicon_url,
+            rapidoc_url=self.rapidoc_url,
+            rapidoc_js_url=self.rapidoc_js_url,
+            rapidoc_favicon_url=self.rapidoc_favicon_url,
         )
 
     @property

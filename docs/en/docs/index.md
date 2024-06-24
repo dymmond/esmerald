@@ -445,6 +445,7 @@ To access the OpenAPI, simply start your local development and access:
 * **Swagger** - `/docs/swagger`.
 * **Redoc** - `/docs/redoc`.
 * **Stoplight Elements** - `/docs/elements`.
+* **Rapidoc** - `/docs/rapidoc`.
 
 There are more details about [how to configure the OpenAPIConfig](./configurations/openapi/config.md)
 within this documentation.
