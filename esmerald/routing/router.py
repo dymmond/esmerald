@@ -657,6 +657,7 @@ class BaseRouter(LilyaRouter):
                     value(parent=self)  # type: ignore
 
                 handler: View = cast("View", value.handler)
+
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gateway = (
