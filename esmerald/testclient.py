@@ -191,7 +191,7 @@ def create_client(
 
 class override_settings:
     """
-    A context manager that allows overriding Lilya settings temporarily.
+    A context manager that allows overriding Esmerald settings temporarily.
 
     Usage:
     ```
