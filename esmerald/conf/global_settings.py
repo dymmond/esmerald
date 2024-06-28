@@ -419,6 +419,20 @@ class EsmeraldAPISettings(BaseSettings):
             """
         ),
     ] = True
+    x_frame_options: Annotated[
+        Union[str, None],
+        Doc(
+            """
+            Set the X-Frame-Options HTTP header in HTTP responses.
+
+            To enable the response to be loaded on a frame within the same site, set
+            x_frame_options to 'SAMEORIGIN'.
+
+            This flag is to be used when `XFrameOptionsMiddleware` is added to the
+            application.
+            """
+        ),
+    ] = None
     root_path_in_servers: Annotated[
         bool,
         Doc(
