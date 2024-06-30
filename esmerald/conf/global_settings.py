@@ -419,6 +419,20 @@ class EsmeraldAPISettings(BaseSettings):
             """
         ),
     ] = True
+    x_frame_options: Annotated[
+        Union[str, None],
+        Doc(
+            """
+            Set the X-Frame-Options HTTP header in HTTP responses.
+
+            To enable the response to be loaded on a frame within the same site, set
+            x_frame_options to 'SAMEORIGIN'.
+
+            This flag is to be used when `XFrameOptionsMiddleware` is added to the
+            application.
+            """
+        ),
+    ] = None
     root_path_in_servers: Annotated[
         bool,
         Doc(
@@ -619,6 +633,39 @@ class EsmeraldAPISettings(BaseSettings):
             and used within OpenAPI documentation,
 
             This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://esmerald.dev/statics/images/favicon.ico"
+    rapidoc_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default relative URL where the Rapidoc documentation
+            shall be accessed in the application.
+
+            Example: `/docs/rapidoc`.
+            """
+        ),
+    ] = "/docs/rapidoc"
+    rapidoc_js_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the RapiDoc Javascript is located
+            and used within OpenAPI documentation,
+
+            This is used as the default if no [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) is provided.
+            """
+        ),
+    ] = "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc-min.js"
+    rapidoc_favicon_url: Annotated[
+        Optional[str],
+        Doc(
+            """
+            String default URL where the RapiDoc favicon is located
+            and used within OpenAPI documentation,
+
+            Example: `https://esmerald.dev/statics/images/favicon.ico`.
             """
         ),
     ] = "https://esmerald.dev/statics/images/favicon.ico"
@@ -967,6 +1014,9 @@ class EsmeraldAPISettings(BaseSettings):
             stoplight_js_url=self.stoplight_js_url,
             stoplight_url=self.stoplight_url,
             stoplight_favicon_url=self.stoplight_favicon_url,
+            rapidoc_url=self.rapidoc_url,
+            rapidoc_js_url=self.rapidoc_js_url,
+            rapidoc_favicon_url=self.rapidoc_favicon_url,
         )
 
     @property
@@ -1003,13 +1053,14 @@ class EsmeraldAPISettings(BaseSettings):
         return []
 
     @property
-    def scheduler_class(self) -> Any:
+    def scheduler_config(self) -> Any:
         """
-        Esmerald integrates out of the box with [Asyncz](https://asyncz.tarsild.io/)
+        Esmerald comes with an internal scheduler connfiguration that can be used to schedule tasks with any scheduler at your choice.
+
+
+        Esmerald also integrates out of the box with [Asyncz](https://asyncz.tarsild.io/)
         and the scheduler class is nothing more than the `AsyncIOScheduler` provided
         by the library.
-
-        Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
 
         !!! Tip
             You can create your own scheduler class and use it with Esmerald.
@@ -1019,91 +1070,6 @@ class EsmeraldAPISettings(BaseSettings):
         **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
         """
         return None
-
-    @property
-    def scheduler_tasks(self) -> Dict[str, str]:
-        """
-        Mapping in the format `<task-name>: <location>` indicating the tasks to
-        be run by the scheduler.
-
-        Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
-
-        **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
-
-        Returns a dict of tasks for run with `scheduler_class`.
-
-        Where the tasks are placed is not linked to the name of
-        the file itself. They can be anywhere. What is imoprtant
-        is that in the dictionary the name of the task and the
-        location of the file where the task is.
-
-        Returns:
-            A mapping with the tasks.
-
-        **Example**
-
-        ```python
-        from esmerald import EsmeraldAPISettings
-
-
-        class AppSettings(EsmeraldAPISettings):
-
-            @property
-            def scheduler_tasks(self) -> Dict[str, str]:
-                tasks = {
-                    "send_newslettters": "accounts.tasks",
-                    "check_balances": "finances.balance_tasks",
-                }
-        ```
-        """
-
-        return {}
-
-    @property
-    def scheduler_configurations(self) -> Dict[str, Union[str, Dict[str, str]]]:
-        """
-        Mapping of extra configuratioms being passed to the scheduler.
-        These are [Asyncz Configurations](https://asyncz.tarsild.io/schedulers/?h=confi#example-configuration).
-
-        Returns a dict of configurations for run with `scheduler_class`.
-
-        Returns:
-            A mapping with the extra configurations passed to the scheduler.
-
-        **Example**
-
-        ```python
-        from esmerald import EsmeraldAPISettings
-
-
-        class AppSettings(EsmeraldAPISettings):
-
-            @property
-            def scheduler_configurations(self) -> Dict[str, str]:
-                configurations = {
-                    'apscheduler.stores.mongo': {
-                        'type': 'mongodb'
-                    },
-                    'apscheduler.stores.default': {
-                        'type': 'sqlalchemy',
-                        'url': 'sqlite:///jobs.sqlite'
-                    },
-                    'apscheduler.executors.default': {
-                        'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
-                        'max_workers': '20'
-                    },
-                    'apscheduler.executors.processpool': {
-                        'type': 'processpool',
-                        'max_workers': '5'
-                    },
-                    'apscheduler.task_defaults.coalesce': 'false',
-                    'apscheduler.task_defaults.max_instances': '3',
-                    'apscheduler.timezone': 'UTC',
-                }
-        ```
-        """
-
-        return {}
 
     @property
     def interceptors(self) -> List[Interceptor]:

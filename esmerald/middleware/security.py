@@ -1,0 +1,1 @@
+from lilya.middleware.security import SecurityMiddleware as SecurityMiddleware

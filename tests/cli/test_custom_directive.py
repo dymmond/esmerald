@@ -4,7 +4,7 @@ import shutil
 import pytest
 
 from esmerald.conf import settings
-from esmerald.contrib.auth.saffier.base_user import AbstractUser
+from tests.cli.user import User
 from tests.cli.utils import run_cmd
 
 database, models = settings.registry
@@ -41,16 +41,6 @@ def create_folders():
         shutil.rmtree("temp_folder")
     except OSError:
         pass
-
-
-class User(AbstractUser):
-    """
-    Inherits from the abstract user and adds the registry
-    from esmerald settings.
-    """
-
-    class Meta:
-        registry = models
 
 
 @pytest.fixture(autouse=True, scope="module")

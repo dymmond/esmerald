@@ -28,6 +28,7 @@ from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
+from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.datastructures import State
 from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
@@ -62,7 +63,6 @@ from esmerald.types import (
     ResponseHeaders,
     ResponseType,
     RouteParent,
-    SchedulerType,
 )
 from esmerald.utils.helpers import is_class_and_subclass
 
@@ -124,10 +124,7 @@ class Esmerald(Lilya):
         "response_cookies",
         "response_headers",
         "root_path",
-        "scheduler",
-        "scheduler_class",
-        "scheduler_configurations",
-        "scheduler_tasks",
+        "scheduler_config",
         "secret",
         "security",
         "servers",
@@ -870,15 +867,16 @@ class Esmerald(Lilya):
                 """
             ),
         ] = None,
-        scheduler_class: Annotated[
-            Optional["SchedulerType"],
+        scheduler_config: Annotated[
+            Optional["SchedulerConfig"],
             Doc(
                 """
-                Esmerald integrates out of the box with [Asyncz](https://asyncz.tarsild.io/)
+                Esmerald comes with an internal scheduler connfiguration that can be used to schedule tasks with any scheduler at your choice.
+
+
+                Esmerald also integrates out of the box with [Asyncz](https://asyncz.tarsild.io/)
                 and the scheduler class is nothing more than the `AsyncIOScheduler` provided
                 by the library.
-
-                Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
 
                 !!! Tip
                     You can create your own scheduler class and use it with Esmerald.
@@ -891,68 +889,11 @@ class Esmerald(Lilya):
 
                 ```python
                 from esmerald import Esmerald
-                from asyncz.schedulers import AsyncIOScheduler
+                from esmerald.contrib.scheduler.asyncz.config import AsynczConfig
 
-                app = Esmerald(scheduler_class=AsyncIOScheduler)
-                ```
-                """
-            ),
-        ] = None,
-        scheduler_tasks: Annotated[
-            Optional[Dict[str, str]],
-            Doc(
-                """
-                Mapping in the format `<task-name>: <location>` indicating the tasks to
-                be run by the scheduler.
+                scheduler_config = AsynczConfig()
 
-                Read more about the [scheduler](https://esmerald.dev/scheduler/scheduler/?h=scheduler_class#esmeraldscheduler) and how to use.
-
-                **Note** - To enable the scheduler, you **must** set the `enable_scheduler=True`.
-
-                **Example**
-
-                ```python
-                from esmerald import Esmerald
-
-                app = Esmerald(
-                    enable_scheduler=True,
-                    scheduler_tasks={
-                        "collect_market_data": "accounts.tasks",
-                        "send_newsletter": "accounts.tasks",
-                    },
-                )
-                ```
-                """
-            ),
-        ] = None,
-        scheduler_configurations: Annotated[
-            Optional[Dict[str, Union[str, Dict[str, str]]]],
-            Doc(
-                """
-                Mapping of extra configuratioms being passed to the scheduler.
-                These are [Asyncz Configurations](https://asyncz.tarsild.io/schedulers/?h=confi#example-configuration).
-
-                **Example**
-
-                ```python
-                from esmerald import Esmerald
-
-                configurations = {
-                    "asyncz.stores.mongo": {"type": "mongodb"},
-                    "asyncz.stores.default": {"type": "redis", "database": "0"},
-                    "asyncz.executors.threadpool": {
-                        "max_workers": "20",
-                        "class": "asyncz.executors.threadpool:ThreadPoolExecutor",
-                    },
-                    "asyncz.executors.default": {"class": "asyncz.executors.asyncio::AsyncIOExecutor"},
-                    "asyncz.task_defaults.coalesce": "false",
-                    "asyncz.task_defaults.max_instances": "3",
-                    "asyncz.task_defaults.timezone": "UTC",
-                }
-
-                app = Esmerald(
-                    scheduler_configurations=configurations
-                )
+                app = Esmerald(scheduler_config=scheduler_config)
                 ```
                 """
             ),
@@ -980,9 +921,6 @@ class Esmerald(Lilya):
                 """
                 Object of time `datetime.timezone` or string indicating the
                 timezone for the application.
-
-                **Note** - The timezone is internally used for the supported
-                scheduler.
 
                 **Example**
 
@@ -1568,10 +1506,8 @@ class Esmerald(Lilya):
         self.enable_scheduler = self.load_settings_value(
             "enable_scheduler", enable_scheduler, is_boolean=True
         )
-        self.scheduler_class = self.load_settings_value("scheduler_class", scheduler_class)
-        self.scheduler_tasks = self.load_settings_value("scheduler_tasks", scheduler_tasks) or {}
-        self.scheduler_configurations = (
-            self.load_settings_value("scheduler_configurations", scheduler_configurations) or {}
+        self.scheduler_config: "SchedulerConfig" = self.load_settings_value(
+            "scheduler_config", scheduler_config
         )
         self.timezone = self.load_settings_value("timezone", timezone)
         self.root_path = self.load_settings_value("root_path", root_path)
@@ -1626,6 +1562,9 @@ class Esmerald(Lilya):
         self.encoders = self.load_settings_value("encoders", encoders) or []
         self._register_application_encoders()
 
+        if self.enable_scheduler:
+            self.activate_scheduler()
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1672,9 +1611,6 @@ class Esmerald(Lilya):
                 static_route = Include(path=config.path, app=config.to_app())
                 self.router.validate_root_route_parent(static_route)
                 self.router.routes.append(static_route)
-
-        if self.enable_scheduler:
-            self.activate_scheduler()
 
         self.create_webhooks_signature_model(self.webhooks)
         self.activate_openapi()
@@ -1752,25 +1688,23 @@ class Esmerald(Lilya):
 
         :raises ImportError: If the scheduler modules are not installed.
         """
-        try:
-            from asyncz.contrib.esmerald.scheduler import EsmeraldScheduler
-            from asyncz.schedulers import AsyncIOScheduler
-        except ImportError as e:
-            raise ImportError(
-                "The scheduler must be installed. You can do it with `pip install esmerald[schedulers]`"
-            ) from e
+        if self.scheduler_config is None:
+            raise ImproperlyConfigured(
+                "It cannot start the scheduler if there is no scheduler_config declared."
+            )
 
-        # Defaulting the scheduler class to AsyncIOScheduler
-        if self.scheduler_class is None:
-            self.scheduler_class = AsyncIOScheduler
+        if self.lifespan is not None:
+            return None
 
-        self.scheduler = EsmeraldScheduler(
-            app=self,
-            scheduler_class=self.scheduler_class,
-            tasks=self.scheduler_tasks,
-            timezone=self.timezone,
-            configurations=self.scheduler_configurations,
-        )
+        if self.on_startup is not None:
+            self.on_startup.append(self.scheduler_config.start)
+        else:
+            self.on_startup = [self.scheduler_config.start]
+
+        if self.on_shutdown is not None:
+            self.on_shutdown.append(self.scheduler_config.shutdown)
+        else:
+            self.on_shutdown = [self.scheduler_config.shutdown]
 
     def get_settings_value(
         self,

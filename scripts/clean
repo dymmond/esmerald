@@ -6,6 +6,9 @@ fi
 if [ -d 'site' ] ; then
     rm -r site
 fi
+if [ -d 'site_lang' ] ; then
+    rm -r site_lang
+fi
 if [ -d 'htmlcov' ] ; then
     rm -r htmlcov
 fi

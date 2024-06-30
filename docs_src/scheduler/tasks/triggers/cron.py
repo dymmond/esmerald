@@ -1,5 +1,5 @@
-from asyncz.contrib.esmerald.decorator import scheduler
 from asyncz.triggers import CronTrigger
+from esmerald.contrib.schedulers.asyncz.decorator import scheduler
 
 
 @scheduler(trigger=CronTrigger(month="4-9,12", day="3rd friday", hour="0-4"))

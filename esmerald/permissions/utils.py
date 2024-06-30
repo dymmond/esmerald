@@ -14,6 +14,10 @@ async def continue_or_raise_permission_exception(
     apiview: "APIGateHandler",
     permission: "BasePermission",
 ) -> None:
+    """
+    Check if the request has permission to access the API view.
+    If not permitted, raise a PermissionDenied exception.
+    """
     has_permission: Callable = permission.has_permission
 
     if not is_async_callable(has_permission):

@@ -2,8 +2,8 @@ import logging
 
 from loguru import logger
 
-from asyncz.contrib.esmerald.decorator import scheduler
 from asyncz.triggers import IntervalTrigger
+from esmerald.contrib.schedulers.asyncz.decorator import scheduler
 
 logging.basicConfig()
 logging.getLogger("esmerald").setLevel(logging.DEBUG)

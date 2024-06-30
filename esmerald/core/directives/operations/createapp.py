@@ -30,6 +30,7 @@ def create_app(name: str, with_basic_controller: bool, verbosity: int) -> None:
         "secret_key": SECRET_KEY_INSECURE_PREFIX + get_random_secret_key(),
         "verbosity": verbosity,
         "with_basic_controller": with_basic_controller,
+        "simple": False,
     }
     directive = TemplateDirective()
 
