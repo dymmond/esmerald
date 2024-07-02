@@ -1,4 +1,4 @@
-__version__ = "3.2.6"
+__version__ = "3.2.7"
 
 
 from lilya import status

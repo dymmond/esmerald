@@ -5,6 +5,20 @@ hide:
 
 # Release Notes
 
+## 3.2.7
+
+This was missed from version [3.2.6](#326).
+
+### Changed
+
+- Removed unused middleware.
+- Updated AppSettingsMiddleware for lazy loading
+- Updated `globalise_settings`.
+
+### Fixed
+
+- Performance issues caused by `AppSettingsModule`.
+
 ## 3.2.6
 
 ### Added
