@@ -18,10 +18,6 @@ Great framework with great documentation and great examples how to use it.
 
 The documentation can be found <a href="https://ariadnegraphql.org/docs/intro" target="_blank">here</a>.
 
-## [Esmerald Sessions](https://esmerald-sessions.dymmond.com/)
-
-Manages sessions for Esmerald using Redis, Memcache or any custom backend.
-
 ### Esmerald Simple JWT
 
 Do you need to implement a JWT access with Esmerald and you don't want to spend a lot of timme configuring

@@ -39,7 +39,7 @@ from pydantic_core.core_schema import (
 )
 from typing_extensions import Literal
 
-from esmerald.backgound import BackgroundTask, BackgroundTasks  # noqa
+from esmerald.background import BackgroundTask, BackgroundTasks  # noqa
 from esmerald.enums import MediaType
 
 R = TypeVar("R", bound=LilyaResponse)

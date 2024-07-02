@@ -14,154 +14,137 @@ And some others.
 
 ## Esmerald scaffold
 
-To help you out with some of those decisions, we developed a [scaffold](https://github.com/dymmond/esmerald-scaffold)
-with some examples how to jump start a project quickly without wasting a lot of time and presenting one folder option
-for the project.
+In the past, Esmerald had the [scaffold](https://github.com/dymmond/esmerald-scaffold) a good starting point but that
+was before the [directives](./directives/index.md) were introduced.
 
-### What does it bring
+It is strongly advised to use them if you want to create a nice structured project containing generated
+files out of the box as well as, if you want, also deployment.
 
-* `deployment` folder - Where some deployment files are placed. This is based on a previous doc about
-[docker](./deployment/docker.md). Feel free to ignore.
-* `README.md` - Auto generated readme file with instructions how to run.
-* `Makefile` - Classic UNIX like Makefile with some pre-defined commands used within the scaffold.
-* The project itself - The source code for the scaffold.
-    * `apps` - Where the scaffold apps live.
-    * `core` - Containing core common files, such as settings.
-    * `tests` - Some already made tests for the scaffold views.
-    * `main` - Containing the application logic to start.
-    * `serve` - A personal touch. Based on Django `manage.py`, we thought it would be nice to have a similar file
-that helps you out with the startup of a project. **Should only be used for development purposes**.
-    * `urls` - Containing urls of the application.
+You can read more about [directives and how to use them](./directives/index.md) in the corresponding
+section.
 
-!!! Note
-    The auto-generated `README.md` of the scaffold contains some instructions how to run it quick and simple using
-    the `Makefile` commands.
+### How to quickly use them
 
-### How to use it
+Imagine you want a project containing also deployment files for a project called `my_project`.
 
-To use the [scaffold](https://github.com/dymmond/esmerald-scaffold) you will need to have installed:
-
-* python 3.8+
-* [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/)
-
-And to install, run:
+#### Generate the application
 
 ```shell
-$ cookiecutter https://github.com/dymmond/esmerald-scaffold
+$ esmerald createproject my_project --with-deployment
 ```
 
-And simply follow the instructions.
+#### Generate an esmerald "app"
 
-Once the project is generated you should have a folder structure similar to this:
+```shell
+$ cd my_project/my_project/apps
+$ esmerald createapp welcome
+```
+
+#### Add your welcome handler
+
+Add the first `welcome` handler (endpoint) by changing the `controllers.py` inside `welcome/v1/controllers.py`.
+
+Edit that file and add the following.
+
+```python
+from esmerald import JSONResponse, get
+
+
+@get("/welcome")
+async def welcome() -> JSONResponse:
+    return JSONResponse({"message": "Welcome to Esmerald!"})
+
+```
+
+#### Update the "app" urls
+
+You can do this directly in the `urls.py` generated in the root of the project as well but we will
+be adding first in the app to give a complete example.
+
+Edit the `welcome/v1/urls.py` and add the following:
+
+```python
+from esmerald import Gateway
+
+from .controllers import welcome
+
+route_patterns = [
+    Gateway(handler=welcome, name="welcome"),
+]
+
+```
+
+#### Update the root urls
+
+Now its time to update the generated `urls.py` from the root.
+
+Edit the `my_project/urls.py` and add the following.
+
+```python
+from esmerald import Include
+
+route_patterns = [Include(namespace="welcome.v1.urls")]
+```
+
+You are now ready to start the application. Since the files were generated, you can run inside the `my_project`
+root the `make run`.
+
+#### Check the documentation
+
+You can now check `http://localhost:8000/docs/swager` and you can test your brand new API.
+
+
+#### Final structure
+
+You should now have a project similar to the following structure, containing also deployment files.
 
 ```shell
 .
-├── Dockerfile # similar Dockerfile.conf from the docker examples
-├── Makefile
-├── README.md
 ├── deployment
-│   ├── nginx.conf # similar nginx.conf from the docker examples
-│   └── supervisor.conf # similar supervisor.conf from the docker examples
-├── requirements.txt
-└── src # or the name given by you when generating the project
-    ├── __init__.py
-    ├── apps
-    │   ├── __init__.py
-    │   └── welcome
-    │       ├── __init__.py
-    │       └── v1
-    │           ├── __init__.py
-    │           ├── urls.py
-    │           └── controllers.py
-    ├── core
-    │   ├── __init__.py
-    │   │   └── __init__.cpython-39.pyc
-    │   └── configs
-    │       ├── __init__.py
-    │       ├── development
-    │       │   ├── __init__.py
-    │       │   └── settings.py
-    │       └── testing
-    │           ├── __init__.py
-    │           └── settings.py
-    ├── main.py
-    ├── serve.py
-    ├── tests
-    │   ├── __init__.py
-    │   └── test_app.py
-    └── urls.py
+│   ├── docker
+│   │   └── Dockerfile
+│   ├── gunicorn
+│   │   └── gunicorn_conf.py
+│   ├── nginx
+│   │   ├── nginx.conf
+│   │   └── nginx.json-logging.conf
+│   └── supervisor
+│       └── supervisord.conf
+├── Makefile
+├── my_project
+│   ├── apps
+│   │   ├── __init__.py
+│   │   └── welcome
+│   │       ├── directives
+│   │       │   ├── __init__.py
+│   │       │   └── operations
+│   │       │       └── __init__.py
+│   │       ├── __init__.py
+│   │       ├── tests.py
+│   │       └── v1
+│   │           ├── controllers.py
+│   │           ├── __init__.py
+│   │           ├── schemas.py
+│   │           └── urls.py
+│   ├── configs
+│   │   ├── development
+│   │   │   ├── __init__.py
+│   │   │   └── settings.py
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   └── testing
+│   │       ├── __init__.py
+│   │       └── settings.py
+│   ├── __init__.py
+│   ├── main.py
+│   ├── serve.py
+│   ├── tests
+│   │   ├── conftest.py
+│   │   ├── __init__.py
+│   │   └── test_app.py
+│   └── urls.py
+└── requirements
+    ├── base.txt
+    ├── development.txt
+    └── testing.txt
 ```
-
-### The welcome app
-
-The way the [scaffold](https://github.com/dymmond/esmerald-scaffold) was designed was not to replace any possible
-design, instead, it was conceived with the idea of facilitating your life when starting a project.
-
-The `welcome` app located inside `/apps/` contains two examples of views. One as function based view and another
-using classes and [permissions](./permissions.md).
-
-The tests are running against those views so if you delete them, the tests are expected to fail.
-
-### The URLs
-
-The `urls` were structured to show you how powerful the [Include](./routing/routes.md#include) is and how clean
-an instance of Esmerald can be when starting a project containing a log of urls as you can see from the `main.py`.
-
-### Settings
-
-The [settings](./application/settings.md) where placed inside a `config` folder and separated by enviroment also to
-show you what Esmerald means by **Simplicity from settings**.
-
-### Makefile
-
-Contains all available commands that can be used within the [scaffold](https://github.com/dymmond/esmerald-scaffold)
-and if you want to list them all simply run:
-
-```shell
-$ make # Lists all available commands
-```
-
-The `Makefile` contains two very important commands. The `make run` and the `make test`.
-
-As you can probably notice, the `make run` runs with the `DevelopmentSettings` module and the `make test` with
-`TestingSettings` module.
-
-**Both development and testing settings are passed via ESMERALD_SETTINGS_MODULE**.
-
-We hope this scaffold can help you clearing out some ideas or even giving you new ones for your applications.
-
-## Nginx, Gunicorn, Tortoise and Docker
-
-We all know how hard it can be to think about deployments and configurations to go live and for that reason there is
-also a cookiecutter available based on the [esmerald scaffold](#esmerald-scaffold) with a lot of extra files
-prepared for the deployment (if needed) and adds an extra flavour in case you want to also use Tortoise ORM.
-
-This can be done for any ORM, really. The goal of the cookiecutter is to give a complex, production ready and similar
-approach to the normal go-lives.
-
-### How to use
-
-To use the [scaffold](https://github.com/dymmond/esmerald-tortoise-nginx-gunicorn-supervisor) you will need to have installed:
-
-* python 3.8+
-* [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/)
-
-And to install, run:
-
-```shell
-$ cookiecutter https://github.com/dymmond/esmerald-tortoise-nginx-gunicorn-supervisor
-```
-
-And simply follow the instructions.
-
-### What does it bring inside
-
-As mentioned before, this is very similar to the [esmerald scaffold](#esmerald-scaffold) so you can expect
-a similar folder structure as that one but also adds some extras.
-
-* `deployment` - Folder containing nginx, supervisor and gunicorn configurations.
-* `docker` - Folder containing a Dockerfile ready to be used and deployed.
-
-The URLs, tests and Makefile file also follows the same structure as the [esmerald scaffold](#how-to-use).
-
-For a more comprehensive explanation, simply install the cookiecutter and give it a try.
