@@ -190,6 +190,48 @@ Once the application is up, all the routes are mounted and therefore the url pat
 Esmerald encourages standard practices and design in mind which means that any application, big or small,
 custom or enterprise, fits within Esmerald ecosystem without scalability issues.
 
+## Quickstart
+
+To quickly start with Esmerald, you can just do this. Using `uvicorn` as example.
+
+```python
+#!/usr/bin/env python
+import uvicorn
+
+from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+
+
+@get()
+def welcome() -> JSONResponse:
+    return JSONResponse({"message": "Welcome to Esmerald"})
+
+
+@get()
+def user(user: str) -> JSONResponse:
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+
+
+@get()
+def user_in_request(request: Request) -> JSONResponse:
+    user = request.path_params["user"]
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+
+
+app = Esmerald(
+    routes=[
+        Gateway("/esmerald", handler=welcome),
+        Gateway("/esmerald/{user}", handler=user),
+        Gateway("/esmerald/in-request/{user}", handler=user_in_request),
+    ]
+)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
+```
+
+Then you can access the endpoints.
+
 ## Settings
 
 Like every other framework, when starting an application, a lot of [settings](./application/settings.md) can/need to be
