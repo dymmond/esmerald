@@ -17,7 +17,7 @@ from lilya.middleware import DefineMiddleware
 from lilya.types import ASGIApp
 from typing_extensions import Literal
 
-from esmerald.backgound import BackgroundTask, BackgroundTasks
+from esmerald.background import BackgroundTask, BackgroundTasks
 from esmerald.exceptions import MissingDependency
 from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include

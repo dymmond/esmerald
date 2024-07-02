@@ -8,7 +8,7 @@ from esmerald.enums import MediaType
 from esmerald.responses.base import Response
 
 if TYPE_CHECKING:  # pragma: no cover
-    from esmerald.backgound import BackgroundTask, BackgroundTasks
+    from esmerald.background import BackgroundTask, BackgroundTasks
     from esmerald.protocols.template import TemplateEngineProtocol
     from esmerald.types import ResponseCookies
 

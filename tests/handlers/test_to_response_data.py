@@ -18,7 +18,7 @@ from lilya.responses import (
 from lilya.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
 from pydantic import ValidationError
 
-from esmerald.backgound import BackgroundTask
+from esmerald.background import BackgroundTask
 from esmerald.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
 from esmerald.enums import HttpMethod, MediaType
 from esmerald.requests import Request

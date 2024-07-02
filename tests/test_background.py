@@ -2,7 +2,7 @@ from typing import Callable
 
 import pytest
 
-from esmerald.backgound import BackgroundTask, BackgroundTasks
+from esmerald.background import BackgroundTask, BackgroundTasks
 from esmerald.responses import Response
 from esmerald.routing.router import Include
 from esmerald.testclient import EsmeraldTestClient, create_client

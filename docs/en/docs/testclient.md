@@ -73,7 +73,7 @@ the settings for a given test temporarily to test any scenario that requires spe
 
 The `override_settings` acts as a normal function decorator or as a context manager.
 
-The settings you can override are the ones declared in the [settings](./settings.md).
+The settings you can override are the ones declared in the [settings](./application/settings.md).
 
 ```python
 from esmerald.testclient import override_settings

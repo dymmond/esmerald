@@ -33,7 +33,7 @@ from esmerald.exceptions import ImproperlyConfigured
 PlainTextResponse = PlainText
 
 if TYPE_CHECKING:  # pragma: no cover
-    from esmerald.backgound import BackgroundTask, BackgroundTasks
+    from esmerald.background import BackgroundTask, BackgroundTasks
     from esmerald.types import ResponseCookies
 
 T = TypeVar("T")
