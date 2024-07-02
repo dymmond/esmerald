@@ -46,11 +46,11 @@ async def world_socket(socket: WebSocket) -> None:
 
 class World(APIView):
     @get(path="/{url}")
-    async def home(request: Request, url: str) -> Response:
+    async def home(self, request: Request, url: str) -> Response:
         return Response(f"URL: {url}")
 
     @post(path="/{url}", status_code=status.HTTP_201_CREATED)
-    async def mars(request: Request, url: str) -> JSONResponse: ...
+    async def mars(self, request: Request, url: str) -> JSONResponse: ...
 
     @websocket(path="/{path_param:str}")
     async def pluto(self, socket: WebSocket) -> None:
