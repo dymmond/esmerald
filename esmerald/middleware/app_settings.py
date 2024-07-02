@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING
 from lilya.conf.context_vars import get_override_settings
 from lilya.types import ASGIApp, Receive, Scope, Send
 
-from esmerald import settings
-from esmerald.conf import reload_settings
+from esmerald import __lazy_settings__, settings
 from esmerald.protocols.middleware import MiddlewareProtocol
 
 if TYPE_CHECKING:
@@ -33,6 +32,5 @@ class ApplicationSettingsMiddleware(MiddlewareProtocol):
             settings.configure(app.settings)
         else:
             if not get_override_settings():
-                app_settings = reload_settings()
-                settings.configure(app_settings())
+                settings.configure(__lazy_settings__._wrapped)
         await self.app(scope, receive, send)

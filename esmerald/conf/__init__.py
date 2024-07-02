@@ -67,3 +67,4 @@ class EsmeraldLazySettings(LazyObject):
 
 
 settings: Type["EsmeraldAPISettings"] = EsmeraldLazySettings()  # type: ignore
+__lazy_settings__: Type["EsmeraldAPISettings"] = EsmeraldLazySettings()  # type: ignore

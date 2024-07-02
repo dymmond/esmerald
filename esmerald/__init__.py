@@ -3,7 +3,7 @@ __version__ = "3.2.6"
 
 from lilya import status
 
-from esmerald.conf import settings
+from esmerald.conf import __lazy_settings__, settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.context import Context
 from esmerald.injector import Factory, Inject
@@ -128,4 +128,5 @@ __all__ = [
     "whput",
     "whroute",
     "whtrace",
+    "__lazy_settings__",
 ]
