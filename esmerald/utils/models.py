@@ -10,6 +10,6 @@ def create_field_model(*, field: FieldInfo, name: str, model_name: str) -> Type[
     """
     params = {name.lower(): (field.annotation, field)}
     data_field_model: Type[BaseModel] = create_model(  # type: ignore[call-overload]
-        __model_name=model_name, __config__={"arbitrary_types_allowed": True}, **params
+        model_name, __config__={"arbitrary_types_allowed": True}, **params
     )
     return data_field_model
