@@ -203,8 +203,8 @@ By default, the `createapp` generates a python module with a `v1` sub-module tha
 
 * **schemas.py** - Empty file with a simple pydantic `BaseModel` import and where you can place any,
 as the import suggests, pydantic model to be used with the `accounts/v1`.
-* **urls.py** - You can place the urls of the views of your `accounts/v1`.
-* **controllers.py** - You can place all the handlers and views of your `accounts/v1`.
+* **urls.py** - You can place the urls of the controllers of your `accounts/v1`.
+* **controllers.py** - You can place all the handlers and controllers of your `accounts/v1`.
 
 A **tests** file is also generated suggesting that you could also add some specific application tests there.
 
@@ -251,7 +251,7 @@ Now it is time to add the newly created view to the urls of the accounts.
 
 #### Add the accounts urls to the application urls
 
-Now that we have created the views and the urls for the accounts, it is time to add the accounts to the application
+Now that we have created the controllers and the urls for the accounts, it is time to add the accounts to the application
 urls.
 
 Let's update the `myproject/urls.py`.
