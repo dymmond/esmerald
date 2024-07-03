@@ -2505,15 +2505,6 @@ class Esmerald(Lilya):
         """
         return esmerald_settings
 
-    async def build_include_scope(self, scope: Scope) -> Scope:
-        """
-        Builds the scope for a specific mounted application.
-        """
-        if "route_root_path" in scope:
-            if "root_include_path" not in scope:
-                scope["root_include_path"] = scope["route_root_path"]
-        return scope
-
     async def globalise_settings(self) -> None:
         """
         Making sure the global settings remain as is
