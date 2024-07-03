@@ -25,7 +25,7 @@ This was missed from version [3.2.6](#326).
 
 - `XFrameOptionsMiddleware` to handle with options headers.
 - `SecurityMiddleware` adding various security headers to the request/response lifecycle.
-- `override_settings` as new decorator that allows to override the Lilya settings in any given test.
+- `override_settings` as new decorator that allows to override the Esmerald settings in any given test.
 - New `--simple` flag for `createproject` directive generating simple structured projects.
 - Integration with new `rapidoc` as another alternative to display the OpenAPI docs.
 
