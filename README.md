@@ -361,7 +361,7 @@ Good design is always encouraged and Esmerald allows complex routing on any leve
 
 ### The handlers (views)
 
-```python title="myapp/accounts/views.py"
+```python title="myapp/accounts/controllers.py"
 from esmerald import get, post, put, status, websocket, APIView, Request, JSONResponse, Response, WebSocket
 from pydantic import BaseModel
 
@@ -427,7 +427,7 @@ If a `path` is not provided, defaults to `/`.
 
 ```python title="myapp/accounts/urls.py"
 from esmerald import Gateway, WebSocketGateway
-from .views import home, another, world_socket, World
+from .controllers import home, another, world_socket, World
 
 route_patterns = [
     Gateway(handler=update_product),
@@ -481,7 +481,7 @@ If a `path` is not provided, defaults to `/`.
 
 ```python title="src/myapp/accounts/urls.py"
 from esmerald import Gateway, WebSocketGateway
-from .views import home, another, world_socket, World
+from .controllers import home, another, world_socket, World
 
 my_urls = [
     Gateway(handler=update_product),
