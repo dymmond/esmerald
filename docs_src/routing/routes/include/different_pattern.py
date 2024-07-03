@@ -1,6 +1,6 @@
 from esmerald import Gateway, WebSocketGateway
 
-from .views import World, another, home, world_socket
+from .controllers import World, another, home, world_socket
 
 my_urls = [
     Gateway(handler=update_product),
