@@ -377,7 +377,7 @@ If a `path` is not provided, defaults to `/`.
 
 ```python title="myapp/accounts/urls.py" hl_lines="5-9"
 from esmerald import Gateway, WebSocketGateway
-from .contollers import home, another, world_socket, World
+from .controllers import home, another, world_socket, World
 
 route_patterns = [
     Gateway(handler=update_product),
