@@ -270,6 +270,8 @@ module = [
     "passlib.*",
     "esmerald.contrib.auth.saffier.*",
     "nest_asyncio.*",
+    "unidecode.*",
+    "text_unidecode.*",
 ]
 ignore_missing_imports = true
 ignore_errors = true

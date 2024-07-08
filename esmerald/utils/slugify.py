@@ -141,7 +141,7 @@ def slugify(
 
     # ensure text is unicode
     if not isinstance(text, str):
-        text = str(text, "utf-8", "ignore")
+        text = str(text, "utf-8", "ignore")  # type: ignore
 
     # replace quotes with dashes - pre-process
     text = QUOTE_PATTERN.sub(DEFAULT_SEPARATOR, text)
@@ -155,7 +155,7 @@ def slugify(
 
     # ensure text is still in unicode
     if not isinstance(text, str):
-        text = str(text, "utf-8", "ignore")
+        text = str(text, "utf-8", "ignore")  # type: ignore
 
     # character entity reference
     if entities:
