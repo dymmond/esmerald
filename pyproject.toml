@@ -39,7 +39,6 @@ classifiers = [
 ]
 dependencies = [
     "anyio>=3.7.1,<5.0.0",
-    "awesome-slugify>=1.6.5,<2",
     "click>=8.1.4,<9.0.0",
     "email-validator >=2.2.0,<3.0.0",
     "itsdangerous>=2.1.2,<3.0.0",
