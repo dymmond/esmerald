@@ -7,9 +7,8 @@ from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 if TYPE_CHECKING:  # pragma: no cover
-    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
-
     from esmerald.interceptors.types import Interceptor
+    from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
     from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler

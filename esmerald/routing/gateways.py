@@ -14,9 +14,8 @@ from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string
 
 if TYPE_CHECKING:  # pragma: no cover
-    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
-
     from esmerald.interceptors.types import Interceptor
+    from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
     from esmerald.types import Dependencies, ExceptionHandlerMap, Middleware, ParentType

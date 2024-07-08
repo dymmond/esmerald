@@ -20,7 +20,7 @@ from esmerald.types import (
 from esmerald.utils.constants import AVAILABLE_METHODS
 
 if TYPE_CHECKING:  # pragma: no cover
-    from openapi_schemas_pydantic.v3_1_0 import SecurityScheme
+    from esmerald.openapi.schemas.v3_1_0 import SecurityScheme
 
 
 SUCCESSFUL_RESPONSE = "Successful response"

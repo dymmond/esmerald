@@ -2,7 +2,6 @@ from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
 from lilya.types import Lifespan
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Annotated, Doc
@@ -14,6 +13,7 @@ from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.datastructures import Secret
 from esmerald.encoders import Encoder
 from esmerald.interceptors.types import Interceptor
+from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Pluggable
 from esmerald.routing import gateways
@@ -144,7 +144,7 @@ class EsmeraldAPISettings(BaseSettings):
         Optional[Contact],
         Doc(
             """
-            A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.Contact` containing the contact information of the application/API.
+            A dictionary or an object of type `esmerald.openapi.schemas.v3_1_0.Contact` containing the contact information of the application/API.
 
             Both dictionary and object contain several fields.
 
@@ -168,7 +168,7 @@ class EsmeraldAPISettings(BaseSettings):
         Optional[License],
         Doc(
             """
-            A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.License` containing the license information of the application/API.
+            A dictionary or an object of type `esmerald.openapi.schemas.v3_1_0.License` containing the license information of the application/API.
 
             Both dictionary and object contain several fields.
 

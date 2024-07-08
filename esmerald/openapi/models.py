@@ -1,39 +1,39 @@
 from typing import Any, Dict, List, Optional, Union
 
-from openapi_schemas_pydantic.v3_1_0.contact import Contact as Contact
-from openapi_schemas_pydantic.v3_1_0.discriminator import Discriminator as Discriminator
-from openapi_schemas_pydantic.v3_1_0.encoding import Encoding as Encoding
-from openapi_schemas_pydantic.v3_1_0.example import Example as Example
-from openapi_schemas_pydantic.v3_1_0.external_documentation import (
-    ExternalDocumentation as ExternalDocumentation,
-)
-from openapi_schemas_pydantic.v3_1_0.header import Header as Header
-from openapi_schemas_pydantic.v3_1_0.info import Info as Info
-from openapi_schemas_pydantic.v3_1_0.license import License as License
-from openapi_schemas_pydantic.v3_1_0.link import Link as Link
-from openapi_schemas_pydantic.v3_1_0.media_type import MediaType as MediaType
-from openapi_schemas_pydantic.v3_1_0.oauth_flow import OAuthFlow as OpenOAuthFlow
-from openapi_schemas_pydantic.v3_1_0.oauth_flows import OAuthFlows as OAuthFlows
-from openapi_schemas_pydantic.v3_1_0.operation import Operation as Operation
-from openapi_schemas_pydantic.v3_1_0.parameter import Parameter as Parameter
-from openapi_schemas_pydantic.v3_1_0.path_item import PathItem as PathItem
-from openapi_schemas_pydantic.v3_1_0.paths import Paths as Paths
-from openapi_schemas_pydantic.v3_1_0.reference import Reference as Reference
-from openapi_schemas_pydantic.v3_1_0.request_body import RequestBody as RequestBody
-from openapi_schemas_pydantic.v3_1_0.response import Response as Response
-from openapi_schemas_pydantic.v3_1_0.schema import Schema as Schema
-from openapi_schemas_pydantic.v3_1_0.security_requirement import (
-    SecurityRequirement as SecurityRequirement,
-)
-from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme as SecurityScheme
-from openapi_schemas_pydantic.v3_1_0.server import Server as Server
-from openapi_schemas_pydantic.v3_1_0.server_variable import ServerVariable as ServerVariable
-from openapi_schemas_pydantic.v3_1_0.tag import Tag as Tag
-from openapi_schemas_pydantic.v3_1_0.xml import XML as XML
 from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Literal
 
 from esmerald.openapi.enums import APIKeyIn, SecuritySchemeType
+from esmerald.openapi.schemas.v3_1_0.contact import Contact as Contact
+from esmerald.openapi.schemas.v3_1_0.discriminator import Discriminator as Discriminator
+from esmerald.openapi.schemas.v3_1_0.encoding import Encoding as Encoding
+from esmerald.openapi.schemas.v3_1_0.example import Example as Example
+from esmerald.openapi.schemas.v3_1_0.external_documentation import (
+    ExternalDocumentation as ExternalDocumentation,
+)
+from esmerald.openapi.schemas.v3_1_0.header import Header as Header
+from esmerald.openapi.schemas.v3_1_0.info import Info as Info
+from esmerald.openapi.schemas.v3_1_0.license import License as License
+from esmerald.openapi.schemas.v3_1_0.link import Link as Link
+from esmerald.openapi.schemas.v3_1_0.media_type import MediaType as MediaType
+from esmerald.openapi.schemas.v3_1_0.oauth_flow import OAuthFlow as OpenOAuthFlow
+from esmerald.openapi.schemas.v3_1_0.oauth_flows import OAuthFlows as OAuthFlows
+from esmerald.openapi.schemas.v3_1_0.operation import Operation as Operation
+from esmerald.openapi.schemas.v3_1_0.parameter import Parameter as Parameter
+from esmerald.openapi.schemas.v3_1_0.path_item import PathItem as PathItem
+from esmerald.openapi.schemas.v3_1_0.paths import Paths as Paths
+from esmerald.openapi.schemas.v3_1_0.reference import Reference as Reference
+from esmerald.openapi.schemas.v3_1_0.request_body import RequestBody as RequestBody
+from esmerald.openapi.schemas.v3_1_0.response import Response as Response
+from esmerald.openapi.schemas.v3_1_0.schema import Schema as Schema
+from esmerald.openapi.schemas.v3_1_0.security_requirement import (
+    SecurityRequirement as SecurityRequirement,
+)
+from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme as SecurityScheme
+from esmerald.openapi.schemas.v3_1_0.server import Server as Server
+from esmerald.openapi.schemas.v3_1_0.server_variable import ServerVariable as ServerVariable
+from esmerald.openapi.schemas.v3_1_0.tag import Tag as Tag
+from esmerald.openapi.schemas.v3_1_0.xml import XML as XML
 
 
 class APIKey(SecurityScheme):

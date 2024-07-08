@@ -45,11 +45,10 @@ from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
-    from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
-
     from esmerald.applications import Esmerald
     from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
+    from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions import BasePermission
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
