@@ -3,9 +3,9 @@ import typing
 from inspect import isclass
 from typing import Any, Union
 
-import slugify
 from lilya._utils import is_class_and_subclass as is_class_and_subclass
 from lilya.compat import is_async_callable as is_async_callable
+from slugify import slugify
 from typing_extensions import get_args, get_origin
 
 from esmerald.datastructures.msgspec import Struct
@@ -41,7 +41,7 @@ def is_msgspec_struct(value: typing.Any) -> bool:
 
 
 def clean_string(value: str) -> str:
-    return slugify.slugify(value, separator="_")  # type: ignore
+    return slugify(value, separator="_")  # type: ignore
 
 
 def is_optional_union(annotation: Any) -> bool:
