@@ -41,7 +41,7 @@ def is_msgspec_struct(value: typing.Any) -> bool:
 
 
 def clean_string(value: str) -> str:
-    return slugify.slugify(value, separator="_")  # type: ignore
+    return slugify.slugify(value, separator="_")
 
 
 def is_optional_union(annotation: Any) -> bool:
