@@ -16,7 +16,6 @@ from typing import (
 from httpx._client import CookieTypes
 from lilya.conf.context_vars import set_override_settings
 from lilya.testclient import TestClient  # noqa
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
 from pydantic import AnyUrl
 
 from esmerald.applications import Esmerald
@@ -24,6 +23,7 @@ from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings as Settings
 from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.encoders import Encoder
+from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.utils.crypto import get_random_secret_key
 
 if sys.version_info >= (3, 10):  # pragma: no cover

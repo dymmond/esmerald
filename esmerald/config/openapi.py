@@ -1,6 +1,5 @@
 from typing import Any, Dict, List, Optional, Sequence, Union
 
-from openapi_schemas_pydantic.v3_1_0.security_scheme import SecurityScheme
 from pydantic import AnyUrl, BaseModel
 from typing_extensions import Annotated, Doc
 
@@ -13,6 +12,7 @@ from esmerald.openapi.docs import (
 )
 from esmerald.openapi.models import Contact, License
 from esmerald.openapi.openapi import get_openapi
+from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
 from esmerald.requests import Request
 from esmerald.responses import HTMLResponse, JSONResponse
 from esmerald.routing.handlers import get
@@ -90,7 +90,7 @@ class OpenAPIConfig(BaseModel):
         Optional[Contact],
         Doc(
             """
-            API contact information. This is an OpenAPI schema contact, meaning, in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.contact.Contact`.
+            API contact information. This is an OpenAPI schema contact, meaning, in a dictionary format compatible with OpenAPI or an instance of `esmerald.openapi.schemas.v3_1_0.contact.Contact`.
             """
         ),
     ] = None
@@ -106,7 +106,7 @@ class OpenAPIConfig(BaseModel):
         Optional[License],
         Doc(
             """
-            API Licensing information. This is an OpenAPI schema licence, meaning, in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.license.License`.
+            API Licensing information. This is an OpenAPI schema licence, meaning, in a dictionary format compatible with OpenAPI or an instance of `esmerald.openapi.schemas.v3_1_0.license.License`.
             """
         ),
     ] = None
@@ -114,7 +114,7 @@ class OpenAPIConfig(BaseModel):
         Optional[List[SecurityScheme]],
         Doc(
             """
-            API Security requirements information. This is an OpenAPI schema security, meaning, in a dictionary format compatible with OpenAPI or an instance of `openapi_schemas_pydantic.v3_1_0.security_requirement.SecurityScheme`.
+            API Security requirements information. This is an OpenAPI schema security, meaning, in a dictionary format compatible with OpenAPI or an instance of `esmerald.openapi.schemas.v3_1_0.security_requirement.SecurityScheme`.
             """
         ),
     ] = None

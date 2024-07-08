@@ -18,8 +18,6 @@ from lilya._internal._module_loading import import_string
 from lilya.apps import Lilya
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
-from openapi_schemas_pydantic.v3_1_0 import Contact, License, SecurityScheme
-from openapi_schemas_pydantic.v3_1_0.open_api import OpenAPI
 from pydantic import AnyUrl, ValidationError
 from typing_extensions import Annotated, Doc
 
@@ -45,6 +43,8 @@ from esmerald.middleware.csrf import CSRFMiddleware
 from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, ExceptionMiddleware
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
+from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
+from esmerald.openapi.schemas.v3_1_0.open_api import OpenAPI
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
@@ -291,7 +291,7 @@ class Esmerald(Lilya):
             Optional[Contact],
             Doc(
                 """
-                A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.Contact` containing the contact information of the application/API.
+                A dictionary or an object of type `esmerald.openapi.schemas.v3_1_0.Contact` containing the contact information of the application/API.
 
                 Both dictionary and object contain several fields.
 
@@ -304,7 +304,7 @@ class Esmerald(Lilya):
 
                 ```python
                 from esmerald import Esmerald
-                from openapi_schemas_pydantic.v3_1_0 import Contact
+                from esmerald.openapi.schemas.v3_1_0 import Contact
 
                 contact = Contact(
                     name="Black Window",
@@ -350,7 +350,7 @@ class Esmerald(Lilya):
             Optional[License],
             Doc(
                 """
-                A dictionary or an object of type `openapi_schemas_pydantic.v3_1_0.License` containing the license information of the application/API.
+                A dictionary or an object of type `esmerald.openapi.schemas.v3_1_0.License` containing the license information of the application/API.
 
                 Both dictionary and object contain several fields.
 
@@ -362,7 +362,7 @@ class Esmerald(Lilya):
 
                 ```python
                 from esmerald import Esmerald
-                from openapi_schemas_pydantic.v3_1_0 import License
+                from esmerald.openapi.schemas.v3_1_0 import License
 
                 license = License(
                     name="MIT",
