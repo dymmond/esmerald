@@ -48,7 +48,6 @@ dependencies = [
     "pydantic>=2.8.0,<3.0.0",
     "pydantic-settings>=2.0.0,<3.0.0",
     "python-multipart>=0.0.7,<0.0.10",
-    "python-slugify>=8.0.4,<10.0.0",
     "orjson>=3.8.5,<4.0.0",
     "msgspec>=0.18.5,<1.0.0",
     "nest_asyncio>=1.5.8,<2.0.0",

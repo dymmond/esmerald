@@ -5,10 +5,10 @@ from typing import Any, Union
 
 from lilya._utils import is_class_and_subclass as is_class_and_subclass
 from lilya.compat import is_async_callable as is_async_callable
-from slugify import slugify
 from typing_extensions import get_args, get_origin
 
 from esmerald.datastructures.msgspec import Struct
+from esmerald.utils.slugify import slugify
 
 if sys.version_info >= (3, 10):
     from types import UnionType
