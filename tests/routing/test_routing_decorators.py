@@ -2,7 +2,7 @@ import typing
 
 import pytest
 
-from esmerald import Esmerald, Response, Router
+from esmerald import Esmerald, Response, Router, WebSocket
 from esmerald.testclient import TestClient
 
 app = Esmerald()
@@ -31,6 +31,13 @@ async def generic() -> Response:
 @app.route("/params/{name}/<age:int>", methods=["GET", "POST"])
 async def params(name: str, age: int) -> Response:
     return Response(f"Name {name} with age {age}", media_type="text/plain")
+
+
+@app.websocket(path="/ws")
+async def websocket_endpoint(socket: WebSocket) -> None:
+    await socket.accept()
+    await socket.send_text("Hello, world!")
+    await socket.close()
 
 
 @pytest.fixture
@@ -71,6 +78,10 @@ def test_decorators(another_client: TestClient):
     assert response.status_code == 200
     assert response.text == "Name John with age 20"
 
+    with another_client.websocket_connect("/ws") as session:
+        text = session.receive_text()
+        assert text == "Hello, world!"
+
 
 router = Router()
 
@@ -98,6 +109,13 @@ async def another_generic() -> Response:
 @router.route("/another/params/{name}/<age:int>", methods=["GET", "POST"])
 async def another_params(name: str, age: int) -> Response:
     return Response(f"Name {name} with age {age}", media_type="text/plain")
+
+
+@router.websocket(path="/another/ws")
+async def another_websocket_endpoint(socket: WebSocket) -> None:
+    await socket.accept()
+    await socket.send_text("Hello, world!")
+    await socket.close()
 
 
 another_app = Esmerald()
@@ -141,3 +159,7 @@ def test_router_decorators(client: TestClient):
     response = client.post("/another/params/John/20")
     assert response.status_code == 200
     assert response.text == "Name John with age 20"
+
+    with client.websocket_connect("/another/ws") as session:
+        text = session.receive_text()
+        assert text == "Hello, world!"
