@@ -33,7 +33,7 @@ except MissingDependency:
     TemplateConfig = Any  # type: ignore
 
 if TYPE_CHECKING:
-    from esmerald.applications import Esmerald
+    from esmerald.applications import Application, Esmerald
     from esmerald.conf.global_settings import EsmeraldAPISettings
     from esmerald.datastructures import Cookie, ResponseHeader, State as State
     from esmerald.injector import Inject
@@ -50,6 +50,7 @@ if TYPE_CHECKING:
     from esmerald.websockets import WebSocket
 else:
     HTTPHandler = Any
+    Application = Any
     Message = Any
     Receive = Any
     Scope = Any
@@ -97,7 +98,7 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
-ParentType = Union[View, Router, Gateway, WebSocketGateway, Esmerald, Include]
+ParentType = Union[View, Router, Gateway, WebSocketGateway, Esmerald, Include, Application]
 APIGateHandler = Union[
     Gateway,
     WebSocketGateway,
