@@ -2524,15 +2524,6 @@ class Application(Lilya):
         await super().__call__(scope, receive, send)
         await self.globalise_settings()
 
-    def route(
-        self,
-        path: str,
-        methods: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        include_in_schema: bool = True,
-    ) -> Callable:
-        raise ImproperlyConfigured("`route` is not valid. Use Gateway instead.")
-
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
         raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
 
@@ -3301,13 +3292,13 @@ class Esmerald(Application):
             ),
         ],
         methods: Annotated[
-            List[str],
+            Optional[List[str]],
             Doc(
                 """
                 A list of HTTP methods to serve the Gateway.
                 """
             ),
-        ],
+        ] = None,
         dependencies: Annotated[
             Optional[Dependencies],
             Doc(

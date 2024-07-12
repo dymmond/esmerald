@@ -1757,13 +1757,13 @@ class Router(BaseRouter):
             ),
         ],
         methods: Annotated[
-            List[str],
+            Optional[List[str]],
             Doc(
                 """
                 A list of HTTP methods to serve the Gateway.
                 """
             ),
-        ],
+        ] = None,
         dependencies: Annotated[
             Optional[Dependencies],
             Doc(
@@ -1830,6 +1830,9 @@ class Router(BaseRouter):
             ),
         ] = None,
     ) -> Callable:
+        if methods is None:
+            methods = [HttpMethod.GET.value]
+
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
                 handler=func,
