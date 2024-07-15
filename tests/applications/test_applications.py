@@ -415,12 +415,6 @@ def test_app_async_gen_lifespan(test_client_factory):
     assert cleanup_complete
 
 
-def test_raise_improperly_configured_on_route_function(test_client_factory):
-    with pytest.raises(ImproperlyConfigured):
-        app = Esmerald(routes=[])
-        app.route(path="/")
-
-
 def test_raise_improperly_configured_on_websocket_route_function(test_client_factory):
     with pytest.raises(ImproperlyConfigured):
         app = Esmerald(routes=[])

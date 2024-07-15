@@ -74,7 +74,7 @@ if TYPE_CHECKING:  # pragma: no cover
 AppType = TypeVar("AppType", bound="Esmerald")
 
 
-class Esmerald(Lilya):
+class Application(Lilya):
     """
     `Esmerald` application object. The main entry-point for any application/API
     with Esmerald.
@@ -141,7 +141,7 @@ class Esmerald(Lilya):
     )
 
     def __init__(
-        self: AppType,
+        self,
         *,
         settings_module: Annotated[
             Union[Optional["SettingsType"], Optional[str]],
@@ -2524,15 +2524,6 @@ class Esmerald(Lilya):
         await super().__call__(scope, receive, send)
         await self.globalise_settings()
 
-    def route(
-        self,
-        path: str,
-        methods: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        include_in_schema: bool = True,
-    ) -> Callable:
-        raise ImproperlyConfigured("`route` is not valid. Use Gateway instead.")
-
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
         raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
 
@@ -2553,6 +2544,909 @@ class Esmerald(Lilya):
         Registers a Encoder into the list of predefined encoders of the system.
         """
         register_esmerald_encoder(encoder)
+
+
+class Esmerald(Application):
+    """
+    `Esmerald` application object. The main entry-point for any application/API
+    with Esmerald.
+
+    This object is complex and very powerful. Read more in detail about [how to start](https://esmerald.dev/esmerald/) and spin-up an application in minutes.
+
+    !!! Tip
+        All the parameters available in the object have defaults being loaded by the
+        [settings system](https://esmerald.dev/application/settings/) if nothing is provided.
+
+    **Note**: More details about the defaults in the [settings reference](./application/settings.md).
+
+    ## Example
+
+    ```python
+    from esmerald import Esmerald.
+
+    app = Esmerald()
+    ```
+    """
+
+    def get(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.get(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def head(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.head(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def post(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.post(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def put(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.put(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def patch(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.patch(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def delete(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.delete(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def trace(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.trace(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def options(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.options(
+            path=path,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def route(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        methods: Annotated[
+            Optional[List[str]],
+            Doc(
+                """
+                A list of HTTP methods to serve the Gateway.
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        include_in_schema: Annotated[
+            bool,
+            Doc(
+                """
+                Boolean flag indicating if it should be added to the OpenAPI docs.
+                """
+            ),
+        ] = True,
+        deprecated: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag for indicating the deprecation of the Gateway and to display it
+                in the OpenAPI documentation..
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.route(
+            path=path,
+            methods=methods,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+            name=name,
+            include_in_schema=include_in_schema,
+            deprecated=deprecated,
+        )
+
+    def websocket(
+        self,
+        path: Annotated[
+            str,
+            Doc(
+                """
+                Relative path of the `Gateway`.
+                The path can contain parameters in a dictionary like format.
+                """
+            ),
+        ],
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
+        dependencies: Annotated[
+            Optional[Dependencies],
+            Doc(
+                """
+                A dictionary of string and [Inject](https://esmerald.dev/dependencies/) instances enable application level dependency injection.
+                """
+            ),
+        ] = None,
+        interceptors: Annotated[
+            Optional[Sequence[Interceptor]],
+            Doc(
+                """
+                A list of [interceptors](https://esmerald.dev/interceptors/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        permissions: Annotated[
+            Optional[Sequence[Permission]],
+            Doc(
+                """
+                A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
+                """
+            ),
+        ] = None,
+        exception_handlers: Annotated[
+            Optional[ExceptionHandlerMap],
+            Doc(
+                """
+                A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        middleware: Annotated[
+            Optional[List[Middleware]],
+            Doc(
+                """
+                A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
+                """
+            ),
+        ] = None,
+    ) -> Callable:
+        return self.router.websocket(
+            path=path,
+            name=name,
+            dependencies=dependencies,
+            interceptors=interceptors,
+            permissions=permissions,
+            exception_handlers=exception_handlers,
+            middleware=middleware,
+        )
 
 
 class ChildEsmerald(Esmerald):
