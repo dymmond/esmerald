@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, Type
+from typing import AsyncGenerator, List, Type
 
 import edgy
 import pytest
@@ -38,7 +38,7 @@ class DocumentService:
 
 
 class DocumentAPIView(APIView):
-    tags: list[str] = ["Document"]
+    tags: List[str] = ["Document"]
     dependencies = {
         "service": Inject(DocumentService),
     }
