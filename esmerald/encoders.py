@@ -66,7 +66,7 @@ class PydanticEncoder(Encoder):
         return obj.model_dump()
 
     def encode(self, annotation: Any, value: Any) -> Any:
-        if isinstance(value, BaseModel):
+        if isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel):
             return value
         return annotation(**value)
 

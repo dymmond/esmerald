@@ -1,4 +1,16 @@
-from typing import TYPE_CHECKING, Any, Dict, List, NamedTuple, Set, Tuple, Type, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    ForwardRef,
+    List,
+    NamedTuple,
+    Set,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 
 from lilya.datastructures import URL
 from pydantic.fields import FieldInfo
@@ -209,8 +221,12 @@ def get_signature(value: Any) -> Type["SignatureModel"]:
 
 
 def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
+    annotation = (
+        ForwardRef(param.annotation) if isinstance(param.annotation, str) else param.annotation
+    )
+
     if param.default_defined:
-        definition = param.annotation, param.default
+        definition = annotation, param.default
     elif not param.optional:
-        definition = param.annotation, ...
+        definition = annotation, ...
     return definition
