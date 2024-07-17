@@ -232,6 +232,40 @@ if __name__ == "__main__":
 
 Then you can access the endpoints.
 
+### Using Esmerald as a decorator
+
+To quickly start with Esmerald you can also use it as decorator, you can just do this. Using `uvicorn` as example.
+
+```python
+#!/usr/bin/env python
+import uvicorn
+
+from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+
+
+app = Esmerald()
+
+
+@app.get("/esmerald")
+def welcome() -> JSONResponse:
+    return JSONResponse({"message": "Welcome to Esmerald"})
+
+
+@app.get("/esmerald/{user}")
+def user(user: str) -> JSONResponse:
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+
+
+@app.get("/esmerald/in-request/{user}")
+def user_in_request(request: Request) -> JSONResponse:
+    user = request.path_params["user"]
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
+```
+
 ## Settings
 
 Like every other framework, when starting an application, a lot of [settings](./application/settings.md) can/need to be
