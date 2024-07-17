@@ -5,6 +5,53 @@ hide:
 
 # Release Notes
 
+## 3.3.0
+
+### Fixed
+
+- Fixes `PydanticEncoder` when checking for subclasses of `BaseModel` causing the dependency injection to fail
+for those specific types
+
+### Added
+
+- Esmerald is ow using `python-slugify` instead of `awesome-slugify` for internals.
+- OpenAPI Schemas Pydantic is now fully integrated with Esmerald OpenAPI.
+- Esmerald now supports `app` as decorator prodiving another way of declaring the routing.
+
+#### Example
+
+```python
+#!/usr/bin/env python
+import uvicorn
+
+from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+
+
+app = Esmerald()
+
+
+@app.get("/esmerald")
+def welcome() -> JSONResponse:
+    return JSONResponse({"message": "Welcome to Esmerald"})
+
+
+@app.get("/esmerald/{user}")
+def user(user: str) -> JSONResponse:
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+
+
+@app.get("/esmerald/in-request/{user}")
+def user_in_request(request: Request) -> JSONResponse:
+    user = request.path_params["user"]
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
+```
+
+The same is also applied to the `Router` object.
+
 ## 3.2.7
 
 This was missed from version [3.2.6](#326).
