@@ -4,11 +4,6 @@ import json
 import warnings
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
 
-from lilya._internal._path import clean_path
-from lilya.middleware import DefineMiddleware
-from lilya.routing import BasePath
-from lilya.status import HTTP_422_UNPROCESSABLE_ENTITY
-from lilya.transformers import TRANSFORMER_TYPES
 from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
@@ -38,9 +33,15 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
+from esmerald.routing._internal import convert_annotation_to_pydantic_model
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass
+from lilya._internal._path import clean_path
+from lilya.middleware import DefineMiddleware
+from lilya.routing import BasePath
+from lilya.status import HTTP_422_UNPROCESSABLE_ENTITY
+from lilya.transformers import TRANSFORMER_TYPES
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
@@ -302,6 +303,16 @@ def get_openapi_path(
             operation.setdefault("responses", {}).setdefault(status_code, {}).setdefault(
                 "content", {}
             ).setdefault(route_response_media_type, {})["schema"] = response_schema
+
+            if handler.handler_signature.return_annotation:
+                response_schema = convert_annotation_to_pydantic_model(
+                    handler.handler_signature.return_annotation
+                )
+
+                if hasattr(response_schema, "model_json_schema"):
+                    operation["responses"][status_code]["content"][route_response_media_type][
+                        "schema"
+                    ] = response_schema.model_json_schema()
 
         # Additional responses
         if handler.response_models:
