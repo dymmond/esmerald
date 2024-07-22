@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.3.1
+
+### Changed
+
+- Automatic detection of a response for a default status code when using OpenAPI documentation.
+- Addressing `from __future__ import annotation` when using the dependency injection defaulting to Any.
+
 ## 3.3.0
 
 ### Fixed
