@@ -38,6 +38,7 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
+from esmerald.routing._internal import convert_annotation_to_pydantic_model
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass
@@ -345,6 +346,22 @@ def get_openapi_path(
                 )
                 dict_update(openapi_response, model_schema)
                 openapi_response["description"] = description
+
+        # Convert to automatic response detection if none is provided by the
+        # responses of the handler.
+        if handler.handler_signature.return_annotation:
+            response_schema = convert_annotation_to_pydantic_model(
+                handler.handler_signature.return_annotation
+            )
+
+            if (
+                hasattr(response_schema, "model_json_schema")
+                and status_code not in handler.responses
+                and int(status_code) not in handler.responses
+            ):
+                operation["responses"][status_code]["content"][route_response_media_type][
+                    "schema"
+                ] = response_schema.model_json_schema()
 
         http422 = str(HTTP_422_UNPROCESSABLE_ENTITY)
         if (all_route_params or handler.data_field) and not any(

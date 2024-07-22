@@ -3,7 +3,7 @@ from typing import Any, Dict, Union
 from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
 
-from esmerald import JSON, Gateway, Include, MiddlewareProtocol, get
+from esmerald import Gateway, Include, MiddlewareProtocol, get
 from esmerald.testclient import create_client
 from tests.settings import TestSettings
 
@@ -32,7 +32,7 @@ def read_mode() -> Dict[str, str]:
 
 
 @get("/item")
-async def read_item() -> JSON:
+async def read_item() -> Dict[str, str]:
     """ """
 
 
