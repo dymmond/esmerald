@@ -2357,6 +2357,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         "permissions",
         "middleware",
         "parent",
+        "__type__",
     )
 
     def __init__(
@@ -2387,6 +2388,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.include_in_schema = None
         self.fn: Optional[AnyCallable] = None
         self.tags: Sequence[str] = []
+        self.__type__: Union[str, None] = None
 
     def validate_reserved_words(self, signature: Signature) -> None:
         """
@@ -2927,7 +2929,7 @@ class Include(LilyaInclude):
                 continue
 
             if isinstance(route.handler, (HTTPHandler, WebSocketHandler)):
-                route.handler.parent = route  # type: ignore
+                route.handler.parent = route
                 routing.append(route)
                 continue
 

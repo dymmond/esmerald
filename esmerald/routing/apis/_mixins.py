@@ -76,7 +76,11 @@ class MethodMixin:
             method,
             (HTTPHandler, WebSocketHandler, WebhookHandler),
         ):
-            if hasattr(cls, "extra_allowed") and cls.extra_allowed is not None and name.lower() in cls.extra_allowed:  # type: ignore[unreachable]
+            if (
+                hasattr(cls, "extra_allowed")
+                and cls.extra_allowed is not None
+                and name.lower() in cls.extra_allowed
+            ):
                 return True
 
             if name.lower() not in cls.http_allowed_methods:
@@ -140,7 +144,7 @@ class MethodMixin:
             method,
             (HTTPHandler, WebSocketHandler, WebhookHandler),
         ):
-            if (  # type: ignore
+            if (
                 not method.handler_signature.return_annotation
                 or method.handler_signature.return_annotation is None
             ):

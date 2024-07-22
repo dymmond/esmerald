@@ -57,7 +57,7 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
         """
         self.app = app
         self.config = config
-        self.user_model: T = user_model
+        self.user_model: T = user_model  # type: ignore
 
     async def retrieve_user(self, token_sub: Any) -> T:
         """

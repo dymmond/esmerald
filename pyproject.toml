@@ -114,7 +114,7 @@ testing = [
     "flask>=1.1.2,<4.0.0",
     "freezegun>=1.2.2,<2.0.0",
     "mongoz>=0.6.0",
-    "mypy==1.9.0",
+    "mypy==1.11.0",
     "pytest>=7.1.3,<9.0.0",
     "pytest-cov>=4.1.0,<6.0.0",
     "pytest-asyncio>=0.20.0",
@@ -210,7 +210,7 @@ disallow_any_generics = false
 implicit_reexport = false
 show_error_codes = true
 disallow_incomplete_defs = true
-disable_error_code = "attr-defined,has-type,override"
+disable_error_code = "attr-defined,has-type,override,safe-super"
 exclude = "esmerald/conf,esmerald/utils"
 warn_unused_ignores = true
 warn_redundant_casts = true
