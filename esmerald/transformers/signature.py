@@ -1,6 +1,5 @@
 import re
-from inspect import Parameter as InspectParameter
-from inspect import Signature as InspectSignature
+from inspect import Parameter as InspectParameter, Signature as InspectSignature
 from typing import (
     TYPE_CHECKING,
     Any,

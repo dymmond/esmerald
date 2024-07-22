@@ -73,7 +73,25 @@ def test_user_msgspec_openapi(test_client_factory):
                         "responses": {
                             "201": {
                                 "description": "Successful response",
-                                "content": {"application/json": {"schema": {"type": "string"}}},
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "name": {"type": "string", "title": "Name"},
+                                                "email": {
+                                                    "anyOf": [
+                                                        {"type": "string"},
+                                                        {"type": "null"},
+                                                    ],
+                                                    "title": "Email",
+                                                },
+                                            },
+                                            "type": "object",
+                                            "required": ["name", "email"],
+                                            "title": "User",
+                                        }
+                                    }
+                                },
                             },
                             "422": {
                                 "description": "Validation Error",

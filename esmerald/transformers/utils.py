@@ -2,7 +2,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
-    ForwardRef,
     List,
     NamedTuple,
     Set,
@@ -12,7 +11,7 @@ from typing import (
     cast,
 )
 
-from pydantic import TypeAdapter
+from lilya.datastructures import URL
 from pydantic.fields import FieldInfo
 
 from esmerald.enums import ParamType, ScopeType
@@ -22,7 +21,6 @@ from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
-from lilya.datastructures import URL
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
