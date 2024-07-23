@@ -2253,8 +2253,8 @@ def delete(
 
 
                 @delete(path='/read', responses={
-                        204: OpenAPIResponse(model=Power, description=...)
                         400: OpenAPIResponse(model=Error, description=...)
+                        401: OpenAPIResponse(model=Power, description=...)
                     }
                 )
                 async def remove() -> Union[None, ItemOut]:
