@@ -149,7 +149,7 @@ class Task:
         trigger: Union[TriggerType, None] = None,
         id: Union[str, None] = None,
         mistrigger_grace_time: Union[int, UndefinedType, None] = undefined,
-        coalesce: Union[bool, UndefinedType] = undefined,
+        coalesce: Union[bool, UndefinedType, None] = undefined,
         max_instances: Union[int, UndefinedType, None] = undefined,
         next_run_time: Union[datetime, str, UndefinedType, None] = undefined,
         store: str = "default",
@@ -183,7 +183,8 @@ class Task:
         self.trigger = trigger
         self.id = id
         self.mistrigger_grace_time = mistrigger_grace_time
-        self.coalesce = coalesce
+        # coalesce is only valid to be undefined or bool
+        self.coalesce = coalesce or undefined
         self.max_instances = max_instances
         self.next_run_time = next_run_time
         self.store = store
