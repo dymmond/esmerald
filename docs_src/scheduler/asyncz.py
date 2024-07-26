@@ -1,17 +1,18 @@
 import warnings
+from uuid import uuid4
 from datetime import datetime
 from datetime import timezone as dtimezone
-from typing import Any, Callable, Dict, Union, cast
+from typing import Any, Callable, Dict, Union, cast, Type
 
 from asyncz.schedulers import AsyncIOScheduler
+from asyncz.schedulers.types import SchedulerType
 from asyncz.triggers.types import TriggerType
-from asyncz.typing import undefined
+from asyncz.tasks.base import Task as AsynczTask
+from asyncz.typing import undefined, UndefinedType
 from esmerald.conf import settings
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.utils.module_loading import import_string
-
-SchedulerCallable = Callable[..., Any]
 
 
 class AsynczConfig(SchedulerConfig):
@@ -22,7 +23,7 @@ class AsynczConfig(SchedulerConfig):
 
     def __init__(
         self,
-        scheduler_class: SchedulerCallable = AsyncIOScheduler,
+        scheduler_class: Type[SchedulerType] = AsyncIOScheduler,
         tasks: Union[Dict[str, str]] = None,
         timezone: Union[dtimezone, str, None] = None,
         configurations: Union[Dict[str, Dict[str, str]], None] = None,
@@ -61,7 +62,7 @@ class AsynczConfig(SchedulerConfig):
             scheduler=self.scheduler_class,
             timezone=self.timezone,
             configurations=self.configurations,
-            **self.options
+            **self.options,
         )
 
         self.register_tasks(tasks=self.tasks)
@@ -87,11 +88,11 @@ class AsynczConfig(SchedulerConfig):
 
     def get_scheduler(
         self,
-        scheduler: "SchedulerCallable",
+        scheduler: Type[SchedulerType],
         timezone: Union[dtimezone, str, None] = None,
         configurations: Union[Dict[str, Any], None] = None,
         **options: Dict[str, Any],
-    ) -> SchedulerCallable:
+    ) -> SchedulerType:
         """
         Initiates the scheduler from the given time.
         If no value is provided, it will default to AsyncIOScheduler.
@@ -105,18 +106,15 @@ class AsynczConfig(SchedulerConfig):
             **options: Additional options.
 
         Returns:
-            SchedulerCallable: An instance of a Scheduler.
+            SchedulerType: An instance of a Scheduler.
         """
         if not timezone:
             timezone = settings.timezone
 
         if not configurations:
-            return cast(SchedulerCallable, scheduler(timezone=timezone, **options))
+            return scheduler(timezone=timezone, **options)
 
-        return cast(
-            SchedulerCallable,
-            scheduler(global_config=configurations, timezone=timezone, **options),
-        )
+        return scheduler(global_config=configurations, timezone=timezone, **options)
 
     async def start(self, **kwargs: Dict[str, Any]) -> None:
         """
@@ -149,10 +147,10 @@ class Task:
         name: Union[str, None] = None,
         trigger: Union[TriggerType, None] = None,
         id: Union[str, None] = None,
-        mistrigger_grace_time: Union[int, None] = None,
-        coalesce: Union[bool, None] = None,
-        max_instances: Union[int, None] = None,
-        next_run_time: Union[datetime, None] = None,
+        mistrigger_grace_time: Union[int, UndefinedType, None] = undefined,
+        coalesce: Union[bool, UndefinedType] = undefined,
+        max_instances: Union[int, UndefinedType, None] = undefined,
+        next_run_time: Union[datetime, str, UndefinedType, None] = undefined,
         store: str = "default",
         executor: str = "default",
         replace_existing: bool = False,
@@ -161,7 +159,7 @@ class Task:
         is_enabled: bool = True,
     ) -> None:
         """
-        Initializes a new instance of the `AsynczScheduler` class.
+        Initializes a new instance of the `Task` class for the  Scheduler.
 
         Args:
             name (str, optional): Textual description of the task.
@@ -183,10 +181,10 @@ class Task:
         self.name = name
         self.trigger = trigger
         self.id = id
-        self.mistrigger_grace_time = mistrigger_grace_time or undefined
-        self.coalesce = coalesce or undefined
-        self.max_instances = max_instances or undefined
-        self.next_run_time = next_run_time or undefined
+        self.mistrigger_grace_time = mistrigger_grace_time
+        self.coalesce = coalesce
+        self.max_instances = max_instances
+        self.next_run_time = next_run_time
         self.store = store
         self.executor = executor
         self.replace_existing = replace_existing
@@ -195,10 +193,10 @@ class Task:
         self.is_enabled = is_enabled
         self.fn = None
 
-    def add_task(self, scheduler: "SchedulerCallable") -> None:
+    def add_task(self, scheduler: SchedulerType) -> None:
         try:
             scheduler.add_task(
-                fn=self.fn,
+                self.fn,
                 trigger=self.trigger,
                 args=self.args,
                 kwargs=self.kwargs,
@@ -214,11 +212,3 @@ class Task:
             )
         except Exception as e:
             raise ImproperlyConfigured(str(e)) from e
-
-    def __call__(self, fn: Any) -> Any:
-        """
-        Tricking the object into think it's being instantiated by in reality
-        is just returning itself.
-        """
-        self.fn = fn
-        return self

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 from unittest.mock import MagicMock
 
@@ -6,6 +6,7 @@ import pytest
 from asyncz.executors.base import BaseExecutor
 from asyncz.schedulers import AsyncIOScheduler
 from asyncz.schedulers.base import BaseScheduler
+from asyncz.schedulers.datastructures import TaskDefaultStruct
 from asyncz.stores.base import BaseStore
 from asyncz.tasks.types import TaskType
 from asyncz.triggers import IntervalTrigger
@@ -109,6 +110,9 @@ def test_esmerald_starts_scheduler():
 def scheduler_class(monkeypatch):
     scheduler_class = AsyncIOScheduler
     scheduler_class._setup = MagicMock()
+    # by patching out _setup task_defaults are not initialized anymore
+    scheduler_class.task_defaults = TaskDefaultStruct()
+    scheduler_class.timezone = timezone.utc
     return scheduler_class
 
 
@@ -151,7 +155,6 @@ def scheduler_class(monkeypatch):
     ids=["ini-style", "yaml-style"],
 )
 def test_esmerald_scheduler_configurations(scheduler_class, global_config):
-
     scheduler_config = AsynczConfig(
         tasks=scheduler_tasks(), scheduler_class=scheduler_class, configurations=global_config
     )
