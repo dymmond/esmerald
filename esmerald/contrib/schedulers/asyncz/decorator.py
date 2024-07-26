@@ -22,9 +22,9 @@ def scheduler(
     extra_kwargs: Optional[Dict[str, Any]] = None,
     is_enabled: bool = True,
 ) -> "Task":
-
     def wrapper(func: Any) -> Task:
         task = Task(
+            fn=func,
             name=name,
             trigger=trigger,
             id=id,
@@ -39,7 +39,6 @@ def scheduler(
             kwargs=extra_kwargs,
             is_enabled=is_enabled,
         )
-        task.fn = func
         return task
 
     return cast(Task, wrapper)
