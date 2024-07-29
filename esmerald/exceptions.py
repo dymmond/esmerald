@@ -186,7 +186,7 @@ class ValidationError(HTTPException):
         elif not isinstance(detail, dict) and not isinstance(detail, list):
             detail = [detail]
 
-        self.detail = _get_error_details(detail)
+        detail = _get_error_details(detail)
         super().__init__(
             status_code=status_code, detail=cast(str, detail), headers=headers, **extra
         )
