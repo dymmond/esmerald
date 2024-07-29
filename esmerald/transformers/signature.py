@@ -48,7 +48,10 @@ def is_server_error(error: Any, klass: Type["SignatureModel"]) -> bool:
     Returns:
         bool: True if the error is a server error, False otherwise.
     """
-    return error["loc"][-1] in klass.dependency_names
+    try:
+        return error["loc"][-1] in klass.dependency_names
+    except IndexError:
+        return False
 
 
 class Parameter(ArbitraryBaseModel):
