@@ -5,6 +5,23 @@ hide:
 
 # Release Notes
 
+## 3.3.3
+
+### Changed
+
+- Internal implementation of the exceptions.
+- Removed redundant exception declaration and delegate the internals to Lilya.
+- Internal code cleaning.
+
+### Added
+
+- [ValidationError](./exceptions.md#validatorerror) for custom independent raising exceptions within
+any Esmerald application
+
+### Fixed
+
+- `is_server_error` for dependencies was causing an exception to be raised in a `loc[-1]`.
+
 ## 3.3.2
 
 ### Changed
