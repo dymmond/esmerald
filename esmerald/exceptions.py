@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from lilya import status
 from lilya.exceptions import (
@@ -155,7 +155,7 @@ class ValidationError(HTTPException):
 
     def __init__(
         self,
-        detail: Union[str, None] = None,
+        detail: Union[str, List[str], Dict[str, Any], Tuple[str]] = None,
         status_code: Annotated[
             Optional[int],
             Doc(
@@ -181,14 +181,15 @@ class ValidationError(HTTPException):
             ),
         ],
     ) -> None:
-        super().__init__(status_code=status_code, detail=detail, headers=headers, **extra)
-
-        if isinstance(detail, tuple):  # type: ignore
-            detail = list(detail)  # type: ignore
-        elif not isinstance(detail, dict) and not isinstance(detail, list):  # type: ignore
-            detail = [detail]  # type: ignore
+        if isinstance(detail, tuple):
+            detail = list(detail)
+        elif not isinstance(detail, dict) and not isinstance(detail, list):
+            detail = [detail]
 
         self.detail = _get_error_details(detail)
+        super().__init__(
+            status_code=status_code, detail=cast(str, detail), headers=headers, **extra
+        )
 
 
 ExceptionErrorMap = Union[
