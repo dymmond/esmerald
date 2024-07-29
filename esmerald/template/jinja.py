@@ -56,4 +56,4 @@ class JinjaTemplateEngine(TemplateEngineProtocol[JinjaTemplate]):  # type: ignor
         try:
             return self.env.get_template(template_name)
         except JinjaTemplateNotFound as e:  # pragma: no cover
-            raise TemplateNotFound(template_name=template_name) from e
+            raise TemplateNotFound(name=template_name) from e

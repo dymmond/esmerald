@@ -3,8 +3,15 @@ from typing import Any, Dict, Optional, Type, Union
 
 from lilya import status
 from lilya.exceptions import (
+    EnvironmentError as EnvironmentError,
     HTTPException as LilyaHTTPException,
     ImproperlyConfigured as ImproperlyConfigured,
+    LilyaException as LilyaException,
+    MethodNotAllowed as MethodNotAllowed,
+    NotAuthorized as NotAuthorized,
+    NotFound as NotFound,
+    PermissionDenied as PermissionDenied,
+    TemplateNotFound as TemplateNotFound,
     WebSocketException as LilyaWebSocketException,
 )
 from pydantic import BaseModel, create_model
@@ -14,18 +21,7 @@ RequestErrorModel: Type[BaseModel] = create_model("Request")
 WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
 
 
-class EsmeraldAPIException(Exception):
-    def __init__(self, *args: Any, detail: str = ""):
-        self.detail = detail
-        super().__init__(*(str(arg) for arg in args if arg), self.detail)
-
-    def __repr__(self) -> str:  # pragma: no cover
-        if self.detail:
-            return f"{self.__class__.__name__} - {self.detail}"
-        return self.__class__.__name__
-
-    def __str__(self) -> str:
-        return "".join(self.args).strip()
+class EsmeraldAPIException(LilyaException): ...
 
 
 class HTTPException(LilyaHTTPException, EsmeraldAPIException):
@@ -97,14 +93,6 @@ class HTTPException(LilyaHTTPException, EsmeraldAPIException):
         return f"<{self.status_code}: {self.__class__.__name__} />"
 
 
-class EsmeraldError(RuntimeError):
-    """
-    Generic exception.
-    """
-
-    ...
-
-
 class ImproperlyMiddlewareConfigured(ImproperlyConfigured): ...
 
 
@@ -113,27 +101,8 @@ class NotAuthenticated(HTTPException):
     detail = "Authentication credentials were not provided."
 
 
-class PermissionDenied(HTTPException):
-    status_code = status.HTTP_403_FORBIDDEN
-    detail = "You do not have permission to perform this action."
-
-
 class ValidationErrorException(HTTPException, ValueError):
     status_code = status.HTTP_400_BAD_REQUEST
-
-
-class NotAuthorized(HTTPException):
-    status_code = status.HTTP_401_UNAUTHORIZED
-    detail = "You do not have authorization to perform this action."
-
-
-class NotFound(HTTPException, ValueError):
-    detail = "The resource cannot be found."
-    status_code = status.HTTP_404_NOT_FOUND
-
-
-class MethodNotAllowed(HTTPException):
-    status_code = status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 class InternalServerError(HTTPException):
@@ -142,12 +111,6 @@ class InternalServerError(HTTPException):
 
 class ServiceUnavailable(HTTPException):
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-
-
-class TemplateNotFound(InternalServerError):
-    def __init__(self, *args: Any, template_name: str):
-        """Template could not be found."""
-        super().__init__(*args, detail=f"Template {template_name} not found.")
 
 
 class MissingDependency(EsmeraldAPIException, ImportError): ...
@@ -161,9 +124,6 @@ class WebSocketException(LilyaWebSocketException): ...
 
 class AuthenticationError(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
-
-
-class EnvironmentError(EsmeraldAPIException): ...
 
 
 class BroadcastError(ImproperlyConfigured): ...
