@@ -155,6 +155,18 @@ When a response fails, it should throw an error similar to this:
 This can be particularly useful mostly if you want to create custom error messages and to be easy to parse a response
 back to a client.
 
+You can use the `ValidationError` in different way. As a `list`, `tuple`, `str` and `dict` and you can also override the
+default `status_code`.
+
+```python
+from esmerald.exceptions import ValidationError
+
+ValidationError("An error") # as string
+ValidationError({"field": "an error" }) # as dict
+ValidationError(["An error", "another error"]) # as list
+ValidationError(("An error", "another error")) # as tuple
+ValidationError("Not Authorized", status_code=401) # override the status_code
+```
 
 ## Custom exceptions
 
