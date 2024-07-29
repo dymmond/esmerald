@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Optional, Union
 
 from lilya import status
 from lilya.exceptions import (
@@ -14,11 +14,7 @@ from lilya.exceptions import (
     TemplateNotFound as TemplateNotFound,
     WebSocketException as WebSocketException,
 )
-from pydantic import BaseModel, create_model
 from typing_extensions import Annotated, Doc
-
-RequestErrorModel: Type[BaseModel] = create_model("Request")
-WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
 
 
 class EsmeraldAPIException(LilyaException): ...
