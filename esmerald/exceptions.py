@@ -16,6 +16,31 @@ from lilya.exceptions import (
 )
 from typing_extensions import Annotated, Doc
 
+from esmerald.contrib.encoding import force_str
+
+
+def _get_error_details(data: Any) -> Any:
+    if isinstance(data, (list, tuple)):
+        return [_get_error_details(item) for item in data]
+
+    elif isinstance(data, dict):
+        return {key: _get_error_details(value) for key, value in data.items()}
+
+    text = force_str(data)
+    return ErrorDetail(text)
+
+
+class ErrorDetail(str):
+    def __new__(cls, string: str) -> "ErrorDetail":
+        self = super().__new__(cls, string)
+        return self
+
+    def __repr__(self) -> str:
+        return "ErrorDetail(string=%r)" % (str(self))
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
 
 class EsmeraldAPIException(LilyaException): ...
 
@@ -117,6 +142,53 @@ class OpenAPIException(ImproperlyConfigured): ...
 
 class AuthenticationError(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class ValidationError(HTTPException):
+    """
+    Provides a more detailed error message for validation errors
+    when thrown by the application.
+    """
+
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Validation error."
+
+    def __init__(
+        self,
+        detail: Union[str, None] = None,
+        status_code: Annotated[
+            Optional[int],
+            Doc(
+                """
+                An integer with the status code to be raised.
+                """
+            ),
+        ] = None,
+        headers: Annotated[
+            Optional[Dict[str, Any]],
+            Doc(
+                """
+                Any python dictionary containing headers.
+                """
+            ),
+        ] = None,
+        **extra: Annotated[
+            Any,
+            Doc(
+                """
+                Any extra information used by the exception.
+                """
+            ),
+        ],
+    ) -> None:
+        super().__init__(status_code=status_code, detail=detail, headers=headers, **extra)
+
+        if isinstance(detail, tuple):  # type: ignore
+            detail = list(detail)  # type: ignore
+        elif not isinstance(detail, dict) and not isinstance(detail, list):  # type: ignore
+            detail = [detail]  # type: ignore
+
+        self.detail = _get_error_details(detail)
 
 
 ExceptionErrorMap = Union[

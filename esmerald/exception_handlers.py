@@ -8,7 +8,11 @@ from orjson import loads
 from pydantic import ValidationError
 
 from esmerald.enums import MediaType
-from esmerald.exceptions import ExceptionErrorMap, HTTPException, ImproperlyConfigured
+from esmerald.exceptions import (
+    ExceptionErrorMap,
+    HTTPException,
+    ImproperlyConfigured,
+)
 from esmerald.responses import JSONResponse, Response
 
 
