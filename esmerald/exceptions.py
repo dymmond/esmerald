@@ -12,7 +12,7 @@ from lilya.exceptions import (
     NotFound as NotFound,
     PermissionDenied as PermissionDenied,
     TemplateNotFound as TemplateNotFound,
-    WebSocketException as LilyaWebSocketException,
+    WebSocketException as WebSocketException,
 )
 from pydantic import BaseModel, create_model
 from typing_extensions import Annotated, Doc
@@ -119,14 +119,8 @@ class MissingDependency(EsmeraldAPIException, ImportError): ...
 class OpenAPIException(ImproperlyConfigured): ...
 
 
-class WebSocketException(LilyaWebSocketException): ...
-
-
 class AuthenticationError(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
-
-
-class BroadcastError(ImproperlyConfigured): ...
 
 
 ExceptionErrorMap = Union[
