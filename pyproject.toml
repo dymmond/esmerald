@@ -173,8 +173,8 @@ features = ["all", "testing"]
 
 [tool.hatch.envs.test.scripts]
 # needs docker services running
-test = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args}"
-test_man = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} -s -vv"
+test = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} --disable-warnings"
+test_man = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} -s -vv --disable-warnings"
 coverage = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
 check_types = "mypy -p esmerald"
 

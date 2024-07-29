@@ -181,3 +181,101 @@ async def test_validation_error_multiple(test_client_factory):
             "value": "Value must be less than another",
             "another": "Another must be greater than value",
         }
+
+
+async def test_validation_simple(test_client_factory):
+
+    class InputIn(BaseModel):
+        value: int
+        another: int
+
+        @model_validator(mode="after")
+        def validate_value(self):
+            if self.value > self.another:
+                raise ValidationError("Value must be less than another")
+            return self
+
+    @post()
+    async def raise_validation_error(data: InputIn) -> InputIn:
+        return data
+
+    with create_client(
+        routes=[Gateway(handler=raise_validation_error)],
+    ) as client:
+        response = client.post("/", json={"value": 2, "another": 1})
+        assert response.status_code == 400
+        assert response.json()["detail"] == ["Value must be less than another"]
+
+
+async def test_validation_as_list(test_client_factory):
+
+    class InputIn(BaseModel):
+        value: int
+        another: int
+
+        @model_validator(mode="after")
+        def validate_value(self):
+            if self.value > self.another:
+                raise ValidationError(["Value must be less than another", "try again"])
+            return self
+
+    @post()
+    async def raise_validation_error(data: InputIn) -> InputIn:
+        return data
+
+    with create_client(
+        routes=[Gateway(handler=raise_validation_error)],
+    ) as client:
+        response = client.post("/", json={"value": 2, "another": 1})
+        assert response.status_code == 400
+        assert response.json()["detail"] == ["Value must be less than another", "try again"]
+
+
+async def test_validation_as_tuple(test_client_factory):
+
+    class InputIn(BaseModel):
+        value: int
+        another: int
+
+        @model_validator(mode="after")
+        def validate_value(self):
+            if self.value > self.another:
+                raise ValidationError(("Value must be less than another", "try again"))
+            return self
+
+    @post()
+    async def raise_validation_error(data: InputIn) -> InputIn:
+        return data
+
+    with create_client(
+        routes=[Gateway(handler=raise_validation_error)],
+    ) as client:
+        response = client.post("/", json={"value": 2, "another": 1})
+        assert response.status_code == 400
+        assert response.json()["detail"] == ["Value must be less than another", "try again"]
+
+
+async def test_validation_different_status_code(test_client_factory):
+
+    class InputIn(BaseModel):
+        value: int
+        another: int
+
+        @model_validator(mode="after")
+        def validate_value(self):
+            if self.value > self.another:
+                raise ValidationError(
+                    ("Value must be less than another", "try again"), status_code=401
+                )
+            return self
+
+    @post()
+    async def raise_validation_error(data: InputIn) -> InputIn:
+        return data
+
+    with create_client(
+        routes=[Gateway(handler=raise_validation_error)],
+    ) as client:
+        response = client.post("/", json={"value": 2, "another": 1})
+        assert response.status_code == 401
+        assert response.json()["detail"] == ["Value must be less than another", "try again"]
