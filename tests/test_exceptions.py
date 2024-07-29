@@ -92,7 +92,7 @@ def test_raise_exception_type_status_code_sync(exception, status_code, test_clie
 def test_raise_exception_type(exception, status_code, test_client_factory):
     def raise_exception() -> exception:
         if exception == TemplateNotFound:
-            raise exception(template_name="test.html")
+            raise exception(name="test.html")
         raise exception
 
     with pytest.raises(exception):
@@ -119,7 +119,7 @@ def test_raise_exception_type(exception, status_code, test_client_factory):
 async def test_raise_exception_type_async(exception, status_code, test_client_factory):
     async def raise_exception() -> exception:
         if exception == TemplateNotFound:
-            raise exception(template_name="test.html")
+            raise exception(name="test.html")
         raise exception
 
     with pytest.raises(exception):
