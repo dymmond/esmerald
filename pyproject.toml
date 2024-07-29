@@ -100,7 +100,7 @@ dev = [
 templates = ["mako>=1.2.4,<2.0.0"]
 jwt = ["passlib==1.7.4", "python-jose>=3.3.0,<4"]
 encoders = ["ujson>=5.7.0,<6"]
-schedulers = ["asyncz>=0.8.2"]
+schedulers = ["asyncz>=0.10.0"]
 all = [
     "esmerald[test,dev,templates,jwt,encoders,schedulers]",
     "ipython",
@@ -173,8 +173,8 @@ features = ["all", "testing"]
 
 [tool.hatch.envs.test.scripts]
 # needs docker services running
-test = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args}"
-test_man = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} -s -vv"
+test = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} --disable-warnings"
+test_man = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} -s -vv --disable-warnings"
 coverage = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
 check_types = "mypy -p esmerald"
 

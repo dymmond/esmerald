@@ -1,31 +1,48 @@
 from http import HTTPStatus
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from lilya import status
 from lilya.exceptions import (
+    EnvironmentError as EnvironmentError,
     HTTPException as LilyaHTTPException,
     ImproperlyConfigured as ImproperlyConfigured,
-    WebSocketException as LilyaWebSocketException,
+    LilyaException as LilyaException,
+    MethodNotAllowed as MethodNotAllowed,
+    NotAuthorized as NotAuthorized,
+    NotFound as NotFound,
+    PermissionDenied as PermissionDenied,
+    TemplateNotFound as TemplateNotFound,
+    WebSocketException as WebSocketException,
 )
-from pydantic import BaseModel, create_model
 from typing_extensions import Annotated, Doc
 
-RequestErrorModel: Type[BaseModel] = create_model("Request")
-WebSocketErrorModel: Type[BaseModel] = create_model("WebSocket")
+from esmerald.contrib.encoding import force_str
 
 
-class EsmeraldAPIException(Exception):
-    def __init__(self, *args: Any, detail: str = ""):
-        self.detail = detail
-        super().__init__(*(str(arg) for arg in args if arg), self.detail)
+def _get_error_details(data: Any) -> Any:
+    if isinstance(data, (list, tuple)):
+        return [_get_error_details(item) for item in data]
 
-    def __repr__(self) -> str:  # pragma: no cover
-        if self.detail:
-            return f"{self.__class__.__name__} - {self.detail}"
-        return self.__class__.__name__
+    elif isinstance(data, dict):
+        return {key: _get_error_details(value) for key, value in data.items()}
 
-    def __str__(self) -> str:
-        return "".join(self.args).strip()
+    text = force_str(data)
+    return ErrorDetail(text)
+
+
+class ErrorDetail(str):
+    def __new__(cls, string: str) -> "ErrorDetail":
+        self = super().__new__(cls, string)
+        return self
+
+    def __repr__(self) -> str:
+        return "ErrorDetail(string=%r)" % (str(self))
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
+
+class EsmeraldAPIException(LilyaException): ...
 
 
 class HTTPException(LilyaHTTPException, EsmeraldAPIException):
@@ -97,14 +114,6 @@ class HTTPException(LilyaHTTPException, EsmeraldAPIException):
         return f"<{self.status_code}: {self.__class__.__name__} />"
 
 
-class EsmeraldError(RuntimeError):
-    """
-    Generic exception.
-    """
-
-    ...
-
-
 class ImproperlyMiddlewareConfigured(ImproperlyConfigured): ...
 
 
@@ -113,27 +122,8 @@ class NotAuthenticated(HTTPException):
     detail = "Authentication credentials were not provided."
 
 
-class PermissionDenied(HTTPException):
-    status_code = status.HTTP_403_FORBIDDEN
-    detail = "You do not have permission to perform this action."
-
-
 class ValidationErrorException(HTTPException, ValueError):
     status_code = status.HTTP_400_BAD_REQUEST
-
-
-class NotAuthorized(HTTPException):
-    status_code = status.HTTP_401_UNAUTHORIZED
-    detail = "You do not have authorization to perform this action."
-
-
-class NotFound(HTTPException, ValueError):
-    detail = "The resource cannot be found."
-    status_code = status.HTTP_404_NOT_FOUND
-
-
-class MethodNotAllowed(HTTPException):
-    status_code = status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 class InternalServerError(HTTPException):
@@ -144,29 +134,62 @@ class ServiceUnavailable(HTTPException):
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
 
-class TemplateNotFound(InternalServerError):
-    def __init__(self, *args: Any, template_name: str):
-        """Template could not be found."""
-        super().__init__(*args, detail=f"Template {template_name} not found.")
-
-
 class MissingDependency(EsmeraldAPIException, ImportError): ...
 
 
 class OpenAPIException(ImproperlyConfigured): ...
 
 
-class WebSocketException(LilyaWebSocketException): ...
-
-
 class AuthenticationError(HTTPException):
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
-class EnvironmentError(EsmeraldAPIException): ...
+class ValidationError(HTTPException):
+    """
+    Provides a more detailed error message for validation errors
+    when thrown by the application.
+    """
 
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Validation error."
 
-class BroadcastError(ImproperlyConfigured): ...
+    def __init__(
+        self,
+        detail: Union[str, List[str], Dict[str, Any], Tuple[str]] = None,
+        status_code: Annotated[
+            Optional[int],
+            Doc(
+                """
+                An integer with the status code to be raised.
+                """
+            ),
+        ] = None,
+        headers: Annotated[
+            Optional[Dict[str, Any]],
+            Doc(
+                """
+                Any python dictionary containing headers.
+                """
+            ),
+        ] = None,
+        **extra: Annotated[
+            Any,
+            Doc(
+                """
+                Any extra information used by the exception.
+                """
+            ),
+        ],
+    ) -> None:
+        if isinstance(detail, tuple):
+            detail = list(detail)
+        elif not isinstance(detail, dict) and not isinstance(detail, list):
+            detail = [detail]
+
+        detail = _get_error_details(detail)
+        super().__init__(
+            status_code=status_code, detail=cast(str, detail), headers=headers, **extra
+        )
 
 
 ExceptionErrorMap = Union[

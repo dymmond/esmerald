@@ -25,4 +25,4 @@ class MakoTemplateEngine(TemplateEngineProtocol[MakoTemplate]):
         try:
             return self.engine.get_template(template_name)
         except MakoTemplateNotFound as e:
-            raise TemplateNotFound(template_name=template_name) from e
+            raise TemplateNotFound(name=template_name) from e

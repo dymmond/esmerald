@@ -20,7 +20,12 @@ from orjson import loads
 from pydantic import ValidationError, create_model
 
 from esmerald.encoders import ENCODER_TYPES, Encoder
-from esmerald.exceptions import ImproperlyConfigured, InternalServerError, ValidationErrorException
+from esmerald.exceptions import (
+    HTTPException,
+    ImproperlyConfigured,
+    InternalServerError,
+    ValidationErrorException,
+)
 from esmerald.parsers import ArbitraryBaseModel, ArbitraryExtraBaseModel
 from esmerald.requests import Request
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, UNDEFINED, VALIDATION_NAMES
@@ -48,7 +53,10 @@ def is_server_error(error: Any, klass: Type["SignatureModel"]) -> bool:
     Returns:
         bool: True if the error is a server error, False otherwise.
     """
-    return error["loc"][-1] in klass.dependency_names
+    try:
+        return error["loc"][-1] in klass.dependency_names
+    except IndexError:
+        return False
 
 
 class Parameter(ArbitraryBaseModel):
@@ -236,6 +244,9 @@ class SignatureModel(ArbitraryBaseModel):
                 return str(exception)  # type: ignore
 
         try:
+            if isinstance(exception, HTTPException):
+                return exception
+
             method, url = get_connection_info(connection)
             error_message = f"Validation failed for {url} with method {method}."
             error_detail = extract_error_message(exception)

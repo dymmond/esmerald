@@ -106,6 +106,68 @@ from esmerald.exceptions import ServiceUnavailable
 
 Status code: 503
 
+
+### ValidatorError
+
+This is a special exception that can be applied to anything in Esmerald. This allows to not only throw a normal
+exception but filter it out the "noise" that can be caused by using an external library and provide a simple response.
+
+```python
+from esmerald.exceptions import ValidationError
+```
+
+Status code: 400
+
+#### Example
+
+Imagine you are using a library such as Pydantic (to simplify the example) and you want to throw a simple exception
+that does not rely on a `ValueError` but you also want to provide some details.
+
+```python
+from esmerald import Esmerald, post
+from esmerald.exceptions import ValidationError
+
+from pydantic import BaseModel, model_validator
+
+
+class PasswordIn(BaseModel):
+    password: str
+    retype_password: str
+
+    @model_validator(mode="after")
+    def validate_value(self):
+        if self.password != self.retype_password
+            raise ValidationError({'password': "Passwords do not match"})
+        return self
+
+
+@post('/password')
+async def check(data: PasswordIn) -> None:
+    ...
+```
+
+When a response fails, it should throw an error similar to this:
+
+```json
+{"detail": {"password": "Passwords do not match"}}
+```
+
+This can be particularly useful mostly if you want to create custom error messages and to be easy to parse a response
+back to a client.
+
+You can use the `ValidationError` in different way. As a `list`, `tuple`, `str` and `dict` and you can also override the
+default `status_code`.
+
+```python
+from esmerald.exceptions import ValidationError
+
+ValidationError("An error") # as string
+ValidationError({"field": "an error" }) # as dict
+ValidationError(["An error", "another error"]) # as list
+ValidationError(("An error", "another error")) # as tuple
+ValidationError("Not Authorized", status_code=401) # override the status_code
+```
+
 ## Custom exceptions
 
 Every application has different needs, errors, operations and everything else. Although the default Esmerald exceptions
