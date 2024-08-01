@@ -162,6 +162,7 @@ nav:
   - extras/index.md
   - Extra, Advanced & Useful:
     - extras/useful-index.md
+    - extras/query-params.md
     - extras/request-data.md
     - extras/upload-files.md
     - extras/forms.md
