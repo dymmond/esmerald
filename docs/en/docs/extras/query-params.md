@@ -125,3 +125,14 @@ Which means, you need to call with the declared parameter, like this, for exampl
 ```shell
 http://127.0.0.1/users?limit=10
 ```
+
+## Extra with Esmerald params
+
+Because everything in Esmerald just works you can also add restrictions and limits to your query parameters. For example.
+you might want to add a limit into the size of a string `q` when searching not to exceed an X value.
+
+```python
+{!> ../../../docs_src/extras/query/example_query.py !}
+```
+
+This basically tells that a `q` query parameters must not exceed the length of `10` of an exception will be raised.

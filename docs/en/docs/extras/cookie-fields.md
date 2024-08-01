@@ -73,7 +73,7 @@ from esmerald.datastructures import Cookie as ResponseCookie
 ### Cookie from params
 
 The cookie used with the [example](#cookie-as-a-param) as param is not a datastructure but a `FieldInfo` so it cannot
-be used to set and create a new `cookie` like the one from [response cookies](#cookie-from-response-cookies).
+be used to set and create a new `cookie` like the one from [response cookies](#response-cookies).
 
 To import it:
 

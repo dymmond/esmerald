@@ -126,6 +126,16 @@ nav:
   - background-tasks.md
   - lifespan-events.md
   - protocols.md
+  - Advanced & Useful:
+    - extras/index.md
+    - extras/path-params.md
+    - extras/query-params.md
+    - extras/request-data.md
+    - extras/upload-files.md
+    - extras/forms.md
+    - extras/body-fields.md
+    - extras/header-fields.md
+    - extras/cookie-fields.md
   - Scheduler:
     - scheduler/index.md
     - Asyncz:
@@ -159,16 +169,6 @@ nav:
       - databases/mongoz/example.md
 - openapi.md
 - Extras:
-  - extras/index.md
-  - Extra, Advanced & Useful:
-    - extras/useful-index.md
-    - extras/query-params.md
-    - extras/request-data.md
-    - extras/upload-files.md
-    - extras/forms.md
-    - extras/body-fields.md
-    - extras/header-fields.md
-    - extras/cookie-fields.md
   - wsgi.md
   - testclient.md
   - Deployment:
