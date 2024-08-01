@@ -52,7 +52,10 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
     query_params = []
     for param in route.transformer.get_query_params():
-        if param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys():
+        if (
+            param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys()
+            or param.field_info.annotation.__name__ in TRANSFORMER_TYPES.keys()
+        ):
             query_params.append(param.field_info)
 
     return path_params + query_params + cookie_params + header_params
