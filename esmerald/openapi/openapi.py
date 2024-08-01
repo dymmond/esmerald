@@ -13,7 +13,7 @@ from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
-from typing_extensions import Literal, get_args
+from typing_extensions import Literal
 
 from esmerald.enums import MediaType
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
@@ -41,7 +41,7 @@ from esmerald.routing import gateways, router
 from esmerald.routing._internal import convert_annotation_to_pydantic_model
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA, PAYLOAD
-from esmerald.utils.helpers import is_class_and_subclass, is_optional_union
+from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
@@ -52,17 +52,12 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
     query_params = []
     for param in route.transformer.get_query_params():
-        is_optional = is_optional_union(param.field_info.annotation)
-        if is_optional:
-            arguments = get_args(param.field_info.annotation)
+        is_union_or_optional = is_union(param.field_info.annotation)
 
-            for arg in arguments:
-                if (
-                    arg.__name__ in TRANSFORMER_TYPES.keys()
-                    or hasattr(arg, "annotation")
-                    and arg.__class__.__name__ in TRANSFORMER_TYPES.keys()
-                ):
-                    query_params.append(param.field_info)
+        # Making sure all the optional and union types are included
+        if is_union_or_optional:
+            query_params.append(param.field_info)
+
         else:
             if (
                 param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys()

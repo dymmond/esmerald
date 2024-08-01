@@ -18,7 +18,7 @@ class PydanticError(BaseModel):
     tags=["bar"],
     responses={200: OpenAPIResponse(model=PydanticError, description="Pydantic response")},
 )
-async def bar(name: Union[str, int, None]) -> Dict[str, str]:
+async def bar(name: Union[str, int]) -> Dict[str, str]:
     return {"hello": "world"}
 
 
@@ -59,16 +59,12 @@ def test_openapi_query_params_optional(test_client_factory):
                         {
                             "name": "name",
                             "in": "query",
-                            "required": False,
+                            "required": True,
                             "deprecated": False,
                             "allowEmptyValue": False,
                             "allowReserved": False,
                             "schema": {
-                                "anyOf": [
-                                    {"type": "string"},
-                                    {"type": "integer"},
-                                    {"type": "null"},
-                                ],
+                                "anyOf": [{"type": "string"}, {"type": "integer"}],
                                 "title": "Name",
                             },
                         }
