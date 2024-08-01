@@ -5,6 +5,24 @@ hide:
 
 # Release Notes
 
+## 3.3.4
+
+### Added
+
+- Missing documentation for [Query Parameters](./extras/query-params.md) and [Path Parameters](./extras/path-params.md).
+
+### Changed
+
+- Documentation for `Extra, Advanced && Useful` is now renamed `Advanced & Useful` and its located in the `Features`
+section.
+- Removed unused internal functions for validations now used by Esmerald encoders.
+
+### Fixed
+
+- Regression caused by the introduction of the dynamic encoders when diplaying the query parameters in the OpenAPI
+documentation.
+- Annotation discovery for the Signature.
+
 ## 3.3.3
 
 ### Changed

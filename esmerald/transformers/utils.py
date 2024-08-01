@@ -1,15 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    NamedTuple,
-    Set,
-    Tuple,
-    Type,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, NamedTuple, Set, Tuple, Type, Union, cast
 
 from lilya.datastructures import URL
 from pydantic.fields import FieldInfo
@@ -232,4 +221,6 @@ def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
         definition = annotation, param.default
     elif not param.optional:
         definition = annotation, ...
+    else:
+        definition = annotation, None
     return definition

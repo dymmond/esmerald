@@ -54,7 +54,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
         path_params: Set[ParamSetting],
         query_params: Set[ParamSetting],
         reserved_kwargs: Set[str],
-        query_param_names: Set[ParamSetting],
         is_optional: bool,
         **kwargs: Any,
     ):
@@ -80,7 +79,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
         self.path_params = path_params
         self.query_params = query_params
         self.reserved_kwargs = reserved_kwargs
-        self.query_param_names = query_param_names
         self.has_kwargs = (
             cookies
             or dependencies
@@ -135,7 +133,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
     ) -> Any:
         connection_params = {}
         for key, value in connection.query_params.items():
-            if key not in self.query_param_names and len(value) == 1:
+            if len(value) == 1:
                 value = value[0]
                 connection_params[key] = value
 
@@ -266,9 +264,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
             headers={ParamSetting(**param) for param in data.get("headers", [])},
             path_params={ParamSetting(**param) for param in data.get("path_params", [])},
             query_params={ParamSetting(**param) for param in data.get("query_params", [])},
-            query_param_names={
-                ParamSetting(**param) for param in data.get("query_param_names", [])
-            },
             reserved_kwargs=set(data.get("reserved_kwargs", [])),
             is_optional=data.get("is_optional", False),
         )
@@ -290,7 +285,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
             headers=merge_sets(self.headers, other.headers),
             path_params=merge_sets(self.path_params, other.path_params),
             query_params=merge_sets(self.query_params, other.query_params),
-            query_param_names=merge_sets(self.query_param_names, other.query_param_names),
             reserved_kwargs=self.reserved_kwargs.union(other.reserved_kwargs),
             is_optional=self.is_optional or other.is_optional,
         )
@@ -312,7 +306,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         connection_params: Dict[str, Any] = {}
         for key, value in connection.query_params.items():
-            if key not in self.query_param_names and len(value) == 1:
+            if len(value) == 1:
                 value = value[0]
                 connection_params[key] = value
 
@@ -571,7 +565,6 @@ def create_signature(
     elif PAYLOAD in reserved_kwargs:
         is_optional = is_field_optional(signature_model.model_fields[PAYLOAD])
 
-    query_param_names: Set[ParamSetting] = set()
     return TransformerModel(
         form_data=form_data,
         dependencies=_dependencies,
@@ -580,7 +573,6 @@ def create_signature(
         cookies=cookies,
         headers=headers,
         reserved_kwargs=reserved_kwargs,
-        query_param_names=query_param_names,
         is_optional=is_optional,
     )
 

@@ -41,7 +41,7 @@ from esmerald.routing import gateways, router
 from esmerald.routing._internal import convert_annotation_to_pydantic_model
 from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA, PAYLOAD
-from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
@@ -52,8 +52,18 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
     query_params = []
     for param in route.transformer.get_query_params():
-        if param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys():
+        is_union_or_optional = is_union(param.field_info.annotation)
+
+        # Making sure all the optional and union types are included
+        if is_union_or_optional:
             query_params.append(param.field_info)
+
+        else:
+            if (
+                param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys()
+                or param.field_info.annotation.__name__ in TRANSFORMER_TYPES.keys()
+            ):
+                query_params.append(param.field_info)
 
     return path_params + query_params + cookie_params + header_params
 
