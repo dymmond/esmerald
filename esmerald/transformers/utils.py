@@ -209,10 +209,9 @@ def get_request_params(
         if is_class_and_subclass(origin, (list, tuple)):
             values[param.field_name] = params.values()
         elif is_class_and_subclass(origin, dict):
-            values = cast(Dict[str, Any], params.items())
+            values[param.field_name] = dict(params.items())  # type: ignore[assignment]
         else:
-            value = params.get(param.field_alias, param.default_value)
-            values[param.field_name] = value
+            values[param.field_name] = params.get(param.field_alias, param.default_value)
     return values
 
 
