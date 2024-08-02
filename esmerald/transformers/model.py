@@ -289,61 +289,6 @@ class TransformerModel(ArbitraryExtraBaseModel):
             is_optional=self.is_optional or other.is_optional,
         )
 
-    def _get_request_params(
-        self,
-        connection: Union["WebSocket", "Request"],
-        handler: Union["HTTPHandler", "WebSocketHandler"] = None,
-    ) -> Any:
-        """
-        Get request parameters.
-
-        Args:
-            connection (Union["WebSocket", "Request"]): Connection object.
-            handler (Union["HTTPHandler", "WebSocketHandler"], optional): Handler object. Defaults to None.
-
-        Returns:
-            Any: Request parameters.
-        """
-        connection_params: Dict[str, Any] = {}
-        for key, value in connection.query_params.items():
-            if len(value) == 1:
-                value = value[0]
-                connection_params[key] = value
-
-        query_params = get_request_params(
-            params=cast("MappingUnion", connection.query_params),
-            expected=self.query_params,
-            url=connection.url,
-        )
-        path_params = get_request_params(
-            params=cast("MappingUnion", connection.path_params),
-            expected=self.path_params,
-            url=connection.url,
-        )
-        headers = get_request_params(
-            params=cast("MappingUnion", connection.headers),
-            expected=self.headers,
-            url=connection.url,
-        )
-        cookies = get_request_params(
-            params=cast("MappingUnion", connection.cookies),
-            expected=self.cookies,
-            url=connection.url,
-        )
-
-        if not self.reserved_kwargs:
-            return {**query_params, **path_params, **headers, **cookies}
-
-        return self.handle_reserved_kwargs(
-            connection=connection,
-            connection_params=connection_params,
-            path_params=path_params,
-            query_params=query_params,
-            headers=headers,
-            cookies=cookies,
-            handler=handler,
-        )
-
     def handle_reserved_kwargs(
         self,
         connection: Union["WebSocket", "Request"],
