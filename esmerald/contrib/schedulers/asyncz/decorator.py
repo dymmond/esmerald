@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Union, cast
 
 from asyncz.triggers.types import TriggerType
-from asyncz.typing import UndefinedType, undefined
+from asyncz.typing import Undefined, undefined
 
 from esmerald.contrib.schedulers.asyncz.config import Task
 
@@ -12,12 +12,12 @@ def scheduler(
     name: Optional[str] = None,
     trigger: Optional[TriggerType] = None,
     id: Optional[str] = None,
-    mistrigger_grace_time: Union[int, UndefinedType, None] = undefined,
-    coalesce: Union[bool, UndefinedType] = undefined,
-    max_instances: Union[int, UndefinedType, None] = undefined,
-    next_run_time: Union[datetime, str, UndefinedType, None] = undefined,
-    store: Optional[str] = "default",
-    executor: Optional[str] = "default",
+    mistrigger_grace_time: Union[int, Undefined, None] = undefined,
+    coalesce: Union[bool, Undefined] = undefined,
+    max_instances: Union[int, Undefined, None] = undefined,
+    next_run_time: Union[datetime, str, Undefined, None] = undefined,
+    store: Union[str, None] = None,
+    executor: Union[str, None] = None,
     replace_existing: bool = True,
     extra_args: Optional[Any] = None,
     extra_kwargs: Optional[Dict[str, Any]] = None,
