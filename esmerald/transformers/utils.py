@@ -1,4 +1,17 @@
-from typing import TYPE_CHECKING, Any, Dict, List, NamedTuple, Set, Tuple, Type, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Mapping,
+    NamedTuple,
+    Set,
+    Tuple,
+    Type,
+    Union,
+    cast,
+    get_origin,
+)
 
 from lilya.datastructures import URL
 from pydantic.fields import FieldInfo
@@ -10,6 +23,7 @@ from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
+from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
@@ -166,7 +180,9 @@ def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> Li
     return missing_params
 
 
-def get_request_params(params: Any, expected: Set[ParamSetting], url: URL) -> Any:
+def get_request_params(
+    params: Mapping[Union[int, str], Any], expected: Set[ParamSetting], url: URL
+) -> Any:
     """
     Gather the parameters from the request.
 
@@ -187,9 +203,20 @@ def get_request_params(params: Any, expected: Set[ParamSetting], url: URL) -> An
             f"Missing required parameter(s) {', '.join(missing_params)} for URL {url}."
         )
 
-    values = {
-        param.field_name: params.get(param.field_alias, param.default_value) for param in expected
-    }
+    values = {}
+    for param in expected:
+        annotation = get_origin(param.field_info.annotation)
+        origin = annotation or param.field_info.annotation
+
+        if is_class_and_subclass(origin, (list, tuple)):
+            values[param.field_name] = params.values()
+        elif is_class_and_subclass(origin, dict):
+            if not params.items():
+                values[param.field_name] = None
+            else:
+                values[param.field_name] = dict(params.items())  # type: ignore[assignment]
+        else:
+            values[param.field_name] = params.get(param.field_alias, param.default_value)
     return values
 
 

@@ -98,7 +98,12 @@ class Parameter(ArbitraryBaseModel):
                 "If it should receive any value, use 'Any' as type."
             )
         self.annotation = parameter.annotation
-        self.default = parameter.default
+
+        self.default = (
+            tuple(parameter.default)
+            if isinstance(parameter.default, (list, dict, set))
+            else parameter.default
+        )
         self.param_name = param_name
         self.name = param_name
         self.optional = is_optional_union(self.annotation)

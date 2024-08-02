@@ -2,7 +2,7 @@ import http.client
 import inspect
 import json
 import warnings
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, _GenericAlias, cast
 
 from lilya._internal._path import clean_path
 from lilya.middleware import DefineMiddleware
@@ -43,6 +43,10 @@ from esmerald.typing import Undefined
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
+ADDITIONAL_TYPES = ["bool", "list", "dict"]
+TRANSFORMER_TYPES_KEYS = list(TRANSFORMER_TYPES.keys())
+TRANSFORMER_TYPES_KEYS += ADDITIONAL_TYPES
+
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
     """Gets all the neded params of the request and route"""
@@ -59,9 +63,11 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
             query_params.append(param.field_info)
 
         else:
-            if (
-                param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES.keys()
-                or param.field_info.annotation.__name__ in TRANSFORMER_TYPES.keys()
+            if isinstance(param.field_info.annotation, _GenericAlias):
+                query_params.append(param.field_info)
+            elif (
+                param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES_KEYS
+                or param.field_info.annotation.__name__ in TRANSFORMER_TYPES_KEYS
             ):
                 query_params.append(param.field_info)
 
