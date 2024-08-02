@@ -64,8 +64,7 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
         else:
             if isinstance(param.field_info.annotation, _GenericAlias):
-                if param.field_info.annotation.__origin__.__name__ in TRANSFORMER_TYPES_KEYS:
-                    query_params.append(param.field_info)
+                query_params.append(param.field_info)
             elif (
                 param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES_KEYS
                 or param.field_info.annotation.__name__ in TRANSFORMER_TYPES_KEYS
