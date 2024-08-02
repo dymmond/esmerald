@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 from asyncz.executors.base import BaseExecutor
 from asyncz.schedulers import AsyncIOScheduler
-from asyncz.schedulers.base import BaseScheduler
+from asyncz.schedulers.base import BaseScheduler, default_loggers_class
 from asyncz.schedulers.datastructures import TaskDefaultStruct
 from asyncz.stores.base import BaseStore
 from asyncz.tasks.types import TaskType
@@ -113,6 +113,8 @@ def scheduler_class(monkeypatch):
     # by patching out _setup task_defaults are not initialized anymore
     scheduler_class.task_defaults = TaskDefaultStruct()
     scheduler_class.timezone = timezone.utc
+    scheduler_class.loggers = default_loggers_class()
+    scheduler_class.logger_name = "asyncz.schedulers"
     return scheduler_class
 
 
