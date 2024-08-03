@@ -5,6 +5,21 @@ hide:
 
 # Release Notes
 
+## 3.3.5
+
+This was missed from the release [3.3.4](#334) and it was supposed to be included.
+
+### Added
+
+- Native types for Esmerald transformer models/
+- Hashing list internally for the signature allowing lists to be declared for OpenAPI representation.
+
+### Changed
+
+- Query parameters when declared as `list`, `List`, `dict` and `Dict` automatically parses the values
+to the declared type.
+- OpenAPI understands the native types, objects and lists (arrays).
+
 ## 3.3.4
 
 ### Added
