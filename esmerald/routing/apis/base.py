@@ -1,5 +1,5 @@
 from copy import copy
-from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple, Union, cast
 
 from lilya._internal._path import clean_path
 from lilya.routing import compile_path
@@ -347,7 +347,7 @@ class View:
         exception_handlers = {**self.exception_handlers, **handler.exception_handlers}
         return cast("ExceptionHandlerMap", exception_handlers)
 
-    async def handle(
+    async def handle_dispatch(
         self, scope: "Scope", receive: "Receive", send: "Send"
     ) -> None:  # pragma: no cover
         raise NotImplementedError(f"{self.__class__.__name__} object does not implement handle()")
@@ -356,3 +356,58 @@ class View:
         raise NotImplementedError(
             f"{self.__class__.__name__} object does not implement create_signature_model()"
         )
+
+    def get_routes(
+        self,
+        path: Union[str, None] = None,
+        name: Union[str, None] = None,
+        middleware: Union[Sequence["Middleware"], List["Middleware"], None] = None,
+        permissions: Union[Sequence["Permission"], Any, None] = None,
+        interceptors: Union[Sequence["Interceptor"], List["Interceptor"], None] = None,
+        exception_handlers: Union["ExceptionHandlerMap", None] = None,
+        include_in_schema: Union[bool, None] = None,
+    ) -> List[Union["Gateway", "WebSocketGateway"]]:
+        """
+        Builds the routes and wraps them in a list containing the Gateway and WebSocketGateway.
+        """
+        from esmerald.routing.gateways import Gateway, WebSocketGateway
+        from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
+
+        if path is None:
+            path = "/"
+
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = (
+            self.get_route_handlers()
+        )
+        handlers: List[Union[Gateway, WebSocketGateway]] = []
+
+        for route_handler in route_handlers:
+            route_path: Union[Gateway, WebSocketGateway]
+
+            route_kwargs = {
+                "path": path,
+                "handler": route_handler,
+                "name": name or route_handler.fn.__name__,
+                "middleware": middleware,
+                "interceptors": interceptors,
+                "permissions": permissions,
+                "exception_handlers": exception_handlers,
+            }
+            route_path = (
+                Gateway(**route_kwargs)  # type: ignore
+                if isinstance(route_handler, HTTPHandler)
+                else WebSocketGateway(**route_kwargs)  # type: ignore
+            )
+
+            if isinstance(route_path, Gateway):
+                if include_in_schema is None:
+                    route_path.include_in_schema = (
+                        route_handler.include_in_schema
+                        if route_handler.include_in_schema is not None
+                        else include_in_schema
+                    )
+                else:
+                    route_path.include_in_schema = include_in_schema
+
+            handlers.append(route_path)
+        return handlers
