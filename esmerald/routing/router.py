@@ -657,33 +657,15 @@ class BaseRouter(LilyaRouter):
 
                 handler: View = cast("View", value.handler)
 
-                route_handlers = handler.get_route_handlers()
-                for route_handler in route_handlers:
-                    gateway = (
-                        Gateway
-                        if not isinstance(route_handler, WebSocketHandler)
-                        else WebSocketGateway
-                    )
-
-                    gate = gateway(
-                        path=value.path,
-                        handler=route_handler,
-                        name=route_handler.fn.__name__,
-                        middleware=value.middleware,
-                        interceptors=value.interceptors,
-                        permissions=value.permissions,
-                        exception_handlers=value.exception_handlers,
-                    )
-
-                    if isinstance(gate, (Gateway, WebhookGateway)):
-                        include_in_schema = (
-                            value.include_in_schema
-                            if value.include_in_schema is not None
-                            else route_handler.include_in_schema
-                        )
-                        gate.include_in_schema = include_in_schema
-
-                    self.routes.append(gate)
+                route_handlers = handler.get_routes(
+                    path=value.path,
+                    middleware=value.middleware,
+                    permissions=value.permissions,
+                    interceptors=value.interceptors,
+                    exception_handlers=value.exception_handlers,
+                )
+                if route_handlers:
+                    self.routes.extend(route_handlers)
                 self.routes.pop(self.routes.index(value))
 
 
@@ -735,23 +717,17 @@ class Router(BaseRouter):
         if not value.handler.parent:  # pragma: no cover
             value.handler(parent=self)
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_route_handlers()  # type: ignore
-        for route_handler in route_handlers:
-            gateway = (
-                Gateway if not isinstance(route_handler, WebSocketHandler) else WebSocketGateway
-            )
-            gate = gateway(
-                path=value.path,
-                handler=route_handler,
-                name=route_handler.path,
-                middleware=value.middleware,
-                interceptors=value.interceptors,
-                include_in_schema=value.include_in_schema,
-                permissions=value.permissions,
-                exception_handlers=value.exception_handlers,
-            )
-            self.routes.append(gate)
-            routes.append(gate)
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_routes(
+            path=value.path,
+            middleware=value.middleware,
+            interceptors=value.interceptors,
+            permissions=value.permissions,
+            exception_handlers=value.exception_handlers,
+            include_in_schema=value.include_in_schema,
+        )
+        if route_handlers:
+            self.routes.extend(route_handlers)
+            routes.extend(route_handlers)
 
         for route in routes or []:
             self.create_signature_models(route)
@@ -2937,33 +2913,17 @@ class Include(LilyaInclude):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)
 
-                route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = (
-                    route.handler.get_route_handlers()
-                )
-
-                for route_handler in route_handlers:
-                    gateway = (
-                        Gateway
-                        if not isinstance(route_handler, WebSocketHandler)
-                        else WebSocketGateway
-                    )
-                    gate = gateway(
+                route_handlers: List[Union[Gateway, WebhookGateway, Include]] = (
+                    route.handler.get_routes(
                         path=route.path,
-                        handler=route_handler,
-                        name=route_handler.fn.__name__,
                         middleware=route.middleware,
                         interceptors=self.interceptors,
                         permissions=route.permissions,
                         exception_handlers=route.exception_handlers,
                     )
-
-                    if isinstance(gate, Gateway):
-                        include_in_schema = (
-                            route.include_in_schema
-                            if route.include_in_schema is not None
-                            else route_handler.include_in_schema
-                        )
-                        gate.include_in_schema = include_in_schema
-
-                    routing.append(gate)
+                )
+                if route_handlers:
+                    routing.extend(
+                        cast(List[Union[Gateway, WebSocketGateway, Include]], route_handlers)
+                    )
         return routing
