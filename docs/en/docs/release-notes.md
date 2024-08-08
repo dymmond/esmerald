@@ -5,6 +5,22 @@ hide:
 
 # Release Notes
 
+## 3.3.6
+
+### Added
+
+- `allow_private_networks` property to `CORSMiddleware`.
+
+### Changed
+
+- `Gateway` now allows to pass also an optional `operation_id` as parameter for OpenAPI documentation allowing
+multiple gateways to use the same handler and being recognised automatically by OpenAPI documentation.
+- OpenAPI documentation when multiple gateways use the same handler and no `operation_id` is declared,
+automatically tries to generate a unique `operation_id` for it.
+- Internal code organisation for class based `View` to generate the routes in one place and reducing
+code duplication.
+- Updated internal testing requirements for Edgy and Saffier and Lilya.
+
 ## 3.3.5
 
 This was missed from the release [3.3.4](#334) and it was supposed to be included.
