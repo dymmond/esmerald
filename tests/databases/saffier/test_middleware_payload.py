@@ -58,7 +58,7 @@ async def create_test_database():
 
 @pytest.fixture(autouse=True)
 async def rollback_transactions():
-    with database.force_rollback():
+    with database.force_rollback(False):
         async with database:
             yield
 
