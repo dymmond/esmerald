@@ -93,3 +93,13 @@ class CORSConfig(BaseModel):
             """
         ),
     ] = 600
+    allow_private_networks: Annotated[
+        bool,
+        Doc(
+            """
+            Flag indicating that CORS allows private networks.
+
+            This option sets the 'Access-Control-Request-Private-Network' header.
+            """
+        ),
+    ] = False
