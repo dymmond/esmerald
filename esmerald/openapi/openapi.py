@@ -138,20 +138,20 @@ def get_fields_from_routes(
 
 
 def get_openapi_operation(
-    *, route: Union[router.HTTPHandler, Any], operation_ids: Set[str]
+    *, route: gateways.Gateway, operation_ids: Set[str]
 ) -> Dict[str, Any]:  # pragma: no cover
     operation = Operation()
-    operation.tags = route.get_handler_tags()
+    operation.tags = route.handler.get_handler_tags()
 
-    if route.summary:
+    if route.handler.summary:
         operation.summary = route.summary
     else:
-        operation.summary = route.name.replace("_", " ").replace("-", " ").title()
+        operation.summary = route.handler.name.replace("_", " ").replace("-", " ").title()
 
-    if route.description:
-        operation.description = route.description
+    if route.handler.description:
+        operation.description = route.handler.description
 
-    operation_id = route.operation_id
+    operation_id = getattr(route, "operation_id", None) or route.handler.operation_id
 
     if operation_id in operation_ids:
         message = (
@@ -166,6 +166,8 @@ def get_openapi_operation(
     operation.operationId = operation_id
     if route.deprecated:
         operation.deprecated = route.deprecated
+    elif route.handler.deprecated:
+        operation.deprecated = route.handler.deprecated
 
     operation_schema = operation.model_dump(exclude_none=True, by_alias=True)
     return operation_schema
@@ -264,7 +266,7 @@ def get_openapi_path(
 
     # For each method
     for method in route.handler.methods:
-        operation = get_openapi_operation(route=handler, operation_ids=operation_ids)
+        operation = get_openapi_operation(route=route, operation_ids=operation_ids)  # type: ignore
         # If the parent if marked as deprecated, it takes precedence
         if is_deprecated or route.deprecated:
             operation["deprecated"] = is_deprecated if is_deprecated else route.deprecated

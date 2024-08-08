@@ -111,6 +111,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         "permissions",
         "deprecated",
         "tags",
+        "operation_id",
     )
 
     def __init__(
@@ -260,6 +261,16 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
                 """
             ),
         ] = None,
+        operation_id: Annotated[
+            Optional[str],
+            Doc(
+                """
+                Unique operation id that allows distinguishing the same handler in different Gateways.
+
+                Used for OpenAPI purposes.
+                """
+            ),
+        ] = None,
     ) -> None:
         if not path:
             path = "/"
@@ -314,11 +325,18 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
             self.path
         )
+        self.operation_id = operation_id
 
         if self.is_handler(self.handler):  # type: ignore
             self.handler.name = self.name
 
-            if not handler.operation_id:
+            if self.operation_id or handler.operation_id is not None:
+                handler_id = self.generate_operation_id(
+                    name=self.name, handler=self.handler  # type: ignore
+                )
+                self.operation_id = f"{operation_id}_{handler_id}" if operation_id else handler_id
+
+            elif not handler.operation_id:
                 handler.operation_id = self.generate_operation_id(
                     name=self.name, handler=self.handler  # type: ignore
                 )
