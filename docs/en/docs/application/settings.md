@@ -101,10 +101,22 @@ Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment vari
     INFO:     Application startup complete.
     ```
 
-=== "With ESMERALD_SETTINGS_MODULE"
+=== "With ESMERALD_SETTINGS_MODULE MacOS & Linux"
 
     ```shell
     ESMERALD_SETTINGS_MODULE=src.configs.production.ProductionSettings uvicorn src:app
+
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "With ESMERALD_SETTINGS_MODULE Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="src.configs.production.ProductionSettings"; uvicorn src:app
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -214,15 +226,29 @@ Let us also assume you have all the settings inside a `src/configs` directory.
 Now we can start the server using the `AppSettings` as global and `InstanceSettings` being passed
 via instantiation. The AppSettings from the main_settings.py is used to call from the command-line.
 
-```shell
-ESMERALD_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
+=== "MacOS & Linux"
 
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28720]
-INFO:     Started server process [28722]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
+    ```shell
+    ESMERALD_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="src.configs.main_settings.AppSettings"; uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
 
 Great! Now not only we have used the `settings_module` and `ESMERALD_SETTINGS_MODULE` but we used
 them at the same time!

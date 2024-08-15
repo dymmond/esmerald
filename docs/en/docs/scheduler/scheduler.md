@@ -86,15 +86,29 @@ the `enable_scheduler` can also be set to `True`/`False` there.
 {!> ../../../docs_src/scheduler/scheduler_settings.py !}
 ```
 
-```shell
-ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+=== "MacOS & Linux"
 
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28720]
-INFO:     Started server process [28722]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
+    ```shell
+    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
 
 !!! Tip
     Read more about how to take [advantage of the settings](../application/settings.md) and how to use them to leverage
@@ -132,15 +146,29 @@ into the `scheduler` handler.
 
 Start the server with the newly created settings.
 
-```shell
-ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+=== "MacOS & Linux"
 
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28720]
-INFO:     Started server process [28722]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
+    ```shell
+    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
 
 The `scheduler_tasks` is expecting a python dictionary where the both key and value are strings.
 

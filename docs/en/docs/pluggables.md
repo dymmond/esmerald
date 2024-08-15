@@ -161,15 +161,29 @@ Like almost everything in Esmerald, you can also add the [Pluggables](#pluggable
 
 And simply start the application.
 
-```shell
-ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+=== "MacOS & Linux"
 
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28720]
-INFO:     Started server process [28722]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
+    ```shell
+    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
 
 If you prefer, you can also use the [settings_module](./application/settings.md#the-settings_module).
 

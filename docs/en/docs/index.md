@@ -345,9 +345,17 @@ class Development(EsmeraldAPISettings):
 
 Assuming your Esmerald app is inside an `src/app.py`.
 
-```console
-ESMERALD_SETTINGS_MODULE='myapp.settings.Development' python -m src.app.py
-```
+=== "MacOS & Linux"
+
+    ```console
+    ESMERALD_SETTINGS_MODULE='myapp.settings.Development' python -m src.app.py
+    ```
+
+=== "Windows"
+
+    ```console
+    $env:ESMERALD_SETTINGS_MODULE="myapp.settings.Development"; python -m src.app.py
+    ```
 
 ## Gateway, WebSocketGateway and Include
 
@@ -498,15 +506,29 @@ INFO:     Application startup complete.
 
 **Using uvicorn**:
 
-```shell
-ESMERALD_SETTINGS_MODULE=myapp.AppSettings uvicorn src:app --reload
+=== "MacOS & Linux"
 
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28720]
-INFO:     Started server process [28722]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
+    ```shell
+    ESMERALD_SETTINGS_MODULE=myapp.AppSettings uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="myapp.AppSettings"; uvicorn src:app --reload
+
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
 
 ## OpenAPI documentation
 

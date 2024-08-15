@@ -272,9 +272,17 @@ make run
 
 What this command is actually doing is:
 
-```shell
-ESMERALD_SETTINGS_MODULE=myproject.configs.development.settings.DevelopmentAppSettings python -m myproject.serve
-```
+=== "MacOS & Linux"
+
+    ```shell
+    ESMERALD_SETTINGS_MODULE=myproject.configs.development.settings.DevelopmentAppSettings python -m myproject.serve
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="myproject.configs.development.settings.DevelopmentAppSettings"; python -m myproject.serve
+    ```
 
 If you want another [settings](../application/settings.md#custom-settings) you can simply update the command to
 run with your custom settings.
@@ -543,9 +551,17 @@ $ esmerald runserver --settings src.configs.development.settings.DevelopmentAppS
 
 Running with [ESMERALD_SETTINGS_MODULE][settings_module] would be:
 
-```shell
-$ ESMERALD_SETTINGS_MODULE=src.configs.development.settings.DevelopmentAppSettings esmerald runserver
-```
+=== "MacOS & Linux"
+
+    ```shell
+    $ ESMERALD_SETTINGS_MODULE=src.configs.development.settings.DevelopmentAppSettings esmerald runserver
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="src.configs.development.settings.DevelopmentAppSettings"; esmerald runserver
+    ```
 
 **Run with testing settings**
 
@@ -555,9 +571,17 @@ $ esmerald runserver --settings src.configs.testing.settings.TestingAppSettings
 
 Running with [ESMERALD_SETTINGS_MODULE][settings_module] would be:
 
-```shell
-$ ESMERALD_SETTINGS_MODULE=src.configs.testing.settings.TestingAppSettings esmerald runserver
-```
+=== "MacOS & Linux"
+
+    ```shell
+    $ ESMERALD_SETTINGS_MODULE=src.configs.testing.settings.TestingAppSettings esmerald runserver
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="src.configs.testing.settings.TestingAppSettings"; esmerald runserver
+    ```
 
 **Run with production settings**
 
@@ -567,9 +591,16 @@ $ esmerald runserver --settings src.configs.settings.AppSettings
 
 Running with [ESMERALD_SETTINGS_MODULE][settings_module] would be:
 
-```shell
-$ ESMERALD_SETTINGS_MODULE=src.configs.settings.AppSettings esmerald runserver
-```
+=== "MacOS & Linux"
 
+    ```shell
+    $ ESMERALD_SETTINGS_MODULE=src.configs.settings.AppSettings esmerald runserver
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="src.configs.settings.AppSettings"; esmerald runserver
+    ```
 
 [settings_module]: ../application/settings.md#esmerald-settings-module
