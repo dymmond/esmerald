@@ -190,15 +190,29 @@ directly when creating the Esmerald intance. A cleaner way of doing it.
 With the `settings` and the `app` created you can simply start the server and pass the newly
 settings module.
 
-```shell
-ESMERALD_SETTINGS_MODULE=settings.AppSettings uvicorn src:app --reload
+=== "MacOS & Linux"
 
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28720]
-INFO:     Started server process [28722]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
+    ```shell
+    ESMERALD_SETTINGS_MODULE=settings.AppSettings uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
+
+=== "Windows"
+
+    ```shell
+    $env:ESMERALD_SETTINGS_MODULE="settings.AppSettings"; uvicorn src:app --reload
+    
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+    INFO:     Started reloader process [28720]
+    INFO:     Started server process [28722]
+    INFO:     Waiting for application startup.
+    INFO:     Application startup complete.
+    ```
 
 !!! Note
     You should replace the location of the settings in the example by the one you have

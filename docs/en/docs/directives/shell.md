@@ -86,12 +86,24 @@ $ esmerald shell --kernel ptpython
 Sometimes you want to use your application settings as well while loading the shell. You can see
 [more details](../application/settings.md) about the settings and [how to use them](../application/settings.md).
 
-```shell
-$ export ESMERALD_SETTINGS_MODULE=MyCustomSettings
-$ export ESMERALD_DEFAULT_APP=--app myproject.main:app
-$ esmerald shell # default
-$ esmerald shell --kernel ptpython # start with ptpython
-```
+
+=== "MacOS & Linux"
+
+    ```shell
+    $ export ESMERALD_SETTINGS_MODULE=MyCustomSettings
+    $ export ESMERALD_DEFAULT_APP=--app myproject.main:app
+    $ esmerald shell # default
+    $ esmerald shell --kernel ptpython # start with ptpython
+    ```
+
+=== "Windows"
+
+    ```shell
+    $ $env:ESMERALD_SETTINGS_MODULE=="MyCustomSettings"
+    $ $env:ESMERALD_DEFAULT_APP=--app myproject.main:app
+    $ esmerald shell # default
+    $ esmerald shell --kernel ptpython # start with ptpython
+    ```
 
 ### How does it look like
 
