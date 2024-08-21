@@ -1,0 +1,20 @@
+from typing import TypeVar
+
+T = TypeVar("T")
+
+
+class {{ name|capitalize }}Repository:
+    """
+    A {{ name|lower }} repository that defines the basic operations of the CRUD.
+
+    This serves as an example how to simply initialise the repository out of the box.
+    """
+    async def create(self) -> T: ...
+
+    async def get_by_id(self, pk: int) -> T: ...
+
+    async def get_all(self) -> list[T]: ...
+
+    async def update(self, pk: int) -> T: ...
+
+    async def delete_by_id(self, pk: int) -> T: ...

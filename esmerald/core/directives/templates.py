@@ -36,6 +36,7 @@ class TemplateDirective(BaseDirective):
         self.deployment_folder_name = options.get("deployment_folder_name", None)
         self.with_basic_controller = options.get("with_basic_controller", False)
         self.simple = options.get("simple", False)
+        self.app_context = options.get("app_context", False)
 
         if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
             self.validate_name(name)
@@ -55,11 +56,14 @@ class TemplateDirective(BaseDirective):
         else:
             base_name = "project_name"
 
-        base_subdir = (
-            f"{app_or_project}_template_simple"
-            if self.simple and self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE
-            else f"{app_or_project}_template"
-        )
+        if self.simple and self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            base_subdir = f"{app_or_project}_template_simple"
+        elif self.app_context and self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            base_subdir = f"{app_or_project}_template_context"
+            self.with_basic_controller = True
+        else:
+            base_subdir = f"{app_or_project}_template"
+
         base_deployment = "deployment_template"
 
         context = {
