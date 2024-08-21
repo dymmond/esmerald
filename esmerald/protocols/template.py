@@ -15,6 +15,8 @@ TP = TypeVar("TP", bound=TemplateProtocol, covariant=True)
 @runtime_checkable
 class TemplateEngineProtocol(Protocol[TP]):  # pragma: no cover
     @validate_call
-    def __init__(self, directory: Union[DirectoryPath, List[DirectoryPath]]) -> None: ...
+    def __init__(
+        self, directory: Union[DirectoryPath, List[DirectoryPath]], **kwargs: Any
+    ) -> None: ...
 
     def get_template(self, template_name: str) -> TP: ...

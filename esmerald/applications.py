@@ -1801,7 +1801,7 @@ class Application(Lilya):
         if not template_config:
             return None
 
-        engine: "TemplateEngineProtocol" = template_config.engine(template_config.directory)
+        engine: "TemplateEngineProtocol" = template_config.engine(template_config.directory, env=template_config.env, **template_config.options)
         return engine
 
     def add_apiview(

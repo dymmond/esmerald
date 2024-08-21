@@ -1,4 +1,4 @@
-from typing import List, Type, Union
+from typing import Any, Dict, List, Type, Union
 
 from pydantic import BaseModel, ConfigDict, DirectoryPath
 from typing_extensions import Annotated, Doc
@@ -55,3 +55,22 @@ class TemplateConfig(BaseModel):
             """
         ),
     ]
+    env: Annotated[
+        Union[Any, None],
+        Doc(
+            """
+        The environment for the template engine.
+        This env is **only used for jinja2** templates and its ignored for other template engines.
+
+        The `env` is a `jinja2.Environment` instance.
+        """
+        ),
+    ] = None
+    options: Annotated[
+        Union[Dict[Any, Any], None],
+        Doc(
+            """
+            The options for the template engine.
+            """
+        ),
+    ] = {}
