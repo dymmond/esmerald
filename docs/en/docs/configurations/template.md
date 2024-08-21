@@ -17,8 +17,7 @@ You are free to build your own and pass it to the `TemplateConfig`. This way you
 
     You can also create your own jinja2 engine and pass it in the `engine` parameter of the `TemplateConfig`.
 
-    You will notice the name of the parameters in the `TemplateConfig` match maority of the jinja2 implementation
-    of Lilya except `env_options` where in Esmerald we simply call it `options`.
+    You will notice the name of the parameters in the `TemplateConfig` match maority of the jinja2 implementation.
 
 ## Requirements
 

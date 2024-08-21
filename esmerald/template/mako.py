@@ -19,13 +19,13 @@ class MakoTemplateEngine(TemplateEngineProtocol[MakoTemplate]):
         self,
         directory: Union["DirectoryPath", List["DirectoryPath"]],
         env: Union[Any, None] = None,
-        **options: Dict[Any, Any],
+        **env_options: Dict[Any, Any],
     ) -> None:
         super().__init__(directory)
         self.engine = TemplateLookup(
             directories=directory if isinstance(directory, (list, tuple)) else [directory]
         )
-        self.options = options
+        self.options = env_options
         self.env = env
 
     def get_template(self, template_name: str) -> MakoTemplate:  # pragma: no cover

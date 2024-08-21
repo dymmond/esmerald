@@ -59,18 +59,22 @@ class TemplateConfig(BaseModel):
         Union[Any, None],
         Doc(
             """
-        The environment for the template engine.
-        This env is **only used for jinja2** templates and its ignored for other template engines.
+            The environment for the template engine.
+            This env is **only used for jinja2** templates and its ignored for other template engines.
 
-        The `env` is a `jinja2.Environment` instance.
-        """
+            The `env` is a `jinja2.Environment` instance.
+            """
         ),
     ] = None
-    options: Annotated[
+    env_options: Annotated[
         Union[Dict[Any, Any], None],
         Doc(
             """
-            The options for the template engine.
+            The options for the template engine. These options are passed to the template engine.
+
+            In the case of the `jinja2` template engine, these options are passed to the `jinja2.Environment` instance and will populate the `env_options` parameter.
+
+            This is currently only used for the `jinja2` template engine and nothing else.
             """
         ),
     ] = {}
