@@ -17,7 +17,7 @@ class JinjaTemplateEngine(Jinja2Template):
     def __init__(
         self,
         directory: Union["DirectoryPath", List["DirectoryPath"]],
-        env: Environment | None = None,
+        env: Union[Environment, None] = None,
         **env_options: Any,
     ) -> None:
         super().__init__(directory=directory, env=env, **env_options)
