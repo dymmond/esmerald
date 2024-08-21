@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from esmerald.exceptions import MissingDependency, TemplateNotFound
 from esmerald.protocols.template import TemplateEngineProtocol
@@ -15,11 +15,18 @@ except ImportError as exc:  # pragma: no cover
 
 
 class MakoTemplateEngine(TemplateEngineProtocol[MakoTemplate]):
-    def __init__(self, directory: Union["DirectoryPath", List["DirectoryPath"]]) -> None:
+    def __init__(
+        self,
+        directory: Union["DirectoryPath", List["DirectoryPath"]],
+        env: Union[Any, None] = None,
+        **env_options: Dict[Any, Any],
+    ) -> None:
         super().__init__(directory)
         self.engine = TemplateLookup(
             directories=directory if isinstance(directory, (list, tuple)) else [directory]
         )
+        self.options = env_options
+        self.env = env
 
     def get_template(self, template_name: str) -> MakoTemplate:  # pragma: no cover
         try:
