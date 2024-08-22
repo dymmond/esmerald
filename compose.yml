@@ -12,7 +12,7 @@ services:
     command: >-
         --jit=false
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
 
   mongodb:
     restart: always
@@ -25,13 +25,13 @@ services:
     expose:
       - 27017
     ports:
-      - 27017:27017
+      - "127.0.0.1:27017:27017"
 
   mongo-express:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - "127.0.0.1:8081:8081"
     environment:
       ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
       ME_CONFIG_MONGODB_SERVER: mongodb
