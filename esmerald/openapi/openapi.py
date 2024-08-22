@@ -144,7 +144,7 @@ def get_openapi_operation(
     operation.tags = route.handler.get_handler_tags()
 
     if route.handler.summary:
-        operation.summary = route.summary
+        operation.summary = route.handler.summary
     else:
         operation.summary = route.handler.name.replace("_", " ").replace("-", " ").title()
 
