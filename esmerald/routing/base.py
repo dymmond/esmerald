@@ -198,10 +198,14 @@ class BaseResponseHandler:
                 request_data = await parameter_model.get_request_data(request=request)
 
                 # Check if there is request data
-                if request_data:
+                if request_data is not None:
                     # Assign each key-value pair in the request data to kwargs
-                    for key, value in request_data.items():
-                        kwargs[key] = value
+                    if isinstance(request_data, (UploadFile, DataUpload)):
+                        for key, _ in kwargs.items():
+                            kwargs[key] = request_data
+                    else:
+                        for key, value in request_data.items():
+                            kwargs[key] = value
 
             for dependency in parameter_model.dependencies:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(
