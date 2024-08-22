@@ -153,6 +153,8 @@ class BaseResponseHandler:
         """
         Determine required kwargs for the given handler, assign to the object dictionary, and get the response data.
 
+        The application contains the reserved kwargs for Esmerald but also allows to add custom kwargs.
+
         Args:
             route (HTTPHandler): The route handler for the request.
             parameter_model (TransformerModel): The parameter model for handling request parameters.
@@ -168,10 +170,12 @@ class BaseResponseHandler:
             kwargs = parameter_model.to_kwargs(connection=request, handler=route)
 
             is_data_or_payload = DATA if kwargs.get(DATA) else PAYLOAD
-            request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
+            reserved_request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
 
-            if request_data:
-                kwargs[is_data_or_payload] = await request_data
+            if reserved_request_data and len(kwargs) == 1:
+                kwargs[is_data_or_payload] = await reserved_request_data
+            elif kwargs is not None:
+                kwargs = await parameter_model.get_request_data(request=request)
 
             for dependency in parameter_model.dependencies:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(
