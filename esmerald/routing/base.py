@@ -170,28 +170,36 @@ class BaseResponseHandler:
         if parameter_model.has_kwargs:
             kwargs = parameter_model.to_kwargs(connection=request, handler=route)
 
-            if DATA in kwargs:
-                is_data_or_payload = DATA
-            elif PAYLOAD in kwargs:
-                is_data_or_payload = PAYLOAD
-            else:
-                is_data_or_payload = None
+            is_data_or_payload = (
+                DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
+            )
 
             request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
 
+            # Check if there is request data
             if request_data:
+                # Get the request data
                 data = await request_data
+
+                # Check if the data is an UploadFile or DataUpload and matches the expected parameter type
                 if isinstance(data, (UploadFile, DataUpload)) and is_data_or_payload is not None:
                     kwargs[is_data_or_payload] = data
+                # Check if the data is None and matches the expected parameter type
                 elif is_data_or_payload is not None and data is None:
                     kwargs[is_data_or_payload] = data
+                # Check if the data is a dictionary and contains the expected parameter key
                 elif is_data_or_payload is not None and is_data_or_payload not in data:
                     kwargs[is_data_or_payload] = data
+                # Otherwise, assign the data to kwargs
                 else:
                     kwargs = data
             else:
+                # Get the request data
                 request_data = await parameter_model.get_request_data(request=request)
+
+                # Check if there is request data
                 if request_data:
+                    # Assign each key-value pair in the request data to kwargs
                     for key, value in request_data.items():
                         kwargs[key] = value
 
