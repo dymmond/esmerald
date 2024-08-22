@@ -20,13 +20,14 @@ from typing import (
 from uuid import UUID
 
 from lilya._internal._connection import Connection
+from lilya.datastructures import DataUpload
 from lilya.responses import Response as LilyaResponse
 from lilya.routing import compile_path
 from lilya.transformers import TRANSFORMER_TYPES
 from lilya.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
-from esmerald.datastructures import ResponseContainer
+from esmerald.datastructures import ResponseContainer, UploadFile
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
@@ -169,13 +170,30 @@ class BaseResponseHandler:
         if parameter_model.has_kwargs:
             kwargs = parameter_model.to_kwargs(connection=request, handler=route)
 
-            is_data_or_payload = DATA if kwargs.get(DATA) else PAYLOAD
-            reserved_request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
+            if DATA in kwargs:
+                is_data_or_payload = DATA
+            elif PAYLOAD in kwargs:
+                is_data_or_payload = PAYLOAD
+            else:
+                is_data_or_payload = None
 
-            if reserved_request_data and len(kwargs) == 1:
-                kwargs[is_data_or_payload] = await reserved_request_data
-            elif kwargs is not None:
-                kwargs = await parameter_model.get_request_data(request=request)
+            request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
+
+            if request_data:
+                data = await request_data
+                if isinstance(data, (UploadFile, DataUpload)) and is_data_or_payload is not None:
+                    kwargs[is_data_or_payload] = data
+                elif is_data_or_payload is not None and data is None:
+                    kwargs[is_data_or_payload] = data
+                elif is_data_or_payload is not None and is_data_or_payload not in data:
+                    kwargs[is_data_or_payload] = data
+                else:
+                    kwargs = data
+            else:
+                request_data = await parameter_model.get_request_data(request=request)
+                if request_data:
+                    for key, value in request_data.items():
+                        kwargs[key] = value
 
             for dependency in parameter_model.dependencies:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(
