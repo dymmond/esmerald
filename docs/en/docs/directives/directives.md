@@ -180,6 +180,11 @@ a basic controller example.
 
     <sup>Default: `False`</sup>
 
+* **--context** - Flag indicating whether the application creation should be accompanied 
+by a sample base controller, service, repository and dtos.
+
+    <sup>Default: `False`</sup>
+
 ```shell
 $ esmerald createapp <YOUR-APP-NAME>
 ```

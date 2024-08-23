@@ -1,0 +1,28 @@
+from typing import TYPE_CHECKING, TypeVar
+
+
+if TYPE_CHECKING:
+    from .repository import {{ name|capitalize }}Repository
+
+T = TypeVar("T")
+
+
+class {{ name|capitalize }}Service:
+    """
+    A {{ name|lower }} service that defines the basic operations of the CRUD.
+
+    This serves as an example how to simply initialise the service out of the box.
+    """
+
+    def __init__(self, repository: "{{ name|capitalize }}Repository"):
+        self.repository = repository
+
+    async def create(self) -> T: ...
+
+    async def get_by_id(self, pk: int) -> T: ...
+
+    async def get_all(self) -> list[T]: ...
+
+    async def update(self, pk: int) -> T: ...
+
+    async def delete_by_id(self, pk: int) -> T: ...
