@@ -1,6 +1,6 @@
 import inspect
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, _GenericAlias, cast, get_args
+from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
 
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
@@ -45,24 +45,6 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
             field_definitions[name] = (annotation, ...)
         return create_model(field_annotation.__name__, **field_definitions)
     return field_annotation
-
-
-def get_field_definition(param: "FieldInfo") -> Tuple[Any, Any]:
-    """
-    This method will make sure that __future__ references are resolved by
-    the Any type. This is necessary because the signature model will be
-    generated before the actual type is resolved.
-    """
-
-    annotation = Any if isinstance(param.annotation, str) else param.annotation
-
-    if param.default:
-        definition = annotation, param.default
-    elif not param.is_required():
-        definition = annotation, ...
-    else:
-        definition = annotation, None
-    return definition
 
 
 def get_original_data_field(
