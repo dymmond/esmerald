@@ -143,6 +143,7 @@ def create_parameter_setting(
         param_type = ParamType.COOKIE
         param = Cookie(default=default_value)
     else:
+        # Checking if the value should go to body or query params
         param = Query(default=default_value)
 
     if not field_info.alias:

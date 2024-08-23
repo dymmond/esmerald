@@ -1,11 +1,11 @@
 import inspect
-from functools import cached_property, lru_cache
+from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union, _GenericAlias, cast, get_args
 
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
-from esmerald.encoders import ENCODER_TYPES
+from esmerald.encoders import ENCODER_TYPES, is_body_encoder
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler, WebhookHandler
 
 
-@lru_cache
 def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     """
     Converts any annotation of the body into a Pydantic
@@ -90,7 +89,7 @@ def get_original_data_field(
             body = data
 
         # Check the annotation type
-        body.annotation = convert_annotation_to_pydantic_model(body.annotation)  # type: ignore
+        body.annotation = convert_annotation_to_pydantic_model(body.annotation)
 
         if not body.title:
             body.title = f"Body_{handler.operation_id}"
@@ -114,8 +113,8 @@ def get_original_data_field(
         return data_field
 
 
-def get_data_field(
-    handler: Union["HTTPHandler", "WebhookHandler", Any]
+def get_complext_data_field(
+    handler: Union["HTTPHandler", "WebhookHandler", Any], fields: Dict[str, FieldInfo]
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -123,21 +122,10 @@ def get_data_field(
     This builds a model for the required data field. Validates the type of encoding
     being passed and builds a model if a datastructure is evaluated.
     """
-    # return get_original_data_field(handler)
-
-    is_data_or_payload = (
-        DATA
-        if DATA in handler.signature_model.model_fields
-        else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
-    )
     body_fields_set = set()
     body_fields: Dict[str, FieldInfo] = {}
 
-    if is_data_or_payload is not None:
-        body_fields_set.add(is_data_or_payload)
-        body_fields[is_data_or_payload] = handler.signature_model.model_fields[is_data_or_payload]
-
-    for name, field in handler.signature_model.model_fields.items():
+    for name, field in fields.items():
         if name in body_fields_set:
             continue
 
@@ -145,23 +133,56 @@ def get_data_field(
         body_fields[name] = field
 
     # Set the field definitions
-    field_definitions = {name: get_field_definition(param) for name, param in body_fields.items()}
+    field_definitions = {}
+    for name, param in body_fields.items():
+        param.annotation = convert_annotation_to_pydantic_model(param.annotation)
+        field_definitions[name] = param.annotation, ...
 
     # Create the model from the field definitions
-    model = create_model(
+    model = create_model(  # type: ignore
         "DataField", __config__={"arbitrary_types_allowed": True}, **field_definitions
     )
-
     # Create the body field
     body = Body(annotation=model, title=f"Body_{handler.operation_id}")
+    body.annotation = convert_annotation_to_pydantic_model(body.annotation)
 
     # Check the annotation type
-    body.annotation = convert_annotation_to_pydantic_model(body.annotation)  # type: ignore
-
     if not body.title:
         body.title = f"Body_{handler.operation_id}"
-
     return body
+
+
+def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
+    """
+    Retrieves the data field from the given handler.
+
+    Args:
+        handler (Union[HTTPHandler, WebhookHandler, Any]): The handler object.
+
+    Returns:
+        Any: The data field.
+
+    Raises:
+        None
+
+    This function checks if the handler has any body encoder fields. If there are less than 2 body encoder fields,
+    it calls the get_original_data_field function. Otherwise, it calls the get_complext_data_field function.
+    """
+    is_data_or_payload = (
+        DATA
+        if DATA in handler.signature_model.model_fields
+        else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
+    )
+
+    body_encoder_fields = {
+        name: field
+        for name, field in handler.signature_model.model_fields.items()
+        if is_body_encoder(field.annotation)
+    }
+
+    if len(body_encoder_fields) < 2 and is_data_or_payload is not None:
+        return get_original_data_field(handler)
+    return get_complext_data_field(handler, fields=body_encoder_fields)
 
 
 class OpenAPIFieldInfoMixin:

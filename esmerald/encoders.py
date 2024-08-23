@@ -81,3 +81,10 @@ def register_esmerald_encoder(encoder: Encoder[Any]) -> None:
     encoder_types = {encoder.__class__.__name__ for encoder in ENCODER_TYPES}
     if encoder.__name__ not in encoder_types:
         register_encoder(encoder)
+
+
+def is_body_encoder(value: Any) -> bool:
+    """
+    Function that checks if the value is a body encoder.
+    """
+    return any(encoder.is_type(value) for encoder in ENCODER_TYPES)

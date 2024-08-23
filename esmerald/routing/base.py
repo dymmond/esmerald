@@ -168,7 +168,7 @@ class BaseResponseHandler:
         is_data_or_payload: str = None
 
         if parameter_model.has_kwargs:
-            kwargs = parameter_model.to_kwargs(connection=request, handler=route)
+            kwargs: Dict[str, Any] = parameter_model.to_kwargs(connection=request, handler=route)
 
             is_data_or_payload = (
                 DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
@@ -190,9 +190,15 @@ class BaseResponseHandler:
                 # Check if the data is a dictionary and contains the expected parameter key
                 elif is_data_or_payload is not None and is_data_or_payload not in data:
                     kwargs[is_data_or_payload] = data
+
                 # Otherwise, assign the data to kwargs
+                # This is important for cases where query parameters are passed as data
+                # and the data is not an UploadFile or DataUpload and we don't want
+                # to override the k
                 else:
-                    kwargs = data
+                    if data is not None:
+                        kwargs.update(data)
+
             else:
                 # Get the request data
                 request_data = await parameter_model.get_request_data(request=request)
@@ -204,8 +210,8 @@ class BaseResponseHandler:
                         for key, _ in kwargs.items():
                             kwargs[key] = request_data
                     else:
-                        for key, value in request_data.items():
-                            kwargs[key] = value
+                        if request_data is not None:
+                            kwargs.update(request_data)
 
             for dependency in parameter_model.dependencies:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(
