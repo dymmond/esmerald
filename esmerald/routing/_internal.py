@@ -150,11 +150,11 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     This function checks if the handler has any body encoder fields. If there are less than 2 body encoder fields,
     it calls the get_original_data_field function. Otherwise, it calls the get_complext_data_field function.
     """
-    is_data_or_payload = (
-        DATA
-        if DATA in handler.signature_model.model_fields
-        else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
-    )
+    # is_data_or_payload = (
+    #     DATA
+    #     if DATA in handler.signature_model.model_fields
+    #     else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
+    # )
 
     body_encoder_fields = {
         name: field
@@ -165,7 +165,7 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     if not body_encoder_fields:
         return None
 
-    if len(body_encoder_fields) < 2 and is_data_or_payload is not None:
+    if len(body_encoder_fields) < 2:
         return get_original_data_field(handler)
     return get_complext_data_field(handler, fields=body_encoder_fields)
 
