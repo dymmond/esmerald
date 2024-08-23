@@ -21,7 +21,7 @@ app = Esmerald(
 client = EsmeraldTestClient(app)
 
 
-def xtest_openapi_schema_tags(test_client_factory):
+def test_openapi_schema_tags(test_client_factory):
     response = client.get("/openapi.json")
 
     assert response.status_code == 200, response.text
