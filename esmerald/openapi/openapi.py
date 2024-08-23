@@ -40,7 +40,6 @@ from esmerald.params import Param
 from esmerald.routing import gateways, router
 from esmerald.routing._internal import convert_annotation_to_pydantic_model
 from esmerald.typing import Undefined
-from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]
@@ -117,13 +116,8 @@ def get_fields_from_routes(
         ):
             handler = cast(router.HTTPHandler, route.handler)
 
-            # Get the data_field
-            if (
-                DATA in handler.signature_model.model_fields
-                or PAYLOAD in handler.signature_model.model_fields
-            ):
-                data_field = handler.data_field
-                body_fields.append(data_field)
+            if handler.data_field:
+                body_fields.append(handler.data_field)
 
             if handler.response_models:
                 for _, response in handler.response_models.items():

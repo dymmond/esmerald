@@ -66,7 +66,7 @@ def get_field_definition(param: "FieldInfo") -> Tuple[Any, Any]:
     return definition
 
 
-def get_data_field(
+def xget_data_field(
     handler: Union["HTTPHandler", "WebhookHandler", Any]
 ) -> Any:  # pragma: no cover
     """
@@ -112,6 +112,58 @@ def get_data_field(
                 setattr(data_field, key, getattr(body, key, None))
 
         return data_field
+
+
+def get_data_field(
+    handler: Union["HTTPHandler", "WebhookHandler", Any]
+) -> Any:  # pragma: no cover
+    """
+    The field used for the payload body.
+
+    This builds a model for the required data field. Validates the type of encoding
+    being passed and builds a model if a datastructure is evaluated.
+    """
+    body_fields_set = set()
+    body_fields: Dict[str, FieldInfo] = {}
+    query_param_names: List[str] = [
+        param.field_name for param in handler.transformer.get_query_params()
+    ]
+
+    is_data_or_payload = (
+        DATA
+        if DATA in handler.signature_model.model_fields
+        else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
+    )
+
+    if is_data_or_payload is not None:
+        body_fields_set.add(is_data_or_payload)
+        body_fields[is_data_or_payload] = handler.signature_model.model_fields[is_data_or_payload]
+
+    for name, field in handler.signature_model.model_fields.items():
+        if name in body_fields_set:
+            continue
+
+        body_fields_set.add(name)
+        body_fields[name] = field
+
+    # Set the field definitions
+    field_definitions = {name: get_field_definition(param) for name, param in body_fields.items()}
+
+    # Create the model from the field definitions
+    model = create_model(
+        "DataField", __config__={"arbitrary_types_allowed": True}, **field_definitions
+    )
+
+    # Create the body field
+    body = Body(annotation=model, title=f"Body_{handler.operation_id}")
+
+    # Check the annotation type
+    body.annotation = convert_annotation_to_pydantic_model(body.annotation)  # type: ignore
+
+    if not body.title:
+        body.title = f"Body_{handler.operation_id}"
+
+    return body
 
 
 class OpenAPIFieldInfoMixin:
