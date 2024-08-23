@@ -5,6 +5,22 @@ hide:
 
 # Release Notes
 
+## 3.3.7
+
+### Added
+
+- New application generator using `--context` allowing to generate application scaffolds containing
+more complex structures.
+
+### Changed
+
+- jinja2 templating is now 100% delegated to its base, Lilya.
+- Added examples in the documentation for windows users.
+
+### Fixed
+
+- Lookup for summary in the handler for OpenAPI.
+
 ## 3.3.6
 
 ### Added
