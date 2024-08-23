@@ -66,7 +66,7 @@ def get_field_definition(param: "FieldInfo") -> Tuple[Any, Any]:
     return definition
 
 
-def xget_data_field(
+def get_original_data_field(
     handler: Union["HTTPHandler", "WebhookHandler", Any]
 ) -> Any:  # pragma: no cover
     """
@@ -123,17 +123,15 @@ def get_data_field(
     This builds a model for the required data field. Validates the type of encoding
     being passed and builds a model if a datastructure is evaluated.
     """
-    body_fields_set = set()
-    body_fields: Dict[str, FieldInfo] = {}
-    query_param_names: List[str] = [
-        param.field_name for param in handler.transformer.get_query_params()
-    ]
+    # return get_original_data_field(handler)
 
     is_data_or_payload = (
         DATA
         if DATA in handler.signature_model.model_fields
         else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
     )
+    body_fields_set = set()
+    body_fields: Dict[str, FieldInfo] = {}
 
     if is_data_or_payload is not None:
         body_fields_set.add(is_data_or_payload)
