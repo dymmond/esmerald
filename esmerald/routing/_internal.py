@@ -166,8 +166,10 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
         if is_body_encoder(field.annotation) and name not in handler_dependencies
     }
 
+    # If there are no body fields, we simply return the original
+    # default Esmerald body parsing
     if not body_encoder_fields:
-        return None
+        return get_original_data_field(handler)
 
     if len(body_encoder_fields) < 2 and is_data_or_payload is not None:
         return get_original_data_field(handler)
