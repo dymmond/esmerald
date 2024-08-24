@@ -149,6 +149,18 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
 
     This function checks if the handler has any body encoder fields. If there are less than 2 body encoder fields,
     it calls the get_original_data_field function. Otherwise, it calls the get_complext_data_field function.
+
+    One the steps is to make sure backwards compatibility and this means to make sure previous
+    versions of Esmerald are supported the way they are supposed to.
+
+    The other thing is to make sure we extract any value from the signature of the handler and
+    match against any encoder, custom or default, and isolate them as body fields and then extract
+    the values that are not in the dependencies since those are not considered part of the body
+    but as dependency itself.
+
+    If the body fields are less than 1 and using the reserved `data` or `payload` then it will
+    default to the normal Esmerald processing, otherwise it will use the complex approach of
+    designing the OpenAPI body.
     """
     is_data_or_payload = (
         DATA
