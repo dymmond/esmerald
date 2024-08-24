@@ -126,7 +126,6 @@ def get_complex_data_field(
     )
     # Create the body field
     body = Body(annotation=model, title=f"Body_{handler.operation_id}")
-    body.annotation = convert_annotation_to_pydantic_model(body.annotation)
 
     # Check the annotation type
     if not body.title:
