@@ -168,24 +168,14 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
         else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
     )
 
-    # Making sure the dependencies are not met as body fields for OpenAPI representation
-    handler_dependencies = set(handler.get_dependencies().keys())
-
-    # Getting everything else that is not considered a dependency
-    body_encoder_fields = {
-        name: field
-        for name, field in handler.signature_model.model_fields.items()
-        if is_body_encoder(field.annotation) and name not in handler_dependencies
-    }
-
     # If there are no body fields, we simply return the original
     # default Esmerald body parsing
-    if not body_encoder_fields:
+    if not handler.body_encoder_fields:
         return get_original_data_field(handler)
 
-    if len(body_encoder_fields) < 2 and is_data_or_payload is not None:
+    if len(handler.body_encoder_fields) < 2 and is_data_or_payload is not None:
         return get_original_data_field(handler)
-    return get_complex_data_field(handler, fields=body_encoder_fields)
+    return get_complex_data_field(handler, fields=handler.body_encoder_fields)
 
 
 class OpenAPIFieldInfoMixin:
@@ -195,6 +185,24 @@ class OpenAPIFieldInfoMixin:
 
     Don't use this anywhere else.
     """
+
+    @property
+    def body_encoder_fields(self) -> Dict[str, FieldInfo]:
+        """
+        The fields that are body encoders.
+
+        This is used for OpenAPI representation purposes only.
+        """
+        # Making sure the dependencies are not met as body fields for OpenAPI representation
+        handler_dependencies = set(self.get_dependencies().keys())
+
+        # Getting everything else that is not considered a dependency
+        body_encoder_fields = {
+            name: field
+            for name, field in self.signature_model.model_fields.items()
+            if is_body_encoder(field.annotation) and name not in handler_dependencies
+        }
+        return body_encoder_fields
 
     @cached_property
     def response_models(self) -> Dict[int, Any]:
