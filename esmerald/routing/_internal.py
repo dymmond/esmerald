@@ -95,7 +95,7 @@ def get_original_data_field(
         return data_field
 
 
-def get_complext_data_field(
+def get_complex_data_field(
     handler: Union["HTTPHandler", "WebhookHandler", Any], fields: Dict[str, FieldInfo]
 ) -> Any:  # pragma: no cover
     """
@@ -148,7 +148,7 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
         None
 
     This function checks if the handler has any body encoder fields. If there are less than 2 body encoder fields,
-    it calls the get_original_data_field function. Otherwise, it calls the get_complext_data_field function.
+    it calls the get_original_data_field function. Otherwise, it calls the get_complex_data_field function.
 
     One the steps is to make sure backwards compatibility and this means to make sure previous
     versions of Esmerald are supported the way they are supposed to.
@@ -185,7 +185,7 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
 
     if len(body_encoder_fields) < 2 and is_data_or_payload is not None:
         return get_original_data_field(handler)
-    return get_complext_data_field(handler, fields=body_encoder_fields)
+    return get_complex_data_field(handler, fields=body_encoder_fields)
 
 
 class OpenAPIFieldInfoMixin:
