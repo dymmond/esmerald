@@ -40,7 +40,6 @@ from esmerald.params import Param
 from esmerald.routing import gateways, router
 from esmerald.routing._internal import convert_annotation_to_pydantic_model
 from esmerald.typing import Undefined
-from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]
@@ -54,8 +53,13 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
     header_params = [param.field_info for param in route.transformer.get_header_params()]
 
+    handler_query_params = [
+        param
+        for param in route.transformer.get_query_params()
+        if param.field_alias not in route.body_encoder_fields.keys()
+    ]
     query_params = []
-    for param in route.transformer.get_query_params():
+    for param in handler_query_params:
         is_union_or_optional = is_union(param.field_info.annotation)
 
         # Making sure all the optional and union types are included
@@ -117,13 +121,8 @@ def get_fields_from_routes(
         ):
             handler = cast(router.HTTPHandler, route.handler)
 
-            # Get the data_field
-            if (
-                DATA in handler.signature_model.model_fields
-                or PAYLOAD in handler.signature_model.model_fields
-            ):
-                data_field = handler.data_field
-                body_fields.append(data_field)
+            if handler.data_field:
+                body_fields.append(handler.data_field)
 
             if handler.response_models:
                 for _, response in handler.response_models.items():
@@ -204,7 +203,6 @@ def get_openapi_operation_parameters(
             parameter.example = json.dumps(field_info.examples)
         if field_info.deprecated:
             parameter.deprecated = field_info.deprecated  # type: ignore
-
         parameters.append(parameter.model_dump(by_alias=True, exclude_none=True))
     return parameters
 

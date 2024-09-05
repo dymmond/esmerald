@@ -20,13 +20,14 @@ from typing import (
 from uuid import UUID
 
 from lilya._internal._connection import Connection
+from lilya.datastructures import DataUpload
 from lilya.responses import Response as LilyaResponse
 from lilya.routing import compile_path
 from lilya.transformers import TRANSFORMER_TYPES
 from lilya.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
-from esmerald.datastructures import ResponseContainer
+from esmerald.datastructures import ResponseContainer, UploadFile
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
@@ -153,6 +154,8 @@ class BaseResponseHandler:
         """
         Determine required kwargs for the given handler, assign to the object dictionary, and get the response data.
 
+        The application contains the reserved kwargs for Esmerald but also allows to add custom kwargs.
+
         Args:
             route (HTTPHandler): The route handler for the request.
             parameter_model (TransformerModel): The parameter model for handling request parameters.
@@ -165,13 +168,50 @@ class BaseResponseHandler:
         is_data_or_payload: str = None
 
         if parameter_model.has_kwargs:
-            kwargs = parameter_model.to_kwargs(connection=request, handler=route)
+            kwargs: Dict[str, Any] = parameter_model.to_kwargs(connection=request, handler=route)
 
-            is_data_or_payload = DATA if kwargs.get(DATA) else PAYLOAD
+            is_data_or_payload = (
+                DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
+            )
+
             request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
 
+            # Check if there is request data
             if request_data:
-                kwargs[is_data_or_payload] = await request_data
+                # Get the request data
+                data = await request_data
+
+                # Check if the data is an UploadFile or DataUpload and matches the expected parameter type
+                if isinstance(data, (UploadFile, DataUpload)) and is_data_or_payload is not None:
+                    kwargs[is_data_or_payload] = data
+                # Check if the data is None and matches the expected parameter type
+                elif is_data_or_payload is not None and data is None:
+                    kwargs[is_data_or_payload] = data
+                # Check if the data is a dictionary and contains the expected parameter key
+                elif is_data_or_payload is not None and is_data_or_payload not in data:
+                    kwargs[is_data_or_payload] = data
+
+                # Otherwise, assign the data to kwargs
+                # This is important for cases where query parameters are passed as data
+                # and the data is not an UploadFile or DataUpload and we don't want
+                # to override the k
+                else:
+                    if data is not None:
+                        kwargs.update(data)
+
+            else:
+                # Get the request data
+                request_data = await parameter_model.get_request_data(request=request)
+
+                # Check if there is request data
+                if request_data is not None:
+                    # Assign each key-value pair in the request data to kwargs
+                    if isinstance(request_data, (UploadFile, DataUpload)):
+                        for key, _ in kwargs.items():
+                            kwargs[key] = request_data
+                    else:
+                        if request_data is not None:
+                            kwargs.update(request_data)
 
             for dependency in parameter_model.dependencies:
                 kwargs[dependency.key] = await parameter_model.get_dependencies(

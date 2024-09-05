@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, TypeVar
+from typing import Any, TypeVar, get_args
 
 import msgspec
 from lilya._internal._encoders import json_encoder as json_encoder  # noqa
@@ -14,6 +14,7 @@ from msgspec import Struct
 from pydantic import BaseModel
 
 from esmerald.exceptions import ImproperlyConfigured
+from esmerald.utils.helpers import is_union
 
 T = TypeVar("T")
 
@@ -81,3 +82,18 @@ def register_esmerald_encoder(encoder: Encoder[Any]) -> None:
     encoder_types = {encoder.__class__.__name__ for encoder in ENCODER_TYPES}
     if encoder.__name__ not in encoder_types:
         register_encoder(encoder)
+
+
+def is_body_encoder(value: Any) -> bool:
+    """
+    Function that checks if the value is a body encoder.
+    """
+    if not is_union(value):
+        return any(encoder.is_type(value) for encoder in ENCODER_TYPES)
+
+    union_arguments = get_args(value)
+    if not union_arguments:
+        return False
+    return any(
+        any(encoder.is_type(argument) for encoder in ENCODER_TYPES) for argument in union_arguments
+    )

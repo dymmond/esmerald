@@ -5,6 +5,7 @@ from pydantic.fields import FieldInfo
 from esmerald.context import Context
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
+from esmerald.params import Body
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
 from esmerald.transformers.signature import SignatureModel
@@ -32,17 +33,6 @@ MappingUnion = Mapping[Union[int, str], Any]
 class TransformerModel(ArbitraryExtraBaseModel):
     """
     Represents a transformer model with parameters and dependencies.
-
-    Attributes:
-        cookies (Set[ParamSetting]): Set of cookie parameters.
-        dependencies (Set[Dependency]): Set of dependencies.
-        form_data (Optional[Tuple[EncodingType, FieldInfo]]): Optional form data information.
-        headers (Set[ParamSetting]): Set of header parameters.
-        path_params (Set[ParamSetting]): Set of path parameters.
-        query_params (Set[ParamSetting]): Set of query parameters.
-        reserved_kwargs (Set[str]): Set of reserved keyword arguments.
-        has_kwargs (bool): Flag indicating if any kwargs are present.
-        is_optional (bool): Flag indicating if the model is optional.
     """
 
     def __init__(
@@ -433,9 +423,13 @@ def _get_form_data(
         Optional[Tuple[EncodingType, FieldInfo]]: Tuple containing media type and data
         field information, or None if not found.
     """
-    data_field = signature_model.model_fields.get(DATA) or signature_model.model_fields.get(
-        PAYLOAD
-    )
+    data_field = None
+
+    for _, field in signature_model.model_fields.items():
+        if isinstance(field, Body):
+            data_field = field
+            break
+
     if data_field:
         extra = getattr(data_field, "json_schema_extra", None) or {}
         media_type = extra.get("media_type")
