@@ -4,12 +4,12 @@ In every application there will be times where sending a payload to the server w
 
 Esmerald is prepared to handle those with ease and that is thanks to Pydantic.
 
-There are two ways of doing this, using the [data](#the-data-field) or using the [payload](#the-payload-field).
+There are two **default ways** of doing this, using the [data](#the-data-field) and using the [payload](#the-payload-field)
+but there are also [custom ways](#complex-request-data) of creating the payload.
 
-## Warning
-
-You can only declare `data` or `payload` in the handler **but not both** or an `ImproperlyConfigured`
-exception is raised.
+!!! Warning
+    You can only declare `data` or `payload` in the handler **but not both** or an `ImproperlyConfigured`
+    exception is raised.
 
 ## The `data` field
 
@@ -150,9 +150,9 @@ own.
 
 === "data"
 
-```python
-{!> ../../../docs_src/extras/request_data/custom_validation.py !}
-```
+    ```python
+    {!> ../../../docs_src/extras/request_data/custom_validation.py !}
+    ```
 
 === "payload"
 
@@ -160,11 +160,172 @@ own.
     {!> ../../../docs_src/extras/request_payload/custom_validation.py !}
     ```
 
-## Summary
+## Complex request data
 
-* To process a payload it must have a `data` or a `payload` field declared in the handler.
-* `data` or `payload` can be any type, including pydantic models.
-* Validations can be achieved by:
-    * Using the `Field` from pydantic and automatic delegate the validations to it.
-    * Using custom validations.
-* To make a field non-mandatory you must use the `Optional`.
+Since the release 3.4+, Esmerald allows you to have multiple payloads declared and allows you to customize the way
+you want to send it.
+
+The [data](#the-data-field) and [payload](#the-payload-field) will always continue to do what they are supposed to do
+which means the following is **valid**.
+
+=== "data"
+
+    ```python
+    {!> ../../../docs_src/extras/request_data/custom_validation.py !}
+    ```
+
+=== "payload"
+
+    ```python
+    {!> ../../../docs_src/extras/request_payload/custom_validation.py !}
+    ```
+
+
+But what if you want to actually have a different payload split by responsabilities or simply because you just want for
+organisation purposes guarantee a more complex request?
+
+Let us imagine we want to register a **user** and at the same time we want to provide extra details for that user such
+as an **address**.
+
+Well, you can use the `data` or `payload` to do it and send all in one go but you can also do something like this:
+
+```python
+{!> ../../../docs_src/extras/request_data/complex_example1.py !}
+```
+
+This makes the declaration of the body a bit more oriented to the type of data you want to send. So, how it would the request data
+would look like now?
+
+```json
+{
+    "user": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    },
+    "address": {
+        "street_name": "123 Queens Park",
+        "post_code": "90241"
+    }
+}
+```
+
+Esmerald automatically will understand where to map the request data and assign them to the proper declaration of
+the `keys` sent.
+
+### Non mandatory fields in the payload
+
+The same principle applied to everything in Esmerald is also applied here in the same fashion. You can also make the
+fields also not mandatory, something like this:
+
+```python
+{!> ../../../docs_src/extras/request_data/complex_example_union.py !}
+```
+
+!!! Note
+    We use `Union` but `Optional` can also be used.
+
+As you can see, now the `address` is a non mandatory field and that means you can simply do:
+
+```json
+{
+    "user": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    }
+}
+```
+
+Esmerald will know and understand what to do. Pretty simple, right?
+
+### Using different `Encoders`
+
+Well, Esmerald is also known for being able to mix and match multiple [Encoders](../encoders.md). If you are not familiar
+with those, now its a great time to go [read and catch-up with those](../encoders.md).
+
+Now, this is very unlikely to happen where you mix encoders such as `Pydantic` with `Msgspec` or `attrs` but it could
+happen if you want, after all you are in charge of your own destiny!
+
+Since Esmerald understands those, that means you can also have a complex payload using different encoders and it would
+still work as it is supposed to.
+
+Let us see the use of two encoders at the same time and how you could do it here.
+
+!!! Note
+    We will be assuming the [encoders](../encoders.md) section was read and understood and you are comfortable with
+    the concept.
+
+We will be using the two **default supported encoders**, Pydantic and MsgSpec.
+
+Using the example from before, now the `Address` won't be a Pydantic model but a Msgspec `Struct`.
+
+```python
+{!> ../../../docs_src/extras/request_data/complex_encoders.py !}
+```
+
+As you can see, nothing really changed besides the type of object, since Esmerald understands the encoder type, it
+will automatically parse them to the proper object and run the declared validations but in terms of the way you send
+the request data **remains exactly the same**.
+
+**Sending the whole data**
+
+```json
+{
+    "user": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    },
+    "address": {
+        "street_name": "123 Queens Park",
+        "post_code": "90241"
+    }
+}
+```
+
+**Sending only the mandatory one**
+
+```json
+{
+    "user": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    }
+}
+```
+
+### Important note
+
+From the moment you add an *extra body* to the signasture of your handler, you must declare them explicitly in your request,
+**even if you want to call it data or payload, it must be there**.
+
+```python
+{!> ../../../docs_src/extras/request_data/complex.py !}
+```
+
+Even if you used the `data` reserved word and because the body is now in a complex form, the request must be explicitly
+declared, like this:
+
+**Sending the whole data**
+
+```json
+{
+    "data": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    },
+    "address": {
+        "street_name": "123 Queens Park",
+        "post_code": "90241"
+    }
+}
+```
+
+**Sending only the mandatory one**
+
+```json
+{
+    "data": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    }
+}
+```
