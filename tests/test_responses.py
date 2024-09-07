@@ -80,7 +80,7 @@ def multiple(name: Union[str, None]) -> Response:
         return Response("Ok", status_code=status.HTTP_401_UNAUTHORIZED)
     if name == "esmerald":
         return Response("Ok", status_code=status.HTTP_300_MULTIPLE_CHOICES)
-    return Response("Ok", status_code=status.HTTP_200_OK)
+    return Response("Ok")
 
 
 def test_multiple(test_client_factory):
