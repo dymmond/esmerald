@@ -5,6 +5,91 @@ hide:
 
 # Release Notes
 
+## 3.4.0
+
+### Added
+
+- New ways of providing the [request data](./extras/request-data.md) allowing to pass a more complex body
+using also the [encoders](./encoders.md). The [complex body](./extras/request-data.md#complex-request-data) is explained
+and how to achieve this result.
+
+!!! Warning
+    This is an **additional** functionality to the existing one and it does not represent any replacement. Be sure
+    you read the [documentation](./extras/request-data.md) and if you understand it.
+
+#### Example
+
+As per some examples of the documentation:
+
+```python
+from pydantic import BaseModel, EmailStr
+
+from esmerald import Esmerald, Gateway, post
+
+
+class User(BaseModel):
+    name: str
+    email: EmailStr
+
+
+class Address(BaseModel):
+    street_name: str
+    post_code: str
+
+
+@post("/create")
+async def create_user(user: User, address: Address) -> None:
+    """
+    Creates a user in the system and does not return anything.
+    Default status_code: 201
+    """
+
+
+app = Esmerald(routes=[Gateway(handler=create_user)])
+```
+
+You can expect to send a payload like this:
+
+```json
+{
+    "user": {
+        "name": "John",
+        "email": "john.doe@example.com",
+    },
+    "address": {
+        "street_name": "123 Queens Park",
+        "post_code": "90241"
+    }
+}
+```
+
+More details can and must be read in the [request data](./extras/request-data.md) section.
+
+### Changed
+
+- Overriding the `status_code` in any response is now possible directly by specifying the intended response and ignoring
+the default from the `handler`.
+
+#### Example
+
+```python
+@get()
+def create(name: Union[str, None]) -> Response:
+    if name is None:
+        return Response("Ok")
+    if name == "something":
+        return Response("Ok", status_code=status.HTTP_401_UNAUTHORIZED)
+    if name == "something-else":
+        return Response("Ok", status_code=status.HTTP_300_MULTIPLE_CHOICES)
+```
+
+If none of the conditions are met, then it will always default to the `status_code` of the handler which in the `get` case,
+its `200`.
+
+### Fixed
+
+- Internal parsing of the encoders for OpenAPI representation and removed unused code *(deprecated)*.
+
 ## 3.3.7
 
 ### Added
