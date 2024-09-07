@@ -27,6 +27,7 @@ from lilya.transformers import TRANSFORMER_TYPES
 from lilya.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
+from esmerald import status
 from esmerald.datastructures import ResponseContainer, UploadFile
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
@@ -237,6 +238,22 @@ class BaseResponseHandler:
             return await fn()
         return fn()
 
+    def _get_default_status_code(self, data: Response) -> int:
+        """
+        Get the default status code for the response.
+        The Response has a default status code of 200, if the status code is different, it will be returned instead of the one from the handler.
+
+        Args:
+            data (Response): The response object.
+
+        Returns:
+            int: The default status code for the response.
+        """
+        default_response_status_code = status.HTTP_200_OK
+        if data.status_code != default_response_status_code:
+            return data.status_code
+        return cast(int, self.status_code)
+
     def _get_response_container_handler(
         self,
         cookies: "ResponseCookies",
@@ -303,8 +320,9 @@ class BaseResponseHandler:
             for header, value in _headers.items():
                 data.headers[header] = value
 
-            if self.status_code:
-                data.status_code = self.status_code
+            status_code = self._get_default_status_code(data)
+            if status_code:
+                data.status_code = status_code
             return data
 
         return cast(Callable[[Response, Dict[str, Any]], LilyaResponse], response_content)
@@ -334,8 +352,9 @@ class BaseResponseHandler:
             for cookie in _cookies:
                 data.set_cookie(**cookie)
 
-            if self.status_code:
-                data.status_code = self.status_code
+            status_code = self._get_default_status_code(data)
+            if status_code:
+                data.status_code = status_code
 
             if media_type:
                 data.media_type = media_type
@@ -372,6 +391,7 @@ class BaseResponseHandler:
 
             for header, value in _headers.items():
                 data.headers[header] = value
+
             return data
 
         return cast(Callable[[LilyaResponse, Dict[str, Any]], LilyaResponse], response_content)
