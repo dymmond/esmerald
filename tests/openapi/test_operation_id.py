@@ -38,6 +38,7 @@ def test_openapi_schema_operation_ids_when_same_handler_is_used(test_client_fact
             "/home": {
                 "get": {
                     "summary": "Home",
+                    "description": "",
                     "operationId": "home_home_get",
                     "parameters": [
                         {
@@ -70,6 +71,7 @@ def test_openapi_schema_operation_ids_when_same_handler_is_used(test_client_fact
             "/home/{id}": {
                 "get": {
                     "summary": "Home",
+                    "description": "",
                     "operationId": "home_home__id__get",
                     "parameters": [
                         {

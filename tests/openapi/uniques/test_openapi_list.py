@@ -54,6 +54,7 @@ def test_open_api(test_app_client_factory):
                 "/list": {
                     "get": {
                         "summary": "Check List",
+                        "description": "",
                         "operationId": "check_list_list_get",
                         "parameters": [
                             {
@@ -141,6 +142,7 @@ def test_open_api_annotated(test_app_client_factory):
                 "/another-list": {
                     "get": {
                         "summary": "Check Another List",
+                        "description": "",
                         "operationId": "check_another_list_another_list_get",
                         "parameters": [
                             {

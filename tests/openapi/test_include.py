@@ -13,8 +13,7 @@ class Item(BaseModel):
 
 
 @get()
-def read_people() -> Dict[str, str]:
-    """ """
+def read_people() -> Dict[str, str]: ...
 
 
 @get(
@@ -69,6 +68,7 @@ def test_add_include_to_openapi(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {
@@ -123,6 +123,7 @@ def test_include_no_include_in_schema(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {

@@ -76,6 +76,7 @@ def test_add_child_esmerald_to_openapi(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {
@@ -137,6 +138,7 @@ def test_child_esmerald_disabled_openapi(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {
@@ -198,6 +200,7 @@ def test_child_esmerald_not_included_in_schema(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {

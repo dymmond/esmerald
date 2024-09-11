@@ -45,6 +45,7 @@ def test_open_api(test_app_client_factory):
                 "/bool": {
                     "get": {
                         "summary": "Check Bool",
+                        "description": "",
                         "operationId": "check_bool_bool_get",
                         "parameters": [
                             {

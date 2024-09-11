@@ -38,6 +38,7 @@ def test_openapi_schema_tags_include(test_client_factory):
                 "get": {
                     "tags": ["Include"],
                     "summary": "Bar",
+                    "description": "",
                     "operationId": "bar_bar_get",
                     "responses": {
                         "200": {

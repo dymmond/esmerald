@@ -152,7 +152,7 @@ def get_openapi_operation(
     if route.handler.description:
         operation.description = route.handler.description
     else:
-        operation.description = route.handler.fn.__doc__
+        operation.description = inspect.cleandoc(route.handler.fn.__doc__ or "")
 
     operation_id = getattr(route, "operation_id", None) or route.handler.operation_id
 

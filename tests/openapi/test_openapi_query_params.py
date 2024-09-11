@@ -54,6 +54,7 @@ def test_openapi_query_params(test_client_factory):
                 "get": {
                     "tags": ["test", "bar"],
                     "summary": "Bar",
+                    "description": "",
                     "operationId": "bar_bar_get",
                     "parameters": [
                         {

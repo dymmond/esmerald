@@ -48,6 +48,7 @@ def test_complex_simple(test_client_factory):
                     "get": {
                         "tags": ["bar"],
                         "summary": "Item",
+                        "description": "",
                         "operationId": "item_item_get",
                         "requestBody": {
                             "content": {

@@ -61,6 +61,7 @@ def test_generic_model_injection() -> None:
                 "/": {
                     "get": {
                         "summary": "Root",
+                        "description": "",
                         "operationId": "root__get",
                         "responses": {
                             "200": {

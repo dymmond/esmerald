@@ -49,6 +49,7 @@ def test_openapi_schema():
             "/people": {
                 "get": {
                     "summary": "Read People",
+                    "description": "",
                     "operationId": "read_people_people_get",
                     "responses": {
                         "200": {
@@ -88,6 +89,7 @@ def test_openapi_schema_default():
             "/people": {
                 "get": {
                     "summary": "Read People",
+                    "description": "",
                     "operationId": "read_people_people_get",
                     "responses": {
                         "200": {

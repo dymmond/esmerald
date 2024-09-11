@@ -50,6 +50,7 @@ def test_tags_nested(test_client_factory):
                     "get": {
                         "tags": ["test", "include", "gateway", "bar"],
                         "summary": "Bar",
+                        "description": "",
                         "operationId": "bar_bar_get",
                         "responses": {
                             "200": {

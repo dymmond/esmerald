@@ -63,6 +63,7 @@ def test_openapi_schema_operation_ids_when_same_handler_is_used(test_client_fact
             "/no-desc": {
                 "get": {
                     "summary": "No Desc",
+                    "description": "",
                     "operationId": "no_desc_no_desc_get",
                     "responses": {"200": {"description": "Successful response"}},
                     "deprecated": False,

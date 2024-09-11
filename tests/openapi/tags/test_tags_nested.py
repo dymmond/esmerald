@@ -39,6 +39,7 @@ def test_openapi_schema_tags(test_client_factory):
                 "get": {
                     "tags": ["test"],
                     "summary": "Bar",
+                    "description": "",
                     "operationId": "bar_bar_get",
                     "responses": {
                         "200": {

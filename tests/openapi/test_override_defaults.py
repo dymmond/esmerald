@@ -54,6 +54,7 @@ def test_openapi_schema_tags_pydantic(test_client_factory):
                 "get": {
                     "tags": ["test", "bar"],
                     "summary": "Bar",
+                    "description": "",
                     "operationId": "bar_bar_get",
                     "responses": {
                         "200": {

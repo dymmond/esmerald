@@ -38,6 +38,7 @@ def test_open_api(test_app_client_factory):
                 "/dict": {
                     "get": {
                         "summary": "Check Dict",
+                        "description": "",
                         "operationId": "check_dict_dict_get",
                         "parameters": [
                             {
