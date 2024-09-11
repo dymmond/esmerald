@@ -142,13 +142,17 @@ def get_openapi_operation(
     operation = Operation()
     operation.tags = route.handler.get_handler_tags()
 
+    # Handle the routing summary
     if route.handler.summary:
         operation.summary = route.handler.summary
     else:
         operation.summary = route.handler.name.replace("_", " ").replace("-", " ").title()
 
+    # Handle the handler description
     if route.handler.description:
         operation.description = route.handler.description
+    else:
+        operation.description = route.handler.fn.__doc__
 
     operation_id = getattr(route, "operation_id", None) or route.handler.operation_id
 
