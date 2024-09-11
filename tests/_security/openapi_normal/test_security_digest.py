@@ -63,6 +63,7 @@ def test_security_digest(auth):
                 "/item/{id}": {
                     "get": {
                         "summary": "Read Item",
+                        "description": "",
                         "operationId": "read_item_item__id__get",
                         "parameters": [
                             {
@@ -94,6 +95,7 @@ def test_security_digest(auth):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "deprecated": False,
                         "security": [

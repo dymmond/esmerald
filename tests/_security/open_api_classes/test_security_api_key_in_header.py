@@ -62,6 +62,7 @@ def test_security_api_key_in_header(auth):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "testapiview_read_people__get",
                         "deprecated": False,
                         "security": [
@@ -131,6 +132,7 @@ def test_security_api_key_header_value(token, value):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "testapiview_read_people__get",
                         "deprecated": False,
                         "security": [
