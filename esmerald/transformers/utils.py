@@ -24,6 +24,7 @@ from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.pydantic.schema import should_skip_json_schema
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
@@ -242,7 +243,8 @@ def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
     the Any type. This is necessary because the signature model will be
     generated before the actual type is resolved.
     """
-
+    if param.optional:
+        annotation = should_skip_json_schema(param)
     annotation = Any if isinstance(param.annotation, str) else param.annotation
 
     if param.default_defined:
