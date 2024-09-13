@@ -25,7 +25,7 @@ from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 from esmerald.utils.helpers import is_class_and_subclass, is_union
-from esmerald.utils.pydantic.schema import should_skip_json_schema
+from esmerald.utils.schema import should_skip_json_schema
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
