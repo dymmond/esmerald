@@ -2,7 +2,20 @@ import http.client
 import inspect
 import json
 import warnings
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, _GenericAlias, cast
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Type,
+    Union,
+    _GenericAlias,
+    cast,
+    get_args,
+)
 
 from lilya._internal._path import clean_path
 from lilya.middleware import DefineMiddleware
@@ -12,7 +25,7 @@ from lilya.transformers import TRANSFORMER_TYPES
 from orjson import loads
 from pydantic import AnyUrl
 from pydantic.fields import FieldInfo
-from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
+from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue, SkipJsonSchema
 from typing_extensions import Literal
 
 from esmerald.enums import MediaType
@@ -47,8 +60,35 @@ TRANSFORMER_TYPES_KEYS = list(TRANSFORMER_TYPES.keys())
 TRANSFORMER_TYPES_KEYS += ADDITIONAL_TYPES
 
 
+def should_skip_json_schema(field_info: FieldInfo) -> FieldInfo:
+    """
+    Checks if the schema generation for the parameters should be skipped.
+    This is applied for complex fields in query params.
+
+    Example:
+        1. Union[Dict[str, str], None]
+        2. Optional[Dict[str, str]]
+        3. Union[List[str], None]
+        4. Optional[List[str]]
+    """
+    union_args = get_args(field_info.annotation)
+    arguments: List[Type[Any]] = []
+
+    for argument in union_args:
+        if argument != type(None):
+            arguments.append(argument)
+        else:
+            arguments.append(SkipJsonSchema[None])
+
+    arguments = tuple(arguments)
+    field_info.annotation = Union[arguments]
+    return field_info
+
+
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
-    """Gets all the neded params of the request and route"""
+    """
+    Gets all the neded params of the request and route.
+    """
     path_params = [param.field_info for param in route.transformer.get_path_params()]
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
     header_params = [param.field_info for param in route.transformer.get_header_params()]
@@ -64,7 +104,8 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
         # Making sure all the optional and union types are included
         if is_union_or_optional:
-            query_params.append(param.field_info)
+            field_info = should_skip_json_schema(param.field_info)
+            query_params.append(field_info)
 
         else:
             if isinstance(param.field_info.annotation, _GenericAlias):
@@ -200,7 +241,6 @@ def get_openapi_operation_parameters(
             required=param.is_required(),
             schema=param_schema,  # type: ignore
         )
-
         if field_info.description:
             parameter.description = field_info.description
         if field_info.examples is not None:
