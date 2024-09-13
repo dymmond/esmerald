@@ -26,7 +26,6 @@ Now it is possible to do something like this:
 from typing import Dict, List, Union, Optional
 
 from esmerald import Gateway, JSONResponse, Query, get
-from esmerald.testclient import create_client
 
 
 @get("/item")
