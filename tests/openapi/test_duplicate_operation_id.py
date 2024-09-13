@@ -65,6 +65,7 @@ def test_open_api_schema(test_client_factory):
                     "post": {
                         "tags": ["User"],
                         "summary": "Create",
+                        "description": "",
                         "operationId": "userapiview_create__post",
                         "responses": {
                             "201": {
@@ -79,6 +80,7 @@ def test_open_api_schema(test_client_factory):
                     "post": {
                         "tags": ["Profile"],
                         "summary": "Create",
+                        "description": "",
                         "operationId": "profileapiview_create__post",
                         "responses": {
                             "201": {

@@ -67,6 +67,7 @@ def test_openapi_schema(test_client_factory):
                 "/files": {
                     "post": {
                         "summary": "Create File",
+                        "description": "",
                         "operationId": "create_file_files_post",
                         "requestBody": {
                             "content": {
@@ -100,6 +101,7 @@ def test_openapi_schema(test_client_factory):
                 "/upload": {
                     "post": {
                         "summary": "Upload File",
+                        "description": "",
                         "operationId": "upload_file_upload_post",
                         "requestBody": {
                             "content": {

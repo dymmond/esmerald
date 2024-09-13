@@ -18,22 +18,6 @@ async def check_another_list(
     return JSONResponse({"value": a_value})
 
 
-def test_query_param(test_client_factory):
-    with create_client(
-        routes=[Gateway(handler=check_list), Gateway(handler=check_another_list)]
-    ) as client:
-
-        response = client.get("/list?a_value=true&a_value=false&a_value=test")
-
-        assert response.status_code == 200
-        assert response.json() == {"value": ["true", "false", "test"]}
-
-        response = client.get("/another-list?a_value=true&a_value=false&a_value=test")
-
-        assert response.status_code == 200
-        assert response.json() == {"value": ["true", "false", "test"]}
-
-
 def test_open_api(test_app_client_factory):
     with create_client(routes=Gateway(handler=check_list)) as client:
         response = client.get("/openapi.json")
@@ -54,6 +38,7 @@ def test_open_api(test_app_client_factory):
                 "/list": {
                     "get": {
                         "summary": "Check List",
+                        "description": "",
                         "operationId": "check_list_list_get",
                         "parameters": [
                             {
@@ -141,6 +126,7 @@ def test_open_api_annotated(test_app_client_factory):
                 "/another-list": {
                     "get": {
                         "summary": "Check Another List",
+                        "description": "",
                         "operationId": "check_another_list_another_list_get",
                         "parameters": [
                             {

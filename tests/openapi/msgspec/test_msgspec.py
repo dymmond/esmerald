@@ -61,6 +61,7 @@ def test_user_msgspec_openapi(test_client_factory):
                 "/": {
                     "post": {
                         "summary": "User",
+                        "description": "",
                         "operationId": "user__post",
                         "requestBody": {
                             "content": {

@@ -92,6 +92,7 @@ def test_openapi_schema(test_client_factory):
                 "/upload": {
                     "post": {
                         "summary": "Upload File",
+                        "description": "",
                         "operationId": "upload_file_upload_post",
                         "requestBody": {
                             "content": {
@@ -125,6 +126,7 @@ def test_openapi_schema(test_client_factory):
                 "/upload-multiple": {
                     "post": {
                         "summary": "Upload List Multiple File",
+                        "description": "",
                         "operationId": "upload_list_multiple_file_upload_multiple_post",
                         "requestBody": {
                             "content": {

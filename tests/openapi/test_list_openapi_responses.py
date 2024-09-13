@@ -72,6 +72,7 @@ def test_open_api_schema(test_client_factory):
                 "/item/{id}": {
                     "get": {
                         "summary": "Read Item",
+                        "description": "",
                         "operationId": "read_item_item__id__get",
                         "parameters": [
                             {
@@ -112,6 +113,7 @@ def test_open_api_schema(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {

@@ -39,6 +39,7 @@ def test_open_api_schema(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read Item",
+                        "description": "",
                         "operationId": "read_item__get",
                         "responses": {
                             "200": {

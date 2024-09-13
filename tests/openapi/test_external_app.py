@@ -4,9 +4,8 @@ from flask import Flask, request
 from markupsafe import escape
 from pydantic import BaseModel
 
-from esmerald import JSON, Gateway, Include, get
+from esmerald import Gateway, Include, get
 from esmerald.middleware.wsgi import WSGIMiddleware
-from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
 from tests.settings import TestSettings
 
@@ -24,17 +23,7 @@ class Item(BaseModel):
 
 
 @get()
-def read_people() -> Dict[str, str]:
-    """ """
-
-
-@get(
-    "/item",
-    description="Read an item",
-    responses={200: OpenAPIResponse(model=Item, description="The SKU information of an item")},
-)
-async def read_item() -> JSON:
-    """ """
+def read_people() -> Dict[str, str]: ...
 
 
 def test_external_app_not_include_in_schema(test_client_factory):
@@ -62,6 +51,7 @@ def test_external_app_not_include_in_schema(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {

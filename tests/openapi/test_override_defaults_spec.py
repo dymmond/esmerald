@@ -63,6 +63,7 @@ def test_openapi_schema_tags_pydantic(test_client_factory):
                 "post": {
                     "tags": ["test", "foo"],
                     "summary": "Foo",
+                    "description": "",
                     "operationId": "foo_foo_post",
                     "responses": {
                         "201": {

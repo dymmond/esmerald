@@ -58,6 +58,7 @@ def test_security_api_key_in_cookie(auth):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "deprecated": False,
                         "security": [
@@ -123,6 +124,7 @@ def test_security_api_key_in_cookie_value(token, value):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "deprecated": False,
                         "security": [

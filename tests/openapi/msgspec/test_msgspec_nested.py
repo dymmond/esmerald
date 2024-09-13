@@ -36,6 +36,7 @@ def test_user_msgspec_openapi(test_client_factory):
                 "/": {
                     "post": {
                         "summary": "User With Pydantic",
+                        "description": "",
                         "operationId": "user_with_pydantic__post",
                         "requestBody": {
                             "content": {

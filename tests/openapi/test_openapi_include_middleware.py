@@ -66,6 +66,7 @@ def test_add_middleware_to_openapi(test_client_factory):
                 "/read-mode": {
                     "get": {
                         "summary": "Read Mode",
+                        "description": "",
                         "operationId": "read_mode_read_mode_get",
                         "responses": {
                             "200": {
@@ -79,6 +80,7 @@ def test_add_middleware_to_openapi(test_client_factory):
                 "/child/item": {
                     "get": {
                         "summary": "Read Item",
+                        "description": "",
                         "operationId": "read_item_item_get",
                         "responses": {
                             "200": {
@@ -92,6 +94,7 @@ def test_add_middleware_to_openapi(test_client_factory):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {

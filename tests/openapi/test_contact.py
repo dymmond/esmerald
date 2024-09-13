@@ -52,6 +52,7 @@ def test_openapi_schema(test_client_factory):
             "/bar": {
                 "get": {
                     "summary": "Bar",
+                    "description": "",
                     "operationId": "bar_bar_get",
                     "responses": {
                         "200": {

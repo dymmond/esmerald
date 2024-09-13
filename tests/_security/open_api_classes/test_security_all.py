@@ -74,6 +74,7 @@ def test_security_api_key_in_cookie():
                 "/{pk}": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "testapi_read_people__pk__get",
                         "deprecated": False,
                         "security": [

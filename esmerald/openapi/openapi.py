@@ -2,7 +2,18 @@ import http.client
 import inspect
 import json
 import warnings
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union, _GenericAlias, cast
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+    _GenericAlias,
+    cast,
+)
 
 from lilya._internal._path import clean_path
 from lilya.middleware import DefineMiddleware
@@ -48,7 +59,9 @@ TRANSFORMER_TYPES_KEYS += ADDITIONAL_TYPES
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
-    """Gets all the neded params of the request and route"""
+    """
+    Gets all the neded params of the request and route.
+    """
     path_params = [param.field_info for param in route.transformer.get_path_params()]
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
     header_params = [param.field_info for param in route.transformer.get_header_params()]
@@ -64,6 +77,7 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
 
         # Making sure all the optional and union types are included
         if is_union_or_optional:
+            # field_info = should_skip_json_schema(param.field_info)
             query_params.append(param.field_info)
 
         else:
@@ -142,13 +156,17 @@ def get_openapi_operation(
     operation = Operation()
     operation.tags = route.handler.get_handler_tags()
 
+    # Handle the routing summary
     if route.handler.summary:
         operation.summary = route.handler.summary
     else:
         operation.summary = route.handler.name.replace("_", " ").replace("-", " ").title()
 
+    # Handle the handler description
     if route.handler.description:
         operation.description = route.handler.description
+    else:
+        operation.description = inspect.cleandoc(route.handler.fn.__doc__ or "")
 
     operation_id = getattr(route, "operation_id", None) or route.handler.operation_id
 
@@ -196,7 +214,6 @@ def get_openapi_operation_parameters(
             required=param.is_required(),
             schema=param_schema,  # type: ignore
         )
-
         if field_info.description:
             parameter.description = field_info.description
         if field_info.examples is not None:

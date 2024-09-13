@@ -1,54 +1,19 @@
-from typing import Dict, List, Union
-
-import pytest
-from pydantic import BaseModel
+from typing import List, Union
 
 from esmerald import Gateway, JSONResponse, get
-from esmerald.openapi.security.http import Bearer
 from esmerald.testclient import create_client
-from tests.settings import TestSettings
 
 
-class Error(BaseModel):
-    status: int
-    detail: str
+@get("/list")
+async def check_list(a_value: Union[List[str], None]) -> JSONResponse:
+    return JSONResponse({"value": a_value})
 
 
-class CustomResponse(BaseModel):
-    status: str
-    title: str
-    errors: List[Error]
-
-
-class JsonResponse(JSONResponse):
-    media_type: str = "application/vnd.api+json"
-
-
-class Item(BaseModel):
-    sku: Union[int, str]
-
-
-@get("/item/{id}")
-async def read_item(id: str) -> None:
-    """ """
-
-
-@pytest.mark.parametrize("auth", [Bearer, Bearer()])
-def test_security_token_bearer(auth):
-    @get(
-        response_class=JsonResponse,
-        security=[auth],
-    )
-    def read_people() -> Dict[str, str]:
-        """ """
-
-    with create_client(
-        routes=[Gateway(handler=read_item), Gateway(handler=read_people)],
-        enable_openapi=True,
-        include_in_schema=True,
-        settings_module=TestSettings,
-    ) as client:
+def test_open_api(test_app_client_factory):
+    with create_client(routes=Gateway(handler=check_list)) as client:
         response = client.get("/openapi.json")
+
+        assert response.status_code == 200, response.text
 
         assert response.json() == {
             "openapi": "3.1.0",
@@ -61,24 +26,31 @@ def test_security_token_bearer(auth):
             },
             "servers": [{"url": "/"}],
             "paths": {
-                "/item/{id}": {
+                "/list": {
                     "get": {
-                        "summary": "Read Item",
+                        "summary": "Check List",
                         "description": "",
-                        "operationId": "read_item_item__id__get",
+                        "operationId": "check_list_list_get",
                         "parameters": [
                             {
-                                "name": "id",
-                                "in": "path",
-                                "required": True,
+                                "name": "a_value",
+                                "in": "query",
+                                "required": False,
                                 "deprecated": False,
                                 "allowEmptyValue": False,
                                 "allowReserved": False,
-                                "schema": {"type": "string", "title": "Id"},
+                                "schema": {
+                                    "items": {"type": "string"},
+                                    "type": "array",
+                                    "title": "A Value",
+                                },
                             }
                         ],
                         "responses": {
-                            "200": {"description": "Successful response"},
+                            "200": {
+                                "description": "Successful response",
+                                "content": {"application/json": {"schema": {"type": "string"}}},
+                            },
                             "422": {
                                 "description": "Validation Error",
                                 "content": {
@@ -92,34 +64,7 @@ def test_security_token_bearer(auth):
                         },
                         "deprecated": False,
                     }
-                },
-                "/": {
-                    "get": {
-                        "summary": "Read People",
-                        "description": "",
-                        "operationId": "read_people__get",
-                        "deprecated": False,
-                        "security": [
-                            {
-                                "Bearer": {
-                                    "type": "http",
-                                    "name": "Authorization",
-                                    "in": "header",
-                                    "scheme": "bearer",
-                                    "scheme_name": "Bearer",
-                                }
-                            }
-                        ],
-                        "responses": {
-                            "200": {
-                                "description": "Successful response",
-                                "content": {
-                                    "application/vnd.api+json": {"schema": {"type": "string"}}
-                                },
-                            }
-                        },
-                    }
-                },
+                }
             },
             "components": {
                 "schemas": {
@@ -148,14 +93,6 @@ def test_security_token_bearer(auth):
                         "required": ["loc", "msg", "type"],
                         "title": "ValidationError",
                     },
-                },
-                "securitySchemes": {
-                    "Bearer": {
-                        "type": "http",
-                        "name": "Authorization",
-                        "in": "header",
-                        "scheme": "bearer",
-                    }
-                },
+                }
             },
         }

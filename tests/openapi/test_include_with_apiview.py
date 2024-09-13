@@ -14,8 +14,7 @@ class Item(BaseModel):
 
 
 @get()
-def read_people() -> Dict[str, str]:
-    """ """
+def read_people() -> Dict[str, str]: ...
 
 
 @pytest.mark.parametrize("value", [APIView, SimpleAPIView])
@@ -31,8 +30,7 @@ def test_add_include_to_openapi(test_client_factory, value):
                 200: OpenAPIResponse(model=Item, description="The SKU information of an item")
             },
         )
-        async def read_item(self) -> JSON:
-            """ """
+        async def read_item(self) -> JSON: ...
 
     with create_client(
         routes=[
@@ -76,6 +74,7 @@ def test_add_include_to_openapi(test_client_factory, value):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {
@@ -145,6 +144,7 @@ def test_include_no_include_in_schema(test_client_factory, value):
                 "/": {
                     "get": {
                         "summary": "Read People",
+                        "description": "",
                         "operationId": "read_people__get",
                         "responses": {
                             "200": {

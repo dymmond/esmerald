@@ -10,6 +10,7 @@ from typing import (
     Type,
     Union,
     cast,
+    get_args,
     get_origin,
 )
 
@@ -23,7 +24,8 @@ from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
-from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.helpers import is_class_and_subclass, is_union
+from esmerald.utils.schema import should_skip_json_schema
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.injector import Inject
@@ -204,20 +206,26 @@ def get_request_params(
             f"Missing required parameter(s) {', '.join(missing_params)} for URL {url}."
         )
 
-    values = {}
+    values: Dict[Any, Any] = {}
     for param in expected:
-        annotation = get_origin(param.field_info.annotation)
-        origin = annotation or param.field_info.annotation
+        if not is_union(param.field_info.annotation):
+            annotation = get_origin(param.field_info.annotation)
+            origin = annotation or param.field_info.annotation
 
-        if is_class_and_subclass(origin, (list, tuple)):
-            values[param.field_name] = params.values()
-        elif is_class_and_subclass(origin, dict):
-            if not params.items():
-                values[param.field_name] = None
+            if is_class_and_subclass(origin, (list, tuple)):
+                values[param.field_name] = params.values()
+            elif is_class_and_subclass(origin, dict):
+                values[param.field_name] = dict(params.items()) if params else None
             else:
-                values[param.field_name] = dict(params.items())  # type: ignore[assignment]
-        else:
-            values[param.field_name] = params.get(param.field_alias, param.default_value)
+                values[param.field_name] = params.get(param.field_alias, param.default_value)
+        elif is_union(param.field_info.annotation):
+            arguments = get_args(param.field_info.annotation)
+            if any(is_class_and_subclass(origin, (list, tuple)) for origin in arguments):
+                values[param.field_name] = params.values()
+            elif any(is_class_and_subclass(origin, dict) for origin in arguments):
+                values[param.field_name] = dict(params.items()) if params else None
+            else:
+                values[param.field_name] = params.get(param.field_alias, param.default_value)
     return values
 
 
@@ -242,7 +250,8 @@ def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
     the Any type. This is necessary because the signature model will be
     generated before the actual type is resolved.
     """
-
+    if param.optional:
+        annotation = should_skip_json_schema(param)
     annotation = Any if isinstance(param.annotation, str) else param.annotation
 
     if param.default_defined:

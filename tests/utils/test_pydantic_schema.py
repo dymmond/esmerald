@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 
 from esmerald.params import Param
-from esmerald.utils.pydantic.schema import is_any_type, is_field_optional
+from esmerald.utils.schema import is_any_type, is_field_optional
 
 
 def test_is_any_type():
