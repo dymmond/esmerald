@@ -47,8 +47,8 @@ def should_skip_json_schema(field_info: Union[FieldInfo, Any]) -> FieldInfo:
         if argument != type(None):
             arguments.append(argument)
         else:
-            arguments.append(SkipJsonSchema[None])
+            arguments.append(SkipJsonSchema[None])  # type: ignore
 
-    arguments = tuple(arguments)
+    arguments = tuple(arguments)  # type: ignore
     field_info.annotation = Union[arguments]
     return field_info

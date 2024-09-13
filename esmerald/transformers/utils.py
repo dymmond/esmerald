@@ -206,7 +206,7 @@ def get_request_params(
             f"Missing required parameter(s) {', '.join(missing_params)} for URL {url}."
         )
 
-    values = {}
+    values: Dict[Any, Any] = {}
     for param in expected:
         if not is_union(param.field_info.annotation):
             annotation = get_origin(param.field_info.annotation)
@@ -215,21 +215,15 @@ def get_request_params(
             if is_class_and_subclass(origin, (list, tuple)):
                 values[param.field_name] = params.values()
             elif is_class_and_subclass(origin, dict):
-                if not params.items():
-                    values[param.field_name] = None
-                else:
-                    values[param.field_name] = dict(params.items())  # type: ignore[assignment]
+                values[param.field_name] = dict(params.items()) if params else None
             else:
                 values[param.field_name] = params.get(param.field_alias, param.default_value)
         elif is_union(param.field_info.annotation):
             arguments = get_args(param.field_info.annotation)
-            if any(origin for origin in arguments if is_class_and_subclass(origin, (list, tuple))):
+            if any(is_class_and_subclass(origin, (list, tuple)) for origin in arguments):
                 values[param.field_name] = params.values()
-            elif any(origin for origin in arguments if is_class_and_subclass(origin, dict)):
-                if not params.items():
-                    values[param.field_name] = None
-                else:
-                    values[param.field_name] = dict(params.items())  # type: ignore[assignment]
+            elif any(is_class_and_subclass(origin, dict) for origin in arguments):
+                values[param.field_name] = dict(params.items()) if params else None
             else:
                 values[param.field_name] = params.get(param.field_alias, param.default_value)
     return values
