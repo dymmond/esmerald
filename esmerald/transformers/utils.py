@@ -10,6 +10,7 @@ from typing import (
     Type,
     Union,
     cast,
+    get_args,
     get_origin,
 )
 
@@ -23,7 +24,7 @@ from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
-from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.helpers import is_class_and_subclass, is_union
 from esmerald.utils.pydantic.schema import should_skip_json_schema
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -207,18 +208,30 @@ def get_request_params(
 
     values = {}
     for param in expected:
-        annotation = get_origin(param.field_info.annotation)
-        origin = annotation or param.field_info.annotation
+        if not is_union(param.field_info.annotation):
+            annotation = get_origin(param.field_info.annotation)
+            origin = annotation or param.field_info.annotation
 
-        if is_class_and_subclass(origin, (list, tuple)):
-            values[param.field_name] = params.values()
-        elif is_class_and_subclass(origin, dict):
-            if not params.items():
-                values[param.field_name] = None
+            if is_class_and_subclass(origin, (list, tuple)):
+                values[param.field_name] = params.values()
+            elif is_class_and_subclass(origin, dict):
+                if not params.items():
+                    values[param.field_name] = None
+                else:
+                    values[param.field_name] = dict(params.items())  # type: ignore[assignment]
             else:
-                values[param.field_name] = dict(params.items())  # type: ignore[assignment]
-        else:
-            values[param.field_name] = params.get(param.field_alias, param.default_value)
+                values[param.field_name] = params.get(param.field_alias, param.default_value)
+        elif is_union(param.field_info.annotation):
+            arguments = get_args(param.field_info.annotation)
+            if any(origin for origin in arguments if is_class_and_subclass(origin, (list, tuple))):
+                values[param.field_name] = params.values()
+            elif any(origin for origin in arguments if is_class_and_subclass(origin, dict)):
+                if not params.items():
+                    values[param.field_name] = None
+                else:
+                    values[param.field_name] = dict(params.items())  # type: ignore[assignment]
+            else:
+                values[param.field_name] = params.get(param.field_alias, param.default_value)
     return values
 
 
