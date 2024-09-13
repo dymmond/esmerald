@@ -5,6 +5,40 @@ hide:
 
 # Release Notes
 
+## 3.4.1
+
+### Changed
+
+- OpenAPI now if no `description` is provided from the handlers, it will read directly from
+the docstrings.
+- Internal code cleaning and organisation.
+
+### Fixed
+
+- OpenAPI query parameters were not rendering properly for optional `dict` or `list` types. This
+was due to the internal evaluation of the `None` field which is now skipping for OpenAPI purposes.
+
+#### Example
+
+Now it is possible to do something like this:
+
+```python
+from typing import Dict, List, Union, Optional
+
+from esmerald import Gateway, JSONResponse, Query, get
+from esmerald.testclient import create_client
+
+
+@get("/item")
+async def check_item(q: Union[List[str], None]) -> JSONResponse:
+    return JSONResponse({"value": q})
+
+
+@get("/another-item")
+async def check_item(q: Optional[Dict[str, str]]) -> JSONResponse:
+    return JSONResponse({"value": q})
+```
+
 ## 3.4.0
 
 ### Added
