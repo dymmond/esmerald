@@ -1,11 +1,11 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from esmerald import Gateway, JSONResponse, get
 from esmerald.testclient import create_client
 
 
 @get("/dict")
-async def check_dict(a_value: Dict[str, Any]) -> JSONResponse:
+async def check_dict(a_value: Optional[Dict[str, Any]]) -> JSONResponse:
     return JSONResponse({"value": a_value})
 
 
@@ -14,6 +14,7 @@ def test_open_api(test_app_client_factory):
         response = client.get("/openapi.json")
 
         assert response.status_code == 200, response.text
+
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
@@ -34,7 +35,7 @@ def test_open_api(test_app_client_factory):
                             {
                                 "name": "a_value",
                                 "in": "query",
-                                "required": True,
+                                "required": False,
                                 "deprecated": False,
                                 "allowEmptyValue": False,
                                 "allowReserved": False,

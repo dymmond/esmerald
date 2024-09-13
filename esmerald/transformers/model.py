@@ -18,7 +18,7 @@ from esmerald.transformers.utils import (
     merge_sets,
 )
 from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
-from esmerald.utils.pydantic.schema import is_field_optional
+from esmerald.utils.schema import is_field_optional
 
 if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler, WebSocketHandler
