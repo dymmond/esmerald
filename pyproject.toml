@@ -271,6 +271,7 @@ module = [
     "mako.*",
     "passlib.*",
     "esmerald.contrib.auth.saffier.*",
+    "esmerald.contrib.auth.edgy.*",
     "nest_asyncio.*",
 ]
 ignore_missing_imports = true
