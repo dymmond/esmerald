@@ -45,21 +45,23 @@ def create_folders():
         pass
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="function")
 async def create_test_database():
     try:
-        await models.create_all()
-        yield
-        await models.drop_all()
+        with database.force_rollback(False):
+            async with database:
+                try:
+                    # somehow the wrong table is still referenced and drop_models doesn't work
+                    await database.execute("DROP TABLE users")
+                except Exception:
+                    pass
+                # we readd the right User
+                User.add_to_registry(models)
+                await models.create_all()
+                yield
+                await models.drop_all()
     except Exception:
         pytest.skip("No database available")
-
-
-@pytest.fixture(autouse=True)
-async def rollback_transactions():
-    with database.force_rollback(False):
-        async with database:
-            yield
 
 
 def generate():
@@ -71,6 +73,7 @@ def generate():
 
 async def test_custom_directive(create_folders):
     original_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assert models.models["User"] is User
 
     users = await User.query.all()
 
