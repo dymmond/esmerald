@@ -7,7 +7,7 @@ from esmerald.conf import settings
 from tests.cli.user import User
 from tests.cli.utils import run_cmd
 
-database, models = settings.registry
+database, models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
