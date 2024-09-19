@@ -50,12 +50,6 @@ async def create_test_database():
     try:
         with database.force_rollback(False):
             async with database:
-                try:
-                    # somehow the wrong table is still referenced and drop_models doesn't work
-                    await database.execute("DROP TABLE users")
-                except Exception:
-                    pass
-                # we readd the right User
                 User.add_to_registry(models)
                 await models.create_all()
                 yield

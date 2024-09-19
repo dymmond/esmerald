@@ -33,6 +33,8 @@ class User(AbstractUser):
 @pytest.fixture(autouse=True, scope="module")
 async def create_test_database():
     try:
+        # add the right user
+        User.add_to_registry(models)
         await models.create_all()
         yield
         await models.drop_all()
