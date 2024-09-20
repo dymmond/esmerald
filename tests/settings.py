@@ -5,6 +5,7 @@ from typing import Optional, Tuple
 
 import mongoz
 from edgy import Database as EdgyDatabase, Registry as EdgyRegistry
+from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
 from pydantic import ConfigDict
 from saffier import Database, Registry
 
@@ -29,8 +30,12 @@ class TestSettings(EsmeraldAPISettings):
         return database, Registry(database=database)
 
     @cached_property
-    def edgy_registry(self) -> Tuple[Database, Registry]:
-        database = EdgyDatabase("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
+    def edgy_registry(self) -> Tuple[EdgyDatabase, EdgyRegistry]:
+        database = EdgyDatabaseTestClient(
+            "postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald_edgy",
+            drop_database=False,
+            use_existing=True,
+        )
         return database, EdgyRegistry(database=database)
 
     @cached_property

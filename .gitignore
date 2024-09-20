@@ -19,6 +19,8 @@ site/
 site_build/
 site_lang/
 target/
+tests/cli/myproject
+tests/cli/simple/myproject
 
 # files
 **/*.so
