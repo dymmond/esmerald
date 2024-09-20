@@ -7,7 +7,7 @@ from esmerald.conf import settings
 from tests.cli.user import User
 from tests.cli.utils import run_cmd
 
-database, models = settings.registry
+database, models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -43,21 +43,18 @@ def create_folders():
         pass
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="function")
 async def create_test_database():
     try:
-        await models.create_all()
-        yield
-        await models.drop_all()
+        with database.force_rollback(False):
+            async with database:
+                # we readd the right User
+                User.add_to_registry(models)
+                await models.create_all()
+                yield
+                await models.drop_all()
     except Exception:
         pytest.skip("No database available")
-
-
-@pytest.fixture(autouse=True)
-async def rollback_transactions():
-    with database.force_rollback(False):
-        async with database:
-            yield
 
 
 def generate():
@@ -73,6 +70,7 @@ async def test_custom_directive(create_folders):
     original_path = os.getcwd()
 
     generate()
+    assert models.models["User"] is User
     users = await User.query.all()
 
     assert len(users) == 0

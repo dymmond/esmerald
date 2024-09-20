@@ -5,7 +5,7 @@ from typing import Any, Type
 
 from esmerald.core.directives import BaseDirective
 from esmerald.core.terminal import Print
-from tests.cli.test_custom_directive import User
+from tests.cli.user import User
 
 printer = Print()
 
