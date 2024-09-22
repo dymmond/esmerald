@@ -10,7 +10,7 @@ from esmerald.routing.handlers import get, post, put
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
-database, models = settings.edgy_registry
+models = settings.edgy_registry
 jwt_config = JWTConfig(signing_key="cenas", auth_header_types=["Bearer", "Token"])
 
 
@@ -31,8 +31,8 @@ async def create_test_database():
 
 @pytest.fixture(autouse=True)
 async def rollback_transactions():
-    with database.force_rollback():
-        async with database:
+    with models.database.force_rollback():
+        async with models:
             yield
 
 

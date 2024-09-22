@@ -20,6 +20,7 @@ from esmerald.testclient import create_client
 
 
 class TestModel(BaseModel):
+    __test__ = False
     name: str
 
 

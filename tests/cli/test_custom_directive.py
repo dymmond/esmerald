@@ -7,7 +7,7 @@ from esmerald.conf import settings
 from tests.cli.user import User
 from tests.cli.utils import run_cmd
 
-database, models = settings.edgy_registry
+models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -46,8 +46,8 @@ def create_folders():
 @pytest.fixture(autouse=True, scope="function")
 async def create_test_database():
     try:
-        with database.force_rollback(False):
-            async with database:
+        with models.database.force_rollback(False):
+            async with models:
                 # we readd the right User
                 User.add_to_registry(models)
                 await models.create_all()

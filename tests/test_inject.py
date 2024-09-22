@@ -65,7 +65,7 @@ sync_partial = partial(sync_fn, "why-three-and-one")
 
 async_factory = Factory(async_fn, "why-three-and-one")
 sync_factory = Factory(sync_fn, "why-three-and-one")
-test_factory = Factory(Test)
+mytest_factory = Factory(Test)
 
 
 @pytest.mark.parametrize(

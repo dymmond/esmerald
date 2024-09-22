@@ -10,7 +10,7 @@ from httpx import AsyncClient
 from esmerald import Esmerald, Gateway, post
 from esmerald.conf import settings
 
-database, models = settings.edgy_registry
+models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -35,21 +35,14 @@ class TestUser(edgy.Model):
         registry = models
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="function")
 async def create_test_database():
-    try:
-        await models.create_all()
-        yield
-        await models.drop_all()
-    except Exception:
-        pytest.skip("No database available")
-
-
-@pytest.fixture(autouse=True)
-async def rollback_transactions():
-    with database.force_rollback(False):
-        async with database:
+    with models.database.force_rollback(False):
+        async with models:
+            await models.create_all()
             yield
+            if not models.database.drop:
+                await models.drop_all()
 
 
 @pytest.fixture()

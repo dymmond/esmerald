@@ -6,7 +6,7 @@ from edgy import fields
 from esmerald.conf import settings
 from esmerald.contrib.auth.edgy.base_user import User as BaseUser
 
-database, models = settings.registry
+models = settings.registry
 
 
 class UserType(Enum):
