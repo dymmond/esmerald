@@ -8,7 +8,7 @@ small details.
 
 SQL Alchemy is another one widely used and loved by the majority of the python community.
 
-[Edgy](https://ild.io) is from the same autor of Esmerald so is expected to be
+[Edgy](https://edgy.dymmond.com) is from the same autor of Esmerald so is expected to be
 supported (not natively) by the framework by providing some out-of-the-box built-in that can simply
 be used
 
