@@ -14,7 +14,7 @@ from esmerald.requests import Connection
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 
-database, models = settings.edgy_registry
+models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -44,8 +44,8 @@ async def create_test_database():
 
 @pytest.fixture(autouse=True)
 async def rollback_transactions():
-    with database.force_rollback():
-        async with database:
+    with models.database.force_rollback():
+        async with models:
             yield
 
 

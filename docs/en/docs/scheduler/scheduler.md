@@ -2,7 +2,7 @@
 
 Almost every application in one way or another needs some sort of automated scheduler to run automated tasks.
 In that in mind and with the help of the great widely used
-<a href='https://asyncz.tarsild.io' target='_blank'>Asyncz</a>, Esmerald comes with a built-in
+<a href='https://asyncz.dymmond.com' target='_blank'>Asyncz</a>, Esmerald comes with a built-in
 scheduler, saving you tons of headaches and simplifying the process of creating them.
 
 ## Requirements

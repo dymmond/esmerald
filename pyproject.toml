@@ -174,19 +174,19 @@ features = ["all", "testing"]
 
 [tool.hatch.envs.test.scripts]
 # needs docker services running
-test = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} --disable-warnings"
-test_man = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest {args} -s -vv --disable-warnings"
-coverage = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
+test = "hatch test -- {args} --disable-warnings"
+test_man = "hatch test -- {args} -s -vv --disable-warnings"
+coverage = "hatch test -- --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
 check_types = "mypy -p esmerald"
 
 [tool.hatch.envs.hatch-test]
-features = ["all"]
+features = ["all", "testing"]
 template = "test"
 installer = "pip"
 
-[tool.hatch.envs.hatch-test.scripts]
-run = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' pytest{env:HATCH_TEST_ARGS:} {args}"
-run-cov = "ESMERALD_SETTINGS_MODULE='tests.settings.TestSettings' coverage run -m pytest{env:HATCH_TEST_ARGS:} {args}"
+[tool.hatch.envs.hatch-test.env-vars]
+ESMERALD_SETTINGS_MODULE = "tests.settings.TestSettings"
+
 
 [tool.hatch.version]
 path = "esmerald/__init__.py"

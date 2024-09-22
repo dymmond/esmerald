@@ -151,7 +151,7 @@ The middleware also contains a wrapper called `AuthMiddleware`. This will be use
 This is where we will place the logic that handles the authentication and refreshing of the token.
 
 !!! Warning
-    The example below uses [Edgy](https://edgy.tarsild.io) from the [contrib](../databases/edgy/models.md)
+    The example below uses [Edgy](https://edgy.dymmond.com) from the [contrib](../databases/edgy/models.md)
     to make it simpler to explain and query.
 
 ```python

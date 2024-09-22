@@ -14,6 +14,8 @@ class ErrorInterceptor(EsmeraldInterceptor):
 
 
 class TestInterceptor(EsmeraldInterceptor):
+    __test__ = False
+
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         request = Request(scope=scope, receive=receive, send=send)
         request.path_params["name"] = "intercept"

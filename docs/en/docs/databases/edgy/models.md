@@ -153,9 +153,9 @@ You can use any migration tool as you see fit. It is recommended
 <a href='https://alembic.sqlalchemy.org/en/latest/' target='_blank'>Alembic</a>.
 
 Edgy also provides some insights in
-[how to migrate using alembic](https://edgy.tarsild.io/migrations/migrations).
+[how to migrate using alembic](https://edgy.dymmond.com/migrations/migrations).
 
 ## General example
 
-More examples and more thorough explanations how to use [Edgy](https://edgy.tarsild.io)
-can be consulted in its own [documentation](https://edgy.tarsild.io).
+More examples and more thorough explanations how to use [Edgy](https://edgy.dymmond.com)
+can be consulted in its own [documentation](https://edgy.dymmond.com).

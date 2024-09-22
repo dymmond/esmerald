@@ -1,6 +1,6 @@
 # Example
 
-Since [Edgy](https://edgy.tarsild.io) if from the same author of Esmerald, it gives some
+Since [Edgy](https://edgy.dymmond.com) if from the same author of Esmerald, it gives some
 extra motivation for its use and therefore an example in how to use the
 [JWTAuthMiddleware](./middleware.md), even if in a very simplistic way, within your Esmerald application.
 

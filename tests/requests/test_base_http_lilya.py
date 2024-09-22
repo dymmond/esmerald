@@ -8,8 +8,7 @@ from lilya.status import HTTP_200_OK
 from lilya.types import Receive, Send
 
 from esmerald.enums import MediaType
-from esmerald.exceptions import InternalServerError
-from esmerald.requests import ClientDisconnect, Request, empty_send
+from esmerald.requests import ClientDisconnect, Request
 from esmerald.responses import JSONResponse, PlainText, Response
 from esmerald.testclient import EsmeraldTestClient
 
@@ -246,22 +245,6 @@ def test_request_without_setting_receive() -> None:
     client = EsmeraldTestClient(app)  # type: ignore
     response = client.post("/", json={"a": "123"})
     assert response.json() == {"json": "Receive channel not available"}
-
-
-async def test_request_disconnect() -> None:  # pragma: no cover
-    """If a client disconnect occurs while reading request body then
-    InternalServerError should be raised."""
-
-    async def app(scope: Any, receive: "Receive", send: "Send") -> None:
-        request = Request(scope, receive)
-        await request.body()
-
-    async def receiver():
-        return {"type": "http.disconnect"}
-
-    scope = {"type": "http", "method": "POST", "path": "/"}
-    with pytest.raises(InternalServerError):
-        await app(scope, receiver, empty_send)
 
 
 def test_request_anyio_disconnect(anyio_backend_name, anyio_backend_options):

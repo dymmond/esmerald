@@ -11,7 +11,7 @@ from esmerald.injector import Inject
 from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 
-database, models = settings.edgy_registry
+models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -29,7 +29,6 @@ class DocumentCreateDTO(BaseModel):
 
 
 class DocumentService:
-
     def __init__(self, model: Type[edgy.Model] = Document):
         self.model = model
 
@@ -60,8 +59,8 @@ async def create_test_database():
 
 @pytest.fixture(autouse=True)
 async def rollback_transactions():
-    with database.force_rollback():
-        async with database:
+    with models.database.force_rollback():
+        async with models.database:
             yield
 
 

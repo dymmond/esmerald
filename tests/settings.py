@@ -4,7 +4,7 @@ from functools import cached_property
 from typing import Optional, Tuple
 
 import mongoz
-from edgy import Database as EdgyDatabase, Registry as EdgyRegistry
+from edgy import Registry as EdgyRegistry
 from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
 from pydantic import ConfigDict
 from saffier import Database, Registry
@@ -16,6 +16,7 @@ TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@lo
 
 
 class TestSettings(EsmeraldAPISettings):
+    __test__ = False
     app_name: str = "test_client"
     debug: bool = True
     enable_sync_handlers: bool = True
@@ -30,13 +31,13 @@ class TestSettings(EsmeraldAPISettings):
         return database, Registry(database=database)
 
     @cached_property
-    def edgy_registry(self) -> Tuple[EdgyDatabase, EdgyRegistry]:
+    def edgy_registry(self) -> EdgyRegistry:
         database = EdgyDatabaseTestClient(
             "postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald_edgy",
             drop_database=False,
             use_existing=True,
         )
-        return database, EdgyRegistry(database=database)
+        return EdgyRegistry(database=database)
 
     @cached_property
     def mongoz_registry(self) -> mongoz.Registry:

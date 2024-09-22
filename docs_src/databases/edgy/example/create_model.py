@@ -1,12 +1,11 @@
 from datetime import datetime
 from enum import Enum
 
-from edgy import Database, Registry, fields
+from edgy import Registry, fields
 
 from esmerald.contrib.auth.edgy.base_user import User as BaseUser
 
-database = Database("sqlite:///db.sqlite")
-models = Registry(database=database)
+models = Registry(database="sqlite:///db.sqlite")
 
 
 class UserType(Enum):

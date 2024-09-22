@@ -1,6 +1,6 @@
 # Handler
 
-Esmerald uses <a href='https://asyncz.tarsild.io' target='_blank'>Asyncz</a> to manage the
+Esmerald uses <a href='https://asyncz.dymmond.com' target='_blank'>Asyncz</a> to manage the
 scheduler internally and therefore their documentation is also up to date.
 
 The handler is the `scheduler` used to decorate a function that you want to process as a task.
@@ -82,10 +82,10 @@ Esmerald comes with some pre-defined triggers ready to be used by the applicatio
 
 The built-in trigger cover the majority of the needs of all users. However if that is not the case, there is always
 the option to create a
-<a href="https://asyncz.tarsild.io/triggers/#custom-trigger" target="_blank">custom</a>.
+<a href="https://asyncz.dymmond.com/triggers/#custom-trigger" target="_blank">custom</a>.
 
 * `BaseTrigger` - The base of all triggers and it can be extended to create a
-<a href="https://asyncz.tarsild.io/triggers/#basetrigger" target="_blank">custom</a>.
+<a href="https://asyncz.dymmond.com/triggers/#basetrigger" target="_blank">custom</a>.
 * `CronTrigger`
 * `IntervalTrigger`
 * `DateTrigger`
@@ -265,6 +265,6 @@ From the [example](#via-application-instantiation) you have new task stores and 
 
 !!! Tip
     Have a look at the documentation from
-    <a href="https://asyncz.tarsild.io" target="_blank">Asyncz</a> and learn more
+    <a href="https://asyncz.dymmond.com" target="_blank">Asyncz</a> and learn more
     about what can be done and how can be done. All the parameters available in the Asyncz `add_task` are also
     available in the `@scheduler` handler in the same way.

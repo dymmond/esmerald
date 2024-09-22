@@ -8,7 +8,7 @@ small details.
 
 SQL Alchemy is another one widely used and loved by the majority of the python community.
 
-[Edgy](https://edgy.tarsild.io) is from the same autor of Esmerald so is expected to be
+[Edgy](https://ild.io) is from the same autor of Esmerald so is expected to be
 supported (not natively) by the framework by providing some out-of-the-box built-in that can simply
 be used
 
@@ -31,35 +31,27 @@ be used
 
 ## How to use
 
-To use Edgy with Esmerald you should install some requirements first.
+Using Edgy is as easy installing edgy and an async capable database driver for sqlalchemy.
+The rest is handled by edgy and databasez.
 
-It will depend of each flavour you want.
+If there is no capable driver you can try to use the generic dbapi2 driver of databasez and adapt any dbapi2 driver.
+But sometimes there is not even a suitable dbapi2 driver.
 
-### Postgres
+Don't worry: you can use JDBC too (with a working java installation):
 
-```shell
-$ pip install edgy[postgres]
-```
-
-### MySQL/MariaDB
 
 ```shell
-$ pip install edgy[mysql]
+$ pip install edgy[jdbc]
+# or manually
+$ pip install edgy jpype1
+
 ```
+There are some other database connection shortcuts like:
 
-### SQLite
+`edgy[postres]` or `edgy[sqlite]`
 
-```shell
-$ pip install edgy[sqlite]
-```
-
-### MSSQL
-
-```shell
-$ pip install edgy[mssql]
-```
 
 ## Documentation and more details
 
 Since Esmerald supports Edgy, the best place to understand how to use all the powerful features given by it you can simply
-use its [documentation](https://edgy.tarsild.io/) and learn more how to leverage it.
+use its [documentation](https://edgy.dymmond.com/) and learn more how to leverage it.
