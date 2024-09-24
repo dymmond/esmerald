@@ -10,6 +10,7 @@ from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
 from esmerald.utils.constants import DATA, PAYLOAD
+from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.models import create_field_model
 
 if TYPE_CHECKING:
@@ -32,6 +33,9 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     if isinstance(field_annotation, _GenericAlias):
         annotations = tuple(convert_annotation_to_pydantic_model(arg) for arg in annotation_args)
         field_annotation.__args__ = annotations
+        return field_annotation
+
+    if is_class_and_subclass(field_annotation, BaseModel):
         return field_annotation
 
     if (
