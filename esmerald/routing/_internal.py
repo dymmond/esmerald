@@ -53,6 +53,7 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
             name: annotation
             for base in field_annotation.__bases__
             for name, annotation in base.__annotations__.items()
+            if hasattr(base, "__annotations__")
         }
 
         field_annotations = {**base_annotations, **field_annotation.__annotations__}
