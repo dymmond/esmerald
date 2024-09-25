@@ -10,7 +10,15 @@ class Base(BaseModel):
     email: EmailStr
 
 
-class PydanticItem(Base):
+class StreetModel(Base):
+    street: str
+
+
+class AgeModel(StreetModel):
+    age: int
+
+
+class PydanticItem(AgeModel):
     name: str
 
 
@@ -39,7 +47,7 @@ def test_inheritance(test_client_factory):
                 "summary": "Esmerald application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
-                "version": "3.4.1",
+                "version": client.app.version,
             },
             "servers": [{"url": "/"}],
             "paths": {
@@ -99,10 +107,12 @@ def test_inheritance(test_client_factory):
                     "PydanticItem": {
                         "properties": {
                             "email": {"type": "string", "format": "email", "title": "Email"},
+                            "street": {"type": "string", "title": "Street"},
+                            "age": {"type": "integer", "title": "Age"},
                             "name": {"type": "string", "title": "Name"},
                         },
                         "type": "object",
-                        "required": ["email", "name"],
+                        "required": ["email", "street", "age", "name"],
                         "title": "PydanticItem",
                     },
                     "ValidationError": {
