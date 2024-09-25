@@ -49,12 +49,11 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
 
         # Get any possible annotations from the base classes
         # This can be useful for inheritance with custom encoders
-        base_annotations = {
-            name: annotation
-            for base in field_annotation.__bases__
-            for name, annotation in base.__annotations__.items()
-            if hasattr(base, "__annotations__")
-        }
+        base_annotations = {}
+        for base in field_annotation.__bases__:
+            if hasattr(base, "__annotations__"):
+                for name, annotation in base.__annotations__.items():
+                    base_annotations[name] = annotation
 
         field_annotations = {**base_annotations, **field_annotation.__annotations__}
         for name, annotation in field_annotations.items():
