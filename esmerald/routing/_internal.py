@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import inspect
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
@@ -84,7 +82,7 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
 
 
 def get_original_data_field(
-    handler: Union[HTTPHandler, WebhookHandler, Any]
+    handler: Union["HTTPHandler", "WebhookHandler", Any]
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -132,7 +130,7 @@ def get_original_data_field(
 
 
 def get_complex_data_field(
-    handler: Union[HTTPHandler, WebhookHandler, Any], fields: Dict[str, FieldInfo]
+    handler: Union["HTTPHandler", "WebhookHandler", Any], fields: Dict[str, FieldInfo]
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -169,7 +167,7 @@ def get_complex_data_field(
     return body
 
 
-def get_data_field(handler: Union[HTTPHandler, WebhookHandler, Any]) -> Any:
+def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     """
     Retrieves the data field from the given handler.
 
