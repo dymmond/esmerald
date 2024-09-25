@@ -39,7 +39,7 @@ def test_inheritance(test_client_factory):
                 "summary": "Esmerald application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
-                "version": "3.4.1",
+                "version": client.app.version,
             },
             "servers": [{"url": "/"}],
             "paths": {
