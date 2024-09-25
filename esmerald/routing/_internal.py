@@ -16,6 +16,25 @@ if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler, WebhookHandler
 
 
+def get_base_annotations(base_annotation: Any) -> Dict[str, Any]:
+    """
+    Returns the annotations of the base class.
+
+    Args:
+        base (Any): The base class.
+
+    Returns:
+        Dict[str, Any]: The annotations of the base class.
+    """
+    base_annotations: Dict[str, Any] = {}
+    for base in base_annotation.__bases__:
+        base_annotations.update(**get_base_annotations(base))
+        if hasattr(base, "__annotations__"):
+            for name, annotation in base.__annotations__.items():
+                base_annotations[name] = annotation
+    return base_annotations
+
+
 def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     """
     Converts any annotation of the body into a Pydantic
@@ -27,6 +46,10 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     this will serve as representation of the model in the documentation but internally,
     it will use the native type to validate the data being sent and parsed in the
     payload/data field.
+
+    Encoders are not supported in the OpenAPI representation, this is because the encoders
+    are unique to Esmerald and are not part of the OpenAPI specification. This is why
+    we convert the encoders into a Pydantic model for OpenAPI representation purposes only.
     """
     annotation_args = get_args(field_annotation)
     if isinstance(field_annotation, _GenericAlias):
@@ -41,9 +64,20 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     ):
         field_definitions: Dict[str, Any] = {}
 
-        for name, annotation in field_annotation.__annotations__.items():
+        # Get any possible annotations from the base classes
+        # This can be useful for inheritance with custom encoders
+        base_annotations: Dict[str, Any] = {**get_base_annotations(field_annotation)}
+        field_annotations = {
+            **base_annotations,
+            **field_annotation.__annotations__,
+        }
+        for name, annotation in field_annotations.items():
             field_definitions[name] = (annotation, ...)
-        return create_model(field_annotation.__name__, **field_definitions)
+        return create_model(
+            field_annotation.__name__,
+            __config__={"arbitrary_types_allowed": True},
+            **field_definitions,
+        )
     return field_annotation
 
 
