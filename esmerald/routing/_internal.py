@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
@@ -27,6 +29,10 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     this will serve as representation of the model in the documentation but internally,
     it will use the native type to validate the data being sent and parsed in the
     payload/data field.
+
+    Encoders are not supported in the OpenAPI representation, this is because the encoders
+    are unique to Esmerald and are not part of the OpenAPI specification. This is why
+    we convert the encoders into a Pydantic model for OpenAPI representation purposes only.
     """
     annotation_args = get_args(field_annotation)
     if isinstance(field_annotation, _GenericAlias):
@@ -41,6 +47,8 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     ):
         field_definitions: Dict[str, Any] = {}
 
+        # Get any possible annotations from the base classes
+        # This can be useful for inheritance with custom encoders
         base_annotations = {
             name: annotation
             for base in field_annotation.__bases__
@@ -55,7 +63,7 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
 
 
 def get_original_data_field(
-    handler: Union["HTTPHandler", "WebhookHandler", Any]
+    handler: Union[HTTPHandler, WebhookHandler, Any]
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -103,7 +111,7 @@ def get_original_data_field(
 
 
 def get_complex_data_field(
-    handler: Union["HTTPHandler", "WebhookHandler", Any], fields: Dict[str, FieldInfo]
+    handler: Union[HTTPHandler, WebhookHandler, Any], fields: Dict[str, FieldInfo]
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -140,7 +148,7 @@ def get_complex_data_field(
     return body
 
 
-def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
+def get_data_field(handler: Union[HTTPHandler, WebhookHandler, Any]) -> Any:
     """
     Retrieves the data field from the given handler.
 
