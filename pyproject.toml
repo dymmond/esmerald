@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "esmerald"
 description = "Highly scalable, performant, easy to learn, easy to code and for every application."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dynamic = ['version']
 license = "MIT"
 authors = [{ name = "Tiago Silva", email = "tiago.silva@dymmond.com" }]
@@ -29,7 +29,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
