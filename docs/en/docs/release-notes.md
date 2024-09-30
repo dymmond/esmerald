@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 3.4.2
+
+### Changed
+
+- OpenAPI for inheritance models using pydantic or any type of encoders.
+- Stop supporting Python 3.8.
+- Changed internal schema location in the helpers.
+
 ## 3.4.1
 
 ### Changed
