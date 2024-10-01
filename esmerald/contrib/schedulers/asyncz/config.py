@@ -1,4 +1,3 @@
-import warnings
 from datetime import datetime, timezone as dtimezone
 from typing import Any, Callable, Dict, Type, Union
 
@@ -41,7 +40,7 @@ class AsynczConfig(SchedulerConfig):
         """
         super().__init__(**kwargs)
         self.scheduler_class = scheduler_class
-        self.tasks = tasks
+        self.tasks = tasks or {}
         self.timezone = timezone
         self.configurations = configurations
         self.options = kwargs
@@ -49,13 +48,6 @@ class AsynczConfig(SchedulerConfig):
         for task, module in self.tasks.items():
             if not isinstance(task, str) or not isinstance(module, str):
                 raise ImproperlyConfigured("The dict of tasks must be Dict[str, str].")
-
-        if not self.tasks:
-            warnings.warn(
-                "Esmerald is starting the scheduler, yet there are no tasks declared.",
-                UserWarning,
-                stacklevel=2,
-            )
 
         # Load the scheduler object
         self.handler = self.get_scheduler(
