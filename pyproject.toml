@@ -173,8 +173,8 @@ features = ["all", "testing"]
 
 [tool.hatch.envs.test.scripts]
 # needs docker services running
-test = "hatch test -- {args} --disable-warnings"
-test_man = "hatch test -- {args} -s -vv --disable-warnings"
+test = "hatch test -- {args}"
+test_man = "hatch test -- {args} -s -vv"
 coverage = "hatch test -- --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
 check_types = "mypy -p esmerald"
 
