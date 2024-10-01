@@ -8,9 +8,7 @@ printer = Print()
 
 
 class BaseDirective(ArbitraryExtraBaseModel, LilyaBaseDirective):
-    """The base class from which all directrives derive"""
-
-    help: str = ""
+    """The base class from which all directives derive."""
 
     def get_version(self) -> str:
         """
