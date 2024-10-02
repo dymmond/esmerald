@@ -81,14 +81,6 @@ $ pip install uvicorn
 
 If you want install esmerald with specifics:
 
-**Support for template system such as jinja2 and mako**:
-
-```shell
-$ pip install esmerald[templates]
-```
-
-Warning: Mako is quite limited as template engine here. This will change in future.
-
 **Support for the internal scheduler**:
 
 ```shell
