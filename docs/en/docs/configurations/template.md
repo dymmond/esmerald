@@ -19,6 +19,9 @@ You are free to build your own and pass it to the `TemplateConfig`. This way you
 
     You will notice the name of the parameters in the `TemplateConfig` match maority of the jinja2 implementation.
 
+!!! Warning
+    The mako engine has a quite limited integration. This will change in future.
+
 ## Requirements
 
 This section requires `jinja` or `mako` to be installed. You can do it so by running:
@@ -64,3 +67,8 @@ you can do something like this:
 ```jinja
 {!> ../../../docs_src/_shared/jinja.html!}
 ```
+
+## How to use
+
+Simply return `Template` (of esmerald) not `TemplateResponse` with a `name` parameter pointing to the relative path of the template.
+You can pass extra data via setting the `context` parameter to a dictionary containing the extra data.

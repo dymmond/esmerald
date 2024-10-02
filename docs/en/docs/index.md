@@ -88,6 +88,9 @@ If you want install esmerald with specifics:
 $ pip install esmerald[templates]
 ```
 
+!!! Warning
+    Mako is quite limited as template engine here. This will change in future.
+
 **Support for the internal scheduler**:
 
 ```shell
