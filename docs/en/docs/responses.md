@@ -31,7 +31,7 @@ Some responses use extra dependencies, such as [UJSON](#ujson) and [OrJSON](#orj
 responses, you need to install:
 
 ```shell
-$ pip install esmerald[encoders]
+$ pip install ujson orjson
 ```
 
 This will allow you to use the [OrJSON](#orjson) and [UJSON](#ujson) as well as the

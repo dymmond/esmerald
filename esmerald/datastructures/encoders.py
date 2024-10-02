@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
     UJSONResponse = None  # type: ignore
 
 
-class OrJSON(ResponseContainer[ORJSONResponse]):
+class ORJSON(ResponseContainer[ORJSONResponse]):
     content: Annotated[
         Optional[Dict[str, Any]],
         Doc(
@@ -75,6 +75,9 @@ class OrJSON(ResponseContainer[ORJSONResponse]):
             media_type=media_type,
             background=self.background,
         )
+
+
+OrJSON = ORJSON
 
 
 class UJSON(ResponseContainer[UJSONResponse]):

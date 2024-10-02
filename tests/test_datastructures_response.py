@@ -2,11 +2,11 @@ import pytest
 
 from esmerald import Gateway, get, status
 from esmerald.datastructures import JSON
-from esmerald.datastructures.encoders import UJSON, OrJSON
+from esmerald.datastructures.encoders import ORJSON, UJSON
 from esmerald.testclient import create_client
 
 
-@pytest.mark.parametrize("response", [JSON, OrJSON, UJSON])
+@pytest.mark.parametrize("response", [JSON, ORJSON, UJSON])
 def test_json_datastructure(response, test_client_factory):
     @get()
     async def home() -> response:
@@ -19,7 +19,7 @@ def test_json_datastructure(response, test_client_factory):
         assert response.json()["detail"] == "using JSON structure"
 
 
-@pytest.mark.parametrize("response", [JSON, OrJSON, UJSON])
+@pytest.mark.parametrize("response", [JSON, ORJSON, UJSON])
 def test_json_datastructure_with_different_status_code(response, test_client_factory):
     @get()
     async def home_two() -> response:
@@ -32,7 +32,7 @@ def test_json_datastructure_with_different_status_code(response, test_client_fac
         assert response.json()["detail"] == "using JSON structure"
 
 
-@pytest.mark.parametrize("response", [JSON, OrJSON, UJSON])
+@pytest.mark.parametrize("response", [JSON, ORJSON, UJSON])
 def test_json_datastructure_with_different_status_code_on_handler(response, test_client_factory):
     @get(status_code=status.HTTP_202_ACCEPTED)
     async def home_three() -> response:
@@ -45,7 +45,7 @@ def test_json_datastructure_with_different_status_code_on_handler(response, test
         assert response.json()["detail"] == "using JSON structure"
 
 
-@pytest.mark.parametrize("response", [JSON, OrJSON, UJSON])
+@pytest.mark.parametrize("response", [JSON, ORJSON, UJSON])
 def test_json_datastructure_with_different_status_code_on_handler_two(
     response, test_client_factory
 ):
