@@ -13,11 +13,6 @@ class TemplateConfig(BaseModel):
 
     This configuration is a simple set of configurations that when passed enables the template engine.
 
-    !!! Note
-        You might need to install the template engine before
-        using this. You can always run
-        `pip install esmerald[templates]` to help you out.
-
     **Example**
 
     ```python
