@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.4.3
+
+### Changed
+
+- PydanticEncoder now tries mode `json` first as default.
+- Stop ignoring warnings in the tests.
+- Stop shadowing the BaseDirective `help` from Lilya.
+- Asyncz settings for empty tasks.
+- Update the docs for the templates.
+
 ## 3.4.2
 
 ### Changed
