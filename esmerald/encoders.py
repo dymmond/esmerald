@@ -12,6 +12,7 @@ from lilya.encoders import (
 )
 from msgspec import Struct
 from pydantic import BaseModel
+from pydantic_core import PydanticSerializationError
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.utils.helpers import is_union
@@ -64,7 +65,10 @@ class PydanticEncoder(Encoder):
         return isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel)
 
     def serialize(self, obj: BaseModel) -> dict[str, Any]:
-        return obj.model_dump()
+        try:
+            return obj.model_dump(mode="json")
+        except PydanticSerializationError:
+            return obj.model_dump()
 
     def encode(self, annotation: Any, value: Any) -> Any:
         if isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel):
