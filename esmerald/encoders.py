@@ -64,7 +64,7 @@ class PydanticEncoder(Encoder):
         return isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel)
 
     def serialize(self, obj: BaseModel) -> dict[str, Any]:
-        return obj.model_dump()
+        return obj.model_dump(mode="json")
 
     def encode(self, annotation: Any, value: Any) -> Any:
         if isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel):
