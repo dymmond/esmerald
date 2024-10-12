@@ -99,7 +99,7 @@ You should have a folder called `myproject` with a similar structure to this:
 
 ```shell
 .
-├── Makefile
+├── Taskfile.yaml
 ├── myproject
 │   ├── apps
 │   │   └── __init__.py
@@ -180,7 +180,7 @@ a basic controller example.
 
     <sup>Default: `False`</sup>
 
-* **--context** - Flag indicating whether the application creation should be accompanied 
+* **--context** - Flag indicating whether the application creation should be accompanied
 by a sample base controller, service, repository and dtos.
 
     <sup>Default: `False`</sup>
@@ -523,7 +523,7 @@ Let us assume the following structure of files and folders that will contain dif
 
 ```shell hl_lines="9 10 13" title="myproject"
 .
-├── Makefile
+├── Taskfile.yaml
 └── src
     ├── __init__.py
     ├── configs

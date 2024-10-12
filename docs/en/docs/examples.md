@@ -110,7 +110,7 @@ You should now have a project similar to the following structure, containing als
 │   │   └── nginx.json-logging.conf
 │   └── supervisor
 │       └── supervisord.conf
-├── Makefile
+├── Taskfile.yaml
 ├── my_project
 │   ├── apps
 │   │   ├── __init__.py
