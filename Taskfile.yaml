@@ -1,6 +1,13 @@
 version: 3
 
 tasks:
+  # --------------------------- SETUP ------------------------------------
+
+  activate:
+    desc: Activates the virtual environment in development mode
+    cmds:
+      - hatch shell
+
   clean:
     desc: Cleans caching, pyc and pycache files
     cmds:
