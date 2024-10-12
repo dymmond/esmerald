@@ -135,7 +135,7 @@ Example:
 
 ```shell hl_lines="10 16 22 36"
 .
-├── Makefile
+├── Taskfile.yaml
 └── myproject
     ├── __init__.py
     ├── apps
@@ -267,7 +267,7 @@ Let us use the following structure as example:
 
 ```shell hl_lines="10 32"
 .
-├── Makefile
+├── Taskfile.yaml
 └── myproject
     ├── __init__.py
     ├── apps

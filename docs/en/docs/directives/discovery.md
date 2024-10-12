@@ -28,7 +28,7 @@ Imagine the following folder and file structure:
 
 ```shell hl_lines="20" title="myproject"
 .
-├── Makefile
+├── Taskfile.yaml
 └── myproject
     ├── __init__.py
     ├── apps
@@ -130,7 +130,7 @@ Let us see again the structure, in case you have forgotten already.
 
 ```shell hl_lines="20" title="myproject"
 .
-├── Makefile
+├── Taskfile.yaml
 └── src
     ├── __init__.py
     ├── apps
