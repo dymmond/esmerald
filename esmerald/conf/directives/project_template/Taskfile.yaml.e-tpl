@@ -1,0 +1,27 @@
+version: 3
+
+tasks:
+  clean:
+    desc: Cleans caching, pyc and pycache files
+    cmds:
+      - find . -type f -name "*.pyc" -delete || true
+      - find . -type d -name "*__pycache__*" -delete
+
+  run:
+    desc: Starts {{ project_name }} in development mode
+    env:
+      ESMERALD_SETTINGS_MODULE: {{ project_name }}.configs.development.settings.DevelopmentAppSettings
+    cmds:
+      - esmerald runserver
+
+  requirements:
+    desc: Install requirements
+    cmds:
+      - pip install -r requirements/development.txt
+
+  test:
+    desc: Run the suite of tests
+    env:
+      ESMERALD_SETTINGS_MODULE: {{ project_name }}.configs.testing.settings.TestingAppSettings
+    cmds:
+      - pytest -s

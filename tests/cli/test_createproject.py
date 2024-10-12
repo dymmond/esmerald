@@ -45,8 +45,6 @@ def test_create_project(create_folders):
     (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
     assert ss == 0
 
-    with open("myproject/Makefile") as f:
-        assert f.readline().strip() == ".DEFAULT_GOAL := help"
     with open("myproject/.gitignore") as f:
         assert f.readline().strip() == "# Byte-compiled / optimized / DLL files"
     with open("myproject/myproject/urls.py") as f:
@@ -54,7 +52,8 @@ def test_create_project(create_folders):
 
 
 def _run_asserts():
-    assert os.path.isfile("myproject/Makefile") is True
+    assert os.path.isfile("myproject/Taskfile.yaml") is True
+    assert os.path.isfile("myproject/README.md") is True
     assert os.path.isfile("myproject/.gitignore") is True
     assert os.path.isfile("myproject/myproject/__init__.py") is True
     assert os.path.isfile("myproject/myproject/main.py") is True

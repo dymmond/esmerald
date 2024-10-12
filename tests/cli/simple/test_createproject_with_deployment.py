@@ -49,8 +49,6 @@ def test_create_project(create_folders):
     )
     assert ss == 0
 
-    with open("myproject/Makefile") as f:
-        assert f.readline().strip() == ".DEFAULT_GOAL := help"
     with open("myproject/.gitignore") as f:
         assert f.readline().strip() == "# Byte-compiled / optimized / DLL files"
     with open("myproject/myproject/app.py") as f:
@@ -58,7 +56,8 @@ def test_create_project(create_folders):
 
 
 def _run_asserts():
-    assert os.path.isfile("myproject/Makefile") is True
+    assert os.path.isfile("myproject/Taskfile.yaml") is True
+    assert os.path.isfile("myproject/README.md") is True
 
     # Deployment
     assert os.path.isfile("myproject/deployment/docker/Dockerfile") is True
@@ -68,7 +67,6 @@ def _run_asserts():
     assert os.path.isfile("myproject/deployment/supervisor/supervisord.conf") is True
 
     # General
-    assert os.path.isfile("myproject/Makefile") is True
     assert os.path.isfile("myproject/.gitignore") is True
     assert os.path.isfile("myproject/myproject/__init__.py") is True
     assert os.path.isfile("myproject/myproject/app.py") is True
