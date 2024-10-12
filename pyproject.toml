@@ -150,7 +150,6 @@ clean_pycache = "find . -type d -name \"*__pycache__*\" -delete"
 build_with_check = "hatch build; twine check dist/*"
 lint = "ruff check --fix --line-length 99 esmerald tests docs_src {args}; hatch run test:check_types"
 
-
 [tool.hatch.envs.docs]
 features = ["all", "docs"]
 
@@ -180,7 +179,6 @@ installer = "pip"
 
 [tool.hatch.envs.hatch-test.env-vars]
 ESMERALD_SETTINGS_MODULE = "tests.settings.TestSettings"
-
 
 [tool.hatch.version]
 path = "esmerald/__init__.py"

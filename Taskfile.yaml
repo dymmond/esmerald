@@ -1,0 +1,84 @@
+version: 3
+
+tasks:
+  clean:
+    desc: Cleans caching, pyc and pycache files
+    cmds:
+      - hatch run clean_pyc
+      - hatch run clean_pyi
+      - hatch run clean_pycache
+
+  build_with_checks:
+    desc: Builds the project with checks
+    cmds:
+      - hatch run build_with_check
+
+  lint:
+    desc: Lints the project
+    cmds:
+      - hatch run lint
+
+  mypy:
+    desc: Runs the type checker only, no formatting
+    cmds:
+      - hatch run test:check_types
+
+  #---------------------------- DOCS -------------------------------
+
+  update_languages:
+    desc: Updates the local docs with a new language
+    cmds:
+      - hatch run docs:update_languages
+
+  build:
+    desc: Builds the documentation
+    cmds:
+      - hatch run docs:build
+
+  build_lang:
+    desc: Builds for a givin langage
+    cmds:
+      - hatch run docs:build_lang {{ .LANG }}
+
+  serve:
+    desc: Runs the documentation in live mode
+    cmds:
+      - hatch run docs:serve
+
+  serve_dev:
+    desc: Runs the documentation in dev mode
+    cmds:
+      - hatch run docs:dev
+
+  serve_lang:
+    desc: Runs the documentation in dev mode for a given language
+    cmds:
+      - hatch run docs:serve_lang {{ .LANG }}
+
+  new_lang:
+    desc: Creates a new language
+    cmds:
+      - hatch run docs:new_lang {{ .LANG }}
+
+  # --------------------------- TEST ------------------------------------
+
+  test:
+    desc: Runs the suite tests
+    env:
+      ESMERALD_SETTINGS_MODULE: tests.settings.TestSettings
+    cmds:
+      - hatch run test:test {{ .ARGS }}
+
+  test_man:
+    desc: Runs the manual tests with more output details and python breakpoints allowed
+    env:
+      ESMERALD_SETTINGS_MODULE: tests.settings.TestSettings
+    cmds:
+      - hatch run test:test_man {{ .ARGS }}
+
+  coverage:
+    desc: Runs the coverage tests
+    env:
+      ESMERALD_SETTINGS_MODULE: tests.settings.TestSettings
+    cmds:
+      - hatch run test:coverage {{ .ARGS }}
