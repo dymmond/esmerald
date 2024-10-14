@@ -87,7 +87,7 @@ route_patterns = [Include(namespace="welcome.v1.urls")]
 ```
 
 You are now ready to start the application. Since the files were generated, you can run inside the `my_project`
-root the `make run`.
+root the `task run`.
 
 #### Check the documentation
 

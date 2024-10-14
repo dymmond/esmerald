@@ -130,15 +130,15 @@ A lot of files generated right? Yes but those are actually quite simple but let'
 
 * **Taskfile.yaml** - This is a special file provided by the directive that contains some useful commands to run your
 peoject locally, for example:
-    * `make run` - Starts your project with the development settings.
-    * `make test` - Runs your local tests with the testing settings.
-    * `make clean` - Removes all the `*.pyc` from your project.
-    * `make requirements` - Installs the mininum requirements from the `requirements` folder.
+    * `task run` - Starts your project with the development settings.
+    * `task test` - Runs your local tests with the testing settings.
+    * `task clean` - Removes all the `*.pyc` from your project.
+    * `task requirements` - Installs the mininum requirements from the `requirements` folder.
 
     !!! Info
         The tests are using [pytest](https://docs.pytest.org/) but you can change to whatever you want.
 
-* **serve.py** - This file is simply a wrapper that is called by the `make run` and starts the local
+* **serve.py** - This file is simply a wrapper that is called by the `task run` and starts the local
 development. **This should not be used in production**.
 * **main.py** - The main file that builds the application path and adds it to the `$PYTHONPATH`. This file can also be
 used to add extra configurations as needed.
@@ -220,7 +220,7 @@ A **tests** file is also generated suggesting that you could also add some speci
 
 ### After generation
 
-Once the project and apps are generated, executing `make run` will throw a `ImproperlyConfigured` exception. This
+Once the project and apps are generated, executing `task run` will throw a `ImproperlyConfigured` exception. This
 is because the `urls.py` expects to be populated with application details.
 
 ### Example
@@ -272,7 +272,7 @@ And that is it! The application is assembled and you can now [start the applicat
 Remember that a `Taskfile.yaml` that was also generated? Let's use it to start the application.
 
 ```shell
-make run
+task run
 ```
 
 What this command is actually doing is:
