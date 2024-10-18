@@ -18,7 +18,7 @@ The available responses from `Esmerald` are:
 
 * `Response`
 * `JSON`
-* `OrJSON`
+* `ORJSON`
 * `UJSON`
 * `Template`
 * `Redirect`
@@ -27,14 +27,14 @@ The available responses from `Esmerald` are:
 
 ## Important requirements
 
-Some responses use extra dependencies, such as [UJSON](#ujson) and [OrJSON](#orjson). To use these
+Some responses use extra dependencies, such as [UJSON](#ujson) and [ORJSON](#orjson). To use these
 responses, you need to install:
 
 ```shell
 $ pip install ujson orjson
 ```
 
-This will allow you to use the [OrJSON](#orjson) and [UJSON](#ujson) as well as the
+This will allow you to use the [ORJSON](#orjson) and [UJSON](#ujson) as well as the
 [UJSONResponse](#ujsonresponse) and [ORJSONResponse](#orjsonresponse) in your projects.
 
 ### Response
@@ -61,7 +61,7 @@ Check out the [API Reference for Response](./references/responses/response.md) f
 ### JSON
 
 The classic JSON response for 99% of the responses used nowaday. The `JSON` returns a
-`JSONResponse`.
+`JSONResponse` (ORJSON).
 
 ```python
 {!> ../../../docs_src/responses/json.py !}
@@ -71,7 +71,7 @@ The classic JSON response for 99% of the responses used nowaday. The `JSON` retu
 
 Check out the [API Reference for JSON](./references/responses/json.md) for more details.
 
-#### JSONResponse
+### JSONResponse (lilya)
 
 You can always use directly the `JSONResponse` from Lilya without using the Esmerald wrapper.
 
@@ -79,17 +79,12 @@ You can always use directly the `JSONResponse` from Lilya without using the Esme
 from lilya.responses import JSONResponse as JSONResponse
 ```
 
-or alternatively
-
-```python
-from esmerald.responses import JSONResponse
-```
 
 ## API Reference
 
 Check out the [API Reference for JSONResponse](./references/responses/json-response.md) for more details.
 
-### OrJSON
+### ORJSON
 
 Super fast JSON serialization/deserialization response.
 
@@ -101,7 +96,7 @@ Super fast JSON serialization/deserialization response.
     Please read the [important requirements](#important-requirements) before using this response.
 
 !!! Check
-    More details about the ORJSOM can be [found here](https://github.com/ijl/orjson).
+    More details about the ORJSON can be [found here](https://github.com/ijl/orjson).
 
 ## API Reference
 
@@ -113,6 +108,12 @@ You can always use directly the `ORJSONResponse` from Esmerald without using the
 
 ```python
 from esmerald.responses.encoders import ORJSONResponse
+```
+
+or alternatively (we alias JSONResponse to ORJSONResponse because it is faster)
+
+```python
+from esmerald.responses import JSONResponse
 ```
 
 ## API Reference
