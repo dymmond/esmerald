@@ -71,7 +71,7 @@ The classic JSON response for 99% of the responses used nowaday. The `JSON` retu
 
 Check out the [API Reference for JSON](./references/responses/json.md) for more details.
 
-### JSONResponse (lilya)
+### JSONResponse (Lilya)
 
 You can always use directly the `JSONResponse` from Lilya without using the Esmerald wrapper.
 
