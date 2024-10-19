@@ -43,6 +43,7 @@ from esmerald.background import BackgroundTask, BackgroundTasks  # noqa
 from esmerald.enums import MediaType
 
 R = TypeVar("R", bound=LilyaResponse)
+L = TypeVar("L")
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
@@ -130,3 +131,107 @@ class ResponseHeader(BaseModel):
     def validate_value(cls, value: Any, values: Dict[str, Any]) -> Any:
         if value is not None:
             return value
+
+
+class MagicList(list[L]):
+    """Converts like magick"""
+
+    def __init__(
+        self,
+        iterable: Iterable[Any] = (),
+        *,
+        allowed_types: tuple[type, ...],
+        converter: Callable[[Any], L],
+    ):
+        self.allowed_types = allowed_types
+        self.converter = converter
+        super().__init__(
+            entry if isinstance(entry, self.allowed_types) else self.converter(entry)
+            for entry in iterable
+        )
+
+    def append(self, value: Any) -> None:
+        if not isinstance(value, self.allowed_types):
+            value = self.converter(value)
+        super().append(value)
+
+    def insert(self, position: int, value: Any) -> None:
+        if not isinstance(value, self.allowed_types):
+            value = self.converter(value)
+        super().insert(position, value)
+
+    def __setitem__(self, position: int, value: Any) -> None:
+        if not isinstance(value, self.allowed_types):
+            value = self.converter(value)
+        super().__setitem__(position, value)
+
+    def extend(self, value: Iterable[Any]) -> None:
+        super().extend(
+            entry if isinstance(entry, self.allowed_types) else self.converter(entry)
+            for entry in value
+        )
+
+
+class MagicDict(dict[str, L]):
+    """Converts like magick"""
+
+    def __init__(
+        self,
+        inp: Any = None,
+        *,
+        allowed_types: tuple[type, ...],
+        converter: Callable[[Any], L],
+    ):
+        self.allowed_types = allowed_types
+        self.converter = converter
+        super().__init__()
+        inp = dict(inp) if inp else {}
+        for k, v in inp.items():
+            self[k] = v
+
+    def __setitem__(self, name: str, value: Any) -> None:
+        if not isinstance(value, self.allowed_types):
+            value = self.converter(value)
+        super().__setitem__(name, value)
+
+    def update(self, value: Any) -> None:
+        value = dict(value)
+        for k, v in value.items():
+            self[k] = v
+
+
+MagicP = TypeVar("MagicP", MagicList[L], MagicDict[L])
+
+
+class MagicProperty(Generic[MagicP]):
+    def __init__(
+        self,
+        type_: MagicP,
+        allowed_types: tuple[type, ...],
+        converter: Callable[[Any], L],
+    ):
+        self.type_ = type_
+        self.allowed_types = allowed_types
+        self.converter = converter
+
+    def __set_name__(self, owner: Any, name: str) -> None:
+        self.name = name
+
+    def __get__(self, instance: Any, owner: Any = None) -> MagicP:
+        if getattr(self.instance, self.name, None) is None:
+            setattr(
+                self.instance,
+                self.name,
+                self.type_(allowed_types=self.allowed_types, converter=self.converter),
+            )
+        return getattr(self.instance, self.name)
+
+    def __set__(self, instance: Any, value: Any) -> None:
+        setattr(
+            self.instance,
+            self.name,
+            self.type_(value, allowed_types=self.allowed_types, converter=self.converter),
+        )
+
+    def __delete__(self, instance: Any) -> None:
+        delattr(self.instance, self.name)

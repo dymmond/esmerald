@@ -2897,7 +2897,7 @@ class Include(LilyaInclude):
 
         for route in routes:  # pragma: no cover
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
-                raise ImproperlyConfigured("The route must be of type Gateway or Include")
+                route = Gateway(handler=route)
 
             route.parent = self
             if isinstance(route, Include):

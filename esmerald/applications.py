@@ -27,7 +27,7 @@ from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
 from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.contrib.schedulers.base import SchedulerConfig
-from esmerald.datastructures import State
+from esmerald.datastructures import MagicDict, MagicProperty, Secret, State
 from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
@@ -68,7 +68,6 @@ from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.conf import EsmeraldLazySettings
-    from esmerald.datastructures import Secret
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -138,6 +137,10 @@ class Application(Lilya):
         "title",
         "version",
         "encoders",
+    )
+
+    pluggables: MagicDict[Pluggable] = MagicProperty(
+        MagicDict[Pluggable], allowed_types=(Pluggable,), converter=Pluggable
     )
 
     def __init__(
