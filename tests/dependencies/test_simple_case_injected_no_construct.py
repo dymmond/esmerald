@@ -78,4 +78,6 @@ async def async_client(app) -> AsyncGenerator:
 async def test_injection(async_client):
     response = await async_client.post("/", json={"name": "test", "content": "test"})
     assert response.status_code == 201
-    assert response.json() == {"name": "test", "content": "test"}
+    jsonob = response.json()
+    jsonob.pop("id")
+    assert jsonob == {"name": "test", "content": "test"}
