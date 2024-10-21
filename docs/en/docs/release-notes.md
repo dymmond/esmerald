@@ -5,6 +5,17 @@ hide:
 
 # Release Notes
 
+## 3.4.4
+
+### Added
+
+- Support for [Taskfile](https://taskfile.dev) when generating a project via directive.
+- Add taskfile for development mode.
+
+### Changed
+
+- Internal JSONResponse is now natively supporting ORJSON.
+
 ## 3.4.3
 
 ### Changed
