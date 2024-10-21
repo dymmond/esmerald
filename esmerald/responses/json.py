@@ -1,7 +1,8 @@
 from typing import Any, Dict, cast
 
+from lilya.responses import JSONResponse
+
 from esmerald.encoders import json_encoder
-from esmerald.responses import JSONResponse as JSONResponse  # noqa
 
 
 class BaseJSONResponse(JSONResponse):
@@ -16,3 +17,6 @@ class BaseJSONResponse(JSONResponse):
         a dict().
         """
         return cast(Dict[str, Any], json_encoder(value))
+
+
+__all__ = ["BaseJSONResponse"]

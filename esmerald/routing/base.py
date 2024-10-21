@@ -33,7 +33,7 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
-from esmerald.responses import JSONResponse, Response
+from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
 from esmerald.transformers.model import (
     TransformerModel,
