@@ -2,12 +2,12 @@ from .base import (
     Error,
     FileResponse,
     HTMLResponse,
-    JSONResponse,
     LilyaResponse,
     PlainText,
     Response,
     StreamingResponse,
 )
+from .encoders import ORJSONResponse as JSONResponse
 from .template import TemplateResponse
 
 __all__ = [

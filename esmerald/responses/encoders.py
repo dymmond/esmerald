@@ -1,14 +1,8 @@
 from typing import Any
 
-from lilya.responses import JSONResponse as JSONResponse
+import orjson
 
 from esmerald.responses.json import BaseJSONResponse
-
-try:
-    import orjson
-    from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY
-except ImportError:  # pragma: no cover
-    orjson = None
 
 try:
     import ujson
@@ -24,11 +18,10 @@ class ORJSONResponse(BaseJSONResponse):
     """
 
     def make_response(self, content: Any) -> bytes:
-        assert orjson is not None, "You must install the encoders or orjson to use ORJSONResponse"
         return orjson.dumps(
             content,
             default=self.transform,
-            option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
+            option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS,
         )
 
 
@@ -42,3 +35,6 @@ class UJSONResponse(BaseJSONResponse):
     def make_response(self, content: Any) -> bytes:
         assert ujson is not None, "You must install the encoders or ujson to use UJSONResponse"
         return ujson.dumps(content, ensure_ascii=False).encode("utf-8")
+
+
+__all__ = ["ORJSONResponse", "UJSONResponse"]

@@ -163,7 +163,6 @@ class Response(LilyaResponse, Generic[T]):
             ),
         ] = None,
     ) -> None:
-
         super().__init__(
             content=content,
             status_code=status_code,
