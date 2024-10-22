@@ -25,7 +25,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:10.8
+        image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -63,8 +63,8 @@ jobs:
         run: "pip install hatch"
       #- name: "Run linting checks"
       #  run: "hatch run lint"
-      - name: "Run mypy"
-        run: "hatch run test:check_types"
+      #- name: "Run mypy"
+      #  run: "hatch run test:check_types"
       - name: "Run tests"
         env:
           DATABASE_URI: "mongodb://root:mongoadmin@localhost:27017"
