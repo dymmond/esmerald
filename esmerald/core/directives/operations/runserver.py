@@ -103,15 +103,20 @@ def runserver(
     except ImportError:
         raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald.") from None
 
+    server_environment: str = ""
+    if os.environ.get("ESMERALD_SETTINGS_MODULE"):
+        from esmerald.conf import settings as esmerald_settings
+
+        server_environment = f"{esmerald_settings.environment} "
     app = env.app
     message = terminal.write_info(
-        f"Starting {app.settings.environment} server @ {host}",
+        f"Starting {server_environment}server @ {host}",
         colour=OutputColour.BRIGHT_CYAN,
     )
     terminal.rule(message, align="center")
 
-    if settings is not None:
-        custom_message = f"'{os.environ.get('ESMERALD_SETTINGS_MODULE')}'"
+    if os.environ.get("ESMERALD_SETTINGS_MODULE"):
+        custom_message = f"'{os.environ['ESMERALD_SETTINGS_MODULE']}'"
         terminal.rule(custom_message, align="center")
 
     if debug:
