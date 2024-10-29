@@ -8,7 +8,6 @@ description = "Highly scalable, performant, easy to learn, easy to code and for 
 readme = "README.md"
 requires-python = ">=3.9"
 dynamic = ['version']
-license = "MIT"
 authors = [{ name = "Tiago Silva", email = "tiago.silva@dymmond.com" }]
 classifiers = [
     "Intended Audience :: Information Technology",
@@ -27,7 +26,7 @@ classifiers = [
     "Framework :: AsyncIO",
     "Framework :: AnyIO",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
