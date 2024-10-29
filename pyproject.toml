@@ -8,7 +8,7 @@ description = "Highly scalable, performant, easy to learn, easy to code and for 
 readme = "README.md"
 requires-python = ">=3.9"
 dynamic = ['version']
-license = "MIT"
+license = "BSD3"
 authors = [{ name = "Tiago Silva", email = "tiago.silva@dymmond.com" }]
 classifiers = [
     "Intended Audience :: Information Technology",
