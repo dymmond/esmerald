@@ -159,7 +159,7 @@ distribute them.
 * **ORM Support**: Native support for [Saffier][saffier_orm] and [Edgy][_orm].
 * **ODM Support**: Native support for [Mongoz][mongoz_odm].
 * **APIView**: Class Based endpoints for your beloved OOP design.
-* **JSON serialization/deserialization**: Both UJSON and ORJON support.
+* **JSON serialization/deserialization**: Both UJSON and ORJSON support.
 * **Lifespan**: Support for the newly Lilya lifespan.
 * **Dependency Injection**: Like any other great framework out there.
 * **Scheduler**: Yes, that's right, we come with a scheduler for those background tasks.
@@ -226,7 +226,7 @@ To quickly start with Esmerald you can also use it as decorator, you can just do
 #!/usr/bin/env python
 import uvicorn
 
-from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+from esmerald import Esmerald, JSONResponse, Request
 
 
 app = Esmerald()
@@ -293,6 +293,7 @@ global settings. This is simple of course but can you override inside the object
 ```python
 from esmerald import Esmerald
 
+
 app = Esmerald(app_name='My App', title='My title')
 
 ```
@@ -313,13 +314,13 @@ Separation of settings by enviromment is a must have these days and starting wit
 enough for any application.
 
 The settings are pydantic standard settings and therefore compatible with Esmerald.
-The system brings some defaults that can be used out-of-the-box but it is not mandatory to be used.
+The system brings some defaults that can be used out-of-the-box, but it is not mandatory to be used.
 The environment defaults to **production**.
 
 ```python
-
 from esmerald import EsmeraldAPISettings
 from esmerald.conf.enums import EnvironmentType
+
 
 class Development(EsmeraldAPISettings):
     app_name: str = 'My app in dev'
@@ -359,6 +360,7 @@ Those are special objects that allow all the magic of Esmerald to happen.
     ```python title='src/app.py'
     from esmerald import Esmerald, Gateway, JSONResponse, Request, Websocket, WebSocketGateway, get, status
 
+
     @get(status_code=status.HTTP_200_OK)
     async def home() -> JSONResponse:
         return JSONResponse({
@@ -371,6 +373,7 @@ Those are special objects that allow all the magic of Esmerald to happen.
         return {
             "detail": "Another world!"
         }
+
 
     @websocket(path="/{path_param:str}")
     async def world_socket(socket: Websocket) -> None:
@@ -407,8 +410,8 @@ If a `path` is not provided, defaults to `/`.
 from esmerald import Gateway, WebSocketGateway
 from .controllers import home, another, world_socket, World
 
+
 route_patterns = [
-    Gateway(handler=update_product),
     Gateway(handler=home),
     Gateway(handler=another),
     Gateway(handler=World),
@@ -474,7 +477,7 @@ of objects to be passed into one single object. This can be particulary useful t
 
 ## Run the application
 
-As mentioned before, we recommend uvicorn for production but it is not mandatory.
+As mentioned before, we recommend uvicorn for production, but it is not mandatory.
 
 **Using uvicorn**:
 
@@ -544,7 +547,7 @@ There are plenty more things you can do with Esmerald. Enjoy! 😊
 
 ## Sponsors
 
-Currently there are no sponsors of Esmerald but you can financially help and support the author though
+Currently there are no sponsors of Esmerald, but you can financially help and support the author though
 [GitHub sponsors](https://github.com/sponsors/tarsil) and become a **Special one** or a **Legend**.
 
 [saffier_orm]: ./databases/saffier/motivation.md
