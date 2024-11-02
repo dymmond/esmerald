@@ -1,6 +1,6 @@
 # Уровни приложения
 
-Приложение Esmerald состоит из уровней, и эти уровни могут быть [Gateway](../routing/routes.md#gateway),
+Приложение Esmerald состоит из уровней. Уровни могут быть [Gateway](../routing/routes.md#gateway),
 [WebSocketGateway](../routing/routes.md#websocketgateway), [Include](../routing/routes.md#include),
 [handlers](../routing/handlers.md) или даже **другое приложение Esmerald** или
 [ChildEsmerald](../routing/router.md#child-esmerald-application).
@@ -22,7 +22,7 @@
 
 ## С использованием ChildEsmerald:
 
-```python hl_lines="50 59"
+```python hl_lines="49 58"
 {!> ../../../docs_src/application/app/child_esmerald_level.py !}
 ```
 
@@ -56,15 +56,15 @@
 и правила приоритета могут применяться между экземпляром `Esmerald` и соответствующими приложениями
 `ChildEsmerald`.
 
-Другими словами, **нет необходимости** создавать или дублировать одни и те же permissions и middleware
+Другими словами, **нет необходимости** создавать или дублировать, одни и те же permissions и middleware
 (общие для обоих) для каждого экземпляра. Они могут быть применены **глобально** из основного объекта `Esmerald`.
 
-```python hl_lines="99-101 108 115 119-120"
+```python hl_lines="97-99 108 115 117-118"
 {!> ../../../docs_src/application/app/permissions_and_middlewares.py !}
 ```
 
 ### Заметки
 
-Приведенный пример намеренно показан большим и "сложным", чтобы продемонстрировать, что, даже
+Приведенный пример намеренно показан большим и "сложным", чтобы продемонстрировать, что даже
 несмотря на такую сложность, `middleware` и `permissions` остаются глобальными для всего
 приложения без необходимости реализовывать их как в `Esmerald`, так и в `ChildEsmerald`.
