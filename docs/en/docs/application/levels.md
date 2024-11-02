@@ -23,7 +23,7 @@ You can create as many levels as you desire. From nested includes to
 
 ## With a ChildEsmerald
 
-```python hl_lines="50 59"
+```python hl_lines="49 58"
 {!> ../../../docs_src/application/app/child_esmerald_level.py !}
 ```
 
@@ -59,7 +59,7 @@ precedence can be applied between an `Esmerald` instance and the corresponding `
 In other words, you **don't need** to create/repeat the same permissions and middlewares (common to both) across
 every instance. They can be applied **globally** from the top main `Esmerald` object.
 
-```python hl_lines="99-101 108 115 119-120"
+```python hl_lines="97-99 108 115 117-118"
 {!> ../../../docs_src/application/app/permissions_and_middlewares.py !}
 ```
 
