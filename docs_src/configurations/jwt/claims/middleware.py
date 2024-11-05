@@ -1,7 +1,7 @@
 from jose import JWSError, JWTError
 
 from esmerald.conf import settings
-from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware as EsmeraldMiddleware
+from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware as EsmeraldMiddleware
 from esmerald.exceptions import AuthenticationError, NotAuthorized
 from esmerald.middleware.authentication import AuthResult
 from esmerald.security.jwt.token import Token
