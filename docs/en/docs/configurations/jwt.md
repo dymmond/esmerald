@@ -24,8 +24,8 @@ To use the JWTConfig with a middleware.
 ```
 
 !!! info
-    The example uses a supported [JWTAuthMiddleware](../databases/saffier/middleware.md#jwtauthmiddleware)
-    from Esmerald with Saffier ORM.
+    The example uses a supported [JWTAuthMiddleware](../databases/edgy/middleware.md#jwtauthmiddleware)
+    from Esmerald with Edgy ORM.
 
 ## Parameters
 
@@ -179,9 +179,9 @@ in dictating which type of token is being validated and sent.
 
 The `access_token` is sent via `headers` **as it should** and the `refresh_token` is sent via `POST`.
 
-#### The views
+#### The controllers
 
-Now it is time to assemble everything in the views where we will have:
+Now it is time to assemble everything in the controllers where we will have:
 
 * `/auth/create` - Endpoint to create the users.
 * `/auth/signin` - Login endpoint for the user.
