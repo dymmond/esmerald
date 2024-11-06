@@ -11,6 +11,11 @@ hide:
 
 - Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
 
+### Changed
+
+- Pluggables can now receive plain Extensions and Extension classes.
+- Alias add_pluggable with add_extension.
+
 ## 3.4.4
 
 ### Added

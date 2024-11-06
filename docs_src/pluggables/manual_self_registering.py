@@ -20,6 +20,10 @@ class MyExtension(Extension):
         # Do something here like print a log or whatever you need
         logger.success("Started the extension manually")
 
+        # Add the extension to the pluggables of Esmerald
+        # And make it accessible
+        self.app.add_pluggable("my-extension", self)
+
 
 @get("/home")
 async def home(request: Request) -> JSONResponse:
@@ -34,6 +38,6 @@ async def home(request: Request) -> JSONResponse:
 
 
 app = Esmerald(routes=[Gateway(handler=home)])
-app.add_pluggable("my-extension", MyExtension)
-# or
-# app.add_extension("my-extension", MyExtension)
+
+extension = MyExtension(app=app)
+extension.extend()

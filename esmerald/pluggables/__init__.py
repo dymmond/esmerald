@@ -1,3 +1,3 @@
-from .base import Extension, Pluggable
+from .base import Extension, ExtensionDict, Pluggable
 
-__all__ = ["Pluggable", "Extension"]
+__all__ = ["Pluggable", "Extension", "ExtensionDict"]

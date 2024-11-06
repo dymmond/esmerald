@@ -105,9 +105,17 @@ This way you don't need to use the [Pluggable](#pluggable) object in any way and
 simply just use the [Extension](#extension) class or even your own since you **are in control**
 of the extension.
 
-```python hl_lines="25 42-43"
+There are two variants how to do it:
+
+```python title="With extension class or Pluggable"
 {!> ../../../docs_src/pluggables/manual.py !}
 ```
+
+```python hl_lines="25 42-43" title="Self registering"
+{!> ../../../docs_src/pluggables/manual_self_registering.py !}
+```
+
+You can use for the late registration the methods `add_extension` or `add_pluggable`. `add_pluggable` is an alias.
 
 ### Standalone object
 

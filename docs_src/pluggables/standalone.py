@@ -8,7 +8,6 @@ from esmerald.types import DictAny
 
 class Standalone:
     def __init__(self, app: Optional["Esmerald"] = None, **kwargs: "DictAny"):
-        super().__init__(app, **kwargs)
         self.app = app
         self.kwargs = kwargs
 

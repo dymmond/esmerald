@@ -18,7 +18,7 @@ class PluggableNoPlug(Extension):  # pragma: no cover
         self.app = app
 
 
-def test_raises_improperly_configured_for_subsclass(test_client_factory):
+def test_raises_improperly_configured_for_subclass(test_client_factory):
     with pytest.raises(ImproperlyConfigured) as raised:
         Esmerald(routes=[], pluggables={"test": MyNewPluggable})
 
@@ -123,6 +123,26 @@ def test_add_extension_(test_client_factory):
             self.app = app
 
         def extend(self, config) -> None:
+            logger.success(f"Started plugging with the name: {config.name}")
+
+            self.app.add_pluggable("manual", self)
+
+    app = Esmerald(routes=[])
+    config = Config(name="manual")
+    extension = CustomExtension(app=app)
+    extension.extend(config=config)
+
+    assert "manual" in app.pluggables
+    assert isinstance(app.pluggables["manual"], Extension)
+
+
+def test_add_standalone_extension(test_client_factory):
+    class CustomExtension:
+        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+            self.app = app
+            self.kwargs = kwargs
+
+        def extend(self, config) -> None:
             logger.success(f"Started standalone plugging with the name: {config.name}")
 
             self.app.add_pluggable("manual", self)
@@ -131,6 +151,23 @@ def test_add_extension_(test_client_factory):
     config = Config(name="manual")
     extension = CustomExtension(app=app)
     extension.extend(config=config)
+
+    assert "manual" in app.pluggables
+    assert not isinstance(app.pluggables["manual"], Extension)
+
+
+def test_add_pluggable(test_client_factory):
+    class CustomExtension(Extension):
+        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+            super().__init__(app, **kwargs)
+            self.app = app
+
+        def extend(self, config) -> None:
+            logger.success(f"Started standalone plugging with the name: {config.name}")
+
+    app = Esmerald(routes=[])
+    config = Config(name="manual")
+    app.add_pluggable("manual", Pluggable(CustomExtension, config=config))
 
     assert "manual" in app.pluggables
     assert isinstance(app.pluggables["manual"], Extension)

@@ -3,7 +3,9 @@ from typing import TYPE_CHECKING, Any, Iterator, Optional
 
 from typing_extensions import Annotated, Doc
 
+from esmerald.exceptions import ImproperlyConfigured
 from esmerald.protocols.extension import ExtensionProtocol
+from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
@@ -35,7 +37,10 @@ class Pluggable:
 
     class MyExtension(Extension):
         def __init__(
-            self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+            self,
+            app: Optional["Esmerald"] = None,
+            config: PluggableConfig = None,
+            **kwargs: "DictAny",
         ):
             super().__init__(app, **kwargs)
             self.app = app
@@ -52,7 +57,7 @@ class Pluggable:
     ```
     """
 
-    def __init__(self, cls: "Extension", **options: Any):
+    def __init__(self, cls: type["Extension"], **options: Any):
         self.cls = cls
         self.options = options
 
@@ -67,35 +72,7 @@ class Pluggable:
         return f"{name}({args})"
 
 
-class BaseExtension(ABC, ExtensionProtocol):  # pragma: no cover
-    """
-    The base for any Esmerald plugglable.
-    """
-
-    def __init__(
-        self,
-        app: Annotated[
-            Optional["Esmerald"],
-            Doc(
-                """
-                An `Esmerald` application instance or subclasses of Esmerald.
-                """
-            ),
-        ] = None,
-        **kwargs: Annotated[
-            Any,
-            Doc("""Any additional kwargs needed."""),
-        ],
-    ):
-        super().__init__(app, **kwargs)
-        self.app = app
-
-    @abstractmethod
-    def extend(self, **kwargs: "Any") -> None:
-        raise NotImplementedError("plug must be implemented by the subclasses.")
-
-
-class Extension(BaseExtension):
+class Extension(ABC, ExtensionProtocol):
     """
     `Extension` object is the one being used to add the logic that will originate
     the `pluggable` in the application.
@@ -127,3 +104,55 @@ class Extension(BaseExtension):
             # Do something here
     ```
     """
+
+    def __init__(
+        self,
+        app: Annotated[
+            Optional["Esmerald"],
+            Doc(
+                """
+                An `Esmerald` application instance or subclasses of Esmerald.
+                """
+            ),
+        ] = None,
+        **kwargs: Annotated[
+            Any,
+            Doc("""Any additional kwargs needed."""),
+        ],
+    ):
+        super().__init__(app, **kwargs)
+        self.app = app
+
+    @abstractmethod
+    def extend(self, **kwargs: "Any") -> None:
+        raise NotImplementedError("plug must be implemented by the subclasses.")
+
+
+BaseExtension = Extension
+
+
+class ExtensionDict(dict[str, Extension]):
+    def __init__(self, data: Any = None, *, app: "Esmerald"):
+        super().__init__(data)
+        self.app = app
+        for k, v in self.items():
+            self[k] = v
+
+    def __setitem__(self, name: Any, value: Any) -> None:
+        if not isinstance(name, str):
+            raise ImproperlyConfigured("Pluggable names should be in string format.")
+        elif isinstance(value, Pluggable):
+            cls, options = value
+            value = cls(app=self.app, **options)
+            value.extend(**options)
+        elif isinstance(value, ExtensionProtocol):
+            pass
+        elif is_class_and_subclass(value, Extension):
+            value = value(app=self.app)
+            value.extend()
+        else:
+            raise ImproperlyConfigured(
+                "An extension must subclass from esmerald.pluggables.Extension and added to "
+                "a Pluggable object"
+            )
+        super().__setitem__(name, value)
