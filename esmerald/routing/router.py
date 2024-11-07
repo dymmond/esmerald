@@ -270,7 +270,7 @@ class BaseRouter(LilyaRouter):
             ),
         ] = None,
         routes: Annotated[
-            Optional[Sequence[Union[APIGateHandler, Include]]],
+            Optional[Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]],
             Doc(
                 """
                 A `list` of esmerald routes. Those routes may vary and those can
@@ -485,7 +485,12 @@ class BaseRouter(LilyaRouter):
                 "/"
             ), "A path must not end with '/', as the routes will start with '/'"
 
+        new_routes: list[Any] = []
         for route in routes or []:
+            if isinstance(route, HTTPHandler):
+                route = Gateway(handler=route)
+            elif isinstance(route, WebSocketHandler):
+                route = WebSocketGateway(handler=route)
             if not isinstance(
                 route,
                 (
@@ -493,14 +498,14 @@ class BaseRouter(LilyaRouter):
                     Gateway,
                     WebSocketGateway,
                     LilyaBasePath,
-                    LilyaBasePath,
                     Host,
                     Router,
                 ),
-            ) or isinstance(route, WebhookGateway):
+            ) or isinstance(route, WebhookGateway):  # type: ignore
                 raise ImproperlyConfigured(
                     f"The route {route} must be of type Gateway, WebSocketGateway or Include"
                 )
+            new_routes.append(route)
 
         assert lifespan is None or (
             on_startup is None and on_shutdown is None
@@ -508,7 +513,7 @@ class BaseRouter(LilyaRouter):
 
         super().__init__(
             redirect_slashes=redirect_slashes,
-            routes=routes,
+            routes=new_routes,
             default=default,
             lifespan=lifespan,
             on_shutdown=on_shutdown,
@@ -522,7 +527,7 @@ class BaseRouter(LilyaRouter):
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
         self.permissions: Sequence[Permission] = permissions or []  # type: ignore
-        self.routes: Any = routes or []
+        self.routes: Any = new_routes
         self.middleware = middleware or []
         self.tags = tags or []
         self.name = name
@@ -534,7 +539,7 @@ class BaseRouter(LilyaRouter):
 
         self.routing = copy(self.routes)
         for route in self.routing or []:
-            self.validate_root_route_parent(route)
+            self.validate_root_route_parent(route)  # type: ignore
 
         for route in self.routes or []:
             self.create_signature_models(route)
@@ -700,12 +705,14 @@ class Router(BaseRouter):
         ```python
         from esmerald import Router, APIView, Gateway, get
 
+
         class View(APIView):
             path = "/"
 
             @get(status_code=status_code)
             async def hello(self) -> str:
                 return "Hello, World!"
+
 
         gateway = Gateway(handler=View)
 
@@ -829,9 +836,11 @@ class Router(BaseRouter):
         ```python
         from esmerald import get
 
+
         @get(status_code=status_code)
         async def hello(self) -> str:
             return "Hello, World!"
+
 
         app = Esmerald()
         app.add_route(path="/hello", handler=hello)
@@ -937,6 +946,7 @@ class Router(BaseRouter):
         ```python
         from esmerald import websocket
 
+
         @websocket()
         async def websocket_route(socket: WebSocket) -> None:
             await socket.accept()
@@ -945,6 +955,7 @@ class Router(BaseRouter):
             assert data
             await socket.send_json({"data": "esmerald"})
             await socket.close()
+
 
         app = Esmerald()
         app.add_websocket_route(path="/ws", handler=websocket_route)
@@ -2553,7 +2564,7 @@ class Include(LilyaInclude):
             ),
         ] = None,
         routes: Annotated[
-            Optional[Sequence[Union[APIGateHandler, Include]]],
+            Optional[Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]],
             Doc(
                 """
                 A global `list` of esmerald routes. Those routes may vary and those can
@@ -2844,7 +2855,7 @@ class Include(LilyaInclude):
         return app
 
     def resolve_route_path_handler(
-        self, routes: Sequence[Union[APIGateHandler, Include]]
+        self, routes: Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]
     ) -> List[Union[Gateway, WebSocketGateway, Include]]:
         """
         Make sure the paths are properly configured from the handler handler.
@@ -2896,6 +2907,11 @@ class Include(LilyaInclude):
         routing: List[Union[Gateway, WebSocketGateway, Include]] = []
 
         for route in routes:  # pragma: no cover
+            if isinstance(route, HTTPHandler):
+                route = Gateway(handler=route)
+            elif isinstance(route, WebSocketHandler):
+                route = WebSocketGateway(handler=route)
+
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
                 raise ImproperlyConfigured("The route must be of type Gateway or Include")
 

@@ -19,7 +19,8 @@ def another_read(name: str) -> str:
 app = Esmerald(
     routes=[
         Gateway(handler=example),
-        Gateway(handler=another),
+        # you can the handlers also directly (they are automatically converted to Gateways)
+        another,
         Gateway(path="/last/{name:str}", handler=another_read),
     ]
 )

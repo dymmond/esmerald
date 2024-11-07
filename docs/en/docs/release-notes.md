@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Added
+
+- Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
+
 ## 3.4.4
 
 ### Added
