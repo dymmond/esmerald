@@ -36,7 +36,4 @@ async def home(request: Request) -> JSONResponse:
     return JSONResponse({"extensions": extensions})
 
 
-app = Esmerald(routes=[Gateway(handler=home)])
-
-extension = Standalone(app=app)
-extension.extend()
+app = Esmerald(routes=[Gateway(handler=home)], extensions=[Standalone])

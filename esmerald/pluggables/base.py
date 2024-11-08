@@ -6,7 +6,6 @@ from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.protocols.extension import ExtensionProtocol
-from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
@@ -177,12 +176,12 @@ class ExtensionDict(dict[str, Extension]):
                 value.extend(**options)
             else:
                 self.delayed_extend[name] = options
-        elif isinstance(value, ExtensionProtocol) and not isclass(value):
+        elif not isclass(value) and isinstance(value, ExtensionProtocol):
             if self.delayed_extend is not None:
                 raise ImproperlyConfigured(
                     "Cannot pass an initialized extension in extensions parameter."
                 )
-        elif is_class_and_subclass(value, Extension):
+        elif isclass(value) and issubclass(value, ExtensionProtocol):
             value = value(app=self.app)
             if self.delayed_extend is None:
                 value.extend()

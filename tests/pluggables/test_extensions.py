@@ -74,6 +74,14 @@ def test_generates_many_pluggables():
         def extend(self) -> None:
             container.append("works")
 
+    class NonExtension:
+        def __init__(self, app: "Esmerald"):
+            super().__init__()
+            self.app = app
+
+        def extend(self) -> None:
+            pass
+
     class LoggingExtension(Extension):
         def __init__(self, app: "Esmerald", name):
             super().__init__(app)
@@ -101,10 +109,11 @@ def test_generates_many_pluggables():
             "logging": Pluggable(LoggingExtension, name="my logging"),
             "database": Pluggable(DatabaseExtension, database="my db"),
             "base": ReorderedExtension,
+            "non-extension": NonExtension,
         },
     )
 
-    assert len(app.extensions.keys()) == 4
+    assert len(app.extensions.keys()) == 5
 
 
 def test_start_extension_directly(test_client_factory):

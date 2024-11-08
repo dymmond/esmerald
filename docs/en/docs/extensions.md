@@ -118,16 +118,15 @@ There are two variants how to do it:
 ```
 
 You can use for the late registration the methods `add_extension`.
+It will automatically initialize and call extend for you when passing a class or **Pluggable**,
+**but not when passing an instance**.
 
 ### Standalone object
 
 But, what if I don't want to use the [Extension](#extension) object for my pluggable? Is this
 possible?
-
-Short answer, yes, but this comes with limitations:
-
-* You **cannot** hook the class within a [Pluggable](#pluggable) and use the automated way.
-* You **will always need** to start it manually.
+´
+yes, it must only implement the ExtensionProtocol.
 
 ```python hl_lines="9 25 42-43"
 {!> ../../../docs_src/pluggables/standalone.py !}
@@ -135,13 +134,13 @@ Short answer, yes, but this comes with limitations:
 
 ## Important notes
 
-As you can see, **pluggables** in Esmerald can be a powerful tool that isolates common
+As you can see, **extensions** in Esmerald can be a powerful tool that isolates common
 functionality from the main Esmerald application and can be used to leverage the creation of plugins
 to be used across your applications and/or to create opensource packages for any need.
 
 ## ChildEsmerald and pluggables
 
-A [Pluggable](#pluggable) **is not the same** as a [ChildEsmerald](./routing/router.md#child-esmerald-application).
+An [Extension](#extension) **is not the same** as a [ChildEsmerald](./routing/router.md#child-esmerald-application).
 
 These are two completely independent pieces of functionality with completely different purposes, be
 careful when considering one and the other.
