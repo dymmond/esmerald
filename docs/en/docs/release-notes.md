@@ -14,7 +14,7 @@ hide:
 ### Changed
 
 - Pluggables can now receive plain Extensions and Extension classes.
-- Alias add_pluggable with add_extension.
+- Rename to extensions.
 
 ## 3.4.4
 

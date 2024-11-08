@@ -15,7 +15,7 @@ from esmerald.encoders import Encoder
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.permissions.types import Permission
-from esmerald.pluggables import Pluggable
+from esmerald.pluggables import Extension, Pluggable
 from esmerald.routing import gateways
 from esmerald.types import (
     APIGateHandler,
@@ -1320,15 +1320,15 @@ class EsmeraldAPISettings(BaseSettings):
         return None
 
     @property
-    def pluggables(self) -> Dict[str, "Pluggable"]:
+    def extensions(self) -> dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
         """
-        A `list` of global pluggables from objects inheriting from
+        A `list` of global extensions from objects inheriting from
         `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
 
         Read more about how to implement the [Plugables](https://esmerald.dev/pluggables/) in Esmerald and to leverage them.
 
         Returns:
-            Mapping of pluggables
+            Mapping of extensions
 
         Defaults:
             {}
@@ -1350,27 +1350,27 @@ class EsmeraldAPISettings(BaseSettings):
 
 
         class MyExtension(Extension):
-            def __init__(
-                self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
-            ):
-                super().__init__(app, **kwargs)
-                self.app = app
-
-            def extend(self, config: PluggableConfig) -> None:
+            def extend(self, config: PluggableConfig = None) -> None:
                 logger.success(f"Successfully passed a config {config.name}")
-
 
         class AppSettings(EsmeraldAPISettings):
 
             @property
-            def pluggables(self) -> Dict[str, "Pluggable"]:
+            def extensions(self) -> dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
                 my_config = PluggableConfig(name="my extension")
-                pluggable = Pluggable(MyExtension, config=my_config)
 
                 return {
-                    "my-extension": pluggable
+                    "my-extension": Pluggable(MyExtension, config=my_config),
+                    "my-extension": MyExtension,
                 }
         ```
+        """
+        return {}
+
+    @property
+    def pluggables(self) -> Dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
+        """
+        Deprecated
         """
         return {}
 

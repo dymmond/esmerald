@@ -27,7 +27,7 @@ class MyExtension(Extension):
 
 class AppSettings(EsmeraldAPISettings):
     @property
-    def pluggables(self) -> Dict[str, "Pluggable"]:
+    def extensions(self) -> Dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
         return {"my-extension": Pluggable(MyExtension, config=my_config)}
 
 

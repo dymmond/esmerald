@@ -20,26 +20,26 @@ class PluggableNoPlug(Extension):  # pragma: no cover
 
 def test_raises_improperly_configured_for_subclass(test_client_factory):
     with pytest.raises(ImproperlyConfigured) as raised:
-        Esmerald(routes=[], pluggables={"test": MyNewPluggable})
+        Esmerald(routes=[], extensions={"test": MyNewPluggable})
 
-    assert (
-        raised.value.detail
-        == "An extension must subclass from esmerald.pluggables.Extension and added to a Pluggable object"
+    assert raised.value.detail == (
+        "An extension must subclass from Extension, implement the ExtensionProtocol "
+        "as instance or being wrapped in a Pluggable."
     )
 
 
 def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory):
     with pytest.raises(ImproperlyConfigured) as raised:
-        Esmerald(routes=[], pluggables={1: MyNewPluggable})
+        Esmerald(routes=[], extensions={1: MyNewPluggable})
 
-    assert raised.value.detail == "Pluggable names should be in string format."
+    assert raised.value.detail == "Extension names should be in string format."
 
 
 def test_raises_error_for_missing_extend(test_client_factory):
     with pytest.raises(Exception):  # noqa
         Esmerald(
             routes=[],
-            pluggables={"test": Pluggable(PluggableNoPlug)},
+            extensions={"test": Pluggable(PluggableNoPlug)},
         )
 
 
@@ -50,7 +50,6 @@ class Config(BaseModel):
 class MyExtension(Extension):
     def __init__(self, app: "Esmerald", config: Config):
         super().__init__(app)
-        self.app = app
         self.config = config
 
     def extend(self, config: Config) -> None:
@@ -59,10 +58,10 @@ class MyExtension(Extension):
 
 def test_generates_pluggable():
     app = Esmerald(
-        routes=[], pluggables={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))}
+        routes=[], extensions={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))}
     )
 
-    assert "test" in app.pluggables
+    assert "test" in app.extensions
 
 
 def test_generates_many_pluggables():
@@ -86,14 +85,14 @@ def test_generates_many_pluggables():
 
     app = Esmerald(
         routes=[],
-        pluggables={
+        extensions={
             "test": Pluggable(MyExtension, config=Config(name="my pluggable")),
             "logging": Pluggable(LoggingExtension, name="my logging"),
             "database": Pluggable(DatabaseExtension, database="my db"),
         },
     )
 
-    assert len(app.pluggables.keys()) == 3
+    assert len(app.extensions.keys()) == 3
 
 
 def test_start_extension_directly(test_client_factory):
@@ -105,15 +104,15 @@ def test_start_extension_directly(test_client_factory):
             app = kwargs.get("app")
             config = kwargs.get("config")
             logger.success(f"Started standalone plugging with the name: {config.name}")
-            app.pluggables["custom"] = self
+            app.extensions["custom"] = self
 
     app = Esmerald(routes=[])
     config = Config(name="standalone")
     extension = CustomExtension()
     extension.extend(app=app, config=config)
 
-    assert "custom" in app.pluggables
-    assert isinstance(app.pluggables["custom"], Extension)
+    assert "custom" in app.extensions
+    assert isinstance(app.extensions["custom"], Extension)
 
 
 def test_add_extension_(test_client_factory):
@@ -125,15 +124,15 @@ def test_add_extension_(test_client_factory):
         def extend(self, config) -> None:
             logger.success(f"Started plugging with the name: {config.name}")
 
-            self.app.add_pluggable("manual", self)
+            self.app.add_extension("manual", self)
 
     app = Esmerald(routes=[])
     config = Config(name="manual")
     extension = CustomExtension(app=app)
     extension.extend(config=config)
 
-    assert "manual" in app.pluggables
-    assert isinstance(app.pluggables["manual"], Extension)
+    assert "manual" in app.extensions
+    assert isinstance(app.extensions["manual"], Extension)
 
 
 def test_add_standalone_extension(test_client_factory):
@@ -145,15 +144,15 @@ def test_add_standalone_extension(test_client_factory):
         def extend(self, config) -> None:
             logger.success(f"Started standalone plugging with the name: {config.name}")
 
-            self.app.add_pluggable("manual", self)
+            self.app.add_extension("manual", self)
 
     app = Esmerald(routes=[])
     config = Config(name="manual")
     extension = CustomExtension(app=app)
     extension.extend(config=config)
 
-    assert "manual" in app.pluggables
-    assert not isinstance(app.pluggables["manual"], Extension)
+    assert "manual" in app.extensions
+    assert not isinstance(app.extensions["manual"], Extension)
 
 
 def test_add_pluggable(test_client_factory):
@@ -167,7 +166,7 @@ def test_add_pluggable(test_client_factory):
 
     app = Esmerald(routes=[])
     config = Config(name="manual")
-    app.add_pluggable("manual", Pluggable(CustomExtension, config=config))
+    app.add_extension("manual", Pluggable(CustomExtension, config=config))
 
-    assert "manual" in app.pluggables
-    assert isinstance(app.pluggables["manual"], Extension)
+    assert "manual" in app.extensions
+    assert isinstance(app.extensions["manual"], Extension)

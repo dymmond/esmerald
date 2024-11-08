@@ -24,16 +24,14 @@ class MyExtension(Extension):
 @get("/home")
 async def home(request: Request) -> JSONResponse:
     """
-    Returns a list of pluggables of the system.
+    Returns a list of extensions of the system.
 
-    "pluggables": ["my-extension"]
+    "extensions": ["my-extension"]
     """
-    pluggables = list(request.app.pluggables)
+    extensions = list(request.app.extensions)
 
-    return JSONResponse({"pluggables": pluggables})
+    return JSONResponse({"extensions": extensions})
 
 
 app = Esmerald(routes=[Gateway(handler=home)])
-app.add_pluggable("my-extension", MyExtension)
-# or
-# app.add_extension("my-extension", MyExtension)
+app.add_extension("my-extension", MyExtension)
