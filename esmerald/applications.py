@@ -1630,17 +1630,17 @@ class Application(Lilya):
         self.template_engine = self.get_template_engine(self.template_config)
 
         # load extensions nearly last so everythings is initialized
-        extensions: Any = self.load_settings_value("extensions", extensions)
-        if not extensions:
-            extensions = self.load_settings_value("pluggables", pluggables)
-            if extensions:
+        _extensions: Any = self.load_settings_value("extensions", extensions)
+        if not _extensions:
+            _extensions = self.load_settings_value("pluggables", pluggables)
+            if _extensions:
                 warnings.warn(
                     "The `pluggables` parameter/setting is deprecated use `extensions` instead",
                     DeprecationWarning,
                     stacklevel=2,
                 )
 
-        self.extensions = ExtensionDict(extensions, app=cast(Esmerald, self))
+        self.extensions = ExtensionDict(_extensions, app=cast(Esmerald, self))
         self._configure()
 
     @property
