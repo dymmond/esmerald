@@ -1,6 +1,6 @@
-# Pluggables
+# Extensions
 
-What are pluggables in an Esmerald context? A separate and individual piece of software that
+What are extensions in an Esmerald context? A separate and individual piece of software that
 can be hooked into **any** Esmerald application and perform specific actions individually without
 breaking the ecosystem.
 
@@ -20,17 +20,15 @@ wouldn't make too much sense right?
 Also, how could we create this pattern, like Flask, to have an `init_app` and allow the application
 to do the rest for you? Well, Esmerald now does that via its internal protocols and interfaces.
 
-In Esmerald world, this is called [**pluggable**](#pluggable).
-
 !!! Note
-    Pluggables only exist on an [application level](./application/levels.md#application-levels).
+    Extensions only exist on an [application level](./application/levels.md#application-levels).
 
 ## Pluggable
 
-This object is one of a kind and does **a lot of magic** for you when creating a pluggble for
+This object is one of a kind and does **a lot of magic** for you when creating an extension for
 your application or even for distribution.
 
-A **pluggable** is an object that receives an [Extension](#extension) class with parameters
+A **Pluggable** is an object that receives an [Extension](#extension) class with parameters
 and hooks them into your Esmerald application and executes the [extend](#extend) method when
 starting the system.
 
@@ -41,10 +39,6 @@ starting the system.
 It is this simple but is it the only way to add a pluggable into the system? **Short answser is no**.
 
 More details about this in [hooking a pluggable into the application](#hooking-pluggables).
-
-!!! Danger
-    If another object but the [Extension](#extension) is provided to the Pluggable, it will
-    raise an `ImproperlyConfigured`. Pluggables are **always expecting an Extension to be provided**.
 
 ## Extension
 
@@ -72,7 +66,7 @@ It is the entry-point for your extension.
 The extend by default expects `kwargs` to be provided but you can pass your own default parameters
 as well as there are many ways of creating and [hooking a pluggable]
 
-## Hooking pluggables
+## Hooking pluggables and extensions
 
 As mentioned before, there are different ways of hooking a pluggable into your Esmerald application.
 
