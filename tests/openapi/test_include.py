@@ -1,5 +1,6 @@
 from typing import Dict, Union
 
+import pytest
 from pydantic import BaseModel
 
 from esmerald import JSON, Gateway, Include, get
@@ -25,11 +26,12 @@ async def read_item() -> JSON:
     """ """
 
 
-def test_add_include_to_openapi(test_client_factory):
+@pytest.mark.parametrize("route", [Gateway(handler=read_item), read_item])
+def test_add_include_to_openapi(test_client_factory, route):
     with create_client(
         routes=[
             Gateway(handler=read_people),
-            Include("/child", routes=[Gateway(handler=read_item)]),
+            Include("/child", routes=[route]),
         ],
         settings_module=TestSettings,
     ) as client:

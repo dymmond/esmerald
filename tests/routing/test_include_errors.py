@@ -1,11 +1,16 @@
 import pytest
 
-from esmerald import Gateway, ImproperlyConfigured, Include, get
+from esmerald import Gateway, ImproperlyConfigured, Include, WebhookGateway, get, whget
 
 
 @get()
 async def home() -> None:
     """"""
+
+
+@whget("new-event")
+async def new_event() -> bool:
+    return True
 
 
 gateway = Gateway(handler=home)
@@ -34,6 +39,12 @@ def test_raise_error_pattern(arg):
 def test_raise_error_pattern_and_routes():
     with pytest.raises(ImproperlyConfigured):
         Include(pattern="test", routes=[gateway])
+
+
+@pytest.mark.parametrize("arg", [new_event, WebhookGateway(handler=new_event)])
+def test_raise_error_webhooks(arg):
+    with pytest.raises(ImproperlyConfigured):
+        Include(routes=[arg])
 
 
 def test_namespace_include_routes():

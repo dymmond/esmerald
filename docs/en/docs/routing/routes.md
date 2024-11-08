@@ -23,6 +23,9 @@ It is automatically added when just passing an HTTP/Websocket handler to routes.
 In simple terms, a Gateway is not a direct route but instead is a "wrapper" of a [handler](./handlers.md)
 and maps that same handler with the application routing system.
 
+This allows overwriting options of the handler route specific.
+If not required, you can just pass the handler, it is automatically wrapped in a plain Gateway.
+
 #### Parameters
 
 All the parameters and defaults are available in the [Gateway Reference](../references/routing/gateway.md).
@@ -37,6 +40,9 @@ All the parameters and defaults are available in the [Gateway Reference](../refe
 
 Same principle as [Gateway](#gateway) with one particularity. Due to the nature of Lilya and websockets we
 decided not to interfere (for now) with what already works and therefore the only supported websockets are `async`.
+
+This allows overwriting options of the WebsocketHandler route specific.
+If not required, you can just pass the handler, it is automatically wrapped in a plain WebSocketGateway.
 
 ### WebSocketGateway and application
 

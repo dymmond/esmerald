@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import inspect
-from copy import copy
 from enum import IntEnum
 from inspect import Signature
 from typing import (
@@ -487,9 +486,14 @@ class BaseRouter(LilyaRouter):
 
         new_routes: list[Any] = []
         for route in routes or []:
-            if isinstance(route, HTTPHandler):
+            if isinstance(route, WebhookHandler):
+                # WebhookHandler is a subclass of HTTPHandler, make sure to not upgrade it
+                pass
+            elif isinstance(route, HTTPHandler):
+                # if using add_route, we would enter a completely different code path with a not fully initialized router
                 route = Gateway(handler=route)
             elif isinstance(route, WebSocketHandler):
+                # if using add_websocket_route, we would enter a completely different code path with a not fully initialized router
                 route = WebSocketGateway(handler=route)
             if not isinstance(
                 route,
@@ -501,9 +505,10 @@ class BaseRouter(LilyaRouter):
                     Host,
                     Router,
                 ),
-            ) or isinstance(route, WebhookGateway):  # type: ignore
+            ) or isinstance(cast(Any, route), (WebhookGateway, WebhookHandler)):
+                # WebhookGateway is subclass of LilyaBasePath
                 raise ImproperlyConfigured(
-                    f"The route {route} must be of type Gateway, WebSocketGateway or Include"
+                    f"The route {route} must be of type HTTPHandler, WebSocketHandler, Gateway, WebSocketGateway or Include"
                 )
             new_routes.append(route)
 
@@ -537,11 +542,10 @@ class BaseRouter(LilyaRouter):
         self.deprecated = deprecated
         self.security = security or []
 
-        self.routing = copy(self.routes)
-        for route in self.routing or []:
+        for route in self.routes:
             self.validate_root_route_parent(route)  # type: ignore
 
-        for route in self.routes or []:
+        for route in self.routes:
             self.create_signature_models(route)
 
         self.activate()
@@ -646,7 +650,7 @@ class BaseRouter(LilyaRouter):
         # Getting the value of the router for the path
         value.path = clean_path(self.path + getattr(value, "path", "/"))
 
-        if isinstance(value, (Include, Gateway, WebSocketGateway, WebSocketGateway)):
+        if isinstance(value, (Include, Gateway, WebSocketGateway, WebhookGateway)):
             if not value.parent and not override:
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
@@ -846,7 +850,7 @@ class Router(BaseRouter):
         app.add_route(path="/hello", handler=hello)
         ```
         """
-        if not isinstance(handler, HTTPHandler):
+        if not isinstance(handler, HTTPHandler) or isinstance(handler, WebhookHandler):
             raise ImproperlyConfigured(
                 f"handler must be a instance of HTTPHandler and not {handler.__class__.__name__}. "
                 "Example: get(), put(), post(), delete(), patch(), route()."
@@ -2907,9 +2911,14 @@ class Include(LilyaInclude):
         routing: List[Union[Gateway, WebSocketGateway, Include]] = []
 
         for route in routes:  # pragma: no cover
-            if isinstance(route, HTTPHandler):
+            if isinstance(route, WebhookHandler):
+                # fail later, a WebhookHandler is subclass of HTTPHandler, so pass down
+                pass
+            elif isinstance(route, HTTPHandler):
+                # if using add_route, we would enter a completely different code path with a not fully initialized router
                 route = Gateway(handler=route)
             elif isinstance(route, WebSocketHandler):
+                # if using add_websocket_route, we would enter a completely different code path with a not fully initialized router
                 route = WebSocketGateway(handler=route)
 
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
