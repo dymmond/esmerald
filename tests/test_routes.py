@@ -210,8 +210,16 @@ def test_raise_exception_on_add_route(test_client_factory) -> None:
             client.app.add_route("/one", handler=handler)
 
 
-def test_websocket_handler_gateway_from_router(test_client_factory) -> None:
-    client = create_client(routes=[WebSocketGateway(path="/", handler=simple_websocket_handler)])
+@pytest.mark.parametrize(
+    "arg",
+    [
+        simple_websocket_handler,
+        WebSocketGateway(handler=simple_websocket_handler),
+        WebSocketGateway(path="/", handler=simple_websocket_handler),
+    ],
+)
+def test_websocket_handler_gateway_from_router(test_client_factory, arg) -> None:
+    client = create_client(routes=[arg])
 
     with client.websocket_connect("/") as websocket_client:
         websocket_client.send_json({"data": "esmerald"})
@@ -225,8 +233,16 @@ def test_websocket_handler_gateway_from_router(test_client_factory) -> None:
         assert data
 
 
-def test_websocket_handler_gateway_from_application(test_client_factory) -> None:
-    client = create_client(routes=[WebSocketGateway(path="/", handler=simple_websocket_handler)])
+@pytest.mark.parametrize(
+    "arg",
+    [
+        simple_websocket_handler,
+        WebSocketGateway(handler=simple_websocket_handler),
+        WebSocketGateway(path="/", handler=simple_websocket_handler),
+    ],
+)
+def test_websocket_handler_gateway_from_application(test_client_factory, arg) -> None:
+    client = create_client(routes=[arg])
 
     with client.websocket_connect("/") as websocket_client:
         websocket_client.send_json({"data": "esmerald"})
