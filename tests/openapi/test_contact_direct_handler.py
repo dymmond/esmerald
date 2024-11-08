@@ -1,6 +1,6 @@
 from typing import Dict
 
-from esmerald import Esmerald, Gateway, get
+from esmerald import Esmerald, get
 from esmerald.testclient import EsmeraldTestClient
 from tests.settings import TestSettings
 
