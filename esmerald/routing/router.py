@@ -542,7 +542,9 @@ class BaseRouter(LilyaRouter):
         self.deprecated = deprecated
         self.security = security or []
 
-        for route in self.routes:
+        # copy routes shallow, fixes bug with tests/dependencies/test_http_handler_dependency_injection.py
+        # routes are modified by validate_root_route_parent
+        for route in list(self.routes):
             self.validate_root_route_parent(route)  # type: ignore
 
         for route in self.routes:
