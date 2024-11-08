@@ -73,7 +73,7 @@ As mentioned before, there are different ways of hooking a pluggable into your E
 ### The automated and default way
 
 When using the default and automated way, Esmerald expects the pluggable to be passed into a dict
-`pluggables` upon instantiation of an Esmerald application with `key-pair` value entries and where
+`extensions` upon instantiation of an Esmerald application with `key-pair` value entries and where
 the `key` is the name for your pluggable and the `value` is an instance [Pluggable](#pluggable)
 holding your [Extension](#extension) object.
 
@@ -87,7 +87,15 @@ parameter if needed
 {!> ../../../docs_src/pluggables/pluggable.py !}
 ```
 
-You can access all the pluggables of your application via `app.pluggables` at any given time.
+You can access all the extensions of your application via `app.extensions` at any given time.
+
+#### Reordering
+
+Sometimes there are dependencies between extensions. One requires another.
+You can reorder the extending order by using the method `ensure_extension(name)` of `app.extensions`.
+It will fail if the extension doesn't exist, so only call it in extend.
+
+{!> ../../../docs_src/pluggables/reorder.py !}
 
 ### The manual and independent way
 
@@ -109,7 +117,7 @@ There are two variants how to do it:
 {!> ../../../docs_src/pluggables/manual_self_registering.py !}
 ```
 
-You can use for the late registration the methods `add_extension` or `add_pluggable`. `add_pluggable` is an alias.
+You can use for the late registration the methods `add_extension`.
 
 ### Standalone object
 

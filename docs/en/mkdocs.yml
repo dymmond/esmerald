@@ -239,5 +239,7 @@ extra:
   alternate:
   - link: /
     name: en - English
+  - link: /ru/
+    name: ru - русский язык
 hooks:
 - ../../scripts/hooks.py

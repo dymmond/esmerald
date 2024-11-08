@@ -1641,6 +1641,7 @@ class Application(Lilya):
                 )
 
         self.extensions = ExtensionDict(_extensions, app=cast(Esmerald, self))
+        self.extensions.extend()
         self._configure()
 
     @property

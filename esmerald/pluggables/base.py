@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from inspect import isclass
 from typing import TYPE_CHECKING, Any, Iterator, Optional
 
 from typing_extensions import Annotated, Doc
@@ -134,6 +135,8 @@ class ExtensionDict(dict[str, Extension]):
         self.delayed_extend: Optional[dict[str, dict[str, Any]]] = {}
         for k, v in self.items():
             self[k] = v
+
+    def extend(self) -> None:
         while self.delayed_extend:
             key, val = self.delayed_extend.popitem()
             self[key].extend(**val)
@@ -174,7 +177,7 @@ class ExtensionDict(dict[str, Extension]):
                 value.extend(**options)
             else:
                 self.delayed_extend[name] = options
-        elif isinstance(value, ExtensionProtocol):
+        elif isinstance(value, ExtensionProtocol) and not isclass(value):
             if self.delayed_extend is not None:
                 raise ImproperlyConfigured(
                     "Cannot pass an initialized extension in extensions parameter."

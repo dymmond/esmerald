@@ -1034,7 +1034,7 @@ across main application and children.
 
 ### Added
 
--  Esmerald [Pluggables](./pluggables.md) [#60](https://github.com/dymmond/esmerald/pull/60).
+-  Esmerald Pluggables [#60](https://github.com/dymmond/esmerald/pull/60).
 
 	This is the feature for the esmerald ecosystem that allows you to create plugins and extensions for any application
 	as well as distribute them as installable packages.

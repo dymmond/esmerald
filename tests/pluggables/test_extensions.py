@@ -65,22 +65,33 @@ def test_generates_pluggable():
 
 
 def test_generates_many_pluggables():
+    container = []
+
+    class ReorderedExtension(Extension):
+        def __init__(self, app: "Esmerald"):
+            super().__init__(app)
+
+        def extend(self) -> None:
+            container.append("works")
+
     class LoggingExtension(Extension):
         def __init__(self, app: "Esmerald", name):
             super().__init__(app)
-            self.app = app
             self.name = name
 
         def extend(self, name) -> None:
+            self.app.extensions.ensure_extension("base")
+            assert container == ["works"]
             logger.info(f"Started logging extension with name {name}")
 
     class DatabaseExtension(Extension):
         def __init__(self, app: "Esmerald", database):
             super().__init__(app)
-            self.app = app
             self.database = database
 
         def extend(self, database) -> None:
+            with pytest.raises(ValueError):
+                self.app.extensions.ensure_extension("non-existing")
             logger.info(f"Started extension with database {database}")
 
     app = Esmerald(
@@ -89,10 +100,11 @@ def test_generates_many_pluggables():
             "test": Pluggable(MyExtension, config=Config(name="my pluggable")),
             "logging": Pluggable(LoggingExtension, name="my logging"),
             "database": Pluggable(DatabaseExtension, database="my db"),
+            "base": ReorderedExtension,
         },
     )
 
-    assert len(app.extensions.keys()) == 3
+    assert len(app.extensions.keys()) == 4
 
 
 def test_start_extension_directly(test_client_factory):

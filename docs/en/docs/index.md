@@ -156,7 +156,7 @@ example.
 * **Pluggables**: Create plugins for Esmerald and hook them into any application and/or
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
-* **ORM Support**: Native support for [Saffier][saffier_orm] and [Edgy][_orm].
+* **ORM Support**: Native support for [Saffier][saffier_orm] and [Edgy][edgy_orm].
 * **ODM Support**: Native support for [Mongoz][mongoz_odm].
 * **APIView**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJSON support.
