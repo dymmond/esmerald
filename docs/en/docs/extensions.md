@@ -128,7 +128,7 @@ possible?
 ´
 yes, it must only implement the ExtensionProtocol.
 
-```python hl_lines="9 25 42-43"
+```python hl_lines="9 25"
 {!> ../../../docs_src/pluggables/standalone.py !}
 ```
 
