@@ -7,10 +7,6 @@ hide:
 
 ## Unreleased
 
-### Added
-
-- Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
-
 ### Changed
 
 - Pluggables can now receive plain Extensions and Extension classes.
@@ -18,6 +14,7 @@ hide:
     - Breaking: The `pluggables` attribute and parameter are now renamed to `extensions`. The old name is still available but deprecated.
     - Breaking: The `add_pluggable` method is now renamed to `add_extension`. The old name is still available but deprecated.
     - The documentation will refer now to extensions with `Pluggable` as a setup wrapper.
+- Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
 
 ## 3.4.4
 
