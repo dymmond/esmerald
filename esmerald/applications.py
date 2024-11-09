@@ -1,3 +1,4 @@
+import warnings
 from datetime import timezone as dtimezone
 from functools import cached_property
 from typing import (
@@ -46,7 +47,7 @@ from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.openapi.schemas.v3_1_0.open_api import OpenAPI
 from esmerald.permissions.types import Permission
-from esmerald.pluggables import Extension, Pluggable
+from esmerald.pluggables import Extension, ExtensionDict, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.apis import base
@@ -118,7 +119,7 @@ class Application(Lilya):
         "openapi_schema",
         "parent",
         "permissions",
-        "pluggables",
+        "extensions",
         "redirect_slashes",
         "response_class",
         "response_cookies",
@@ -1341,11 +1342,11 @@ class Application(Lilya):
                 """
             ),
         ] = None,
-        pluggables: Annotated[
-            Optional[Dict[str, Pluggable]],
+        extensions: Annotated[
+            Optional[Dict[str, Union[Extension, Pluggable, type[Extension]]]],
             Doc(
                 """
-                A `list` of global pluggables from objects inheriting from
+                A `list` of global extensions from objects inheriting from
                 `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
 
                 Read more about how to implement the [Plugables](https://esmerald.dev/pluggables/) in Esmerald and to leverage them.
@@ -1382,7 +1383,56 @@ class Application(Lilya):
 
 
                 app = Esmerald(
-                    routes=[], pluggables={"my-extension": pluggable}
+                    routes=[], extensions={"my-extension": pluggable}
+                )
+                ```
+                """
+            ),
+        ] = None,
+        pluggables: Annotated[
+            Optional[Dict[str, Union[Extension, Pluggable, type[Extension]]]],
+            Doc(
+                """
+                THIS PARAMETER IS DEPRECATED USE extensions INSTEAD
+
+                A `list` of global extensions from objects inheriting from
+                `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
+
+                Read more about how to implement the [Plugables](https://esmerald.dev/pluggables/) in Esmerald and to leverage them.
+
+                **Example**
+
+                ```python
+                from typing import Optional
+
+                from loguru import logger
+                from pydantic import BaseModel
+
+                from esmerald import Esmerald, Extension, Pluggable
+                from esmerald.types import DictAny
+
+
+                class PluggableConfig(BaseModel):
+                    name: str
+
+
+                class MyExtension(Extension):
+                    def __init__(
+                        self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+                    ):
+                        super().__init__(app, **kwargs)
+                        self.app = app
+
+                    def extend(self, config: PluggableConfig) -> None:
+                        logger.success(f"Successfully passed a config {config.name}")
+
+
+                my_config = PluggableConfig(name="my extension")
+                pluggable = Pluggable(MyExtension, config=my_config)
+
+
+                app = Esmerald(
+                    routes=[], extensions={"my-extension": pluggable}
                 )
                 ```
                 """
@@ -1528,7 +1578,6 @@ class Application(Lilya):
         self.redirect_slashes = self.load_settings_value(
             "redirect_slashes", redirect_slashes, is_boolean=True
         )
-        self.pluggables = self.load_settings_value("pluggables", pluggables)
 
         # OpenAPI Related
         self.root_path_in_servers = self.load_settings_value(
@@ -1578,10 +1627,31 @@ class Application(Lilya):
         self.get_default_exception_handlers()
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
-        self.pluggable_stack = self.build_pluggable_stack()
         self.template_engine = self.get_template_engine(self.template_config)
 
+        # load extensions nearly last so everythings is initialized
+        _extensions: Any = self.load_settings_value("extensions", extensions)
+        if not _extensions:
+            _extensions = self.load_settings_value("pluggables", pluggables)
+            if _extensions:
+                warnings.warn(
+                    "The `pluggables` parameter/setting is deprecated use `extensions` instead",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+
+        self.extensions = ExtensionDict(_extensions, app=cast(Esmerald, self))
+        self.extensions.extend()
         self._configure()
+
+    @property
+    def pluggables(self) -> ExtensionDict:
+        warnings.warn(
+            "The `pluggables` attribute is deprecated use `extensions` instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.extensions
 
     def _register_application_encoders(self) -> None:
         """
@@ -1826,12 +1896,14 @@ class Application(Lilya):
         ```python
         from esmerald import Esmerald, APIView, Gateway, get
 
+
         class View(APIView):
             path = "/"
 
             @get(status_code=status_code)
             async def hello(self) -> str:
                 return "Hello, World!"
+
 
         gateway = Gateway(handler=View)
 
@@ -1955,9 +2027,11 @@ class Application(Lilya):
         ```python
         from esmerald import Esmerald, get
 
+
         @get(status_code=status_code)
         async def hello() -> str:
             return "Hello, World!"
+
 
         app = Esmerald()
         app.add_route(path="/hello", handler=hello)
@@ -2067,6 +2141,7 @@ class Application(Lilya):
         ```python
         from esmerald import Esmerald, websocket
 
+
         @websocket()
         async def websocket_route(socket: WebSocket) -> None:
             await socket.accept()
@@ -2075,6 +2150,7 @@ class Application(Lilya):
             assert data
             await socket.send_json({"data": "esmerald"})
             await socket.close()
+
 
         app = Esmerald()
         app.add_websocket_route(path="/ws", handler=websocket_route)
@@ -2113,9 +2189,11 @@ class Application(Lilya):
         ```python
         from esmerald import get, Include
 
+
         @get(status_code=status_code)
         async def hello(self) -> str:
             return "Hello, World!"
+
 
         include = Include("/child", routes=[Gateway(handler=hello)])
 
@@ -2212,9 +2290,11 @@ class Application(Lilya):
         from esmerald import get
         from esmerald.routing.router import Router
 
+
         @get(status_code=status_code)
         async def hello(self) -> str:
             return "Hello, World!"
+
 
         router = Router(path="/aditional", routes=[Gateway(handler=hello)])
 
@@ -2415,37 +2495,9 @@ class Application(Lilya):
             app = cls(app=app, *args, **kwargs)  # noqa
         return app
 
-    def build_pluggable_stack(self) -> Optional["Esmerald"]:
-        """
-        Validates the pluggable types passed and builds the stack
-        and triggers the plug
-        """
-        if not self.pluggables:
-            return None
-
-        pluggables = {}
-
-        for name, extension in self.pluggables.items():
-            if not isinstance(name, str):
-                raise ImproperlyConfigured("Pluggable names should be in string format.")
-            elif isinstance(extension, Pluggable):
-                pluggables[name] = extension
-                continue
-            elif not is_class_and_subclass(extension, Extension):
-                raise ImproperlyConfigured(
-                    "An extension must subclass from esmerald.pluggables.Extension and added to "
-                    "a Pluggable object"
-                )
-
-        app: "ASGIApp" = self
-        for name, pluggable in pluggables.items():
-            for cls, options in [pluggable]:
-                ext: "Extension" = cls(app=app, **options)
-                ext.extend(**options)
-                self.pluggables[name] = cls
-        return cast("Esmerald", app)
-
-    def add_pluggable(self, name: str, extension: "Extension") -> None:
+    def add_extension(
+        self, name: str, extension: Union[Extension, Pluggable, type[Extension]]
+    ) -> None:
         """
         Adds a [Pluggable](https://esmerald.dev/pluggables/) directly to the active application router.
 
@@ -2457,8 +2509,10 @@ class Application(Lilya):
 
         from pydantic import BaseModel
 
+
         class Config(BaseModel):
             name: Optional[str]
+
 
         class CustomExtension(Extension):
             def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
@@ -2466,17 +2520,33 @@ class Application(Lilya):
                 self.app = app
 
             def extend(self, config) -> None:
-                logger.success(f"Started standalone plugging with the name: {config.name}")
+                logger.success(
+                    f"Started standalone plugging with the name: {config.name}"
+                )
 
-                self.app.add_pluggable("manual", self)
+                # you can also autoadd the extension like this
+                # self.app.add_extension(config.name, self)
+
 
         app = Esmerald(routes=[])
         config = Config(name="manual")
-        extension = CustomExtension(app=app)
-        extension.extend(config=config)
+        pluggable = Pluggable(CustomExtension, config=config)
+        app.add_extension("manual", pluggable)
+        # or
+        # app.add_extension("manual", pluggable)
         ```
         """
-        self.pluggables[name] = extension
+        self.extensions[name] = extension
+
+    def add_pluggable(
+        self, name: str, extension: Union[Extension, Pluggable, type[Extension]]
+    ) -> None:
+        warnings.warn(
+            "The `add_pluggable` method is deprecated use `add_extension` instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.add_extension(name, extension)
 
     @property
     def settings(self) -> Type["EsmeraldAPISettings"]:
@@ -3470,7 +3540,7 @@ class ChildEsmerald(Esmerald):
     ```python
     from esmerald import Esmerald, ChildEsmerald, Include
 
-    app = Esmerald(routes=[Include('/child', app=ChildEsmerald(...))])
+    app = Esmerald(routes=[Include("/child", app=ChildEsmerald(...))])
     ```
     """
 

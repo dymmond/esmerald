@@ -30,4 +30,4 @@ class ChildEsmeraldPluggable(Extension):
         logger.success("Added the ChildEsmerald via pluggable.")
 
 
-app = Esmerald(routes=[], pluggables={"child-esmerald": Pluggable(ChildEsmeraldPluggable)})
+app = Esmerald(routes=[], extensions={"child-esmerald": Pluggable(ChildEsmeraldPluggable)})

@@ -1,6 +1,6 @@
-# Pluggables
+# Extensions
 
-What are pluggables in an Esmerald context? A separate and individual piece of software that
+What are extensions in an Esmerald context? A separate and individual piece of software that
 can be hooked into **any** Esmerald application and perform specific actions individually without
 breaking the ecosystem.
 
@@ -20,17 +20,15 @@ wouldn't make too much sense right?
 Also, how could we create this pattern, like Flask, to have an `init_app` and allow the application
 to do the rest for you? Well, Esmerald now does that via its internal protocols and interfaces.
 
-In Esmerald world, this is called [**pluggable**](#pluggable).
-
 !!! Note
-    Pluggables only exist on an [application level](./application/levels.md#application-levels).
+    Extensions only exist on an [application level](./application/levels.md#application-levels).
 
 ## Pluggable
 
-This object is one of a kind and does **a lot of magic** for you when creating a pluggble for
+This object is one of a kind and does **a lot of magic** for you when creating an extension for
 your application or even for distribution.
 
-A **pluggable** is an object that receives an [Extension](#extension) class with parameters
+A **Pluggable** is an object that receives an [Extension](#extension) class with parameters
 and hooks them into your Esmerald application and executes the [extend](#extend) method when
 starting the system.
 
@@ -41,10 +39,6 @@ starting the system.
 It is this simple but is it the only way to add a pluggable into the system? **Short answser is no**.
 
 More details about this in [hooking a pluggable into the application](#hooking-pluggables).
-
-!!! Danger
-    If another object but the [Extension](#extension) is provided to the Pluggable, it will
-    raise an `ImproperlyConfigured`. Pluggables are **always expecting an Extension to be provided**.
 
 ## Extension
 
@@ -72,14 +66,14 @@ It is the entry-point for your extension.
 The extend by default expects `kwargs` to be provided but you can pass your own default parameters
 as well as there are many ways of creating and [hooking a pluggable]
 
-## Hooking pluggables
+## Hooking pluggables and extensions
 
 As mentioned before, there are different ways of hooking a pluggable into your Esmerald application.
 
 ### The automated and default way
 
 When using the default and automated way, Esmerald expects the pluggable to be passed into a dict
-`pluggables` upon instantiation of an Esmerald application with `key-pair` value entries and where
+`extensions` upon instantiation of an Esmerald application with `key-pair` value entries and where
 the `key` is the name for your pluggable and the `value` is an instance [Pluggable](#pluggable)
 holding your [Extension](#extension) object.
 
@@ -93,7 +87,15 @@ parameter if needed
 {!> ../../../docs_src/pluggables/pluggable.py !}
 ```
 
-You can access all the pluggables of your application via `app.pluggables` at any given time.
+You can access all the extensions of your application via `app.extensions` at any given time.
+
+#### Reordering
+
+Sometimes there are dependencies between extensions. One requires another.
+You can reorder the extending order by using the method `ensure_extension(name)` of `app.extensions`.
+It will fail if the extension doesn't exist, so only call it in extend.
+
+{!> ../../../docs_src/pluggables/reorder.py !}
 
 ### The manual and independent way
 
@@ -105,33 +107,40 @@ This way you don't need to use the [Pluggable](#pluggable) object in any way and
 simply just use the [Extension](#extension) class or even your own since you **are in control**
 of the extension.
 
-```python hl_lines="25 42-43"
+There are two variants how to do it:
+
+```python title="With extension class or Pluggable"
 {!> ../../../docs_src/pluggables/manual.py !}
 ```
+
+```python hl_lines="25 42-43" title="Self registering"
+{!> ../../../docs_src/pluggables/manual_self_registering.py !}
+```
+
+You can use for the late registration the methods `add_extension`.
+It will automatically initialize and call extend for you when passing a class or **Pluggable**,
+**but not when passing an instance**.
 
 ### Standalone object
 
 But, what if I don't want to use the [Extension](#extension) object for my pluggable? Is this
 possible?
+´
+Yes, it must only implement the ExtensionProtocol.
 
-Short answer, yes, but this comes with limitations:
-
-* You **cannot** hook the class within a [Pluggable](#pluggable) and use the automated way.
-* You **will always need** to start it manually.
-
-```python hl_lines="9 25 42-43"
+```python hl_lines="9 25"
 {!> ../../../docs_src/pluggables/standalone.py !}
 ```
 
 ## Important notes
 
-As you can see, **pluggables** in Esmerald can be a powerful tool that isolates common
+As you can see, **extensions** in Esmerald can be a powerful tool that isolates common
 functionality from the main Esmerald application and can be used to leverage the creation of plugins
 to be used across your applications and/or to create opensource packages for any need.
 
 ## ChildEsmerald and pluggables
 
-A [Pluggable](#pluggable) **is not the same** as a [ChildEsmerald](./routing/router.md#child-esmerald-application).
+An [Extension](#extension) **is not the same** as a [ChildEsmerald](./routing/router.md#child-esmerald-application).
 
 These are two completely independent pieces of functionality with completely different purposes, be
 careful when considering one and the other.

@@ -8,7 +8,6 @@ from esmerald.types import DictAny
 
 class Standalone:
     def __init__(self, app: Optional["Esmerald"] = None, **kwargs: "DictAny"):
-        super().__init__(app, **kwargs)
         self.app = app
         self.kwargs = kwargs
 
@@ -20,24 +19,21 @@ class Standalone:
         # Do something here like print a log or whatever you need
         logger.success("Started the extension manually")
 
-        # Add the extension to the pluggables of Esmerald
+        # Add the extension to the extensions of Esmerald
         # And make it accessible
-        self.app.add_pluggable("standalone", self)
+        self.app.add_extension("standalone", self)
 
 
 @get("/home")
 async def home(request: Request) -> JSONResponse:
     """
-    Returns a list of pluggables of the system.
+    Returns a list of extensions of the system.
 
-    "pluggables": ["standalone"]
+    "extensions": ["standalone"]
     """
-    pluggables = list(request.app.pluggables)
+    extensions = list(request.app.extensions)
 
-    return JSONResponse({"pluggables": pluggables})
+    return JSONResponse({"extensions": extensions})
 
 
-app = Esmerald(routes=[Gateway(handler=home)])
-
-extension = Standalone(app=app)
-extension.extend()
+app = Esmerald(routes=[Gateway(handler=home)], extensions=[Standalone])

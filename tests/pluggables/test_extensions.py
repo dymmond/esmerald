@@ -19,9 +19,8 @@ class PluggableNoPlug(Extension):  # pragma: no cover
 
 
 def test_raises_improperly_configured_for_subclass(test_client_factory):
-    with pytest.warns(DeprecationWarning):
-        with pytest.raises(ImproperlyConfigured) as raised:
-            Esmerald(routes=[], pluggables={"test": MyNewPluggable})
+    with pytest.raises(ImproperlyConfigured) as raised:
+        Esmerald(routes=[], extensions={"test": MyNewPluggable})
 
     assert raised.value.detail == (
         "An extension must subclass from Extension, implement the ExtensionProtocol "
@@ -30,20 +29,18 @@ def test_raises_improperly_configured_for_subclass(test_client_factory):
 
 
 def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory):
-    with pytest.warns(DeprecationWarning):
-        with pytest.raises(ImproperlyConfigured) as raised:
-            Esmerald(routes=[], pluggables={1: MyNewPluggable})
+    with pytest.raises(ImproperlyConfigured) as raised:
+        Esmerald(routes=[], extensions={1: MyNewPluggable})
 
     assert raised.value.detail == "Extension names should be in string format."
 
 
 def test_raises_error_for_missing_extend(test_client_factory):
-    with pytest.warns(DeprecationWarning):
-        with pytest.raises(Exception):  # noqa
-            Esmerald(
-                routes=[],
-                pluggables={"test": Pluggable(PluggableNoPlug)},
-            )
+    with pytest.raises(Exception):  # noqa
+        Esmerald(
+            routes=[],
+            extensions={"test": Pluggable(PluggableNoPlug)},
+        )
 
 
 class Config(BaseModel):
@@ -60,33 +57,49 @@ class MyExtension(Extension):
 
 
 def test_generates_pluggable():
-    with pytest.warns(DeprecationWarning):
-        app = Esmerald(
-            routes=[],
-            pluggables={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))},
-        )
+    app = Esmerald(
+        routes=[], extensions={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))}
+    )
 
-    with pytest.warns(DeprecationWarning):
-        assert "test" in app.pluggables
+    assert "test" in app.extensions
 
 
 def test_generates_many_pluggables():
+    container = []
+
+    class ReorderedExtension(Extension):
+        def __init__(self, app: "Esmerald"):
+            super().__init__(app)
+
+        def extend(self) -> None:
+            container.append("works")
+
+    class NonExtension:
+        def __init__(self, app: "Esmerald"):
+            super().__init__()
+            self.app = app
+
+        def extend(self) -> None:
+            pass
+
     class LoggingExtension(Extension):
         def __init__(self, app: "Esmerald", name):
             super().__init__(app)
-            self.app = app
             self.name = name
 
         def extend(self, name) -> None:
+            self.app.extensions.ensure_extension("base")
+            assert container == ["works"]
             logger.info(f"Started logging extension with name {name}")
 
     class DatabaseExtension(Extension):
         def __init__(self, app: "Esmerald", database):
             super().__init__(app)
-            self.app = app
             self.database = database
 
         def extend(self, database) -> None:
+            with pytest.raises(ValueError):
+                self.app.extensions.ensure_extension("non-existing")
             logger.info(f"Started extension with database {database}")
 
     app = Esmerald(
@@ -95,13 +108,35 @@ def test_generates_many_pluggables():
             "test": Pluggable(MyExtension, config=Config(name="my pluggable")),
             "logging": Pluggable(LoggingExtension, name="my logging"),
             "database": Pluggable(DatabaseExtension, database="my db"),
+            "base": ReorderedExtension,
+            "non-extension": NonExtension,
         },
     )
-    with pytest.warns(DeprecationWarning):
-        assert len(app.pluggables.keys()) == 3
+
+    assert len(app.extensions.keys()) == 5
 
 
-def test_add_pluggable(test_client_factory):
+def test_start_extension_directly(test_client_factory):
+    class CustomExtension(Extension):
+        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+            super().__init__(app, **kwargs)
+
+        def extend(self, **kwargs) -> None:
+            app = kwargs.get("app")
+            config = kwargs.get("config")
+            logger.success(f"Started standalone plugging with the name: {config.name}")
+            app.extensions["custom"] = self
+
+    app = Esmerald(routes=[])
+    config = Config(name="standalone")
+    extension = CustomExtension()
+    extension.extend(app=app, config=config)
+
+    assert "custom" in app.extensions
+    assert isinstance(app.extensions["custom"], Extension)
+
+
+def test_add_extension_manual(test_client_factory):
     class CustomExtension(Extension):
         def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
@@ -141,7 +176,7 @@ def test_add_standalone_extension(test_client_factory):
     assert not isinstance(app.extensions["manual"], Extension)
 
 
-def test_add_pluggable_manual(test_client_factory):
+def test_add_pluggable(test_client_factory):
     class CustomExtension(Extension):
         def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
@@ -152,8 +187,7 @@ def test_add_pluggable_manual(test_client_factory):
 
     app = Esmerald(routes=[])
     config = Config(name="manual")
-    with pytest.warns(DeprecationWarning):
-        app.add_pluggable("manual", Pluggable(CustomExtension, config=config))
+    app.add_extension("manual", Pluggable(CustomExtension, config=config))
 
     assert "manual" in app.extensions
     assert isinstance(app.extensions["manual"], Extension)

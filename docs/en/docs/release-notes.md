@@ -5,6 +5,20 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Added
+
+- Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
+
+### Changed
+
+- Pluggables can now receive plain Extensions and Extension classes.
+- Rename of Pluggables to Extensions:
+    - Breaking: The `pluggables` attribute and parameter are now renamed to `extensions`. The old name is still available but deprecated.
+    - Breaking: The `add_pluggable` method is now renamed to `add_extension`. The old name is still available but deprecated.
+    - The documentation will refer now to extensions with `Pluggable` as a setup wrapper.
+
 ## 3.4.4
 
 ### Added
@@ -1023,7 +1037,7 @@ across main application and children.
 
 ### Added
 
--  Esmerald [Pluggables](./pluggables.md) [#60](https://github.com/dymmond/esmerald/pull/60).
+-  Esmerald Pluggables [#60](https://github.com/dymmond/esmerald/pull/60).
 
 	This is the feature for the esmerald ecosystem that allows you to create plugins and extensions for any application
 	as well as distribute them as installable packages.

@@ -16,6 +16,8 @@ different APIs and systems, so Esmerald created its own.
 A Gateway is an extension of the Route, really, but adds its own logic and handling capabilities, as well as its own
 validations, without compromising the core.
 
+It is automatically added when just passing an HTTP/Websocket handler to routes.
+
 ### Gateway and application
 
 In simple terms, a Gateway is not a direct route but instead is a "wrapper" of a [handler](./handlers.md)

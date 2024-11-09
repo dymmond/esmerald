@@ -116,7 +116,7 @@ nav:
   - dependencies.md
   - exceptions.md
   - exception-handlers.md
-  - pluggables.md
+  - extensions.md
   - password-hashers.md
   - requests.md
   - context.md
@@ -199,6 +199,7 @@ nav:
   - references/permissions.md
   - references/middleware/baseauth.md
   - references/middleware/middlewares.md
+  - references/extensions.md
   - references/pluggables.md
   - references/exceptions.md
   - references/request.md
@@ -238,5 +239,7 @@ extra:
   alternate:
   - link: /
     name: en - English
+  - link: /ru/
+    name: ru - русский язык
 hooks:
 - ../../scripts/hooks.py

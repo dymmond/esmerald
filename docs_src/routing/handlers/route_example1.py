@@ -14,6 +14,6 @@ async def multiple_methods_function(request: Request) -> JSONResponse:
 
 app = Esmerald(
     routes=[
-        Gateway(handler=multiple_methods_function),
+        multiple_methods_function,
     ]
 )

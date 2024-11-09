@@ -26,4 +26,4 @@ my_config = PluggableConfig(name="my extension")
 
 pluggable = Pluggable(MyExtension, config=my_config)
 
-app = Esmerald(routes=[], pluggables={"my-extension": pluggable})
+app = Esmerald(routes=[], extensions={"my-extension": pluggable})

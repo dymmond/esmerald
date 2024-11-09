@@ -21,7 +21,7 @@ from esmerald import Esmerald
             - add_include
             - add_child_esmerald
             - add_router
-            - add_pluggable
+            - add_extension
             - register_encoder
 
 ::: esmerald.ChildEsmerald

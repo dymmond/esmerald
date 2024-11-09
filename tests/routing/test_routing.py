@@ -26,6 +26,11 @@ async def deny_access(request: Request) -> JSONResponse:
     """ """
 
 
+@get(path="/decorated")
+async def decorated(request: Request) -> JSONResponse:
+    return JSONResponse("Hello, world")
+
+
 @get(path="/", permissions=[AllowAny])
 async def allow_access(request: Request) -> JSONResponse:
     return JSONResponse("Hello, world")
@@ -240,6 +245,7 @@ routes = [
     ),
     Gateway("/func", handler=func_homepage),
     Gateway("/func", handler=contact),
+    decorated,
     Gateway("/int/{param:int}", handler=int_convertor, name="int-convertor"),
     Gateway("/float/{param:float}", handler=float_convertor, name="float-convertor"),
     Gateway("/path/{param:path}", handler=path_convertor, name="path-convertor"),

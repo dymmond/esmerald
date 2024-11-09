@@ -19,7 +19,7 @@ def another_read(name: str) -> str:
 app = Esmerald(
     routes=[
         Gateway(handler=example),
-        Gateway(handler=another),
+        another,
         Gateway(path="/last/{name:str}", handler=another_read),
     ]
 )

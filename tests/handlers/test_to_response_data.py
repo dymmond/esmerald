@@ -93,13 +93,17 @@ async def test_to_response_async_await() -> None:
 
     person_instance = IndividualFactory.build()
     test_function.signature_model = SignatureFactory(
-        test_function.fn, set()  # type:ignore[arg-type]
+        test_function.fn,
+        set(),  # type:ignore[arg-type]
     ).create_signature()
 
-    response = await test_function.to_response(
-        data=test_function.fn(data=person_instance), app=None  # type: ignore
-    )
-    assert loads(response.body) == person_instance.model_dump()
+    # we need the encoders
+    with create_client([]):
+        response = await test_function.to_response(
+            data=test_function.fn(data=person_instance),
+            app=None,  # type: ignore
+        )
+        assert loads(response.body) == person_instance.model_dump()
 
 
 @pytest.mark.asyncio()
@@ -111,13 +115,17 @@ async def test_to_response_async_await_with_post_handler() -> None:
 
     person_instance = IndividualFactory.build()
     test_function.signature_model = SignatureFactory(
-        test_function.fn, set()  # type:ignore[arg-type]
+        test_function.fn,
+        set(),  # type:ignore[arg-type]
     ).create_signature()
 
-    response = await test_function.to_response(
-        data=test_function.fn(data=person_instance), app=None  # type: ignore
-    )
-    assert loads(response.body) == person_instance.model_dump()
+    # we need the encoders
+    with create_client([]):
+        response = await test_function.to_response(
+            data=test_function.fn(data=person_instance),
+            app=None,  # type: ignore
+        )
+        assert loads(response.body) == person_instance.model_dump()
 
 
 @pytest.mark.asyncio()
@@ -127,7 +135,7 @@ async def test_to_response_returning_esmerald_response() -> None:
         return Response(status_code=HTTP_200_OK, media_type=MediaType.TEXT, content="ok")
 
     with create_client(test_function) as client:
-        route: HTTPHandler = client.app.routes[0]  # type: ignore
+        route: HTTPHandler = client.app.routes[0].handler  # type: ignore
         response = await route.to_response(data=route.fn(), app=None)  # type: ignore
         assert isinstance(response, Response)
 
@@ -155,7 +163,7 @@ async def test_to_response_returning_redirect_starlette_response(
         return expected_response
 
     with create_client(test_function) as client:
-        route = client.app.routes[0]  # type: ignore
+        route = client.app.routes[0].handler  # type: ignore
         response = await route.to_response(data=route.fn(), app=None)  # type: ignore
         assert isinstance(response, LilyaResponse)
         assert response is expected_response
@@ -183,7 +191,7 @@ async def test_to_response_returning_redirect_response() -> None:
         )
 
     with create_client(test_function) as client:
-        route = client.app.routes[0]
+        route = client.app.routes[0].handler
         response = await route.to_response(data=route.fn(), app=None)  # type: ignore
         assert isinstance(response, RedirectResponse)
         assert response.headers["location"] == "/somewhere-else"
@@ -246,7 +254,7 @@ async def test_to_response_returning_file_response() -> None:
         )
 
     with create_client(test_function) as client:
-        route = client.app.routes[0]  # type: ignore
+        route = client.app.routes[0].handler  # type: ignore
         response = await route.to_response(data=route.fn(), app=None)  # type: ignore
 
         assert isinstance(response, FileResponse)
@@ -301,7 +309,7 @@ async def test_to_response_streaming_response(
             )
 
         with create_client(test_function) as client:
-            route = client.app.routes[0]  # type: ignore
+            route = client.app.routes[0].handler  # type: ignore
             response = await route.to_response(data=route.fn(), app=None)  # type: ignore
             assert isinstance(response, StreamingResponse)
             assert response.headers["local-header"] == "123"
@@ -339,7 +347,7 @@ async def func_to_response_template_response() -> None:  # pragma: no cover
         )
 
     with create_client(test_function) as client:
-        route = client.app.routes[0]  # type: ignore
+        route = client.app.routes[0].handler  # type: ignore
 
         response = await route.to_response(data=route.fn(), app=None)  # type: ignore
         assert isinstance(response, TemplateResponse)

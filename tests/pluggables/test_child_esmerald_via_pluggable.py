@@ -19,13 +19,13 @@ from esmerald.types import DictAny
 @get("/")
 async def home(request: Request) -> JSONResponse:
     """
-    Returns a list of pluggables of the system.
+    Returns a list of extensions of the system.
 
-    "pluggables": ["standalone"]
+    "extensions": ["standalone"]
     """
-    pluggables = list(request.app.pluggables)
+    extensions = list(request.app.extensions)
 
-    return JSONResponse({"pluggables": pluggables})
+    return JSONResponse({"extensions": extensions})
 
 
 class ChildEsmeraldPluggable(Extension):
@@ -48,7 +48,7 @@ class ChildEsmeraldPluggable(Extension):
 
 
 def test_can_add_child_esmerald_via_pluggable():
-    app = Esmerald(routes=[], pluggables={"child-esmerald": Pluggable(ChildEsmeraldPluggable)})
+    app = Esmerald(routes=[], extensions={"child-esmerald": Pluggable(ChildEsmeraldPluggable)})
 
     client = EsmeraldTestClient(app=app)
 
