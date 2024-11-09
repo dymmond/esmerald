@@ -5,17 +5,28 @@ hide:
 
 # Release Notes
 
-## Unreleased
+## 3.5.0
+
+### Added
+
+- Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
+- Allow passing HTTP/WebSocket handlers directly to routes as alternative to defining a Gateway/WebsocketGateway.
 
 ### Changed
 
+- Esmerald is now under the License BSD-3. This aims to protect the maintainers and contributors and
+the license will be now the final.
 - Pluggables can now receive plain Extensions and Extension classes.
 - Rename of Pluggables to Extensions:
-    - Breaking: The `pluggables` attribute and parameter are now renamed to `extensions`. The old name is still available but deprecated.
-    - Breaking: The `add_pluggable` method is now renamed to `add_extension`. The old name is still available but deprecated.
+    - **Breaking**: The `pluggables` attribute and parameter are now renamed to `extensions`. The old name is still available but deprecated.
+    - **Breaking**: The `add_pluggable` method is now renamed to `add_extension`. The old name is still available but deprecated.
     - The documentation will refer now to extensions with `Pluggable` as a setup wrapper.
-- Allow passing HTTP/WebSocket handlers directly to routes. They are automatically wrapped in Gateways-
-- Allow passing HTTP/WebSocket handlers directly to routes as alternative to defining a Gateway/WebsocketGateway.
+
+### Fixed
+
+- Directive `runserver` now allows the use of ASGI middlewares.
+- Remove the dependency of an app being an `esmerald` instance for `runserver`.
+- Check the environment variables instead of settings variable for esmerald settings in the runserver.
 
 ## 3.4.4
 
