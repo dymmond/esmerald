@@ -14,7 +14,10 @@ hide:
 ### Changed
 
 - Pluggables can now receive plain Extensions and Extension classes.
-- Rename to extensions.
+- Rename of Pluggables to Extensions:
+    - Breaking: The `pluggables` attribute and parameter are now renamed to `extensions`. The old name is still available but deprecated.
+    - Breaking: The `add_pluggable` method is now renamed to `add_extension`. The old name is still available but deprecated.
+    - The documentation will refer now to extensions with `Pluggable` as a setup wrapper.
 
 ## 3.4.4
 

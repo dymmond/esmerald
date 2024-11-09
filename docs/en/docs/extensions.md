@@ -126,7 +126,7 @@ It will automatically initialize and call extend for you when passing a class or
 But, what if I don't want to use the [Extension](#extension) object for my pluggable? Is this
 possible?
 ´
-yes, it must only implement the ExtensionProtocol.
+Yes, it must only implement the ExtensionProtocol.
 
 ```python hl_lines="9 25"
 {!> ../../../docs_src/pluggables/standalone.py !}
