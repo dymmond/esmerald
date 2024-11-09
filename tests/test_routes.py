@@ -3,10 +3,16 @@ from lilya import status
 
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway, WebSocketGateway
+from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.routing.handlers import delete, get, post, put, route, websocket
+from esmerald.routing.webhooks import whget
 from esmerald.testclient import create_client
 from esmerald.websockets import WebSocket
+
+
+@whget("new-event")
+async def new_event() -> bool:
+    return True
 
 
 @get(status_code=status.HTTP_202_ACCEPTED)
@@ -55,6 +61,25 @@ def test_add_route_from_router(test_client_factory) -> None:
     """
 
     with create_client(routes=[Gateway(handler=route_one)]) as client:
+        response = client.get("/")
+
+        assert response.json() == {"test": 1}
+        assert response.status_code == status.HTTP_202_ACCEPTED
+
+        client.app.router.add_route("/second", handler=route_two)
+
+        response = client.get("/second")
+
+        assert response.json() == {"test": 2}
+        assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
+
+
+def test_add_route_from_router_direct(test_client_factory) -> None:
+    """
+    Adds a route to the router.
+    """
+
+    with create_client(routes=[route_one]) as client:
         response = client.get("/")
 
         assert response.json() == {"test": 1}
@@ -152,6 +177,28 @@ def test_add_route_multiple_from_application(test_client_factory) -> None:
         assert response.status_code == status.HTTP_202_ACCEPTED
 
 
+@pytest.mark.parametrize("arg", [new_event, WebhookGateway(handler=new_event)])
+def test_raise_exception_on_create_webhook(test_client_factory, arg) -> None:
+    """
+    Raises improperly configured.
+    """
+
+    with pytest.raises(ImproperlyConfigured):
+        with create_client(routes=[arg]):
+            pass
+
+
+@pytest.mark.parametrize("arg", [new_event, WebhookGateway(handler=new_event)])
+def test_raise_exception_on_add_webhook(test_client_factory, arg) -> None:
+    """
+    Raises improperly configured.
+    """
+
+    with create_client(routes=[]) as client:
+        with pytest.raises(ImproperlyConfigured):
+            client.app.add_route("/fooobar", handler=arg)
+
+
 def test_raise_exception_on_add_route(test_client_factory) -> None:
     """
     Raises improperly configured.
@@ -163,8 +210,16 @@ def test_raise_exception_on_add_route(test_client_factory) -> None:
             client.app.add_route("/one", handler=handler)
 
 
-def test_websocket_handler_gateway_from_router(test_client_factory) -> None:
-    client = create_client(routes=[WebSocketGateway(path="/", handler=simple_websocket_handler)])
+@pytest.mark.parametrize(
+    "arg",
+    [
+        simple_websocket_handler,
+        WebSocketGateway(handler=simple_websocket_handler),
+        WebSocketGateway(path="/", handler=simple_websocket_handler),
+    ],
+)
+def test_websocket_handler_gateway_from_router(test_client_factory, arg) -> None:
+    client = create_client(routes=[arg])
 
     with client.websocket_connect("/") as websocket_client:
         websocket_client.send_json({"data": "esmerald"})
@@ -178,8 +233,16 @@ def test_websocket_handler_gateway_from_router(test_client_factory) -> None:
         assert data
 
 
-def test_websocket_handler_gateway_from_application(test_client_factory) -> None:
-    client = create_client(routes=[WebSocketGateway(path="/", handler=simple_websocket_handler)])
+@pytest.mark.parametrize(
+    "arg",
+    [
+        simple_websocket_handler,
+        WebSocketGateway(handler=simple_websocket_handler),
+        WebSocketGateway(path="/", handler=simple_websocket_handler),
+    ],
+)
+def test_websocket_handler_gateway_from_application(test_client_factory, arg) -> None:
+    client = create_client(routes=[arg])
 
     with client.websocket_connect("/") as websocket_client:
         websocket_client.send_json({"data": "esmerald"})
