@@ -490,10 +490,8 @@ class BaseRouter(LilyaRouter):
                 # WebhookHandler is a subclass of HTTPHandler, make sure to not upgrade it
                 ...
             elif isinstance(route, HTTPHandler):
-                # if using add_route, we would enter a completely different code path with a not fully initialized router
                 route = Gateway(handler=route)
             elif isinstance(route, WebSocketHandler):
-                # if using add_websocket_route, we would enter a completely different code path with a not fully initialized router
                 route = WebSocketGateway(handler=route)
             if not isinstance(
                 route,
@@ -2917,10 +2915,8 @@ class Include(LilyaInclude):
                 # fail later, a WebhookHandler is subclass of HTTPHandler, so pass down
                 ...
             elif isinstance(route, HTTPHandler):
-                # if using add_route, we would enter a completely different code path with a not fully initialized router
                 route = Gateway(handler=route)
             elif isinstance(route, WebSocketHandler):
-                # if using add_websocket_route, we would enter a completely different code path with a not fully initialized router
                 route = WebSocketGateway(handler=route)
 
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
