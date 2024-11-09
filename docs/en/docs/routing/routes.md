@@ -16,14 +16,14 @@ different APIs and systems, so Esmerald created its own.
 A Gateway is an extension of the Route, really, but adds its own logic and handling capabilities, as well as its own
 validations, without compromising the core.
 
-It is automatically added when just passing an HTTP/Websocket handler to routes.
+When a handler is passed instead of a Gateway/WebsocketGateway, it will be automatically mapped to the corresponding wrapper and added to the routes.
 
 ### Gateway and application
 
 In simple terms, a Gateway is not a direct route but instead is a "wrapper" of a [handler](./handlers.md)
 and maps that same handler with the application routing system.
 
-This allows overwriting options of the handler route specific.
+This allows overwriting options of the specific handler route.
 If not required, you can just pass the handler, it is automatically wrapped in a plain Gateway.
 
 #### Parameters
@@ -41,7 +41,7 @@ All the parameters and defaults are available in the [Gateway Reference](../refe
 Same principle as [Gateway](#gateway) with one particularity. Due to the nature of Lilya and websockets we
 decided not to interfere (for now) with what already works and therefore the only supported websockets are `async`.
 
-This allows overwriting options of the WebsocketHandler route specific.
+This allows overwriting options of the specific WebsocketHandler route.
 If not required, you can just pass the handler, it is automatically wrapped in a plain WebSocketGateway.
 
 ### WebSocketGateway and application

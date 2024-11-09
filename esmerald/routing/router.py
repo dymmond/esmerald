@@ -488,7 +488,7 @@ class BaseRouter(LilyaRouter):
         for route in routes or []:
             if isinstance(route, WebhookHandler):
                 # WebhookHandler is a subclass of HTTPHandler, make sure to not upgrade it
-                pass
+                ...
             elif isinstance(route, HTTPHandler):
                 # if using add_route, we would enter a completely different code path with a not fully initialized router
                 route = Gateway(handler=route)
@@ -2915,7 +2915,7 @@ class Include(LilyaInclude):
         for route in routes:  # pragma: no cover
             if isinstance(route, WebhookHandler):
                 # fail later, a WebhookHandler is subclass of HTTPHandler, so pass down
-                pass
+                ...
             elif isinstance(route, HTTPHandler):
                 # if using add_route, we would enter a completely different code path with a not fully initialized router
                 route = Gateway(handler=route)
