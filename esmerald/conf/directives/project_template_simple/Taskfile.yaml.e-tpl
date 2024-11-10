@@ -9,8 +9,6 @@ tasks:
 
   run:
     desc: Starts {{ project_name }} in development mode
-    env:
-      ESMERALD_SETTINGS_MODULE: {{ project_name }}.configs.development.settings.DevelopmentAppSettings
     cmds:
       - esmerald runserver
 
