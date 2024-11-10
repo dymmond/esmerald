@@ -21,7 +21,7 @@ def get_base_annotations(base_annotation: Any) -> Dict[str, Any]:
     Returns the annotations of the base class.
 
     Args:
-        base (Any): The base class.
+        base_annotation (Any): The base class.
 
     Returns:
         Dict[str, Any]: The annotations of the base class.
@@ -195,16 +195,16 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     default to the normal Esmerald processing, otherwise it will use the complex approach of
     designing the OpenAPI body.
     """
+    # If there are no body fields, we simply return the original
+    # default Esmerald body parsing
+    if not handler.body_encoder_fields:
+        return get_original_data_field(handler)
+
     is_data_or_payload = (
         DATA
         if DATA in handler.signature_model.model_fields
         else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
     )
-
-    # If there are no body fields, we simply return the original
-    # default Esmerald body parsing
-    if not handler.body_encoder_fields:
-        return get_original_data_field(handler)
 
     if len(handler.body_encoder_fields) < 2 and is_data_or_payload is not None:
         return get_original_data_field(handler)

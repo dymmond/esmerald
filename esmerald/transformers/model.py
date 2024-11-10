@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from esmerald.types import Dependencies  # pragma: no cover
     from esmerald.websockets import WebSocket  # pragma: no cover
 
-
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 MappingUnion = Mapping[Union[int, str], Any]
 
