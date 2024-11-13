@@ -58,7 +58,7 @@ TRANSFORMER_TYPES_KEYS = list(TRANSFORMER_TYPES.keys())
 TRANSFORMER_TYPES_KEYS += ADDITIONAL_TYPES
 
 
-def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
+def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str]) -> List[Any]:
     """
     Gets all the neded params of the request and route.
     """
@@ -74,6 +74,9 @@ def get_flat_params(route: Union[router.HTTPHandler, Any]) -> List[Any]:
     query_params = []
     for param in handler_query_params:
         is_union_or_optional = is_union(param.field_info.annotation)
+
+        if param.field_info.alias in body_fields:
+            continue
 
         # Making sure all the optional and union types are included
         if is_union_or_optional:
@@ -143,7 +146,8 @@ def get_fields_from_routes(
                     response_from_routes.append(response)
 
             # Get the params from the transformer
-            params = get_flat_params(handler)
+            body_fields_names = [field.alias for field in body_fields]
+            params = get_flat_params(handler, body_fields_names)
             if params:
                 request_fields.extend(params)
 
@@ -297,7 +301,12 @@ def get_openapi_path(
         if security_definitions:
             security_schemes.update(security_definitions)
 
-        all_route_params = get_flat_params(handler)
+        body_fields = []
+        if handler.data_field:
+            body_fields.append(handler.data_field)
+
+        body_fields_names = [field.alias for field in body_fields]
+        all_route_params = get_flat_params(handler, body_fields_names)
         operation_parameters = get_openapi_operation_parameters(
             all_route_params=all_route_params,
             field_mapping=field_mapping,
@@ -323,9 +332,9 @@ def get_openapi_path(
                 operation["requestBody"] = request_data_oai
 
         status_code = str(handler.status_code)
-        operation.setdefault("responses", {}).setdefault(status_code, {})[
-            "description"
-        ] = handler.response_description
+        operation.setdefault("responses", {}).setdefault(status_code, {})["description"] = (
+            handler.response_description
+        )
 
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):

@@ -2,14 +2,17 @@ import inspect
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
 
+from lilya.datastructures import DataUpload
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
+from esmerald.datastructures import UploadFile
 from esmerald.encoders import ENCODER_TYPES, is_body_encoder
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
 from esmerald.utils.constants import DATA, PAYLOAD
+from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.models import create_field_model
 
 if TYPE_CHECKING:
@@ -81,8 +84,60 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     return field_annotation
 
 
+def handle_upload_files(data: Any, body: Body) -> Body:
+    """
+    Handles the creation of the body field for the upload files.
+    """
+    # For Uploads and Multi Part
+    args = get_args(body.annotation)
+    name = "File" if not args else "Files"
+
+    model = create_field_model(field=body, name=name, model_name=body.title)
+    data_field = Body(annotation=model, title=body.title)
+
+    for key, _ in data._attributes_set.items():
+        if key != "annotation":
+            setattr(data_field, key, getattr(body, key, None))
+    return data_field
+
+
+def get_upload_body(handler: Union["HTTPHandler"]) -> Any:
+    """
+    This function repeats some of the steps but covers all the
+    cases for simple use cases.
+    """
+    for name, _ in handler.signature_model.model_fields.items():
+        data = handler.signature_model.model_fields[name]
+
+        if not isinstance(data, Body):
+            body = Body(alias="body")
+            for key, _ in data._attributes_set.items():
+                setattr(body, key, getattr(data, key, None))
+        else:
+            body = data
+
+        # Check the annotation type
+        body.annotation = convert_annotation_to_pydantic_model(body.annotation)
+
+        if not body.title:
+            body.title = f"Body_{handler.operation_id}"
+
+        # For everything else that is not MULTI_PART
+        extra = cast("Dict[str, Any]", body.json_schema_extra) or {}
+        if extra.get(
+            "media_type", EncodingType.JSON
+        ) != EncodingType.MULTI_PART and not is_class_and_subclass(
+            body.annotation, (UploadFile, DataUpload)
+        ):
+            continue
+
+        # For Uploads and Multi Part
+        data_field = handle_upload_files(data, body)
+        return data_field
+
+
 def get_original_data_field(
-    handler: Union["HTTPHandler", "WebhookHandler", Any]
+    handler: Union["HTTPHandler", "WebhookHandler", Any],
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -116,16 +171,7 @@ def get_original_data_field(
             return body
 
         # For Uploads and Multi Part
-        args = get_args(body.annotation)
-        name = "File" if not args else "Files"
-
-        model = create_field_model(field=body, name=name, model_name=body.title)
-        data_field = Body(annotation=model, title=body.title)
-
-        for key, _ in data._attributes_set.items():
-            if key != "annotation":
-                setattr(data_field, key, getattr(body, key, None))
-
+        data_field = handle_upload_files(data, body)
         return data_field
 
 
@@ -197,14 +243,17 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     """
     # If there are no body fields, we simply return the original
     # default Esmerald body parsing
-    if not handler.body_encoder_fields:
-        return get_original_data_field(handler)
-
     is_data_or_payload = (
         DATA
         if DATA in handler.signature_model.model_fields
         else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
     )
+
+    if not handler.body_encoder_fields and is_data_or_payload:
+        return get_original_data_field(handler)
+
+    if not handler.body_encoder_fields:
+        return get_upload_body(handler)
 
     if len(handler.body_encoder_fields) < 2 and is_data_or_payload is not None:
         return get_original_data_field(handler)
