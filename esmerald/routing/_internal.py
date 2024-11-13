@@ -81,6 +81,65 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
     return field_annotation
 
 
+def get_simple_body(handler: Union["HTTPHandler"]) -> Any:
+    """
+    This function repeats some of the steps but covers all the
+    cases for simple use cases.
+    """
+    body_fields: Dict[str, Any] = {}
+
+    for name, _ in handler.signature_model.model_fields.items():
+        data = handler.signature_model.model_fields[name]
+
+        if not isinstance(data, Body):
+            body = Body(alias="body")
+            for key, _ in data._attributes_set.items():
+                setattr(body, key, getattr(data, key, None))
+        else:
+            body = data
+
+        # Check the annotation type
+        body.annotation = convert_annotation_to_pydantic_model(body.annotation)
+
+        if not body.title:
+            body.title = f"Body_{handler.operation_id}"
+
+        # For everything else that is not MULTI_PART
+        extra = cast("Dict[str, Any]", body.json_schema_extra) or {}
+        if extra.get("media_type", EncodingType.JSON) != EncodingType.MULTI_PART:
+            return body
+
+        # For Uploads and Multi Part
+        args = get_args(body.annotation)
+        name = "File" if not args else "Files"
+
+        model = create_field_model(field=body, name=name, model_name=body.title)
+        data_field = Body(annotation=model, title=body.title)
+
+        for key, _ in data._attributes_set.items():
+            if key != "annotation":
+                setattr(data_field, key, getattr(body, key, None))
+
+        body_fields[name] = data_field
+
+    # Set the field definitions
+    field_definitions: Dict[str, Any] = {}
+    for name, param in body_fields.items():
+        param.annotation = convert_annotation_to_pydantic_model(param.annotation)
+        field_definitions[name] = param.annotation, ...
+
+    # Create the model from the field definitions
+    model = create_model(  # type: ignore
+        "DataField", __config__={"arbitrary_types_allowed": True}, **field_definitions
+    )
+    # Create the body field
+    body = Body(annotation=model, title=f"Body_{handler.operation_id}")
+
+    # Check the annotation type
+    if not body.title:
+        body.title = f"Body_{handler.operation_id}"
+    return body
+
 def get_original_data_field(
     handler: Union["HTTPHandler", "WebhookHandler", Any]
 ) -> Any:  # pragma: no cover
@@ -197,14 +256,18 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     """
     # If there are no body fields, we simply return the original
     # default Esmerald body parsing
-    if not handler.body_encoder_fields:
-        return get_original_data_field(handler)
-
     is_data_or_payload = (
         DATA
         if DATA in handler.signature_model.model_fields
         else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
     )
+
+    breakpoint()
+    if not handler.body_encoder_fields and is_data_or_payload:
+        return get_original_data_field(handler)
+
+    if not handler.body_encoder_fields:
+        return get_simple_body(handler)
 
     if len(handler.body_encoder_fields) < 2 and is_data_or_payload is not None:
         return get_original_data_field(handler)
