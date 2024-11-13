@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from esmerald import Gateway, UploadFile, post, status
 from esmerald.params import File
@@ -6,7 +6,7 @@ from esmerald.testclient import create_client
 
 
 @post("/upload", status_code=status.HTTP_200_OK)
-async def upload_file(upload: UploadFile = File()) -> Dict[str, str]:
+async def upload_file(upload: List[UploadFile] = File()) -> Dict[str, str]:
     names = []
     for file in upload:
         names.append(file.filename)
@@ -39,6 +39,21 @@ def test_openapi_schema(test_client_factory):
                         "summary": "Upload File",
                         "description": "",
                         "operationId": "upload_file_upload_post",
+                        "parameters": [
+                            {
+                                "name": "upload",
+                                "in": "query",
+                                "required": True,
+                                "deprecated": False,
+                                "allowEmptyValue": False,
+                                "allowReserved": False,
+                                "schema": {
+                                    "items": {"type": "string", "format": "binary"},
+                                    "type": "array",
+                                    "title": "Upload",
+                                },
+                            }
+                        ],
                         "requestBody": {
                             "content": {
                                 "application/json": {
@@ -88,10 +103,14 @@ def test_openapi_schema(test_client_factory):
                     },
                     "Upload": {
                         "properties": {
-                            "file": {"type": "string", "format": "binary", "title": "File"}
+                            "files": {
+                                "items": {"type": "string", "format": "binary"},
+                                "type": "array",
+                                "title": "Files",
+                            }
                         },
                         "type": "object",
-                        "required": ["file"],
+                        "required": ["files"],
                         "title": "Upload",
                     },
                     "ValidationError": {
