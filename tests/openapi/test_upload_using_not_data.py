@@ -41,8 +41,10 @@ def test_openapi_schema(test_client_factory):
                         "operationId": "upload_file_upload_post",
                         "requestBody": {
                             "content": {
-                                "application/json": {
-                                    "schema": {"$ref": "#/components/schemas/DataField"}
+                                "multipart/form-data": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Body_upload_file_upload_post"
+                                    }
                                 }
                             },
                             "required": True,
@@ -69,11 +71,17 @@ def test_openapi_schema(test_client_factory):
             },
             "components": {
                 "schemas": {
-                    "DataField": {
-                        "properties": {"upload": {"$ref": "#/components/schemas/Upload"}},
+                    "Body_upload_file_upload_post": {
+                        "properties": {
+                            "file": {
+                                "type": "string",
+                                "format": "binary",
+                                "title": "Body_upload_file_upload_post",
+                            }
+                        },
                         "type": "object",
-                        "required": ["upload"],
-                        "title": "DataField",
+                        "required": ["file"],
+                        "title": "Body_upload_file_upload_post",
                     },
                     "HTTPValidationError": {
                         "properties": {
@@ -85,14 +93,6 @@ def test_openapi_schema(test_client_factory):
                         },
                         "type": "object",
                         "title": "HTTPValidationError",
-                    },
-                    "Upload": {
-                        "properties": {
-                            "file": {"type": "string", "format": "binary", "title": "File"}
-                        },
-                        "type": "object",
-                        "required": ["file"],
-                        "title": "Upload",
                     },
                     "ValidationError": {
                         "properties": {

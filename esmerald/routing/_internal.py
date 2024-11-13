@@ -2,14 +2,17 @@ import inspect
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
 
+from lilya.datastructures import DataUpload
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
+from esmerald.datastructures import UploadFile
 from esmerald.encoders import ENCODER_TYPES, is_body_encoder
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
 from esmerald.utils.constants import DATA, PAYLOAD
+from esmerald.utils.helpers import is_class_and_subclass
 from esmerald.utils.models import create_field_model
 
 if TYPE_CHECKING:
@@ -103,8 +106,6 @@ def get_upload_body(handler: Union["HTTPHandler"]) -> Any:
     This function repeats some of the steps but covers all the
     cases for simple use cases.
     """
-    body_fields: Dict[str, Any] = {}
-
     for name, _ in handler.signature_model.model_fields.items():
         data = handler.signature_model.model_fields[name]
 
@@ -118,38 +119,21 @@ def get_upload_body(handler: Union["HTTPHandler"]) -> Any:
         # Check the annotation type
         body.annotation = convert_annotation_to_pydantic_model(body.annotation)
 
+        if not body.title:
+            body.title = f"Body_{handler.operation_id}"
+
         # For everything else that is not MULTI_PART
         extra = cast("Dict[str, Any]", body.json_schema_extra) or {}
-        if extra.get("media_type", EncodingType.JSON) != EncodingType.MULTI_PART:
+        if extra.get(
+            "media_type", EncodingType.JSON
+        ) != EncodingType.MULTI_PART and not is_class_and_subclass(
+            body.annotation, (UploadFile, DataUpload)
+        ):
             continue
-
-        if not body.title:
-            body.title = "Upload"
 
         # For Uploads and Multi Part
         data_field = handle_upload_files(data, body)
-        body_fields[name] = data_field
-
-    if not body_fields:
-        return None
-
-    # Set the field definitions
-    field_definitions: Dict[str, Any] = {}
-    for name, param in body_fields.items():
-        param.annotation = convert_annotation_to_pydantic_model(param.annotation)
-        field_definitions[name] = param.annotation, ...
-
-    # Create the model from the field definitions
-    model = create_model(
-        "DataField", __config__={"arbitrary_types_allowed": True}, **field_definitions
-    )
-    # Create the body field
-    body = Body(annotation=model, title=f"Body_{handler.operation_id}")
-
-    # Check the annotation type
-    if not body.title:
-        body.title = f"Body_{handler.operation_id}"
-    return body
+        return data_field
 
 
 def get_original_data_field(

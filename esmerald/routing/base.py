@@ -206,7 +206,12 @@ class BaseResponseHandler:
                 # Check if there is request data
                 if request_data is not None:
                     # Assign each key-value pair in the request data to kwargs
-                    if isinstance(request_data, (UploadFile, DataUpload)):
+                    if isinstance(request_data, (UploadFile, DataUpload)) or (
+                        isinstance(request_data, (list, tuple))
+                        and any(
+                            isinstance(value, (UploadFile, DataUpload)) for value in request_data
+                        )
+                    ):
                         for key, _ in kwargs.items():
                             kwargs[key] = request_data
                     else:

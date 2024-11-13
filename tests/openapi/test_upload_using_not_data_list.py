@@ -39,25 +39,12 @@ def test_openapi_schema(test_client_factory):
                         "summary": "Upload File",
                         "description": "",
                         "operationId": "upload_file_upload_post",
-                        "parameters": [
-                            {
-                                "name": "upload",
-                                "in": "query",
-                                "required": True,
-                                "deprecated": False,
-                                "allowEmptyValue": False,
-                                "allowReserved": False,
-                                "schema": {
-                                    "items": {"type": "string", "format": "binary"},
-                                    "type": "array",
-                                    "title": "Upload",
-                                },
-                            }
-                        ],
                         "requestBody": {
                             "content": {
-                                "application/json": {
-                                    "schema": {"$ref": "#/components/schemas/DataField"}
+                                "multipart/form-data": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Body_upload_file_upload_post"
+                                    }
                                 }
                             },
                             "required": True,
@@ -84,11 +71,17 @@ def test_openapi_schema(test_client_factory):
             },
             "components": {
                 "schemas": {
-                    "DataField": {
-                        "properties": {"upload": {"$ref": "#/components/schemas/Upload"}},
+                    "Body_upload_file_upload_post": {
+                        "properties": {
+                            "files": {
+                                "items": {"type": "string", "format": "binary"},
+                                "type": "array",
+                                "title": "Body_upload_file_upload_post",
+                            }
+                        },
                         "type": "object",
-                        "required": ["upload"],
-                        "title": "DataField",
+                        "required": ["files"],
+                        "title": "Body_upload_file_upload_post",
                     },
                     "HTTPValidationError": {
                         "properties": {
@@ -100,18 +93,6 @@ def test_openapi_schema(test_client_factory):
                         },
                         "type": "object",
                         "title": "HTTPValidationError",
-                    },
-                    "Upload": {
-                        "properties": {
-                            "files": {
-                                "items": {"type": "string", "format": "binary"},
-                                "type": "array",
-                                "title": "Files",
-                            }
-                        },
-                        "type": "object",
-                        "required": ["files"],
-                        "title": "Upload",
                     },
                     "ValidationError": {
                         "properties": {
