@@ -1,7 +1,7 @@
 import select
 import sys
 from collections.abc import Sequence
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 import click
 import nest_asyncio
@@ -62,9 +62,9 @@ async def run_shell(app: Any, lifespan: Any, kernel: str) -> None:
 
 
 def handle_lifespan_events(
-    on_startup: Sequence[Callable] | None = None,
-    on_shutdown: Sequence[Callable] | None = None,
-    lifespan: Any | None = None,
+    on_startup: Union[Sequence[Callable], None] = None,
+    on_shutdown: Union[Sequence[Callable], None] = None,
+    lifespan: Union[Any, None] = None,
 ) -> Any:
     if lifespan:
         return lifespan
