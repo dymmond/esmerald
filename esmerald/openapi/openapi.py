@@ -49,7 +49,10 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
-from esmerald.routing._internal import convert_annotation_to_pydantic_model
+from esmerald.routing._internal import (
+    convert_annotation_to_pydantic_model,
+)
+from esmerald.security.oauth2.oauth import SecurityBase
 from esmerald.typing import Undefined
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
@@ -106,10 +109,11 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
         if inspect.isclass(security_requirement):
             security_requirement = security_requirement()
 
-        if not isinstance(security_requirement, SecurityScheme):
+        if not isinstance(security_requirement, (SecurityScheme, SecurityBase)):
             raise ValueError(
                 "Security schemes must subclass from `esmerald.openapi.models.SecurityScheme`"
             )
+
         security_definition = security_requirement.model_dump(by_alias=True, exclude_none=True)
         security_name = security_requirement.scheme_name
         security_definitions[security_name] = security_definition

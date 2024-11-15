@@ -38,7 +38,7 @@ from esmerald.openapi.schemas.v3_1_0.xml import XML as XML
 
 class APIKey(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.apiKey,
+        default=SecuritySchemeType.apiKey.value,
         alias="type",
     )
     param_in: APIKeyIn = Field(alias="in")
@@ -47,7 +47,7 @@ class APIKey(SecurityScheme):
 
 class HTTPBase(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.http,
+        default=SecuritySchemeType.http.value,
         alias="type",
     )
     scheme: str
@@ -64,14 +64,14 @@ class OAuthFlow(OpenOAuthFlow):
 
 class OAuth2(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.oauth2, alias="type"
+        default=SecuritySchemeType.oauth2.value, alias="type"
     )
     flows: OAuthFlows
 
 
 class OpenIdConnect(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.openIdConnect, alias="type"
+        default=SecuritySchemeType.openIdConnect.value, alias="type"
     )
     openIdConnectUrl: str
 
@@ -81,6 +81,7 @@ class SecurityBase(BaseModel):
 
     type: SecuritySchemeType = Field(alias="type")
     description: Optional[str] = None
+    scheme_name: Optional[str] = None
 
 
 SecuritySchemeUnion = Union[APIKey, HTTPBase, OAuth2, OpenIdConnect, HTTPBearer]
@@ -93,7 +94,7 @@ class Components(BaseModel):
     examples: Optional[Dict[str, Union[Example, Reference]]] = None
     requestBodies: Optional[Dict[str, Union[RequestBody, Reference]]] = None
     headers: Optional[Dict[str, Union[Header, Reference]]] = None
-    securitySchemes: Optional[Dict[str, Union[SecurityScheme, Reference]]] = None
+    securitySchemes: Optional[Dict[str, Union[SecurityScheme, Reference, Dict[str, Any]]]] = None
     links: Optional[Dict[str, Union[Link, Reference]]] = None
     callbacks: Optional[Dict[str, Union[Dict[str, PathItem], Reference, Any]]] = None
     pathItems: Optional[Dict[str, Union[PathItem, Reference]]] = None

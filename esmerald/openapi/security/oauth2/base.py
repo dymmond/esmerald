@@ -3,9 +3,13 @@ from typing import Any, Dict, Literal, Optional, Union
 from esmerald.openapi.enums import SecuritySchemeType
 from esmerald.openapi.models import OAuthFlows
 from esmerald.openapi.security.base import HTTPBase
+from esmerald.security.oauth2.oauth import OAuth2 as BaseOAuth2
 
 
-class OAuth2(HTTPBase):
+class OAuth2(BaseOAuth2): ...
+
+
+class AOAuth2(HTTPBase):
     """
     The OAuth2 scheme.
 
