@@ -14,7 +14,15 @@ from esmerald.param_functions import Form
 from esmerald.security.utils import get_authorization_scheme_param
 
 
-class SecurityBase(SecurityScheme): ...
+class SecurityBase(SecurityScheme):
+    scheme_name: Optional[str] = None
+    """
+    An optional name for the security scheme.
+    """
+    __auto_error__: bool = False
+    """
+    A flag to indicate if automatic error handling should be enabled.
+    """
 
 
 class OAuth2PasswordRequestForm:
@@ -393,11 +401,13 @@ class OAuth2(SecurityBase):
             ),
         ] = True,
     ) -> None:
-        model = OAuth2Model(flows=cast(OAuthFlowsModel, flows), description=description)
+        model = OAuth2Model(
+            flows=cast(OAuthFlowsModel, flows), scheme=scheme_name, description=description
+        )
         model_dump = model.model_dump()
         super().__init__(**model_dump)
         self.scheme_name = scheme_name or self.__class__.__name__
-        self.auto_error = auto_error
+        self.__auto_error__ = auto_error
 
     async def __call__(self, request: Request) -> Any:
         authorization = request.headers.get("Authorization")
@@ -405,7 +415,7 @@ class OAuth2(SecurityBase):
         if authorization:
             return authorization
 
-        if self.auto_error:
+        if self.__auto_error__:
             raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
 
         return None
@@ -526,7 +536,7 @@ class OAuth2PasswordBearer(OAuth2):
         if authorization and scheme.lower() == "bearer":
             return param
 
-        if self.auto_error:
+        if self.__auto_error__:
             raise HTTPException(
                 status_code=HTTP_401_UNAUTHORIZED,
                 detail="Not authenticated",
@@ -652,7 +662,7 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
         if authorization and scheme.lower() == "bearer":
             return param
 
-        if self.auto_error:
+        if self.__auto_error__:
             raise HTTPException(
                 status_code=HTTP_401_UNAUTHORIZED,
                 detail="Not authenticated",

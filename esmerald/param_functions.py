@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Sequence, Union
 
 from pydantic.fields import AliasChoices, AliasPath
 
@@ -8,6 +8,19 @@ from esmerald.params import DirectInject
 from esmerald.typing import Undefined
 
 _PyUndefined: Any = Undefined
+
+
+def Security(
+    dependency: Optional[Callable[..., Any]] = None,
+    *,
+    scopes: Optional[Sequence[str]] = None,
+    use_cache: bool = True,
+) -> Any:
+    """
+    This function should be only called if Inject/Injects is not used in the dependencies.
+    This is a simple wrapper of the classic Inject().
+    """
+    return params.Security(dependency=dependency, scopes=scopes, use_cache=use_cache)
 
 
 def DirectInjects(

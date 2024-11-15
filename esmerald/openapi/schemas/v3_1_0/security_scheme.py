@@ -76,16 +76,6 @@ class SecurityScheme(BaseModel):
     An optional model to be used for the security scheme.
     """
 
-    scheme_name: Optional[str] = None
-    """
-    An optional name for the security scheme.
-    """
-
-    auto_error: bool = False
-    """
-    A flag to indicate if automatic error handling should be enabled.
-    """
-
     model_config = ConfigDict(
         extra="ignore",
         populate_by_name=True,
@@ -110,7 +100,7 @@ class SecurityScheme(BaseModel):
                 {
                     "type": "openIdConnect",
                     "openIdConnectUrl": "openIdConnect",
-                },  # issue #5: allow relative path
+                },
             ]
         },
     )

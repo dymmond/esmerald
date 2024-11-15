@@ -118,7 +118,6 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
         security_name = security_requirement.scheme_name
         security_definitions[security_name] = security_definition
         operation_security.append({security_name: security_requirement})
-
     return security_definitions, operation_security
 
 
