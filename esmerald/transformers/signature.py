@@ -178,9 +178,7 @@ class SignatureModel(ArbitraryBaseModel):
                 encoder_info: Dict[str, "Encoder"] = cls.encoders[key]  # type: ignore
                 encoder: "Encoder" = encoder_info["encoder"]
                 annotation = encoder_info["annotation"]
-                kwargs[key] = (
-                    encode_value(encoder, annotation, value) if value is not None else value
-                )
+                kwargs[key] = encode_value(encoder, annotation, value)
 
         return kwargs
 
