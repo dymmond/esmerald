@@ -22,6 +22,17 @@ def Security(
     return params.Security(dependency=dependency, scopes=scopes, use_cache=use_cache)
 
 
+def DirectInjects(
+    dependency: Optional[Callable[..., Any]] = None,
+    *,
+    use_cache: bool = True,
+) -> Any:
+    """
+    This function should be only called if Inject/Injects is not used in the dependencies.
+    This is a simple wrapper of the classic Depends().
+    """
+    return params.Depends(dependency=dependency, use_cache=use_cache)
+
 def Form(
     default: Any = _PyUndefined,
     *,
