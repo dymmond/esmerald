@@ -2,30 +2,20 @@ from typing import Any, Dict, List, Optional, Union, cast
 
 from lilya.requests import Request
 from lilya.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
+from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import HTTPException
 from esmerald.openapi.models import (
     OAuth2 as OAuth2Model,
     OAuthFlows as OAuthFlowsModel,
-    SecurityScheme,
 )
 from esmerald.param_functions import Form
+from esmerald.security.base import SecurityBase as SecurityBase
 from esmerald.security.utils import get_authorization_scheme_param
 
 
-class SecurityBase(SecurityScheme):
-    scheme_name: Optional[str] = None
-    """
-    An optional name for the security scheme.
-    """
-    __auto_error__: bool = False
-    """
-    A flag to indicate if automatic error handling should be enabled.
-    """
-
-
-class OAuth2PasswordRequestForm:
+class OAuth2PasswordRequestForm(BaseModel):
     """
     This is a dependency class to collect the `username` and `password` as form data
     for an OAuth2 password flow.
@@ -75,110 +65,109 @@ class OAuth2PasswordRequestForm:
     know that that it is application specific, it's not part of the specification.
     """
 
-    def __init__(
-        self,
-        *,
-        grant_type: Annotated[
-            Union[str, None],
-            Form(pattern="password"),
-            Doc(
-                """
-                Specifies the OAuth2 grant type.
+    grant_type: Annotated[
+        Union[str, None],
+        Form(pattern="password"),
+        Doc(
+            """
+            Specifies the OAuth2 grant type.
 
-                Per the OAuth2 specification, this value is required and must be set
-                to the fixed string "password" when using the password grant flow.
-                However, this class allows flexibility and does not enforce this
-                restriction. To enforce the "password" value strictly, consider using
-                the `OAuth2PasswordRequestFormStrict` dependency.
-                """
-            ),
-        ] = None,
-        username: Annotated[
-            str,
-            Form(),
-            Doc(
-                """
-                The username of the user for OAuth2 authentication.
+            Per the OAuth2 specification, this value is required and must be set
+            to the fixed string "password" when using the password grant flow.
+            However, this class allows flexibility and does not enforce this
+            restriction. To enforce the "password" value strictly, consider using
+            the `OAuth2PasswordRequestFormStrict` dependency.
+            """
+        ),
+    ] = None
+    username: Annotated[
+        str,
+        Form(),
+        Doc(
+            """
+            The username of the user for OAuth2 authentication.
 
-                According to the OAuth2 specification, this field must be named
-                `username`, as it is used to identify the user during the
-                authentication process.
-                """
-            ),
-        ],
-        password: Annotated[
-            str,
-            Form(),
-            Doc(
-                """
-                The password of the user for OAuth2 authentication.
+            According to the OAuth2 specification, this field must be named
+            `username`, as it is used to identify the user during the
+            authentication process.
+            """
+        ),
+    ]
+    password: Annotated[
+        str,
+        Form(),
+        Doc(
+            """
+            The password of the user for OAuth2 authentication.
 
-                Per the OAuth2 spec, this field must also use the name `password`.
-                It is required for authentication to validate the provided username.
-                """
-            ),
-        ],
-        scope: Annotated[
-            str,
-            Form(),
-            Doc(
-                """
-                A single string containing one or more scopes, space-separated.
+            Per the OAuth2 spec, this field must also use the name `password`.
+            It is required for authentication to validate the provided username.
+            """
+        ),
+    ]
+    scopes: Annotated[
+        Union[str, List[str]],
+        Form(),
+        Doc(
+            """
+            A single string containing one or more scopes, space-separated.
 
-                Each scope represents a permission requested by the application.
-                Scopes help specify fine-grained access control, enabling the client
-                to request only the permissions it needs. For example, the following
-                string:
+            Each scope represents a permission requested by the application.
+            Scopes help specify fine-grained access control, enabling the client
+            to request only the permissions it needs. For example, the following
+            string:
 
-                ```python
-                "items:read items:write users:read profile openid"
-                ```
+            ```python
+            "items:read items:write users:read profile openid"
+            ```
 
-                represents multiple scopes:
+            represents multiple scopes:
 
-                * `items:read`
-                * `items:write`
-                * `users:read`
-                * `profile`
-                * `openid`
-                """
-            ),
-        ] = "",
-        client_id: Annotated[
-            Union[str, None],
-            Form(),
-            Doc(
-                """
-                Optional client identifier used to identify the client application.
+            * `items:read`
+            * `items:write`
+            * `users:read`
+            * `profile`
+            * `openid`
+            """
+        ),
+    ] = []
+    client_id: Annotated[
+        Union[str, None],
+        Form(),
+        Doc(
+            """
+            Optional client identifier used to identify the client application.
 
-                If provided, `client_id` can be sent as part of the form data.
-                Although the OAuth2 specification recommends sending both `client_id`
-                and `client_secret` via HTTP Basic authentication headers, some APIs
-                accept these values in the form fields for flexibility.
-                """
-            ),
-        ] = None,
-        client_secret: Annotated[
-            Union[str, None],
-            Form(),
-            Doc(
-                """
-                Optional client secret for authenticating the client application.
+            If provided, `client_id` can be sent as part of the form data.
+            Although the OAuth2 specification recommends sending both `client_id`
+            and `client_secret` via HTTP Basic authentication headers, some APIs
+            accept these values in the form fields for flexibility.
+            """
+        ),
+    ] = None
+    client_secret: Annotated[
+        Union[str, None],
+        Form(),
+        Doc(
+            """
+            Optional client secret for authenticating the client application.
 
-                If a `client_secret` is required (along with `client_id`), it can be
-                included in the form data. However, the OAuth2 spec advises sending
-                both `client_id` and `client_secret` using HTTP Basic authentication
-                headers for security.
-                """
-            ),
-        ] = None,
-    ) -> None:
-        self.grant_type = grant_type
-        self.username = username
-        self.password = password
-        self.scopes = scope.split()
-        self.client_id = client_id
-        self.client_secret = client_secret
+            If a `client_secret` is required (along with `client_id`), it can be
+            included in the form data. However, the OAuth2 spec advises sending
+            both `client_id` and `client_secret` using HTTP Basic authentication
+            headers for security.
+            """
+        ),
+    ] = None
+
+    @field_validator("scopes", mode="before")
+    @classmethod
+    def validate_scopes(cls, value: Union[str, List[str]]) -> Any:
+        if isinstance(value, str) and len(value) == 0:
+            return []
+        if isinstance(value, str):
+            return value.split(" ")
+        return value
 
 
 class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
@@ -333,7 +322,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
             grant_type=grant_type,
             username=username,
             password=password,
-            scope=scope,
+            scopes=scope,
             client_id=client_id,
             client_secret=client_secret,
         )
@@ -670,54 +659,3 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             )
 
         return None
-
-
-class SecurityScopes:
-    """
-    Represents a collection of OAuth2 scopes required across multiple dependencies.
-
-    `SecurityScopes` is used as a parameter in a dependency to aggregate the OAuth2
-    scopes required by all dependent components within the same request. This allows
-    different dependencies to specify varying scopes even when used together in the
-    same *path operation*, and provides access to all required scopes in one place
-    for streamlined authorization handling.
-    """
-
-    def __init__(
-        self,
-        scopes: Annotated[
-            Optional[List[str]],
-            Doc(
-                """
-                A list of OAuth2 scopes needed for the current request, populated by Esmerald.
-
-                This list will automatically include all required scopes based on the
-                dependencies in the request, ensuring all necessary permissions are available.
-                """
-            ),
-        ] = None,
-    ):
-        self.scopes: Annotated[
-            List[str],
-            Doc(
-                """
-                List of all OAuth2 scopes required by dependencies for this request.
-
-                This list consolidates the individual scopes required by each dependency,
-                providing a comprehensive view of the permissions needed for access.
-                """
-            ),
-        ] = scopes or []
-
-        self.scope_str: Annotated[
-            str,
-            Doc(
-                """
-                A single string of all required scopes, space-separated as per OAuth2 specification.
-
-                This string is useful for passing scopes in formats where a single,
-                space-delimited string is required, such as in OAuth2-compliant authorization
-                requests or access tokens.
-                """
-            ),
-        ] = " ".join(self.scopes)

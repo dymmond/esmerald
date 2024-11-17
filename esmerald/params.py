@@ -1,6 +1,5 @@
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
-from pydantic.dataclasses import dataclass
 from pydantic.fields import AliasChoices, AliasPath, FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
@@ -626,30 +625,6 @@ class Injects(FieldInfo):
             "allow_none": self.allow_none,
         }
         super().__init__(default=default, json_schema_extra=self.extra)
-
-
-@dataclass
-class DirectInject:  # pragma: no cover
-    def __init__(
-        self,
-        dependency: Optional[Callable[..., Any]] = None,
-        *,
-        use_cache: bool = True,
-        allow_none: bool = True,
-    ) -> None:
-        self.dependency = dependency
-        self.use_cache = use_cache
-        self.allow_none = allow_none
-
-    def __hash__(self) -> int:
-        values: Dict[str, Any] = {}
-        for key, value in self.__dict__.items():
-            values[key] = None
-            if isinstance(value, (list, set)):
-                values[key] = tuple(value)
-            else:
-                values[key] = value
-        return hash((type(self),) + tuple(values))
 
 
 class Depends:

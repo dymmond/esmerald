@@ -4,7 +4,6 @@ from .oauth import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
     OAuth2PasswordRequestFormStrict,
-    SecurityScopes,
 )
 
 __all__ = [
@@ -13,5 +12,4 @@ __all__ = [
     "OAuth2PasswordBearer",
     "OAuth2PasswordRequestForm",
     "OAuth2PasswordRequestFormStrict",
-    "SecurityScopes",
 ]

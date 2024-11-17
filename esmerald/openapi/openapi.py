@@ -47,18 +47,28 @@ from esmerald.openapi.utils import (
     get_schema_from_model_field,
     is_status_code_allowed,
 )
-from esmerald.params import Param
+from esmerald.params import Param, Security
 from esmerald.routing import gateways, router
 from esmerald.routing._internal import (
     convert_annotation_to_pydantic_model,
 )
 from esmerald.security.oauth2.oauth import SecurityBase
+from esmerald.transformers.model import ParamSetting
 from esmerald.typing import Undefined
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]
 TRANSFORMER_TYPES_KEYS = list(TRANSFORMER_TYPES.keys())
 TRANSFORMER_TYPES_KEYS += ADDITIONAL_TYPES
+
+
+def is_security_scheme(param: ParamSetting) -> bool:
+    """
+    Checks if the object is a security scheme.
+    """
+    if not param.field_info.default:
+        return False
+    return isinstance(param.field_info.default, Security)
 
 
 def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str]) -> List[Any]:
@@ -83,17 +93,20 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
 
         # Making sure all the optional and union types are included
         if is_union_or_optional:
-            # field_info = should_skip_json_schema(param.field_info)
-            query_params.append(param.field_info)
+            if not is_security_scheme(param):
+                query_params.append(param.field_info)
 
         else:
-            if isinstance(param.field_info.annotation, _GenericAlias):
+            if isinstance(param.field_info.annotation, _GenericAlias) and not is_security_scheme(
+                param
+            ):
                 query_params.append(param.field_info)
             elif (
                 param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES_KEYS
                 or param.field_info.annotation.__name__ in TRANSFORMER_TYPES_KEYS
             ):
-                query_params.append(param.field_info)
+                if not is_security_scheme(param):
+                    query_params.append(param.field_info)
 
     return path_params + query_params + cookie_params + header_params
 

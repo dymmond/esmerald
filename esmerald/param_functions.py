@@ -4,7 +4,6 @@ from pydantic.fields import AliasChoices, AliasPath
 
 from esmerald import params
 from esmerald.enums import EncodingType
-from esmerald.params import DirectInject
 from esmerald.typing import Undefined
 
 _PyUndefined: Any = Undefined
@@ -21,19 +20,6 @@ def Security(
     This is a simple wrapper of the classic Inject().
     """
     return params.Security(dependency=dependency, scopes=scopes, use_cache=use_cache)
-
-
-def DirectInjects(
-    dependency: Optional[Callable[..., Any]] = None,
-    *,
-    use_cache: bool = True,
-    allow_none: bool = True,
-) -> Any:
-    """
-    This function should be only called if Inject/Injects is not used in the dependencies.
-    This is a simple wrapper of the classic Inject().
-    """
-    return DirectInject(dependency=dependency, use_cache=use_cache, allow_none=allow_none)
 
 
 def Form(
