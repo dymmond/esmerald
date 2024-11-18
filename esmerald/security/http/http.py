@@ -90,15 +90,16 @@ class HTTPBasic(HTTPBase):
 
     Example:
         ```python
-        from typing import Annotated
-        from fastapi import Depends, FastAPI
-        from fastapi.security import HTTPBasic, HTTPBasicCredentials
+        from typing import Any
 
-        app = FastAPI()
+        from esmerald import Gateway, Inject, Injects, get
+        from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
+        from esmerald.testclient import create_client
+
         security = HTTPBasic()
 
-        @app.get("/users/me")
-        def read_current_user(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
+        @app.get("/users/me", security=[security], dependencies={"credentials": Inject(security)}))
+        def read_current_user(credentials: HTTPBasicCredentials = Injects()):
             return {"username": credentials.username, "password": credentials.password}
         ```
     """
@@ -163,19 +164,20 @@ class HTTPBearer(HTTPBase):
 
     Use this class as a dependency to enforce HTTP Bearer token authentication.
 
-    Example:
-        ```python
-        from typing import Annotated
-        from fastapi import Depends, FastAPI
-        from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+    ## Example
 
-        app = FastAPI()
-        security = HTTPBearer()
+    ```python
+    from typing import Any
 
-        @app.get("/users/me")
-        def read_current_user(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
-            return {"scheme": credentials.scheme, "credentials": credentials.credentials}
-        ```
+    from esmerald import Inject, Injects, get
+    from esmerald.security.http import HTTPAuthorizationCredentials, HTTPBearer
+
+    security = HTTPBearer()
+
+    @app.get("/users/me")
+    def read_current_user(credentials: HTTPAuthorizationCredentials = Injects()) -> Any::
+        return {"scheme": credentials.scheme, "credentials": credentials.credentials}
+    ```
     """
 
     def __init__(
@@ -224,19 +226,20 @@ class HTTPDigest(HTTPBase):
 
     Use this class as a dependency to enforce HTTP Digest authentication.
 
-    Example:
-        ```python
-        from typing import Annotated
-        from fastapi import Depends, FastAPI
-        from fastapi.security import HTTPAuthorizationCredentials, HTTPDigest
+    ## Example:
 
-        app = FastAPI()
-        security = HTTPDigest()
+    ```python
+    from typing import Any
 
-        @app.get("/users/me")
-        def read_current_user(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
-            return {"scheme": credentials.scheme, "credentials": credentials.credentials}
-        ```
+    from esmerald import Inject, Injects, get
+    from esmerald.security.http import HTTPAuthorizationCredentials, HTTPDigest
+
+    security = HTTPDigest()
+
+    @get("/users/me", security=[security], dependencies={"credentials": Inject(security)})
+    def read_current_user(credentials: HTTPAuthorizationCredentials = Injects()) -> Any:
+        return {"scheme": credentials.scheme, "credentials": credentials.credentials}
+    ```
     """
 
     def __init__(
