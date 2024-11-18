@@ -627,8 +627,33 @@ class Injects(FieldInfo):
         super().__init__(default=default, json_schema_extra=self.extra)
 
 
-class Depends:
+class Requires:
+    """
+    A class that represents a requirement with an optional dependency and caching behavior.
+
+    Attributes:
+        dependency (Optional[Callable[..., Any]]): An optional callable that represents the dependency.
+        use_cache (bool): A flag indicating whether to use caching for the dependency. Defaults to True.
+
+    Methods:
+        __repr__(): Returns a string representation of the Requires instance.
+    """
+
     def __init__(self, dependency: Optional[Callable[..., Any]] = None, *, use_cache: bool = True):
+        """
+        Initializes a Requires instance.
+
+        Args:
+            dependency (Optional[Callable[..., Any]]): An optional callable that represents the dependency.
+            use_cache (bool): A flag indicating whether to use caching for the dependency. Defaults to True.
+        """
+
+        """
+        Returns a string representation of the Requires instance.
+
+        Returns:
+            str: A string representation of the Requires instance.
+        """
         self.dependency = dependency
         self.use_cache = use_cache
 
@@ -638,7 +663,24 @@ class Depends:
         return f"{self.__class__.__name__}({attr}{cache})"
 
 
-class Security(Depends):
+class Security(Requires):
+    """
+    A class used to represent security requirements for a particular operation.
+
+    Attributes:
+    ----------
+    dependency : Optional[Callable[..., Any]]
+        A callable that represents the dependency required for security.
+    scopes : Optional[Sequence[str]]
+        A sequence of scopes required for the security. Defaults to an empty list.
+    use_cache : bool
+        A flag indicating whether to use cache. Defaults to True.
+
+    Methods:
+    -------
+    __init__(self, dependency: Optional[Callable[..., Any]] = None, *, scopes: Optional[Sequence[str]] = None, use_cache: bool = True)
+        Initializes the Security class with the given dependency, scopes, and use_cache flag.
+    """
     def __init__(
         self,
         dependency: Optional[Callable[..., Any]] = None,

@@ -18,6 +18,7 @@ from typing import (
 
 from orjson import loads
 from pydantic import ValidationError, create_model
+from pydantic.fields import FieldInfo
 
 from esmerald.encoders import ENCODER_TYPES, Encoder
 from esmerald.exceptions import (
@@ -31,8 +32,9 @@ from esmerald.requests import Request
 from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, UNDEFINED, VALIDATION_NAMES
 from esmerald.transformers.utils import get_connection_info, get_field_definition_from_param
 from esmerald.typing import Undefined
-from esmerald.utils.dependency import is_dependency_field, should_skip_dependency_validation
+from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
 from esmerald.utils.helpers import is_optional_union
+from esmerald.utils.schema import extract_arguments
 from esmerald.websockets import WebSocket
 
 if TYPE_CHECKING:
@@ -57,6 +59,16 @@ def is_server_error(error: Any, klass: Type["SignatureModel"]) -> bool:
         return error["loc"][-1] in klass.dependency_names
     except IndexError:
         return False
+
+
+def is_dependency_field(val: Any) -> bool:
+    json_schema_extra = getattr(val, "json_schema_extra", None) or {}
+    return bool(isinstance(val, FieldInfo) and bool(json_schema_extra.get(IS_DEPENDENCY)))
+
+
+def should_skip_dependency_validation(val: Any) -> bool:
+    json_schema_extra = getattr(val, "json_schema_extra", None) or {}
+    return bool(is_dependency_field(val) and json_schema_extra.get(SKIP_VALIDATION))
 
 
 class Parameter(ArbitraryBaseModel):
@@ -178,6 +190,15 @@ class SignatureModel(ArbitraryBaseModel):
                 encoder_info: Dict[str, "Encoder"] = cls.encoders[key]  # type: ignore
                 encoder: "Encoder" = encoder_info["encoder"]
                 annotation = encoder_info["annotation"]
+
+                if is_optional_union(annotation) and not value:
+                    kwargs[key] = None
+                    continue
+
+                if is_optional_union(annotation) and value:
+                    decoded_list = extract_arguments(annotation)
+                    annotation = decoded_list[0]  # type: ignore
+
                 kwargs[key] = encode_value(encoder, annotation, value)
 
         return kwargs

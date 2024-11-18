@@ -69,7 +69,7 @@ def test_security_oauth2_password_other_header():
         assert response.json() == {"username": "Other footokenbar"}
 
 
-def xtest_security_oauth2_password_bearer_no_header():
+def test_security_oauth2_password_bearer_no_header():
     with create_client(
         routes=[Gateway(handler=read_users_me)], security=[reusable_oauth2]
     ) as client:
