@@ -261,18 +261,15 @@ class HTTPDigest(HTTPBase):
 
     async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:
         authorization = request.headers.get("Authorization")
-        if not authorization:
+        scheme, credentials = get_authorization_scheme_param(authorization)
+        if not (authorization and scheme and credentials):
             if self.__auto_error__:
                 raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-            return None
-
-        scheme, credentials = get_authorization_scheme_param(authorization)
-        if not (scheme and credentials) or scheme.lower() != "digest":
-            if self.__auto_error__:
-                raise HTTPException(
-                    status_code=HTTP_403_FORBIDDEN,
-                    detail="Invalid authentication credentials",
-                )
-            return None
-
+            else:
+                return None
+        if scheme.lower() != "digest":
+            raise HTTPException(
+                status_code=HTTP_403_FORBIDDEN,
+                detail="Invalid authentication credentials",
+            )
         return HTTPAuthorizationCredentials(scheme=scheme, credentials=credentials)
