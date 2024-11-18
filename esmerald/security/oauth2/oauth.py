@@ -393,8 +393,7 @@ class OAuth2(SecurityBase):
         model = OAuth2Model(
             flows=cast(OAuthFlowsModel, flows), scheme=scheme_name, description=description
         )
-        model_dump = model.model_dump()
-        super().__init__(**model_dump)
+        super().__init__(**model.model_dump())
         self.scheme_name = scheme_name or self.__class__.__name__
         self.__auto_error__ = auto_error
 
