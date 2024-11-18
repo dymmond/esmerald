@@ -92,67 +92,16 @@ def test_openapi_schema():
                                 }
                             }
                         ],
-                        "parameters": [
-                            {
-                                "name": "token",
-                                "in": "query",
-                                "required": True,
-                                "deprecated": False,
-                                "allowEmptyValue": False,
-                                "allowReserved": False,
-                                "schema": {
-                                    "anyOf": [{"type": "string"}, {"type": "null"}],
-                                    "title": "Token",
-                                },
-                            }
-                        ],
                         "responses": {
                             "200": {
                                 "description": "Successful response",
                                 "content": {"application/json": {"schema": {"type": "string"}}},
-                            },
-                            "422": {
-                                "description": "Validation Error",
-                                "content": {
-                                    "application/json": {
-                                        "schema": {
-                                            "$ref": "#/components/schemas/HTTPValidationError"
-                                        }
-                                    }
-                                },
-                            },
+                            }
                         },
                     }
                 }
             },
             "components": {
-                "schemas": {
-                    "HTTPValidationError": {
-                        "properties": {
-                            "detail": {
-                                "items": {"$ref": "#/components/schemas/ValidationError"},
-                                "type": "array",
-                                "title": "Detail",
-                            }
-                        },
-                        "type": "object",
-                        "title": "HTTPValidationError",
-                    },
-                    "ValidationError": {
-                        "properties": {
-                            "loc": {
-                                "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
-                                "type": "array",
-                                "title": "Location",
-                            },
-                            "msg": {"type": "string", "title": "Message"},
-                            "type": {"type": "string", "title": "Error Type"},
-                        },
-                        "type": "object",
-                        "required": ["loc", "msg", "type"],
-                        "title": "ValidationError",
-                    },
-                },
                 "securitySchemes": {
                     "OAuth2AuthorizationCodeBearer": {
                         "type": "oauth2",
@@ -165,6 +114,6 @@ def test_openapi_schema():
                             }
                         },
                     }
-                },
+                }
             },
         }

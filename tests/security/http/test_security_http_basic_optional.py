@@ -1,37 +1,59 @@
+from base64 import b64encode
 from typing import Any, Optional
 
 from esmerald import Gateway, Inject, Injects, get
-from esmerald.security.http import HTTPAuthorizationCredentials, HTTPBase
+from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
 from esmerald.testclient import create_client
 
-security = HTTPBase(scheme="Other", auto_error=False)
+security = HTTPBasic(auto_error=False)
 
 
 @get(
     "/users/me",
-    dependencies={"credentials": Inject(security)},
     security=[security],
+    dependencies={"credentials": Inject(security)},
 )
-def read_current_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Injects(),
-) -> Any:
+def read_current_user(credentials: Optional[HTTPBasicCredentials] = Injects()) -> Any:
     if credentials is None:
         return {"msg": "Create an account first"}
-    return {"scheme": credentials.scheme, "credentials": credentials.credentials}
+    return {"username": credentials.username, "password": credentials.password}
 
 
-def test_security_http_base():
-    with create_client(routes=[Gateway(handler=read_current_user)]) as client:
-        response = client.get("/users/me", headers={"Authorization": "Other foobar"})
+def test_security_http_basic():
+    with create_client(
+        routes=[
+            Gateway(handler=read_current_user),
+        ],
+    ) as client:
+        response = client.get("/users/me", auth=("john", "secret"))
         assert response.status_code == 200, response.text
-        assert response.json() == {"scheme": "Other", "credentials": "foobar"}
+        assert response.json() == {"username": "john", "password": "secret"}
 
 
-def test_security_http_base_no_credentials():
+def test_security_http_basic_no_credentials():
     with create_client(routes=[Gateway(handler=read_current_user)]) as client:
         response = client.get("/users/me")
         assert response.status_code == 200, response.text
         assert response.json() == {"msg": "Create an account first"}
+
+
+def test_security_http_basic_invalid_credentials():
+    with create_client(routes=[Gateway(handler=read_current_user)]) as client:
+        response = client.get("/users/me", headers={"Authorization": "Basic notabase64token"})
+        assert response.status_code == 401, response.text
+        assert response.headers["WWW-Authenticate"] == "Basic"
+        assert response.json() == {"detail": "Invalid authentication credentials"}
+
+
+def test_security_http_basic_non_basic_credentials():
+    payload = b64encode(b"johnsecret").decode("ascii")
+    auth_header = f"Basic {payload}"
+
+    with create_client(routes=[Gateway(handler=read_current_user)]) as client:
+        response = client.get("/users/me", headers={"Authorization": auth_header})
+        assert response.status_code == 401, response.text
+        assert response.headers["WWW-Authenticate"] == "Basic"
+        assert response.json() == {"detail": "Invalid authentication credentials"}
 
 
 def test_openapi_schema():
@@ -58,10 +80,10 @@ def test_openapi_schema():
                         "deprecated": False,
                         "security": [
                             {
-                                "HTTPBase": {
+                                "HTTPBasic": {
                                     "type": "http",
-                                    "scheme": "Other",
-                                    "scheme_name": "HTTPBase",
+                                    "scheme": "basic",
+                                    "scheme_name": "HTTPBasic",
                                 }
                             }
                         ],
@@ -74,5 +96,5 @@ def test_openapi_schema():
                     }
                 }
             },
-            "components": {"securitySchemes": {"HTTPBase": {"type": "http", "scheme": "Other"}}},
+            "components": {"securitySchemes": {"HTTPBasic": {"type": "http", "scheme": "basic"}}},
         }

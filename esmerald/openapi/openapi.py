@@ -70,11 +70,15 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
     header_params = [param.field_info for param in route.transformer.get_header_params()]
 
+    handler_dependencies = set(route.get_dependencies().keys())
     handler_query_params = [
         param
         for param in route.transformer.get_query_params()
-        if param.field_alias not in route.body_encoder_fields.keys() and not param.is_security
+        if param.field_alias not in route.body_encoder_fields.keys()
+        and not param.is_security
+        and param.field_alias not in handler_dependencies
     ]
+
     query_params = []
     for param in handler_query_params:
         is_union_or_optional = is_union(param.field_info.annotation)

@@ -42,6 +42,7 @@ class ParamSetting(NamedTuple):
     field_info: FieldInfo
     is_security: bool = False
 
+
 class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
     def __init__(
         self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: Any

@@ -1,6 +1,6 @@
 import binascii
 from base64 import b64decode
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from lilya.requests import Request
 from lilya.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
@@ -9,7 +9,7 @@ from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import HTTPException
 from esmerald.openapi.models import HTTPBase as HTTPBaseModel, HTTPBearer as HTTPBearerModel
-from esmerald.security.base import SecurityBase
+from esmerald.security.base import HttpSecurityBase
 from esmerald.security.utils import get_authorization_scheme_param
 
 
@@ -39,7 +39,7 @@ class HTTPAuthorizationCredentials(BaseModel):
     credentials: Annotated[str, Doc("The authorization credentials extracted from the header.")]
 
 
-class HTTPBase(SecurityBase):
+class HTTPBase(HttpSecurityBase):
     def __init__(
         self,
         *,
@@ -47,6 +47,7 @@ class HTTPBase(SecurityBase):
         scheme_name: Union[str, None] = None,
         description: Union[str, None] = None,
         auto_error: bool = True,
+        **kwargs: Any,
     ):
         """
         Base class for HTTP security schemes.
@@ -58,7 +59,8 @@ class HTTPBase(SecurityBase):
             auto_error (bool, optional): Whether to automatically raise an error if authentication fails.
         """
         model = HTTPBaseModel(scheme=scheme, description=description)
-        super().__init__(**model.model_dump())
+        model_dump = {**model.model_dump(), **kwargs}
+        super().__init__(**model_dump)
         self.scheme_name = scheme_name or self.__class__.__name__
         self.__auto_error__ = auto_error
 

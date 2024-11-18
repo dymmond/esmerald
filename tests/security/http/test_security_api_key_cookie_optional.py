@@ -87,82 +87,18 @@ def test_openapi_schema():
                                 }
                             }
                         ],
-                        "parameters": [
-                            {
-                                "name": "current_user",
-                                "in": "query",
-                                "required": True,
-                                "deprecated": False,
-                                "allowEmptyValue": False,
-                                "allowReserved": False,
-                                "schema": {
-                                    "anyOf": [
-                                        {"$ref": "#/components/schemas/User"},
-                                        {"type": "null"},
-                                    ],
-                                    "title": "Current User",
-                                },
-                            }
-                        ],
                         "responses": {
                             "200": {
                                 "description": "Successful response",
                                 "content": {"application/json": {"schema": {"type": "string"}}},
-                            },
-                            "422": {
-                                "description": "Validation Error",
-                                "content": {
-                                    "application/json": {
-                                        "schema": {
-                                            "$ref": "#/components/schemas/HTTPValidationError"
-                                        }
-                                    }
-                                },
-                            },
+                            }
                         },
                     }
                 }
             },
             "components": {
-                "schemas": {
-                    "HTTPValidationError": {
-                        "properties": {
-                            "detail": {
-                                "items": {"$ref": "#/components/schemas/ValidationError"},
-                                "type": "array",
-                                "title": "Detail",
-                            }
-                        },
-                        "type": "object",
-                        "title": "HTTPValidationError",
-                    },
-                    "User": {
-                        "properties": {"username": {"type": "string", "title": "Username"}},
-                        "type": "object",
-                        "required": ["username"],
-                        "title": "User",
-                    },
-                    "ValidationError": {
-                        "properties": {
-                            "loc": {
-                                "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
-                                "type": "array",
-                                "title": "Location",
-                            },
-                            "msg": {"type": "string", "title": "Message"},
-                            "type": {"type": "string", "title": "Error Type"},
-                        },
-                        "type": "object",
-                        "required": ["loc", "msg", "type"],
-                        "title": "ValidationError",
-                    },
-                },
                 "securitySchemes": {
-                    "APIKeyInCookie": {
-                        "type": "apiKey",
-                        "name": "key",
-                        "in": "cookie",
-                    }
-                },
+                    "APIKeyInCookie": {"type": "apiKey", "name": "key", "in": "cookie"}
+                }
             },
         }
