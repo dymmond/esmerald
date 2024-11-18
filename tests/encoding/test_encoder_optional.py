@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel
 
@@ -31,7 +31,7 @@ def test_optional():
 
 
 @post("/union")
-async def create_union(data: Optional[User]) -> Any:
+async def create_union(data: Union[User, None]) -> Any:
     return data if data else {}
 
 
@@ -46,5 +46,45 @@ def test_union():
         assert response.json() == {}
 
         response = client.post("/union")
+        assert response.status_code == 201
+        assert response.json() == {}
+
+
+@post("/optional-one")
+async def create_one(test: Optional[User]) -> Any:
+    return test if test else {}
+
+
+def test_optional_one():
+    with create_client(routes=[Gateway(handler=create_one)]) as client:
+        response = client.post("/optional-one", json={"test": {"username": "test"}})
+        assert response.status_code == 201
+        assert response.json() == {"username": "test"}
+
+        response = client.post("/optional-one", json={})
+        assert response.status_code == 201
+        assert response.json() == {}
+
+        response = client.post("/optional-one")
+        assert response.status_code == 201
+        assert response.json() == {}
+
+
+@post("/union-one")
+async def create_union_one(test: Union[User, None]) -> Any:
+    return test if test else {}
+
+
+def test_union_one():
+    with create_client(routes=[Gateway(handler=create_union_one)]) as client:
+        response = client.post("/union-one", json={"test": {"username": "test"}})
+        assert response.status_code == 201
+        assert response.json() == {"username": "test"}
+
+        response = client.post("/union-one", json={})
+        assert response.status_code == 201
+        assert response.json() == {}
+
+        response = client.post("/union-one")
         assert response.status_code == 201
         assert response.json() == {}
