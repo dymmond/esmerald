@@ -326,12 +326,15 @@ class OpenAPIFieldInfoMixin:
         """
         # Making sure the dependencies are not met as body fields for OpenAPI representation
         handler_dependencies = set(self.get_dependencies().keys())
+        security_dependencies = set(self.transformer.get_security_params().keys())
 
         # Getting everything else that is not considered a dependency
         body_encoder_fields = {
             name: field
             for name, field in self.signature_model.model_fields.items()
-            if is_body_encoder(field.annotation) and name not in handler_dependencies
+            if is_body_encoder(field.annotation)
+            and name not in handler_dependencies
+            and name not in security_dependencies
         }
         return body_encoder_fields
 

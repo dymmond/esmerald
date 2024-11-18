@@ -1,41 +1,33 @@
 from typing import Any, Optional
 
-from pydantic import BaseModel
-
-from esmerald import Gateway, Inject, Injects, Security, get
-from esmerald.security.api_key import APIKeyInQuery
+from esmerald import Gateway, Inject, Injects, get
+from esmerald.security.http import HTTPAuthorizationCredentials, HTTPBase
 from esmerald.testclient import create_client
 
-api_key = APIKeyInQuery(name="key", auto_error=False)
+security = HTTPBase(scheme="Other", auto_error=False)
 
 
-class User(BaseModel):
-    username: str
-
-
-def get_current_user(oauth_header: Optional[str] = Security(api_key)):
-    if oauth_header is None:
-        return None
-    user = User(username=oauth_header)
-    return user
-
-
-@get("/users/me", dependencies={"current_user": Inject(get_current_user)}, security=[api_key])
-def read_current_user(current_user: Optional[User] = Injects()) -> Any:
-    if current_user is None:
+@get(
+    "/users/me",
+    dependencies={"credentials": Inject(security)},
+    security=[security],
+)
+def read_current_user(
+    credentials: Optional[HTTPAuthorizationCredentials] = Injects(),
+) -> Any:
+    if credentials is None:
         return {"msg": "Create an account first"}
-    else:
-        return current_user
+    return {"scheme": credentials.scheme, "credentials": credentials.credentials}
 
 
-def test_security_api_key():
+def test_security_http_base():
     with create_client(routes=[Gateway(handler=read_current_user)]) as client:
-        response = client.get("/users/me?key=secret")
+        response = client.get("/users/me", headers={"Au thorization": "Other foobar"})
         assert response.status_code == 200, response.text
-        assert response.json() == {"username": "secret"}
+        assert response.json() == {"scheme": "Other", "credentials": "foobar"}
 
 
-def test_security_api_key_no_key():
+def test_security_http_base_no_credentials():
     with create_client(routes=[Gateway(handler=read_current_user)]) as client:
         response = client.get("/users/me")
         assert response.status_code == 200, response.text
@@ -66,17 +58,16 @@ def test_openapi_schema():
                         "deprecated": False,
                         "security": [
                             {
-                                "APIKeyInQuery": {
-                                    "type": "apiKey",
-                                    "name": "key",
-                                    "in": "query",
-                                    "scheme_name": "APIKeyInQuery",
+                                "HTTPBase": {
+                                    "type": "http",
+                                    "scheme": "Other",
+                                    "scheme_name": "HTTPBase",
                                 }
                             }
                         ],
                         "parameters": [
                             {
-                                "name": "current_user",
+                                "name": "credentials",
                                 "in": "query",
                                 "required": True,
                                 "deprecated": False,
@@ -84,10 +75,12 @@ def test_openapi_schema():
                                 "allowReserved": False,
                                 "schema": {
                                     "anyOf": [
-                                        {"$ref": "#/components/schemas/User"},
+                                        {
+                                            "$ref": "#/components/schemas/HTTPAuthorizationCredentials"
+                                        },
                                         {"type": "null"},
                                     ],
-                                    "title": "Current User",
+                                    "title": "Credentials",
                                 },
                             }
                         ],
@@ -112,6 +105,15 @@ def test_openapi_schema():
             },
             "components": {
                 "schemas": {
+                    "HTTPAuthorizationCredentials": {
+                        "properties": {
+                            "scheme": {"type": "string", "title": "Scheme"},
+                            "credentials": {"type": "string", "title": "Credentials"},
+                        },
+                        "type": "object",
+                        "required": ["scheme", "credentials"],
+                        "title": "HTTPAuthorizationCredentials",
+                    },
                     "HTTPValidationError": {
                         "properties": {
                             "detail": {
@@ -122,12 +124,6 @@ def test_openapi_schema():
                         },
                         "type": "object",
                         "title": "HTTPValidationError",
-                    },
-                    "User": {
-                        "properties": {"username": {"type": "string", "title": "Username"}},
-                        "type": "object",
-                        "required": ["username"],
-                        "title": "User",
                     },
                     "ValidationError": {
                         "properties": {
@@ -144,8 +140,6 @@ def test_openapi_schema():
                         "title": "ValidationError",
                     },
                 },
-                "securitySchemes": {
-                    "APIKeyInQuery": {"type": "apiKey", "name": "key", "in": "query"}
-                },
+                "securitySchemes": {"HTTPBase": {"type": "http", "scheme": "Other"}},
             },
         }

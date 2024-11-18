@@ -154,7 +154,9 @@ class SignatureModel(ArbitraryBaseModel):
     encoders: ClassVar[Dict["Encoder", Any]]
 
     @classmethod
-    def parse_encoders(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    async def parse_encoders(
+        cls, connection: Union[Request, WebSocket], kwargs: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Parses the kwargs into a proper structure for the encoder itself.
 
@@ -204,7 +206,7 @@ class SignatureModel(ArbitraryBaseModel):
         return kwargs
 
     @classmethod
-    def parse_values_for_connection(
+    async def parse_values_for_connection(
         cls, connection: Union[Request, WebSocket], **kwargs: Dict[str, Any]
     ) -> Any:
         """
@@ -224,7 +226,7 @@ class SignatureModel(ArbitraryBaseModel):
         """
         try:
             if cls.encoders:
-                kwargs = cls.parse_encoders(kwargs)
+                kwargs = await cls.parse_encoders(connection, kwargs)
             signature = cls(**kwargs)
             values = {}
             for key in cls.model_fields:

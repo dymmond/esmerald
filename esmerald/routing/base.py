@@ -223,7 +223,7 @@ class BaseResponseHandler:
                     dependency=dependency, connection=request, **kwargs
                 )
 
-            parsed_kwargs = signature_model.parse_values_for_connection(
+            parsed_kwargs = await signature_model.parse_values_for_connection(
                 connection=request, **kwargs
             )
         else:

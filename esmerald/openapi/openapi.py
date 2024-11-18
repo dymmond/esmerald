@@ -73,13 +73,16 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
     handler_query_params = [
         param
         for param in route.transformer.get_query_params()
-        if param.field_alias not in route.body_encoder_fields.keys()
+        if param.field_alias not in route.body_encoder_fields.keys() and not param.is_security
     ]
     query_params = []
     for param in handler_query_params:
         is_union_or_optional = is_union(param.field_info.annotation)
 
         if param.field_info.alias in body_fields:
+            continue
+
+        if param.is_security:
             continue
 
         # Making sure all the optional and union types are included

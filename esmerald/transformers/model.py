@@ -18,6 +18,7 @@ from esmerald.transformers.utils import (
     merge_sets,
 )
 from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
+from esmerald.utils.dependencies import is_security_scheme
 from esmerald.utils.schema import is_field_optional
 
 if TYPE_CHECKING:
@@ -114,6 +115,15 @@ class TransformerModel(ArbitraryExtraBaseModel):
             Set[ParamSetting]: Set of header parameters.
         """
         return self.headers
+
+    def get_security_params(self) -> Dict[str, ParamSetting]:
+        """
+        Get header parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of header parameters.
+        """
+        return {field.field_name: field for field in self.get_query_params() if field.is_security}
 
     def to_kwargs(
         self,
@@ -230,7 +240,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         if kwargs:
             kwargs = await self.get_for_security_dependencies(connection, kwargs)
 
-        dependency_kwargs = signature_model.parse_values_for_connection(
+        dependency_kwargs = await signature_model.parse_values_for_connection(
             connection=connection, **kwargs
         )
         return await dependency.inject(**dependency_kwargs)
@@ -399,12 +409,14 @@ def get_parameter_settings(
     for field_name, model_field in signature_fields.items():
         if field_name not in ignored_keys:
             allow_none = getattr(model_field, "allow_none", True)
+            is_security = is_security_scheme(model_field.default)
             parameter_definitions.add(
                 create_parameter_setting(
                     allow_none=allow_none,
                     field_name=field_name,
                     field_info=model_field,
                     path_parameters=path_parameters,
+                    is_security=is_security,
                 )
             )
 

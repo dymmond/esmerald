@@ -1,5 +1,6 @@
 from .http import (
     HTTPAuthorizationCredentials,
+    HTTPBase,
     HTTPBasic,
     HTTPBasicCredentials,
     HTTPBearer,
@@ -7,6 +8,7 @@ from .http import (
 )
 
 __all__ = [
+    "HTTPBase",
     "HTTPBasic",
     "HTTPBearer",
     "HTTPDigest",
