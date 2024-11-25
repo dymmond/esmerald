@@ -68,7 +68,7 @@
 
 ### Использование add_task
 
-Другой способ добавления нескольких задач - использование функции `add_tasks`, предоставляемой объектом `BackgroundTasks`.
+Другой способ добавления нескольких задач - использование функции `add_task`, предоставляемой объектом `BackgroundTasks`.
 
 ```python hl_lines="28-32"
 {!> ../../../docs_src/background_tasks/response/add_tasks.py !}
