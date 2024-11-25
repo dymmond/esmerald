@@ -1,4 +1,5 @@
 import re
+from contextvars import ContextVar
 from inspect import Parameter as InspectParameter, Signature as InspectSignature
 from typing import (
     TYPE_CHECKING,
@@ -516,7 +517,12 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             Any: The encoder found, or None if no encoder matches.
         """
         origin = get_origin(annotation)
-        for encoder in ENCODER_TYPES.get():
+
+        if isinstance(ENCODER_TYPES, ContextVar):
+            encoder_types = ENCODER_TYPES.get()
+        else:
+            encoder_types = ENCODER_TYPES
+        for encoder in encoder_types:
             if not origin and encoder.is_type(annotation):
                 return encoder
             elif origin:

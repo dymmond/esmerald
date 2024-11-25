@@ -1,4 +1,5 @@
 import inspect
+from contextvars import ContextVar
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
 
@@ -60,9 +61,14 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
         field_annotation.__args__ = annotations
         return field_annotation
 
+    if isinstance(ENCODER_TYPES, ContextVar):
+        encoder_types = ENCODER_TYPES.get()
+    else:
+        encoder_types = ENCODER_TYPES
+
     if (
         not isinstance(field_annotation, BaseModel)
-        and any(encoder.is_type(field_annotation) for encoder in ENCODER_TYPES.get())
+        and any(encoder.is_type(field_annotation) for encoder in encoder_types)
         and inspect.isclass(field_annotation)
     ):
         field_definitions: Dict[str, Any] = {}
