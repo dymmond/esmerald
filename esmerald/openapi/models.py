@@ -38,7 +38,7 @@ from esmerald.openapi.schemas.v3_1_0.xml import XML as XML
 
 class APIKey(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.apiKey,
+        default=SecuritySchemeType.apiKey.value,
         alias="type",
     )
     param_in: APIKeyIn = Field(alias="in")
@@ -47,7 +47,7 @@ class APIKey(SecurityScheme):
 
 class HTTPBase(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.http,
+        default=SecuritySchemeType.http.value,
         alias="type",
     )
     scheme: str
@@ -64,14 +64,14 @@ class OAuthFlow(OpenOAuthFlow):
 
 class OAuth2(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.oauth2, alias="type"
+        default=SecuritySchemeType.oauth2.value, alias="type"
     )
     flows: OAuthFlows
 
 
 class OpenIdConnect(SecurityScheme):
     type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
-        default=SecuritySchemeType.openIdConnect, alias="type"
+        default=SecuritySchemeType.openIdConnect.value, alias="type"
     )
     openIdConnectUrl: str
 
