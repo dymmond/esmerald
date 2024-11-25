@@ -28,7 +28,7 @@ There are also two ways of passing via handlers.
 
 ### Using a single instance
 
-This is probably the most common use case where you simply need to execute one bacground task upon
+This is probably the most common use case where you simply need to execute one background task upon
 receiving the request, for example, sending an email notification.
 
 ```python hl_lines="18"
@@ -73,7 +73,7 @@ needed.
 
 ### Using the add_task
 
-Another way of adding multiple tasks is by using the `add_tasks` function provided by the
+Another way of adding multiple tasks is by using the `add_task` function provided by the
 `BackgroundTasks` object.
 
 ```python hl_lines="28-32"
