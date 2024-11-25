@@ -1,15 +1,19 @@
+from collections import deque
 from typing import Any
 
+import pytest
 from attrs import asdict, define, field, has
 
 from esmerald import Gateway, post
-from esmerald.encoders import Encoder, register_esmerald_encoder
+from esmerald.encoders import ENCODER_TYPES_CTX, Encoder, register_esmerald_encoder
 from esmerald.testclient import create_client
 
 
 class AttrsEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
+        return has(type(value))
+
+    def is_type_structure(self, value: Any) -> bool:
         return has(value)
 
     def serialize(self, obj: Any) -> Any:
@@ -19,7 +23,14 @@ class AttrsEncoder(Encoder):
         return annotation(**value)
 
 
-register_esmerald_encoder(AttrsEncoder)
+@pytest.fixture(autouse=True, scope="function")
+def additional_encoders():
+    token = ENCODER_TYPES_CTX.set(deque(ENCODER_TYPES_CTX.get()))
+    try:
+        register_esmerald_encoder(AttrsEncoder)
+        yield
+    finally:
+        ENCODER_TYPES_CTX.reset(token)
 
 
 @define
@@ -30,7 +41,6 @@ class AttrItem:
 
 
 def test_can_parse_attrs(test_app_client_factory):
-
     @post("/create")
     async def create(data: AttrItem) -> AttrItem:
         return data
@@ -44,7 +54,6 @@ def test_can_parse_attrs(test_app_client_factory):
 
 
 def test_can_parse_attrs_errors(test_app_client_factory):
-
     @define
     class Item:
         sku: str = field()

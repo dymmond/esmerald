@@ -22,7 +22,7 @@ from esmerald.applications import Esmerald
 from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings as Settings
 from esmerald.contrib.schedulers import SchedulerConfig
-from esmerald.encoders import Encoder
+from esmerald.encoders import EncoderProtocol, MoldingProtocol
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.utils.crypto import get_random_secret_key
 
@@ -136,7 +136,16 @@ def create_client(
     redirect_slashes: Optional[bool] = None,
     tags: Optional[List[str]] = None,
     webhooks: Optional[Sequence["WebhookGateway"]] = None,
-    encoders: Optional[Sequence[Encoder]] = None,
+    encoders: Optional[
+        Sequence[
+            Union[
+                EncoderProtocol,
+                MoldingProtocol,
+                type[EncoderProtocol],
+                type[MoldingProtocol],
+            ]
+        ]
+    ] = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
         app=Esmerald(

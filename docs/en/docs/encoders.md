@@ -29,8 +29,15 @@ from esmerald.encoders import Encoder
 
 When subclassing the `Encoder`, the mandatory functions are:
 
+**Serializing**
 * [`is_type()`](#is_type)
 * [`serialize()`](#serialize)
+
+
+**Molding**
+
+* [`is_type()`](#is_type)
+* [`is_type_structure()`](#is_type_structure)
 * [`encode()`](#encode)
 
 Esmerald extends the native functionality of Lilya regarding the encoders and adds some extra flavours to it.
@@ -43,9 +50,6 @@ unique to Esmerald.
 This function might sound confusing but it is in fact something simple. This function is used to check
 if the object of type X is an instance or a subclass of that same type.
 
-!!! Danger
-    Here is where it is different from Lilya. With Lilya you can use the `__type__` as well but
-    **not in Esmerald. In Esmerald you must implement the `is_type` function.
 
 #### Example
 
@@ -71,6 +75,11 @@ Quite simple and intuitive.
 {!> ../../../docs_src/encoders/serialize.py !}
 ```
 
+### is_type_structure
+
+For checking if an annotation can be used to mold an instance from the value.
+In the second step it is verified via `is_type` if the molding is required of the type or the type does match already.
+
 ### encode
 
 Finally, this functionality is what converts a given piece of data (JSON usually) into an object
@@ -83,6 +92,7 @@ For example, a dictionary into Pydantic models or MsgSpec Structs.
 ```python
 {!> ../../../docs_src/encoders/encode.py !}
 ```
+
 
 ### The flexibility
 

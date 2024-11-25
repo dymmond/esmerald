@@ -11,9 +11,11 @@ from lilya._utils import is_class_and_subclass
 
 
 class MsgSpecEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
-        return isinstance(value, Struct) or is_class_and_subclass(value, Struct)
+        return isinstance(value, Struct)
+
+    def is_type_structure(self, value: Any) -> bool:
+        return is_class_and_subclass(value, Struct)
 
     def serialize(self, obj: Any) -> Any:
         return msgspec.json.decode(msgspec.json.encode(obj))
@@ -23,9 +25,8 @@ class MsgSpecEncoder(Encoder):
 
 
 class PydanticEncoder(Encoder):
-
-    def is_type(self, value: Any) -> bool:
-        return isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel)
+    # leverage the comfort lilya is_type and is_type_structure defaults
+    __type__ = BaseModel
 
     def serialize(self, obj: BaseModel) -> dict[str, Any]:
         return obj.model_dump()

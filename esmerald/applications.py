@@ -1,14 +1,14 @@
 import warnings
+from collections.abc import Callable, Iterable, Sequence
 from datetime import timezone as dtimezone
 from functools import cached_property
+from inspect import isclass
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Dict,
     List,
     Optional,
-    Sequence,
     Type,
     TypeVar,
     Union,
@@ -29,7 +29,11 @@ from esmerald.config.openapi import OpenAPIConfig
 from esmerald.config.static_files import StaticFilesConfig
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.datastructures import State
-from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
+from esmerald.encoders import (
+    EncoderProtocol,
+    MoldingProtocol,
+    register_esmerald_encoder,
+)
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
     pydantic_validation_error_handler,
@@ -1024,7 +1028,16 @@ class Application(Lilya):
             ),
         ] = None,
         encoders: Annotated[
-            Sequence[Optional[Encoder]],
+            Optional[
+                Sequence[
+                    Union[
+                        EncoderProtocol,
+                        MoldingProtocol,
+                        type[EncoderProtocol],
+                        type[MoldingProtocol],
+                    ]
+                ]
+            ],
             Doc(
                 """
             A `list` of encoders to be used by the application once it
@@ -1608,7 +1621,15 @@ class Application(Lilya):
         ] = State()
         self.async_exit_config = esmerald_settings.async_exit_config
 
-        self.encoders = self.load_settings_value("encoders", encoders) or []
+        self.encoders: list[Union[EncoderProtocol, MoldingProtocol]] = list(
+            cast(
+                Iterable[Union[EncoderProtocol, MoldingProtocol]],
+                (
+                    encoder if isclass(encoder) else encoder
+                    for encoder in self.load_settings_value("encoders", encoders) or []
+                ),
+            )
+        )
         self._register_application_encoders()
 
         if self.enable_scheduler:
@@ -1662,9 +1683,6 @@ class Application(Lilya):
 
         This way, the support still remains but using the Lilya Encoders.
         """
-        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
-        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
-
         for encoder in self.encoders:
             self.register_encoder(encoder)
 
@@ -2577,12 +2595,15 @@ class Application(Lilya):
         """
         return esmerald_settings
 
-    async def globalise_settings(self) -> None:
+    async def globalize_settings(self) -> None:
         """
         Making sure the global settings remain as is
         after the request is done.
         """
         esmerald_settings.configure(__lazy_settings__._wrapped)
+
+    # typo
+    globalise_settings = globalize_settings
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "lifespan":
@@ -2594,7 +2615,7 @@ class Application(Lilya):
 
         scope["state"] = {}
         await super().__call__(scope, receive, send)
-        await self.globalise_settings()
+        await self.globalize_settings()
 
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
         raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
@@ -2611,7 +2632,7 @@ class Application(Lilya):
     def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
         self.router.add_event_handler(event_type, func)
 
-    def register_encoder(self, encoder: Encoder[Any]) -> None:
+    def register_encoder(self, encoder: Union[EncoderProtocol, MoldingProtocol]) -> None:
         """
         Registers a Encoder into the list of predefined encoders of the system.
         """

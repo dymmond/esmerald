@@ -1,15 +1,19 @@
+from collections import deque
 from typing import Any
 
+import pytest
 from attrs import asdict, define, field, has
 
 from esmerald import Esmerald, Gateway, post
-from esmerald.encoders import Encoder
+from esmerald.encoders import ENCODER_TYPES_CTX, Encoder
 from esmerald.testclient import EsmeraldTestClient, create_client
 
 
 class AttrsEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
+        return has(type(value))
+
+    def is_type_structure(self, value: Any) -> bool:
         return has(value)
 
     def serialize(self, obj: Any) -> Any:
@@ -26,9 +30,19 @@ class AttrItem:
     email: str
 
 
+@pytest.fixture(autouse=True, scope="function")
+def additional_encoders():
+    token = ENCODER_TYPES_CTX.set(deque(ENCODER_TYPES_CTX.get()))
+    try:
+        yield
+    finally:
+        ENCODER_TYPES_CTX.reset(token)
+
+
 def test_can_parse_attrs(test_app_client_factory):
     @post("/create")
     async def create(data: AttrItem) -> AttrItem:
+        assert type(ENCODER_TYPES_CTX.get()[0]) is AttrsEncoder
         return data
 
     app = Esmerald(routes=[Gateway(handler=create)], encoders=[AttrsEncoder])
@@ -40,7 +54,6 @@ def test_can_parse_attrs(test_app_client_factory):
 
 
 def test_can_parse_attrs_errors(test_app_client_factory):
-
     @define
     class Item:
         sku: str = field()
@@ -52,6 +65,7 @@ def test_can_parse_attrs_errors(test_app_client_factory):
 
     @post("/create")
     async def create(data: Item) -> AttrItem:
+        assert type(ENCODER_TYPES_CTX.get()[0]) is AttrsEncoder
         return data
 
     with create_client(routes=[Gateway(handler=create)], encoders=[AttrsEncoder]) as client:

@@ -5,6 +5,20 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Added
+
+- `ENCODER_TYPES_CTX` for using/setting the current encoders.
+- Tests can be executed without changing the global ENCODER_TYPES state.
+
+### Changed
+
+- Leverage new lilya encoder API. Encoders can use `__type__`
+- **Breaking** For custom Encoders implementing encode either `__type__` or `is_type_structure` must be provided.
+- **Breaking** For Python >=3.10 eval_str is used for resolving the annotations of a function.
+  Make sure objects specified are not hidden with `TYPE_CHECKING` flag.
+
 ## 3.5.0
 
 ### Added

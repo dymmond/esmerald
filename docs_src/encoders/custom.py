@@ -8,9 +8,10 @@ from esmerald.encoders import Encoder
 
 
 class AttrsEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return has(value)
+
+    is_type_structure = is_type
 
     def serialize(self, obj: Any) -> Any:
         return asdict(obj)

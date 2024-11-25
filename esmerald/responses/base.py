@@ -1,3 +1,5 @@
+from functools import partial
+from inspect import isclass
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -23,10 +25,10 @@ from lilya.responses import (
     Response as LilyaResponse,  # noqa
     StreamingResponse as StreamingResponse,  # noqa
 )
-from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps
+from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps, loads
 from typing_extensions import Annotated, Doc
 
-from esmerald.encoders import Encoder, json_encoder
+from esmerald.encoders import ENCODER_TYPES_CTX, Encoder, json_encoder
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -180,9 +182,21 @@ class Response(LilyaResponse, Generic[T]):
 
         Supports all the default encoders from Lilya and custom from Esmerald.
         """
-        return cast(Dict[str, Any], json_encoder(value))
+        return cast(
+            Dict[str, Any], json_encoder(value, json_encode_fn=dumps, post_transform_fn=loads)
+        )
 
     def make_response(self, content: Any) -> Union[bytes, str]:
+        encoders = (
+            (
+                (
+                    *(encoder() if isclass(encoder) else encoder for encoder in self.encoders),
+                    *ENCODER_TYPES_CTX.get(),
+                )
+            )
+            if self.encoders
+            else None
+        )
         try:
             if (
                 content is None
@@ -194,11 +208,17 @@ class Response(LilyaResponse, Generic[T]):
                 )
             ):
                 return b""
-            if self.media_type == MediaType.JSON:
-                return dumps(
-                    content,
-                    default=self.transform,
-                    option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS,
+            elif self.media_type == MediaType.JSON:
+                return cast(
+                    bytes,
+                    json_encoder(
+                        content,
+                        json_encode_fn=partial(
+                            dumps, option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS
+                        ),
+                        post_transform_fn=None,
+                        with_encoders=encoders,
+                    ),
                 )
             return super().make_response(content)
         except (AttributeError, ValueError, TypeError) as e:  # pragma: no cover

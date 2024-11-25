@@ -7,7 +7,7 @@ from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
 from esmerald.datastructures import UploadFile
-from esmerald.encoders import ENCODER_TYPES, is_body_encoder
+from esmerald.encoders import ENCODER_TYPES_CTX, is_body_encoder
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
@@ -62,7 +62,10 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
 
     if (
         not isinstance(field_annotation, BaseModel)
-        and any(encoder.is_type(field_annotation) for encoder in ENCODER_TYPES)
+        and any(
+            hasattr(encoder, "is_type_structure") and encoder.is_type_structure(field_annotation)
+            for encoder in ENCODER_TYPES_CTX.get()
+        )
         and inspect.isclass(field_annotation)
     ):
         field_definitions: Dict[str, Any] = {}

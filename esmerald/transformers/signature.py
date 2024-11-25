@@ -1,4 +1,5 @@
 import re
+import sys
 from inspect import Parameter as InspectParameter, Signature as InspectSignature
 from typing import (
     TYPE_CHECKING,
@@ -19,7 +20,7 @@ from typing import (
 from orjson import loads
 from pydantic import ValidationError, create_model
 
-from esmerald.encoders import ENCODER_TYPES, Encoder
+from esmerald.encoders import ENCODER_TYPES_CTX, Encoder
 from esmerald.exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -40,6 +41,10 @@ if TYPE_CHECKING:
 
 
 object_setattr = object.__setattr__
+
+_signature_kwargs: dict = {}
+if sys.version_info >= (3, 10):
+    _signature_kwargs["eval_str"] = True
 
 
 def is_server_error(error: Any, klass: Type["SignatureModel"]) -> bool:
@@ -169,7 +174,7 @@ class SignatureModel(ArbitraryBaseModel):
             Returns:
                 Any: The encoded value if the encoder is valid, otherwise the original value.
             """
-            if hasattr(encoder, "encode"):
+            if hasattr(encoder, "encode") and not encoder.is_type(value):
                 return encoder.encode(annotation, value)
             return value
 
@@ -350,7 +355,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         """
         super().__init__(**kwargs)
         self.fn = fn
-        self.signature = InspectSignature.from_callable(self.fn)
+        self.signature = InspectSignature.from_callable(self.fn, **_signature_kwargs)
         self.fn_name = fn.__name__ if hasattr(fn, "__name__") else "anonymous"
         self.defaults: Dict[str, Any] = {}
         self.dependency_names = dependency_names
@@ -516,12 +521,19 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             Any: The encoder found, or None if no encoder matches.
         """
         origin = get_origin(annotation)
-        for encoder in ENCODER_TYPES:
-            if not origin and encoder.is_type(annotation):
+        for encoder in ENCODER_TYPES_CTX.get():
+            if (
+                not origin
+                and hasattr(encoder, "is_type_structure")
+                and encoder.is_type_structure(annotation)
+            ):
                 return encoder
             elif origin:
                 arguments = self.extract_arguments(annotation)
-                if any(encoder.is_type(arg) for arg in arguments):
+                if any(
+                    hasattr(encoder, "is_type_structure") and encoder.is_type_structure(arg)
+                    for arg in arguments
+                ):
                     return encoder
         return None
 
