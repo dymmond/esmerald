@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.5.1
+
+### Fixed
+
+- Compatibility with lilya 0.11.0.
+
 ## 3.5.0
 
 ### Added
