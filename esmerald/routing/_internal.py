@@ -62,7 +62,7 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
 
     if (
         not isinstance(field_annotation, BaseModel)
-        and any(encoder.is_type(field_annotation) for encoder in ENCODER_TYPES)
+        and any(encoder.is_type(field_annotation) for encoder in ENCODER_TYPES.get())
         and inspect.isclass(field_annotation)
     ):
         field_definitions: Dict[str, Any] = {}

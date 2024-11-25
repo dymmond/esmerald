@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextvars import ContextVar
 from typing import Any, TypeVar, get_args
 
 import msgspec
@@ -87,7 +88,10 @@ def is_body_encoder(value: Any) -> bool:
     """
     Function that checks if the value is a body encoder.
     """
-    encoder_types = ENCODER_TYPES.get()
+    if isinstance(ENCODER_TYPES, ContextVar):
+        encoder_types = ENCODER_TYPES.get()
+    else:
+        encoder_types = ENCODER_TYPES
     if not is_union(value):
         return any(encoder.is_type(value) for encoder in encoder_types)
 

@@ -516,7 +516,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             Any: The encoder found, or None if no encoder matches.
         """
         origin = get_origin(annotation)
-        for encoder in ENCODER_TYPES:
+        for encoder in ENCODER_TYPES.get():
             if not origin and encoder.is_type(annotation):
                 return encoder
             elif origin:
