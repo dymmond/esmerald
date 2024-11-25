@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.5.1
+
+### Fixes
+
+- Clamp lilya to below 0.11.0 until a proper fix is available.
+
+
 ## 3.5.0
 
 ### Added
