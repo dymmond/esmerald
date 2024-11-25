@@ -6,7 +6,7 @@ import msgspec
 from lilya._internal._encoders import json_encoder as json_encoder  # noqa
 from lilya._utils import is_class_and_subclass
 from lilya.encoders import (
-    ENCODER_TYPES as ENCODER_TYPES,  # noqa
+    ENCODER_TYPES as LILYA_ENCODER_TYPES,  # noqa
     Encoder as LilyaEncoder,  # noqa
     register_encoder as register_encoder,  # noqa
 )
@@ -19,9 +19,10 @@ from esmerald.utils.helpers import is_union
 
 T = TypeVar("T")
 
+ENCODER_TYPES = LILYA_ENCODER_TYPES.get()
+
 
 class Encoder(LilyaEncoder[T]):
-
     def is_type(self, value: Any) -> bool:
         """
         Function that checks if the function is
@@ -44,7 +45,6 @@ class Encoder(LilyaEncoder[T]):
 
 
 class MsgSpecEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return isinstance(value, Struct) or is_class_and_subclass(value, Struct)
 
@@ -60,7 +60,6 @@ class MsgSpecEncoder(Encoder):
 
 
 class PydanticEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel)
 
