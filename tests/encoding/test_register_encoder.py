@@ -5,7 +5,7 @@ import pytest
 from attrs import asdict, define, field, has
 
 from esmerald import Esmerald, Gateway, post
-from esmerald.encoders import LILYA_ENCODER_TYPES, Encoder
+from esmerald.encoders import ENCODER_TYPES, LILYA_ENCODER_TYPES, Encoder
 from esmerald.testclient import EsmeraldTestClient, create_client
 
 
@@ -34,6 +34,10 @@ def additional_encoders():
         yield
     finally:
         LILYA_ENCODER_TYPES.reset(token)
+
+
+def test_working_overwrite():
+    assert LILYA_ENCODER_TYPES.get() is not ENCODER_TYPES
 
 
 def test_can_parse_attrs(test_app_client_factory):

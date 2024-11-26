@@ -5,7 +5,12 @@ import pytest
 from attrs import asdict, define, field, has
 
 from esmerald import Gateway, post
-from esmerald.encoders import LILYA_ENCODER_TYPES, Encoder, register_esmerald_encoder
+from esmerald.encoders import (
+    ENCODER_TYPES,
+    LILYA_ENCODER_TYPES,
+    Encoder,
+    register_esmerald_encoder,
+)
 from esmerald.testclient import create_client
 
 
@@ -35,6 +40,10 @@ class AttrItem:
     name: str = field()
     age: int = field()
     email: str
+
+
+def test_working_overwrite():
+    assert LILYA_ENCODER_TYPES.get() is not ENCODER_TYPES
 
 
 def test_can_parse_attrs(test_app_client_factory):
