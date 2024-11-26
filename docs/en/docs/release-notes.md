@@ -5,7 +5,7 @@ hide:
 
 # Release Notes
 
-## Unreleased
+## 3.5.1
 
 ### Changed
 
