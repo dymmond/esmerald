@@ -1,7 +1,10 @@
-from typing import Any
+from functools import partial
+from inspect import isclass
+from typing import Any, cast
 
 import orjson
 
+from esmerald.encoders import LILYA_ENCODER_TYPES, json_encoder
 from esmerald.responses.json import BaseJSONResponse
 
 try:
@@ -18,10 +21,26 @@ class ORJSONResponse(BaseJSONResponse):
     """
 
     def make_response(self, content: Any) -> bytes:
-        return orjson.dumps(
-            content,
-            default=self.transform,
-            option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS,
+        encoders = (
+            (
+                (
+                    *(encoder() if isclass(encoder) else encoder for encoder in self.encoders),
+                    *LILYA_ENCODER_TYPES.get(),
+                )
+            )
+            if self.encoders
+            else None
+        )
+        return cast(
+            bytes,
+            json_encoder(
+                content,
+                json_encode_fn=partial(
+                    orjson.dumps, option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS
+                ),
+                post_transform_fn=None,
+                with_encoders=encoders,
+            ),
         )
 
 
@@ -34,6 +53,8 @@ class UJSONResponse(BaseJSONResponse):
 
     def make_response(self, content: Any) -> bytes:
         assert ujson is not None, "You must install the encoders or ujson to use UJSONResponse"
+        # UJSON is actually in maintainance mode, recommends switch to ORJSON
+        # https://github.com/ultrajson/ultrajson
         return ujson.dumps(content, ensure_ascii=False).encode("utf-8")
 
 

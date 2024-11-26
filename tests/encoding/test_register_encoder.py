@@ -1,14 +1,15 @@
+from collections import deque
 from typing import Any
 
+import pytest
 from attrs import asdict, define, field, has
 
 from esmerald import Esmerald, Gateway, post
-from esmerald.encoders import Encoder
+from esmerald.encoders import ENCODER_TYPES, LILYA_ENCODER_TYPES, Encoder
 from esmerald.testclient import EsmeraldTestClient, create_client
 
 
 class AttrsEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return has(value)
 
@@ -26,9 +27,23 @@ class AttrItem:
     email: str
 
 
+@pytest.fixture(autouse=True, scope="function")
+def additional_encoders():
+    token = LILYA_ENCODER_TYPES.set(deque(LILYA_ENCODER_TYPES.get()))
+    try:
+        yield
+    finally:
+        LILYA_ENCODER_TYPES.reset(token)
+
+
+def test_working_overwrite():
+    assert LILYA_ENCODER_TYPES.get() is not ENCODER_TYPES
+
+
 def test_can_parse_attrs(test_app_client_factory):
     @post("/create")
     async def create(data: AttrItem) -> AttrItem:
+        assert type(LILYA_ENCODER_TYPES.get()[0]) is AttrsEncoder
         return data
 
     app = Esmerald(routes=[Gateway(handler=create)], encoders=[AttrsEncoder])
@@ -40,7 +55,6 @@ def test_can_parse_attrs(test_app_client_factory):
 
 
 def test_can_parse_attrs_errors(test_app_client_factory):
-
     @define
     class Item:
         sku: str = field()

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from inspect import isclass
 from typing import Any, TypeVar, get_args
 
 import msgspec
@@ -26,7 +27,7 @@ class Encoder(LilyaEncoder[T]):
     def is_type(self, value: Any) -> bool:
         """
         Function that checks if the function is
-        an instance of a given type
+        an instance of a given type (and also for the subclass of the type in case of encode)
         """
         raise NotImplementedError("All Esmerald encoders must implement is_type() method.")
 
@@ -42,6 +43,19 @@ class Encoder(LilyaEncoder[T]):
         Function that transforms the kwargs into a structure
         """
         raise NotImplementedError("All Esmerald encoders must implement encode() method.")
+
+
+def register_esmerald_encoder(encoder: Encoder | type[Encoder]) -> None:
+    """
+    Registers an esmerald encoder into available Lilya encoders
+    """
+    encoder_type = encoder if isclass(encoder) else type(encoder)
+    if not isinstance(encoder, Encoder) and not is_class_and_subclass(encoder, Encoder):
+        raise ImproperlyConfigured(f"{encoder_type} must be a subclass of Encoder")
+
+    encoder_types = {_encoder.__class__.__name__ for _encoder in LILYA_ENCODER_TYPES.get()}
+    if encoder_type.__name__ not in encoder_types:
+        register_encoder(encoder)
 
 
 class MsgSpecEncoder(Encoder):
@@ -75,28 +89,17 @@ class PydanticEncoder(Encoder):
         return annotation(**value)
 
 
-def register_esmerald_encoder(encoder: Encoder[Any]) -> None:
-    """
-    Registers an esmerald encoder into available Lilya encoders
-    """
-    if not isinstance(encoder, Encoder) and not is_class_and_subclass(encoder, Encoder):  # type: ignore
-        raise ImproperlyConfigured(f"{type(encoder)} must be a subclass of Encoder")
-
-    encoder_types = {encoder.__class__.__name__ for encoder in ENCODER_TYPES}
-    if encoder.__name__ not in encoder_types:
-        register_encoder(encoder)
-
-
 def is_body_encoder(value: Any) -> bool:
     """
     Function that checks if the value is a body encoder.
     """
+    encoder_types = LILYA_ENCODER_TYPES.get()
     if not is_union(value):
-        return any(encoder.is_type(value) for encoder in ENCODER_TYPES)
+        return any(encoder.is_type(value) for encoder in encoder_types)
 
     union_arguments = get_args(value)
     if not union_arguments:
         return False
     return any(
-        any(encoder.is_type(argument) for encoder in ENCODER_TYPES) for argument in union_arguments
+        any(encoder.is_type(argument) for encoder in encoder_types) for argument in union_arguments
     )
