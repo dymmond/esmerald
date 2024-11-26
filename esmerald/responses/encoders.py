@@ -1,5 +1,4 @@
 from functools import partial
-from inspect import isclass
 from typing import Any, cast
 
 import orjson
@@ -24,7 +23,7 @@ class ORJSONResponse(BaseJSONResponse):
         encoders = (
             (
                 (
-                    *(encoder() if isclass(encoder) else encoder for encoder in self.encoders),
+                    *self.encoders,
                     *LILYA_ENCODER_TYPES.get(),
                 )
             )
