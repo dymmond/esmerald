@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Changed
+
+- Use assigned encoders at requests for json_encoder.
+- Allow overwriting the `LILYA_ENCODER_TYPES` for different encoder sets or tests.
+- Use more orjson for encoding requests.
+
 ## 3.5.0
 
 ### Added

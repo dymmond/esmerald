@@ -19,7 +19,7 @@ from typing import (
 from orjson import loads
 from pydantic import ValidationError, create_model
 
-from esmerald.encoders import ENCODER_TYPES, Encoder
+from esmerald.encoders import LILYA_ENCODER_TYPES, Encoder
 from esmerald.exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -516,7 +516,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             Any: The encoder found, or None if no encoder matches.
         """
         origin = get_origin(annotation)
-        for encoder in ENCODER_TYPES:
+        for encoder in LILYA_ENCODER_TYPES.get():
             if not origin and encoder.is_type(annotation):
                 return encoder
             elif origin:
