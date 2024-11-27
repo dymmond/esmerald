@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from functools import lru_cache
 from inspect import isclass
-from typing import Any, TypeVar, get_args
+from typing import Any, Generic, TypeVar, get_args
 
 import msgspec
 from lilya._internal._encoders import json_encoder as json_encoder  # noqa
@@ -9,6 +10,7 @@ from lilya._utils import is_class_and_subclass
 from lilya.encoders import (
     ENCODER_TYPES as LILYA_ENCODER_TYPES,  # noqa
     Encoder as LilyaEncoder,  # noqa
+    EncoderProtocol,
     register_encoder as register_encoder,  # noqa
 )
 from msgspec import Struct
@@ -23,7 +25,7 @@ T = TypeVar("T")
 ENCODER_TYPES = LILYA_ENCODER_TYPES.get()
 
 
-class Encoder(LilyaEncoder[T]):
+class Encoder(EncoderProtocol, Generic[T]):
     def is_type(self, value: Any) -> bool:
         """
         Function that checks if the function is
@@ -56,6 +58,19 @@ def register_esmerald_encoder(encoder: Encoder | type[Encoder]) -> None:
     encoder_types = {_encoder.__class__.__name__ for _encoder in LILYA_ENCODER_TYPES.get()}
     if encoder_type.__name__ not in encoder_types:
         register_encoder(encoder)
+
+
+@lru_cache(maxsize=16)
+def _get_esmerald_encoders(id: int) -> tuple[Encoder, ...]:
+    return tuple(
+        (encoder for encoder in LILYA_ENCODER_TYPES.get() if isinstance(encoder, Encoder))
+    )
+
+
+def get_esmerald_encoders() -> tuple[Encoder, ...]:
+    """Esmerald specific encoders."""
+    encoders = LILYA_ENCODER_TYPES.get()
+    return _get_esmerald_encoders(id(encoders))
 
 
 class MsgSpecEncoder(Encoder):

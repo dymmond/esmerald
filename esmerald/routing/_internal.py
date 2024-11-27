@@ -7,7 +7,7 @@ from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
 from esmerald.datastructures import UploadFile
-from esmerald.encoders import LILYA_ENCODER_TYPES, is_body_encoder
+from esmerald.encoders import get_esmerald_encoders, is_body_encoder
 from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
@@ -64,7 +64,7 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
         not isinstance(field_annotation, BaseModel)
         # call before encoder check, because this test is faster
         and inspect.isclass(field_annotation)
-        and any(encoder.is_type(field_annotation) for encoder in LILYA_ENCODER_TYPES.get())
+        and any(encoder.is_type(field_annotation) for encoder in get_esmerald_encoders())
     ):
         field_definitions: Dict[str, Any] = {}
 
