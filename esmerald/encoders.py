@@ -32,6 +32,10 @@ class Encoder(EncoderProtocol, Generic[T]):
         """
         raise NotImplementedError("All Esmerald encoders must implement is_type() method.")
 
+    def is_type_structure(self, value: Any) -> bool:
+        """Prevent lilya picking it up for apply_structure."""
+        return False
+
     def serialize(self, obj: Any) -> Any:
         """
         Function that transforms a data structure into a serializable
