@@ -483,10 +483,9 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             Dict[str, Any]: A dictionary mapping parameter names to encoder details.
         """
         encoders: Dict[str, Any] = {}
-        esmerald_encoders = LILYA_ENCODER_TYPES.get()
         for param in self.parameters:
             if not self._should_skip_parameter(param):
-                encoder = self._find_encoder(param.annotation, esmerald_encoders)
+                encoder = self._find_encoder(param.annotation)
                 if encoder:
                     encoders[param.name] = {
                         "encoder": encoder,
@@ -506,9 +505,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         """
         return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
-    def _find_encoder(
-        self, annotation: Any, esmerald_encoders: tuple[Encoder, ...]
-    ) -> Optional[Encoder]:
+    def _find_encoder(self, annotation: Any) -> Any:
         """
         Finds an appropriate encoder for the given parameter annotation.
 
@@ -519,7 +516,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             Any: The encoder found, or None if no encoder matches.
         """
         origin = get_origin(annotation)
-        for encoder in esmerald_encoders:
+        for encoder in LILYA_ENCODER_TYPES.get():
             if not origin and encoder.is_type(annotation):
                 return encoder
             elif origin:
