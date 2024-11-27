@@ -96,7 +96,7 @@ class DirectiveEnv:
             # FIrst check some attrs
             for attr in DISCOVERY_ATTRS:
                 value = getattr(module, attr, None)
-                if value is not None:
+                if value:
                     app_path = f"{dotted_path}:{attr}"
                     return Scaffold(app=getattr(module, attr), path=app_path)
 
