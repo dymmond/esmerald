@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import lru_cache
 from inspect import isclass
 from typing import Any, Generic, TypeVar, get_args
 
@@ -58,19 +57,6 @@ def register_esmerald_encoder(encoder: Encoder | type[Encoder]) -> None:
     encoder_types = {_encoder.__class__.__name__ for _encoder in LILYA_ENCODER_TYPES.get()}
     if encoder_type.__name__ not in encoder_types:
         register_encoder(encoder)
-
-
-@lru_cache(maxsize=16)
-def _get_esmerald_encoders(id: int) -> tuple[Encoder, ...]:
-    return tuple(
-        (encoder for encoder in LILYA_ENCODER_TYPES.get() if isinstance(encoder, Encoder))
-    )
-
-
-def get_esmerald_encoders() -> tuple[Encoder, ...]:
-    """Esmerald specific encoders."""
-    encoders = LILYA_ENCODER_TYPES.get()
-    return _get_esmerald_encoders(id(encoders))
 
 
 class MsgSpecEncoder(Encoder):
