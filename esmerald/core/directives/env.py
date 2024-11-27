@@ -98,7 +98,7 @@ class DirectiveEnv:
                 value = getattr(module, attr, None)
                 if value:
                     app_path = f"{dotted_path}:{attr}"
-                    return Scaffold(app=getattr(module, attr), path=app_path)
+                    return Scaffold(app=value, path=app_path)
 
             # Iterates through the elements of the module.
             for attr, value in module.__dict__.items():
