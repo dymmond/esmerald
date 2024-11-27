@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Fixed
+
+- Fix cli detection of wrapped esmerald instances or different ASGI servers.
+
 ## 3.5.1
 
 ### Changed
