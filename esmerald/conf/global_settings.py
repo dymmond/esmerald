@@ -869,7 +869,7 @@ class EsmeraldAPISettings(BaseSettings):
         class AppSettings(EsmeraldAPISettings):
             @property
             def template_config(self) -> TemplateConfig:
-                TemplateConfig(directory='templates', engine=MakoTemplateEngine)
+                TemplateConfig(directory='templates')
         ```
         """
         return None

@@ -1,5 +1,6 @@
 import os
 import pathlib
+from contextlib import nullcontext
 
 import pytest
 
@@ -30,13 +31,14 @@ def test_handler_raise_for_no_template_engine_created() -> None:
 
 @pytest.mark.parametrize("engine", [JinjaTemplateEngine, MakoTemplateEngine])
 def test_engine_jinja_and_mako(engine, template_dir: "pathlib.Path") -> None:
-    app = Esmerald(
-        routes=[],
-        template_config=TemplateConfig(
-            directory=template_dir,
-            engine=engine,
-        ),
-    )
+    with pytest.warns(DeprecationWarning) if engine is MakoTemplateEngine else nullcontext():
+        app = Esmerald(
+            routes=[],
+            template_config=TemplateConfig(
+                directory=template_dir,
+                engine=engine,
+            ),
+        )
 
     assert isinstance(app.template_engine, engine)
 
