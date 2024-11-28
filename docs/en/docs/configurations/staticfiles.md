@@ -42,10 +42,10 @@ but also via settings.
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
 
-
 ## Multiple directories and multiple pathes
 
-You have e.g. a node_modules directory you have to include? You can do so by passing multiple `StaticFilesConfig` configurations.
+Imagine, for example, you have multiple directories you would like to access including a `node_modules/` one.
+This is possible do do it by passing multiple `StaticFilesConfig` configurations and shown below:
 
 ```python
 {!> ../../../docs_src/configurations/staticfiles/example_multiple.py!}
