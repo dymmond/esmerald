@@ -41,3 +41,15 @@ but also via settings.
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+
+## Multiple directories and multiple pathes
+
+Imagine, for example, you have multiple directories you would like to access including a `node_modules/` one.
+This is possible do do it by passing multiple `StaticFilesConfig` configurations and shown below:
+
+```python
+{!> ../../../docs_src/configurations/staticfiles/example_multiple.py!}
+```
+
+!!! Note
+    The first path match is used and there is currently no fallthrough in case no file is found, so the order is very important.

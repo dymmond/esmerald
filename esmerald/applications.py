@@ -720,13 +720,18 @@ class Application(Lilya):
             ),
         ] = None,
         static_files_config: Annotated[
-            Optional["StaticFilesConfig"],
+            Union[
+                "StaticFilesConfig",
+                list["StaticFilesConfig"],
+                tuple["StaticFilesConfig", ...],
+                None,
+            ],
             Doc(
                 """
                 An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
 
                 This configuration is used to enable and serve static files via
-                Esmerald application.
+                Esmerald application. You can pass also multiple objects via a list or tuple.
 
                 **Example**
 
@@ -1683,7 +1688,7 @@ class Application(Lilya):
         if self.static_files_config:
             for config in (
                 self.static_files_config
-                if isinstance(self.static_files_config, list)
+                if isinstance(self.static_files_config, (list, tuple))
                 else [self.static_files_config]
             ):
                 static_route = Include(path=config.path, app=config.to_app())
