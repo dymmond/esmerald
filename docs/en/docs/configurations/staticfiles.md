@@ -43,10 +43,13 @@ but also via settings.
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
 
 
-## Multiple directories
+## Multiple directories and multiple pathes
 
-You have e.g. a node_modules directory you have to include? You can do so by passing multiple configurations
+You have e.g. a node_modules directory you have to include? You can do so by passing multiple `StaticFileConfig` configurations.
 
 ```python
 {!> ../../../docs_src/configurations/staticfiles/example_multiple.py!}
 ```
+
+!!! Note
+    The first path match is used and there is currently no fallthrough in case no file is found, so the order is very important.
