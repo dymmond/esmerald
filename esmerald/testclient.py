@@ -129,7 +129,9 @@ def create_client(
     openapi_version: Optional[str] = "3.1.0",
     raise_server_exceptions: bool = True,
     root_path: str = "",
-    static_files_config: Optional["StaticFilesConfig"] = None,
+    static_files_config: Union[
+        "StaticFilesConfig", list["StaticFilesConfig"], tuple["StaticFilesConfig"], None
+    ] = None,
     template_config: Optional["TemplateConfig"] = None,
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
     cookies: Optional[CookieTypes] = None,

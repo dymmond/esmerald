@@ -25,7 +25,7 @@ class StaticFilesConfig(BaseModel):
         path="/static", directory=Path("static")
     )
 
-    app = Esmerald(static_files_config=static_files_config)
+    app = Esmerald(static_files_config=[static_files_config])
     ```
     """
 

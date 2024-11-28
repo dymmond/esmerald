@@ -41,3 +41,12 @@ but also via settings.
 ```
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+
+
+## Multiple directories
+
+You have e.g. a node_modules directory you have to include? You can do so by passing multiple configurations
+
+```python
+{!> ../../../docs_src/configurations/staticfiles/example_multiple.py!}
+```
