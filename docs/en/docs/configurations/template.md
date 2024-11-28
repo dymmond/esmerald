@@ -20,7 +20,7 @@ You are free to build your own and pass it to the `TemplateConfig`. This way you
     You will notice the name of the parameters in the `TemplateConfig` match maority of the jinja2 implementation.
 
 !!! Warning
-    The `Mako` engine integration, due to its own limitations, will be not supported by Esmerald from version 3.6.0.
+    The `mako` engine integration, due to its own limitations, will be not supported by Esmerald from version 3.6.0.
 
 ## TemplateConfig and application
 
