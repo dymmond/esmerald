@@ -45,7 +45,7 @@ This will make sure you keep the settings clean, separated and without a bloated
 
 ## Multiple directories and multiple pathes
 
-You have e.g. a node_modules directory you have to include? You can do so by passing multiple `StaticFileConfig` configurations.
+You have e.g. a node_modules directory you have to include? You can do so by passing multiple `StaticFilesConfig` configurations.
 
 ```python
 {!> ../../../docs_src/configurations/staticfiles/example_multiple.py!}

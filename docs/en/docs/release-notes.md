@@ -10,7 +10,7 @@ hide:
 ### Fixed
 
 - Fix cli detection of wrapped esmerald instances or different ASGI servers.
-- Expose multiple pathes/directories functionality of staticfiles.
+- Allow passing tuple for multiple `StaticFilesConfig` configurations.
 
 ## 3.5.1
 
