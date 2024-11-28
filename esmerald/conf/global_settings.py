@@ -877,7 +877,7 @@ class EsmeraldAPISettings(BaseSettings):
     @property
     def static_files_config(
         self,
-    ) -> Union[StaticFilesConfig, list[StaticFilesConfig], tuple[StaticFilesConfig], None]:
+    ) -> Union[StaticFilesConfig, list[StaticFilesConfig], tuple[StaticFilesConfig, ...], None]:
         """
         An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
 

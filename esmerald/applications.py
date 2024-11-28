@@ -721,7 +721,10 @@ class Application(Lilya):
         ] = None,
         static_files_config: Annotated[
             Union[
-                "StaticFilesConfig", list["StaticFilesConfig"], tuple["StaticFilesConfig"], None
+                "StaticFilesConfig",
+                list["StaticFilesConfig"],
+                tuple["StaticFilesConfig", ...],
+                None,
             ],
             Doc(
                 """

@@ -130,7 +130,7 @@ def create_client(
     raise_server_exceptions: bool = True,
     root_path: str = "",
     static_files_config: Union[
-        "StaticFilesConfig", list["StaticFilesConfig"], tuple["StaticFilesConfig"], None
+        "StaticFilesConfig", list["StaticFilesConfig"], tuple["StaticFilesConfig", ...], None
     ] = None,
     template_config: Optional["TemplateConfig"] = None,
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
