@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 
-from jose import JWSError, JWTError, jwt
-from jose.exceptions import JWSAlgorithmError, JWSSignatureError
+import jwt
+from jwt.exceptions import PyJWTError
 from pydantic import BaseModel, Field, conint, constr, field_validator
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -47,35 +47,40 @@ class Token(BaseModel):
             raise ValueError(f"{subject} is not a valid string.") from e
 
     def encode(
-        self, key: str, algorithm: str, **claims_extra: Any
+        self,
+        key: str,
+        algorithm: str,
+        claims_extra: Union[Dict[str, Any], None] = None,
+        **kwargs: Any,
     ) -> Union[str, Any]:  # pragma: no cover
         """
         Encodes the token into a proper str formatted and allows passing kwargs.
         """
-        claims: Dict = {**self.model_dump(exclude_none=True), **claims_extra}
+        if claims_extra is None:
+            claims_extra = {}
+
+        payload: Dict = {**self.model_dump(exclude_none=True), **claims_extra}
         try:
             return jwt.encode(
-                claims=claims,
+                payload=payload,
                 key=key,
                 algorithm=algorithm,
+                **kwargs,
             )
-        except (JWSError, JWTError) as e:
+        except PyJWTError as e:
             raise ImproperlyConfigured("Error encoding the token.") from e
 
     @classmethod
     def decode(
-        cls, token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
+        cls, token: str, key: Union[str, bytes, jwt.PyJWK], algorithms: List[str], **kwargs: Any
     ) -> "Token":  # pragma: no cover
         """
         Decodes the given token.
         """
         try:
             data = jwt.decode(
-                token=token,
-                key=key,
-                algorithms=algorithms,
-                options={"verify_aud": False},
+                jwt=token, key=key, algorithms=algorithms, options={"verify_aud": False}, **kwargs
             )
-        except (JWSError, JWTError, JWSAlgorithmError, JWSSignatureError) as e:
+        except PyJWTError as e:
             raise e
         return cls(**data)

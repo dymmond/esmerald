@@ -95,7 +95,7 @@ dev = [
     "uvicorn[standard]>=0.24.0",
 ]
 
-jwt = ["passlib==1.7.4", "python-jose>=3.3.0,<4"]
+jwt = ["passlib==1.7.4", "pyjwt>=2.10.1,<3"]
 schedulers = ["asyncz>=0.11.0"]
 all = ["esmerald[test,dev,jwt,schedulers]", "ipython", "ptpython", "a2wsgi"]
 testing = [
@@ -258,7 +258,7 @@ module = [
     "sqlalchemy_utils.*",
     "slugify.*",
     "pytz",
-    "jose.*",
+    "pyjwt.*",
     "mako.*",
     "passlib.*",
     "esmerald.contrib.auth.saffier.*",

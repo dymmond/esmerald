@@ -3,7 +3,7 @@ from typing import Any
 import edgy
 import pytest
 from edgy.exceptions import ObjectNotFound
-from jose.exceptions import JWTError
+from jwt.exceptions import PyJWTError
 from lilya.types import ASGIApp
 
 from esmerald import APIView, Gateway, HTTPException, Request, Response, get, settings, status
@@ -75,9 +75,6 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
 
     async def authenticate(self, request: Connection) -> AuthResult:
         try:
-            # token_raw = request.headers.get(self.config.authorization_header, None)
-            # token = token_raw.split(" ")[1] if token_raw else None
-
             token = request.headers.get(self.config.api_key_header, None)
             if not token:
                 return get_error_response(
@@ -91,7 +88,7 @@ class JWTAuthMiddleware(BaseAuthMiddleware):
             )
             user = await self.retrieve_user(token.sub)
             return AuthResult(user=user)
-        except JWTError:
+        except PyJWTError:
             return get_error_response(
                 detail="Authentication failed",
                 status_code=status.HTTP_401_UNAUTHORIZED,
