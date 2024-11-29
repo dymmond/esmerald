@@ -7,6 +7,7 @@ from pathlib import Path
 
 from esmerald import ChildEsmerald, Esmerald
 from esmerald.core.directives.constants import (
+    DISCOVERY_ATTRS,
     DISCOVERY_FILES,
     DISCOVERY_FUNCTIONS,
     ESMERALD_DISCOVER_APP,
@@ -91,6 +92,13 @@ class DirectiveEnv:
 
             # Load file from module
             module = import_module(dotted_path)
+
+            # FIrst check some attrs
+            for attr in DISCOVERY_ATTRS:
+                value = getattr(module, attr, None)
+                if value:
+                    app_path = f"{dotted_path}:{attr}"
+                    return Scaffold(app=value, path=app_path)
 
             # Iterates through the elements of the module.
             for attr, value in module.__dict__.items():

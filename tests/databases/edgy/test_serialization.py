@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import edgy
 import pytest
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 
 from esmerald import Esmerald, Gateway, post
 from esmerald.conf import settings
@@ -53,7 +53,7 @@ def app() -> Esmerald:
 
 @pytest.fixture()
 async def async_client(app) -> AsyncGenerator:
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac
 
 

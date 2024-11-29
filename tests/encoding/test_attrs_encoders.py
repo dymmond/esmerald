@@ -1,14 +1,19 @@
 from typing import Any
 
+import pytest
 from attrs import asdict, define, field, has
 
 from esmerald import Gateway, post
-from esmerald.encoders import Encoder, register_esmerald_encoder
+from esmerald.encoders import (
+    ENCODER_TYPES,
+    LILYA_ENCODER_TYPES,
+    Encoder,
+    register_esmerald_encoder,
+)
 from esmerald.testclient import create_client
 
 
 class AttrsEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return has(value)
 
@@ -19,7 +24,14 @@ class AttrsEncoder(Encoder):
         return annotation(**value)
 
 
-register_esmerald_encoder(AttrsEncoder)
+@pytest.fixture(autouse=True, scope="function")
+def additional_encoders():
+    token = LILYA_ENCODER_TYPES.set(LILYA_ENCODER_TYPES.get().copy())
+    try:
+        register_esmerald_encoder(AttrsEncoder)
+        yield
+    finally:
+        LILYA_ENCODER_TYPES.reset(token)
 
 
 @define
@@ -29,8 +41,11 @@ class AttrItem:
     email: str
 
 
-def test_can_parse_attrs(test_app_client_factory):
+def test_working_overwrite():
+    assert LILYA_ENCODER_TYPES.get() is not ENCODER_TYPES
 
+
+def test_can_parse_attrs():
     @post("/create")
     async def create(data: AttrItem) -> AttrItem:
         return data
@@ -43,8 +58,7 @@ def test_can_parse_attrs(test_app_client_factory):
         assert response.json() == {"name": "test", "age": 2, "email": "test@foobar.com"}
 
 
-def test_can_parse_attrs_errors(test_app_client_factory):
-
+def test_can_parse_attrs_errors():
     @define
     class Item:
         sku: str = field()
