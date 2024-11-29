@@ -1,11 +1,13 @@
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from lilya._internal._path import clean_path
 from lilya.staticfiles import StaticFiles
 from lilya.types import ASGIApp
 from pydantic import BaseModel, DirectoryPath, constr, field_validator
 from typing_extensions import Annotated, Doc
+
+DirectoryType = Union[DirectoryPath, str, Path, Any]
 
 
 class StaticFilesConfig(BaseModel):
@@ -41,7 +43,7 @@ class StaticFilesConfig(BaseModel):
         ),
     ]
     directory: Annotated[
-        Optional[Union[DirectoryPath, str, Path, Any]],
+        Optional[Union[DirectoryType, list[DirectoryType], tuple[DirectoryType, ...]]],
         Doc(
             """
             The directory for the statics in the format of a path like.
@@ -81,22 +83,9 @@ class StaticFilesConfig(BaseModel):
             raise ValueError("path parameters are not supported for static files")
         return clean_path(value)
 
-    def _build_kwargs(
-        self,
-    ) -> Dict[str, Union[bool, int, DirectoryPath, List[Union[str, Tuple[str, str]]]]]:
-        """
-        Builds the necessary kwargs to create an StaticFiles object.
-        """
-        kwargs = {"html": self.html, "check_dir": self.check_dir}
-        if self.packages:
-            kwargs.update({"packages": self.packages})  # type: ignore
-        if self.directory:
-            kwargs.update({"directory": str(self.directory)})  # type: ignore
-        return kwargs  # type: ignore
-
     def to_app(self) -> ASGIApp:
         """
         It can be three scenarios
         """
 
-        return StaticFiles(**self._build_kwargs())  # type: ignore
+        return StaticFiles(**self.model_dump(exclude_none=True, exclude=["path"]))  # type: ignore
