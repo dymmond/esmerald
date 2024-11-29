@@ -99,7 +99,7 @@ def test_request_body(test_client_factory) -> None:
     assert response.json() == {"body": ""}
 
     response = client.post("/", json={"a": "123"})
-    assert response.json() == {"body": '{"a": "123"}'}
+    assert response.json() == {"body": '{"a":"123"}'}
 
     response = client.post("/", data="abc")
     assert response.json() == {"body": "abc"}
@@ -124,7 +124,7 @@ def test_request_stream(test_client_factory) -> None:
     assert response.json() == {"body": ""}
 
     response = client.post("/", json={"a": "123"})
-    assert response.json() == {"body": '{"a": "123"}'}
+    assert response.json() == {"body": '{"a":"123"}'}
 
     response = client.post("/", data="abc")
     assert response.json() == {"body": "abc"}
