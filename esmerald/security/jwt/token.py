@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 
 import jwt
-from jwt.api_jwt import AllowedPublicKeys
 from jwt.exceptions import PyJWTError
 from pydantic import BaseModel, Field, conint, constr, field_validator
 
@@ -67,7 +66,7 @@ class Token(BaseModel):
     def decode(
         cls,
         token: str,
-        key: Union[str, bytes, jwt.PyJWK, AllowedPublicKeys],
+        key: Union[str, bytes, jwt.PyJWK],
         algorithms: List[str],
     ) -> "Token":  # pragma: no cover
         """
