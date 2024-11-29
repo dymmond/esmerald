@@ -65,4 +65,4 @@ For **newer** lilya versions it is possible to provide multiple directories to l
 {!> ../../../docs_src/configurations/staticfiles/example_multiple_fallthrough.py!}
 ```
 
-Both styles can
+Both ways can be mixed.
