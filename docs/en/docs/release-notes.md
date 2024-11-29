@@ -7,6 +7,10 @@ hide:
 
 ## Unreleased
 
+### Changed
+
+- Updates from python-jose to PyJWT as dependency contrib library.
+
 ### Fixed
 
 - Fix cli detection of wrapped esmerald instances or different ASGI servers.
