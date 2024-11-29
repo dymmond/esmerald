@@ -9,7 +9,7 @@ JWT extends for JSON Web Token and it can be used with any middleware at your de
 
 ## Requirements
 
-Esmerald uses `python-jose` and `passlib` for this JWT integration. You can install by running:
+Esmerald uses `pyjwt` and `passlib` for this JWT integration. You can install by running:
 
 ```shell
 $ pip install esmerald[jwt]
@@ -52,12 +52,12 @@ token = Token(exp=..., iat=..., sub=...)
 ```
 
 The parameters are pretty standard from
-<a href="https://python-jose.readthedocs.io/en/latest/" target='_blank'>Python JOSE</a> so you can feel
+<a href="https://pyjwt.readthedocs.io/en/latest/" target='_blank'>Python JOSE</a> so you can feel
 comfortable with.
 
 ### Generate a Token (encode)
 
-The [token](#token-model) offers simple and standard operations to interact with `python-jose`.
+The [token](#token-model) offers simple and standard operations to interact with `pyjwt`.
 
 ```python
 from esmerald.security.jwt.token import Token
@@ -85,7 +85,7 @@ jwt_token = Token.decode(token=..., key=settings.secret_key, algorithms=["HS256"
 The `Token.decode` returns a [Token](#token-model) object.
 
 !!! Note
-    This functionality relies heavily on `python-jose` but it is not mandatory to use it in any way.
+    This functionality relies heavily on `pyjwt` but it is not mandatory to use it in any way.
     You are free to use any library that suits your unique needs. Esmerald only offers some examples and alternatives.
 
 ### The claims

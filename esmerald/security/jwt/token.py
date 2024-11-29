@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 
-from jose import JWSError, JWTError, jwt
-from jose.exceptions import JWSAlgorithmError, JWSSignatureError
+import jwt
+from jwt.api_jwt import AllowedPublicKeys
+from jwt.exceptions import PyJWTError
 from pydantic import BaseModel, Field, conint, constr, field_validator
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -47,35 +48,38 @@ class Token(BaseModel):
             raise ValueError(f"{subject} is not a valid string.") from e
 
     def encode(
-        self, key: str, algorithm: str, **claims_extra: Any
+        self, key: str, algorithm: str, **payload_extra: Any
     ) -> Union[str, Any]:  # pragma: no cover
         """
         Encodes the token into a proper str formatted and allows passing kwargs.
         """
-        claims: Dict = {**self.model_dump(exclude_none=True), **claims_extra}
+        payload: Dict[str, Any] = {**self.model_dump(exclude_none=True), **payload_extra}
         try:
             return jwt.encode(
-                claims=claims,
+                payload=payload,
                 key=key,
                 algorithm=algorithm,
             )
-        except (JWSError, JWTError) as e:
+        except PyJWTError as e:
             raise ImproperlyConfigured("Error encoding the token.") from e
 
     @classmethod
     def decode(
-        cls, token: str, key: Union[str, Dict[str, str]], algorithms: List[str]
+        cls,
+        token: str,
+        key: Union[str, bytes, jwt.PyJWK, AllowedPublicKeys],
+        algorithms: List[str],
     ) -> "Token":  # pragma: no cover
         """
         Decodes the given token.
         """
         try:
             data = jwt.decode(
-                token=token,
+                jwt=token,
                 key=key,
                 algorithms=algorithms,
                 options={"verify_aud": False},
             )
-        except (JWSError, JWTError, JWSAlgorithmError, JWSSignatureError) as e:
+        except PyJWTError as e:
             raise e
         return cls(**data)

@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from jose import JWSError, JWTError
+from jwt.exceptions import PyJWTError
 from lilya._internal._connection import Connection
 from lilya.types import ASGIApp
 
@@ -82,7 +82,7 @@ class CommonJWTAuthMiddleware(BaseAuthMiddleware):  # pragma: no cover
                 key=self.config.signing_key,
                 algorithms=[self.config.algorithm],
             )
-        except (JWSError, JWTError) as e:
+        except PyJWTError as e:
             raise AuthenticationError(str(e)) from e
 
         user = await self.retrieve_user(token.sub)
