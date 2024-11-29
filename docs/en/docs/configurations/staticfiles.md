@@ -59,7 +59,7 @@ The advantage is a fine granular configuration. Different options and packages c
 ## Multiple directories with fallthrough
 
 Designers may want to provide overwrites to static files or have fallbacks. In the [former example](#multiple-directories-and-multiple-pathes-without-fallthrough) this wasn't possible.
-For **newer** lilya versions it is possible to provide multiple directories to lilya and get such a behavior
+From the newest version of Lilya (0.11.5+) it is possible to provide multiple directories to lilya and get such a behavior
 
 ```python
 {!> ../../../docs_src/configurations/staticfiles/example_multiple_fallthrough.py!}
