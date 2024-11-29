@@ -42,7 +42,7 @@ but also via settings.
 
 This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
 
-## Multiple directories and multiple pathes
+## Multiple directories and multiple pathes (without fallthrough)
 
 Imagine, for example, you have multiple directories you would like to access including a `node_modules/` one.
 This is possible do do it by passing multiple `StaticFilesConfig` configurations and shown below:
@@ -50,6 +50,19 @@ This is possible do do it by passing multiple `StaticFilesConfig` configurations
 ```python
 {!> ../../../docs_src/configurations/staticfiles/example_multiple.py!}
 ```
+The advantage is a fine granular configuration. Different options and packages can be set.
 
 !!! Note
     The first path match is used and there is currently no fallthrough in case no file is found, so the order is very important.
+
+
+## Multiple directories with fallthrough
+
+Designers may want to provide overwrites to static files or have fallbacks. In the [former example](#multiple-directories-and-multiple-pathes-without-fallthrough) this wasn't possible.
+For **newer** lilya versions it is possible to provide multiple directories to lilya and get such a behavior
+
+```python
+{!> ../../../docs_src/configurations/staticfiles/example_multiple_fallthrough.py!}
+```
+
+Both styles can

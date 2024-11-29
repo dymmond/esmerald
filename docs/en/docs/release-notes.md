@@ -11,6 +11,8 @@ hide:
 
 - Fix cli detection of wrapped esmerald instances or different ASGI servers.
 - Allow passing multiple `StaticFilesConfig` configurations in a tuple.
+- Allow passing multiple directories to `StaticFiles` by removing the stringification in `StaticFilesConfig` so a fallthrough behavior can be etablished.
+  Note: this requires a newer lilya version.
 
 ## 3.5.1
 
