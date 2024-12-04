@@ -91,7 +91,7 @@ You can add as many `ChildEsmerald` as you desire, there are no limits.
 {!> ../../../docs_src/routing/router/childesmerald/app.py!}
 ```
 
-* **Adding nested applications**
+**Adding nested applications**
 
 ```python hl_lines="9 13-14" title="/application/app.py"
 {!> ../../../docs_src/routing/router/childesmerald/nested.py!}
@@ -189,5 +189,5 @@ injection.
 * **exception_handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
-* **include_in_schema** - Boolean if this ChildEsmerald should be included in the schema.
+* **include_in_schema** - Boolean if this ChildEsmerald should be included in the OpenAPI Schema.
 * **deprecated** - Boolean if this ChildEsmerald should be marked as deprecated.
