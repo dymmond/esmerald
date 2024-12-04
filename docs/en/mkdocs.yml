@@ -126,6 +126,9 @@ nav:
   - background-tasks.md
   - lifespan-events.md
   - protocols.md
+  - Security:
+    - security/index.md
+    - security/first-steps.md
   - Advanced & Useful:
     - extras/index.md
     - extras/path-params.md

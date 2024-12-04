@@ -24,8 +24,6 @@ from esmerald import Inject, Injects, Factory, DiderectInjects
         - "!^__call__"
         - "!^__eq__"
 
-::: esmerald.DirectInjects
-
 ::: esmerald.Factory
     options:
         filters:

@@ -71,6 +71,11 @@ class SecurityScheme(BaseModel):
     **REQUIRED** for `openIdConnect`. OpenId Connect URL to discover OAuth2 configuration values.
     This MUST be in the form of a URL. The OpenID Connect standard requires the use of TLS.
     """
+    model: Optional[BaseModel] = None
+    """
+    An optional model to be used for the security scheme.
+    """
+
     model_config = ConfigDict(
         extra="ignore",
         populate_by_name=True,
@@ -95,7 +100,7 @@ class SecurityScheme(BaseModel):
                 {
                     "type": "openIdConnect",
                     "openIdConnectUrl": "openIdConnect",
-                },  # issue #5: allow relative path
+                },
             ]
         },
     )
