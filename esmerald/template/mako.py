@@ -1,3 +1,4 @@
+import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from esmerald.exceptions import MissingDependency, TemplateNotFound
@@ -22,6 +23,12 @@ class MakoTemplateEngine(TemplateEngineProtocol[MakoTemplate]):
         **env_options: Dict[Any, Any],
     ) -> None:
         super().__init__(directory)
+        warnings.warn(
+            "The mako template engine integration is deprecated."
+            "Use the jinja2 integration, create an own, custom integration or render the templates manually with mako.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.engine = TemplateLookup(
             directories=directory if isinstance(directory, (list, tuple)) else [directory]
         )

@@ -25,7 +25,6 @@ class DocumentAPIView(APIView):
 
 
 def test_injection():
-
     with create_client(routes=[Gateway(handler=DocumentAPIView)]) as client:
         response = client.post("/", json={"name": "test", "content": "test"})
         assert response.status_code == 201

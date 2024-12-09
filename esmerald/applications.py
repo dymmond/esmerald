@@ -1,14 +1,14 @@
 import warnings
+from collections.abc import Callable, Iterable, Sequence
 from datetime import timezone as dtimezone
 from functools import cached_property
+from inspect import isclass
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Dict,
     List,
     Optional,
-    Sequence,
     Type,
     TypeVar,
     Union,
@@ -720,13 +720,18 @@ class Application(Lilya):
             ),
         ] = None,
         static_files_config: Annotated[
-            Optional["StaticFilesConfig"],
+            Union[
+                "StaticFilesConfig",
+                list["StaticFilesConfig"],
+                tuple["StaticFilesConfig", ...],
+                None,
+            ],
             Doc(
                 """
                 An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
 
                 This configuration is used to enable and serve static files via
-                Esmerald application.
+                Esmerald application. You can pass also multiple objects via a list or tuple.
 
                 **Example**
 
@@ -1024,7 +1029,7 @@ class Application(Lilya):
             ),
         ] = None,
         encoders: Annotated[
-            Sequence[Optional[Encoder]],
+            Optional[Sequence[Union[Encoder, type[Encoder]]]],
             Doc(
                 """
             A `list` of encoders to be used by the application once it
@@ -1608,7 +1613,15 @@ class Application(Lilya):
         ] = State()
         self.async_exit_config = esmerald_settings.async_exit_config
 
-        self.encoders = self.load_settings_value("encoders", encoders) or []
+        self.encoders = list(
+            cast(
+                Iterable[Union[Encoder]],
+                (
+                    encoder if isclass(encoder) else encoder
+                    for encoder in self.load_settings_value("encoders", encoders) or []
+                ),
+            )
+        )
         self._register_application_encoders()
 
         if self.enable_scheduler:
@@ -1662,8 +1675,8 @@ class Application(Lilya):
 
         This way, the support still remains but using the Lilya Encoders.
         """
-        self.register_encoder(cast(Encoder[Any], PydanticEncoder))
-        self.register_encoder(cast(Encoder[Any], MsgSpecEncoder))
+        self.register_encoder(cast(Encoder, PydanticEncoder))
+        self.register_encoder(cast(Encoder, MsgSpecEncoder))
 
         for encoder in self.encoders:
             self.register_encoder(encoder)
@@ -1675,7 +1688,7 @@ class Application(Lilya):
         if self.static_files_config:
             for config in (
                 self.static_files_config
-                if isinstance(self.static_files_config, list)
+                if isinstance(self.static_files_config, (list, tuple))
                 else [self.static_files_config]
             ):
                 static_route = Include(path=config.path, app=config.to_app())
@@ -2611,7 +2624,7 @@ class Application(Lilya):
     def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
         self.router.add_event_handler(event_type, func)
 
-    def register_encoder(self, encoder: Encoder[Any]) -> None:
+    def register_encoder(self, encoder: Encoder) -> None:
         """
         Registers a Encoder into the list of predefined encoders of the system.
         """

@@ -869,13 +869,15 @@ class EsmeraldAPISettings(BaseSettings):
         class AppSettings(EsmeraldAPISettings):
             @property
             def template_config(self) -> TemplateConfig:
-                TemplateConfig(directory='templates', engine=MakoTemplateEngine)
+                TemplateConfig(directory='templates')
         ```
         """
         return None
 
     @property
-    def static_files_config(self) -> Optional[StaticFilesConfig]:
+    def static_files_config(
+        self,
+    ) -> Union[StaticFilesConfig, list[StaticFilesConfig], tuple[StaticFilesConfig, ...], None]:
         """
         An instance of [StaticFilesConfig](https://esmerald.dev/configurations/staticfiles/).
 

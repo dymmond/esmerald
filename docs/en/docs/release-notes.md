@@ -5,6 +5,21 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Fixed
+
+- Fix cli detection of wrapped esmerald instances or different ASGI servers.
+- Allow passing multiple `StaticFilesConfig` configurations in a tuple.
+
+## 3.5.1
+
+### Changed
+
+- Use assigned encoders at requests for json_encoder.
+- Allow overwriting the `LILYA_ENCODER_TYPES` for different encoder sets or tests.
+- Use more orjson for encoding requests.
+
 ## 3.5.0
 
 ### Added

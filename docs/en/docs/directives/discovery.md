@@ -65,14 +65,17 @@ When no `--app` or no `ESMERALD_DEFAULT_APP` environment variable is provided, E
     * **main.py**
     * **app.py**
     * **application.py**
+    * **asgi.py**
 
     !!! Warning
         **If none of these files are found**, Esmerald will look **at the first children nodes, only**,
         and repeats the same process. If no files are found then throws an `EnvironmentError`
         exception.
 
-* Once one of those files is found, Esmerald will analise the type of objects contained in the
-module and will check if any of them is a valid `Esmerald` type and return it.
+* Once one of those files is found, Esmerald will check the module for a truthy declaration with name `app` or `application`.
+
+* If Esmerald doesn't find the declarations or they are not truthy, Esmerald will analise the type of objects contained in the
+  module and will check if any of them is a valid `Esmerald` type and return it.
 
 * If Esmerald understand that none of those objects are type `Esmerald` (or subclasses), it will
 do one last attempt and try to find specific function declarations:
