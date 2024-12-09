@@ -51,7 +51,7 @@ def test_openapi_schema():
                 "summary": "Esmerald application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
-                "version": "3.5.0",
+                "version": client.app.version,
             },
             "servers": [{"url": "/"}],
             "paths": {

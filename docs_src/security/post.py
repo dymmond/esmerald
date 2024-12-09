@@ -53,20 +53,15 @@ def fake_decode_token(token: str):
 
 async def get_current_user(token: str = Security(oauth2_scheme)):
     user = fake_decode_token(token)
+    if user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return user
-
-
-async def get_current_active_user(
-    user: User = Inject(get_current_user),
-):
-    if user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return user
 
 
@@ -87,7 +82,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Injects()) -> Dict[str, s
     return {"access_token": user.username, "token_type": "bearer"}
 
 
-@get("/users/me", dependencies={"current_user": Inject(get_current_active_user)})
+@get("/users/me", dependencies={"current_user": Inject(get_current_user)})
 async def read_users_me(
     current_user: User = Injects(),
 ) -> User:

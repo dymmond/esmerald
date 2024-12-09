@@ -17,6 +17,7 @@ from esmerald.transformers.utils import (
     get_signature,
     merge_sets,
 )
+from esmerald.typing import Undefined
 from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
 from esmerald.utils.dependencies import is_security_scheme
 from esmerald.utils.schema import is_field_optional
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 MappingUnion = Mapping[Union[int, str], Any]
+PydanticUndefined = Undefined
 
 
 class TransformerModel(ArbitraryExtraBaseModel):
@@ -358,7 +360,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         return {**reserved_kwargs, **path_params, **query_params, **headers, **cookies}
 
 
-def dependency_tree(key: str, dependencies: "Dependencies") -> Dependency:
+def dependency_tree(key: str, dependencies: "Dependencies", first_run: bool = True) -> Dependency:
     """
     Recursively build a dependency tree starting from a given key.
 
@@ -369,13 +371,17 @@ def dependency_tree(key: str, dependencies: "Dependencies") -> Dependency:
     Returns:
         Dependency: Constructed dependency tree starting from the specified key.
     """
+
     inject = dependencies[key]
-    dependency_keys = [key for key in get_signature(inject).model_fields if key in dependencies]
+    inject_signature = get_signature(inject)
+    dependency_keys = [key for key in inject_signature.model_fields if key in dependencies]
+
     return Dependency(
         key=key,
         inject=inject,
         dependencies=[
-            dependency_tree(key=key, dependencies=dependencies) for key in dependency_keys
+            dependency_tree(key=key, dependencies=dependencies, first_run=False)
+            for key in dependency_keys
         ],
     )
 

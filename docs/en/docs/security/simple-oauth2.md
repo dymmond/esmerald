@@ -171,7 +171,7 @@ Both dependencies will raise an HTTP error if the user doesn't exist or if the u
 
 With this update, the endpoint will only return a user if the user exists, is authenticated correctly, and is active.
 
-```python hl_lines="54-62 65-70"
+```python hl_lines="54-65"
 {!> ../../../docs_src/security/post.py !}
 ```
 
@@ -183,3 +183,60 @@ With this update, the endpoint will only return a user if the user exists, is au
     While you can technically omit this header and it will still function, including it ensures compliance with the specification. Additionally, some tools may expect and use this header, either now or in the future, which could be helpful for you or your users.
 
     That's the advantage of following standards.
+
+## Go ahead and test it
+
+Open the OpenAPI documentation and check it out: [http://localhost:8000/docs/swagger](http://localhost:8000/docs/swagger).
+
+### Authenticate
+
+Click the **Authorize** button and use the following credentials:
+
+* **User**: `janedoe`
+* **Password**: `secret`.
+
+<img src="https://res.cloudinary.com/dymmond/image/upload/v1733758942/esmerald/security/authorize_jimv3t.png" alt="Authorize">
+
+After pressing the authenticate, you should be able to see something like this:
+
+<img src="https://res.cloudinary.com/dymmond/image/upload/v1733759042/esmerald/security/done_mgpwvt.png" alt="Done">
+
+### Get the data
+
+Now it is time to test and get the data using the `GET` method provided in the examples `/users/me`.
+
+You will get a payload similar to this:
+
+```json
+{
+    "username": "johndoe",
+  "email": "johndoe@example.com",
+  "full_name": "John Doe",
+  "disabled": false,
+  "hashed_password": "fakehashedsecret"
+}
+```
+
+<img src="https://res.cloudinary.com/dymmond/image/upload/v1733759233/esmerald/security/payload_eaxlaf.png" alt="Payload">
+
+Now, if you logout by clicking in the logout icon, you should receive a 401.
+
+<img src="https://res.cloudinary.com/dymmond/image/upload/v1733759352/esmerald/security/not_auth_nwd72q.png" alt="Not authenticated">
+
+
+## Inactive users
+
+Now you can try with an inactive user and see what happens.
+
+* **User**: `peter`
+* **Password**: `secret2`.
+
+You should have an error like this:
+
+```json
+{
+  "detail": "Inactive user"
+}
+```
+
+As you can see, we have now implemented a simple and yet effective authentication.
