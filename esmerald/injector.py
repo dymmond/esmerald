@@ -81,3 +81,13 @@ class Inject(ArbitraryHashableBaseModel):
             and other.use_cache == self.use_cache
             and other.value == self.value
         )
+
+    def __hash__(self) -> int:
+        values: Dict[str, Any] = {}
+        for key, value in self.__dict__.items():
+            values[key] = None
+            if isinstance(value, (list, set)):
+                values[key] = tuple(value)
+            else:
+                values[key] = value
+        return hash((type(self),) + tuple(values))

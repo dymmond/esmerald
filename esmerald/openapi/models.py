@@ -81,6 +81,7 @@ class SecurityBase(BaseModel):
 
     type: SecuritySchemeType = Field(alias="type")
     description: Optional[str] = None
+    scheme_name: Optional[str] = None
 
 
 SecuritySchemeUnion = Union[APIKey, HTTPBase, OAuth2, OpenIdConnect, HTTPBearer]
@@ -93,7 +94,7 @@ class Components(BaseModel):
     examples: Optional[Dict[str, Union[Example, Reference]]] = None
     requestBodies: Optional[Dict[str, Union[RequestBody, Reference]]] = None
     headers: Optional[Dict[str, Union[Header, Reference]]] = None
-    securitySchemes: Optional[Dict[str, Union[SecurityScheme, Reference]]] = None
+    securitySchemes: Optional[Dict[str, Union[SecurityScheme, Reference, Dict[str, Any]]]] = None
     links: Optional[Dict[str, Union[Link, Reference]]] = None
     callbacks: Optional[Dict[str, Union[Dict[str, PathItem], Reference, Any]]] = None
     pathItems: Optional[Dict[str, Union[PathItem, Reference]]] = None
