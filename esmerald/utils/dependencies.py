@@ -18,3 +18,12 @@ def is_security_scheme(param: Any) -> bool:
     if not param:
         return False
     return isinstance(param, params.Security)
+
+
+def is_inject(param: Any) -> bool:
+    """
+    Checks if the object is an Inject.
+    """
+    from esmerald.injector import Inject
+
+    return isinstance(param, Inject)

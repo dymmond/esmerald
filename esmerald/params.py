@@ -426,6 +426,7 @@ class Body(FieldInfo):
         init_var: bool = True,
         kw_only: bool = True,
         include_in_schema: bool = True,
+        json_schema_extra: Optional[Dict[str, Any]] = None,
     ) -> None:
         extra: Dict[str, Any] = {}
         self.media_type = media_type
@@ -438,6 +439,8 @@ class Body(FieldInfo):
         extra.update(content_encoding=self.content_encoding)
         extra.update(embed=embed)
         extra.update(allow_none=allow_none)
+
+        json_schema_extra = extra if json_schema_extra is None else json_schema_extra.update(extra)
 
         super().__init__(
             default=default,
@@ -457,7 +460,7 @@ class Body(FieldInfo):
             min_length=min_length,
             max_length=max_length,
             pattern=pattern,
-            json_schema_extra=extra,
+            json_schema_extra=json_schema_extra,
             validate_default=validate_default,
             validation_alias=validation_alias,
             discriminator=discriminator,
@@ -681,6 +684,7 @@ class Security(Requires):
     __init__(self, dependency: Optional[Callable[..., Any]] = None, *, scopes: Optional[Sequence[str]] = None, use_cache: bool = True)
         Initializes the Security class with the given dependency, scopes, and use_cache flag.
     """
+
     def __init__(
         self,
         dependency: Optional[Callable[..., Any]] = None,

@@ -254,7 +254,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return {
             "cookies": [param.dict() for param in self.cookies],
-            "dependencies": [dep.dict() for dep in self.dependencies],
+            "dependencies": [dep.model_dump() for dep in self.dependencies],
             "form_data": self.form_data,
             "headers": [param.dict() for param in self.headers],
             "path_params": [param.dict() for param in self.path_params],

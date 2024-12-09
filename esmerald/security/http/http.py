@@ -88,20 +88,21 @@ class HTTPBasic(HTTPBase):
 
     Use this class as a dependency to enforce HTTP Basic authentication.
 
-    Example:
-        ```python
-        from typing import Any
+    ## Example:
 
-        from esmerald import Gateway, Inject, Injects, get
-        from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
-        from esmerald.testclient import create_client
+    ```python
+    from typing import Any
 
-        security = HTTPBasic()
+    from esmerald import Gateway, Inject, Injects, get
+    from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
+    from esmerald.testclient import create_client
 
-        @app.get("/users/me", security=[security], dependencies={"credentials": Inject(security)}))
-        def read_current_user(credentials: HTTPBasicCredentials = Injects()):
-            return {"username": credentials.username, "password": credentials.password}
-        ```
+    security = HTTPBasic()
+
+    @app.get("/users/me", security=[security], dependencies={"credentials": Inject(security)}))
+    def get_current_user(credentials: HTTPBasicCredentials = Injects()):
+        return {"username": credentials.username, "password": credentials.password}
+    ```
     """
 
     def __init__(
@@ -175,7 +176,7 @@ class HTTPBearer(HTTPBase):
     security = HTTPBearer()
 
     @app.get("/users/me")
-    def read_current_user(credentials: HTTPAuthorizationCredentials = Injects()) -> Any::
+    def get_current_user(credentials: HTTPAuthorizationCredentials = Injects()) -> Any::
         return {"scheme": credentials.scheme, "credentials": credentials.credentials}
     ```
     """
@@ -237,7 +238,7 @@ class HTTPDigest(HTTPBase):
     security = HTTPDigest()
 
     @get("/users/me", security=[security], dependencies={"credentials": Inject(security)})
-    def read_current_user(credentials: HTTPAuthorizationCredentials = Injects()) -> Any:
+    def get_current_user(credentials: HTTPAuthorizationCredentials = Injects()) -> Any:
         return {"scheme": credentials.scheme, "credentials": credentials.credentials}
     ```
     """
