@@ -7,10 +7,16 @@ hide:
 
 ## Unreleased
 
+### Changed
+
+- Updates from python-jose to PyJWT as dependency contrib library.
+
 ### Fixed
 
 - Fix cli detection of wrapped esmerald instances or different ASGI servers.
 - Allow passing multiple `StaticFilesConfig` configurations in a tuple.
+- Allow passing multiple directories to `StaticFiles` by removing the stringification in `StaticFilesConfig` so a fallthrough behavior can be established.
+  Note: this requires a newer lilya version.
 
 ## 3.5.1
 
