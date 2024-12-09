@@ -6,7 +6,7 @@ from esmerald import Gateway, Inject, Injects, Security, get, post
 from esmerald.security.oauth2 import OAuth2, OAuth2PasswordRequestFormStrict
 from esmerald.testclient import create_client
 
-pydantic_version = __version__
+pydantic_version = ".".join(__version__.split(".")[:2])
 
 reusable_oauth2 = OAuth2(
     flows={

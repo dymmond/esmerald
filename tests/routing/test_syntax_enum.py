@@ -5,7 +5,7 @@ from pydantic import __version__
 from esmerald import Gateway, JSONResponse, get
 from esmerald.testclient import create_client
 
-pydantic_version = __version__
+pydantic_version = ".".join(__version__.split(".")[:2])
 
 
 class ItemType(str, Enum):
