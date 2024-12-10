@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler, WebhookHandler
 
 
-def get_base_annotations(base_annotation: Any) -> Dict[str, Any]:
+def get_base_annotations(base_annotation: Any, is_class: bool = False) -> Dict[str, Any]:
     """
     Returns the annotations of the base class.
 
@@ -30,12 +30,61 @@ def get_base_annotations(base_annotation: Any) -> Dict[str, Any]:
         Dict[str, Any]: The annotations of the base class.
     """
     base_annotations: Dict[str, Any] = {}
-    for base in base_annotation.__bases__:
+    if not is_class:
+        bases = base_annotation.__bases__
+    else:
+        bases = base_annotation.__class__.__bases__
+
+    for base in bases:
         base_annotations.update(**get_base_annotations(base))
         if hasattr(base, "__annotations__"):
             for name, annotation in base.__annotations__.items():
                 base_annotations[name] = annotation
     return base_annotations
+
+
+def convert_object_annotation_to_pydantic_model(field_annotation: Any) -> BaseModel:
+    """
+    Converts any annotation of the body into a Pydantic
+    base model.
+
+    This is used for OpenAPI representation purposes only.
+
+    Esmerald will try internally to convert the model into a Pydantic BaseModel,
+    this will serve as representation of the model in the documentation but internally,
+    it will use the native type to validate the data being sent and parsed in the
+    payload/data field.
+
+    Encoders are not supported in the OpenAPI representation, this is because the encoders
+    are unique to Esmerald and are not part of the OpenAPI specification. This is why
+    we convert the encoders into a Pydantic model for OpenAPI representation purposes only.
+    """
+    annotation_args = get_args(field_annotation)
+    if isinstance(field_annotation, _GenericAlias):
+        annotations = tuple(convert_annotation_to_pydantic_model(arg) for arg in annotation_args)
+        field_annotation.__args__ = annotations
+        return cast(BaseModel, field_annotation)
+
+    field_definitions: Dict[str, Any] = {}
+
+    # Get any possible annotations from the base classes
+    base_annotations: Dict[str, Any] = {**get_base_annotations(field_annotation, is_class=True)}
+    field_annotations = {
+        **base_annotations,
+        **field_annotation.__annotations__,
+    }
+    for name, annotation in field_annotations.items():
+        field_definitions[name] = (annotation, ...)
+
+    if inspect.isclass(field_annotation):
+        name = field_annotation.__name__
+    else:
+        name = field_annotation.__class__.__name__
+
+    return cast(
+        BaseModel,
+        create_model(name, __config__={"arbitrary_types_allowed": True}, **field_definitions),
+    )
 
 
 def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
@@ -278,12 +327,15 @@ class OpenAPIFieldInfoMixin:
         """
         # Making sure the dependencies are not met as body fields for OpenAPI representation
         handler_dependencies = set(self.get_dependencies().keys())
+        security_dependencies = set(self.transformer.get_security_params().keys())
 
         # Getting everything else that is not considered a dependency
         body_encoder_fields = {
             name: field
             for name, field in self.signature_model.model_fields.items()
-            if is_body_encoder(field.annotation) and name not in handler_dependencies
+            if is_body_encoder(field.annotation)
+            and name not in handler_dependencies
+            and name not in security_dependencies
         }
         return body_encoder_fields
 

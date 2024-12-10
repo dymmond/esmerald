@@ -2448,7 +2448,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             kwargs[dependency.key] = await self.websocket_parameter_model.get_dependencies(
                 dependency=dependency, connection=websocket, **kwargs
             )
-        return signature_model.parse_values_for_connection(connection=websocket, **kwargs)
+        return await signature_model.parse_values_for_connection(connection=websocket, **kwargs)
 
 
 class Include(LilyaInclude):

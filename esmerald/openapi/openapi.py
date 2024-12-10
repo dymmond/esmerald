@@ -49,8 +49,12 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
-from esmerald.routing._internal import convert_annotation_to_pydantic_model
+from esmerald.routing._internal import (
+    convert_annotation_to_pydantic_model,
+)
+from esmerald.security.oauth2.oauth import SecurityBase
 from esmerald.typing import Undefined
+from esmerald.utils.dependencies import is_security_scheme
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]
@@ -66,11 +70,15 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
     cookie_params = [param.field_info for param in route.transformer.get_cookie_params()]
     header_params = [param.field_info for param in route.transformer.get_header_params()]
 
+    handler_dependencies = set(route.get_dependencies().keys())
     handler_query_params = [
         param
         for param in route.transformer.get_query_params()
         if param.field_alias not in route.body_encoder_fields.keys()
+        and not param.is_security
+        and param.field_alias not in handler_dependencies
     ]
+
     query_params = []
     for param in handler_query_params:
         is_union_or_optional = is_union(param.field_info.annotation)
@@ -78,19 +86,25 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
         if param.field_info.alias in body_fields:
             continue
 
+        if param.is_security:
+            continue
+
         # Making sure all the optional and union types are included
         if is_union_or_optional:
-            # field_info = should_skip_json_schema(param.field_info)
-            query_params.append(param.field_info)
+            if not is_security_scheme(param.field_info.default):
+                query_params.append(param.field_info)
 
         else:
-            if isinstance(param.field_info.annotation, _GenericAlias):
+            if isinstance(param.field_info.annotation, _GenericAlias) and not is_security_scheme(
+                param.field_info.default
+            ):
                 query_params.append(param.field_info)
             elif (
                 param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES_KEYS
                 or param.field_info.annotation.__name__ in TRANSFORMER_TYPES_KEYS
             ):
-                query_params.append(param.field_info)
+                if not is_security_scheme(param.field_info.default):
+                    query_params.append(param.field_info)
 
     return path_params + query_params + cookie_params + header_params
 
@@ -106,15 +120,15 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
         if inspect.isclass(security_requirement):
             security_requirement = security_requirement()
 
-        if not isinstance(security_requirement, SecurityScheme):
+        if not isinstance(security_requirement, (SecurityScheme, SecurityBase)):
             raise ValueError(
                 "Security schemes must subclass from `esmerald.openapi.models.SecurityScheme`"
             )
+
         security_definition = security_requirement.model_dump(by_alias=True, exclude_none=True)
         security_name = security_requirement.scheme_name
         security_definitions[security_name] = security_definition
         operation_security.append({security_name: security_requirement})
-
     return security_definitions, operation_security
 
 

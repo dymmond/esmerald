@@ -40,6 +40,7 @@ class ParamSetting(NamedTuple):
     is_required: bool
     param_type: ParamType
     field_info: FieldInfo
+    is_security: bool = False
 
 
 class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
@@ -111,6 +112,7 @@ def create_parameter_setting(
     field_info: FieldInfo,
     field_name: str,
     path_parameters: Set[str],
+    is_security: bool,
 ) -> ParamSetting:
     """
     Create a setting definition for a parameter.
@@ -161,6 +163,7 @@ def create_parameter_setting(
         field_name=field_name,
         field_info=param,
         is_required=is_required and (default_value is None and not allow_none),
+        is_security=is_security,
     )
     return param_settings
 

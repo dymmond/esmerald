@@ -52,3 +52,28 @@ def should_skip_json_schema(field_info: Union[FieldInfo, Any]) -> FieldInfo:
     arguments = tuple(arguments)  # type: ignore
     field_info.annotation = Union[arguments]
     return field_info
+
+
+def extract_arguments(
+    param: Union[Any, None] = None, argument_list: Union[List[Any], None] = None
+) -> List[Type[type]]:
+    """
+    Recursively extracts unique types from a parameter's type annotation.
+
+    Args:
+        param (Union[Parameter, None], optional): The parameter with type annotation to extract from.
+        argument_list (Union[List[Any], None], optional): The list of arguments extracted so far.
+
+    Returns:
+        List[Type[type]]: A list of unique types extracted from the parameter's type annotation.
+    """
+    arguments: List[Any] = list(argument_list) if argument_list is not None else []
+    args = get_args(param)
+
+    for arg in args:
+        if isinstance(arg, _GenericAlias):
+            arguments.extend(extract_arguments(param=arg, argument_list=arguments))
+        else:
+            if arg not in arguments:
+                arguments.append(arg)
+    return arguments

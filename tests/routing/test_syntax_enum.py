@@ -20,14 +20,12 @@ async def item(item_type: ItemType) -> JSONResponse:
 
 def test_syntax():
     with create_client(routes=[Gateway(handler=item)]) as client:
-
         response = client.get("/item/sold")
         assert response.json() == {"item_type": "sold"}
 
 
 def test_syntax_fail():
     with create_client(routes=[Gateway(handler=item)]) as client:
-
         response = client.get("/item/test")
 
         assert response.status_code == 400

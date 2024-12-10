@@ -5,7 +5,7 @@ from pydantic.fields import FieldInfo
 from esmerald.context import Context
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.params import Body
+from esmerald.params import Body, Security
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
 from esmerald.transformers.signature import SignatureModel
@@ -17,7 +17,9 @@ from esmerald.transformers.utils import (
     get_signature,
     merge_sets,
 )
+from esmerald.typing import Undefined
 from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
+from esmerald.utils.dependencies import is_security_scheme
 from esmerald.utils.schema import is_field_optional
 
 if TYPE_CHECKING:
@@ -27,6 +29,7 @@ if TYPE_CHECKING:
 
 MEDIA_TYPES = [EncodingType.MULTI_PART, EncodingType.URL_ENCODED]
 MappingUnion = Mapping[Union[int, str], Any]
+PydanticUndefined = Undefined
 
 
 class TransformerModel(ArbitraryExtraBaseModel):
@@ -115,6 +118,15 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return self.headers
 
+    def get_security_params(self) -> Dict[str, ParamSetting]:
+        """
+        Get header parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of header parameters.
+        """
+        return {field.field_name: field for field in self.get_query_params() if field.is_security}
+
     def to_kwargs(
         self,
         connection: Union["WebSocket", "Request"],
@@ -193,8 +205,22 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return Context(__handler__=handler, __request__=request)
 
+    async def get_for_security_dependencies(
+        self, connection: Union["Request", "WebSocket"], kwargs: Any
+    ) -> Any:
+        """
+        Checks if the class has security dependencies.
+
+        Returns:
+            bool: True if security dependencies are present, False otherwise.
+        """
+        for name, dependency in kwargs.items():
+            if isinstance(dependency, Security):
+                kwargs[name] = await dependency.dependency(connection)
+        return kwargs
+
     async def get_dependencies(
-        self, dependency: Dependency, connection: Union["WebSocket", Request], **kwargs: Any
+        self, dependency: Dependency, connection: Union["WebSocket", "Request"], **kwargs: Any
     ) -> Any:
         """
         Get dependencies asynchronously.
@@ -212,7 +238,11 @@ class TransformerModel(ArbitraryExtraBaseModel):
             kwargs[_dependency.key] = await self.get_dependencies(
                 dependency=_dependency, connection=connection, **kwargs
             )
-        dependency_kwargs = signature_model.parse_values_for_connection(
+
+        if kwargs:
+            kwargs = await self.get_for_security_dependencies(connection, kwargs)
+
+        dependency_kwargs = await signature_model.parse_values_for_connection(
             connection=connection, **kwargs
         )
         return await dependency.inject(**dependency_kwargs)
@@ -226,7 +256,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return {
             "cookies": [param.dict() for param in self.cookies],
-            "dependencies": [dep.dict() for dep in self.dependencies],
+            "dependencies": [dep.model_dump() for dep in self.dependencies],
             "form_data": self.form_data,
             "headers": [param.dict() for param in self.headers],
             "path_params": [param.dict() for param in self.path_params],
@@ -330,7 +360,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         return {**reserved_kwargs, **path_params, **query_params, **headers, **cookies}
 
 
-def dependency_tree(key: str, dependencies: "Dependencies") -> Dependency:
+def dependency_tree(key: str, dependencies: "Dependencies", first_run: bool = True) -> Dependency:
     """
     Recursively build a dependency tree starting from a given key.
 
@@ -341,13 +371,17 @@ def dependency_tree(key: str, dependencies: "Dependencies") -> Dependency:
     Returns:
         Dependency: Constructed dependency tree starting from the specified key.
     """
+
     inject = dependencies[key]
-    dependency_keys = [key for key in get_signature(inject).model_fields if key in dependencies]
+    inject_signature = get_signature(inject)
+    dependency_keys = [key for key in inject_signature.model_fields if key in dependencies]
+
     return Dependency(
         key=key,
         inject=inject,
         dependencies=[
-            dependency_tree(key=key, dependencies=dependencies) for key in dependency_keys
+            dependency_tree(key=key, dependencies=dependencies, first_run=False)
+            for key in dependency_keys
         ],
     )
 
@@ -381,12 +415,14 @@ def get_parameter_settings(
     for field_name, model_field in signature_fields.items():
         if field_name not in ignored_keys:
             allow_none = getattr(model_field, "allow_none", True)
+            is_security = is_security_scheme(model_field.default)
             parameter_definitions.add(
                 create_parameter_setting(
                     allow_none=allow_none,
                     field_name=field_name,
                     field_info=model_field,
                     path_parameters=path_parameters,
+                    is_security=is_security,
                 )
             )
 

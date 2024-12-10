@@ -3,7 +3,7 @@ from typing import AsyncGenerator, Generator
 import pytest
 
 from esmerald import Esmerald, Gateway, get
-from esmerald.param_functions import DirectInjects
+from esmerald.param_functions import Requires
 from esmerald.testclient import EsmeraldTestClient
 
 
@@ -49,53 +49,53 @@ methods_dependency = MethodsDependency()
 
 
 @get("/callable-dependency")
-async def get_callable_dependency(value: str = DirectInjects(callable_dependency)) -> str:
+async def get_callable_dependency(value: str = Requires(callable_dependency)) -> str:
     return value
 
 
 @get("/callable-gen-dependency")
-async def get_callable_gen_dependency(value: str = DirectInjects(callable_gen_dependency)) -> str:
+async def get_callable_gen_dependency(value: str = Requires(callable_gen_dependency)) -> str:
     return value
 
 
 @get("/async-callable-dependency")
 async def get_async_callable_dependency(
-    value: str = DirectInjects(async_callable_dependency),
+    value: str = Requires(async_callable_dependency),
 ) -> str:
     return value
 
 
 @get("/async-callable-gen-dependency")
 async def get_async_callable_gen_dependency(
-    value: str = DirectInjects(async_callable_gen_dependency),
+    value: str = Requires(async_callable_gen_dependency),
 ) -> str:
     return value
 
 
 @get("/synchronous-method-dependency")
 async def get_synchronous_method_dependency(
-    value: str = DirectInjects(methods_dependency.synchronous),
+    value: str = Requires(methods_dependency.synchronous),
 ) -> str:
     return value
 
 
 @get("/synchronous-method-gen-dependency")
 async def get_synchronous_method_gen_dependency(
-    value: str = DirectInjects(methods_dependency.synchronous_gen),
+    value: str = Requires(methods_dependency.synchronous_gen),
 ) -> str:
     return value
 
 
 @get("/asynchronous-method-dependency")
 async def get_asynchronous_method_dependency(
-    value: str = DirectInjects(methods_dependency.asynchronous),
+    value: str = Requires(methods_dependency.asynchronous),
 ) -> str:
     return value
 
 
 @get("/asynchronous-method-gen-dependency")
 async def get_asynchronous_method_gen_dependency(
-    value: str = DirectInjects(methods_dependency.asynchronous_gen),
+    value: str = Requires(methods_dependency.asynchronous_gen),
 ) -> str:
     return value
 
