@@ -24,7 +24,7 @@ from .exceptions import (
 )
 from .interceptors.interceptor import EsmeraldInterceptor
 from .param_functions import Security
-from .params import Body, Cookie, File, Form, Header, Injects, MultiPartForm, Param, Path, Query
+from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
 from .pluggables import Extension, Pluggable
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
@@ -80,7 +80,6 @@ __all__ = [
     "JSONResponse",
     "MethodNotAllowed",
     "MiddlewareProtocol",
-    "MultiPartForm",
     "NotAuthenticated",
     "NotFound",
     "OpenAPIConfig",

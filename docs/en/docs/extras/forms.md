@@ -24,16 +24,6 @@ from esmerald.params import Form
 As [explained here](./request-data.md#request-data), the handler is expecting a `data` field declared and from there
 you can pass more details about the form.
 
-!!! Tip
-    As of version 3.6.0, Esmerald also supports the `MultiPartForm` parameter. This parameter is the equivalent of
-    doing `Body(media_type="application/x-www-form-urlencoded")`.
-
-    You can import it via `esmerald.params.MultiPartForm` or via:
-
-    ```python
-    from esmerald import MultiPartForm
-    ```
-
 ## Examples
 
 You can send the form in many different formats, for example:
