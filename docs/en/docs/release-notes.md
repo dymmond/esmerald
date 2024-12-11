@@ -5,11 +5,20 @@ hide:
 
 # Release Notes
 
-## Unreleased
+## 3.6.0
+
+### Added
+
+- New [Security](./security/index.md) section with all the explanations how to use the internals of Esmerald.
+- Added new `Security` object used for security dependencies using Esmerald `esmerald.security` package.
 
 ### Changed
 
 - Updates from python-jose to PyJWT as dependency contrib library.
+- Remove OpenAPI security as they where redundant and not 100% compliant with OpenAPI security.
+- Allow the new Lilya StaticFiles allowing to provide multiple directories with fallthrough behaviour.
+- Deprecate support for Mako.
+- Internal code organisation and cleaning.
 
 ### Fixed
 
@@ -24,7 +33,7 @@ hide:
 
 - Use assigned encoders at requests for json_encoder.
 - Allow overwriting the `LILYA_ENCODER_TYPES` for different encoder sets or tests.
-- Use more orjson for encoding requests.
+- Use more OrJSON for encoding requests.
 
 ## 3.5.0
 

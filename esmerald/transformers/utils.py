@@ -216,7 +216,6 @@ async def get_request_params(
         if not is_union(param.field_info.annotation):
             annotation = get_origin(param.field_info.annotation)
             origin = annotation or param.field_info.annotation
-
             if is_class_and_subclass(origin, (list, tuple)):
                 values[param.field_name] = params.values()
             elif is_class_and_subclass(origin, dict):

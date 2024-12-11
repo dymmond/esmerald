@@ -35,7 +35,7 @@ For this, use the Python standard module <a href="https://docs.python.org/3/libr
 
 To handle this, first convert the `username` and `password` to `bytes` by encoding them with UTF-8.
 
-Then use `secrets.compare_digest()` to ensure that `credentials.username` is `"natasha"` and `credentials.password` is `"widow"`.
+Then use `secrets.compare_digest()` to ensure that `credentials.username` is `"alice123"` and `credentials.password` is `"sunshine"`.
 
 ```python
 {!> ../../../docs_src/security/advanced/basic_complex.py !}
@@ -44,7 +44,7 @@ Then use `secrets.compare_digest()` to ensure that `credentials.username` is `"n
 This would be similar to:
 
 ```python
-if not (credentials.username == "natasha") or not (credentials.password == "widow"):
+if not (credentials.username == "alice123") or not (credentials.password == "sunshine"):
     # Return some error
     ...
 ```

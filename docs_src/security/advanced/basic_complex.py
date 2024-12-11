@@ -10,8 +10,8 @@ security = HTTPBasic()
 
 
 def get_username(credentials: HTTPBasicCredentials = Security(security)):
-    correct_username = "natasha"
-    correct_password = "widow"
+    correct_username = "alice123"
+    correct_password = "sunshine"
 
     if not (
         secrets.compare_digest(credentials.username, correct_username)
