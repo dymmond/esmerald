@@ -186,8 +186,10 @@ def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> Li
     return missing_params
 
 
-def get_request_params(
-    params: Mapping[Union[int, str], Any], expected: Set[ParamSetting], url: URL
+async def get_request_params(
+    params: Mapping[Union[int, str], Any],
+    expected: Set[ParamSetting],
+    url: URL,
 ) -> Any:
     """
     Gather the parameters from the request.
@@ -214,7 +216,6 @@ def get_request_params(
         if not is_union(param.field_info.annotation):
             annotation = get_origin(param.field_info.annotation)
             origin = annotation or param.field_info.annotation
-
             if is_class_and_subclass(origin, (list, tuple)):
                 values[param.field_name] = params.values()
             elif is_class_and_subclass(origin, dict):

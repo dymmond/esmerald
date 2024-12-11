@@ -46,7 +46,6 @@ These types are the ones that shall be passed to `Body(media_type=...)`.
     optional to use `File` and `Form` as the same result can be achieved by using
     `Body(media_type=...)`.
 
-
 ## Single file upload
 
 Uploading a single file, you need to type the `data` as [UploadFile](#uploadfile).

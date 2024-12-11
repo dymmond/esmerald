@@ -26,7 +26,8 @@ def test_signature_model_is_none():
     assert handler is None
 
 
-def test_get_request_params_raise_validation_error_exception():  # pragma: no cover
+@pytest.mark.asyncio()
+async def test_get_request_params_raise_validation_error_exception():  # pragma: no cover
     param = Param(default=None)
     expected_param = File(default=None)
     param_setting = ParamSetting(
@@ -51,6 +52,6 @@ def test_get_request_params_raise_validation_error_exception():  # pragma: no co
     expected_params = {expected_param_setting}
 
     with pytest.raises(ValidationErrorException):
-        get_request_params(
+        await get_request_params(
             params=set_params, expected=expected_params, url="http://testserver.com"
         )

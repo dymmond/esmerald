@@ -2443,7 +2443,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         assert self.websocket_parameter_model, "handler parameter model not defined."
 
         signature_model = get_signature(self)
-        kwargs = self.websocket_parameter_model.to_kwargs(connection=websocket)
+        kwargs = await self.websocket_parameter_model.to_kwargs(connection=websocket)
         for dependency in self.websocket_parameter_model.dependencies:
             kwargs[dependency.key] = await self.websocket_parameter_model.get_dependencies(
                 dependency=dependency, connection=websocket, **kwargs

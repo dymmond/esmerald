@@ -168,7 +168,9 @@ class BaseResponseHandler:
         signature_model = get_signature(route)
 
         if parameter_model.has_kwargs:
-            kwargs: Dict[str, Any] = parameter_model.to_kwargs(connection=request, handler=route)
+            kwargs: Dict[str, Any] = await parameter_model.to_kwargs(
+                connection=request, handler=route
+            )
 
             is_data_or_payload = (
                 DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)

@@ -24,7 +24,6 @@ from esmerald.params import Form
 As [explained here](./request-data.md#request-data), the handler is expecting a `data` field declared and from there
 you can pass more details about the form.
 
-
 ## Examples
 
 You can send the form in many different formats, for example:

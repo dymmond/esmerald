@@ -14,7 +14,7 @@ def Security(
     *,
     scopes: Optional[Sequence[str]] = None,
     use_cache: bool = True,
-) -> Any:
+) -> params.Security:
     """
     This function should be only called if Inject/Injects is not used in the dependencies.
     This is a simple wrapper of the classic Inject().
@@ -32,6 +32,7 @@ def Requires(
     This is a simple wrapper of the classic Depends().
     """
     return params.Requires(dependency=dependency, use_cache=use_cache)
+
 
 def Form(
     default: Any = _PyUndefined,

@@ -65,6 +65,8 @@ class OAuth2PasswordRequestForm(BaseModel):
     know that that it is application specific, it's not part of the specification.
     """
 
+    model_config = {"extra": "allow"}
+
     grant_type: Annotated[
         Union[str, None],
         Form(pattern="password"),
@@ -105,7 +107,7 @@ class OAuth2PasswordRequestForm(BaseModel):
             """
         ),
     ]
-    scopes: Annotated[
+    scope: Annotated[
         Union[str, List[str]],
         Form(),
         Doc(
@@ -160,14 +162,28 @@ class OAuth2PasswordRequestForm(BaseModel):
         ),
     ] = None
 
-    @field_validator("scopes", mode="before")
+    def __init__(self, **kwargs: Any):
+        super().__init__(**kwargs)
+        self.scopes = self.scope
+
+    @field_validator("scope", mode="before")
     @classmethod
-    def validate_scopes(cls, value: Union[str, List[str]]) -> Any:
+    def validate_scope(cls, value: Union[str, List[str]]) -> Any:
         if isinstance(value, str) and len(value) == 0:
             return []
         if isinstance(value, str):
             return value.split(" ")
         return value
+
+    def model_dump(self, **kwargs: Any) -> Dict[str, Any]:
+        """
+        Making sure the "scope" is not included in the model dump
+        as the scopes should be the one being used by Esmerald.
+        """
+        if kwargs is None:
+            kwargs = {}
+        kwargs["exclude"] = {"scope"}
+        return super().model_dump(**kwargs)
 
 
 class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
@@ -322,7 +338,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
             grant_type=grant_type,
             username=username,
             password=password,
-            scopes=scope,
+            scope=scope,
             client_id=client_id,
             client_secret=client_secret,
         )

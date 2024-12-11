@@ -1,4 +1,17 @@
-from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 
 from pydantic.fields import FieldInfo
 
@@ -19,7 +32,7 @@ from esmerald.transformers.utils import (
 )
 from esmerald.typing import Undefined
 from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
-from esmerald.utils.dependencies import is_security_scheme
+from esmerald.utils.dependencies import is_security_scheme, is_security_scope
 from esmerald.utils.schema import is_field_optional
 
 if TYPE_CHECKING:
@@ -127,7 +140,33 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return {field.field_name: field for field in self.get_query_params() if field.is_security}
 
-    def to_kwargs(
+    def get_security_scope_params(self) -> Dict[str, ParamSetting]:
+        """
+        Get header parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of header parameters.
+        """
+        return {
+            field.field_name: field
+            for field in self.get_query_params()
+            if field.is_security and is_security_scope(field.field_info.annotation)
+        }
+
+    def get_security_definition(self) -> Dict[str, ParamSetting]:
+        """
+        Get header parameters.
+
+        Returns:
+            Set[ParamSetting]: Set of header parameters.
+        """
+        return {
+            field.field_name: field
+            for field in self.get_query_params()
+            if field.is_security and is_security_scheme(field.default_value)
+        }
+
+    async def to_kwargs(
         self,
         connection: Union["WebSocket", "Request"],
         handler: Union["HTTPHandler", "WebSocketHandler"] = None,
@@ -138,22 +177,22 @@ class TransformerModel(ArbitraryExtraBaseModel):
                 value = value[0]
                 connection_params[key] = value
 
-        query_params = get_request_params(
+        query_params = await get_request_params(
             params=cast("MappingUnion", connection.query_params),
             expected=self.query_params,
             url=connection.url,
         )
-        path_params = get_request_params(
+        path_params = await get_request_params(
             params=cast("MappingUnion", connection.path_params),
             expected=self.path_params,
             url=connection.url,
         )
-        headers = get_request_params(
+        headers = await get_request_params(
             params=cast("MappingUnion", connection.headers),
             expected=self.headers,
             url=connection.url,
         )
-        cookies = get_request_params(
+        cookies = await get_request_params(
             params=cast("MappingUnion", connection.cookies),
             expected=self.cookies,
             url=connection.url,
@@ -214,9 +253,20 @@ class TransformerModel(ArbitraryExtraBaseModel):
         Returns:
             bool: True if security dependencies are present, False otherwise.
         """
+        security_scopes_list: Union[Sequence[str], List[str]] = []
         for name, dependency in kwargs.items():
             if isinstance(dependency, Security):
+                security_scopes_list = dependency.scopes
                 kwargs[name] = await dependency.dependency(connection)
+                break
+
+        # Check for security scopes objects
+        security_scopes: Dict[str, Any] = self.get_security_scope_params()
+        if security_scopes:
+            for name, value in security_scopes.items():
+                kwargs[name] = value.field_info.annotation(scopes=security_scopes_list)
+                break
+
         return kwargs
 
     async def get_dependencies(
@@ -234,58 +284,19 @@ class TransformerModel(ArbitraryExtraBaseModel):
             Any: Dependencies resolved from the connection and dependencies.
         """
         signature_model = get_signature(dependency.inject)
+
         for _dependency in dependency.dependencies:
             kwargs[_dependency.key] = await self.get_dependencies(
                 dependency=_dependency, connection=connection, **kwargs
             )
 
-        if kwargs:
+        if kwargs and self.get_security_definition():
             kwargs = await self.get_for_security_dependencies(connection, kwargs)
 
         dependency_kwargs = await signature_model.parse_values_for_connection(
             connection=connection, **kwargs
         )
         return await dependency.inject(**dependency_kwargs)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert TransformerModel instance to dictionary.
-
-        Returns:
-            Dict[str, Any]: Dictionary representation of TransformerModel instance.
-        """
-        return {
-            "cookies": [param.dict() for param in self.cookies],
-            "dependencies": [dep.model_dump() for dep in self.dependencies],
-            "form_data": self.form_data,
-            "headers": [param.dict() for param in self.headers],
-            "path_params": [param.dict() for param in self.path_params],
-            "query_params": [param.dict() for param in self.query_params],
-            "reserved_kwargs": list(self.reserved_kwargs),
-            "is_optional": self.is_optional,
-        }
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "TransformerModel":
-        """
-        Create TransformerModel instance from dictionary.
-
-        Args:
-            data (Dict[str, Any]): Dictionary containing TransformerModel attributes.
-
-        Returns:
-            TransformerModel: TransformerModel instance created from dictionary.
-        """
-        return cls(
-            cookies={ParamSetting(**param) for param in data.get("cookies", [])},
-            dependencies={Dependency(**dep) for dep in data.get("dependencies", [])},
-            form_data=data.get("form_data"),
-            headers={ParamSetting(**param) for param in data.get("headers", [])},
-            path_params={ParamSetting(**param) for param in data.get("path_params", [])},
-            query_params={ParamSetting(**param) for param in data.get("query_params", [])},
-            reserved_kwargs=set(data.get("reserved_kwargs", [])),
-            is_optional=data.get("is_optional", False),
-        )
 
     def merge_with(self, other: "TransformerModel") -> "TransformerModel":
         """
@@ -415,7 +426,9 @@ def get_parameter_settings(
     for field_name, model_field in signature_fields.items():
         if field_name not in ignored_keys:
             allow_none = getattr(model_field, "allow_none", True)
-            is_security = is_security_scheme(model_field.default)
+            is_security = is_security_scheme(model_field.default) or is_security_scope(
+                model_field.annotation
+            )
             parameter_definitions.add(
                 create_parameter_setting(
                     allow_none=allow_none,
