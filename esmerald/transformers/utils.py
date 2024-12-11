@@ -186,8 +186,10 @@ def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> Li
     return missing_params
 
 
-def get_request_params(
-    params: Mapping[Union[int, str], Any], expected: Set[ParamSetting], url: URL
+async def get_request_params(
+    params: Mapping[Union[int, str], Any],
+    expected: Set[ParamSetting],
+    url: URL,
 ) -> Any:
     """
     Gather the parameters from the request.

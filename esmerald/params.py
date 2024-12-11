@@ -1,10 +1,14 @@
+import inspect
+from functools import cached_property
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
 from pydantic.fields import AliasChoices, AliasPath, FieldInfo
 
 from esmerald.enums import EncodingType, ParamType
+from esmerald.security.scopes import Scopes
 from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
+from esmerald.utils.helpers import is_class_and_subclass
 
 _PyUndefined: Any = Undefined
 
@@ -537,6 +541,7 @@ class Form(Body):
             strict=strict,
         )
 
+
 class File(Form):
     def __init__(
         self,
@@ -658,6 +663,7 @@ class Requires:
         """
         self.dependency = dependency
         self.use_cache = use_cache
+        self.signature_model = inspect.signature(dependency) if dependency else None
 
     def __repr__(self) -> str:
         attr = getattr(self.dependency, "__name__", type(self.dependency).__name__)
@@ -693,3 +699,10 @@ class Security(Requires):
     ):
         super().__init__(dependency=dependency, use_cache=use_cache)
         self.scopes = scopes or []
+
+    @cached_property
+    def is_security_scope_dependency(self) -> bool:
+        parameters: Dict[str, inspect.Parameter] = dict(self.signature_model.parameters.items())
+        return any(
+            is_class_and_subclass(param.annotation, Scopes) for param in parameters.values()
+        )
