@@ -38,7 +38,7 @@ hide:
 Esmerald is a modern, powerful, flexible, high performant web framework designed to build not only APIs
 but also full scalable applications from the smallest to enterprise level.
 
-Esmerald is designed to build with python 3.8+ based on standard python type hints and on the top of
+Esmerald is designed to build with Python 3.9+ based on standard python type hints and on the top of
 the heavily known [Lilya](https://github.com/dymmond/lilya) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
 !!! Success
@@ -60,7 +60,7 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 ## Requirements
 
-* python 3.8+
+* Python 3.9+
 
 Esmerald wouldn't be possible without at least these two:
 
@@ -499,7 +499,7 @@ INFO:     Application startup complete.
 
     ```shell
     ESMERALD_SETTINGS_MODULE=myapp.AppSettings uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]

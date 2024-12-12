@@ -2,7 +2,7 @@ from typing import List
 
 from esmerald import Request, get
 from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.openapi.security.api_key import APIKeyInQuery
+from esmerald.security.api_key import APIKeyInQuery
 
 from .daos import UserDAO
 from .schemas import Error, UserOut

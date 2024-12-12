@@ -35,7 +35,7 @@
 Esmerald is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
 but also full scalable applications from the smallest to enterprise level.
 
-Esmerald is designed to build with python 3.8+ and based on standard python type hints. Initially
+Esmerald is designed to build with Python 3.9+ and based on standard python type hints. Initially
 built on the top of [Starlette](https://github.com/encode/starlette) and later on moved to [Lilya](https://lilya.dev) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
 Check out the [Esmerald documentation 📚](https://esmerald.dev)
@@ -58,7 +58,7 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 ## Requirements
 
-* python 3.8+
+* Python 3.9+
 
 Esmerald wouldn't be possible without two pillars:
 
