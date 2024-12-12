@@ -134,6 +134,7 @@ nav:
     - security/oauth-jwt.md
     - security/advanced/oauth2-scopes.md
     - security/advanced/basic-auth.md
+    - security/available-security.md
   - Advanced & Useful:
     - extras/index.md
     - extras/path-params.md
