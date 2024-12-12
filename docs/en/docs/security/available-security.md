@@ -49,15 +49,15 @@ In this example:
 
 **Benefits**
 
-* Simplicity: Easy to implement and use.
-* Stateless: The server does not need to store session information, as the token contains all necessary information.
-* Security: Tokens can be signed and encrypted to prevent tampering and ensure confidentiality.
+* **Simplicity**: Easy to implement and use.
+* **Stateless**: The server does not need to store session information, as the token contains all necessary information.
+* **Security**: Tokens can be signed and encrypted to prevent tampering and ensure confidentiality.
 
 **Considerations**
 
-* Token Expiry: Tokens should have an expiration time to limit the window of misuse if compromised.
-* Secure Storage: Clients must securely store tokens to prevent unauthorized access.
-* HTTPS: Always use HTTPS to encrypt the token during transmission and protect against man-in-the-middle attacks.
+* **Token expiry**: Tokens should have an expiration time to limit the window of misuse if compromised.
+* **Secure storage**: Clients must securely store tokens to prevent unauthorized access.
+* **HTTPS**: Always use HTTPS to encrypt the token during transmission and protect against man-in-the-middle attacks.
 
 By using HTTP Bearer authentication, you can secure your API endpoints effectively while maintaining a simple and stateless authentication mechanism. `
 
@@ -123,9 +123,11 @@ API Key authentication is a method used to verify the identity of a client tryin
 ### API Key Authentication
 
 **Definition:**
+
 API Key authentication involves sending a unique key in the request header. This key is a string that acts as a secret token, allowing the server to identify and authenticate the client making the request.
 
 **How It Works:**
+
 1. **Client Requests API Key:** The client (e.g., a user or an application) requests an API key from the server. This usually involves registering with the API provider.
 2. **Server Issues API Key:** The server generates a unique API key and provides it to the client. This key is typically a long, random string.
 3. **Client Sends API Key:** For each API request, the client includes the API key in the request header. This is often done using the `Authorization` header, but it can also be included in other headers or as a query parameter.
