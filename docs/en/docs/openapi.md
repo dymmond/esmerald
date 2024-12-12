@@ -91,22 +91,22 @@ is where you can pass the definitions needed.
 
 ### Supported authorizations
 
-* `Basic` - For basic authentication.
-* `Bearer` - For the `Authorization` of a `Bearer` token. Example: `JWT` token authentication.
-* `Digest` - For digest.
+* `HTTPBasic` - For basic authentication.
+* `HTTPBearer` - For the `Authorization` of a `HTTPBearer` token. Example: `JWT` token authentication.
+* `HTTPDigest` - For digest.
 * `APIKeyInCookie` - For any key passed in a `cookie` with a spefific `name`.
 * `APIKeyInHeader` - For any key passed in a `header` with a spefific `name`.
 * `APIKeyInQuery` - For any key passed in a `query` with a spefific `name`.
 * `OAuth2` - For OAuth2 authentication.
 * `OpenIdConnect` - OpenIdConnect authorization.
-
+dasda
 How to import them:
 
 ```python
-from esmerald.openapi.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
-from esmerald.openapi.security.http import Basic, Bearer, Digest
-from esmerald.openapi.security.oauth2 import OAuth2
-from esmerald.openapi.security.openid_connect import OpenIdConnect
+from esmerald.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
+from esmerald.security.http import HTTPBasic, HTTPBearer, HTTPDigest
+from esmerald.security.oauth2 import OAuth2
+from esmerald.security.open_id import OpenIdConnect
 ```
 
 ### HTTPBase
@@ -115,7 +115,7 @@ Every [supported authorization](#supported-authorizations) has the same `HTTPBas
 if you want to build your own custom object, you can simply inherit from it and develop it.
 
 ```python
-from esmerald.openapi.security.base import HTTPBase
+from esmerald.security import HTTPBase
 ```
 
 #### Parameters
@@ -127,13 +127,11 @@ Every [supported authorization](#supported-authorizations) has in common the fol
 
     <sup>Default: `__class__.__name__`</sup>
 
-* **description** (Optional) - A description for the security scheme.
-* **in_** (Optional) - The location of the API key. Literal `header`, `cookie` or `query`.
-* **name** (Optional) - The name of the header, query or cookie parameter to be used. This is should
-be used when using `APIKeyInCookie`, `APIKeyInHeader` or `APIKeyInQuery`.
 * **scheme** - The name of the HTTP Authorization scheme to be used in the
 [Authorization header as defined in RFC7235](https://tools.ietf.org/html/rfc7235#section-5.1).
 Example: `Authorization`.
+* **scheme_name** (Optional) - The name of the header, query or cookie parameter to be used. This is should be used when using `APIKeyInCookie`, `APIKeyInHeader` or `APIKeyInQuery`.
+* **description** (Optional) - A description for the security scheme.
 
 ### How to use it
 
@@ -146,7 +144,7 @@ Let us use the following API as example from before.
 from typing import List
 
 from esmerald import Request, get
-from esmerald.openapi.datastructures import OpenAPIResponse
+from esmerald.datastructures import OpenAPIResponse
 
 from .daos import UserDAO
 from .schemas import Error, UserOut
@@ -170,61 +168,35 @@ async def users(request: Request) -> List[UserOut]:
     return await users.get_all()
 ```
 
-#### Basic
-
-**Without instantiating the object.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/basic/basic.py !}
-```
+#### HTTPBasic
 
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/basic/basic_inst.py !}
 ```
 
-#### Bearer
-
-**Without instantiating the object.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/bearer/basic.py !}
-```
+#### HTTPBearer
 
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/bearer/basic_inst.py !}
 ```
 
-#### Digest
-
-**Without instantiating the object.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/digest/basic.py !}
-```
+#### HTTPDigest
 
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/digest/basic_inst.py !}
 ```
 
 #### APIKeyInHeader
 
-**Without instantiating the object.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/api_header/basic.py !}
-```
-
-This example does not do too much since you are not specifying the `name` of the header to be passed.
-
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/api_header/basic_inst.py !}
 ```
 
@@ -233,17 +205,9 @@ automatically added in your API calls that declare it.
 
 #### APIKeyInCookie
 
-**Without instantiating the object.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/api_cookie/basic.py !}
-```
-
-This example does not do too much since you are not specifying the `name` of the cookie to be passed.
-
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/api_cookie/basic_inst.py !}
 ```
 
@@ -252,17 +216,9 @@ automatically added in your API calls that declare it.
 
 #### APIKeyInQuery
 
-**Without instantiating the object.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/api_query/basic.py !}
-```
-
-This example does not do too much since you are not specifying the `name` of the query parameter to be passed.
-
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/api_query/basic_inst.py !}
 ```
 
@@ -271,65 +227,8 @@ automatically added in your API calls that declare it by adding the `?X_QUERY_AP
 
 #### OAuth2
 
-Now this one is quite tricky because this one also expects `flows` to be passed for the `oauth2`
-to take place.
-
-The `flows` is expecting an object of type `OAuthFlows`.
-
-##### OAuthFlows
-
-```python
-from esmerald.openapi.models import OAuthFlows
-```
-
-##### OAuthFlow
-
-Each parameter of the `OAuthFlows` is an instance of an `OAuthFlow`.
-
-```python
-from esmerald.openapi.models import OAuthFlow
-```
-
-**Parameters**:
-
-* **authorizationUrl** - For `oauth2 ("implicit", "authorizationCode")`. The authorization URL to
-be used for this flow. This MUST be in the form of a URL. The OAuth2 standard requires the use of TLS.
-* **tokenUrl** - For `oauth2 ("password", "clientCredentials", "authorizationCode")`. The token URL
-to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard requires the use of TLS.
-* **scopes** - The available scopes for the OAuth2 security scheme. A map between the scope name and
-a short description for it. The map **can be empty**.
-* **refreshUrl** (Optional) - The URL to be used for obtaining refresh tokens. This MUST be in the
-form of a URL. The OAuth2 standard requires the use of TLS.
-
-Example:
-
-```python
-from esmerald.openapi.models import OAuthFlows, OAuthFlow
-
-
-implicit: OAuthFlow = OAuthFlow(...)
-password: OAuthFlow = OAuthFlow(...)
-clientCredentials: OAuthFlow = OAuthFlow(...)
-authorizationCode: OAuthFlow = OAuthFlow(...)
-
-OAuthFlows(
-    implicit=implicit,
-    password=password,
-    clientCredentials=clientCredentials,
-    authorizationCode=authorizationCode,
-)
-```
-
-##### Using it in APIs
-
-We won't pass all the details here but you now understand that for `OAuth2` certain parameters
-are needed.
-
-**As an instance in case you need to pass extra parameters.**
-
-```python hl_lines="5 20"
-{!> ../../../docs_src/openapi/oauth2/basic_inst.py !}
-```
+Now this is an extremely complex and dedicated flow. Esmerald provides [detailed explanations and examples](./security/index.md)
+in its own security section, including how to use it in the OpenAPI documentation.
 
 #### OpenIdConnect
 
@@ -340,7 +239,7 @@ This MUST be in the form of a URL. The OpenID Connect standard requires the use 
 
 **As an instance in case you need to pass extra parameters.**
 
-```python hl_lines="5 20"
+```python
 {!> ../../../docs_src/openapi/openid_connect/basic_inst.py !}
 ```
 
@@ -348,7 +247,7 @@ This MUST be in the form of a URL. The OpenID Connect standard requires the use 
 
 Is it possible to have more than one type in the APIs? **Of course!**.
 
-```python hl_lines="24-31"
+```python
 {!> ../../../docs_src/openapi/all.py !}
 ```
 
@@ -378,4 +277,4 @@ Did you notice the `name` specified in each authorization object? Cool, right?.
 
 Like everything in Esmerald, you can specify the security on each [level of the application](./application/levels.md).
 Which means, you don't need to repeat yourself if for instance, all APIs of a given [Include](./routing/routes.md#include)
-require a [Bearer](#bearer) token or any other.
+require a [HTTPBearer](#httpbearer) token or any other.

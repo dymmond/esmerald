@@ -2,7 +2,7 @@ from typing import List
 
 from esmerald import Request, get
 from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.openapi.security.http import Bearer
+from esmerald.security.http import HTTPBearer
 
 from .daos import UserDAO
 from .schemas import Error, UserOut
@@ -17,7 +17,7 @@ from .schemas import Error, UserOut
         200: OpenAPIResponse(model=[UserOut]),
         400: OpenAPIResponse(model=Error, description="Bad response"),
     },
-    security=[Bearer()],
+    security=[HTTPBearer()],
 )
 async def users(request: Request) -> List[UserOut]:
     """

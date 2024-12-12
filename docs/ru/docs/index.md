@@ -37,7 +37,7 @@ hide:
 Esmerald — это современный, мощный, гибкий и высокопроизводительный веб-фреймворк, созданный для построения
 не только API, но и полноценных масштабируемых приложений — от самых малых до уровня крупных компаний.
 
-Esmerald разрабатывался для Python 3.8+ и использует стандартные подсказки типов (type hints) Python,
+Esmerald разрабатывался для Python 3.9+ и использует стандартные подсказки типов (type hints) Python,
 основан на широко
 известном [Lilya](https://github.com/dymmond/lilya) и [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
@@ -60,7 +60,7 @@ NestJS — контроллеры и многое другое.
 
 ## Требования
 
-* Python 3.8+
+* Python 3.9+
 
 Esmerald не был бы возможен без следующих двух компонентов:
 
