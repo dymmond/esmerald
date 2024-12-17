@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+
+## 3.6.1
+
+### Fixed
+
+- Fix returning plain bytes when media_type is MediaType.JSON.
+
 ## 3.6.0
 
 ### Added

@@ -209,6 +209,8 @@ class Response(LilyaResponse, Generic[T]):
             ):
                 return b""
             if self.media_type == MediaType.JSON:
+                if isinstance(content, (bytes, memoryview)):
+                    return content
                 return cast(
                     bytes,
                     json_encoder(
