@@ -215,13 +215,13 @@ The wrappers, like Lilya, also accept the classic parameters such as `headers` a
 ## Response status codes
 
 You need to be mindful when it comes to return a specific status code when using
-[JSON](#json), [OrJSON](#orjson) and [UJSON](#ujson) wrappers.
+[JSON](#json), [ORJSON](#orjson) and [UJSON](#ujson) wrappers.
 
 Esmerald allows you to pass the status codes via [handler](./routing/handlers.md) and directly via
 return of that same response but the if the handler has a `status_code` declared, the returned
 `status_code` **takes precedence**.
 
-Let us use an example to be more clear. This example is applied to `JSON`, `UJSON` and `OrJSON`.
+Let us use an example to be more clear. This example is applied to `JSON`, `UJSON` and `ORJSON`.
 
 ### Status code without declaring in the handler
 
