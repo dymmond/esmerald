@@ -175,18 +175,27 @@ class Response(LilyaResponse, Generic[T]):
         self.cookies = cookies or []
 
     @staticmethod
-    def transform(value: Any) -> Dict[str, Any]:
+    def transform(
+        value: Any, *, encoders: Union[Sequence[Encoder], None] = None
+    ) -> Dict[str, Any]:
         """
         The transformation of the data being returned.
 
         Supports all the default encoders from Lilya and custom from Esmerald.
         """
         return cast(
-            Dict[str, Any], json_encoder(value, json_encode_fn=dumps, post_transform_fn=loads)
+            Dict[str, Any],
+            json_encoder(
+                value,
+                json_encode_fn=partial(dumps, option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS),
+                post_transform_fn=loads,
+                with_encoders=encoders,
+            ),
         )
 
     def make_response(self, content: Any) -> Union[bytes, str]:
         # here we need lilyas encoders not only esmerald encoders
+        # in case no extra encoders are defined use the default by passing None
         encoders = (
             (
                 (
@@ -208,6 +217,7 @@ class Response(LilyaResponse, Generic[T]):
                 )
             ):
                 return b""
+            # switch to a special mode for MediaType.JSON
             if self.media_type == MediaType.JSON:
                 return cast(
                     bytes,

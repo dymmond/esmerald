@@ -28,9 +28,9 @@ def test_can_load_from_proxy(test_client_factory):
         response = client.get("/child/home")
 
         assert response.status_code == 200
-        assert response.json() == "Hello, from proxy"
+        assert response.text == '"Hello, from proxy"'
 
         response = client.get("/esmerald")
 
         assert response.status_code == 200
-        assert response.json() == "Hello, esmerald"
+        assert response.text == '"Hello, esmerald"'

@@ -11,6 +11,10 @@ hide:
 
 - Allow passing extensions as string.
 
+### Changed
+
+- Change `media_type` parameter of `Response` from `MediaType.JSON` to `None` to match the default of the underlying lilya Response.
+
 ### Fixed
 
 - OpenAPI responses.

@@ -565,7 +565,7 @@ def test_protocol_switch(test_client_factory):
     with create_client(routes=mixed_protocol_app) as client:
         response = client.get("/")
         assert response.status_code == 200
-        assert response.json() == "URL: http://testserver/"
+        assert response.text == "URL: http://testserver/"
 
         with client.websocket_connect("/") as session:
             assert session.receive_json() == {"URL": "ws://testserver/"}
