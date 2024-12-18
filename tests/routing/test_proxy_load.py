@@ -33,4 +33,4 @@ def test_can_load_from_proxy(test_client_factory):
         response = client.get("/esmerald")
 
         assert response.status_code == 200
-        assert response.text == '"Hello, esmerald"'
+        assert response.text == "Hello, esmerald"

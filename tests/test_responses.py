@@ -52,7 +52,7 @@ def test_override(test_client_factory):
     with create_client(routes=[Gateway(handler=route_three)]) as client:
         response = client.get("/three")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_103_EARLY_HINTS
 
 
@@ -60,7 +60,7 @@ def test_default(test_client_factory):
     with create_client(routes=[Gateway(handler=route_four)]) as client:
         response = client.get("/four")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_200_OK
 
 
@@ -68,7 +68,7 @@ def test_default_decorator(test_client_factory):
     with create_client(routes=[Gateway(handler=route_five)]) as client:
         response = client.get("/five")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_207_MULTI_STATUS
 
 
@@ -92,20 +92,20 @@ def test_multiple(test_client_factory):
     ) as client:
         response = client.get("/multi")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_207_MULTI_STATUS
 
         response = client.get("/multi/test")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
         response = client.get("/multi/esmerald")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_300_MULTIPLE_CHOICES
 
         response = client.get("/multi/other")
 
-        assert response.text == '"Ok"'
+        assert response.text == "Ok"
         assert response.status_code == status.HTTP_207_MULTI_STATUS

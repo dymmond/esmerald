@@ -96,7 +96,7 @@ class Response(LilyaResponse, Generic[T]):
                 The media type used in the response.
                 """
             ),
-        ] = MediaType.JSON,
+        ] = None,
         background: Annotated[
             Optional[Union["BackgroundTask", "BackgroundTasks"]],
             Doc(
