@@ -11,6 +11,11 @@ hide:
 
 - Allow passing extensions as string.
 
+### Fixed
+
+- OpenAPI responses.
+- Enum definitions.
+
 ## 3.6.0
 
 ### Added
