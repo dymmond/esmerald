@@ -38,7 +38,7 @@ starting the system.
 
 It is this simple but is it the only way to add a pluggable into the system? **Short answser is no**.
 
-More details about this in [hooking a pluggable into the application](#hooking-pluggables).
+More details about this in [hooking a pluggable into the application](#hooking-pluggables-and-extensions).
 
 ## Extension
 
@@ -174,7 +174,7 @@ And simply start the application.
 
     ```shell
     ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]
@@ -186,7 +186,7 @@ And simply start the application.
 
     ```shell
     $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]

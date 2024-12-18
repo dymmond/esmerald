@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from inspect import isclass
-from typing import TYPE_CHECKING, Any, Iterator, Optional
+from typing import TYPE_CHECKING, Any, Iterator, Optional, cast
 
+from lilya._internal._module_loading import import_string
 from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -49,14 +52,23 @@ class Pluggable:
     my_config = PluggableConfig(name="my extension")
 
     pluggable = Pluggable(MyExtension, config=my_config)
+    # or
+    # pluggable = Pluggable("path.to.MyExtension", config=my_config)
 
     app = Esmerald(routes=[], extensions={"my-extension": pluggable})
     ```
     """
 
-    def __init__(self, cls: type["ExtensionProtocol"], **options: Any):
-        self.cls = cls
+    def __init__(self, cls: type[ExtensionProtocol] | str, **options: Any):
+        self.cls_or_string = cls
         self.options = options
+
+    @property
+    def cls(self) -> type[ExtensionProtocol]:
+        cls_or_string = self.cls_or_string
+        if isinstance(cls_or_string, str):
+            self.cls_or_string = cls_or_string = import_string(cls_or_string)
+        return cast(type["ExtensionProtocol"], cls_or_string)
 
     def __iter__(self) -> Iterator:
         iterator = (self.cls, self.options)
@@ -104,7 +116,7 @@ class Extension(ABC, ExtensionProtocol):
     def __init__(
         self,
         app: Annotated[
-            Optional["Esmerald"],
+            Optional[Esmerald],
             Doc(
                 """
                 An `Esmerald` application instance or subclasses of Esmerald.
@@ -128,7 +140,7 @@ BaseExtension = Extension
 
 
 class ExtensionDict(dict[str, Extension]):
-    def __init__(self, data: Any = None, *, app: "Esmerald"):
+    def __init__(self, data: Any = None, *, app: Esmerald):
         super().__init__(data)
         self.app = app
         self.delayed_extend: Optional[dict[str, dict[str, Any]]] = {}
@@ -167,6 +179,8 @@ class ExtensionDict(dict[str, Extension]):
             self[name].extend(**val)
 
     def __setitem__(self, name: Any, value: Any) -> None:
+        if isinstance(value, str):
+            value = Pluggable(value)
         if not isinstance(name, str):
             raise ImproperlyConfigured("Extension names should be in string format.")
         elif isinstance(value, Pluggable):

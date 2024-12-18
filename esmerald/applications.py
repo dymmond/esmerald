@@ -1348,7 +1348,7 @@ class Application(Lilya):
             ),
         ] = None,
         extensions: Annotated[
-            Optional[Dict[str, Union[Extension, Pluggable, type[Extension]]]],
+            Optional[Dict[str, Union[Extension, Pluggable, type[Extension], str]]],
             Doc(
                 """
                 A `list` of global extensions from objects inheriting from
@@ -1395,7 +1395,7 @@ class Application(Lilya):
             ),
         ] = None,
         pluggables: Annotated[
-            Optional[Dict[str, Union[Extension, Pluggable, type[Extension]]]],
+            Optional[Dict[str, Union[Extension, Pluggable, type[Extension], str]]],
             Doc(
                 """
                 THIS PARAMETER IS DEPRECATED USE extensions INSTEAD

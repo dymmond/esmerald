@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.6.1
+
+### Added
+
+- Allow passing extensions as string.
+
 ## 3.6.0
 
 ### Added

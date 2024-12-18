@@ -110,8 +110,12 @@ def create_client(
     backend: "Literal['asyncio', 'trio']" = "asyncio",
     backend_options: Optional[Dict[str, Any]] = None,
     interceptors: Optional[List["Interceptor"]] = None,
-    pluggables: Optional[Dict[str, Union["Extension", "Pluggable", type["Extension"]]]] = None,
-    extensions: Optional[Dict[str, Union["Extension", "Pluggable", type["Extension"]]]] = None,
+    pluggables: Optional[
+        Dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
+    ] = None,
+    extensions: Optional[
+        Dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
+    ] = None,
     permissions: Optional[List["Permission"]] = None,
     dependencies: Optional["Dependencies"] = None,
     middleware: Optional[List["Middleware"]] = None,
