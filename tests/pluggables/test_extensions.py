@@ -58,10 +58,20 @@ class MyExtension(Extension):
 
 def test_generates_pluggable():
     app = Esmerald(
-        routes=[], extensions={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))}
+        routes=[],
+        extensions={
+            "test": Pluggable(MyExtension, config=Config(name="my pluggable")),
+            "test2": Pluggable("tests.pluggables.import_target.MyExtension2"),
+            "test3": "tests.pluggables.import_target.MyExtension2",
+        },
     )
 
     assert "test" in app.extensions
+    assert isinstance(app.extensions["test"], Extension)
+    assert "test2" in app.extensions
+    assert isinstance(app.extensions["test2"], Extension)
+    assert "test3" in app.extensions
+    assert isinstance(app.extensions["test3"], Extension)
 
 
 def test_generates_many_pluggables():

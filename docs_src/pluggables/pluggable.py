@@ -26,4 +26,8 @@ my_config = PluggableConfig(name="my extension")
 
 pluggable = Pluggable(MyExtension, config=my_config)
 
-app = Esmerald(routes=[], extensions={"my-extension": pluggable})
+# it is also possible to just pass strings instead of pluggables but this way you lose the ability to pass arguments
+app = Esmerald(
+    routes=[],
+    extensions={"my-extension": pluggable, "my-other-extension": Pluggable("path.to.extension")},
+)
