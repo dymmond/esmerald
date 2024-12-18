@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def create_internal_response(
-    handler: Union["HTTPHandler", Any]
+    handler: Union["HTTPHandler", Any],
 ) -> InternalResponse:  # pragma: no cover
     signature = Signature.from_callable(cast("AnyCallable", handler.fn))
     default_descriptions: Dict[Any, str] = {
@@ -43,20 +43,22 @@ def create_internal_response(
     }:
         if signature.return_annotation is Template:
             internal_response.return_annotation = str
-            internal_response.media_type = MediaType.HTML
+            internal_response.media_type = (
+                handler.content_media_type or handler.media_type or MediaType.HTML
+            )
         elif get_origin(signature.return_annotation) is EsmeraldResponse:
             internal_response.return_annotation = get_args(signature.return_annotation)[0] or Any
             internal_response.media_type = handler.content_media_type
         else:
-            internal_response.media_type = MediaType.JSON
+            internal_response.media_type = handler.content_media_type or MediaType.JSON
 
         internal_response.encoding = handler.content_encoding
 
     elif signature.return_annotation is Redirect:
         internal_response.media_type = MediaType.JSON
     elif signature.return_annotation in (File, Stream):
-        internal_response.media_type = handler.content_media_type
-        internal_response.encoding = handler.content_encoding or MediaType.OCTET
+        internal_response.media_type = handler.content_media_type or MediaType.OCTET
+        internal_response.encoding = handler.content_encoding
     else:
         internal_response.media_type = handler.content_media_type
         internal_response.encoding = handler.content_encoding
