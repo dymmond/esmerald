@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from inspect import isclass
 from typing import TYPE_CHECKING, Any, Iterator, Optional, cast
@@ -57,12 +59,12 @@ class Pluggable:
     ```
     """
 
-    def __init__(self, cls: type["ExtensionProtocol"] | str, **options: Any):
+    def __init__(self, cls: type[ExtensionProtocol] | str, **options: Any):
         self.cls_or_string = cls
         self.options = options
 
     @property
-    def cls(self) -> type["ExtensionProtocol"]:
+    def cls(self) -> type[ExtensionProtocol]:
         cls_or_string = self.cls_or_string
         if isinstance(cls_or_string, str):
             self.cls_or_string = cls_or_string = import_string(cls_or_string)
@@ -114,7 +116,7 @@ class Extension(ABC, ExtensionProtocol):
     def __init__(
         self,
         app: Annotated[
-            Optional["Esmerald"],
+            Optional[Esmerald],
             Doc(
                 """
                 An `Esmerald` application instance or subclasses of Esmerald.
@@ -138,7 +140,7 @@ BaseExtension = Extension
 
 
 class ExtensionDict(dict[str, Extension]):
-    def __init__(self, data: Any = None, *, app: "Esmerald"):
+    def __init__(self, data: Any = None, *, app: Esmerald):
         super().__init__(data)
         self.app = app
         self.delayed_extend: Optional[dict[str, dict[str, Any]]] = {}
