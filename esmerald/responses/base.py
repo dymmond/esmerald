@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from functools import partial
 from typing import (
     TYPE_CHECKING,
@@ -101,7 +103,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
             ),
         ] = None,
         background: Annotated[
-            Optional[Union["BackgroundTask", "BackgroundTasks"]],
+            Optional[Union[BackgroundTask, BackgroundTasks]],
             Doc(
                 """
                 Any instance of a [BackgroundTask or BackgroundTasks](https://esmerald.dev/background-tasks/).
@@ -117,7 +119,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
             ),
         ] = None,
         cookies: Annotated[
-            Optional["ResponseCookies"],
+            Optional[ResponseCookies],
             Doc(
                 """
                 A sequence of `esmerald.datastructures.Cookie` objects.
