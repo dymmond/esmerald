@@ -177,7 +177,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
         )
         self.cookies = cookies or []
 
-    def make_response(self, content: Any) -> bytes | memoryview:
+    def make_response(self, content: Any) -> bytes | memoryview | str:
         if (
             content is None
             or content is NoReturn

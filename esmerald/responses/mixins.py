@@ -1,12 +1,8 @@
 from functools import partial
-from typing import (
-    Any,
-)
+from typing import Any
 
 import orjson
-from lilya.responses import (
-    RESPONSE_TRANSFORM_KWARGS,
-)
+from lilya.responses import RESPONSE_TRANSFORM_KWARGS
 
 
 class ORJSONTransformMixin:
@@ -31,4 +27,4 @@ class ORJSONTransformMixin:
         transform_kwargs.setdefault("post_transform_fn", orjson.loads)
 
         with cls.with_transform_kwargs(transform_kwargs):
-            return super().transform(value)
+            return super().transform(value)  # type: ignore
