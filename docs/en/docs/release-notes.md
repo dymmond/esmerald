@@ -11,7 +11,7 @@ hide:
 
 - Cleanup Response.
 - Move `transform` method to lilya but provide speedup in a mixin.
-- `Response` behaves like `make_response` in lilya with a plain `Response`.
+- Esmerald `Response` behaves like `make_response` in lilya with a plain `Response`.
 - Special handle None (nothing is returned) in `Response`. It shouldn't map to `null` so not all handlers have to return a value.
 
 
