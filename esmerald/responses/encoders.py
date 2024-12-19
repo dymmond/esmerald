@@ -1,10 +1,11 @@
 from functools import partial
-from typing import Any, cast
+from typing import Any
 
 import orjson
+from lilya.responses import RESPONSE_TRANSFORM_KWARGS
 
-from esmerald.encoders import LILYA_ENCODER_TYPES, json_encoder
-from esmerald.responses.json import BaseJSONResponse
+from .json import BaseJSONResponse
+from .mixins import ORJSONTransformMixin
 
 try:
     import ujson
@@ -12,7 +13,7 @@ except ImportError:  # pragma: no cover
     ujson = None
 
 
-class ORJSONResponse(BaseJSONResponse):
+class ORJSONResponse(ORJSONTransformMixin, BaseJSONResponse):
     """
     An alternative to `JSONResponse` and performance wise, faster.
 
@@ -20,28 +21,20 @@ class ORJSONResponse(BaseJSONResponse):
     """
 
     def make_response(self, content: Any) -> bytes:
-        # here we need lilyas encoders not only esmerald encoders
-        encoders = (
-            (
-                (
-                    *self.encoders,
-                    *LILYA_ENCODER_TYPES.get(),
-                )
-            )
-            if self.encoders
-            else None
-        )
-        return cast(
-            bytes,
-            json_encoder(
-                content,
-                json_encode_fn=partial(
-                    orjson.dumps, option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS
-                ),
-                post_transform_fn=None,
-                with_encoders=encoders,
+        new_params = RESPONSE_TRANSFORM_KWARGS.get()
+        if new_params:
+            new_params = new_params.copy()
+        else:
+            new_params = {}
+        new_params.setdefault(
+            "json_encode_fn",
+            partial(
+                orjson.dumps,
+                option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS,
             ),
         )
+        with self.with_transform_kwargs(new_params):
+            return super().make_response(content)
 
 
 class UJSONResponse(BaseJSONResponse):

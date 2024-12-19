@@ -12,8 +12,10 @@ from typing import (
     cast,
 )
 
+import orjson
 from lilya import status
 from lilya.responses import (
+    RESPONSE_TRANSFORM_KWARGS,
     Error as Error,
     FileResponse as FileResponse,  # noqa
     HTMLResponse as HTMLResponse,  # noqa
@@ -24,12 +26,13 @@ from lilya.responses import (
     Response as LilyaResponse,  # noqa
     StreamingResponse as StreamingResponse,  # noqa
 )
-from orjson import OPT_OMIT_MICROSECONDS, OPT_SERIALIZE_NUMPY, dumps, loads
 from typing_extensions import Annotated, Doc
 
-from esmerald.encoders import LILYA_ENCODER_TYPES, Encoder, json_encoder
+from esmerald.encoders import Encoder
 from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
+
+from .mixins import ORJSONTransformMixin
 
 PlainTextResponse = PlainText
 
@@ -40,7 +43,7 @@ if TYPE_CHECKING:  # pragma: no cover
 T = TypeVar("T")
 
 
-class Response(LilyaResponse, Generic[T]):
+class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
     """
     Default `Response` object from Esmerald where it can be as the
     return annotation of a [handler](https://esmerald.dev/routing/handlers/).
@@ -174,62 +177,42 @@ class Response(LilyaResponse, Generic[T]):
         )
         self.cookies = cookies or []
 
-    @staticmethod
-    def transform(
-        value: Any, *, encoders: Union[Sequence[Encoder], None] = None
-    ) -> Dict[str, Any]:
-        """
-        The transformation of the data being returned.
-
-        Supports all the default encoders from Lilya and custom from Esmerald.
-        """
-        return cast(
-            Dict[str, Any],
-            json_encoder(
-                value,
-                json_encode_fn=partial(dumps, option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS),
-                post_transform_fn=loads,
-                with_encoders=encoders,
+    def make_response(self, content: Any) -> bytes | memoryview:
+        if (
+            content is None
+            or content is NoReturn
+            and (
+                self.status_code < 100
+                or self.status_code in {status.HTTP_204_NO_CONTENT, status.HTTP_304_NOT_MODIFIED}
+            )
+        ):
+            return b""
+        transform_kwargs = RESPONSE_TRANSFORM_KWARGS.get()
+        if transform_kwargs:
+            transform_kwargs = transform_kwargs.copy()
+        else:
+            transform_kwargs = {}
+        transform_kwargs.setdefault(
+            "json_encode_fn",
+            partial(
+                orjson.dumps,
+                option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS,
             ),
         )
-
-    def make_response(self, content: Any) -> Union[bytes, str]:
-        # here we need lilyas encoders not only esmerald encoders
-        # in case no extra encoders are defined use the default by passing None
-        encoders = (
-            (
-                (
-                    *self.encoders,
-                    *LILYA_ENCODER_TYPES.get(),
-                )
-            )
-            if self.encoders
-            else None
-        )
         try:
-            if (
-                content is None
-                or content is NoReturn
-                and (
-                    self.status_code < 100
-                    or self.status_code
-                    in {status.HTTP_204_NO_CONTENT, status.HTTP_304_NOT_MODIFIED}
-                )
-            ):
-                return b""
-            # switch to a special mode for MediaType.JSON
+            # switch to a special mode for MediaType.JSON (default handlers)
             if self.media_type == MediaType.JSON:
-                return cast(
-                    bytes,
-                    json_encoder(
-                        content,
-                        json_encode_fn=partial(
-                            dumps, option=OPT_SERIALIZE_NUMPY | OPT_OMIT_MICROSECONDS
-                        ),
-                        post_transform_fn=None,
-                        with_encoders=encoders,
-                    ),
-                )
-            return super().make_response(content)
+                # "" should serialize to json
+                if content == "":
+                    return b'""'
+                # keep it a serialized json object
+                transform_kwargs.setdefault("post_transform_fn", None)
+            else:
+                # strip '"'
+                transform_kwargs.setdefault("post_transform_fn", lambda x: x.strip(b'"'))
+            with self.with_transform_kwargs(transform_kwargs):
+                # if content is bytes it won't be transformed and
+                # if None or NoReturn, return b"", this differs from the dedicated JSONResponses.
+                return super().make_response(content)
         except (AttributeError, ValueError, TypeError) as e:  # pragma: no cover
             raise ImproperlyConfigured("Unable to serialize response content") from e

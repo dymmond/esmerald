@@ -34,6 +34,26 @@ def route_five() -> Response:
     return Response("Ok")
 
 
+@get("/six")
+def route_six() -> bytes:
+    return b"Ok"
+
+
+@get("/seven")
+def route_seven() -> str:
+    return ""
+
+
+@get("/eight")
+def route_eight() -> str:
+    return "hello"
+
+
+@get("/nine")
+def route_nine() -> None:
+    pass
+
+
 def test_ujson_response(test_client_factory):
     with create_client(routes=[Gateway(handler=route_one)]) as client:
         response = client.get("/one")
@@ -70,6 +90,34 @@ def test_default_decorator(test_client_factory):
 
         assert response.text == "Ok"
         assert response.status_code == status.HTTP_207_MULTI_STATUS
+
+
+def test_implicit_bytes_returnal(test_client_factory):
+    with create_client(routes=[route_six]) as client:
+        response = client.get("/six")
+
+        assert response.text == "Ok"
+
+
+def test_implicit_empty_str_returnal(test_client_factory):
+    with create_client(routes=[route_seven]) as client:
+        response = client.get("/seven")
+
+        assert response.text == '""'
+
+
+def test_str_returnal(test_client_factory):
+    with create_client(routes=[route_eight]) as client:
+        response = client.get("/eight")
+
+        assert response.text == '"hello"'
+
+
+def test_implicit_none_returnal(test_client_factory):
+    with create_client(routes=[route_nine]) as client:
+        response = client.get("/nine")
+
+        assert response.text == ""
 
 
 @get(status_code=status.HTTP_207_MULTI_STATUS)
