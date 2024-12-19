@@ -39,9 +39,9 @@ This will allow you to use the [ORJSON](#orjson) and [UJSON](#ujson) as well as 
 
 ### Response
 
-Classic and generic `Response` that fits almost every single use case out there. It behaves like lilya `Response` by default.
-It has a special mode for `media_type="application/json"` (used by handlers) in which it behaves like `make_response` (encodes content).
-This special mode is required for encoding data like datetimes, ...
+Classic and generic `Response` that fits almost every single use case out there. It behaves like lilya `make_response` with a plain `Response` by default.
+It has a special mode for `media_type="application/json"` (used by handlers) in which it behaves like `make_response` with a plain `JSONResponse`.
+The special mode has an exception for strings, so you can return in handlers a string object without having it jsonified.
 
 ```python
 {!> ../../../docs_src/responses/response.py !}

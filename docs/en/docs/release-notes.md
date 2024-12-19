@@ -5,6 +5,20 @@ hide:
 
 # Release Notes
 
+## 3.6.2
+
+### Changed
+
+- Cleanup Response.
+- Move `transform` method to lilya but provide speedup in a mixin.
+- Esmerald `Response` behaves like `make_response` in lilya with a plain `Response`.
+- Special handle None (nothing is returned) in `Response`. It shouldn't map to `null` so not all handlers have to return a value.
+
+
+### Fixed
+
+- `bytes` won't be encoded as json when returned from a handler. This would unexpectly lead to a base64 encoding.
+
 ## 3.6.1
 
 ### Added
