@@ -209,9 +209,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
                     return b'""'
                 # keep it a serialized json object
                 transform_kwargs.setdefault("post_transform_fn", None)
-            else:
-                # strip '"'
-                transform_kwargs.setdefault("post_transform_fn", lambda x: x.strip(b'"'))
+            # otherwise use default logic of lilya striping '"'
             with self.with_transform_kwargs(transform_kwargs):
                 # if content is bytes it won't be transformed and
                 # if None or NoReturn, return b"", this differs from the dedicated JSONResponses.
