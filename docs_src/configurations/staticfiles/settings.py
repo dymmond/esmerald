@@ -10,4 +10,9 @@ class CustomSettings(EsmeraldAPISettings):
         Simple configuration indicating where the statics will be placed in
         the application.
         """
-        return StaticFilesConfig(path="/static", packages=["mypackage"], directory=Path("static"))
+        return StaticFilesConfig(
+            path="/static",
+            packages=["mypackage"],
+            directory=Path("static"),
+            name="static",
+        )

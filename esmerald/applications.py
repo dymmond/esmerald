@@ -1691,7 +1691,7 @@ class Application(Lilya):
                 if isinstance(self.static_files_config, (list, tuple))
                 else [self.static_files_config]
             ):
-                static_route = Include(path=config.path, app=config.to_app())
+                static_route = Include(path=config.path, app=config.to_app(), name=config.name)
                 self.router.validate_root_route_parent(static_route)
                 self.router.routes.append(static_route)
 

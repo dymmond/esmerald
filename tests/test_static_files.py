@@ -145,7 +145,9 @@ def test_mixing_static_and_include(tmpdir: Any, redirect_slashes) -> None:
 
 
 @pytest.mark.parametrize("redirect_slashes", [True, False])
-def test_mixing_static_and_include_template_config(tmpdir: Any, template_dir, redirect_slashes) -> None:
+def test_mixing_static_and_include_template_config(
+    tmpdir: Any, template_dir, redirect_slashes
+) -> None:
     @get("/include")
     async def get_include() -> str:
         return "include"
@@ -159,7 +161,7 @@ def test_mixing_static_and_include_template_config(tmpdir: Any, template_dir, re
         [Include("/", routes=[get_include])],
         static_files_config=static_files_config,
         redirect_slashes=redirect_slashes,
-        template_config=template_config
+        template_config=template_config,
     ) as client:
         response = client.get("/static/test.txt")
         assert response.status_code == 200
