@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic import BaseModel, ConfigDict, constr, field_validator
+from pydantic import BaseModel, ConfigDict, constr
 from typing_extensions import Annotated, Doc, Literal
 
 from esmerald.datastructures import Secret
@@ -12,9 +12,7 @@ SECONDS_IN_A_DAY: Annotated[
         Total seconds in a day.
         """
     ),
-] = (
-    60 * 60 * 24
-)
+] = 60 * 60 * 24
 
 
 class SessionConfig(BaseModel):
@@ -74,9 +72,7 @@ class SessionConfig(BaseModel):
             The number in seconds until the cookie expires.
             """
         ),
-    ] = (
-        SECONDS_IN_A_DAY * 180
-    )
+    ] = SECONDS_IN_A_DAY * 180
     https_only: Annotated[
         bool,
         Doc(
@@ -95,19 +91,3 @@ class SessionConfig(BaseModel):
             """
         ),
     ] = "lax"
-
-    @field_validator("secret_key")
-    def validate_secret(
-        cls,
-        value: Annotated[
-            Secret,
-            Doc(
-                """
-                The string secret that will be evaluated.
-                """
-            ),
-        ],
-    ) -> Secret:
-        if len(value) not in [16, 24, 32]:
-            raise ValueError("secret length must be 16 (128 bit), 24 (192 bit) or 32 (256 bit)")
-        return value
