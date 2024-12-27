@@ -28,7 +28,7 @@ class TemplateResponse(Response):
         if media_type == MediaType.JSON:  # we assume this is the default
             suffixes = PurePath(template_name).suffixes
             for suffix in suffixes:
-                _type = guess_type("name" + suffix)[0]
+                _type = guess_type(f"name{suffix}")[0]
                 if _type:
                     media_type = _type
                     break
