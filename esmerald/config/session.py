@@ -12,9 +12,7 @@ SECONDS_IN_A_DAY: Annotated[
         Total seconds in a day.
         """
     ),
-] = (
-    60 * 60 * 24
-)
+] = 60 * 60 * 24
 
 
 class SessionConfig(BaseModel):
@@ -41,7 +39,7 @@ class SessionConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     secret_key: Annotated[
-        Union[str, Secret],
+        Union[str, bytes, Secret],
         Doc(
             """
             The string used for the encryption/decryption and used to create an HMAC to sign.
@@ -74,9 +72,7 @@ class SessionConfig(BaseModel):
             The number in seconds until the cookie expires.
             """
         ),
-    ] = (
-        SECONDS_IN_A_DAY * 180
-    )
+    ] = SECONDS_IN_A_DAY * 180
     https_only: Annotated[
         bool,
         Doc(
@@ -108,6 +104,6 @@ class SessionConfig(BaseModel):
             ),
         ],
     ) -> Secret:
-        if len(value) not in [16, 24, 32]:
-            raise ValueError("secret length must be 16 (128 bit), 24 (192 bit) or 32 (256 bit)")
+        if not value:
+            raise ValueError("secret_key is empty")
         return value

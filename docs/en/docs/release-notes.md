@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.6.3
+
+### Fixed
+
+- SessionConfig has a unneccessarily heavily restricted secret_key parameter.
+
 ## 3.6.2
 
 ### Added
