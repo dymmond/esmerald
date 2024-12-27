@@ -20,9 +20,6 @@ from esmerald.utils.crypto import get_random_secret_key
         [os.urandom(16), False],
         [os.urandom(24), False],
         [os.urandom(32), False],
-        [os.urandom(17), True],
-        [os.urandom(4), True],
-        [os.urandom(100), True],
         [b"", True],
     ],
 )

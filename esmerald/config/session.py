@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic import BaseModel, ConfigDict, constr
+from pydantic import BaseModel, ConfigDict, constr, field_validator
 from typing_extensions import Annotated, Doc, Literal
 
 from esmerald.datastructures import Secret
@@ -39,7 +39,7 @@ class SessionConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     secret_key: Annotated[
-        Union[str, Secret],
+        Union[str, bytes, Secret],
         Doc(
             """
             The string used for the encryption/decryption and used to create an HMAC to sign.
@@ -91,3 +91,19 @@ class SessionConfig(BaseModel):
             """
         ),
     ] = "lax"
+
+    @field_validator("secret_key")
+    def validate_secret(
+        cls,
+        value: Annotated[
+            Secret,
+            Doc(
+                """
+                The string secret that will be evaluated.
+                """
+            ),
+        ],
+    ) -> Secret:
+        if not value:
+            raise ValueError("secret_key is empty")
+        return value
