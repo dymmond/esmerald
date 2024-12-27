@@ -76,6 +76,14 @@ class StaticFilesConfig(BaseModel):
             """
         ),
     ] = True
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+            The name of the static files to be looked up at.
+            """
+        ),
+    ] = None
 
     @field_validator("path")
     def validate_path(cls, value: str) -> str:
@@ -88,4 +96,4 @@ class StaticFilesConfig(BaseModel):
         It can be three scenarios
         """
 
-        return StaticFiles(**self.model_dump(exclude_none=True, exclude=["path"]))  # type: ignore
+        return StaticFiles(**self.model_dump(exclude_none=True, exclude=["path", "name"]))  # type: ignore
