@@ -141,7 +141,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
                     )
                 ]
 
-                Response(response_cookies=response_cookies)
+                Response(cookies=response_cookies)
                 ```
                 """
             ),
@@ -163,12 +163,13 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
                     encoders=[PydanticEncoder, MsgSpecEncoder]
                 ]
 
-                Response(response_cookies=response_cookies)
+                Response(cookies=response_cookies)
                 ```
                 """
             ),
         ] = None,
     ) -> None:
+        self.cookies = cookies or []
         super().__init__(
             content=content,
             status_code=status_code,
@@ -177,7 +178,6 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
             background=cast("BackgroundTask", background),
             encoders=encoders,
         )
-        self.cookies = cookies or []
 
     def make_response(self, content: Any) -> bytes | memoryview | str:
         if (
@@ -204,9 +204,6 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
         try:
             # switch to a special mode for MediaType.JSON (default handlers)
             if self.media_type == MediaType.JSON:
-                # "" should serialize to json
-                if content == "":
-                    return b'""'
                 # keep it a serialized json object
                 transform_kwargs.setdefault("post_transform_fn", None)
             # otherwise use default logic of lilya striping '"'
