@@ -1917,6 +1917,9 @@ class Router(BaseRouter):
         return wrapper
 
 
+_body_less_methods = frozenset({"GET", "HEAD"})
+
+
 class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
     __slots__ = (
         "path",
@@ -2222,12 +2225,18 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         """
         Validates if special words are in the signature.
         """
-        if DATA in self.handler_signature.parameters and "GET" in self.methods:
-            raise ImproperlyConfigured("'data' argument is unsupported for 'GET' request handlers")
-
-        if PAYLOAD in self.handler_signature.parameters and "GET" in self.methods:
+        if DATA in self.handler_signature.parameters and _body_less_methods.issuperset(
+            self.methods
+        ):
             raise ImproperlyConfigured(
-                "'payload' argument is unsupported for 'GET' request handlers"
+                "'data' argument is unsupported for 'GET' and 'HEAD' request handlers"
+            )
+
+        if PAYLOAD in self.handler_signature.parameters and _body_less_methods.issuperset(
+            self.methods
+        ):
+            raise ImproperlyConfigured(
+                "'payload' argument is unsupported for 'GET' and 'HEAD' request handlers"
             )
 
         if SOCKET in self.handler_signature.parameters:

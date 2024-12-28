@@ -20,6 +20,7 @@ hide:
 
 ### Fixed
 
+- `data` and `payload` special kwargs are now allowed when a not-bodyless method is available for the handler. They default to None.
 - `bytes` won't be encoded as json when returned from a handler. This would unexpectly lead to a base64 encoding.
 - SessionConfig has a unneccessarily heavily restricted secret_key parameter.
 - Gracefully handle situations where cookies are None in `get_cookies`.
