@@ -27,27 +27,11 @@ class UserModel(BaseModel):
     name: str
 
 
-@post("/form")
-async def test_form(data: Any = Form()) -> Dict[str, str]:
-    return {"name": data["name"]}
-
-
-@post("/complex-form-pydantic")
-async def test_complex_form_pydantic_dataclass(data: User = Form()) -> User:
-    return data
-
-
-@post("/complex-form-dataclass")
-async def test_complex_form_dataclass(data: UserOut = Form()) -> UserOut:
-    return data
-
-
-@post("/complex-form-basemodel")
-async def test_complex_form_basemodel(data: UserModel = Form()) -> UserModel:
-    return data
-
-
 def test_send_form(test_client_factory):
+    @post("/form")
+    async def test_form(data: Any = Form()) -> Dict[str, str]:
+        return {"name": data["name"]}
+
     data = {"name": "Test"}
 
     with create_client(routes=[Gateway(handler=test_form)]) as client:
@@ -58,6 +42,10 @@ def test_send_form(test_client_factory):
 
 
 def test_send_complex_form_pydantic_dataclass(test_client_factory):
+    @post("/complex-form-pydantic")
+    async def test_complex_form_pydantic_dataclass(data: User = Form()) -> User:
+        return data
+
     data = {"id": 1, "name": "Test"}
     with create_client(
         routes=[Gateway(handler=test_complex_form_pydantic_dataclass)],
@@ -69,6 +57,10 @@ def test_send_complex_form_pydantic_dataclass(test_client_factory):
 
 
 def test_send_complex_form_normal_dataclass(test_client_factory):
+    @post("/complex-form-dataclass")
+    async def test_complex_form_dataclass(data: UserOut = Form()) -> UserOut:
+        return data
+
     data = {"id": 1, "name": "Test"}
     with create_client(
         routes=[Gateway(handler=test_complex_form_dataclass)],
@@ -80,6 +72,10 @@ def test_send_complex_form_normal_dataclass(test_client_factory):
 
 
 def test_send_complex_form_base_model(test_client_factory):
+    @post("/complex-form-basemodel")
+    async def test_complex_form_basemodel(data: UserModel = Form()) -> UserModel:
+        return data
+
     data = {"id": 1, "name": "Test"}
     with create_client(
         routes=[Gateway(handler=test_complex_form_basemodel)],

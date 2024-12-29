@@ -2243,8 +2243,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             if isinstance(parameter.default, Form):
                 if body_less_only:
                     raise ImproperlyConfigured(
-                            f"'{special}' uses Form() which is unsupported when only body-less methods "
-                            "like 'GET' and 'HEAD' are handled"
+                        f"'{special}' uses Form() which is unsupported when only body-less methods "
+                        "like 'GET' and 'HEAD' are handled"
                     )
                 elif not is_optional_union(parameter.annotation):
                     raise ImproperlyConfigured(
@@ -2262,6 +2262,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
     def validate_handler(self) -> None:
         self.check_handler_function()
         self.validate_annotations()
+        self.validate_bodyless_kwargs()
         self.validate_reserved_kwargs()
 
     async def to_response(self, app: "Esmerald", data: Any) -> LilyaResponse:
