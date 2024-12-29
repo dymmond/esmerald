@@ -55,6 +55,7 @@ from esmerald.exceptions import (
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.openapi.utils import is_status_code_allowed
+from esmerald.params import Form
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing._internal import OpenAPIFieldInfoMixin
@@ -66,7 +67,7 @@ from esmerald.transformers.signature import SignatureModel
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
-from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
+from esmerald.utils.helpers import is_async_callable, is_class_and_subclass, is_optional_union
 from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -1917,6 +1918,9 @@ class Router(BaseRouter):
         return wrapper
 
 
+_body_less_methods = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
+
+
 class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
     __slots__ = (
         "path",
@@ -2218,17 +2222,39 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         ]:
             self.media_type = MediaType.TEXT
 
+    def validate_bodyless_kwargs(self) -> None:
+        if _body_less_methods.isdisjoint(self.methods):
+            return
+        body_less_only = _body_less_methods.issuperset(self.methods)
+        for special in [DATA, PAYLOAD]:
+            if special in self.handler_signature.parameters:
+                if body_less_only:
+                    raise ImproperlyConfigured(
+                        f"'{special}' argument unsupported when only body-less methods like 'GET' and 'HEAD' are handled"
+                    )
+                elif not is_optional_union(self.handler_signature.parameters[special].annotation):
+                    raise ImproperlyConfigured(
+                        f"'{special}' argument must be optional when body-less methods like 'GET' and 'HEAD' are handled"
+                    )
+        for parameter_name, parameter in self.handler_signature.parameters.items():
+            # don't check twice
+            if parameter_name == DATA or parameter_name == PAYLOAD:
+                continue
+            if isinstance(parameter.default, Form):
+                if body_less_only:
+                    raise ImproperlyConfigured(
+                        f"'{special}' uses Form() which is unsupported when only body-less methods "
+                        "like 'GET' and 'HEAD' are handled"
+                    )
+                elif not is_optional_union(parameter.annotation):
+                    raise ImproperlyConfigured(
+                        f"'{special}' argument must be optional when body-less methods like 'GET' and 'HEAD' are handled"
+                    )
+
     def validate_reserved_kwargs(self) -> None:  # pragma: no cover
         """
         Validates if special words are in the signature.
         """
-        if DATA in self.handler_signature.parameters and "GET" in self.methods:
-            raise ImproperlyConfigured("'data' argument is unsupported for 'GET' request handlers")
-
-        if PAYLOAD in self.handler_signature.parameters and "GET" in self.methods:
-            raise ImproperlyConfigured(
-                "'payload' argument is unsupported for 'GET' request handlers"
-            )
 
         if SOCKET in self.handler_signature.parameters:
             raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
@@ -2236,6 +2262,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
     def validate_handler(self) -> None:
         self.check_handler_function()
         self.validate_annotations()
+        self.validate_bodyless_kwargs()
         self.validate_reserved_kwargs()
 
     async def to_response(self, app: "Esmerald", data: Any) -> LilyaResponse:

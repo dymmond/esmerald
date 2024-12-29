@@ -1,6 +1,7 @@
 import contextlib
 import uuid
 from dataclasses import dataclass
+from typing import Optional
 
 import pytest
 from lilya.responses import JSONResponse, PlainText, Response as LilyaResponse
@@ -10,13 +11,14 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from esmerald.applications import Esmerald
 from esmerald.enums import MediaType
+from esmerald.exceptions import ImproperlyConfigured
 from esmerald.permissions import AllowAny, DenyAll
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.responses.encoders import UJSONResponse
 from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, post, put, websocket
+from esmerald.routing.handlers import get, post, put, route, websocket
 from esmerald.routing.router import Include, Router
 from esmerald.testclient import create_client
 
@@ -1020,3 +1022,54 @@ def test_response_pydantic_dataclass(test_app_client_factory):
 
     assert response.status_code == 200
     assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+
+
+def test_get_and_post_data(test_app_client_factory):
+    @route(path="/another-user", status_code=200, methods=["GET", "POST"])
+    def another_user(data: Optional[UserOut]) -> Optional[UserOut]:
+        return data
+
+    data = {"name": "test", "email": "esmerald@esmerald.dev"}
+    app = Esmerald(routes=[Gateway(handler=another_user)])
+    client = test_app_client_factory(app)
+    response = client.get("/another-user")
+    assert response.status_code == 200
+    assert response.text == ""
+    response = client.post("/another-user", json=data)
+
+    assert response.status_code == 200
+    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+
+
+def test_get_and_post_payload(test_app_client_factory):
+    @route(path="/another-user", status_code=200, methods=["GET", "POST"])
+    def another_user(payload: Optional[UserOut]) -> Optional[UserOut]:
+        return payload
+
+    data = {"name": "test", "email": "esmerald@esmerald.dev"}
+    app = Esmerald(routes=[Gateway(handler=another_user)])
+
+    client = test_app_client_factory(app)
+    response = client.get("/another-user")
+    assert response.status_code == 200
+    assert response.text == ""
+    response = client.post("/another-user", json=data)
+
+    assert response.status_code == 200
+    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+
+
+def test_get_and_head_data():
+    with pytest.raises(ImproperlyConfigured):
+
+        @route(path="/another-user", status_code=200, methods=["GET", "HEAD"])
+        def another_user(data: UserOut) -> UserOut:
+            return data
+
+
+def test_get_and_head_payload():
+    with pytest.raises(ImproperlyConfigured):
+
+        @route(path="/another-user", status_code=200, methods=["GET", "HEAD"])
+        def another_user(payload: UserOut) -> UserOut:
+            return payload
