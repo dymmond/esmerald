@@ -24,6 +24,7 @@ hide:
 - `bytes` won't be encoded as json when returned from a handler. This would unexpectly lead to a base64 encoding.
 - SessionConfig has a unneccessarily heavily restricted secret_key parameter.
 - Gracefully handle situations where cookies are None in `get_cookies`.
+- Fix validation of parameters requiring a body.
 
 ## 3.6.1
 

@@ -1,10 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
+import pytest
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from esmerald import Form, Gateway, post
+from esmerald import Form, Gateway, post, route
+from esmerald.exceptions import ImproperlyConfigured
 from esmerald.testclient import create_client
 
 
@@ -86,3 +88,11 @@ def test_send_complex_form_base_model(test_client_factory):
         response = client.post("/complex-form-basemodel", data=payload)
         assert response.status_code == 201, response.text
         assert response.json() == {"id": 1, "name": "Test"}
+
+
+def test_get_and_head_payload():
+    with pytest.raises(ImproperlyConfigured):
+
+        @route(methods=["GET", "HEAD"])
+        async def start(payload: Optional[UserModel]) -> bytes:
+            return b"hello world"
