@@ -254,7 +254,7 @@ def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
     the Any type. This is necessary because the signature model will be
     generated before the actual type is resolved.
     """
-    annotation: Any | FieldInfo
+    annotation: Union[Any, FieldInfo]
 
     if param.optional:
         annotation = should_skip_json_schema(param)
