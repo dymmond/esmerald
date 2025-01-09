@@ -2824,7 +2824,7 @@ class Include(LilyaInclude):
                 routes or not.
                 """
             ),
-        ] = None,
+        ] = True,
     ) -> None:
         self.path = path
         if not path:

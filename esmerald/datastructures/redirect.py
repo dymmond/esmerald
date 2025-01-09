@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Type, Union
 
+from lilya import status
 from lilya.responses import RedirectResponse  # noqa
 from typing_extensions import Annotated, Doc
 
@@ -22,6 +23,17 @@ class Redirect(ResponseContainer[RedirectResponse]):
             """
         ),
     ]
+    status_code: Annotated[
+        int,
+        Doc(
+            """
+            The status code of the response.
+            This should be in format of `int`.
+
+            Example: `301`.
+            """
+        ),
+    ] = status.HTTP_307_TEMPORARY_REDIRECT
 
     def to_response(
         self,

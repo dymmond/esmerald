@@ -12,6 +12,7 @@ hide:
 - `name` parameter to StaticFiles config allowing to reverse lookup internally.
 - Support for Python 3.13
 - Support for `redirect_slashes` in the Include.
+- `status_code` to ResponseContainer to be parameter detectable.
 
 ### Changed
 
