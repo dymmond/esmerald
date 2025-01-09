@@ -85,6 +85,23 @@ class StaticFilesConfig(BaseModel):
         ),
     ] = None
 
+    fall_through: Annotated[
+        bool,
+        Doc(
+            """
+            Activate fall-through routing.
+            """
+        ),
+    ] = False
+    follow_symlink: Annotated[
+        bool,
+        Doc(
+            """
+            Follow symlinks.
+            """
+        ),
+    ] = False
+
     @field_validator("path")
     def validate_path(cls, value: str) -> str:
         if "{" in value:
