@@ -2026,7 +2026,11 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.status_code = status_code
 
         self.dependencies: Dependencies = dependencies or {}
-        self.description = description or inspect.cleandoc(self.handler.__doc__ or "")
+
+        if not description:
+            description = inspect.cleandoc(self.handler.__doc__ or "") if self.handler else ""
+
+        self.description = description
         self.permissions = list(permissions) if permissions else []  # type: ignore
         self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
@@ -2504,6 +2508,7 @@ class Include(LilyaInclude):
         "deprecated",
         "security",
         "tags",
+        "redirect_slashes",
     )
 
     def __init__(
@@ -2811,6 +2816,15 @@ class Include(LilyaInclude):
                 """
             ),
         ] = None,
+        redirect_slashes: Annotated[
+            Optional[bool],
+            Doc(
+                """
+                Boolean flag indicating if the redirect slashes are enabled for the
+                routes or not.
+                """
+            ),
+        ] = True,
     ) -> None:
         self.path = path
         if not path:
@@ -2873,6 +2887,7 @@ class Include(LilyaInclude):
             exception_handlers=exception_handlers,
             deprecated=deprecated,
             include_in_schema=include_in_schema,
+            redirect_slashes=redirect_slashes,
         )
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:

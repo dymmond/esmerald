@@ -297,7 +297,7 @@ class BaseResponseHandler:
             response: Response = data.to_response(
                 app=app,
                 headers=_headers,
-                status_code=self.status_code,
+                status_code=data.status_code or self.status_code,
                 media_type=media_type,
             )
             for cookie in _cookies:

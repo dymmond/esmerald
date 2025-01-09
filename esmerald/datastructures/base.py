@@ -111,6 +111,7 @@ class ResponseContainer(BaseModel, ABC, Generic[R]):
     background: Optional[Union[BackgroundTask, BackgroundTasks]] = None
     headers: Dict[str, Any] = {}
     cookies: List[Cookie] = []
+    status_code: Optional[int] = None
 
     @abstractmethod
     def to_response(
