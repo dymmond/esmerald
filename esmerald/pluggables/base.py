@@ -179,31 +179,34 @@ class ExtensionDict(dict[str, Extension]):
             self[name].extend(**val)
 
     def __setitem__(self, name: Any, value: Any) -> None:
-        if isinstance(value, str):
-            value = Pluggable(value)
         if not isinstance(name, str):
             raise ImproperlyConfigured("Extension names should be in string format.")
-        elif isinstance(value, Pluggable):
+
+        if isinstance(value, str):
+            value = Pluggable(value)
+
+        if isinstance(value, Pluggable):
             cls, options = value
             value = cls(app=self.app, **options)
             if self.delayed_extend is None:
                 value.extend(**options)
             else:
                 self.delayed_extend[name] = options
-        elif not isclass(value) and isinstance(value, ExtensionProtocol):
-            if self.delayed_extend is not None:
-                raise ImproperlyConfigured(
-                    "Cannot pass an initialized extension in extensions parameter."
-                )
         elif isclass(value) and issubclass(value, ExtensionProtocol):
             value = value(app=self.app)
             if self.delayed_extend is None:
                 value.extend()
             else:
                 self.delayed_extend[name] = {}
+        elif isinstance(value, ExtensionProtocol):
+            if self.delayed_extend is not None:
+                raise ImproperlyConfigured(
+                    "Cannot pass an initialized extension in extensions parameter."
+                )
         else:
             raise ImproperlyConfigured(
                 "An extension must subclass from Extension, implement the ExtensionProtocol "
                 "as instance or being wrapped in a Pluggable."
             )
+
         super().__setitem__(name, value)
