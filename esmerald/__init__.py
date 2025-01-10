@@ -23,7 +23,7 @@ from .exceptions import (
     ValidationErrorException,
 )
 from .interceptors.interceptor import EsmeraldInterceptor
-from .param_functions import Security
+from .param_functions import Requires, Security
 from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll
 from .pluggables import Extension, Pluggable
@@ -91,6 +91,7 @@ __all__ = [
     "Query",
     "Redirect",
     "Request",
+    "Requires",
     "Response",
     "Router",
     "Security",
