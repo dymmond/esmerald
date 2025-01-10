@@ -30,7 +30,7 @@ from .pluggables import Extension, Pluggable
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
-from .routing.apis import APIView, SimpleAPIView
+from .routing.apis import APIView, Controller, SimpleAPIView
 from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
 from .routing.router import Include, Router
@@ -57,6 +57,7 @@ __all__ = [
     "BasePermission",
     "ChildEsmerald",
     "Context",
+    "Controller",
     "CORSConfig",
     "CSRFConfig",
     "Cookie",
