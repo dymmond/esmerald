@@ -86,7 +86,7 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
         if param.field_info.alias in body_fields:
             continue
 
-        if param.is_security:
+        if param.is_security or param.is_requires_dependency:
             continue
 
         # Making sure all the optional and union types are included

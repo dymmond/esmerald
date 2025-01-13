@@ -24,6 +24,7 @@ from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
 from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
+from esmerald.utils.dependencies import is_requires
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 from esmerald.utils.schema import should_skip_json_schema
 
@@ -41,6 +42,7 @@ class ParamSetting(NamedTuple):
     param_type: ParamType
     field_info: FieldInfo
     is_security: bool = False
+    is_requires_dependency: bool = False
 
 
 class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
@@ -113,6 +115,7 @@ def create_parameter_setting(
     field_name: str,
     path_parameters: Set[str],
     is_security: bool,
+    is_requires_dependency: bool,
 ) -> ParamSetting:
     """
     Create a setting definition for a parameter.
@@ -164,6 +167,7 @@ def create_parameter_setting(
         field_info=param,
         is_required=is_required and (default_value is None and not allow_none),
         is_security=is_security,
+        is_requires_dependency=is_requires_dependency,
     )
     return param_settings
 
@@ -213,6 +217,13 @@ async def get_request_params(
 
     values: Dict[Any, Any] = {}
     for param in expected:
+        is_requires_dependency = is_requires(param.default_value)
+
+        # Using the default value if the parameter is a dependency requires
+        if is_requires_dependency:
+            values[param.field_name] = param.default_value
+            continue
+
         if not is_union(param.field_info.annotation):
             annotation = get_origin(param.field_info.annotation)
             origin = annotation or param.field_info.annotation

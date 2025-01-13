@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 import anyio
 import pytest
@@ -57,8 +57,29 @@ def test_use_requires_in_function_dependencies_using_inject(test_client_factory)
         assert response.json() == {"message": "Hello", "user": {"id": 1, "name": "Alice"}}
 
 
+@get("/requires-simple-union")
+async def get_requires_simple_union(
+    current_user: Union[Dict[str, Any], None] = Requires(endpoint),
+) -> JSONResponse:
+    return JSONResponse(current_user)
+
+
+def test_use_requires_as_a_non_dependency_union(test_app_client_factory):
+    with create_client(
+        routes=[
+            Gateway(handler=get_requires_simple_union),
+        ],
+    ) as client:
+        response = client.get("/requires-simple-union")
+
+        assert response.status_code == 200
+        assert response.json() == {"message": "Hello", "user": {"id": 1, "name": "Alice"}}
+
+
 @get("/requires-simple")
-async def get_requires_simple(current_user: Any = Requires(endpoint)) -> JSONResponse:
+async def get_requires_simple(
+    current_user: Any = Requires(endpoint),
+) -> JSONResponse:
     return JSONResponse(current_user)
 
 
@@ -74,15 +95,20 @@ def test_use_requires_as_a_non_dependency(test_app_client_factory):
         assert response.json() == {"message": "Hello", "user": {"id": 1, "name": "Alice"}}
 
 
-@get("/requires-typed-error")
-async def get_requires_typed_error(current_user: int = Requires(endpoint)) -> JSONResponse: ...
+@pytest.mark.parametrize(
+    "type_field", [List[str], int, float, frozenset, Union[List[str], None], Optional[List[str]]], ids=["list", "int", "float", "frozenset", "union", "optional"]
+)
+def test_use_requires_raise_error_for_typing(test_app_client_factory, type_field):
+    @get("/requires-typed-error")
+    async def get_requires_typed_error(
+        current_user: type_field = Requires(endpoint),
+    ) -> JSONResponse: ...
 
-
-def test_use_requires_raise_error_for_typing(test_app_client_factory):
     with create_client(
         routes=[
             Gateway(handler=get_requires_typed_error),
         ],
+        debug=False,
     ) as client:
         response = client.get("/requires-typed-error")
 
@@ -93,6 +119,7 @@ def test_openapi(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=get_requires_simple),
+            Gateway(handler=get_requires_simple_union),
         ],
         enable_openapi=True,
     ) as client:
@@ -123,6 +150,20 @@ def test_openapi(test_client_factory):
                         },
                         "deprecated": False,
                     }
-                }
+                },
+                "/requires-simple-union": {
+                    "get": {
+                        "summary": "Get Requires Simple Union",
+                        "description": "",
+                        "operationId": "get_requires_simple_union_requires_simple_union_get",
+                        "responses": {
+                            "200": {
+                                "description": "Successful response",
+                                "content": {"application/json": {"schema": {"type": "string"}}},
+                            }
+                        },
+                        "deprecated": False,
+                    }
+                },
             },
         }

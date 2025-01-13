@@ -48,6 +48,7 @@ def is_inject(param: Any) -> bool:
 
     return isinstance(param, Inject)
 
+
 def is_requires(param: Any) -> bool:
     """
     Checks if the object is an Inject.

@@ -459,9 +459,15 @@ def get_parameter_settings(
     for field_name, model_field in signature_fields.items():
         if field_name not in ignored_keys:
             allow_none = getattr(model_field, "allow_none", True)
+
+            # Flag if its a Security dependency
             is_security = is_security_scheme(model_field.default) or is_security_scope(
                 model_field.annotation
             )
+
+            # Flag if its a Requires() dependency
+            is_requires_dependency = is_requires(model_field.default)
+
             parameter_definitions.add(
                 create_parameter_setting(
                     allow_none=allow_none,
@@ -469,6 +475,7 @@ def get_parameter_settings(
                     field_info=model_field,
                     path_parameters=path_parameters,
                     is_security=is_security,
+                    is_requires_dependency=is_requires_dependency,
                 )
             )
 
