@@ -2,6 +2,7 @@ import inspect
 from typing import Any, Dict, Union
 
 from lilya.compat import run_sync
+from lilya.context import request_context
 
 from esmerald import params
 from esmerald.security.scopes import Scopes
@@ -78,6 +79,10 @@ async def async_resolve_dependencies(func: Any, overrides: Union[Dict[str, Any]]
     kwargs = {}
 
     for name, param in signature.parameters.items():
+        # If in one of the requirements happens to be Security, we need to resolve it
+        # By passing the Request object to the dependency
+        if isinstance(param.default, params.Security):
+            kwargs[name] = await param.default.dependency(request_context)
         if isinstance(param.default, params.Requires):
             dep_func = param.default.dependency
             dep_func = overrides.get(dep_func, dep_func)  # type: ignore

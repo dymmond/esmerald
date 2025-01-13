@@ -16,6 +16,7 @@ from typing import (
     get_origin,
 )
 
+from lilya.exceptions import HTTPException as LilyaHTTPException
 from orjson import loads
 from pydantic import ValidationError, create_model
 from pydantic.fields import FieldInfo
@@ -200,6 +201,10 @@ class SignatureModel(ArbitraryBaseModel):
                     decoded_list = extract_arguments(annotation)
                     annotation = decoded_list[0]  # type: ignore
 
+                if is_requires(value):
+                    kwargs[key] = await async_resolve_dependencies(value.dependency)
+                    continue
+
                 kwargs[key] = encode_value(encoder, annotation, value)
 
         return kwargs
@@ -296,7 +301,7 @@ class SignatureModel(ArbitraryBaseModel):
                 return str(exception)  # type: ignore
 
         try:
-            if isinstance(exception, HTTPException):
+            if isinstance(exception, (HTTPException, LilyaHTTPException)):
                 return exception
 
             method, url = get_connection_info(connection)
