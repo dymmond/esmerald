@@ -16,7 +16,7 @@ The dependencies are read from top-down in a python dictionary format, which mea
 
 ## How to use
 
-Assuming we have a `User` model using [Saffier](./databases/saffier/models.md).
+Assuming we have a `User` model using [Edgy](./databases/edgy/models.md).
 
 ```python hl_lines="14-15 19"
 {!> ../../../docs_src/dependencies/precedent.py !}
@@ -123,3 +123,127 @@ objects from the top.
 
 In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described
 and Esmerald will make sure that they will be automatically injected.
+
+## `Requires` and `Security`
+
+From the version 3.6.3+, Esmerald allows also to use what we call a "simpler" dependency injection. This dependency
+injection system does not aim replace the current sytem but aims to provide another way of using some dependencies
+in a simpler fashion.
+
+The `Security` object is used, as the name suggests, to implement the out of the box [security provided by Esmerald](./security/index.md)
+and in that section, that is explained how to apply whereas te `Requires` implements a more high level dependency system.
+
+You can import directly from `esmerald`:
+
+**Requires**
+
+```python
+from esmerald import Requires
+```
+
+**Security**
+
+```python
+from esmerald import Requires
+```
+
+!!! Warning
+    Neither `Requires()` or `Security()` are designed to work on an [application level](#dependencies-and-the-application-levels)
+    as is. For application layers and dependencies, you **must still use the normal dependency injection system to make it work**
+    or use the [Requires within the application layers](#requires-within-the-application-layers).
+
+### Requires
+
+This is what we describe a simple dependency.
+
+
+An example how to use `Requires` would be something like this:
+
+```python
+{!> ../../../docs_src/dependencies/requires/simple.py !}
+```
+
+This example is very simple but you can extend to whatever you want and need. The `Requires` is not a Pydantic model
+but a pure Python class. You can apply to any other complex example and having a `Requires` inside more `Requires`.
+
+```python
+{!> ../../../docs_src/dependencies/requires/nested.py !}
+```
+
+### Requires within the application layers
+
+Now this is where things start to get interesting. Esmerald operates in layers and **almost** everything works like that.
+
+What if you want to use the requires to operate on a layer level? Can you do it? **Yes**.
+
+It works as we normally declare dependencies, for example, a [Factory](#more-real-world-examples) object.
+
+```python
+{!> ../../../docs_src/dependencies/requires/layer.py !}
+```
+
+### Security within the Requires
+
+You can mix `Security()` and `Requires()` without any issues as both subclass the same base but there are nuances compared to
+the direct application of the `Security` without using the `Requires` object.
+
+For more details how to directly use the Security without using the Requires, please check the [security provided by Esmerald](./security/index.md)
+section where it goes in into detail how to use it.
+
+```python
+from lilya.middleware.request_context import RequestContextMiddleware
+from lilya.middleware import DefineMiddleware
+
+
+app = Esmerald(
+    routes=[...],
+    middleware=[
+        middleware=[DefineMiddleware(RequestContextMiddleware)],
+    ]
+)
+```
+
+!!! Warning
+    You can mix both `Requires()` and `Security()` (**Security inside Requires**) but for this to work properly, you will
+    **need to add the `RequestContextMiddleware` from Lilya** or an exception will be raised.
+
+Now, how can we make this simple example work? Like this:
+
+```python
+{!> ../../../docs_src/dependencies/requires/security.py !}
+```
+
+This example is an short adaptation of [security using jwt](./security/oauth-jwt.md) where we update the dependency
+to add a `Requires` that also depends on a `Security`.
+
+The `Security()` object is used **only** when you want to apply the niceties of [Esmerald security](./security/index.md)
+in your application.
+
+It is also a wrapper that does some magic for you by adding some extras automatically. The `Security` object expects you
+to have an instance that implements an `async __call__(self, connection: Request) -> Any:` in order to operate.
+
+Let us see a quick example:
+
+```python
+{!> ../../../docs_src/dependencies/requires/example.py !}
+```
+
+#### Application layer
+
+But what about you using the application layer architecture? Is it possible? Also yes. Let us update the previous example
+to make sure we reflect that.
+
+```python
+{!> ../../../docs_src/dependencies/requires/security_layer.py !}
+```
+
+## Recap
+
+There many ways of implementing the dependency injection in Esmerald:
+
+* Using the layers with `Inject` and `Injects()` respectively.
+* Using the `Factory()` within and `Inject()` and `Injects()`.
+* Using `Requires()` within an `Inject()` and `Injects()`.
+* Using `Security()` within an `Inject()` and `Injects()` or within a `Requires()`.
+* Using `Requires()` without using an `Inject()` and `Injects()` limiting it to the handler and **not application layer dependency**.
+*
