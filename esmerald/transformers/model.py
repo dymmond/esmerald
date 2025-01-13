@@ -18,7 +18,7 @@ from pydantic.fields import FieldInfo
 from esmerald.context import Context
 from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.params import Body, Security
+from esmerald.params import Body, Requires, Security
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
 from esmerald.requests import Request
 from esmerald.transformers.signature import SignatureModel
@@ -32,7 +32,12 @@ from esmerald.transformers.utils import (
 )
 from esmerald.typing import Undefined
 from esmerald.utils.constants import CONTEXT, DATA, PAYLOAD, RESERVED_KWARGS
-from esmerald.utils.dependencies import is_security_scheme, is_security_scope
+from esmerald.utils.dependencies import (
+    async_resolve_dependencies,
+    is_requires,
+    is_security_scheme,
+    is_security_scope,
+)
 from esmerald.utils.schema import is_field_optional
 
 if TYPE_CHECKING:
@@ -155,7 +160,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
     def get_security_definition(self) -> Dict[str, ParamSetting]:
         """
-        Get header parameters.
+        Get header parameters for security.
 
         Returns:
             Set[ParamSetting]: Set of header parameters.
@@ -164,6 +169,20 @@ class TransformerModel(ArbitraryExtraBaseModel):
             field.field_name: field
             for field in self.get_query_params()
             if field.is_security and is_security_scheme(field.default_value)
+        }
+
+    def get_requires_definition(self) -> Dict[str, ParamSetting]:
+        """
+        Get header parameters for requires.
+
+        Returns:
+            Set[ParamSetting]: Set of header parameters.
+        """
+
+        return {
+            field.field_name: field
+            for field in self.get_query_params()
+            if is_requires(field.default_value)
         }
 
     async def to_kwargs(
@@ -269,6 +288,15 @@ class TransformerModel(ArbitraryExtraBaseModel):
 
         return kwargs
 
+    async def get_requires_dependencies(self, kwargs: Any) -> Any:
+        """
+        get_requires_dependencies.
+        """
+        for name, dependency in kwargs.items():
+            if isinstance(dependency, Requires):
+                kwargs[name] = await async_resolve_dependencies(dependency.dependency)
+        return kwargs
+
     async def get_dependencies(
         self, dependency: Dependency, connection: Union["WebSocket", "Request"], **kwargs: Any
     ) -> Any:
@@ -290,8 +318,13 @@ class TransformerModel(ArbitraryExtraBaseModel):
                 dependency=_dependency, connection=connection, **kwargs
             )
 
+        # Handles with Security dependencies only
         if kwargs and self.get_security_definition():
             kwargs = await self.get_for_security_dependencies(connection, kwargs)
+
+        # Handles with everything that is related with a Requires
+        if kwargs and self.get_requires_definition():
+            kwargs = await self.get_requires_dependencies(kwargs)
 
         dependency_kwargs = await signature_model.parse_values_for_connection(
             connection=connection, **kwargs

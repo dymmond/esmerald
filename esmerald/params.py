@@ -634,9 +634,11 @@ class Injects(FieldInfo):
         super().__init__(default=default, json_schema_extra=self.extra)
 
 
-class Requires:
+class BaseRequires:
     """
     A class that represents a requirement with an optional dependency and caching behavior.
+
+    This object serves as a base class for other classes that require dependencies.
 
     Attributes:
         dependency (Optional[Callable[..., Any]]): An optional callable that represents the dependency.
@@ -671,7 +673,10 @@ class Requires:
         return f"{self.__class__.__name__}({attr}{cache})"
 
 
-class Security(Requires):
+class Requires(BaseRequires): ...
+
+
+class Security(BaseRequires):
     """
     A class used to represent security requirements for a particular operation.
 

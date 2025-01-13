@@ -24,6 +24,13 @@ def is_security_scheme(param: Any) -> bool:
     return isinstance(param, params.Security)
 
 
+def is_base_requires(param: Any) -> bool:
+    """
+    Checks if the object is a base requires object.
+    """
+    return is_class_and_subclass(param, params.BaseRequires)
+
+
 def is_security_scope(param: Any) -> bool:
     """
     Checks if the object is a security scope object.
@@ -40,6 +47,14 @@ def is_inject(param: Any) -> bool:
     from esmerald.injector import Inject
 
     return isinstance(param, Inject)
+
+def is_requires(param: Any) -> bool:
+    """
+    Checks if the object is an Inject.
+    """
+    if not param:
+        return False
+    return isinstance(param, params.Requires)
 
 
 async def async_resolve_dependencies(func: Any, overrides: Union[Dict[str, Any]] = None) -> Any:
