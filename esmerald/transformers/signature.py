@@ -16,6 +16,7 @@ from typing import (
     get_origin,
 )
 
+from lilya.exceptions import HTTPException as LilyaHTTPException
 from orjson import loads
 from pydantic import ValidationError, create_model
 from pydantic.fields import FieldInfo
@@ -33,6 +34,7 @@ from esmerald.transformers.constants import CLASS_SPECIAL_WORDS, UNDEFINED, VALI
 from esmerald.transformers.utils import get_connection_info, get_field_definition_from_param
 from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
+from esmerald.utils.dependencies import async_resolve_dependencies, is_requires
 from esmerald.utils.helpers import is_optional_union
 from esmerald.utils.schema import extract_arguments
 from esmerald.websockets import WebSocket
@@ -199,8 +201,32 @@ class SignatureModel(ArbitraryBaseModel):
                     decoded_list = extract_arguments(annotation)
                     annotation = decoded_list[0]  # type: ignore
 
+                if is_requires(value):
+                    kwargs[key] = await async_resolve_dependencies(value.dependency)
+                    continue
+
                 kwargs[key] = encode_value(encoder, annotation, value)
 
+        return kwargs
+
+    @classmethod
+    async def check_requires(cls, kwargs: Any) -> Any:
+        """
+        Checks if any of the parameters is a requires dependency.
+
+        Args:
+            connection (Union[Request, WebSocket]): The connection object to check.
+
+        Raises:
+            BaseSystemException: If validation error occurs.
+            EncoderException: If encoder error occurs.
+        """
+        if kwargs is None:
+            return kwargs
+
+        for key, value in kwargs.items():
+            if is_requires(value):
+                kwargs[key] = await async_resolve_dependencies(value.dependency)
         return kwargs
 
     @classmethod
@@ -225,6 +251,11 @@ class SignatureModel(ArbitraryBaseModel):
         try:
             if cls.encoders:
                 kwargs = await cls.parse_encoders(kwargs)
+
+            # Checks if any of the parameters is a requires dependency
+            kwargs = await cls.check_requires(kwargs)
+
+            # Apply into the signature
             signature = cls(**kwargs)
             values = {}
             for key in cls.model_fields:
@@ -270,7 +301,7 @@ class SignatureModel(ArbitraryBaseModel):
                 return str(exception)  # type: ignore
 
         try:
-            if isinstance(exception, HTTPException):
+            if isinstance(exception, (HTTPException, LilyaHTTPException)):
                 return exception
 
             method, url = get_connection_info(connection)

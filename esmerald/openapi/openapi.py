@@ -54,7 +54,7 @@ from esmerald.routing._internal import (
 )
 from esmerald.security.oauth2.oauth import SecurityBase
 from esmerald.typing import Undefined
-from esmerald.utils.dependencies import is_security_scheme
+from esmerald.utils.dependencies import is_base_requires
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]
@@ -86,16 +86,16 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
         if param.field_info.alias in body_fields:
             continue
 
-        if param.is_security:
+        if param.is_security or param.is_requires_dependency:
             continue
 
         # Making sure all the optional and union types are included
         if is_union_or_optional:
-            if not is_security_scheme(param.field_info.default):
+            if not is_base_requires(param.field_info.default):
                 query_params.append(param.field_info)
 
         else:
-            if isinstance(param.field_info.annotation, _GenericAlias) and not is_security_scheme(
+            if isinstance(param.field_info.annotation, _GenericAlias) and not is_base_requires(
                 param.field_info.default
             ):
                 query_params.append(param.field_info)
@@ -103,7 +103,7 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
                 param.field_info.annotation.__class__.__name__ in TRANSFORMER_TYPES_KEYS
                 or param.field_info.annotation.__name__ in TRANSFORMER_TYPES_KEYS
             ):
-                if not is_security_scheme(param.field_info.default):
+                if not is_base_requires(param.field_info.default):
                     query_params.append(param.field_info)
 
     return path_params + query_params + cookie_params + header_params

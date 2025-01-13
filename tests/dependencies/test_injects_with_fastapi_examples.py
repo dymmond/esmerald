@@ -1,10 +1,17 @@
-from typing import AsyncGenerator, Generator
+from typing import Any, AsyncGenerator, Callable, Generator, Optional
 
 import pytest
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.param_functions import Requires
+from esmerald import Esmerald, Gateway, get, params
 from esmerald.testclient import EsmeraldTestClient
+
+
+def BaseRequires(
+    dependency: Optional[Callable[..., Any]] = None,
+    *,
+    use_cache: bool = True,
+) -> Any:
+    return params.BaseRequires(dependency=dependency, use_cache=use_cache)
 
 
 class CallableDependency:  # pragma: no cover
@@ -49,53 +56,53 @@ methods_dependency = MethodsDependency()
 
 
 @get("/callable-dependency")
-async def get_callable_dependency(value: str = Requires(callable_dependency)) -> str:
+async def get_callable_dependency(value: str = BaseRequires(callable_dependency)) -> str:
     return value
 
 
 @get("/callable-gen-dependency")
-async def get_callable_gen_dependency(value: str = Requires(callable_gen_dependency)) -> str:
+async def get_callable_gen_dependency(value: str = BaseRequires(callable_gen_dependency)) -> str:
     return value
 
 
 @get("/async-callable-dependency")
 async def get_async_callable_dependency(
-    value: str = Requires(async_callable_dependency),
+    value: str = BaseRequires(async_callable_dependency),
 ) -> str:
     return value
 
 
 @get("/async-callable-gen-dependency")
 async def get_async_callable_gen_dependency(
-    value: str = Requires(async_callable_gen_dependency),
+    value: str = BaseRequires(async_callable_gen_dependency),
 ) -> str:
     return value
 
 
 @get("/synchronous-method-dependency")
 async def get_synchronous_method_dependency(
-    value: str = Requires(methods_dependency.synchronous),
+    value: str = BaseRequires(methods_dependency.synchronous),
 ) -> str:
     return value
 
 
 @get("/synchronous-method-gen-dependency")
 async def get_synchronous_method_gen_dependency(
-    value: str = Requires(methods_dependency.synchronous_gen),
+    value: str = BaseRequires(methods_dependency.synchronous_gen),
 ) -> str:
     return value
 
 
 @get("/asynchronous-method-dependency")
 async def get_asynchronous_method_dependency(
-    value: str = Requires(methods_dependency.asynchronous),
+    value: str = BaseRequires(methods_dependency.asynchronous),
 ) -> str:
     return value
 
 
 @get("/asynchronous-method-gen-dependency")
 async def get_asynchronous_method_gen_dependency(
-    value: str = Requires(methods_dependency.asynchronous_gen),
+    value: str = BaseRequires(methods_dependency.asynchronous_gen),
 ) -> str:
     return value
 

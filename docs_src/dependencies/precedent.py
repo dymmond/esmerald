@@ -1,5 +1,5 @@
 from myapp.accounts.models import User
-from saffier.exceptions import ObjectNotFound
+from edgy.exceptions import ObjectNotFound
 
 from esmerald import Esmerald, Gateway, Inject, Injects, get
 

@@ -5,6 +5,18 @@ hide:
 
 # Release Notes
 
+## 3.6.3
+
+## Added
+
+- [Requires()](./dependencies.md#requires-and-security) as a new independent way to manage dependencies.
+- A more thorough explanation about the [Security()](./dependencies.md#requires-and-security), how to use it and examples.
+
+## Changed
+
+- Expose `Controller` in `esmerald` as alternative to `APIView`. This was already available to use but not directly
+accessible via `from esmerald import Controller`.
+
 ## 3.6.2
 
 ### Added
