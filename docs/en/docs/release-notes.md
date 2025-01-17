@@ -17,6 +17,11 @@ hide:
 - Expose `Controller` in `esmerald` as alternative to `APIView`. This was already available to use but not directly
 accessible via `from esmerald import Controller`.
 
+## Fixed
+
+- Fix escaped " in TemplateResponse.
+- Fix TemplateResponse's auto-detection of the media-type when used directly.
+
 ## 3.6.2
 
 ### Added
