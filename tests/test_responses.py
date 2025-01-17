@@ -3,6 +3,7 @@ from typing import Union
 from lilya import status
 
 from esmerald import Response
+from esmerald.enums import MediaType
 from esmerald.responses.encoders import ORJSONResponse, UJSONResponse
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
@@ -52,6 +53,11 @@ def route_eight() -> str:
 @get("/nine")
 def route_nine() -> None:
     pass
+
+
+@get("/ten", media_type=MediaType.TEXT)
+def route_ten() -> str:
+    return "hello"
 
 
 def test_ujson_response(test_client_factory):
@@ -111,6 +117,13 @@ def test_str_returnal(test_client_factory):
         response = client.get("/eight")
 
         assert response.text == '"hello"'
+
+
+def test_str_returnal_non_json(test_client_factory):
+    with create_client(routes=[Gateway(handler=route_ten)]) as client:
+        response = client.get("/ten")
+
+        assert response.text == "hello"
 
 
 def test_implicit_none_returnal(test_client_factory):
