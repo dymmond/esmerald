@@ -22,6 +22,7 @@ accessible via `from esmerald import Controller`.
 - Fix escaped " in TemplateResponse.
 - Fix TemplateResponse's auto-detection of the media-type when used directly.
 - Don't mangle strings by default for other media-types than json.
+- Don't mangle returned responses.
 
 ## 3.6.2
 

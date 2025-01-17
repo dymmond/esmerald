@@ -275,7 +275,9 @@ class BaseResponseHandler:
         cookies: ResponseCookies,
         headers: Dict[str, Any],
         media_type: str,
-    ) -> Callable[[ResponseContainer, Type[Esmerald], Dict[str, Any]], LilyaResponse]:
+    ) -> Callable[
+        [Union[ResponseContainer, LilyaResponse], Type[Esmerald], Dict[str, Any]], LilyaResponse
+    ]:
         """
         Creates a handler for ResponseContainer types.
 
@@ -290,22 +292,30 @@ class BaseResponseHandler:
         """
 
         async def response_content(
-            data: ResponseContainer, app: Type["Esmerald"], **kwargs: Dict[str, Any]
+            data: Union[ResponseContainer, LilyaResponse],
+            app: Type["Esmerald"],
+            **kwargs: Dict[str, Any],
         ) -> LilyaResponse:
             _headers = {**self.get_headers(headers), **data.headers}
             _cookies = self.get_cookies(data.cookies, cookies)
-            response: Response = data.to_response(
-                app=app,
-                headers=_headers,
-                status_code=data.status_code or self.status_code,
-                media_type=media_type,
-            )
+            if isinstance(data, LilyaResponse):
+                response: LilyaResponse = data
+            else:
+                response = data.to_response(
+                    app=app,
+                    headers=_headers,
+                    status_code=data.status_code or self.status_code,
+                    media_type=media_type,
+                )
             for cookie in _cookies:
                 response.set_cookie(**cookie)
             return response
 
         return cast(
-            Callable[[ResponseContainer, Type["Esmerald"], Dict[str, Any]], LilyaResponse],
+            Callable[
+                [Union[ResponseContainer, LilyaResponse], Type["Esmerald"], Dict[str, Any]],
+                LilyaResponse,
+            ],
             response_content,
         )
 
@@ -435,7 +445,7 @@ class BaseResponseHandler:
         async def response_content(data: Any, **kwargs: Dict[str, Any]) -> LilyaResponse:
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies)
-            if isinstance(data, JSONResponse):
+            if isinstance(data, LilyaResponse):
                 response = data
                 response.status_code = self.status_code
                 response.background = self.background

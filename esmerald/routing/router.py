@@ -481,9 +481,9 @@ class BaseRouter(LilyaRouter):
             path = "/"
         else:
             assert path.startswith("/"), "A path prefix must start with '/'"
-            assert not path.endswith(
-                "/"
-            ), "A path must not end with '/', as the routes will start with '/'"
+            assert not path.endswith("/"), (
+                "A path must not end with '/', as the routes will start with '/'"
+            )
 
         new_routes: list[Any] = []
         for route in routes or []:
@@ -511,9 +511,9 @@ class BaseRouter(LilyaRouter):
                 )
             new_routes.append(route)
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         super().__init__(
             redirect_slashes=redirect_slashes,
