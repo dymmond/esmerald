@@ -192,20 +192,25 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
         transform_kwargs = RESPONSE_TRANSFORM_KWARGS.get()
         if transform_kwargs:
             transform_kwargs = transform_kwargs.copy()
+        elif isinstance(content, str) and self.media_type != MediaType.JSON:
+            # treat strings special when not using json and disable mangling when no context is active.
+            transform_kwargs = None
         else:
             transform_kwargs = {}
-        transform_kwargs.setdefault(
-            "json_encode_fn",
-            partial(
-                orjson.dumps,
-                option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS,
-            ),
-        )
+        if transform_kwargs is not None:
+            transform_kwargs.setdefault(
+                "json_encode_fn",
+                partial(
+                    orjson.dumps,
+                    option=orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_OMIT_MICROSECONDS,
+                ),
+            )
         try:
             # switch to a special mode for MediaType.JSON (default handlers)
             if self.media_type == MediaType.JSON:
                 # keep it a serialized json object
-                transform_kwargs.setdefault("post_transform_fn", None)
+                if transform_kwargs is not None:
+                    transform_kwargs.setdefault("post_transform_fn", None)
             # otherwise use default logic of lilya striping '"'
             with self.with_transform_kwargs(transform_kwargs):
                 # if content is bytes it won't be transformed and
