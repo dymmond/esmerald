@@ -43,10 +43,15 @@ def test_engine_jinja_and_mako(engine, template_dir: "pathlib.Path") -> None:
     assert isinstance(app.template_engine, engine)
 
 
-def test_templates_starlette(template_dir, test_client_factory):
+@pytest.mark.parametrize("apostrophe", ["'", '"'])
+def test_templates_starlette(template_dir, test_client_factory, apostrophe):
     path = os.path.join(template_dir, "index.html")
     with open(path, "w") as file:
-        file.write("<html>Hello, <a href='{{ url_for('homepage') }}'>world</a></html>")
+        file.write(
+            "<html>Hello, <a href='{{ url_for('homepage') }}'>world</a></html>".replace(
+                "'", apostrophe
+            )
+        )
 
     @get()
     async def homepage(request: Request) -> Template:
@@ -62,7 +67,9 @@ def test_templates_starlette(template_dir, test_client_factory):
     )
     client = EsmeraldTestClient(app)
     response = client.get("/")
-    assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>"
+    assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>".replace(
+        "'", apostrophe
+    )
 
 
 def test_alternative_template(template_dir, test_client_factory):
