@@ -19,7 +19,7 @@ accessible via `from esmerald import Controller`.
 
 ## Fixed
 
-- Fix returning strings (or using templates) causes " escaped.
+- Fix escaped " in TemplateResponse.
 - Fix TemplateResponse's auto-detection of the media-type when used directly.
 
 ## 3.6.2
