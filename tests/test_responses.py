@@ -57,7 +57,7 @@ def route_nine() -> None:
 
 @get("/ten", media_type=MediaType.TEXT)
 def route_ten() -> str:
-    return "hello"
+    return "hel\"'lo"
 
 
 def test_ujson_response(test_client_factory):
@@ -123,7 +123,7 @@ def test_str_returnal_non_json(test_client_factory):
     with create_client(routes=[Gateway(handler=route_ten)]) as client:
         response = client.get("/ten")
 
-        assert response.text == "hello"
+        assert response.text == "hel\"'lo"
 
 
 def test_implicit_none_returnal(test_client_factory):
