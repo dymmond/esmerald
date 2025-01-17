@@ -523,6 +523,8 @@ class BaseDispatcher(BaseResponseHandler):
             parameter_model=parameter_model,
             request=request,
         )
+        if isinstance(response_data, LilyaResponse):
+            return response_data
 
         response = await self.to_response(
             app=scope["app"],

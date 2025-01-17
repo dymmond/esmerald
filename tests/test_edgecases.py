@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 import os
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -34,7 +33,7 @@ def test_return_response_container(template_dir):
         middleware=[],
     )
     client = EsmeraldTestClient(app)
-    response = client.get("/")
+    response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
 
@@ -55,13 +54,13 @@ def test_return_response(template_dir):
         ),
     )
     client = EsmeraldTestClient(app)
-    response = client.get("/")
+    response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
 
 def test_get_and_post():
     @route(methods=["GET", "POST"])
-    async def start(request: Request, data: Model | None = Form()) -> bytes:
+    async def start(request: Request, data: Optional[Model] = Form()) -> bytes:
         return b"hello world"
 
     app = Esmerald(
