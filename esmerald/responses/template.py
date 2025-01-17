@@ -38,6 +38,7 @@ class TemplateResponse(Response):
         self.template = template_engine.get_template(template_name)
         self.context = context or {}
         content = self.template.render(**context)
+        # ensure template string is not mangled
         if isinstance(content, str):
             content = content.encode(self.charset)
         super().__init__(
