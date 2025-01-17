@@ -2270,8 +2270,6 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.validate_reserved_kwargs()
 
     async def to_response(self, app: "Esmerald", data: Any) -> LilyaResponse:
-        if isinstance(data, LilyaResponse):
-            return data
         response_handler = self.get_response_for_handler()
         return await response_handler(app=app, data=data)  # type: ignore[call-arg]
 
