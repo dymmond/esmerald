@@ -387,7 +387,7 @@ class View:
             route_kwargs = {
                 "path": path,
                 "handler": route_handler,
-                "name": name or route_handler.fn.__name__,
+                "name": name or route_handler.name or route_handler.fn.__name__,
                 "middleware": middleware,
                 "interceptors": interceptors,
                 "permissions": permissions,
