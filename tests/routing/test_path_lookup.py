@@ -56,6 +56,29 @@ routes = [
         ],
         name="api",
     ),
+    Include(
+        "/esmerald",
+        routes=[
+            Include(
+                "/api",
+                routes=[
+                    Include(
+                        routes=[
+                            Gateway(handler=get_hello, name="hello"),
+                            Gateway(handler=post_new, name="new"),
+                            Gateway(handler=home, name="home"),
+                            Gateway(handler=post_new_home, name="new-home"),
+                            Gateway(handler=TestController, name="test"),
+                            Gateway(handler=Test2Controller),
+                        ],
+                        name="v1",
+                    ),
+                ],
+                name="api",
+            ),
+        ],
+        name="esmerald",
+    ),
 ]
 
 
@@ -118,3 +141,26 @@ def test_can_reverse_lookup_all(test_client_factory):
 
         assert app.path_for("api:v1:test2controller:int") == "/api/test/int"
         assert reverse("api:v1:test2controller:int") == "/api/test/int"
+
+
+def test_can_reverse_lookup_all_nested(test_client_factory):
+    with create_client(routes=routes, enable_openapi=False) as client:
+        app = client.app
+
+        assert app.path_for("esmerald:api:v1:hello") == "/esmerald/api/hello"
+        assert app.path_for("esmerald:api:v1:new") == "/esmerald/api/new"
+
+        assert reverse("esmerald:api:v1:hello") == "/esmerald/api/hello"
+        assert reverse("esmerald:api:v1:new") == "/esmerald/api/new"
+
+        assert app.path_for("esmerald:api:v1:home:home") == "/esmerald/api/home"
+        assert reverse("esmerald:api:v1:home:home") == "/esmerald/api/home"
+
+        assert app.path_for("esmerald:api:v1:new-home:new-home") == "/esmerald/api/new-home"
+        assert reverse("esmerald:api:v1:new-home:new-home") == "/esmerald/api/new-home"
+
+        assert app.path_for("esmerald:api:v1:test:int") == "/esmerald/api/int"
+        assert reverse("esmerald:api:v1:test:int") == "/esmerald/api/int"
+
+        assert app.path_for("esmerald:api:v1:test2controller:int") == "/esmerald/api/test/int"
+        assert reverse("esmerald:api:v1:test2controller:int") == "/esmerald/api/test/int"
