@@ -23,6 +23,7 @@ accessible via `from esmerald import Controller`.
 - Fix TemplateResponse's auto-detection of the media-type when used directly.
 - Don't mangle strings by default for other media-types than json.
 - Don't mangle returned responses.
+- Reverse lookup or Class based views and nested naming using `path_for`
 
 ## 3.6.2
 
