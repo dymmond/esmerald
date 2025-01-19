@@ -1,4 +1,3 @@
-import pytest
 from lilya.compat import reverse
 
 from esmerald import Controller, Gateway, Include, get, post
@@ -29,7 +28,7 @@ routes = [
                 routes=[
                     Gateway(handler=get_hello, name="hello"),
                     Gateway(handler=post_new, name="new"),
-                    Gateway(handler=TestController, name="test"),
+                    Gateway(handler=TestController),
                 ],
                 name="v1",
             ),
@@ -39,7 +38,6 @@ routes = [
 ]
 
 
-@pytest.mark.filterwarnings(r"ignore" r":UserWarning")
 def test_can_reverse_lookup(test_client_factory):
     with create_client(routes=routes) as client:
         app = client.app
