@@ -1,5 +1,4 @@
 import re
-import warnings
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
 
 from lilya._internal._path import clean_path
@@ -281,13 +280,6 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             self.path = clean_path(path)
 
         self.methods = getattr(handler, "http_methods", None)
-
-        if name and isinstance(handler, View):
-            warnings.warn(
-                "When using a class based view, the name will be automatically generated from the class name if the handlers of the Class based view are not specified. This can cause problems with reverse lookup.",
-                UserWarning,
-                stacklevel=2,
-            )
 
         if not name:
             if not isinstance(handler, View):

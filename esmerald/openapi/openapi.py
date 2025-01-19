@@ -191,7 +191,7 @@ def get_openapi_operation(
 
     if operation_id in operation_ids:
         message = (
-            f"Duplicate Operation ID {operation_id} for function " + f"{route.handler.__name__}"
+            f"Duplicate Operation ID {operation_id} for function " + f"{route.handler.fn.__name__}"
         )
         file_name = getattr(route.handler, "__globals__", {}).get("__file__")
         if file_name:

@@ -674,6 +674,29 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             current = current.parent
         return list(reversed(levels))
 
+    def get_lookup_path(self) -> List[str]:
+        """
+        Constructs and returns the lookup path for the current object by traversing
+        its parent hierarchy.
+
+        The method collects the 'name' attribute of the current object and its
+        ancestors, if they exist, and returns them as a list in reverse order
+        (from the root ancestor to the current object).
+
+        Returns:
+            List[str]: A list of names representing the lookup path from the root
+            ancestor to the current object.
+        """
+
+        names = []
+        current: Any = self
+
+        while current:
+            if getattr(current, "name", None) is not None:
+                names.append(current.name)
+            current = current.parent
+        return list(reversed(names))
+
     @property
     def dependency_names(self) -> Set[str]:
         """
