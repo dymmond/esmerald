@@ -25,6 +25,7 @@ def test_add_include_to_openapi(test_client_factory, value):
 
         @get(
             "/item",
+            summary="Read Item",
             description="Read an item",
             responses={
                 200: OpenAPIResponse(model=Item, description="The SKU information of an item")
@@ -57,7 +58,7 @@ def test_add_include_to_openapi(test_client_factory, value):
                     "get": {
                         "summary": "Read Item",
                         "description": "Read an item",
-                        "operationId": "myapi_read_item_item_get",
+                        "operationId": "myapi_item_get",
                         "responses": {
                             "200": {
                                 "description": "The SKU information of an item",

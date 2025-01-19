@@ -64,9 +64,9 @@ def test_open_api_schema(test_client_factory):
                 "/api/v1/admin/users": {
                     "post": {
                         "tags": ["User"],
-                        "summary": "Create",
+                        "summary": "Userapiview",
                         "description": "",
-                        "operationId": "userapiview_create__post",
+                        "operationId": "userapiview__post",
                         "responses": {
                             "201": {
                                 "description": "Successful response",
@@ -79,9 +79,9 @@ def test_open_api_schema(test_client_factory):
                 "/api/v1/admin/profiles": {
                     "post": {
                         "tags": ["Profile"],
-                        "summary": "Create",
+                        "summary": "Profileapiview",
                         "description": "",
-                        "operationId": "profileapiview_create__post",
+                        "operationId": "profileapiview__post",
                         "responses": {
                             "201": {
                                 "description": "Successful response",

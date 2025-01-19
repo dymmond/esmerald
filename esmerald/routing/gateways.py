@@ -60,9 +60,7 @@ class GatewayUtil:
         We need to be able to handle with edge cases when a view does not default a path like `/format` and a default name needs to be passed when its a class based view.
         """
         if self.is_class_based(handler.parent):
-            operation_id = (
-                handler.parent.__class__.__name__.lower() + f"_{name}" + handler.path_format
-            )
+            operation_id = handler.parent.__class__.__name__.lower() + handler.path_format
         else:
             operation_id = name + handler.path_format
 
@@ -297,6 +295,12 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             else:
                 name = clean_string(handler.__class__.__name__)
 
+        else:
+            route_name_list = [name]
+            if not isinstance(handler, View) and handler.name:
+                route_name_list.append(handler.name)
+                name = ":".join(route_name_list)
+
         # Handle middleware
         self.middleware = middleware or []
         self._middleware: List["Middleware"] = self.handle_middleware(
@@ -510,9 +514,15 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         if not name:
             if not isinstance(handler, View):
-                name = clean_string(handler.fn.__name__)
+                name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
+
+        else:
+            route_name_list = [name]
+            if not isinstance(handler, View) and handler.name:
+                route_name_list.append(handler.name)
+                name = ":".join(route_name_list)
 
         # Handle middleware
         self.middleware = middleware or []
