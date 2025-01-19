@@ -387,12 +387,18 @@ class View:
             route_kwargs = {
                 "path": path,
                 "handler": route_handler,
-                "name": name or route_handler.fn.__name__,
                 "middleware": middleware,
                 "interceptors": interceptors,
                 "permissions": permissions,
                 "exception_handlers": exception_handlers,
             }
+
+            route_name_list = [
+                self.parent.name,
+            ]
+
+            # Make sure the proper name is set for the route
+            route_kwargs["name"] = ":".join(route_name_list)
             route_path = (
                 Gateway(**route_kwargs)  # type: ignore
                 if isinstance(route_handler, HTTPHandler)

@@ -42,7 +42,6 @@ class BaseMiddleware:
 
 
 class GatewayUtil:
-
     def is_class_based(
         self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]
     ) -> bool:
@@ -60,9 +59,7 @@ class GatewayUtil:
         We need to be able to handle with edge cases when a view does not default a path like `/format` and a default name needs to be passed when its a class based view.
         """
         if self.is_class_based(handler.parent):
-            operation_id = (
-                handler.parent.__class__.__name__.lower() + f"_{name}" + handler.path_format
-            )
+            operation_id = handler.parent.__class__.__name__.lower() + handler.path_format
         else:
             operation_id = name + handler.path_format
 
@@ -286,9 +283,15 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         if not name:
             if not isinstance(handler, View):
-                name = clean_string(handler.fn.__name__)
+                name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
+
+        else:
+            route_name_list = [name]
+            if not isinstance(handler, View) and handler.name:
+                route_name_list.append(handler.name)
+                name = ":".join(route_name_list)
 
         # Handle middleware
         self.middleware = middleware or []
@@ -328,17 +331,17 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.operation_id = operation_id
 
         if self.is_handler(self.handler):  # type: ignore
-            self.handler.name = self.name
-
             if self.operation_id or handler.operation_id is not None:
                 handler_id = self.generate_operation_id(
-                    name=self.name, handler=self.handler  # type: ignore
+                    name=self.name or "",
+                    handler=self.handler,  # type: ignore
                 )
                 self.operation_id = f"{operation_id}_{handler_id}" if operation_id else handler_id
 
             elif not handler.operation_id:
                 handler.operation_id = self.generate_operation_id(
-                    name=self.name, handler=self.handler  # type: ignore
+                    name=self.name or "",
+                    handler=self.handler,  # type: ignore
                 )
 
     async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
@@ -503,9 +506,15 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         if not name:
             if not isinstance(handler, View):
-                name = clean_string(handler.fn.__name__)
+                name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
+
+        else:
+            route_name_list = [name]
+            if not isinstance(handler, View) and handler.name:
+                route_name_list.append(handler.name)
+                name = ":".join(route_name_list)
 
         # Handle middleware
         self.middleware = middleware or []
@@ -691,5 +700,6 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
 
             if not handler.operation_id:
                 handler.operation_id = self.generate_operation_id(
-                    name=self.name, handler=self.handler  # type: ignore
+                    name=self.name,
+                    handler=self.handler,  # type: ignore
                 )

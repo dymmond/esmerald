@@ -50,6 +50,14 @@ def get(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -397,6 +405,7 @@ def get(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.GET],
             summary=summary,
             description=description,
@@ -441,6 +450,14 @@ def head(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -666,6 +683,7 @@ def head(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.HEAD],
             summary=summary,
             description=description,
@@ -722,6 +740,14 @@ def post(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -1074,6 +1100,7 @@ def post(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             status_code=status_code,
             content_encoding=content_encoding,
             content_media_type=content_media_type,
@@ -1130,6 +1157,14 @@ def put(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -1477,6 +1512,7 @@ def put(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.PUT],
             summary=summary,
             description=description,
@@ -1533,6 +1569,14 @@ def patch(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -1880,6 +1924,7 @@ def patch(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.PATCH],
             summary=summary,
             description=description,
@@ -1936,6 +1981,14 @@ def delete(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -2283,6 +2336,7 @@ def delete(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.DELETE],
             summary=summary,
             description=description,
@@ -2327,6 +2381,14 @@ def options(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -2552,6 +2614,7 @@ def options(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.OPTIONS],
             summary=summary,
             description=description,
@@ -2596,6 +2659,14 @@ def trace(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -2822,6 +2893,7 @@ def trace(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=[HttpMethod.TRACE],
             summary=summary,
             description=description,
@@ -2878,6 +2950,14 @@ def route(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     methods: Annotated[
         List[str],
         Doc(
@@ -3259,6 +3339,7 @@ def route(
     def wrapper(func: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
+            name=name,
             methods=methods,
             summary=summary,
             description=description,
@@ -3316,6 +3397,14 @@ def websocket(
         ),
     ] = None,
     *,
+    name: Annotated[
+        Optional[str],
+        Doc(
+            """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+        ),
+    ] = None,
     dependencies: Annotated[
         Optional["Dependencies"],
         Doc(
@@ -3356,6 +3445,7 @@ def websocket(
             exception_handlers=exception_handlers,
             permissions=permissions,
             middleware=middleware,
+            name=name,
         )
         handler.fn = func
         handler.handler = func

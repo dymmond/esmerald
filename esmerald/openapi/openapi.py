@@ -178,7 +178,8 @@ def get_openapi_operation(
     if route.handler.summary:
         operation.summary = route.handler.summary
     else:
-        operation.summary = route.handler.name.replace("_", " ").replace("-", " ").title()
+        name = route.handler.name or route.name
+        operation.summary = name.replace("_", " ").replace("-", " ").title()
 
     # Handle the handler description
     if route.handler.description:
@@ -190,7 +191,7 @@ def get_openapi_operation(
 
     if operation_id in operation_ids:
         message = (
-            f"Duplicate Operation ID {operation_id} for function " + f"{route.handler.__name__}"
+            f"Duplicate Operation ID {operation_id} for function " + f"{route.handler.fn.__name__}"
         )
         file_name = getattr(route.handler, "__globals__", {}).get("__file__")
         if file_name:

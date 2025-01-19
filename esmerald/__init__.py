@@ -33,7 +33,7 @@ from .responses import JSONResponse, Response, TemplateResponse
 from .routing.apis import APIView, Controller, SimpleAPIView
 from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
-from .routing.router import Include, Router
+from .routing.router import Host, Include, Router
 from .routing.webhooks import (
     whdelete,
     whead,
@@ -75,6 +75,7 @@ __all__ = [
     "Include",
     "Inject",
     "Factory",
+    "Host",
     "Injects",
     "ImproperlyConfigured",
     "JSON",

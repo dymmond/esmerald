@@ -8,7 +8,7 @@ from lilya._internal._path import clean_path
 from rich.console import Console
 from rich.table import Table
 
-from esmerald import Gateway
+from esmerald import Gateway, Router
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
@@ -19,7 +19,6 @@ if TYPE_CHECKING:
     from lilya.routing import BasePath
 
     from esmerald.applications import ChildEsmerald, Esmerald
-    from esmerald.routing.router import Router
 
 printer = Print()
 writer = Terminal()
@@ -48,6 +47,10 @@ def get_http_verb(mapping: Any) -> str:
         return HttpMethod.DELETE.value
     elif getattr(mapping, "header", None):
         return HttpMethod.HEAD.value
+    elif getattr(mapping, "trace", None):
+        return HttpMethod.TRACE.value
+    elif getattr(mapping, "options", None):
+        return HttpMethod.OPTIONS.value
     return HttpMethod.GET.value
 
 
@@ -77,7 +80,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
     """Prints the routing system"""
     table.add_column("Path", style=OutputColour.GREEN, vertical="middle")
     table.add_column("Path Parameters", style=OutputColour.BRIGHT_CYAN, vertical="middle")
-    table.add_column("Name", style=OutputColour.CYAN, vertical="middle")
+    table.add_column("Name & Path Lookup", style=OutputColour.CYAN, vertical="middle")
     table.add_column("Type", style=OutputColour.YELLOW, vertical="middle")
     table.add_column("HTTP Methods", style=OutputColour.RED, vertical="middle")
 
@@ -106,9 +109,15 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
                         fn_type = "sync"
 
                 # Http methods
+                names = route.handler.get_lookup_path()
+
+                # We need to escape the character ':' to avoid the error
+                # of the table not being able to render the string
+                route_name = ":\u200d".join(names)
+
                 http_methods = ", ".join(sorted(route.methods))
                 parameters = ", ".join(sorted(route.stringify_parameters))
-                table.add_row(path, parameters, route.name, fn_type, http_methods)
+                table.add_row(path, parameters, route_name, fn_type, http_methods)
                 continue
 
             route_app = getattr(route, "app", None)
@@ -118,7 +127,6 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
             path = clean_path(prefix + route.path)  # type: ignore
             if any(element in path for element in DOCS_ELEMENTS):
                 continue
-
             parse_routes(route, table, prefix=f"{path}")
 
     parse_routes(app, table)
