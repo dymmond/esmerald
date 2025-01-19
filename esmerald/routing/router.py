@@ -481,9 +481,9 @@ class BaseRouter(LilyaRouter):
             path = "/"
         else:
             assert path.startswith("/"), "A path prefix must start with '/'"
-            assert not path.endswith("/"), (
-                "A path must not end with '/', as the routes will start with '/'"
-            )
+            assert not path.endswith(
+                "/"
+            ), "A path must not end with '/', as the routes will start with '/'"
 
         new_routes: list[Any] = []
         for route in routes or []:
@@ -511,9 +511,9 @@ class BaseRouter(LilyaRouter):
                 )
             new_routes.append(route)
 
-        assert lifespan is None or (on_startup is None and on_shutdown is None), (
-            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
-        )
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         super().__init__(
             redirect_slashes=redirect_slashes,
@@ -1929,6 +1929,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         "_dependencies",
         "_response_handler",
         "_middleware",
+        "name",
         "methods",
         "status_code",
         "content_encoding",
@@ -1958,6 +1959,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         path: Optional[str] = None,
         handler: Callable[..., Any] = None,
         *,
+        name: Optional[str] = None,
         methods: Optional[Sequence[str]] = None,
         status_code: Optional[int] = None,
         content_encoding: Optional[str] = None,
@@ -1991,6 +1993,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             handler=handler,
             include_in_schema=include_in_schema,
             exception_handlers=exception_handlers,
+            name=name,
         )
 
         self._permissions: Union[List[Permission], VoidType] = Void
@@ -2002,6 +2005,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.path = path
         self.handler = handler
         self.summary = summary
+        self.name = name
         self.tags = tags or []
         self.include_in_schema = include_in_schema
         self.deprecated = deprecated
@@ -2379,6 +2383,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         "permissions",
         "middleware",
         "parent",
+        "name",
         "__type__",
     )
 
@@ -2391,6 +2396,14 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         exception_handlers: Optional[ExceptionHandlerMap] = None,
         permissions: Optional[List[Permission]] = None,
         middleware: Optional[List[Middleware]] = None,
+        name: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The name for the Gateway. The name can be reversed by `path_for()`.
+                """
+            ),
+        ] = None,
     ):
         if not path:
             path = "/"
@@ -2411,6 +2424,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.fn: Optional[AnyCallable] = None
         self.tags: Sequence[str] = []
         self.__type__: Union[str, None] = None
+        self.name = name
 
     def validate_reserved_words(self, signature: Signature) -> None:
         """

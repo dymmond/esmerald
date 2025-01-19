@@ -178,7 +178,8 @@ def get_openapi_operation(
     if route.handler.summary:
         operation.summary = route.handler.summary
     else:
-        operation.summary = route.handler.name.replace("_", " ").replace("-", " ").title()
+        name = route.handler.name or route.name
+        operation.summary = name.replace("_", " ").replace("-", " ").title()
 
     # Handle the handler description
     if route.handler.description:
