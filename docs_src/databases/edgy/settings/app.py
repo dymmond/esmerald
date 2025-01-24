@@ -35,9 +35,7 @@ def get_application():
     monkay.evaluate_settings_once(ignore_import_errors=False)  # import manually
 
     # now the project is in the search path and we can import
-    from my_project.utils import get_db_connection
-
-    registry = get_db_connection()
+    registry = settings.registry
 
     app = registry.asgi(
         Esmerald(
