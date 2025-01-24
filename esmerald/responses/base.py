@@ -179,7 +179,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
             encoders=encoders,
         )
 
-    def make_response(self, content: Any) -> bytes | memoryview | str:
+    def make_response(self, content: Any) -> bytes:
         if (
             content is None
             or content is NoReturn
