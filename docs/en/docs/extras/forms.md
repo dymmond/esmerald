@@ -77,6 +77,13 @@ dataclasses.
 {!> ../../../docs_src/extras/form/model.py !}
 ```
 
+## Using form as non-data, non-payload field
+
+When using Form as a non-data, non-payload field, the form receives only the data which matches the field-name.
+
+If you use form-data requests make sure the field content is valid json.
+When you use json requests only the portion which matches the field-name is passed through the model wrapped by the form.
+
 ## Notes
 
 As you could see from the examples, it is very simple and direct to use the `Form` in Esmerald and
