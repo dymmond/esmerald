@@ -71,10 +71,11 @@ def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str
     header_params = [param.field_info for param in route.transformer.get_header_params()]
 
     handler_dependencies = set(route.get_dependencies().keys())
+    body_encoder_fields = route.body_encoder_fields
     handler_query_params = [
         param
         for param in route.transformer.get_query_params()
-        if param.field_alias not in route.body_encoder_fields.keys()
+        if param.field_alias not in body_encoder_fields
         and not param.is_security
         and param.field_alias not in handler_dependencies
     ]
@@ -289,9 +290,9 @@ def get_openapi_path(
         internal_response = create_internal_response(handler)
         route_response_media_type = internal_response.media_type
     else:
-        assert (
-            handler.response_class.media_type is not None
-        ), "`media_type` is required in the response class."
+        assert handler.response_class.media_type is not None, (
+            "`media_type` is required in the response class."
+        )
         route_response_media_type = handler.response_class.media_type
 
     # If routes do not want to be included in the schema generation
