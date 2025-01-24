@@ -5,7 +5,7 @@ import pytest
 
 from esmerald.conf import settings
 
-models = settings.edgy_registry
+models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
 
 

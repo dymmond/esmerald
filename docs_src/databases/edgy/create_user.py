@@ -3,7 +3,7 @@ from pydantic import EmailStr
 from esmerald.conf import settings
 from esmerald.contrib.auth.edgy.base_user import User as BaseUser
 
-database, models = settings.registry
+models = settings.registry
 
 
 class User(BaseUser):
