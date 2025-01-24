@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 from pydantic import BaseModel
@@ -64,7 +65,7 @@ def test_return_response_route_form(template_dir):
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
-    response = client.post("/", data={"id": 55}, follow_redirects=False)
+    response = client.post("/", data={"form": json.dumps({"id": 55})}, follow_redirects=False)
     assert response.status_code == 301
 
 

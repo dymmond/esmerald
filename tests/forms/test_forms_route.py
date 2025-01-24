@@ -1,3 +1,4 @@
+import json
 from typing import Optional, Union
 
 import pytest
@@ -29,7 +30,7 @@ def test_get_and_post():
     response = client.get("/")
     assert response.status_code == 200
 
-    response = client.post("/", data={"id": "733"})
+    response = client.post("/", data={"form": json.dumps({"id": "733"})})
     assert response.status_code == 200
 
 
