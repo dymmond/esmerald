@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from mimetypes import guess_type
 from pathlib import PurePath
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
@@ -9,6 +10,7 @@ from esmerald.responses.base import Response
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.background import BackgroundTask, BackgroundTasks
+    from esmerald.encoders import Encoder
     from esmerald.protocols.template import TemplateEngineProtocol
     from esmerald.types import ResponseCookies
 
@@ -24,6 +26,8 @@ class TemplateResponse(Response):
         headers: Optional[Dict[str, Any]] = None,
         cookies: Optional["ResponseCookies"] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
+        encoders: Union[Sequence["Encoder"], None] = None,
+        passthrough_body_types: Union[tuple[type, ...], None] = None,
     ):
         if media_type == MediaType.JSON:  # we assume this is the default
             suffixes = PurePath(template_name).suffixes
@@ -48,6 +52,8 @@ class TemplateResponse(Response):
             media_type=media_type,
             background=background,
             cookies=cookies,
+            encoders=encoders,
+            passthrough_body_types=passthrough_body_types,
         )
 
     async def __call__(

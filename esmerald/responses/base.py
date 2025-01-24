@@ -168,6 +168,20 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
                 """
             ),
         ] = None,
+        passthrough_body_types: Annotated[
+            Union[tuple[type, ...], None],
+            Doc(
+                """
+            A tuple with types, which should be passed through directly to the ASGI server.
+            By default only "bytes" are passed through but some ASGI servers can also handle
+            memoryviews or strings.
+            If set, it should include the "bytes" type.
+            As an alternative you can subclass and set a ClassVar named passthrough_body_types.
+
+            Be warned: this is highly ASGI server specific and may requires you to set the content-length header yourself.
+            """
+            ),
+        ] = None,
     ) -> None:
         self.cookies = cookies or []
         super().__init__(
@@ -177,6 +191,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
             media_type=media_type,
             background=cast("BackgroundTask", background),
             encoders=encoders,
+            passthrough_body_types=passthrough_body_types,
         )
 
     def make_response(self, content: Any) -> bytes:
