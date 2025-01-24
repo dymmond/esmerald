@@ -42,7 +42,6 @@ with Edgy.
     ```python hl_lines="12-14"
     {!> ../../../docs_src/databases/edgy/settings/settings.py !}
     ```
-
 === "models.py"
 
     ```python hl_lines="17 32"
