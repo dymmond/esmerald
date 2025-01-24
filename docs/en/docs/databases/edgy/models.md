@@ -49,6 +49,12 @@ with Edgy.
     {!> ../../../docs_src/databases/edgy/settings/models.py !}
     ```
 
+=== "app.py"
+
+    ```python
+    {!> ../../../docs_src/databases/edgy/settings/app.py !}
+    ```
+
 You simply isolated your common database connection and registry inside the globally accessible
 settings and with that you can import in any Esmerald application, ChildEsmerald or whatever you
 prefer without the need of repeating yourself.

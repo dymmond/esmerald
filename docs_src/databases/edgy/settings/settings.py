@@ -1,9 +1,12 @@
-from typing import Tuple
+from typing import TYPE_CHECKING
 
 from functools import cached_property
 from edgy import Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
+
+if TYPE_CHECKING:
+    from edgy import EdgySettings
 
 
 class AppSettings(EsmeraldAPISettings):
@@ -12,3 +15,10 @@ class AppSettings(EsmeraldAPISettings):
     @cached_property
     def registry(self) -> Registry:
         return Registry("<YOUR-SQL-QUERY-STRING")
+
+    # optional, in case we want a centralized place
+    @cached_property
+    def edgy_settings(self) -> "EdgySettings":
+        from edgy import EdgySettings
+
+        return EdgySettings(preloads=["myproject.models"])

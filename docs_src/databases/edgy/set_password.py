@@ -1,21 +1,5 @@
 from pydantic import EmailStr
-
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.base_user import User as BaseUser
-
-database, models = settings.registry
-
-
-class User(BaseUser):
-    """
-    Inherits from the BaseUser all the fields and adds extra unique ones.
-    """
-
-    class Meta:
-        registry = models
-
-    def __str__(self):
-        return f"{self.email} - {self.last_login}"
+from edgy import monkay
 
 
 # Update password
@@ -23,6 +7,9 @@ async def set_password(email: EmailStr, password: str) -> None:
     """
     Set the password of a user is correct.
     """
-    user: User = await User.query.get(email=email)
+    registry = monkay.instance.registry
+    async with registry:
+        User = registry.get_model("User")
+        user: User = await User.query.get(email=email)
 
-    await user.set_password(password)
+        await user.set_password(password)
