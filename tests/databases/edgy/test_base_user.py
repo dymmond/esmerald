@@ -2,12 +2,13 @@ import random
 import string
 from uuid import uuid4
 
+import edgy
 import pytest
 
 from esmerald.conf import settings
 from esmerald.contrib.auth.edgy.base_user import AbstractUser
 
-models = settings.edgy_registry
+models = edgy.Registry(settings.edgy_registry.database)
 pytestmark = pytest.mark.anyio
 
 

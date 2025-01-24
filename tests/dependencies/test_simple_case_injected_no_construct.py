@@ -11,7 +11,7 @@ from esmerald.injector import Inject
 from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 
-models = settings.edgy_registry
+models = edgy.Registry(settings.edgy_registry.database)
 pytestmark = pytest.mark.anyio
 
 

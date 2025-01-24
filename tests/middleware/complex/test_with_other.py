@@ -14,7 +14,7 @@ from esmerald.requests import Connection
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 
-models = settings.edgy_registry
+models = edgy.Registry(settings.edgy_registry.database)
 pytestmark = pytest.mark.anyio
 
 
@@ -33,8 +33,6 @@ class User(AbstractUser):
 @pytest.fixture(autouse=True, scope="module")
 async def create_test_database():
     try:
-        # add the right user
-        User.add_to_registry(models)
         await models.create_all()
         yield
         await models.drop_all()

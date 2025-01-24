@@ -1,3 +1,4 @@
+import edgy
 import pytest
 from lilya.types import ASGIApp
 
@@ -10,7 +11,7 @@ from esmerald.routing.handlers import get, post, put
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
-models = settings.edgy_registry
+models = edgy.Registry(settings.edgy_registry.database)
 jwt_config = JWTConfig(signing_key="cenas", auth_header_types=["Bearer", "Token"])
 
 

@@ -9,7 +9,7 @@ models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
-class User(edgy.Model):
+class User(edgy.StrictModel):
     """
     Base model used for a custom user of any application.
     """
