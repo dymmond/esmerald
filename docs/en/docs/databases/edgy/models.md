@@ -39,14 +39,19 @@ with Edgy.
 
 === "settings.py"
 
-    ```python hl_lines="10-12"
+    ```python hl_lines="12-14"
     {!> ../../../docs_src/databases/edgy/settings/settings.py !}
     ```
-
 === "models.py"
 
     ```python hl_lines="17 32"
     {!> ../../../docs_src/databases/edgy/settings/models.py !}
+    ```
+
+=== "app.py"
+
+    ```python
+    {!> ../../../docs_src/databases/edgy/settings/app.py !}
     ```
 
 You simply isolated your common database connection and registry inside the globally accessible

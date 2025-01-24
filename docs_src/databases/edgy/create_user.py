@@ -1,21 +1,6 @@
 from pydantic import EmailStr
 
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.base_user import User as BaseUser
-
-database, models = settings.registry
-
-
-class User(BaseUser):
-    """
-    Inherits from the BaseUser all the fields and adds extra unique ones.
-    """
-
-    class Meta:
-        registry = models
-
-    def __str__(self):
-        return f"{self.email} - {self.last_login}"
+from edgy import monkay
 
 
 async def create_user(
@@ -24,11 +9,14 @@ async def create_user(
     """
     Creates a user in the database.
     """
-    user = await User.query.create_user(
-        username=username,
-        password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-    )
-    return user
+    registry = monkay.instance.registry
+    async with registry:
+        User = registry.get_model("User")
+        user = await User.query.create_user(
+            username=username,
+            password=password,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+        )
+        return user

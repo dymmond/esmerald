@@ -4,7 +4,6 @@ from functools import cached_property
 from typing import Optional, Tuple
 
 import mongoz
-from edgy import Registry as EdgyRegistry
 from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
 from pydantic import ConfigDict
 from saffier import Database, Registry
@@ -30,14 +29,15 @@ class TestSettings(EsmeraldAPISettings):
         database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
         return database, Registry(database=database)
 
-    @cached_property
-    def edgy_registry(self) -> EdgyRegistry:
-        database = EdgyDatabaseTestClient(
+    @property
+    def edgy_database(self) -> EdgyDatabaseTestClient:
+        # not cached, so always a new object is returned
+        # should be wrapped in a registry
+        return EdgyDatabaseTestClient(
             "postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald_edgy",
             drop_database=False,
             use_existing=True,
         )
-        return EdgyRegistry(database=database)
 
     @cached_property
     def mongoz_registry(self) -> mongoz.Registry:

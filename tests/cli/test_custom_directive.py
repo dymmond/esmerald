@@ -3,11 +3,9 @@ import shutil
 
 import pytest
 
-from esmerald.conf import settings
-from tests.cli.user import User
+from tests.cli.user import User, models
 from tests.cli.utils import run_cmd
 
-models = settings.edgy_registry
 pytestmark = pytest.mark.anyio
 
 
@@ -48,8 +46,6 @@ async def create_test_database():
     try:
         with models.database.force_rollback(False):
             async with models:
-                # we readd the right User
-                User.add_to_registry(models)
                 await models.create_all()
                 yield
                 await models.drop_all()

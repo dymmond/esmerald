@@ -5,11 +5,11 @@ import pytest
 
 from esmerald.conf import settings
 
-models = settings.edgy_registry
+models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
 
 
-class User(edgy.Model):
+class User(edgy.StrictModel):
     """
     Base model used for a custom user of any application.
     """

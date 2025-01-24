@@ -11,7 +11,8 @@ from esmerald.injector import Inject
 from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 
-models = settings.edgy_registry
+# create a local Registry with the data of the settings registry. We register models and don't want to pollute it
+models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
 
 

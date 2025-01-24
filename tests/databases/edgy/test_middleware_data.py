@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import pytest
 from anyio import from_thread, sleep, to_thread
-from edgy import ObjectNotFound
+from edgy import ObjectNotFound, Registry
 from httpx import ASGITransport, AsyncClient
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 from pydantic import BaseModel
@@ -19,7 +19,7 @@ from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 
-models = settings.edgy_registry
+models = Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
 
 
