@@ -195,12 +195,10 @@ def get_original_data_field(
     This builds a model for the required data field. Validates the type of encoding
     being passed and builds a model if a datastructure is evaluated.
     """
-    if (
-        DATA in handler.signature_model.model_fields
-        or PAYLOAD in handler.signature_model.model_fields
-    ):
-        data_or_payload = DATA if DATA in handler.signature_model.model_fields else PAYLOAD
-        data = handler.signature_model.model_fields[data_or_payload]
+    model_fields = handler.signature_model.model_fields
+    if DATA in model_fields or PAYLOAD in model_fields:
+        data_or_payload = DATA if DATA in model_fields else PAYLOAD
+        data = model_fields[data_or_payload]
 
         if not isinstance(data, Body):
             body = Body(alias="body")
@@ -293,19 +291,16 @@ def get_data_field(handler: Union["HTTPHandler", "WebhookHandler", Any]) -> Any:
     """
     # If there are no body fields, we simply return the original
     # default Esmerald body parsing
-    is_data_or_payload = (
-        DATA
-        if DATA in handler.signature_model.model_fields
-        else (PAYLOAD if PAYLOAD in handler.signature_model.model_fields else None)
+    is_data_or_payload = not {DATA, PAYLOAD}.isdisjoint(
+        handler.signature_model.model_fields.keys()
     )
-
     if not handler.body_encoder_fields and is_data_or_payload:
         return get_original_data_field(handler)
 
     if not handler.body_encoder_fields:
         return get_upload_body(handler)
 
-    if len(handler.body_encoder_fields) < 2 and is_data_or_payload is not None:
+    if len(handler.body_encoder_fields) < 2 and is_data_or_payload:
         return get_original_data_field(handler)
     return get_complex_data_field(handler, fields=handler.body_encoder_fields)
 
@@ -318,7 +313,7 @@ class OpenAPIFieldInfoMixin:
     Don't use this anywhere else.
     """
 
-    @property
+    @cached_property
     def body_encoder_fields(self) -> Dict[str, FieldInfo]:
         """
         The fields that are body encoders.

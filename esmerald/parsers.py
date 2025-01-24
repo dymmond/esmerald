@@ -1,8 +1,9 @@
 from contextlib import suppress
-from json import JSONDecodeError, loads
+from json import JSONDecodeError
 from typing import TYPE_CHECKING, Any, Dict, List, get_args, get_origin
 
 from lilya.datastructures import DataUpload as LilyaUploadFile
+from orjson import loads
 from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
 
