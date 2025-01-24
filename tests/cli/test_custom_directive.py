@@ -48,8 +48,6 @@ async def create_test_database():
     try:
         with models.database.force_rollback(False):
             async with models:
-                # we readd the right User
-                User.add_to_registry(models)
                 await models.create_all()
                 yield
                 await models.drop_all()

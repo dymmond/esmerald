@@ -19,6 +19,7 @@ from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 
+# create a local Registry with the data of the settings registry. We register models and don't want to pollute it
 models = Registry(settings.edgy_registry.database)
 pytestmark = pytest.mark.anyio
 

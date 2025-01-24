@@ -11,6 +11,7 @@ from esmerald.routing.handlers import get, post, put
 from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
+# create a local Registry with the data of the settings registry. We register models and don't want to pollute it
 models = edgy.Registry(settings.edgy_registry.database)
 jwt_config = JWTConfig(signing_key="cenas", auth_header_types=["Bearer", "Token"])
 

@@ -32,6 +32,7 @@ class TestSettings(EsmeraldAPISettings):
 
     @cached_property
     def edgy_registry(self) -> EdgyRegistry:
+        # tests/cli uses this directly. All other should use edgy.Registry(settings.edgy_registry) instead for a clean registry
         database = EdgyDatabaseTestClient(
             "postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald_edgy",
             drop_database=False,
