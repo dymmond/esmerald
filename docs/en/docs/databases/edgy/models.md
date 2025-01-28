@@ -15,7 +15,7 @@ initial configuration.
 
 Extenting the existing `User` model is as simple as this:
 
-```python hl_lines="17 32"
+```python hl_lines="18 33"
 {!> ../../../docs_src/databases/edgy/models.py !}
 ```
 
@@ -39,12 +39,12 @@ with Edgy.
 
 === "settings.py"
 
-    ```python hl_lines="12-14"
+    ```python hl_lines="15-17"
     {!> ../../../docs_src/databases/edgy/settings/settings.py !}
     ```
 === "models.py"
 
-    ```python hl_lines="17 32"
+    ```python hl_lines="18 33"
     {!> ../../../docs_src/databases/edgy/settings/models.py !}
     ```
 
