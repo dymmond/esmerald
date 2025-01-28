@@ -29,7 +29,6 @@ class TemplateResponse(Response):
         encoders: Union[Sequence["Encoder"], None] = None,
         passthrough_body_types: Union[tuple[type, ...], None] = None,
     ):
-        global nest_asyncio_applied
         if media_type == MediaType.JSON:  # we assume this is the default
             suffixes = PurePath(template_name).suffixes
             for suffix in suffixes:
