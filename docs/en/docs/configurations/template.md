@@ -66,3 +66,15 @@ Simply return `Template` (of esmerald) not `TemplateResponse` with a `name` para
 You can pass extra data via setting the `context` parameter to a dictionary containing the extra data.
 
 To select the return type (txt, html) you need to name the files: `foo.html.jinja`.
+
+
+## Using async templates
+
+If you want to be able to iterate over QuerySets you will need the async feature. It is easily enabled.
+
+```python
+{!> ../../../docs_src/configurations/template/settings_async.py!}
+```
+
+Note however the body attribute of the response will be set in the `__call__` method. You can however call
+`resolve_async_content()` to resolve earlier.
