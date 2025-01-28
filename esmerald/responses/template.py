@@ -29,6 +29,7 @@ class TemplateResponse(Response):
         encoders: Union[Sequence["Encoder"], None] = None,
         passthrough_body_types: Union[tuple[type, ...], None] = None,
     ):
+        global nest_asyncio_applied
         if media_type == MediaType.JSON:  # we assume this is the default
             suffixes = PurePath(template_name).suffixes
             for suffix in suffixes:
@@ -42,9 +43,6 @@ class TemplateResponse(Response):
         self.template = template_engine.get_template(template_name)
         self.context = context or {}
         content = self.template.render(**context)
-        # ensure template string is not mangled
-        if isinstance(content, str):
-            content = content.encode(self.charset)
         super().__init__(
             content=content,
             status_code=status_code,
@@ -55,6 +53,12 @@ class TemplateResponse(Response):
             encoders=encoders,
             passthrough_body_types=passthrough_body_types,
         )
+
+    def make_response(self, content: Any) -> bytes:
+        # ensure template string is not mangled
+        if isinstance(content, str):
+            content = content.encode(self.charset)
+        return super().make_response(content)
 
     async def __call__(
         self, scope: Scope, receive: Receive, send: Send

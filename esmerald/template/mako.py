@@ -40,3 +40,6 @@ class MakoTemplateEngine(TemplateEngineProtocol[MakoTemplate]):
             return self.engine.get_template(template_name)
         except MakoTemplateNotFound as e:
             raise TemplateNotFound(name=template_name) from e
+
+    def get_template_render_function(self) -> str:
+        return "render"

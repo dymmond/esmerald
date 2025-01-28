@@ -21,3 +21,6 @@ class JinjaTemplateEngine(Jinja2Template):
         **env_options: Any,
     ) -> None:
         super().__init__(directory=directory, env=env, **env_options)
+
+    def get_template_render_function(self) -> str:
+        return "render_async" if self.env.is_async else "render"
