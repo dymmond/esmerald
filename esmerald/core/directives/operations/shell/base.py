@@ -1,10 +1,11 @@
+import asyncio
 import select
 import sys
 from collections.abc import Sequence
+from contextvars import copy_context
 from typing import Any, Callable, Union
 
 import click
-import nest_asyncio
 from lilya._internal._events import AyncLifespanContextManager
 from lilya.cli.directives.operations.shell.enums import ShellOption
 from lilya.compat import run_sync
@@ -51,14 +52,12 @@ async def run_shell(app: Any, lifespan: Any, kernel: str) -> None:
             from esmerald.core.directives.operations.shell.ipython import get_ipython
 
             ipython_shell = get_ipython(app=app)
-            nest_asyncio.apply()
-            ipython_shell()
+            await asyncio.to_thread(copy_context().run, ipython_shell)
         else:
             from esmerald.core.directives.operations.shell.ptpython import get_ptpython
 
             ptpython = get_ptpython(app=app)
-            nest_asyncio.apply()
-            ptpython()
+            await asyncio.to_thread(copy_context().run, ptpython)
 
 
 def handle_lifespan_events(
