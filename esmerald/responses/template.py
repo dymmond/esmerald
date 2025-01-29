@@ -41,7 +41,7 @@ class TemplateResponse(Response):
 
         self.template = template_engine.get_template(template_name)
         self.context = context or {}
-        content = self.template.render(**context)
+        content = getattr(self.template, template_engine.get_template_render_function())(**context)
         super().__init__(
             content=content,
             status_code=status_code,

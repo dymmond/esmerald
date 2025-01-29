@@ -3,7 +3,6 @@ import pathlib
 from contextlib import nullcontext
 
 import pytest
-from lilya.responses import Response
 
 from esmerald.applications import Esmerald
 from esmerald.config.template import TemplateConfig
@@ -74,8 +73,6 @@ def test_templates_starlette(template_dir, test_client_factory, apostrophe):
 
 
 def test_templates_async(template_dir, test_client_factory):
-    if not hasattr(Response, "resolve_async_content"):
-        pytest.skip(reason="Old lilya version without async content support")
     path = os.path.join(template_dir, "index.html")
     with open(path, "w") as file:
         file.write("<html>Hello {{ say_world() }}</html>")
