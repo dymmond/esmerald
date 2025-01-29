@@ -41,10 +41,7 @@ class TemplateResponse(Response):
 
         self.template = template_engine.get_template(template_name)
         self.context = context or {}
-        content = self.template.render(**context)
-        # ensure template string is not mangled
-        if isinstance(content, str):
-            content = content.encode(self.charset)
+        content = getattr(self.template, template_engine.get_template_render_function())(**context)
         super().__init__(
             content=content,
             status_code=status_code,
@@ -55,6 +52,12 @@ class TemplateResponse(Response):
             encoders=encoders,
             passthrough_body_types=passthrough_body_types,
         )
+
+    def make_response(self, content: Any) -> bytes:
+        # ensure template string is not mangled
+        if isinstance(content, str):
+            content = content.encode(self.charset)
+        return super().make_response(content)
 
     async def __call__(
         self, scope: Scope, receive: Receive, send: Send

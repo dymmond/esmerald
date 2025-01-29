@@ -56,7 +56,7 @@ The special mode has an exception for strings, so you can return in handlers a s
 Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
 unless you want to.
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for Response](./references/responses/response.md) for more details.
 
@@ -69,7 +69,7 @@ The classic JSON response for 99% of the responses used nowaday. The `JSON` retu
 {!> ../../../docs_src/responses/json.py !}
 ```
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for JSON](./references/responses/json.md) for more details.
 
@@ -82,7 +82,7 @@ from lilya.responses import JSONResponse as JSONResponse
 ```
 
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for JSONResponse](./references/responses/json-response.md) for more details.
 
@@ -100,11 +100,11 @@ Super fast JSON serialization/deserialization response.
 !!! Check
     More details about the ORJSON can be [found here](https://github.com/ijl/orjson).
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for OrJSON](./references/responses/orjson.md) for more details.
 
-#### ORJSONResponse
+### ORJSONResponse
 
 You can always use directly the `ORJSONResponse` from Esmerald without using the wrapper.
 
@@ -118,7 +118,7 @@ or alternatively (we alias JSONResponse to ORJSONResponse because it is faster)
 from esmerald.responses import JSONResponse
 ```
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for ORJSONResponse](./references/responses/orjson-response.md) for more details.
 
@@ -137,11 +137,11 @@ Another super fast JSON serialization/deserialization response.
     More details about the UJSON can be [found here](https://github.com/ultrajson/ultrajson).
     For JSONResponse the way of doing it the same as ORJSONResponse and UJSONResponse.
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for UJSON](./references/responses/ujson.md) for more details.
 
-#### UJSONResponse
+### UJSONResponse
 
 You can always use directly the `UJSONResponse` from Esmerald without using the wrapper.
 
@@ -149,7 +149,7 @@ You can always use directly the `UJSONResponse` from Esmerald without using the 
 from esmerald.responses.encoders import UJSONResponse
 ```
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for UJSONResponse](./references/responses/ujson-response.md) for more details.
 
@@ -163,9 +163,18 @@ This response returns a `TemplateResponse`.
 {!> ../../../docs_src/responses/template.py !}
 ```
 
-## API Reference
+Note that TemplateResponse uses the name `template_name` instead of `name` of Template and requires the `template_engine` attribute of application.
+This can be very confusing when mixing both.
+
+#### API Reference
 
 Check out the [API Reference for Template](./references/responses/template.md) for more details.
+
+####  Async templates
+
+If you want to iterate over QuerySets of edgy/saffier you may need to checkout:
+[Async Templates](./configurations/template.md) how to enable the async feature of
+jinja.
 
 ### Redirect
 
@@ -177,7 +186,7 @@ This response returns a `ResponseRedirect`.
 {!> ../../../docs_src/responses/redirect.py !}
 ```
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for Redirect](./references/responses/redirect.md) for more details.
 
@@ -189,7 +198,7 @@ The File response sends a file. This response returns a `FileResponse`.
 {!> ../../../docs_src/responses/file.py !}
 ```
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for File](./references/responses/file.md) for more details.
 
@@ -201,7 +210,7 @@ The Stream response uses the `StreamResponse`.
 {!> ../../../docs_src/responses/stream.py !}
 ```
 
-## API Reference
+#### API Reference
 
 Check out the [API Reference for Stream](./references/responses/stream.md) for more details.
 

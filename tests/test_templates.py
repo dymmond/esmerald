@@ -72,6 +72,30 @@ def test_templates_starlette(template_dir, test_client_factory, apostrophe):
     )
 
 
+def test_templates_async(template_dir, test_client_factory):
+    path = os.path.join(template_dir, "index.html")
+    with open(path, "w") as file:
+        file.write("<html>Hello {{ say_world() }}</html>")
+
+    async def say_world():
+        return "world"
+
+    @get()
+    async def homepage(request: Request) -> Template:
+        return Template(name="index.html", context={"request": request, "say_world": say_world})
+
+    app = Esmerald(
+        debug=True,
+        routes=[Gateway("/", handler=homepage)],
+        template_config=TemplateConfig(
+            directory=template_dir, engine=JinjaTemplateEngine, env_options={"enable_async": True}
+        ),
+    )
+    client = EsmeraldTestClient(app)
+    response = client.get("/")
+    assert response.text == "<html>Hello world</html>"
+
+
 def test_alternative_template(template_dir, test_client_factory):
     path = os.path.join(template_dir, "index.html")
     with open(path, "w") as file:
