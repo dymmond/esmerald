@@ -67,14 +67,17 @@ You can pass extra data via setting the `context` parameter to a dictionary cont
 
 To select the return type (txt, html) you need to name the files: `foo.html.jinja`.
 
-
 ## Using async templates
 
-If you want to be able to iterate over QuerySets you will need the async feature. It is easily enabled.
+A very good feature of jinja2 is that you can you can have async templates. This means awaitables are automatically resolved
+and async iteration is supported out of the box.
+This is especially useful for the async ORMs, for example [Edgy](https://edgy.dymmond.com).
 
 ```python
 {!> ../../../docs_src/configurations/template/settings_async.py!}
 ```
 
-Note however the body attribute of the response will be set in the `__call__` method. You can however call
-`resolve_async_content()` to resolve earlier.
+And now you can iterate over QuerySets out of the box. Nothing else is required.
+
+Note that internally the template response switches the render method and uses the async content feature of lilya
+so you can only access the body attribute after calling `__call__` or `resolve_async_content()`.
