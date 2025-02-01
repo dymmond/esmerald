@@ -69,7 +69,7 @@ class OAuth2PasswordRequestForm(BaseModel):
 
     grant_type: Annotated[
         Union[str, None],
-        Form(pattern="password"),
+        Form(pattern="^password$"),
         Doc(
             """
             Specifies the OAuth2 grant type.
@@ -256,7 +256,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
         self,
         grant_type: Annotated[
             str,
-            Form(pattern="password"),
+            Form(pattern="^password$"),
             Doc(
                 """
                 The OAuth2 spec says it is required and MUST be the fixed string

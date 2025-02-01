@@ -17,7 +17,7 @@ TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@lo
 class TestSettings(EsmeraldAPISettings):
     __test__ = False
     app_name: str = "test_client"
-    debug: bool = True
+    debug: bool = False
     enable_sync_handlers: bool = True
     enable_openapi: bool = False
     environment: Optional[str] = "testing"
