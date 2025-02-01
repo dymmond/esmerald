@@ -5,6 +5,22 @@ hide:
 
 # Release Notes
 
+### 3.6.4
+
+### Added
+
+- Support for `async` jinja templates.
+
+### Changed
+
+- Removed hard dependency of `nest_asyncio`
+- Use ORJSON as parsing json.
+
+### Fixed
+
+- Internal pattern for OAuth2 form password.
+- Fixed internal typings of passthrough in Response and TemplateResponse.
+
 ## 3.6.3
 
 ## Added

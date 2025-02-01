@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
+import pytest
 from pydantic import BaseModel, __version__
 
 from esmerald import Gateway, Inject, Injects, Security, get, post
@@ -128,11 +129,19 @@ def test_strict_login_no_grant_type():
         }
 
 
-def test_strict_login_incorrect_grant_type():
+@pytest.mark.parametrize(
+    argnames=["grant_type"],
+    argvalues=[
+        pytest.param("incorrect", id="incorrect value"),
+        pytest.param("passwordblah", id="password with suffix"),
+        pytest.param("blahpassword", id="password with prefix"),
+    ],
+)
+def test_strict_login_incorrect_grant_type(grant_type):
     with create_client(routes=[Gateway(handler=login)], security=[reusable_oauth2]) as client:
         response = client.post(
             "/login",
-            json={"username": "johndoe", "password": "secret", "grant_type": "incorrect"},
+            json={"username": "johndoe", "password": "secret", "grant_type": grant_type},
         )
         assert response.status_code == 400
         assert response.json() == {
@@ -141,9 +150,9 @@ def test_strict_login_incorrect_grant_type():
                 {
                     "type": "string_pattern_mismatch",
                     "loc": ["grant_type"],
-                    "msg": "String should match pattern 'password'",
-                    "input": "incorrect",
-                    "ctx": {"pattern": "password"},
+                    "msg": "String should match pattern '^password$'",
+                    "input": grant_type,
+                    "ctx": {"pattern": "^password$"},
                     "url": f"https://errors.pydantic.dev/{pydantic_version}/v/string_pattern_mismatch",
                 }
             ],
