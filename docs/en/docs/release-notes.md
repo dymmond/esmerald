@@ -10,6 +10,7 @@ hide:
 ### Added
 
 - Support for `async` jinja templates.
+- Missing `esmerald --version` command to the cli.
 
 ### Changed
 
