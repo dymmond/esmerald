@@ -14,7 +14,7 @@ hide:
 
 ### Changed
 
-- Removed hard dependency of `nest_asyncio`
+- Removed hard dependency of `nest_asyncio`.
 - Use ORJSON as parsing json.
 
 ### Fixed
