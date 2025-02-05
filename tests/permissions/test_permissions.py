@@ -1,11 +1,13 @@
 from typing import TYPE_CHECKING
 
 import pytest
+from lilya.protocols.permissions import PermissionProtocol
 from lilya.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from lilya.websockets import WebSocketDisconnect
 
 from esmerald.applications import ChildEsmerald
 from esmerald.permissions import AllowAny, BasePermission, DenyAll
+from esmerald.permissions.utils import is_esmerald_permission
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import get, route, websocket
@@ -153,3 +155,29 @@ def test_permissions_with_child_esmerald_three() -> None:
         assert (
             response.json().get("detail") == "You do not have permission to perform this action."
         )
+
+
+class TestPermission:
+    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+        return False
+
+
+class DummyPermission(PermissionProtocol):
+    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+        return False
+
+
+class DummyTrue(BasePermission): ...
+
+
+@pytest.mark.parametrize(
+    "permission,result",
+    [
+        (AllowAny, True),
+        (DummyTrue, True),
+        (TestPermission, False),
+        (DummyPermission, False),
+    ],
+)
+def test_is_esmerald_permission(permission, result) -> None:
+    assert is_esmerald_permission(permission) == result

@@ -8,6 +8,7 @@ from lilya.routing import Path as LilyaPath, WebSocketPath as LilyaWebSocketPath
 from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
+from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 from esmerald.routing.apis.base import View
 from esmerald.routing.base import Dispatcher
 from esmerald.typing import Void, VoidType
@@ -298,6 +299,12 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self._middleware: List["Middleware"] = self.handle_middleware(
             handler=handler, base_middleware=self.middleware
         )
+
+        lilya_permissions = [
+            wrap_permission(permission)
+            for permission in permissions or []
+            if not is_esmerald_permission(permission)
+        ]
         super().__init__(
             path=self.path,
             handler=cast(Callable, handler),
@@ -306,6 +313,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             methods=self.methods,
             middleware=self._middleware,
             exception_handlers=exception_handlers,
+            permissions=lilya_permissions,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -317,7 +325,9 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
-        self.permissions: Sequence["Permission"] = permissions or []  # type: ignore
+        self.permissions: Sequence[Permission] = [
+            permission for permission in permissions or [] if is_esmerald_permission(permission)
+        ]  # type: ignore
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -523,12 +533,18 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         )
         self.is_middleware: bool = False
 
+        lilya_permissions = [
+            wrap_permission(permission)
+            for permission in permissions or []
+            if not is_esmerald_permission(permission)
+        ]
         super().__init__(
             path=self.path,
             handler=cast("Callable", handler),
             name=name,
             middleware=self._middleware,
             exception_handlers=exception_handlers,
+            permissions=lilya_permissions,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -539,7 +555,9 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
-        self.permissions = permissions or []  # type: ignore
+        self.permissions: Sequence[Permission] = [
+            permission for permission in permissions or [] if is_esmerald_permission(permission)
+        ]  # type: ignore
         self.include_in_schema = False
         self.parent = parent
         (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
