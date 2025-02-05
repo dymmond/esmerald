@@ -21,6 +21,7 @@ hide:
 
 - Internal pattern for OAuth2 form password.
 - Fixed internal typings of passthrough in Response and TemplateResponse.
+- Esmerald permissions on Include were being overriten by Lilya too early.
 
 ## 3.6.3
 

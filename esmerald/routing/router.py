@@ -2878,7 +2878,6 @@ class Include(LilyaInclude):
 
         self.dependencies = dependencies or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
-        self.permissions: Sequence[Permission] = permissions or []  # type: ignore
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -2903,6 +2902,9 @@ class Include(LilyaInclude):
             include_in_schema=include_in_schema,
             redirect_slashes=redirect_slashes,
         )
+
+        # Making sure Esmerald uses the Esmerald permission system and not Lilya's.
+        self.permissions: Sequence[Permission] = permissions or []  # type: ignore
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
         """
