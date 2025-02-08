@@ -1,5 +1,4 @@
-from functools import lru_cache
-from typing import TYPE_CHECKING, Any, Callable, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
 
 from lilya.permissions.base import DefinePermission
 
@@ -45,7 +44,6 @@ def permission_denied(request: "Request", message: Optional[str] = None) -> None
     raise PermissionDenied(detail=message, status_code=403)
 
 
-@lru_cache
 def is_esmerald_permission(permission: Union["BasePermission", Any]) -> bool:
     """
     Checks if the given permission is an instance or subclass of BasePermission.
@@ -61,7 +59,9 @@ def is_esmerald_permission(permission: Union["BasePermission", Any]) -> bool:
     return is_class_and_subclass(permission, BasePermission)
 
 
-def wrap_permission(permission: Union["BasePermission", Any]) -> "BasePermission":
+def wrap_permission(
+    permission: Union["BasePermission", Any],
+) -> "BasePermission":
     """
     Wraps the given permission into a BasePermission instance if it is not already one.
     Or else it will assume its a Lilya permission and wraps it.
@@ -75,4 +75,4 @@ def wrap_permission(permission: Union["BasePermission", Any]) -> "BasePermission
     if is_esmerald_permission(permission):
         return permission
 
-    return DefinePermission(permission)
+    return cast("BasePermission", DefinePermission(cast(Any, permission)))

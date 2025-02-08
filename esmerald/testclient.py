@@ -270,7 +270,7 @@ class override_settings:
         """
 
         @wraps(test_func)
-        def inner(*args: P.args, **kwargs: P.kwargs) -> Any:
+        def inner(*args: Any, **kwargs: Any) -> Any:
             with self:
                 return test_func(*args, **kwargs)
 

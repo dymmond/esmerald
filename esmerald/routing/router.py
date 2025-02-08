@@ -516,7 +516,7 @@ class BaseRouter(LilyaRouter):
             on_startup is None and on_shutdown is None
         ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
-        lilya_permissions = [
+        self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
             if not is_esmerald_permission(permission)
@@ -529,7 +529,7 @@ class BaseRouter(LilyaRouter):
             lifespan=lifespan,
             on_shutdown=on_shutdown,
             on_startup=on_startup,
-            permissions=lilya_permissions,
+            permissions=self.__lilya_permissions__,  # type: ignore
         )
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
@@ -1931,7 +1931,7 @@ class Router(BaseRouter):
 _body_less_methods = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
-class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
+class HTTPHandler(LilyaPath, Dispatcher, OpenAPIFieldInfoMixin):
     __slots__ = (
         "path",
         "_interceptors",
@@ -1999,7 +1999,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         if not path:
             path = "/"
 
-        lilya_permissions = [
+        self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
             if not is_esmerald_permission(permission)
@@ -2011,7 +2011,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             include_in_schema=include_in_schema,
             exception_handlers=exception_handlers,
             name=name,
-            permissions=lilya_permissions,
+            permissions=self.__lilya_permissions__,  # type: ignore
         )
 
         self._permissions: Union[List[Permission], VoidType] = Void
@@ -2054,8 +2054,10 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
 
         self.description = description
         self.permissions = [
-            permission for permission in permissions or [] if is_esmerald_permission(permission)
-        ]  # type: ignore
+            cast(Any, permission)
+            for permission in permissions or []
+            if is_esmerald_permission(permission)
+        ]
         self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
@@ -2080,9 +2082,6 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
 
         if self.responses:
             self.validate_responses(responses=self.responses)
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> Any:
-        await self.handle_dispatch(scope=scope, receive=receive, send=send)
 
     def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
         """
@@ -2298,7 +2297,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         return await response_handler(app=app, data=data)  # type: ignore[call-arg]
 
 
-class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin, LilyaPath):
+class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
     """
     Base for a webhook handler.
     """
@@ -2392,7 +2391,7 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin, LilyaPath):
         self.path = path
 
 
-class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
+class WebSocketHandler(LilyaWebSocketPath, Dispatcher):
     """
     Websocket handler object representation.
     """
@@ -2429,7 +2428,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         if not path:
             path = "/"
 
-        lilya_permissions = [
+        self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
             if not is_esmerald_permission(permission)
@@ -2438,7 +2437,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             path=path,
             handler=handler,
             exception_handlers=exception_handlers,
-            permissions=lilya_permissions,
+            permissions=self.__lilya_permissions__,  # type: ignore
         )
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
@@ -2925,7 +2924,7 @@ class Include(LilyaInclude):
         if routes:
             routes = self.resolve_route_path_handler(routes)
 
-        lilya_permissions = [
+        self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
             if not is_esmerald_permission(permission)
@@ -2940,7 +2939,7 @@ class Include(LilyaInclude):
             deprecated=deprecated,
             include_in_schema=include_in_schema,
             redirect_slashes=redirect_slashes,
-            permissions=lilya_permissions,
+            permissions=self.__lilya_permissions__,  # type: ignore
         )
 
         # Making sure Esmerald uses the Esmerald permission system and not Lilya's.

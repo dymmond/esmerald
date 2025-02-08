@@ -300,7 +300,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             handler=handler, base_middleware=self.middleware
         )
 
-        lilya_permissions = [
+        self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
             if not is_esmerald_permission(permission)
@@ -313,7 +313,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             methods=self.methods,
             middleware=self._middleware,
             exception_handlers=exception_handlers,
-            permissions=lilya_permissions,
+            permissions=self.__lilya_permissions__,  # type: ignore
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -533,7 +533,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         )
         self.is_middleware: bool = False
 
-        lilya_permissions = [
+        self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
             if not is_esmerald_permission(permission)
@@ -544,7 +544,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             name=name,
             middleware=self._middleware,
             exception_handlers=exception_handlers,
-            permissions=lilya_permissions,
+            permissions=self.__lilya_permissions__,  # type: ignore
         )
         """
         A "bridge" to a handler and router mapping functionality.
