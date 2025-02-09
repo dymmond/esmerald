@@ -306,6 +306,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             for permission in self.__base_permissions__ or []
             if not is_esmerald_permission(permission)
         ]
+
         super().__init__(
             path=self.path,
             handler=cast(Callable, handler),

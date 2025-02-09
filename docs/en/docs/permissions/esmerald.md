@@ -1,4 +1,4 @@
-# Permissions
+# Esmerald Permissions
 
 Authentication and authorization are a must in every application. Managing those via dependencies is extremely possible
 and also widely used but with **Esmerald** you have a clear separation of permissions although still allowing
@@ -29,7 +29,7 @@ The permissions can also be `async` in case you need to run awaitables.
 
 **An example of a permission for an user admin with async**.
 
-```python hl_lines="25"
+```python
 {!> ../../../docs_src/permissions/async/permissions.py !}
 ```
 
@@ -41,7 +41,7 @@ The permissions can also be `async` in case you need to run awaitables.
 
 **An example of a permission for a project with async**
 
-```python hl_lines="10"
+```python
 {!> ../../../docs_src/permissions/async/simple_permissions.py !}
 ```
 
@@ -75,7 +75,7 @@ part the `is_user_authenticated` needs to be implemented.
 
 To use the `IsAdminUser`, `IsAuthenticated` and `IsAuthenticatedOrReadOnly` is as simple as the example below.
 
-```python hl_lines="33 35 42"
+```python
 {!> ../../../docs_src/permissions/admin.py !}
 ```
 

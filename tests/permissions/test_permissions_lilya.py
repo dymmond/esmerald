@@ -100,3 +100,15 @@ def test_two_permissions_mixed_same_level() -> None:
         )
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_two_permissions_mixed_same_level_top() -> None:
+    @get(path="/secret")
+    def my_http_route_handler() -> None: ...
+
+    with create_client(
+        routes=[Gateway(handler=my_http_route_handler, permissions=[LilyaDeny])],
+        permissions=[EsmeraldPermission],
+    ) as client:
+        response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED

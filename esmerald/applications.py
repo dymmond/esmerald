@@ -1628,21 +1628,6 @@ class Application(Lilya):
         if self.enable_scheduler:
             self.activate_scheduler()
 
-        self.router: "Router" = Router(
-            on_shutdown=self.on_shutdown,
-            on_startup=self.on_startup,
-            routes=routes,
-            app=self,
-            lifespan=self.lifespan,
-            deprecated=deprecated,
-            security=security,
-            redirect_slashes=self.redirect_slashes,
-        )
-        self.get_default_exception_handlers()
-        self.user_middleware = self.build_user_middleware_stack()
-        self.middleware_stack = self.build_middleware_stack()
-        self.template_engine = self.get_template_engine(self.template_config)
-
         # Handle permissions
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
@@ -1658,6 +1643,21 @@ class Application(Lilya):
             or []
             if is_esmerald_permission(permission)
         ]
+
+        self.router: "Router" = Router(
+            on_shutdown=self.on_shutdown,
+            on_startup=self.on_startup,
+            routes=routes,
+            app=self,
+            lifespan=self.lifespan,
+            deprecated=deprecated,
+            security=security,
+            redirect_slashes=self.redirect_slashes,
+        )
+        self.get_default_exception_handlers()
+        self.user_middleware = self.build_user_middleware_stack()
+        self.middleware_stack = self.build_middleware_stack()
+        self.template_engine = self.get_template_engine(self.template_config)
 
         # load extensions nearly last so everythings is initialized
         _extensions: Any = self.load_settings_value("extensions", extensions)

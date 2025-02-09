@@ -518,7 +518,7 @@ class BaseRouter(LilyaRouter):
         )
 
         self.__base_permissions__ = permissions or []
-        self.__lilya_permissions__ = [
+        self.__lilya_permissions__ =  [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
             if not is_esmerald_permission(permission)
@@ -3009,7 +3009,9 @@ class Include(LilyaInclude):
 
         # Making sure Esmerald uses the Esmerald permission system and not Lilya's.
         self.permissions: Sequence[Permission] = [
-            permission for permission in self.__base_permissions__ or [] if is_esmerald_permission(permission)
+            permission
+            for permission in self.__base_permissions__ or []
+            if is_esmerald_permission(permission)
         ]  # type: ignore
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
