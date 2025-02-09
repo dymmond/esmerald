@@ -12,6 +12,11 @@ hide:
 - Esmerald now **also** supports **Pure ASGI Permissions**. That means you can pass the same
 style of permissions as the ones used in Lilya as alternative to the native Esmerald permission
 system.
+- New [Lilya permissions](./permissions/lilya.md) documentation section.
+
+### Changed
+
+- [Permissions section](./permissions/esmerald.md) moved and renamed to Esmerald Permissions.
 
 ### 3.6.4
 
