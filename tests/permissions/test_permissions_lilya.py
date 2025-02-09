@@ -2,6 +2,7 @@ from lilya import status
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.types import Receive, Scope, Send
 
+from esmerald import Include
 from esmerald.exceptions import NotAuthorized, PermissionDenied
 from esmerald.permissions import BasePermission
 from esmerald.requests import Request
@@ -108,6 +109,20 @@ def test_two_permissions_mixed_same_level_top() -> None:
 
     with create_client(
         routes=[Gateway(handler=my_http_route_handler, permissions=[LilyaDeny])],
+        permissions=[EsmeraldPermission],
+    ) as client:
+        response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_include() -> None:
+    @get(path="/secret")
+    def my_http_route_handler() -> None: ...
+
+    with create_client(
+        routes=[
+            Include(routes=[Gateway(handler=my_http_route_handler)], permissions=[LilyaDeny]),
+        ],
         permissions=[EsmeraldPermission],
     ) as client:
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
