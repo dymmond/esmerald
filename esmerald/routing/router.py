@@ -1931,7 +1931,7 @@ class Router(BaseRouter):
 _body_less_methods = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
-class HTTPHandler(LilyaPath, Dispatcher, OpenAPIFieldInfoMixin):
+class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
     __slots__ = (
         "path",
         "_interceptors",
@@ -1999,6 +1999,7 @@ class HTTPHandler(LilyaPath, Dispatcher, OpenAPIFieldInfoMixin):
         if not path:
             path = "/"
 
+        self._lilya_permissions: Union[List[Permission], VoidType] = Void
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in permissions or []
@@ -2096,6 +2097,9 @@ class HTTPHandler(LilyaPath, Dispatcher, OpenAPIFieldInfoMixin):
             if not is_status_code_allowed(status_code):
                 raise OpenAPIException(detail="The status is not a valid OpenAPI status response.")
 
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> Any:
+        await self.handle_dispatch(scope=scope, receive=receive, send=send)
+
     @property
     def http_methods(self) -> List[str]:
         """
@@ -2168,6 +2172,9 @@ class HTTPHandler(LilyaPath, Dispatcher, OpenAPIFieldInfoMixin):
 
         request = Request(scope=scope, receive=receive, send=send)
         route_handler, parameter_model = self.route_map[scope["method"]]
+
+        if self.get_lilya_permissions():
+            await super().handle_dispatch(scope, receive, send)
 
         if self.get_permissions():
             connection = Connection(scope=scope, receive=receive)
@@ -2391,7 +2398,7 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         self.path = path
 
 
-class WebSocketHandler(LilyaWebSocketPath, Dispatcher):
+class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
     """
     Websocket handler object representation.
     """
@@ -2440,6 +2447,7 @@ class WebSocketHandler(LilyaWebSocketPath, Dispatcher):
             permissions=self.__lilya_permissions__,  # type: ignore
         )
         self._permissions: Union[List[Permission], VoidType] = Void
+        self._lilya_permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
         self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
         self._interceptors: Union[List[Interceptor], VoidType] = Void
@@ -2496,6 +2504,9 @@ class WebSocketHandler(LilyaWebSocketPath, Dispatcher):
         """The handle of a websocket"""
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
+
+        if self.get_lilya_permissions():
+            await super().handle_dispatch(scope, receive, send)
 
         websocket = WebSocket(scope=scope, receive=receive, send=send)
         if self.get_permissions():

@@ -747,9 +747,26 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
                 "List[Permission]",
-                [AsyncCallable(permissions) for permissions in self._permissions],
+                [AsyncCallable(permission) for permission in self._permissions],
             )
         return cast("List[AsyncCallable]", self._permissions)
+
+    def get_lilya_permissions(self) -> List[AsyncCallable]:
+        """
+        Retrieves the list of Lilya permissions for the current instance.
+        If the `_lilya_permissions` attribute is set to `Void`, it initializes it as an empty list
+        and extends it with permissions from the parent levels. The permissions are then cast to
+        a list of `Permission` objects.
+
+        Returns:
+            List[AsyncCallable]: A list of asynchronous callable permissions.
+        """
+
+        if self._lilya_permissions is Void:
+            self._lilya_permissions: Union[List[Permission], VoidType] = []
+            for layer in self.parent_levels:
+                self._lilya_permissions.extend(layer.__lilya_permissions__ or [])
+        return cast("List[AsyncCallable]", self._lilya_permissions)
 
     def get_dependencies(self) -> Dependencies:
         """
