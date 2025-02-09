@@ -300,9 +300,10 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             handler=handler, base_middleware=self.middleware
         )
 
+        self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
-            for permission in permissions or []
+            for permission in self.__base_permissions__ or []
             if not is_esmerald_permission(permission)
         ]
         super().__init__(
@@ -325,9 +326,13 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
+
         self.permissions: Sequence[Permission] = [
-            permission for permission in permissions or [] if is_esmerald_permission(permission)
+            permission
+            for permission in self.__base_permissions__ or []
+            if is_esmerald_permission(permission)
         ]  # type: ignore
+
         self.response_class = None
         self.response_cookies = None
         self.response_headers = None
@@ -533,9 +538,10 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         )
         self.is_middleware: bool = False
 
+        self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
-            for permission in permissions or []
+            for permission in self.__base_permissions__ or []
             if not is_esmerald_permission(permission)
         ]
         super().__init__(
@@ -555,9 +561,13 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
+
         self.permissions: Sequence[Permission] = [
-            permission for permission in permissions or [] if is_esmerald_permission(permission)
+            permission
+            for permission in self.__base_permissions__ or []
+            if is_esmerald_permission(permission)
         ]  # type: ignore
+
         self.include_in_schema = False
         self.parent = parent
         (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(

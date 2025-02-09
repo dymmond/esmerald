@@ -43,6 +43,7 @@ class View:
     """
 
     __slots__ = (
+        "__base_permissions__",
         "__lilya_permissions__",
         "dependencies",
         "exception_handlers",
