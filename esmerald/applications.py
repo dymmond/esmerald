@@ -47,6 +47,7 @@ from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.openapi.schemas.v3_1_0.open_api import OpenAPI
 from esmerald.permissions.types import Permission
+from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 from esmerald.pluggables import Extension, ExtensionDict, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
@@ -1519,9 +1520,9 @@ class Application(Lilya):
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
@@ -1544,7 +1545,7 @@ class Application(Lilya):
         self.secret_key = self.load_settings_value("secret_key", secret_key)
         self.allowed_hosts = self.load_settings_value("allowed_hosts", allowed_hosts)
         self.allow_origins = self.load_settings_value("allow_origins", allow_origins)
-        self.permissions = self.load_settings_value("permissions", permissions) or []
+
         self.interceptors = self.load_settings_value("interceptors", interceptors) or []
         self.dependencies = self.load_settings_value("dependencies", dependencies) or {}
         self.csrf_config = self.load_settings_value("csrf_config", csrf_config)
@@ -1626,6 +1627,22 @@ class Application(Lilya):
 
         if self.enable_scheduler:
             self.activate_scheduler()
+
+        # Handle permissions
+        self.__base_permissions__ = permissions or []
+        self.__lilya_permissions__ = [
+            wrap_permission(permission)
+            for permission in self.load_settings_value("permissions", self.__base_permissions__)
+            or []
+            if not is_esmerald_permission(permission)
+        ]
+
+        self.permissions: Sequence[Permission] = [
+            permission
+            for permission in self.load_settings_value("permissions", self.__base_permissions__)
+            or []
+            if is_esmerald_permission(permission)
+        ]
 
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,

@@ -24,6 +24,7 @@ from uuid import UUID
 
 from lilya._internal._connection import Connection
 from lilya.datastructures import DataUpload
+from lilya.permissions import DefinePermission
 from lilya.responses import Response as LilyaResponse
 from lilya.routing import compile_path
 from lilya.transformers import TRANSFORMER_TYPES
@@ -34,7 +35,8 @@ from esmerald import status
 from esmerald.datastructures import ResponseContainer, UploadFile
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
-from esmerald.permissions.utils import continue_or_raise_permission_exception
+from esmerald.permissions import BasePermission
+from esmerald.permissions.utils import continue_or_raise_permission_exception, wrap_permission
 from esmerald.requests import Request
 from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
@@ -54,7 +56,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
-    from esmerald.permissions import BasePermission
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
@@ -747,9 +748,71 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
                 "List[Permission]",
-                [AsyncCallable(permissions) for permissions in self._permissions],
+                [wrap_permission(permission) for permission in self._permissions],
             )
         return cast("List[AsyncCallable]", self._permissions)
+
+    def get_lilya_permissions(self) -> List[DefinePermission]:
+        """
+        Retrieves the list of Lilya permissions for the current instance.
+        If the `_lilya_permissions` attribute is set to `Void`, it initializes it as an empty list
+        and extends it with permissions from the parent levels. The permissions are then cast to
+        a list of `Permission` objects.
+
+        Returns:
+            List[AsyncCallable]: A list of asynchronous callable permissions.
+        """
+
+        if self._lilya_permissions is Void:
+            self._lilya_permissions: Union[List[DefinePermission], VoidType] = []
+            for layer in self.parent_levels:
+                self._lilya_permissions.extend(
+                    wrap_permission(permission) for permission in layer.__lilya_permissions__ or []
+                )
+        return cast("List[DefinePermission]", self._lilya_permissions)
+
+    def get_application_permissions(self) -> Dict[int, Union[AsyncCallable, DefinePermission]]:
+        """
+        Retrieves the list of permissions for the current instance from the application level.
+
+        Returns:
+            List[AsyncCallable | DefinePermission]: A list of permissions from the application level.
+
+        Example:
+        >>> handler = Dispatcher()
+        >>> permissions = handler.get_application_permissions()
+        >>> print(permissions)
+
+        Note:app_permissions
+        - The permissions are collected from the application level and stored in a list.
+        - The permissions are represented by instances of the AsyncCallable or DefinePermission classes.
+        - If no permissions are defined at the application level, an empty list will be returned.
+        """
+        application_permissions: List[Union[AsyncCallable, DefinePermission]] = []
+        for layer in self.parent_levels:
+            application_permissions.extend(
+                wrap_permission(permission) for permission in (layer.__base_permissions__ or [])
+            )
+
+        # Extract the dictionary of permissions
+        if self._application_permissions is Void:
+            self._application_permissions: Dict[int, Union[AsyncCallable, DefinePermission]] = {}
+
+        for index, value in enumerate(application_permissions):
+            self._application_permissions[index] = value
+
+        return self._application_permissions
+
+    @property
+    def lilya_permissions(self) -> List[DefinePermission]:
+        """
+        Returns the list of permissions defined for Lilya.
+
+        Returns:
+            List[DefinePermission]: A list of permissions.
+        """
+
+        return cast("List[DefinePermission]", self._lilya_permissions)
 
     def get_dependencies(self) -> Dependencies:
         """
@@ -922,28 +985,54 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             data = await data
         return data
 
-    async def allow_connection(self, connection: "Connection") -> None:  # pragma: no cover
+    async def allow_connection(
+        self, connection: "Connection", permission: AsyncCallable
+    ) -> None:  # pragma: no cover
         """
-        Validates the connection and handles permissions for each view.
+        Asynchronously allows a connection based on the provided permission.
 
-        This method is responsible for validating the connection and handling the permissions for each view (e.g., get, put, post, delete, patch, route) after the request.
-
-        If the connection is not allowed, it raises a PermissionDenied exception.
-
-        Parameters:
-        - connection: The connection object representing the request.
-
+        Args:
+            permission (BasePermission): The permission object to check.
+            connection (Connection): The connection object representing the request.
         Returns:
-        None
-
+            None
         Raises:
-        - PermissionDenied: If the connection is not allowed.
+            PermissionException: If the permission check fails.
         """
-        for permission in self.get_permissions():
-            awaitable: BasePermission = cast("BasePermission", await permission())
-            request: Request = cast("Request", connection)
-            handler = cast("APIGateHandler", self)
-            await continue_or_raise_permission_exception(request, handler, awaitable)
+        awaitable: BasePermission = cast("BasePermission", await permission())
+        request: Request = cast("Request", connection)
+        handler = cast("APIGateHandler", self)
+        await continue_or_raise_permission_exception(request, handler, awaitable)
+
+    async def dispatch_allow_connection(
+        self,
+        permissions: Dict[int, Union[AsyncCallable, DefinePermission]],
+        connection: "Connection",
+        scope: Scope,
+        receive: Receive,
+        send: Send,
+        dispatch_call: Callable[..., Awaitable[None]],
+    ) -> None:  # pragma: no cover
+        """
+        Dispatches a connection based on the provided permissions.
+
+        Args:
+            permissions (Dict[int, Union[AsyncCallable, DefinePermission]]):
+                A dictionary mapping permission levels to either an asynchronous
+                callable or a DefinePermission instance.
+            connection (Connection): The connection object to be dispatched.
+            scope (Scope): The scope of the connection.
+            receive (Receive): The receive channel for the connection.
+            send (Send): The send channel for the connection.
+        Returns:
+            None
+        """
+        for _, permission in permissions.items():
+            if isinstance(permission, AsyncCallable):
+                await self.allow_connection(connection, permission)
+            else:
+                # Dispatches to lilya permissions
+                await dispatch_call(scope, receive, send)
 
     def get_security_schemes(self) -> List[SecurityScheme]:
         """

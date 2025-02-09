@@ -4,6 +4,7 @@ from lilya.permissions.base import DefinePermission
 
 from esmerald.exceptions import PermissionDenied
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
+from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions import BasePermission
@@ -60,8 +61,8 @@ def is_esmerald_permission(permission: Union["BasePermission", Any]) -> bool:
 
 
 def wrap_permission(
-    permission: Union["BasePermission", Any],
-) -> "BasePermission":
+    permission: Union[AsyncCallable, DefinePermission, Any],
+) -> Union["BasePermission", DefinePermission]:
     """
     Wraps the given permission into a BasePermission instance if it is not already one.
     Or else it will assume its a Lilya permission and wraps it.
@@ -73,6 +74,9 @@ def wrap_permission(
     """
 
     if is_esmerald_permission(permission):
-        return permission
+        return cast("BasePermission", AsyncCallable(permission))
 
-    return cast("BasePermission", DefinePermission(cast(Any, permission)))
+    # If its an instance of a DefinePermission, then return it.
+    if isinstance(permission, DefinePermission):
+        return permission
+    return DefinePermission(cast(Any, permission))

@@ -43,6 +43,8 @@ class View:
     """
 
     __slots__ = (
+        "__base_permissions__",
+        "__lilya_permissions__",
         "dependencies",
         "exception_handlers",
         "interceptors",
@@ -360,7 +362,6 @@ class View:
     def get_routes(
         self,
         path: Union[str, None] = None,
-        name: Union[str, None] = None,
         middleware: Union[Sequence["Middleware"], List["Middleware"], None] = None,
         permissions: Union[Sequence["Permission"], Any, None] = None,
         interceptors: Union[Sequence["Interceptor"], List["Interceptor"], None] = None,
