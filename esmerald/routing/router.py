@@ -601,6 +601,8 @@ class BaseRouter(LilyaRouter):
             on_shutdown=on_shutdown,
             on_startup=on_startup,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
@@ -2095,6 +2097,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             exception_handlers=exception_handlers,
             name=name,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
@@ -2542,6 +2546,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
                 """
             ),
         ] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
     ):
         if not path:
             path = "/"
@@ -2558,6 +2564,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             handler=handler,
             exception_handlers=exception_handlers,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
         self._permissions: Union[List[Permission], VoidType] = Void
         self._lilya_permissions: Union[List[DefinePermission], VoidType] = Void
@@ -2701,6 +2709,8 @@ class Include(LilyaInclude):
         "security",
         "tags",
         "redirect_slashes",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -2960,6 +2970,28 @@ class Include(LilyaInclude):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[[], Any]] | None,
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[[], Any]] | None,
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
         include_in_schema: Annotated[
             bool,
             Doc(
@@ -3086,6 +3118,8 @@ class Include(LilyaInclude):
             include_in_schema=include_in_schema,
             redirect_slashes=redirect_slashes,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
 
         # Making sure Esmerald uses the Esmerald permission system and not Lilya's.
