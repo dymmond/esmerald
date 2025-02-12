@@ -117,6 +117,8 @@ class BaseRouter(LilyaRouter):
         "_app",
         "esmerald_lifespan",
         "routing",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -443,6 +445,73 @@ class BaseRouter(LilyaRouter):
                 to `on_startup` and `on_shutdown` and you **cannot used all combined**.
 
                 Read more about the [lifespan](https://esmerald.dev/lifespan-events/).
+                """
+            ),
+        ] = None,
+        before_request: Annotated[
+            Sequence[Callable[[], Any]] | None,
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[[], Any]] | None,
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
                 """
             ),
         ] = None,
@@ -1968,6 +2037,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         "operation_id",
         "interceptors",
         "__type__",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -1992,6 +2063,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         response_class: Optional[ResponseType] = None,
         response_cookies: Optional[ResponseCookies] = None,
         response_headers: Optional[ResponseHeaders] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
@@ -2365,6 +2438,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         "deprecated",
         "security",
         "operation_id",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -2388,6 +2463,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         response_class: Optional[ResponseType] = None,
         response_cookies: Optional[ResponseCookies] = None,
         response_headers: Optional[ResponseHeaders] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
@@ -2424,6 +2501,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         self.path = path
 
@@ -2441,6 +2520,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         "middleware",
         "parent",
         "name",
+        "before_request",
+        "after_request",
         "__type__",
     )
 
@@ -3109,6 +3190,8 @@ class Include(LilyaInclude):
                         interceptors=self.interceptors,
                         permissions=route.permissions,
                         exception_handlers=route.exception_handlers,
+                        before_request=route.before_request,
+                        after_request=route.after_request,
                     )
                 )
                 if route_handlers:

@@ -140,6 +140,8 @@ class Application(Lilya):
         "title",
         "version",
         "encoders",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -1210,6 +1212,73 @@ class Application(Lilya):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[[], Any]] | None,
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[[], Any]] | None,
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
         tags: Annotated[
             Optional[List[str]],
             Doc(
@@ -1644,6 +1713,14 @@ class Application(Lilya):
             if is_esmerald_permission(permission)
         ]
 
+        self.before_request_callbacks = (
+            self.load_settings_value("before_request", before_request) or []
+        )
+
+        self.after_request_callbacks = (
+            self.load_settings_value("after_request", after_request) or []
+        )
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1653,6 +1730,8 @@ class Application(Lilya):
             deprecated=deprecated,
             security=security,
             redirect_slashes=self.redirect_slashes,
+            before_request=self.before_request_callbacks,
+            after_request=self.after_request_callbacks,
         )
         self.get_default_exception_handlers()
         self.user_middleware = self.build_user_middleware_stack()
