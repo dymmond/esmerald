@@ -18,6 +18,10 @@ system.
 
 - [Permissions section](./permissions/esmerald.md) moved and renamed to Esmerald Permissions.
 
+### Fixed
+
+- `set_cookie` was causing an issue when multiple were being generated.
+
 ### 3.6.4
 
 ### Added
