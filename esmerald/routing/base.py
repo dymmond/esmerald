@@ -297,7 +297,7 @@ class BaseResponseHandler:
             app: Type["Esmerald"],
             **kwargs: Dict[str, Any],
         ) -> LilyaResponse:
-            _headers = {**self.get_headers(headers), **data.headers.dump()}
+            _headers = {**self.get_headers(headers), **data.headers}
             _cookies = self.get_cookies(data.cookies, cookies)
             if isinstance(data, LilyaResponse):
                 response: LilyaResponse = data
