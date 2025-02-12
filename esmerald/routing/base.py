@@ -297,7 +297,7 @@ class BaseResponseHandler:
             app: Type["Esmerald"],
             **kwargs: Dict[str, Any],
         ) -> LilyaResponse:
-            _headers = {**self.get_headers(headers), **data.headers}
+            _headers = {**self.get_headers(headers), **data.headers.dump()}
             _cookies = self.get_cookies(data.cookies, cookies)
             if isinstance(data, LilyaResponse):
                 response: LilyaResponse = data
@@ -338,7 +338,6 @@ class BaseResponseHandler:
             _cookies = self.get_cookies(cookies)
             _headers = {
                 **self.get_headers(headers),
-                **data.headers,
                 **self.allow_header,
             }
             for cookie in _cookies:
@@ -373,7 +372,6 @@ class BaseResponseHandler:
             _cookies = self.get_cookies(data.cookies, cookies)
             _headers = {
                 **self.get_headers(headers),
-                **data.headers,
                 **self.allow_header,
             }
             for cookie in _cookies:
@@ -410,7 +408,6 @@ class BaseResponseHandler:
             _cookies = self.get_cookies(cookies)
             _headers = {
                 **self.get_headers(headers),
-                **data.headers,
                 **self.allow_header,
             }
             for cookie in _cookies:
