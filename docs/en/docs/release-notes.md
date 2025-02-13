@@ -7,8 +7,6 @@ hide:
 
 ### 3.6.6
 
-## 0.12.9
-
 ### Added
 
 - Missing before and after request in the handler helpers.
