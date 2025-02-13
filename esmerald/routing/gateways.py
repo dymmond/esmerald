@@ -214,7 +214,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             ),
         ] = None,
         before_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[[], Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
@@ -247,7 +247,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             ),
         ] = None,
         after_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[[], Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
@@ -574,7 +574,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             ),
         ] = None,
         before_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[[], Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
@@ -585,7 +585,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             ),
         ] = None,
         after_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[[], Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
@@ -776,7 +776,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
             ),
         ] = None,
         before_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[[], Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
@@ -787,7 +787,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
             ),
         ] = None,
         after_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[[], Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application

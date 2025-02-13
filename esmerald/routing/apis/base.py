@@ -206,7 +206,7 @@ class View:
         ),
     ]
     before_request: Annotated[
-        Sequence[Callable[[], Any]] | None,
+        Union[Sequence[Callable[[], Any]], None],
         Doc(
             """
             A `list` of events that are trigger after the application
@@ -239,7 +239,7 @@ class View:
         ),
     ]
     after_request: Annotated[
-        Sequence[Callable[[], Any]] | None,
+        Union[Sequence[Callable[[], Any]], None],
         Doc(
             """
             A `list` of events that are trigger after the application
@@ -436,8 +436,8 @@ class View:
         interceptors: Union[Sequence["Interceptor"], List["Interceptor"], None] = None,
         exception_handlers: Union["ExceptionHandlerMap", None] = None,
         include_in_schema: Union[bool, None] = None,
-        before_request: Sequence[Callable[..., Any]] | None = None,
-        after_request: Sequence[Callable[..., Any]] | None = None,
+        before_request: Union[Sequence[Callable[..., Any]], None] = None,
+        after_request: Union[Sequence[Callable[..., Any]], None] = None,
     ) -> List[Union["Gateway", "WebSocketGateway"]]:
         """
         Builds the routes and wraps them in a list containing the Gateway and WebSocketGateway.
