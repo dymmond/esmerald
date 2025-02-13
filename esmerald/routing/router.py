@@ -25,6 +25,7 @@ from lilya import status
 from lilya._internal._connection import Connection
 from lilya._internal._module_loading import import_string
 from lilya._internal._path import clean_path
+from lilya.concurrency import run_in_threadpool
 from lilya.datastructures import URLPath
 from lilya.middleware import DefineMiddleware
 from lilya.permissions import DefinePermission
@@ -2315,8 +2316,6 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             exception_handlers=exception_handlers,
             name=name,
             permissions=self.__lilya_permissions__,  # type: ignore
-            before_request=before_request,
-            after_request=after_request,
         )
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
@@ -2363,7 +2362,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             for permission in self.__base_permissions__ or []
             if is_esmerald_permission(permission)
         ]
-
+        self.before_request = list(before_request or [])
+        self.after_request = list(after_request or [])
         self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
@@ -2385,6 +2385,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self._middleware: List[Middleware] = []
         self._interceptors: Union[List[Interceptor], VoidType] = Void
         self.__type__: Union[str, None] = None
+        self.before_request = list(before_request or [])
+        self.after_request = list(after_request or [])
 
         if self.responses:
             self.validate_responses(responses=self.responses)
@@ -2484,6 +2486,14 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         Returns:
             None
         """
+        for before_request in self.before_request:
+            if inspect.isclass(before_request):
+                before_request = before_request()
+
+            if is_async_callable(before_request):
+                await before_request(scope, receive, send)
+            else:
+                await run_in_threadpool(before_request, scope, receive, send)
 
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
@@ -2512,6 +2522,15 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             parameter_model=parameter_model,
         )
         await response(scope, receive, send)
+
+        for after_request in self.after_request:
+            if inspect.isclass(after_request):
+                after_request = after_request()
+
+            if is_async_callable(after_request):
+                await after_request(scope, receive, send)
+            else:
+                await run_in_threadpool(after_request, scope, receive, send)
 
     def check_handler_function(self) -> None:
         """Validates the route handler function once it's set by inspecting its

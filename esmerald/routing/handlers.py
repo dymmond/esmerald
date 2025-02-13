@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union, cast
 
 from lilya import status
 from typing_extensions import Annotated, Doc
@@ -385,6 +385,22 @@ def get(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `get` and
@@ -428,6 +444,8 @@ def get(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -674,6 +692,22 @@ def head(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `head` and
@@ -706,6 +740,8 @@ def head(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -1080,6 +1116,22 @@ def post(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `post` and
@@ -1123,6 +1175,8 @@ def post(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -1492,6 +1546,22 @@ def put(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `put` and
@@ -1535,6 +1605,8 @@ def put(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -1904,6 +1976,22 @@ def patch(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `path` and
@@ -1947,6 +2035,8 @@ def patch(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -2316,6 +2406,22 @@ def delete(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `delete` and
@@ -2359,6 +2465,8 @@ def delete(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -2605,6 +2713,22 @@ def options(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `options` and
@@ -2637,6 +2761,8 @@ def options(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -2883,6 +3009,22 @@ def trace(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for the HTTP method `trace` and
@@ -2916,6 +3058,8 @@ def trace(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func
@@ -3304,6 +3448,22 @@ def route(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> HTTPHandler:
     """
     Handler responsible for allowing multiple HTTP verbs in one go
@@ -3329,7 +3489,7 @@ def route(
     for method in methods:
         if method.upper() not in AVAILABLE_METHODS:
             raise ImproperlyConfigured(
-                f"Invalid method {method}. " "An example would be: @route(methods=['GET', 'PUT'])."
+                f"Invalid method {method}. An example would be: @route(methods=['GET', 'PUT'])."
             )
 
     methods = [method.upper() for method in methods]
@@ -3362,6 +3522,8 @@ def route(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
 
         handler.fn = func
@@ -3437,6 +3599,22 @@ def websocket(
                 """
         ),
     ] = None,
+    before_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered before the application processes the request.
+                """
+        ),
+    ] = None,
+    after_request: Annotated[
+        Sequence[Callable[..., Any]] | None,
+        Doc(
+            """
+                A list of events that are triggered after the application processes the request.
+                """
+        ),
+    ] = None,
 ) -> WebSocketHandler:
     def wrapper(func: Any) -> WebSocketHandler:
         handler = WebSocketHandler(
@@ -3446,6 +3624,8 @@ def websocket(
             permissions=permissions,
             middleware=middleware,
             name=name,
+            before_request=before_request,
+            after_request=after_request,
         )
         handler.fn = func
         handler.handler = func

@@ -385,14 +385,29 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             middleware=self._middleware,
             exception_handlers=exception_handlers,
             permissions=self.__lilya_permissions__,  # type: ignore
-            before_request=before_request,
-            after_request=after_request,
         )
         """
         A "bridge" to a handler and router mapping functionality.
         Since the default Lilya Route handler does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
+        self.before_request = before_request if before_request is not None else []
+        self.after_request = after_request if after_request is not None else []
+
+        if self.before_request:
+            if handler.before_request is None:
+                handler.before_request = []
+
+            for before in self.before_request:
+                handler.before_request.insert(0, before)
+
+        if self.after_request:
+            if handler.after_request is None:
+                handler.after_request = []
+
+            for after in self.after_request:
+                handler.after_request.insert(0, after)
+
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
         self.handler = cast("Callable", handler)

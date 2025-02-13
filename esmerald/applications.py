@@ -2374,8 +2374,8 @@ class Application(Lilya):
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
-        before_request: Sequence[Callable[..., Any]] | None = None,
-        after_request: Sequence[Callable[..., Any]] | None = None,
+        before_request: Union[Sequence[Callable[..., Any]], None] = None,
+        after_request: Union[Sequence[Callable[..., Any]], None] = None,
     ) -> None:
         """
         Adds a [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application) directly to the active application router.

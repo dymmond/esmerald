@@ -143,6 +143,8 @@ def create_client(
     tags: Optional[List[str]] = None,
     webhooks: Optional[Sequence["WebhookGateway"]] = None,
     encoders: Optional[Sequence[Encoder]] = None,
+    before_request: Sequence[Callable[..., Any]] | None = None,
+    after_request: Sequence[Callable[..., Any]] | None = None,
 ) -> EsmeraldTestClient:
     return EsmeraldTestClient(
         app=Esmerald(
@@ -187,6 +189,8 @@ def create_client(
             pluggables=pluggables,
             extensions=extensions,
             encoders=encoders,
+            before_request=before_request,
+            after_request=after_request,
         ),
         base_url=base_url,
         backend=backend,
