@@ -386,7 +386,7 @@ def get(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -394,7 +394,7 @@ def get(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -693,7 +693,7 @@ def head(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -701,7 +701,7 @@ def head(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -1117,7 +1117,7 @@ def post(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -1125,7 +1125,7 @@ def post(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -1547,7 +1547,7 @@ def put(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -1555,7 +1555,7 @@ def put(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -1977,7 +1977,7 @@ def patch(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -1985,7 +1985,7 @@ def patch(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -2407,7 +2407,7 @@ def delete(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -2415,7 +2415,7 @@ def delete(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -2714,7 +2714,7 @@ def options(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -2722,7 +2722,7 @@ def options(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -3010,7 +3010,7 @@ def trace(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -3018,7 +3018,7 @@ def trace(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -3449,7 +3449,7 @@ def route(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -3457,7 +3457,7 @@ def route(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
@@ -3600,7 +3600,7 @@ def websocket(
         ),
     ] = None,
     before_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered before the application processes the request.
@@ -3608,7 +3608,7 @@ def websocket(
         ),
     ] = None,
     after_request: Annotated[
-        Sequence[Callable[..., Any]] | None,
+        Union[Sequence[Callable[..., Any]], None],
         Doc(
             """
                 A list of events that are triggered after the application processes the request.
