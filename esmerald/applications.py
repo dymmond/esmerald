@@ -1213,7 +1213,7 @@ class Application(Lilya):
             ),
         ] = None,
         before_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[..., Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
@@ -1246,7 +1246,7 @@ class Application(Lilya):
             ),
         ] = None,
         after_request: Annotated[
-            Sequence[Callable[[], Any]] | None,
+            Union[Sequence[Callable[..., Any]], None],
             Doc(
                 """
                 A `list` of events that are trigger after the application
