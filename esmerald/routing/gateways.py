@@ -110,6 +110,8 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         "deprecated",
         "tags",
         "operation_id",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -208,6 +210,73 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             Doc(
                 """
                 A dictionary of [exception types](https://esmerald.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
+                """
+            ),
+        ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[[], Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[[], Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
                 """
             ),
         ] = None,
@@ -322,6 +391,23 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         Since the default Lilya Route handler does not understand the Esmerald handlers,
         the Gateway bridges both functionalities and adds an extra "flair" to be compliant with both class based views and decorated function views.
         """
+        self.before_request = before_request if before_request is not None else []
+        self.after_request = after_request if after_request is not None else []
+
+        if self.before_request:
+            if handler.before_request is None:
+                handler.before_request = []
+
+            for before in self.before_request:
+                handler.before_request.insert(0, before)
+
+        if self.after_request:
+            if handler.after_request is None:
+                handler.after_request = []
+
+            for after in self.after_request:
+                handler.after_request.insert(0, after)
+
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
         self.handler = cast("Callable", handler)
@@ -407,6 +493,8 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         "parent",
         "security",
         "tags",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -500,6 +588,28 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[[], Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[[], Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
         is_from_router: Annotated[
             bool,
             Doc(
@@ -552,6 +662,8 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             middleware=self._middleware,
             exception_handlers=exception_handlers,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
         """
         A "bridge" to a handler and router mapping functionality.
@@ -612,6 +724,8 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         "permissions",
         "security",
         "tags",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -676,6 +790,28 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[[], Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[[], Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
         tags: Annotated[
             Optional[Sequence[str]],
             Doc(
@@ -719,6 +855,8 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self.deprecated = deprecated
         self.parent = parent
         self.security = security
+        self.before_request = before_request
+        self.after_request = after_request
         self.tags = tags or []
         (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
             self.path

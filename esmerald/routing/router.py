@@ -25,6 +25,7 @@ from lilya import status
 from lilya._internal._connection import Connection
 from lilya._internal._module_loading import import_string
 from lilya._internal._path import clean_path
+from lilya.concurrency import run_in_threadpool
 from lilya.datastructures import URLPath
 from lilya.middleware import DefineMiddleware
 from lilya.permissions import DefinePermission
@@ -117,6 +118,8 @@ class BaseRouter(LilyaRouter):
         "_app",
         "esmerald_lifespan",
         "routing",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -446,6 +449,73 @@ class BaseRouter(LilyaRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
         tags: Annotated[
             Optional[Sequence[str]],
             Doc(
@@ -532,6 +602,8 @@ class BaseRouter(LilyaRouter):
             on_shutdown=on_shutdown,
             on_startup=on_startup,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
         self.path = path
         self.on_startup = [] if on_startup is None else list(on_startup)
@@ -752,6 +824,8 @@ class Router(BaseRouter):
             permissions=value.permissions,
             exception_handlers=value.exception_handlers,
             include_in_schema=value.include_in_schema,
+            before_request=value.before_request,
+            after_request=value.after_request,
         )
         if route_handlers:
             self.routes.extend(route_handlers)
@@ -845,6 +919,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a [Route](https://esmerald.dev/routing/routes/)
@@ -883,6 +973,8 @@ class Router(BaseRouter):
             permissions=permissions,
             middleware=middleware,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
         self.validate_root_route_parent(gateway)
         self.create_signature_models(gateway)
@@ -955,6 +1047,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a websocket [Route](https://esmerald.dev/routing/routes/)
@@ -996,6 +1104,8 @@ class Router(BaseRouter):
             interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,
+            before_request=before_request,
+            after_request=after_request,
         )
         self.validate_root_route_parent(websocket_gateway)
         self.create_signature_models(websocket_gateway)
@@ -1077,6 +1187,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1088,6 +1214,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1171,6 +1299,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1182,6 +1326,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1265,6 +1411,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1276,6 +1438,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1359,6 +1523,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1370,6 +1550,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1453,6 +1635,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1464,6 +1662,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1547,6 +1747,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1558,6 +1774,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1641,6 +1859,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1652,6 +1886,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1735,6 +1971,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = HTTPHandler(
@@ -1746,6 +1998,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1837,6 +2091,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         if methods is None:
             methods = [HttpMethod.GET.value]
@@ -1851,6 +2121,8 @@ class Router(BaseRouter):
                 middleware=middleware,
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
@@ -1917,6 +2189,22 @@ class Router(BaseRouter):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Sequence[Callable[..., Any]] | None,
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         def wrapper(func: Callable) -> Callable:
             handler = WebSocketHandler(
@@ -1924,6 +2212,8 @@ class Router(BaseRouter):
                 exception_handlers=exception_handlers,
                 permissions=cast(List["Permission"], permissions),
                 middleware=middleware,
+                before_request=before_request,
+                after_request=after_request,
             )
             handler.fn = func
             self.add_websocket_route(
@@ -1968,6 +2258,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         "operation_id",
         "interceptors",
         "__type__",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -1992,6 +2284,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         response_class: Optional[ResponseType] = None,
         response_cookies: Optional[ResponseCookies] = None,
         response_headers: Optional[ResponseHeaders] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
@@ -2068,7 +2362,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             for permission in self.__base_permissions__ or []
             if is_esmerald_permission(permission)
         ]
-
+        self.before_request = list(before_request or [])
+        self.after_request = list(after_request or [])
         self.interceptors: Sequence[Interceptor] = []
         self.middleware = list(middleware) if middleware else []
         self.description = self.description.split("\f")[0]
@@ -2090,6 +2385,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self._middleware: List[Middleware] = []
         self._interceptors: Union[List[Interceptor], VoidType] = Void
         self.__type__: Union[str, None] = None
+        self.before_request = list(before_request or [])
+        self.after_request = list(after_request or [])
 
         if self.responses:
             self.validate_responses(responses=self.responses)
@@ -2189,6 +2486,14 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         Returns:
             None
         """
+        for before_request in self.before_request:
+            if inspect.isclass(before_request):
+                before_request = before_request()
+
+            if is_async_callable(before_request):
+                await before_request(scope, receive, send)
+            else:
+                await run_in_threadpool(before_request, scope, receive, send)
 
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
@@ -2217,6 +2522,15 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             parameter_model=parameter_model,
         )
         await response(scope, receive, send)
+
+        for after_request in self.after_request:
+            if inspect.isclass(after_request):
+                after_request = after_request()
+
+            if is_async_callable(after_request):
+                await after_request(scope, receive, send)
+            else:
+                await run_in_threadpool(after_request, scope, receive, send)
 
     def check_handler_function(self) -> None:
         """Validates the route handler function once it's set by inspecting its
@@ -2365,6 +2679,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         "deprecated",
         "security",
         "operation_id",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -2388,6 +2704,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         response_class: Optional[ResponseType] = None,
         response_cookies: Optional[ResponseCookies] = None,
         response_headers: Optional[ResponseHeaders] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
@@ -2424,6 +2742,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
+            before_request=before_request,
+            after_request=after_request,
         )
         self.path = path
 
@@ -2441,6 +2761,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         "middleware",
         "parent",
         "name",
+        "before_request",
+        "after_request",
         "__type__",
     )
 
@@ -2461,6 +2783,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
                 """
             ),
         ] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
     ):
         if not path:
             path = "/"
@@ -2477,6 +2801,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             handler=handler,
             exception_handlers=exception_handlers,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
         self._permissions: Union[List[Permission], VoidType] = Void
         self._lilya_permissions: Union[List[DefinePermission], VoidType] = Void
@@ -2620,6 +2946,8 @@ class Include(LilyaInclude):
         "security",
         "tags",
         "redirect_slashes",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -2879,6 +3207,28 @@ class Include(LilyaInclude):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+                """
+            ),
+        ] = None,
         include_in_schema: Annotated[
             bool,
             Doc(
@@ -3005,6 +3355,8 @@ class Include(LilyaInclude):
             include_in_schema=include_in_schema,
             redirect_slashes=redirect_slashes,
             permissions=self.__lilya_permissions__,  # type: ignore
+            before_request=before_request,
+            after_request=after_request,
         )
 
         # Making sure Esmerald uses the Esmerald permission system and not Lilya's.
@@ -3109,6 +3461,8 @@ class Include(LilyaInclude):
                         interceptors=self.interceptors,
                         permissions=route.permissions,
                         exception_handlers=route.exception_handlers,
+                        before_request=route.before_request,
+                        after_request=route.after_request,
                     )
                 )
                 if route_handlers:

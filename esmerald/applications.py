@@ -140,6 +140,8 @@ class Application(Lilya):
         "title",
         "version",
         "encoders",
+        "before_request",
+        "after_request",
     )
 
     def __init__(
@@ -1210,6 +1212,73 @@ class Application(Lilya):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A `list` of events that are trigger after the application
+                processes the request.
+
+                Read more about the [events](https://lilya.dev/lifespan/).
+
+                **Example**
+
+                ```python
+                from edgy import Database, Registry
+
+                from esmerald import Esmerald, Request, Gateway, get
+
+                database = Database("postgresql+asyncpg://user:password@host:port/database")
+                registry = Registry(database=database)
+
+
+                async def create_user(request: Request):
+                    # Logic to create the user
+                    data = await request.json()
+                    ...
+
+
+                app = Esmerald(
+                    routes=[Gateway("/create", handler=create_user)],
+                    after_request=[database.disconnect],
+                )
+                ```
+                """
+            ),
+        ] = None,
         tags: Annotated[
             Optional[List[str]],
             Doc(
@@ -1644,6 +1713,14 @@ class Application(Lilya):
             if is_esmerald_permission(permission)
         ]
 
+        self.before_request_callbacks = (
+            self.load_settings_value("before_request", before_request) or []
+        )
+
+        self.after_request_callbacks = (
+            self.load_settings_value("after_request", after_request) or []
+        )
+
         self.router: "Router" = Router(
             on_shutdown=self.on_shutdown,
             on_startup=self.on_startup,
@@ -1653,6 +1730,8 @@ class Application(Lilya):
             deprecated=deprecated,
             security=security,
             redirect_slashes=self.redirect_slashes,
+            before_request=self.before_request_callbacks,
+            after_request=self.after_request_callbacks,
         )
         self.get_default_exception_handlers()
         self.user_middleware = self.build_user_middleware_stack()
@@ -2045,6 +2124,22 @@ class Application(Lilya):
                 """
             ),
         ] = True,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a [Route](https://esmerald.dev/routing/routes/)
@@ -2079,6 +2174,8 @@ class Application(Lilya):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
         if activate_openapi:
@@ -2159,6 +2256,22 @@ class Application(Lilya):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a websocket [Route](https://esmerald.dev/routing/routes/)
@@ -2196,6 +2309,8 @@ class Application(Lilya):
             permissions=permissions,
             middleware=middleware,
             name=name,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def add_include(
@@ -2259,6 +2374,8 @@ class Application(Lilya):
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
+        before_request: Union[Sequence[Callable[..., Any]], None] = None,
+        after_request: Union[Sequence[Callable[..., Any]], None] = None,
     ) -> None:
         """
         Adds a [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application) directly to the active application router.
@@ -2295,6 +2412,8 @@ class Application(Lilya):
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
                 security=security,
+                before_request=before_request,
+                after_request=after_request,
             )
         )
         self.activate_openapi()
@@ -2347,6 +2466,8 @@ class Application(Lilya):
                         routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
                         parent=self.router,
                         security=route.security,
+                        before_request=route.before_request,
+                        after_request=route.after_request,
                     )
                 )
                 continue
@@ -2374,6 +2495,8 @@ class Application(Lilya):
                     handler=route.handler,
                     parent=self.router,
                     is_from_router=True,
+                    before_request=route.before_request,
+                    after_request=route.after_request,
                 )
             )
 
@@ -2746,6 +2869,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.get(
             path=path,
@@ -2757,6 +2896,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def head(
@@ -2835,6 +2976,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.head(
             path=path,
@@ -2846,6 +3003,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def post(
@@ -2924,6 +3083,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.post(
             path=path,
@@ -2935,6 +3110,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def put(
@@ -3013,6 +3190,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.put(
             path=path,
@@ -3024,6 +3217,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def patch(
@@ -3102,6 +3297,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.patch(
             path=path,
@@ -3113,6 +3324,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def delete(
@@ -3191,6 +3404,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.delete(
             path=path,
@@ -3202,6 +3431,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def trace(
@@ -3280,6 +3511,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.trace(
             path=path,
@@ -3291,6 +3538,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def options(
@@ -3369,6 +3618,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.options(
             path=path,
@@ -3380,6 +3645,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def route(
@@ -3466,6 +3733,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.route(
             path=path,
@@ -3478,6 +3761,8 @@ class Esmerald(Application):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def websocket(
@@ -3539,6 +3824,22 @@ class Esmerald(Application):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> Callable:
         return self.router.websocket(
             path=path,
@@ -3548,6 +3849,8 @@ class Esmerald(Application):
             permissions=permissions,
             exception_handlers=exception_handlers,
             middleware=middleware,
+            before_request=before_request,
+            after_request=after_request,
         )
 
 

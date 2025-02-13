@@ -1,5 +1,5 @@
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
 
 from lilya._internal._path import clean_path
 from lilya.routing import compile_path
@@ -66,6 +66,8 @@ class View:
         "methods",
         "interceptors",
         "security",
+        "before_request",
+        "after_request",
     )
 
     path: Annotated[
@@ -199,6 +201,73 @@ class View:
 
             class MyView(APIView):
                 response_headers = response_headers
+            ```
+            """
+        ),
+    ]
+    before_request: Annotated[
+        Union[Sequence[Callable[[], Any]], None],
+        Doc(
+            """
+            A `list` of events that are trigger after the application
+            processes the request.
+
+            Read more about the [events](https://lilya.dev/lifespan/).
+
+            **Example**
+
+            ```python
+            from edgy import Database, Registry
+
+            from esmerald import Esmerald, Request, Gateway, get
+
+            database = Database("postgresql+asyncpg://user:password@host:port/database")
+            registry = Registry(database=database)
+
+            async def create_user(request: Request):
+                # Logic to create the user
+                data = await request.json()
+                ...
+
+
+            app = Esmerald(
+                routes=[Gateway("/create", handler=create_user)],
+                after_request=[database.disconnect],
+            )
+            ```
+            """
+        ),
+    ]
+    after_request: Annotated[
+        Union[Sequence[Callable[[], Any]], None],
+        Doc(
+            """
+            A `list` of events that are trigger after the application
+            processes the request.
+
+            Read more about the [events](https://lilya.dev/lifespan/).
+
+            **Example**
+
+            ```python
+            from edgy import Database, Registry
+
+            from esmerald import Esmerald, Request, Gateway, get
+
+            database = Database("postgresql+asyncpg://user:password@host:port/database")
+            registry = Registry(database=database)
+
+
+            async def create_user(request: Request):
+                # Logic to create the user
+                data = await request.json()
+                ...
+
+
+            app = Esmerald(
+                routes=[Gateway("/create", handler=create_user)],
+                after_request=[database.disconnect],
+            )
             ```
             """
         ),
@@ -367,6 +436,8 @@ class View:
         interceptors: Union[Sequence["Interceptor"], List["Interceptor"], None] = None,
         exception_handlers: Union["ExceptionHandlerMap", None] = None,
         include_in_schema: Union[bool, None] = None,
+        before_request: Union[Sequence[Callable[..., Any]], None] = None,
+        after_request: Union[Sequence[Callable[..., Any]], None] = None,
     ) -> List[Union["Gateway", "WebSocketGateway"]]:
         """
         Builds the routes and wraps them in a list containing the Gateway and WebSocketGateway.
@@ -392,6 +463,8 @@ class View:
                 "interceptors": interceptors,
                 "permissions": permissions,
                 "exception_handlers": exception_handlers,
+                "before_request": before_request,
+                "after_request": after_request,
             }
 
             route_name_list = [

@@ -5,7 +5,16 @@ hide:
 
 # Release Notes
 
-### 3.6.5
+### 3.6.6
+
+### Added
+
+- Missing before and after request in the handler helpers.
+- `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` now support `before_request` and `after_request`
+life cycles. This can be particularly useful to those who want to perform actions before and after
+a request is performed. E.g.: Telemetry.
+
+## 3.6.5
 
 ### Added
 
@@ -22,7 +31,7 @@ system.
 
 - `set_cookie` was causing an issue when multiple were being generated.
 
-### 3.6.4
+## 3.6.4
 
 ### Added
 
@@ -47,12 +56,12 @@ system.
 - [Requires()](./dependencies.md#requires-and-security) as a new independent way to manage dependencies.
 - A more thorough explanation about the [Security()](./dependencies.md#requires-and-security), how to use it and examples.
 
-## Changed
+### Changed
 
 - Expose `Controller` in `esmerald` as alternative to `APIView`. This was already available to use but not directly
 accessible via `from esmerald import Controller`.
 
-## Fixed
+### Fixed
 
 - Fix escaped " in TemplateResponse.
 - Fix TemplateResponse's auto-detection of the media-type when used directly.
