@@ -823,7 +823,6 @@ class Router(BaseRouter):
             permissions=value.permissions,
             exception_handlers=value.exception_handlers,
             include_in_schema=value.include_in_schema,
-            deprecated=value.deprecated,
             before_request=value.before_request,
             after_request=value.after_request,
         )
@@ -1110,7 +1109,6 @@ class Router(BaseRouter):
         self.validate_root_route_parent(websocket_gateway)
         self.create_signature_models(websocket_gateway)
         self.routes.append(websocket_gateway)
-
 
     def get(
         self,

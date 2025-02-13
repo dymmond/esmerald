@@ -2124,6 +2124,22 @@ class Application(Lilya):
                 """
             ),
         ] = True,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a [Route](https://esmerald.dev/routing/routes/)
@@ -2158,6 +2174,8 @@ class Application(Lilya):
             name=name,
             include_in_schema=include_in_schema,
             deprecated=deprecated,
+            before_request=before_request,
+            after_request=after_request,
         )
 
         if activate_openapi:
@@ -2238,6 +2256,22 @@ class Application(Lilya):
                 """
             ),
         ] = None,
+        before_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered before the application processes the request.
+                """
+            ),
+        ] = None,
+        after_request: Annotated[
+            Union[Sequence[Callable[..., Any]], None],
+            Doc(
+                """
+                A list of events that are triggered after the application processes the request.
+                """
+            ),
+        ] = None,
     ) -> None:
         """
         Adds a websocket [Route](https://esmerald.dev/routing/routes/)
@@ -2275,6 +2309,8 @@ class Application(Lilya):
             permissions=permissions,
             middleware=middleware,
             name=name,
+            before_request=before_request,
+            after_request=after_request,
         )
 
     def add_include(
@@ -2338,6 +2374,8 @@ class Application(Lilya):
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
         security: Optional[List["SecurityScheme"]] = None,
+        before_request: Sequence[Callable[..., Any]] | None = None,
+        after_request: Sequence[Callable[..., Any]] | None = None,
     ) -> None:
         """
         Adds a [ChildEsmerald](https://esmerald.dev/routing/router/#child-esmerald-application) directly to the active application router.
@@ -2374,6 +2412,8 @@ class Application(Lilya):
                 include_in_schema=include_in_schema,
                 deprecated=deprecated,
                 security=security,
+                before_request=before_request,
+                after_request=after_request,
             )
         )
         self.activate_openapi()
@@ -2426,6 +2466,8 @@ class Application(Lilya):
                         routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
                         parent=self.router,
                         security=route.security,
+                        before_request=route.before_request,
+                        after_request=route.after_request,
                     )
                 )
                 continue
@@ -2453,6 +2495,8 @@ class Application(Lilya):
                     handler=route.handler,
                     parent=self.router,
                     is_from_router=True,
+                    before_request=route.before_request,
+                    after_request=route.after_request,
                 )
             )
 
