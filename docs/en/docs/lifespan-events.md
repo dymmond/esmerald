@@ -167,3 +167,102 @@ This time the `@asynccontextmanager` wasn't necessary to decorate the class. The
 implemented by that is done via `aenter` and `aexit`.
 
 Async context managers can be a powerful tool in your application.
+
+## Request Lifecycle
+
+Lilya supports the concept of request lifecycle. What does this actually mean?
+
+Means that you can add behaviour **before** the response and **after** the response.
+
+This can be very useful if for example you want to add some logging, telemety or anything else
+really.
+
+This also means that you can add behaviour also on every layer of your application, this means,
+`Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` .
+
+There are two cycles, the `before_request` and the `after_request`. All of these available, you guessed,
+on `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` objects.
+
+### How to use it
+
+Like everything in Lilya, this behaves similarly to an ASGI app **except** you don't need to declare
+the `app` parameter like you do in the [middleware](./middleware.md) and [permissions](./permissions.md).
+
+In fact, you **need to declare only** a function, `sync` or `async` with `scope`, `receive` and `send`
+as paramters and you **don't need to return anything**.
+
+#### Using the function approach
+
+There are two ways of making it happening: `sync` and `async`.
+
+=== "Async"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/class_async.py !}
+    ```
+=== "Sync"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/func_sync.py !}
+    ```
+
+##### Within levels
+
+You can mix with different levels as well, for instance with an `Include`.
+
+=== "Async"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/func_async_include.py !}
+    ```
+=== "Sync"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/func_sync_include.py !}
+    ```
+
+You get the point, don't you? It is this simple and versatile.
+
+#### Using the class approach
+
+In the same way you do for functions, you can apply the same principle using classes and
+the **only thing** you need to declare is the `__call__(scope, receive, send)__`.
+
+**Remember**: No `app` is declared since Lilya automatically passes the scope, receive and send
+to the handler.
+
+=== "Async"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/func_async.py !}
+    ```
+=== "Sync"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/class_sync.py !}
+    ```
+
+##### Within levels
+
+You can mix with different levels as well, for instance with an `Include`.
+
+=== "Async"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/class_async_include.py !}
+    ```
+=== "Sync"
+
+    ```python
+    {!> ../../../docs_src/requests/cycle/class_sync_include.py !}
+    ```
+
+You get the point, don't you? This is also this simple.
+
+#### Notes
+
+The `before_request` and `after_request` cycles **are lists** of callables, which means that you
+**can have multiple callables** within the same level and it will be called by the same order given
+in the list.
+
+**Example**: `[CallableOne, CallableTwo, CallableThree]` will execute from left to right.

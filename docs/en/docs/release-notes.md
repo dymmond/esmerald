@@ -5,6 +5,17 @@ hide:
 
 # Release Notes
 
+### 3.6.6
+
+## 0.12.9
+
+### Added
+
+- Missing before and after request in the handler helpers.
+- `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` now support `before_request` and `after_request`
+life cycles. This can be particularly useful to those who want to perform actions before and after
+a request is performed. E.g.: Telemetry.
+
 ## 3.6.5
 
 ### Added
