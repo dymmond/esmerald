@@ -1,5 +1,15 @@
 # MsgSpec
 
+!!! Info
+    WHen Msgspec was natively added to Esmerald in the version 2.4.0, it was beyond our wildest dreams
+    what was about to come. With the introduction of the [Encoders](./encoders.md), every integration
+    with external validators was simplified a lot.
+
+    The following section is still applied but its for historical reasons since Pydantic and Msgspec
+    in Esmerald are natively integration with Encoders but we leave this section as some principals
+    are still applied but eventually we migh discontinue (or not) this part and you can treat msgspec as you
+    normally treat with Pydantic approach.
+
 Prior to version 2.4.0, as well known, Esmerald was using Pydantic to make the life easier
 for almost everyone using the framework but things evolved and it was necessary to support
 other ways to validate data too, [msgspec](https://jcristharif.com/msgspec/) became predominant
