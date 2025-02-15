@@ -9,10 +9,15 @@ hide:
 
 ### Added
 
-- Missing before and after request in the handler helpers.
 - `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` now support `before_request` and `after_request`
 life cycles. This can be particularly useful to those who want to perform actions before and after
 a request is performed. E.g.: Telemetry.
+- Missing before and after request in the handler helpers.
+- `BaseController` alias for the `View`. This serves a preparation for the internal renaming.
+
+### Fixed
+
+- Internal permission checking for Lilya and Esmerald was not extended to `View` base of Controllers.
 
 ## 3.6.5
 

@@ -564,6 +564,8 @@ class BaseRouter(LilyaRouter):
                 ...
             elif isinstance(route, HTTPHandler):
                 route = Gateway(handler=route)
+            elif is_class_and_subclass(route, View):
+                route = Gateway(handler=cast(View, route))
             elif isinstance(route, WebSocketHandler):
                 route = WebSocketGateway(handler=route)
             if not isinstance(

@@ -6,6 +6,8 @@ from lilya.routing import compile_path
 from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
+from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
+
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
@@ -331,6 +333,18 @@ class View:
         self.operation_id: Optional[str] = None
         self.methods: List[str] = []
 
+        self.__base_permissions__ = self.permissions or []
+        self.__lilya_permissions__ = [
+            wrap_permission(permission)
+            for permission in self.__base_permissions__ or []
+            if not is_esmerald_permission(permission)
+        ]
+        self.permissions: Sequence[Permission] = [
+            permission
+            for permission in self.__base_permissions__ or []
+            if is_esmerald_permission(permission)
+        ]
+
     def get_filtered_handler(self) -> List[str]:
         """
         Filters out the names of the functions that are not part of the handler itself.
@@ -491,3 +505,6 @@ class View:
 
             handlers.append(route_path)
         return handlers
+
+
+BaseController = View
