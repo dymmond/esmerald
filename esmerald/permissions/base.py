@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import TYPE_CHECKING, Any
 
 from typing_extensions import Annotated, Doc
@@ -191,7 +191,7 @@ class BasePermission(metaclass=BasePermissionMetaclass):
         return True
 
 
-class BaseAbstractUserPermission(ABC):
+class BaseAbstractUserPermission(BasePermission):
     """
     Abstract Base class for user validation permissions.
     """

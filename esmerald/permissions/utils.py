@@ -72,7 +72,6 @@ def wrap_permission(
     Returns:
         BasePermission: The wrapped permission instance.
     """
-
     if is_esmerald_permission(permission):
         return cast("BasePermission", AsyncCallable(permission))
 
