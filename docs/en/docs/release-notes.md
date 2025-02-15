@@ -18,6 +18,7 @@ a request is performed. E.g.: Telemetry.
 ### Fixed
 
 - Internal permission checking for Lilya and Esmerald was not extended to `View` base of Controllers.
+- Inheritance extending previous permissions on Controllers.
 
 ## 3.6.5
 

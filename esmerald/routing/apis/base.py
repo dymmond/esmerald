@@ -1,3 +1,4 @@
+import types
 from copy import copy
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
 
@@ -334,6 +335,7 @@ class View:
         self.methods: List[str] = []
 
         self.__base_permissions__ = self.permissions or []
+
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
@@ -344,6 +346,24 @@ class View:
             for permission in self.__base_permissions__ or []
             if is_esmerald_permission(permission)
         ]
+
+        self.__handle_base_permissions()
+
+    def __handle_base_permissions(self) -> None:
+        """
+        Handles the inheritance of permissions from base classes.
+        This method iterates over the base classes of the current class and checks if they have a 'permissions' attribute.
+        If the 'permissions' attribute exists and is not a MemberDescriptorType, and it contains one or more permissions,
+        those permissions are inserted at the beginning of the 'permissions' and '__base_permissions__' lists of the current instance.
+        """
+        for base in self.__class__.__bases__:
+            if (
+                hasattr(base, "permissions")
+                and not isinstance(base.permissions, types.MemberDescriptorType)
+                and len(base.permissions) > 0
+            ):
+                self.permissions.insert(0, *base.permissions)
+                self.__base_permissions__.insert(0, *base.permissions)
 
     def get_filtered_handler(self) -> List[str]:
         """
@@ -435,7 +455,9 @@ class View:
     async def handle_dispatch(
         self, scope: "Scope", receive: "Receive", send: "Send"
     ) -> None:  # pragma: no cover
-        raise NotImplementedError(f"{self.__class__.__name__} object does not implement handle()")
+        raise NotImplementedError(
+            f"{self.__class__.__name__} object does not implement handle_dispatch()"
+        )
 
     def create_signature_model(self, is_websocket: bool = False) -> None:  # pragma: no cover
         raise NotImplementedError(
