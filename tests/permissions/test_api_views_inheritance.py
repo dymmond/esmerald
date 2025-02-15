@@ -22,10 +22,14 @@ class MySimpleAPIView(MyAPIView):
 def test_cannot_access_apiview(test_client_factory):
     with create_client(routes=[MyAPIView]) as client:
         response = client.get("/home")
+
         assert response.status_code == 403
+        assert MyAPIView.permissions == [DenyAll]
 
 
 def test_cannot_access_simple_apiview(test_client_factory):
     with create_client(routes=[MySimpleAPIView]) as client:
         response = client.get("/new-home")
+
         assert response.status_code == 403
+        assert MySimpleAPIView.permissions == [DenyAll, AllowAny]

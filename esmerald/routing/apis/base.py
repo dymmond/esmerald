@@ -1,4 +1,3 @@
-import types
 from copy import copy
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
 
@@ -353,17 +352,15 @@ class View:
         """
         Handles the inheritance of permissions from base classes.
         This method iterates over the base classes of the current class and checks if they have a 'permissions' attribute.
+
         If the 'permissions' attribute exists and is not a MemberDescriptorType, and it contains one or more permissions,
         those permissions are inserted at the beginning of the 'permissions' and '__base_permissions__' lists of the current instance.
         """
         for base in self.__class__.__bases__:
-            if (
-                hasattr(base, "permissions")
-                and not isinstance(base.permissions, types.MemberDescriptorType)
-                and len(base.permissions) > 0
-            ):
-                self.permissions.insert(0, *base.permissions)
-                self.__base_permissions__.insert(0, *base.permissions)
+            if hasattr(base, "permissions") and isinstance(getattr(base, "permissions", None), (list, tuple)):
+                unique_perms = [perm for perm in base.permissions if perm not in self.permissions]
+                self.permissions[:0] = unique_perms
+                self.__base_permissions__[:0] = unique_perms
 
     def get_filtered_handler(self) -> List[str]:
         """
