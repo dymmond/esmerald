@@ -5,6 +5,19 @@ hide:
 
 # Release Notes
 
+### 3.6.7
+
+### Added
+
+- `before_request` and `after_request` WebSocketGateway handler added.
+- `before_request` and `after_request` added as default to the settings. This was not required
+as the settings loading system of Esmerald defaults values but this should be added to the settings
+for consistency reasons of the framework.
+
+### Changed
+
+- Reverse order on Gateway `after_request`.
+
 ### 3.6.6
 
 ### Added
