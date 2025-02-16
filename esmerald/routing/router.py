@@ -2879,6 +2879,15 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             None
         """
 
+        for before_request in self.before_request:
+            if inspect.isclass(before_request):
+                before_request = before_request()
+
+            if is_async_callable(before_request):
+                await before_request(scope, receive, send)
+            else:
+                await run_in_threadpool(before_request, scope, receive, send)
+
         if self.get_interceptors():
             await self.intercept(scope, receive, send)
 
@@ -2900,6 +2909,15 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             await fn(self.parent, **kwargs)
         else:
             await fn(**kwargs)
+
+        for after_request in self.after_request:
+            if inspect.isclass(after_request):
+                after_request = after_request()
+
+            if is_async_callable(after_request):
+                await after_request(scope, receive, send)
+            else:
+                await run_in_threadpool(after_request, scope, receive, send)
 
     async def get_kwargs(self, websocket: WebSocket) -> Any:
         """Resolves the required kwargs from the request data.

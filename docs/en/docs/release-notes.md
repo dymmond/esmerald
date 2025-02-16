@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+### 3.6.7
+
+### Added
+
+- `before_request` and `after_request` WebSocketGateway handler added.
+
 ### 3.6.6
 
 ### Added
