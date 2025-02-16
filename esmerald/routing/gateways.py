@@ -406,7 +406,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
                 handler.after_request = []
 
             for after in self.after_request:
-                handler.after_request.insert(0, after)
+                handler.after_request.append(after)
 
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.name = name
@@ -685,7 +685,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
                 handler.after_request = []
 
             for after in self.after_request:
-                handler.after_request.insert(0, after)
+                handler.after_request.append(after)
 
         self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
         self.handler = cast("Callable", handler)
