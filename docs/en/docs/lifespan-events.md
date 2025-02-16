@@ -1,4 +1,4 @@
-# Lifespan Events
+# Lifespan Events & Request Lifecycle
 
 These are extremely common for the cases where you need to define logic that should be execute
 before the application starts and shuts down.
@@ -259,7 +259,42 @@ You can mix with different levels as well, for instance with an `Include`.
 
 You get the point, don't you? This is also this simple.
 
-#### Notes
+### Call order
+
+Like everything, it is important to understand the order of the calls since there is one.
+
+Let us imagine we have the following:
+
+1. An Esmerald object with `before_request` and `after_request`.
+2. An Include with `before_request` and `after_request`.
+3. A Gateway/WebSocketGateway with `before_request` and `after_request`.
+4. A handler (get, post, put... websocket...) with `before_request` and `after_request`.
+
+```shell
+Esmerald:
+    Include:
+        Gateway/WebSocketGateway:
+            HTTPHandler/WebSocketHander
+```
+
+What is the order of calls? So, first with the `before_request`, it will call:
+
+1. Esmerald
+2. Include
+3. Gateway/WebSocketGateway
+4. Handler
+
+Then the `after_request` does the reverse, which means:
+
+1. Handler
+2. Gateway/WebSocketGateway
+3. Include
+4. Esmerald
+
+This makes sense because its the `incoming` and `outgoing` request lifecycle happening or as we
+like to call *the boomerang effect*.
+
+### Notes
 
 The `before_request` and `after_request` cycles **are lists** of callables, which means that you
 **can have multiple callables** within the same level and it will be called by the same order given

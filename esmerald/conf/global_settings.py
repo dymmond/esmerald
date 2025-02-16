@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union
 
 from lilya.types import Lifespan
 from pydantic import AnyUrl
@@ -430,6 +430,73 @@ class EsmeraldAPISettings(BaseSettings):
 
             This flag is to be used when `XFrameOptionsMiddleware` is added to the
             application.
+            """
+        ),
+    ] = None
+    before_request: Annotated[
+        Union[Sequence[Callable[..., Any]], None],
+        Doc(
+            """
+            A `list` of events that are trigger after the application
+            processes the request.
+
+            Read more about the [events](https://lilya.dev/lifespan/).
+
+            **Example**
+
+            ```python
+            from edgy import Database, Registry
+
+            from esmerald import Esmerald, Request, Gateway, get
+
+            database = Database("postgresql+asyncpg://user:password@host:port/database")
+            registry = Registry(database=database)
+
+            async def create_user(request: Request):
+                # Logic to create the user
+                data = await request.json()
+                ...
+
+
+            app = Esmerald(
+                routes=[Gateway("/create", handler=create_user)],
+                after_request=[database.disconnect],
+            )
+            ```
+            """
+        ),
+    ] = None
+    after_request: Annotated[
+        Union[Sequence[Callable[..., Any]], None],
+        Doc(
+            """
+            A `list` of events that are trigger after the application
+            processes the request.
+
+            Read more about the [events](https://lilya.dev/lifespan/).
+
+            **Example**
+
+            ```python
+            from edgy import Database, Registry
+
+            from esmerald import Esmerald, Request, Gateway, get
+
+            database = Database("postgresql+asyncpg://user:password@host:port/database")
+            registry = Registry(database=database)
+
+
+            async def create_user(request: Request):
+                # Logic to create the user
+                data = await request.json()
+                ...
+
+
+            app = Esmerald(
+                routes=[Gateway("/create", handler=create_user)],
+                after_request=[database.disconnect],
+            )
+            ```
             """
         ),
     ] = None
