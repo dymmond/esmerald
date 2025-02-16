@@ -10,6 +10,9 @@ hide:
 ### Added
 
 - `before_request` and `after_request` WebSocketGateway handler added.
+- `before_request` and `after_request` added as default to the settings. This was not required
+as the settings loading system of Esmerald defaults values but this should be added to the settings
+for consistency reasons of the framework.
 
 ### 3.6.6
 
