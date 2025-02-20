@@ -18,6 +18,10 @@ for consistency reasons of the framework.
 
 - Reverse order on Gateway `after_request`.
 
+### Fixed
+
+- `override_settings` was not taking into account async functions.
+
 ### 3.6.6
 
 ### Added

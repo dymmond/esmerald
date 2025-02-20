@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from functools import wraps
 from typing import (
@@ -20,7 +21,6 @@ from pydantic import AnyUrl
 
 from esmerald.applications import Esmerald
 from esmerald.conf import settings
-from esmerald.conf.global_settings import EsmeraldAPISettings as Settings
 from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.encoders import Encoder
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
@@ -203,7 +203,7 @@ def create_client(
 
 class override_settings:
     """
-    A context manager that allows overriding Esmerald settings temporarily.
+    A context manager that allows overriding Lilya settings temporarily.
 
     Usage:
     ```
@@ -233,6 +233,30 @@ class override_settings:
         """
         self.app = kwargs.pop("app", None)
         self.options = kwargs
+        self._original_settings = None
+
+    async def __aenter__(self) -> None:
+        """
+        Enter the context manager and set the modified settings.
+
+        Saves the original settings and sets the modified settings
+        based on the provided options.
+
+        Returns:
+            None
+        """
+        self.__enter__()
+
+    async def __aexit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """
+        Restores the original settings and sets them up again.
+
+        Args:
+            exc_type (Any): The type of the exception raised, if any.
+            exc_value (Any): The exception instance raised, if any.
+            traceback (Any): The traceback for the exception raised, if any.
+        """
+        self.__exit__(exc_type, exc_value, traceback)
 
     def __enter__(self) -> None:
         """
@@ -244,8 +268,9 @@ class override_settings:
         Returns:
             None
         """
+        settings._setup()
         self._original_settings = settings._wrapped
-        settings._wrapped = Settings(settings._wrapped, **self.options)  # type: ignore
+        settings._wrapped = self._original_settings.__class__(settings._wrapped, **self.options)
         set_override_settings(True)
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
@@ -261,7 +286,7 @@ class override_settings:
         settings._setup()
         set_override_settings(False)
 
-    def __call__(self, test_func: Any) -> Any:
+    def __call__(self, func: Callable[..., Any]) -> Callable[..., Any]:
         """
         Decorator that wraps a test function and executes it within a context manager.
 
@@ -272,10 +297,19 @@ class override_settings:
             Any: The result of the test function.
 
         """
+        if asyncio.iscoroutinefunction(func):
 
-        @wraps(test_func)
-        def inner(*args: Any, **kwargs: Any) -> Any:
-            with self:
-                return test_func(*args, **kwargs)
+            @wraps(func)
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+                async with self:
+                    return await func(*args, **kwargs)
 
-        return inner
+            return async_wrapper
+        else:
+
+            @wraps(func)
+            def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+                with self:
+                    return func(*args, **kwargs)
+
+            return sync_wrapper
