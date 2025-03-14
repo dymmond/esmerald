@@ -609,6 +609,15 @@ There are plenty more things you can do with Esmerald. Enjoy! 😊
 Currently there are no sponsors of Esmerald but you can financially help and support the author though
 [GitHub sponsors](https://github.com/sponsors/tarsil) and become a **Special one** or a **Legend**.
 
+### Powered by
+
+Worth mentioning who is helping us.
+
+**JetBrains**
+
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
+
+
 [saffier_orm]: https://esmerald.dev/databases/saffier/motivation
 [edgy_orm]: https://esmerald.dev/databases/saffier/motivation
 [mongoz_odm]: https://esmerald.dev/databases/mongoz/motivation
