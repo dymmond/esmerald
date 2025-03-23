@@ -5,6 +5,35 @@ hide:
 
 # Release Notes
 
+### 3.6.9
+
+### Added
+
+- Decorator `controller`. This decorator allows to, as the name suggests, create a controller from
+a normal python objects. This is a simple way of creating a controller without the need of subclassing the `Controller` class.
+- [Observables](./observables.md) documentation section. This is a new feature that allows to create
+observables that can be used to create a more reactive programming style.
+
+#### Example
+
+```python
+from esmerald.utils.decorators import controller
+from esmerald import get, post
+
+@controller(path="/items")
+class ItemHandler:
+
+    @get("/{item_id}")
+    async def get_item(self, item_id: int) -> dict:
+        return {"item_id": item_id}
+
+    @post("/")
+    async def create_item(self, data: dict) -> dict:
+        return {"message": "Item created", "data": data}
+```
+
+The rest remains as per normal usage of Esmerald.
+
 ### 3.6.8
 
 ### Added

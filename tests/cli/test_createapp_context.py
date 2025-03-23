@@ -82,7 +82,9 @@ def test_create_app_without_env_var_with_app_flag(create_folders):
     os.chdir("myproject/myproject/apps")
 
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald --app tests.cli.main:app createapp myapp --context", is_app=False
+        "tests.cli.main:app",
+        "esmerald --app tests.cli.main:app createapp myapp --context",
+        is_app=False,
     )
 
     _run_asserts()
