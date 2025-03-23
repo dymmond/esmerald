@@ -1,4 +1,4 @@
-from functools import update_wrapper, wraps
+from functools import update_wrapper
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -11,13 +11,11 @@ from typing import (
     Union,
 )
 
-import anyio
 from lilya._internal._path import clean_path  # noqa
-from lilya.compat import is_async_callable
+from lilya.decorators import observable as observable  # noqa
 from typing_extensions import Annotated, Doc, Unpack
 
 from esmerald import Controller
-from esmerald.core.events.base import EventDispatcher
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
@@ -295,71 +293,3 @@ def controller(**kwargs: Unpack[ControllerOptions]) -> Callable[[type], type]:
         return new_class
 
     return wrapper
-
-
-def observable(send: Optional[List[str]] = None, listen: Optional[List[str]] = None) -> Callable:
-    """
-    A decorator that enables a function to participate in an event-driven system.
-
-    - If `send` is provided, the function will emit the specified events after execution.
-    - If `listen` is provided, the function will be registered as a listener for those events
-      and executed when they are emitted.
-
-    This allows seamless event propagation and reaction, making functions behave like observables.
-
-    Args:
-        send (Optional[List[str]]): A list of event names to emit after the function executes.
-        listen (Optional[List[str]]): A list of event names the function should listen for.
-
-    Returns:
-        Callable: The decorated function with event-driven behavior.
-    """
-
-    def decorator(func: Callable) -> Callable:
-        """Wraps the function to handle event subscription and emission."""
-
-        async def register() -> None:
-            """Registers the function as a listener if `listen` events are specified."""
-            if listen:
-                for event in listen:
-                    await EventDispatcher.subscribe(event, func)
-
-        try:
-            anyio.run(register)  # Ensures safe execution if no event loop is running
-        except RuntimeError:
-            anyio.from_thread.run(register)  # Runs in an existing event loop if active
-
-        @wraps(func)
-        async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            """
-            Executes the function and emits events if specified.
-
-            - If the function is asynchronous, it is awaited.
-            - If the function is synchronous, it is executed in a separate thread.
-            - After execution, events defined in `send` are emitted.
-
-            Args:
-                *args (Any): Positional arguments for the function.
-                **kwargs (Any): Keyword arguments for the function.
-
-            Returns:
-                Any: The result of the function execution.
-            """
-            if is_async_callable(func):
-                result = await func(*args, **kwargs)
-            else:
-                result = await anyio.to_thread.run_sync(func, *args, **kwargs)
-
-            # Emit events after execution
-            if send:
-                async with anyio.create_task_group() as tg:
-                    for event in send:
-                        tg.start_soon(
-                            lambda e=event, a=args, k=kwargs: EventDispatcher.emit(e, *a, **k)
-                        )
-
-            return result
-
-        return wrapper
-
-    return decorator
