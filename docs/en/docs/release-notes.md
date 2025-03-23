@@ -15,6 +15,9 @@ hide:
     from esmerald.utils.environments import EnvironmentLoader
     ```
 
+- [Factory](./dependencies.md) now accepts `kwargs` parameters.
+- You can now declare dependencies [without using explicitly the `Inject()`](./dependencies.md#use-without-inject).
+
 ### Changed
 
 - Event lifecycle fully delegated to Lilya internals removing duplication.
@@ -22,6 +25,7 @@ hide:
 - Background tasks pointing 100% to Lilya.
 - Moved `concurrecy` to `esmerald.utils.concurrency`.
 - Moved `esmerald.enums` to `esmerald.utils.enums`.
+- Refactored `parse_form_data` from `esmerald.parsers` into a cleaner version.
 
 ### Fixed
 

@@ -1,6 +1,5 @@
 from typing import Optional
 
-from lilya._internal._connection import Connection as Connection  # noqa: F401
 from lilya.websockets import (
     WebSocket as WebSocket,  # noqa
     WebSocketClose as WebSocketClose,  # noqa

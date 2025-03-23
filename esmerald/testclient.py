@@ -291,7 +291,7 @@ class override_settings:
         Decorator that wraps a test function and executes it within a context manager.
 
         Args:
-            test_func (Any): The test function to be wrapped.
+            func (Any): The test function to be wrapped.
 
         Returns:
             Any: The result of the test function.

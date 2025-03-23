@@ -69,6 +69,7 @@ else:
     Gateway = Any
     WebhookGateway = Any
     Esmerald = Any
+    EsmeraldAPISettings = Any
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
@@ -94,7 +95,6 @@ ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
 AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 
-
 SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
@@ -104,9 +104,7 @@ APIGateHandler = Union[
     WebSocketGateway,
 ]
 
-RouteParent = Union[
-    "Router", "Include", "ASGIApp", "Gateway", "WebSocketGateway", "WebhookGateway"
-]
+RouteParent = Union["Router", "Include", ASGIApp, "Gateway", "WebSocketGateway", "WebhookGateway"]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
 SecurityScheme = Dict[str, List[str]]
