@@ -50,7 +50,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class UploadFile(LilyaUploadFile):  # pragma: no cover
     """
-    Adding pydantic specific functionalitty for parsing.
+    Adding pydantic specific functionality for parsing.
     """
 
     @classmethod
