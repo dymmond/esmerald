@@ -18,6 +18,8 @@ hide:
 ### Changed
 
 - Event lifecycle fully delegated to Lilya internals removing duplication.
+- Cleanup internals for thr path and delegate to Lilya.
+- Background tasks pointing 100% to Lilya.
 
 ### Fixed
 
