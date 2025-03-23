@@ -16,6 +16,7 @@ hide:
     ```
 
 - [Factory](./dependencies.md) now accepts `kwargs` parameters.
+- You can now declare dependencies [without using explicitly the `Inject()`](./dependencies.md#use-without-inject).
 
 ### Changed
 
