@@ -6,7 +6,7 @@ from contextvars import copy_context
 from typing import Any, Callable, Union
 
 import click
-from lilya._internal._events import AyncLifespanContextManager
+from lilya._internal._events import AsyncLifespanContextManager
 from lilya.cli.directives.operations.shell.enums import ShellOption
 from lilya.compat import run_sync
 
@@ -67,4 +67,4 @@ def handle_lifespan_events(
 ) -> Any:
     if lifespan:
         return lifespan
-    return AyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)
+    return AsyncLifespanContextManager(on_startup=on_startup, on_shutdown=on_shutdown)

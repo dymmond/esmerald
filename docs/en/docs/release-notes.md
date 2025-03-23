@@ -5,6 +5,24 @@ hide:
 
 # Release Notes
 
+### 3.6.8
+
+### Added
+
+- Esmerald now allows the import of Lilya EnvironLoader directly using it directly via:
+
+    ```python
+    from esmerald.utils.environments import EnvironmentLoader
+    ```
+
+### Changed
+
+- Event lifecycle fully delegated to Lilya internals removing duplication.
+
+### Fixed
+
+- Documentation pointing to the state of the CI.
+
 ### 3.6.7
 
 ### Added
