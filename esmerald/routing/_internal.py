@@ -1,6 +1,6 @@
 import inspect
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Union, _GenericAlias, cast, get_args
+from typing import TYPE_CHECKING, Any, Dict, List, Type, Union, _GenericAlias, cast, get_args
 
 from lilya.datastructures import DataUpload
 from pydantic import BaseModel, create_model
@@ -13,10 +13,20 @@ from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_class_and_subclass
-from esmerald.utils.models import create_field_model
 
 if TYPE_CHECKING:
     from esmerald.routing.router import HTTPHandler, WebhookHandler
+
+
+def create_field_model(*, field: FieldInfo, name: str, model_name: str) -> Type[BaseModel]:
+    """
+    Creates a pydantic model for a specific field
+    """
+    params = {name.lower(): (field.annotation, field)}
+    data_field_model: Type[BaseModel] = create_model(  # type: ignore[call-overload]
+        model_name, __config__={"arbitrary_types_allowed": True}, **params
+    )
+    return data_field_model
 
 
 def get_base_annotations(base_annotation: Any, is_class: bool = False) -> Dict[str, Any]:
@@ -25,7 +35,7 @@ def get_base_annotations(base_annotation: Any, is_class: bool = False) -> Dict[s
 
     Args:
         base_annotation (Any): The base class.
-
+        is_class (bool): Whether the base class is a class or not.
     Returns:
         Dict[str, Any]: The annotations of the base class.
     """
