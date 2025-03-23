@@ -3,9 +3,9 @@
 TemplateConfig is a simple set of configurations that when passed enables the template engine.
 
 !!! info
-    Currently Esmerald supports `Jinja2` or `mako` (deprecated). Mako will be removed in the release 3.6.0 of Esmerald.
+    Currently Esmerald supports `Jinja2`.
 
-It is important to understand that you don't need to use the provided `JinjaTemplateEngine` or `MakoTemplateEngine`
+It is important to understand that you don't need to use the provided `JinjaTemplateEngine`
 from Esmerald within the `TemplateConfig`.
 
 You are free to build your own and pass it to the `TemplateConfig`. This way you can design however you see fit.
@@ -19,21 +19,12 @@ You are free to build your own and pass it to the `TemplateConfig`. This way you
 
     You will notice the name of the parameters in the `TemplateConfig` match maority of the jinja2 implementation.
 
-!!! Warning
-    The `mako` engine integration, due to its own limitations, will be not supported by Esmerald from version 3.6.0.
-
 ## TemplateConfig and application
 
 To use the TemplateConfig in an application instance.
 
 ```python hl_lines="4-5 9"
 {!> ../../../docs_src/configurations/template/example1.py!}
-```
-
-Another example
-
-```python hl_lines="4-5 9"
-{!> ../../../docs_src/configurations/template/example2.py!}
 ```
 
 ## Parameters

@@ -3,9 +3,9 @@
 TemplateConfig — это простой набор конфигураций, который при передаче активирует движок шаблонов.
 
 !!! info
-    В настоящее время Esmerald поддерживает `Jinja2` и `Mako`.
+    В настоящее время Esmerald поддерживает `Jinja2`.
 
-Важно понимать, что вам не обязательно использовать предоставляемые Esmerald `JinjaTemplateEngine` или `MakoTemplateEngine`
+Важно понимать, что вам не обязательно использовать предоставляемые Esmerald `JinjaTemplateEngine`
 в рамках `TemplateConfig`.
 
 Вы вольны создать свой собственный движок шаблонов и передать его в `TemplateConfig`.
@@ -21,21 +21,12 @@ TemplateConfig — это простой набор конфигураций, к
 
     Вы заметите, что имена параметров в `TemplateConfig` совпадают с большинством реализаций jinja2.
 
-!!! Warning
-    Движок `Mako` имеет ограниченную интеграцию в Esmerald. В будущем это изменится.
-
 ## TemplateConfig и приложение
 
 Для использования TemplateConfig в экземпляре приложения.
 
 ```python hl_lines="4-5 9"
 {!> ../../../docs_src/configurations/template/example1.py!}
-```
-
-Другой пример
-
-```python hl_lines="4-5 9"
-{!> ../../../docs_src/configurations/template/example2.py!}
 ```
 
 ## Параметры
