@@ -19,6 +19,10 @@ hide:
 
 - Event lifecycle fully delegated to Lilya internals removing duplication.
 
+### Fixed
+
+- Documentation pointing to the state of the CI.
+
 ### 3.6.7
 
 ### Added
