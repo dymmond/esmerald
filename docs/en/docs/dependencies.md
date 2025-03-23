@@ -205,7 +205,7 @@ from esmerald import Requires
 **Security**
 
 ```python
-from esmerald import Requires
+from esmerald import Security
 ```
 
 !!! Warning
