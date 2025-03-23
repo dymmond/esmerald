@@ -42,14 +42,6 @@ class ArbitraryHashableBaseModel(HashableBaseModel):
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
-class BaseModelExtra(BaseModel):
-    """
-    BaseModel that allows extra to be passed.
-    """
-
-    model_config = ConfigDict(extra="allow")
-
-
 class ArbitraryBaseModel(BaseModel):
     """
     ArbitraryBaseModel that allows arbitrary_types_allowed to be passed.
