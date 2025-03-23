@@ -9,13 +9,12 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
-    Unpack,
 )
 
 import anyio
 from lilya._internal._path import clean_path  # noqa
 from lilya.compat import is_async_callable
-from typing_extensions import Annotated, Doc
+from typing_extensions import Annotated, Doc, Unpack
 
 from esmerald import Controller
 from esmerald.core.events.base import EventDispatcher
