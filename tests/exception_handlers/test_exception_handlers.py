@@ -4,7 +4,6 @@ import pytest
 from lilya.status import HTTP_400_BAD_REQUEST
 
 from esmerald.applications import ChildEsmerald
-from esmerald.enums import MediaType
 from esmerald.exceptions import (
     EsmeraldAPIException,
     InternalServerError,
@@ -21,6 +20,7 @@ from esmerald.routing.handlers import get
 from esmerald.routing.router import Include
 from esmerald.testclient import create_client
 from esmerald.types import ExceptionHandlerMap
+from esmerald.utils.enums import MediaType
 
 
 @pytest.mark.parametrize(

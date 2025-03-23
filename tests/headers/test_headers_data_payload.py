@@ -4,9 +4,9 @@ from pydantic import BaseModel
 
 from esmerald import Gateway, Header, Param, Response, post
 from esmerald.datastructures import ResponseHeader
-from esmerald.enums import MediaType
 from esmerald.responses.encoders import ORJSONResponse
 from esmerald.testclient import create_client
+from esmerald.utils.enums import MediaType
 
 
 class User(BaseModel):

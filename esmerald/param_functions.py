@@ -3,8 +3,8 @@ from typing import Any, Callable, List, Optional, Sequence, Union
 from pydantic.fields import AliasChoices, AliasPath
 
 from esmerald import params
-from esmerald.enums import EncodingType
 from esmerald.typing import Undefined
+from esmerald.utils.enums import EncodingType
 
 _PyUndefined: Any = Undefined
 

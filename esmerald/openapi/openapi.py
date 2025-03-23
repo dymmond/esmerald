@@ -26,7 +26,6 @@ from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from typing_extensions import Literal
 
-from esmerald.enums import MediaType
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
 from esmerald.openapi.models import (
     Contact,
@@ -55,6 +54,7 @@ from esmerald.routing._internal import (
 from esmerald.security.oauth2.oauth import SecurityBase
 from esmerald.typing import Undefined
 from esmerald.utils.dependencies import is_base_requires
+from esmerald.utils.enums import MediaType
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]
@@ -290,9 +290,9 @@ def get_openapi_path(
         internal_response = create_internal_response(handler)
         route_response_media_type = internal_response.media_type
     else:
-        assert handler.response_class.media_type is not None, (
-            "`media_type` is required in the response class."
-        )
+        assert (
+            handler.response_class.media_type is not None
+        ), "`media_type` is required in the response class."
         route_response_media_type = handler.response_class.media_type
 
     # If routes do not want to be included in the schema generation
@@ -348,9 +348,9 @@ def get_openapi_path(
                 operation["requestBody"] = request_data_oai
 
         status_code = str(handler.status_code)
-        operation.setdefault("responses", {}).setdefault(status_code, {})["description"] = (
-            handler.response_description
-        )
+        operation.setdefault("responses", {}).setdefault(status_code, {})[
+            "description"
+        ] = handler.response_description
 
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):

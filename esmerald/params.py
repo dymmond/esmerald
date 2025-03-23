@@ -4,10 +4,10 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
 from pydantic.fields import AliasChoices, AliasPath, FieldInfo
 
-from esmerald.enums import EncodingType, ParamType
 from esmerald.security.scopes import Scopes
 from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
+from esmerald.utils.enums import EncodingType, ParamType
 from esmerald.utils.helpers import is_class_and_subclass
 
 _PyUndefined: Any = Undefined

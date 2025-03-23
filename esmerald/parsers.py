@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
 
 from esmerald.datastructures import UploadFile
-from esmerald.enums import EncodingType
+from esmerald.utils.enums import EncodingType
 
 if TYPE_CHECKING:  # pragma: no cover
     from lilya.datastructures import FormData
@@ -40,14 +40,6 @@ class ArbitraryHashableBaseModel(HashableBaseModel):
     """
 
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
-
-
-class BaseModelExtra(BaseModel):
-    """
-    BaseModel that allows extra to be passed.
-    """
-
-    model_config = ConfigDict(extra="allow")
 
 
 class ArbitraryBaseModel(BaseModel):

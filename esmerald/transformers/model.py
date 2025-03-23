@@ -16,7 +16,6 @@ from typing import (
 from pydantic.fields import FieldInfo
 
 from esmerald.context import Context
-from esmerald.enums import EncodingType, ParamType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.params import Body, Requires, Security
 from esmerald.parsers import ArbitraryExtraBaseModel, parse_form_data
@@ -38,6 +37,7 @@ from esmerald.utils.dependencies import (
     is_security_scheme,
     is_security_scope,
 )
+from esmerald.utils.enums import EncodingType, ParamType
 from esmerald.utils.schema import is_field_optional
 
 if TYPE_CHECKING:

@@ -96,7 +96,9 @@ def test_use_requires_as_a_non_dependency(test_app_client_factory):
 
 
 @pytest.mark.parametrize(
-    "type_field", [List[str], int, float, frozenset, Union[List[str], None], Optional[List[str]]], ids=["list", "int", "float", "frozenset", "union", "optional"]
+    "type_field",
+    [List[str], int, float, frozenset, Union[List[str], None], Optional[List[str]]],
+    ids=["list", "int", "float", "frozenset", "union", "optional"],
 )
 def test_use_requires_raise_error_for_typing(test_app_client_factory, type_field):
     @get("/requires-typed-error")

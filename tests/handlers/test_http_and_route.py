@@ -4,10 +4,10 @@ import pytest
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from esmerald import Include, route, status
-from esmerald.enums import HttpMethod
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.routing.gateways import Gateway
 from esmerald.testclient import create_client
+from esmerald.utils.enums import HttpMethod
 
 
 @pytest.mark.parametrize(

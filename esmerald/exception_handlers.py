@@ -7,13 +7,13 @@ from lilya.responses import Response as LilyaResponse
 from orjson import loads
 from pydantic import ValidationError
 
-from esmerald.enums import MediaType
 from esmerald.exceptions import (
     ExceptionErrorMap,
     HTTPException,
     ImproperlyConfigured,
 )
 from esmerald.responses import JSONResponse, Response
+from esmerald.utils.enums import MediaType
 
 
 async def http_exception_handler(

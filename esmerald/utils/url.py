@@ -1,17 +1,2 @@
-import re
-from typing import Iterable
-
-
-def clean_path(path: str) -> str:
-    """Make sure a given path by ensuring it starts with a slash and does not
-    end with a slash.
-    """
-    path = path.rstrip("/")
-    if not path.startswith("/"):
-        path = "/" + path
-    path = re.sub("//+", "/", path)
-    return path
-
-
-def join_paths(paths: Iterable[str]) -> str:
-    return clean_path("/".join(paths))
+from lilya._internal._path import clean_path as clean_path  # noqa
+from lilya._internal._path import join_paths as join_paths  # noqa

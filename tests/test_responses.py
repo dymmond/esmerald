@@ -3,11 +3,11 @@ from typing import Union
 from lilya import status
 
 from esmerald import Response
-from esmerald.enums import MediaType
 from esmerald.responses.encoders import ORJSONResponse, UJSONResponse
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.testclient import create_client
+from esmerald.utils.enums import MediaType
 
 
 @get("/one", status_code=status.HTTP_202_ACCEPTED)

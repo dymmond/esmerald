@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from lilya.types import Receive, Scope, Send
 
-from esmerald.enums import MediaType
 from esmerald.responses.base import Response
+from esmerald.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.background import BackgroundTask, BackgroundTasks

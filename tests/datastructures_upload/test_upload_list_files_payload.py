@@ -24,7 +24,7 @@ async def upload_file(payload: List[Union[UploadFile, None]] = File()) -> Dict[s
 
 @post("/upload-multiple", status_code=status.HTTP_200_OK)
 async def upload_list_multiple_file(
-    payload: List[Union[UploadFile, None]] = File()
+    payload: List[Union[UploadFile, None]] = File(),
 ) -> Dict[str, str]:
     names = []
     for file in payload:

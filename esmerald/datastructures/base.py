@@ -15,20 +15,20 @@ from typing import (
     cast,
 )
 
-from lilya._internal._message import Address as Address  # noqa: F401
+from lilya._internal._message import Address as Address  # noqa
 from lilya.datastructures import (
     URL as URL,  # noqa: F401
     DataUpload as LilyaUploadFile,  # noqa
-    FormData as FormData,  # noqa: F401
-    Header as Header,  # noqa: F401
-    QueryParam as QueryParam,  # noqa: F401
+    FormData as FormData,  # noqa
+    Header as Header,  # noqa
+    QueryParam as QueryParam,  # noqa
     Secret as Secret,  # noqa
-    State as State,  # noqa: F401
-    URLPath as URLPath,  # noqa: F401
+    State as State,  # noqa
+    URLPath as URLPath,  # noqa
 )
 from lilya.responses import Response as LilyaResponse  # noqa
 from pydantic import BaseModel, ConfigDict, field_validator  # noqa
-from pydantic._internal._schema_generation_shared import (
+from pydantic._internal._schema_generation_shared import (  # noqa
     GetJsonSchemaHandler as GetJsonSchemaHandler,
 )
 from pydantic.json_schema import JsonSchemaValue as JsonSchemaValue
@@ -40,7 +40,7 @@ from pydantic_core.core_schema import (
 from typing_extensions import Literal
 
 from esmerald.background import BackgroundTask, BackgroundTasks  # noqa
-from esmerald.enums import MediaType
+from esmerald.utils.enums import MediaType
 
 R = TypeVar("R", bound=LilyaResponse)
 
@@ -50,7 +50,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class UploadFile(LilyaUploadFile):  # pragma: no cover
     """
-    Adding pydantic specific functionalitty for parsing.
+    Adding pydantic specific functionality for parsing.
     """
 
     @classmethod

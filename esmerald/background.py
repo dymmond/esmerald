@@ -1,5 +1,3 @@
-from typing import Any, Callable, List, Optional
-
 from lilya.background import Task, Tasks
 from typing_extensions import ParamSpec
 
@@ -39,8 +37,7 @@ class BackgroundTask(Task):
     ```
     """
 
-    def __init__(self, func: Callable[P, Any], *args: P.args, **kwargs: P.kwargs) -> None:
-        super().__init__(func, *args, **kwargs)
+    ...
 
 
 class BackgroundTasks(Tasks):
@@ -91,5 +88,4 @@ class BackgroundTasks(Tasks):
     ```
     """
 
-    def __init__(self, tasks: Optional[List[BackgroundTask]] = None):
-        super().__init__(tasks=tasks)
+    ...

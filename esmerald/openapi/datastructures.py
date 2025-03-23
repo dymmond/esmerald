@@ -4,7 +4,7 @@ from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.msgspec import Struct
-from esmerald.enums import MediaType
+from esmerald.utils.enums import MediaType
 
 
 class OpenAPIResponse(BaseModel):

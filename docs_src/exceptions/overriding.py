@@ -9,7 +9,7 @@ from esmerald import (
     ValidationErrorException,
 )
 from esmerald.applications import Esmerald
-from esmerald.enums import MediaType
+from esmerald.utils.enums import MediaType
 from lilya import status
 from lilya.exceptions import HTTPException as LilyaHTTPException
 from lilya.responses import Response as LilyaResponse

@@ -17,7 +17,6 @@ from typing import (
 from lilya.datastructures import URL
 from pydantic.fields import FieldInfo
 
-from esmerald.enums import ParamType, ScopeType
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
 from esmerald.params import Cookie, Header, Path, Query
 from esmerald.parsers import ArbitraryExtraBaseModel, HashableBaseModel
@@ -25,6 +24,7 @@ from esmerald.requests import Request
 from esmerald.typing import Undefined
 from esmerald.utils.constants import REQUIRED
 from esmerald.utils.dependencies import is_requires
+from esmerald.utils.enums import ParamType, ScopeType
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 from esmerald.utils.schema import should_skip_json_schema
 

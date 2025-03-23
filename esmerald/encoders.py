@@ -5,7 +5,7 @@ from typing import Any, Generic, TypeVar, get_args
 
 import msgspec
 from lilya._internal._encoders import json_encoder as json_encoder  # noqa
-from lilya._utils import is_class_and_subclass
+from lilya._utils import is_class_and_subclass  # noqa
 from lilya.encoders import (
     ENCODER_TYPES as LILYA_ENCODER_TYPES,  # noqa
     Encoder as LilyaEncoder,  # noqa
@@ -25,34 +25,74 @@ ENCODER_TYPES = LILYA_ENCODER_TYPES.get()
 
 
 class Encoder(EncoderProtocol, Generic[T]):
+    """
+    Base class for Esmerald encoders. All encoders must inherit from this class
+    and implement the following methods:
+    - is_type: Check if the value is an instance of a given type.
+    - is_type_structure: Prevent Lilya from picking it up for apply_structure.
+    - serialize: Transform a data structure into a serializable object.
+    - encode: Transform the kwargs into a structure.
+    """
+
     def is_type(self, value: Any) -> bool:
         """
-        Function that checks if the function is
-        an instance of a given type (and also for the subclass of the type in case of encode)
+        Check if the value is an instance of a given type.
+
+        Args:
+            value (Any): The value to check.
+
+        Returns:
+            bool: True if the value is an instance of the type, False otherwise.
         """
         raise NotImplementedError("All Esmerald encoders must implement is_type() method.")
 
     def is_type_structure(self, value: Any) -> bool:
-        """Prevent lilya picking it up for apply_structure."""
+        """
+        Prevent Lilya from picking it up for apply_structure.
+
+        Args:
+            value (Any): The value to check.
+
+        Returns:
+            bool: False, indicating it should not be picked up for apply_structure.
+        """
         return False
 
     def serialize(self, obj: Any) -> Any:
         """
-        Function that transforms a data structure into a serializable
-        object.
+        Transform a data structure into a serializable object.
+
+        Args:
+            obj (Any): The object to serialize.
+
+        Returns:
+            Any: The serialized object.
         """
         raise NotImplementedError("All Esmerald encoders must implement serialize() method.")
 
     def encode(self, annotation: Any, value: Any) -> Any:
         """
-        Function that transforms the kwargs into a structure
+        Transform the kwargs into a structure.
+
+        Args:
+            annotation (Any): The annotation type.
+            value (Any): The value to encode.
+
+        Returns:
+            Any: The encoded value.
         """
         raise NotImplementedError("All Esmerald encoders must implement encode() method.")
 
 
 def register_esmerald_encoder(encoder: Encoder | type[Encoder]) -> None:
     """
-    Registers an esmerald encoder into available Lilya encoders
+    Register an Esmerald encoder into available Lilya encoders.
+
+    Args:
+        encoder (Encoder | type[Encoder]): The encoder to register.
+
+    Raises:
+        ImproperlyConfigured: If the encoder is not a subclass of Encoder.
     """
     encoder_type = encoder if isclass(encoder) else type(encoder)
     if not isinstance(encoder, Encoder) and not is_class_and_subclass(encoder, Encoder):
@@ -64,31 +104,91 @@ def register_esmerald_encoder(encoder: Encoder | type[Encoder]) -> None:
 
 
 class MsgSpecEncoder(Encoder):
+    """
+    Encoder for msgspec.Struct objects.
+    """
+
     def is_type(self, value: Any) -> bool:
+        """
+        Check if the value is an instance of msgspec.Struct.
+
+        Args:
+            value (Any): The value to check.
+
+        Returns:
+            bool: True if the value is an instance of msgspec.Struct, False otherwise.
+        """
         return isinstance(value, Struct) or is_class_and_subclass(value, Struct)
 
     def serialize(self, obj: Any) -> Any:
         """
-        When a `msgspec.Struct` is serialised,
-        it will call this function.
+        Serialize a msgspec.Struct object.
+
+        Args:
+            obj (Any): The object to serialize.
+
+        Returns:
+            Any: The serialized object.
         """
         return msgspec.json.decode(msgspec.json.encode(obj))
 
     def encode(self, annotation: Any, value: Any) -> Any:
+        """
+        Encode a value into a msgspec.Struct.
+
+        Args:
+            annotation (Any): The annotation type.
+            value (Any): The value to encode.
+
+        Returns:
+            Any: The encoded value.
+        """
         return msgspec.json.decode(msgspec.json.encode(value), type=annotation)
 
 
 class PydanticEncoder(Encoder):
+    """
+    Encoder for Pydantic BaseModel objects.
+    """
+
     def is_type(self, value: Any) -> bool:
+        """
+        Check if the value is an instance of Pydantic BaseModel.
+
+        Args:
+            value (Any): The value to check.
+
+        Returns:
+            bool: True if the value is an instance of Pydantic BaseModel, False otherwise.
+        """
         return isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel)
 
     def serialize(self, obj: BaseModel) -> dict[str, Any]:
+        """
+        Serialize a Pydantic BaseModel object.
+
+        Args:
+            obj (BaseModel): The object to serialize.
+
+        Returns:
+            dict[str, Any]: The serialized object as a dictionary.
+        """
         try:
             return obj.model_dump(mode="json")
         except PydanticSerializationError:
             return obj.model_dump()
 
     def encode(self, annotation: Any, value: Any) -> Any:
+        """
+        Encode a value into a Pydantic BaseModel.
+
+        Args:
+            annotation (Any): The annotation type.
+            value (Any): The value to encode.
+
+        Returns:
+            Any: The encoded value.
+        """
         if isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel):
             return value
         return annotation(**value)
@@ -96,7 +196,13 @@ class PydanticEncoder(Encoder):
 
 def is_body_encoder(value: Any) -> bool:
     """
-    Function that checks if the value is a body encoder.
+    Check if the value is a body encoder.
+
+    Args:
+        value (Any): The value to check.
+
+    Returns:
+        bool: True if the value is a body encoder, False otherwise.
     """
     encoder_types = LILYA_ENCODER_TYPES.get()
     if not is_union(value):

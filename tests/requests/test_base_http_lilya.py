@@ -7,10 +7,10 @@ from lilya.datastructures import State
 from lilya.status import HTTP_200_OK
 from lilya.types import Receive, Send
 
-from esmerald.enums import MediaType
 from esmerald.requests import ClientDisconnect, Request
 from esmerald.responses import JSONResponse, PlainText, Response
 from esmerald.testclient import EsmeraldTestClient
+from esmerald.utils.enums import MediaType
 
 
 def test_request_url(test_client_factory) -> None:
