@@ -11,13 +11,21 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Factory:
-    def __init__(self, provides: Union["AnyCallable", str], *args: Any) -> None:
+    def __init__(self, provides: Union["AnyCallable", str], *args: Any, **kwargs: Any) -> None:
         """
-        The provider can be passed in separate ways. Via direct callable
-        or via string value where it will be automatically imported by the application.
+        A dependency injection factory that supports both positional and keyword arguments.
+
+        The provider can be passed as either:
+        - A direct callable
+        - A string reference to be dynamically imported
+
+        Example Usage:
+            dependencies = {
+                "user": Factory(UserDAO, db_session=session, cache=cache)
+            }
         """
-        self.__args: Tuple[Any, ...] = ()
-        self.set_args(*args)
+        self.__args: Tuple[Any, ...] = args
+        self.__kwargs: Dict[str, Any] = kwargs
         self.is_nested: bool = False
 
         if isinstance(provides, str):
@@ -25,31 +33,34 @@ class Factory:
         else:
             self.provides = provides
 
-    def set_args(self, *args: Any) -> None:
+    def set_args(self, *args: Any, **kwargs: Any) -> None:
+        """Set or update arguments dynamically."""
         self.__args = args
+        self.__kwargs = kwargs
 
     @property
     def cls(self) -> "AnyCallable":  # pragma: no cover
-        """Return provided type."""
+        """Return the provided class or function."""
         return self.provides
 
     async def __call__(self) -> Any:
         """
-        This handles with normal and nested imports.
+        Instantiates the provided class/function, handling both sync and async cases.
+
+        Supports:
+            - Nested imports (e.g., MyClass.func, MyClass.SubClass.func)
+            - Both sync and async callables
+            - Positional and keyword arguments
 
         Example:
-
-            1. MyClass.func
-            2. MyClass.AnotherClass.func
+            Factory(UserDAO, db_session=session)
         """
         if self.is_nested:
             self.provides = self.provides()
 
         if is_async_callable(self.provides):
-            value = await self.provides(*self.__args)
-        else:
-            value = self.provides(*self.__args)
-        return value
+            return await self.provides(*self.__args, **self.__kwargs)
+        return self.provides(*self.__args, **self.__kwargs)
 
 
 class Inject(ArbitraryHashableBaseModel):
