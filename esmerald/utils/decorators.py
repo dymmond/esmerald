@@ -347,7 +347,10 @@ def propagator(send: Optional[List[str]] = None, listen: Optional[List[str]] = N
             await EventDispatcher.register(func, listen)
 
         # Schedule the listener registration in the background to avoid blocking
-        anyio.run(register_if_needed)
+        try:
+            anyio.run(register_if_needed)  # Safe if no event loop is running
+        except RuntimeError:  # If an event loop is already running
+            anyio.from_thread.run(register_if_needed)  # Runs inside existing loop
 
         @wraps(func)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
