@@ -22,7 +22,7 @@ from typing import (
 )
 from uuid import UUID
 
-from lilya._internal._connection import Connection
+from lilya._internal._connection import Connection  # noqa
 from lilya.datastructures import DataUpload
 from lilya.permissions import DefinePermission
 from lilya.responses import Response as LilyaResponse
@@ -42,7 +42,7 @@ from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
 from esmerald.transformers.model import (
     TransformerModel,
-    create_signature as transfomer_create_signature,
+    create_signature as transformer_create_signature,
 )
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
@@ -147,7 +147,7 @@ class BaseSignature:
         dependencies = self.get_dependencies()
         signature_model = get_signature(self)
 
-        return transfomer_create_signature(
+        return transformer_create_signature(
             signature_model=signature_model,
             dependencies=dependencies,
             path_parameters=self.path_parameters,
@@ -843,6 +843,8 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             self._dependencies: Dependencies = {}
             for level in self.parent_levels:
                 for key, value in (level.dependencies or {}).items():
+                    if not isinstance(value, Inject):
+                        value = Inject(value)
                     self.is_unique_dependency(
                         dependencies=self._dependencies,
                         key=key,

@@ -415,7 +415,6 @@ def dependency_tree(key: str, dependencies: "Dependencies", first_run: bool = Tr
     Returns:
         Dependency: Constructed dependency tree starting from the specified key.
     """
-
     inject = dependencies[key]
     inject_signature = get_signature(inject)
     dependency_keys = [key for key in inject_signature.model_fields if key in dependencies]
