@@ -15,8 +15,8 @@ class CustomSettings(EsmeraldAPISettings):
         property to change the behavior of the whole template_config.
 
         Esmerald can also support other engines like mako, Diazo,
-        Cheetah. Currently natively only supports jinja2 and mako as they
-        are standards in the market.
+        Cheetah. Currently natively only supports jinja2 as its
+        a standards in the market.
         """
         return TemplateConfig(
             directory=Path("templates"),

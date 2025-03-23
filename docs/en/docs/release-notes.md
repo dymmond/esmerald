@@ -27,6 +27,10 @@ hide:
 
 - Documentation pointing to the state of the CI.
 
+### Removed
+
+- Official support for Mako template engine as previously announced.
+
 ### 3.6.7
 
 ### Added
