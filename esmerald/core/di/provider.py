@@ -2,6 +2,7 @@
 Functions to use with the Factory dependency injection.
 """
 
+from importlib import import_module
 from typing import Any, Callable, Tuple, cast
 
 from lilya._internal._module_loading import import_string  # noqa
@@ -13,18 +14,35 @@ def _resolve_imported_attribute(target: str, attribute: str) -> Any:  # pragma: 
     """
     Dynamically imports a module and retrieves the requested attribute.
 
+    This function efficiently resolves deeply nested attributes by progressively importing
+    each module level while avoiding redundant re-imports.
+
     Args:
-        target (str): The fully qualified module path (e.g., "myapp.daos").
+        target (str): The fully qualified module path (e.g., "module.something").
         attribute (str): The attribute name to retrieve from the module.
 
     Returns:
         Any: The resolved attribute.
 
     Raises:
-        AttributeError: If the attribute does not exist in the module.
+        ImportError: If the module or attribute cannot be imported.
     """
     try:
-        module = __import__(target, fromlist=[attribute])
+        module = import_module(target)
+        return getattr(module, attribute)
+    except ModuleNotFoundError:
+        # If `target` is not a module, progressively resolve attributes.
+        components = target.split(".")
+        module_name = components.pop(0)
+        module = __import__(module_name)
+
+        for comp in components:
+            module_name += f".{comp}"
+            try:
+                module = getattr(module, comp)
+            except AttributeError:
+                module = import_module(module_name)
+
         return getattr(module, attribute)
     except AttributeError as e:
         raise ImportError(f"Module '{target}' has no attribute '{attribute}'.") from e
