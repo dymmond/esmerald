@@ -49,15 +49,56 @@ and checks if the value is bigger or equal than 5 and that result `is_valid` is 
 
 The same is applied also to [exception handlers](./exception-handlers.md).
 
-## More real world examples
+## Use without `Inject`
 
-Now let us imagine that we have a web application with one of the views. Something like this:
+From the version 3.6.8+, Esmerald allows you to use the callable directly without using the `Inject` object.
+
+What does this mean? Well, internally Esmerald checks if its an Inject object and if not, it will automatically
+create an `Inject` object for you. This means that you can use the callable directly without using the `Inject` object.
+
+```python
+{!> ../../../docs_src/dependencies/no_inject.py !}
+```
+
+This is a great way to use the dependencies without having to worry about the `Inject` object and just use the
+callable directly.
+
+This is also applied to the `Factory` (below) or to any callable that you want to use.
+
+## The usage of the `Factory`
+
+The `Factory` class serves as a **dependency provider** for Esmerald's dependency injection system.
+It allows developers to register a class or function as a dependency that will be instantiated or invoked whenever needed.
+Instead of manually creating instances across multiple parts of an application, `Factory` ensures a
+**centralized and automated way** to manage dependencies.
+
+This is particularly useful in frameworks like Esmerald, where dependency injection plays a key role in managing
+resources, services, and business logic components efficiently.
+
+One of the **primary benefits** of using `Factory` is that it supports **both direct callables and string-based imports**,
+making it flexible for various use cases.
+
+When a string is provided, the application dynamically loads the required module and resolves the attribute,
+enabling a **decoupled structure** where dependencies do not need to be imported explicitly everywhere.
+
+Additionally, the `Factory` allows to accept arguments (`args` and `kwargs`), which means dependencies can be
+instantiated with **custom parameters** rather than relying solely on default constructors.
+
+From a **performance and maintainability** perspective, `Factory` helps **reduce boilerplate code**,
+ensures **lazy instantiation** of dependencies (only creating instances when required),
+and **improves testability** by allowing easy substitution of dependencies during unit testing.
+
+This approach **enhances modularity**, making it easier to swap out implementations or introduce mock objects when needed.
+
+In a **scalable** application, having a well-structured dependency injection system powered by `Factory`
+ensures that component interactions remain **clean, efficient, and adaptable** to future changes.
+
+**Example**
 
 ```python hl_lines="17"
 {!> ../../../docs_src/dependencies/controllers.py !}
 ```
-
-As you can notice, the `user_dao`` is injected automatically using the appropriate level of dependency injection.
+As you can notice, the `user_dao` is injected automatically using the appropriate level of dependency injection.
 
 Let us see the `urls.py` and understand from where we got the `user_dao`:
 
@@ -84,6 +125,26 @@ The Factory is a clean wrapper around any callable (classes usually are callable
 !!! Tip
     No need to explicitly instantiate the class, just pass the class definition to the `Factory`
     and Esmerald takes care of the rest for you.
+
+### Factory using `args`
+
+This represents the usage of the explicit `args` to pass.
+
+```python
+{!> ../../../docs_src/dependencies/factory_args.py !}
+```
+
+### Factory using `kwargs`
+
+This represents the usage of the explicit `args` and `kwargs` to pass.
+
+```python
+{!> ../../../docs_src/dependencies/factory_kwargs.py !}
+```
+
+!!! Tip
+    You can also [not use the Inject()](#use-without-inject) when passing a Factory in the same way as it was
+    explained in the [Use without Inject](#use-without-inject) section.
 
 ### Importing using strings
 

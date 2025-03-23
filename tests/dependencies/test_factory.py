@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from esmerald import Factory, Gateway, JSONResponse, get
+from esmerald import Factory, Gateway, Inject, JSONResponse, get
 from esmerald.protocols.asyncdao import AsyncDAOProtocol
 from esmerald.testclient import create_client
 
@@ -24,7 +24,7 @@ class AnotherFakeDAO(AsyncDAOProtocol):
 @get(
     "/test",
     dependencies={
-        "dao": Factory(AnotherFakeDAO, "awesome_conn", db_session="session", cache="cache")
+        "dao": Inject(Factory(AnotherFakeDAO, "awesome_conn", db_session="session", cache="cache"))
     },
 )
 async def test_view(dao: AnotherFakeDAO) -> JSONResponse:
