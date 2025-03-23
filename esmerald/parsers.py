@@ -86,7 +86,7 @@ def parse_json_value(value: Any) -> Any:
     with suppress(JSONDecodeError):
         return loads(value)
 
-    return value
+    return value  # type: ignore
 
 
 def merge_values(values_dict: Dict[str, Any], key: str, value: Any) -> None:
