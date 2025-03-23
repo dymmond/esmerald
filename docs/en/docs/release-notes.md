@@ -15,6 +15,10 @@ hide:
     from esmerald.utils.environments import EnvironmentLoader
     ```
 
+### Changed
+
+- Event lifecycle fully delegated to Lilya internals removing duplication.
+
 ### 3.6.7
 
 ### Added
