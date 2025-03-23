@@ -1,4 +1,4 @@
-from functools import wraps
+from functools import update_wrapper, wraps
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -290,6 +290,9 @@ def controller(**kwargs: Unpack[ControllerOptions]) -> Callable[[type], type]:
             (Controller, cls),  # Ensure it inherits from Controller
             {**cls.__dict__, **kwargs},  # Merge original attributes with kwargs
         )
+
+        # Preserve the original class metadata
+        update_wrapper(new_class, cls, updated=())
         return new_class
 
     return wrapper
@@ -352,7 +355,9 @@ def observable(send: Optional[List[str]] = None, listen: Optional[List[str]] = N
             if send:
                 async with anyio.create_task_group() as tg:
                     for event in send:
-                        tg.start_soon(EventDispatcher.emit, event, *args, **kwargs)
+                        tg.start_soon(
+                            lambda e=event, a=args, k=kwargs: EventDispatcher.emit(e, *a, **k)
+                        )
 
             return result
 

@@ -1,7 +1,10 @@
+import functools
 from typing import Any, Callable, Dict, List
 
 import anyio
 from lilya.compat import is_async_callable
+
+from esmerald.utils.inspect import func_accepts_kwargs
 
 
 class EventDispatcher:
@@ -77,8 +80,14 @@ class EventDispatcher:
         async with anyio.create_task_group() as tg:
             for listener in listeners:
                 if is_async_callable(listener):
-                    tg.start_soon(listener, *args, **kwargs)  # Run async function
+                    (
+                        tg.start_soon(functools.partial(listener, *args, **kwargs))
+                        if func_accepts_kwargs(listener)
+                        else tg.start_soon(functools.partial(listener, *args))
+                    )
                 else:
-                    tg.start_soon(
-                        anyio.to_thread.run_sync, listener, *args, **kwargs
-                    )  # Run sync function in a separate thread
+                    (
+                        tg.start_soon(anyio.to_thread.run_sync, listener, *args, **kwargs)
+                        if func_accepts_kwargs(listener)
+                        else tg.start_soon(anyio.to_thread.run_sync, listener, *args)
+                    )
