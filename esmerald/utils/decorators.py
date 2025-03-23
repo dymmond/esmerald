@@ -1,9 +1,12 @@
+from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, TypedDict, Union, Unpack
 
 from lilya._internal._path import clean_path  # noqa
+from lilya.compat import is_async_callable
 from typing_extensions import Annotated, Doc
 
 from esmerald import Controller
+from esmerald.core.events.base import EventDispatcher
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.interceptors.types import Interceptor
@@ -275,3 +278,69 @@ def controller(**kwargs: Unpack[ControllerOptions]) -> Callable[[type], type]:
         return new_class
 
     return wrapper
+
+
+def propagator(send: Optional[List[str]] = None, listen: Optional[List[str]] = None) -> Callable:
+    """
+    Decorator to register event listeners and automatically trigger them when an event is sent.
+
+    This decorator allows a function to:
+    - **Send events** (`send` parameter): When the function executes, it will automatically
+      trigger the specified events.
+    - **Listen to events** (`listen` parameter): The function will be registered as a listener
+      for the specified events, meaning it will be called whenever those events are emitted.
+
+    **Example**:
+
+    ```python
+    @propagator(send=["user_created"])
+    async def create_user():
+        return "User created"
+
+    @propagator(listen=["user_created"])
+    async def notify_admin():
+        print("Admin notified about new user")
+    ```
+
+    Parameters:
+        send : Optional[List[str]]
+            A list of event names that should be emitted when the function is executed.
+        listen : Optional[List[str]]
+            A list of event names that the function should listen to.
+
+    Callable
+        The wrapped function with event propagation behavior.
+    """
+
+    def decorator(func: Callable) -> Callable:
+        """
+        Inner decorator function that wraps the original function to handle event propagation.
+
+        - Registers the function as an event listener if it listens to any events.
+        - Wraps the function to emit specified events upon execution.
+        """
+
+        # Register function as a listener if it listens to events
+        EventDispatcher.register(func, listen)
+
+        @wraps(func)
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """
+            Wrapper function that:
+            - Calls the original function (sync or async).
+            - Emits events defined in `send` after execution.
+            """
+            result = (
+                await func(*args, **kwargs) if is_async_callable(func) else func(*args, **kwargs)
+            )
+
+            # Automatically emit the events when function is executed
+            if send:
+                for event in send:
+                    await EventDispatcher.emit(event, *args, **kwargs)
+
+            return result
+
+        return wrapper
+
+    return decorator
