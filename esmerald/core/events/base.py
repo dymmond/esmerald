@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 import anyio
 from lilya.compat import is_async_callable
@@ -6,83 +6,79 @@ from lilya.compat import is_async_callable
 
 class EventDispatcher:
     """
-    A thread-safe event dispatcher that allows registering event listeners and emitting events asynchronously.
+    A lightweight event dispatcher implementing an observable pattern.
 
-    - Uses an internal lock to ensure thread safety when modifying the listener registry.
-    - Supports both synchronous and asynchronous event listeners.
-    - Uses `anyio.create_task_group()` to handle multiple event listeners concurrently.
-
-    This enables a flexible event-driven system where functions can subscribe to and react to events.
+    - Allows functions to subscribe to specific events.
+    - Emits events and notifies all registered listeners asynchronously.
+    - Ensures thread safety for event subscriptions and emissions.
     """
 
     _listeners: Dict[str, List[Callable]] = {}
-    _lock = anyio.Lock()  # Ensures thread safety when modifying listeners
+    _lock = anyio.Lock()  # Ensures thread-safe modifications of listeners
 
     @classmethod
-    async def register(cls, func: Callable, listen: Optional[List[str]] = None) -> None:
+    async def subscribe(cls, event: str, func: Callable) -> None:
         """
-        Registers a function as a listener for specific events.
+        Registers a function as a listener for a given event.
 
-        - If an event does not exist in `_listeners`, it will be created.
-        - The function will be added to the list of listeners for each specified event.
-        - Ensures thread safety using an `anyio.Lock`.
+        - If the event does not exist, it is initialized.
+        - The function is added to the list of listeners for that event.
+        - Ensures safe concurrent access with a lock.
 
         Args:
-            func (Callable): The function to register as an event listener.
-            listen (Optional[List[str]]): A list of event names to listen for.
+            event (str): The name of the event to subscribe to.
+            func (Callable): The function that will be triggered when the event is emitted.
 
         Example:
             ```python
-            async def on_user_created():
-                print("User created event received")
+            async def on_user_registered():
+                print("User registered!")
 
-            await EventDispatcher.register(on_user_created, ["user_created"])
+            await EventDispatcher.subscribe("user_registered", on_user_registered)
             ```
         """
-        if not listen:
-            return
-
         async with cls._lock:
-            for event in listen:
-                if event not in cls._listeners:
-                    cls._listeners[event] = []
-                cls._listeners[event].append(func)
+            if event not in cls._listeners:
+                cls._listeners[event] = []
+            cls._listeners[event].append(func)
 
     @classmethod
     async def emit(cls, event: str, *args: Any, **kwargs: Any) -> None:
         """
-        Emits an event and triggers all registered listeners for that event.
+        Emits an event, triggering all registered listeners asynchronously.
 
-        - Listeners are retrieved in a thread-safe manner.
-        - Uses `anyio.create_task_group()` to run multiple listeners concurrently.
-        - Both synchronous and asynchronous listeners are supported.
+        - Collects all listeners for the specified event.
+        - Uses `anyio.create_task_group()` to execute them concurrently.
+        - Supports both synchronous and asynchronous listeners.
 
         Args:
-            event (str): The event name to trigger.
-            *args (Any): Positional arguments to pass to the listeners.
-            **kwargs (Any): Keyword arguments to pass to the listeners.
+            event (str): The event name to emit.
+            *args (Any): Positional arguments to pass to listeners.
+            **kwargs (Any): Keyword arguments to pass to listeners.
 
         Example:
             ```python
-            async def send_email():
-                print("Email sent")
+            async def handle_event(data):
+                print(f"Received event with data: {data}")
 
-            await EventDispatcher.register(send_email, ["email_sent"])
-            await EventDispatcher.emit("email_sent")
+            await EventDispatcher.subscribe("data_received", handle_event)
+            await EventDispatcher.emit("data_received", {"id": 1})
             ```
 
         Notes:
-            - Asynchronous functions will be awaited.
-            - Synchronous functions will be executed in a separate thread using `anyio.to_thread.run_sync`.
+            - Asynchronous listeners will be awaited.
+            - Synchronous listeners will run in a separate thread using `anyio.to_thread.run_sync`.
         """
         async with cls._lock:
-            listeners = cls._listeners.get(event, []).copy()  # Copy to avoid mutation issues
+            listeners = cls._listeners.get(
+                event, []
+            ).copy()  # Copy to prevent modification during iteration
 
         async with anyio.create_task_group() as tg:
             for listener in listeners:
                 if is_async_callable(listener):
-                    tg.start_soon(listener, *args, **kwargs)  # Async listener
+                    tg.start_soon(listener, *args, **kwargs)  # Run async function
                 else:
                     tg.start_soon(
                         anyio.to_thread.run_sync, listener, *args, **kwargs
-                    )  # Sync listener
+                    )  # Run sync function in a separate thread

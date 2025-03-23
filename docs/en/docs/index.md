@@ -153,19 +153,20 @@ example.
 * **Exception Handlers**: Apply exception handlers on any desired level.
 * **Permissions**: Apply specific rules and permissions on each API.
 * **Interceptors**: Intercept requests and add logic before reaching the endpoint.
+* **Observables** - Support for observables allowing to create reactive programming within your application
 * **Pluggables**: Create plugins for Esmerald and hook them into any application and/or
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
 * **ORM Support**: Native support for [Saffier][saffier_orm] and [Edgy][edgy_orm].
 * **ODM Support**: Native support for [Mongoz][mongoz_odm].
-* **APIView**: Class Based endpoints for your beloved OOP design.
+* **Controller**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJSON support.
 * **Lifespan**: Support for the newly Lilya lifespan.
 * **Dependency Injection**: Like any other great framework out there.
 * **Scheduler**: Yes, that's right, we come with a scheduler for those background tasks.
 * **Simplicity from settings**: Yes, we have a way to make the code even cleaner by introducing settings
 based systems.
-* **msgspec** - Support for `msgspec`.
+* **Encoders** - Support for custom encoders allowing compatibility with any favourity validation library: `msgspec`, `attrs`....
 
 ## Relation to Lilya and other frameworks
 

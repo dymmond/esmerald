@@ -116,6 +116,7 @@ nav:
     - permissions/esmerald.md
     - permissions/lilya.md
   - middleware/middleware.md
+  - observables.md
   - dependencies.md
   - exceptions.md
   - exception-handlers.md

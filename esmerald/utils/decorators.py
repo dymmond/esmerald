@@ -295,86 +295,60 @@ def controller(**kwargs: Unpack[ControllerOptions]) -> Callable[[type], type]:
     return wrapper
 
 
-def propagator(send: Optional[List[str]] = None, listen: Optional[List[str]] = None) -> Callable:
+def observable(send: Optional[List[str]] = None, listen: Optional[List[str]] = None) -> Callable:
     """
-    A decorator that registers a function as an event listener and/or automatically emits events.
+    A decorator that enables a function to participate in an event-driven system.
 
-    - **Send events** (`send` parameter): When the decorated function executes, it will automatically
-      trigger the specified events.
-    - **Listen to events** (`listen` parameter): The function will be registered as a listener for the
-      specified events and will be executed when those events are emitted.
+    - If `send` is provided, the function will emit the specified events after execution.
+    - If `listen` is provided, the function will be registered as a listener for those events
+      and executed when they are emitted.
 
-    This enables a simple event-driven architecture where functions can listen for and propagate events.
+    This allows seamless event propagation and reaction, making functions behave like observables.
 
     Args:
         send (Optional[List[str]]): A list of event names to emit after the function executes.
         listen (Optional[List[str]]): A list of event names the function should listen for.
 
     Returns:
-        Callable: The decorated function with event propagation behavior.
-
-    Example:
-        ```python
-        @propagator(send=["user_created"])
-        async def create_user():
-            return "User created"
-
-        @propagator(listen=["user_created"])
-        async def notify_admin():
-            print("Admin notified about new user")
-        ```
+        Callable: The decorated function with event-driven behavior.
     """
 
     def decorator(func: Callable) -> Callable:
-        """
-        Internal decorator function that wraps the original function, ensuring it is properly registered
-        as an event listener and emits events when executed.
+        """Wraps the function to handle event subscription and emission."""
 
-        Args:
-            func (Callable): The function to be wrapped.
+        async def register() -> None:
+            """Registers the function as a listener if `listen` events are specified."""
+            if listen:
+                for event in listen:
+                    await EventDispatcher.subscribe(event, func)
 
-        Returns:
-            Callable: The function wrapped with event listening and emitting capabilities.
-        """
-
-        async def register_if_needed() -> None:
-            """
-            Registers the function as a listener for specified events.
-
-            This ensures that the function is properly registered in the event dispatcher
-            when the application starts.
-            """
-            await EventDispatcher.register(func, listen)
-
-        # Schedule the listener registration in the background to avoid blocking
         try:
-            anyio.run(register_if_needed)  # Safe if no event loop is running
-        except RuntimeError:  # If an event loop is already running
-            anyio.from_thread.run(register_if_needed)  # Runs inside existing loop
+            anyio.run(register)  # Ensures safe execution if no event loop is running
+        except RuntimeError:
+            anyio.from_thread.run(register)  # Runs in an existing event loop if active
 
         @wraps(func)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
             """
-            Executes the original function and propagates events if specified.
+            Executes the function and emits events if specified.
 
             - If the function is asynchronous, it is awaited.
-            - If the function is synchronous, it runs safely in a separate thread.
-            - After execution, if the `send` parameter is set, the corresponding events are emitted.
+            - If the function is synchronous, it is executed in a separate thread.
+            - After execution, events defined in `send` are emitted.
 
             Args:
                 *args (Any): Positional arguments for the function.
                 **kwargs (Any): Keyword arguments for the function.
 
             Returns:
-                Any: The result of the wrapped function's execution.
+                Any: The result of the function execution.
             """
             if is_async_callable(func):
                 result = await func(*args, **kwargs)
             else:
-                result = await anyio.to_thread.run_sync(
-                    func, *args, **kwargs
-                )  # Run sync function safely
+                result = await anyio.to_thread.run_sync(func, *args, **kwargs)
 
+            # Emit events after execution
             if send:
                 async with anyio.create_task_group() as tg:
                     for event in send:

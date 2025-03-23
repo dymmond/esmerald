@@ -11,6 +11,8 @@ hide:
 
 - Decorator `controller`. This decorator allows to, as the name suggests, create a controller from
 a normal python objects. This is a simple way of creating a controller without the need of subclassing the `Controller` class.
+- [Observables](./observables.md) documentation section. This is a new feature that allows to create
+observables that can be used to create a more reactive programming style.
 
 #### Example
 
