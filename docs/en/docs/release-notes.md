@@ -15,6 +15,8 @@ hide:
     from esmerald.utils.environments import EnvironmentLoader
     ```
 
+- [Factory](./dependencies.md) now accepts `kwargs` parameters.
+
 ### Changed
 
 - Event lifecycle fully delegated to Lilya internals removing duplication.
