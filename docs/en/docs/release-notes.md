@@ -22,6 +22,7 @@ hide:
 - Background tasks pointing 100% to Lilya.
 - Moved `concurrecy` to `esmerald.utils.concurrency`.
 - Moved `esmerald.enums` to `esmerald.utils.enums`.
+- Refactored `parse_form_data` from `esmerald.parsers` into a cleaner version.
 
 ### Fixed
 
