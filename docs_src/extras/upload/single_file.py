@@ -1,5 +1,5 @@
 from esmerald import Body, Esmerald, Gateway, JSONResponse, UploadFile, post
-from esmerald.enums import EncodingType, MediaType
+from esmerald.utils.enums import EncodingType
 
 
 @post("/upload")

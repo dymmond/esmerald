@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, ca
 from lilya import status
 from typing_extensions import Annotated, Doc
 
-from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.permissions.types import Permission
@@ -18,6 +17,7 @@ from esmerald.types import (
     ResponseType,
 )
 from esmerald.utils.constants import AVAILABLE_METHODS
+from esmerald.utils.enums import HttpMethod, MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.openapi.schemas.v3_1_0 import SecurityScheme

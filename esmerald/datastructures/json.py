@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer  # noqa
-from esmerald.enums import MediaType
 from esmerald.responses import JSONResponse  # noqa
+from esmerald.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald

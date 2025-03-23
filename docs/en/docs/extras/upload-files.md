@@ -29,7 +29,7 @@ The `media_type` allows to pass different encoding types for your uploads.
 Esmerald `EncodingType` can be accessed via:
 
 ```python
-from esmerald.enums import EncodingType
+from esmerald.utils.enums import EncodingType
 ```
 
 The current available `content-types` available in the `EncodingType` are:

@@ -2,12 +2,12 @@ from random import randint
 
 from lilya.status import HTTP_200_OK
 
-from esmerald.enums import MediaType
 from esmerald.injector import Inject
 from esmerald.routing.apis.views import APIView
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get
 from esmerald.testclient import create_client
+from esmerald.utils.enums import MediaType
 
 
 def test_inter_dependencies() -> None:

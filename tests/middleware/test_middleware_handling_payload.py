@@ -4,12 +4,12 @@ from _pytest.logging import LogCaptureFixture
 from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
 
-from esmerald.enums import ScopeType
 from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get, post
 from esmerald.testclient import create_client
+from esmerald.utils.enums import ScopeType
 
 logger = logging.getLogger(__name__)
 

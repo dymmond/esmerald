@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 from esmerald import Body, Esmerald, Gateway, post
-from esmerald.enums import EncodingType
+from esmerald.utils.enums import EncodingType
 
 
 class User(BaseModel):

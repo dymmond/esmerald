@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from esmerald import Body, Esmerald, Gateway, UploadFile, post
-from esmerald.enums import EncodingType
 from esmerald.testclient import EsmeraldTestClient
+from esmerald.utils.enums import EncodingType
 
 
 def test_upload_file_is_closed_using_complexity(tmp_path: Path):

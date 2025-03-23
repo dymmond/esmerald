@@ -17,15 +17,16 @@ from typing import (
 
 from lilya._internal._message import Address as Address  # noqa: F401
 from lilya.datastructures import (
-    URL as URL,  # noqa: F401
+    # noqa: F401
     DataUpload as LilyaUploadFile,  # noqa
-    FormData as FormData,  # noqa: F401
-    Header as Header,  # noqa: F401
-    QueryParam as QueryParam,  # noqa: F401
-    Secret as Secret,  # noqa
-    State as State,  # noqa: F401
-    URLPath as URLPath,  # noqa: F401
 )
+
+# noqa: F401
+# noqa: F401
+# noqa: F401
+# noqa
+# noqa: F401
+# noqa: F401
 from lilya.responses import Response as LilyaResponse  # noqa
 from pydantic import BaseModel, ConfigDict, field_validator  # noqa
 from pydantic._internal._schema_generation_shared import (
@@ -40,7 +41,7 @@ from pydantic_core.core_schema import (
 from typing_extensions import Literal
 
 from esmerald.background import BackgroundTask, BackgroundTasks  # noqa
-from esmerald.enums import MediaType
+from esmerald.utils.enums import MediaType
 
 R = TypeVar("R", bound=LilyaResponse)
 

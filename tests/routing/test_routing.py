@@ -10,7 +10,6 @@ from lilya.websockets import WebSocket, WebSocketDisconnect
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from esmerald.applications import Esmerald
-from esmerald.enums import MediaType
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.permissions import AllowAny, DenyAll
 from esmerald.requests import Request
@@ -21,6 +20,7 @@ from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import get, post, put, route, websocket
 from esmerald.routing.router import Include, Router
 from esmerald.testclient import create_client
+from esmerald.utils.enums import MediaType
 
 
 @get(path="/", permissions=[DenyAll])

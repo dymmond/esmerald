@@ -26,7 +26,6 @@ from pydantic.fields import FieldInfo
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from typing_extensions import Literal
 
-from esmerald.enums import MediaType
 from esmerald.openapi.constants import METHODS_WITH_BODY, REF_PREFIX, REF_TEMPLATE
 from esmerald.openapi.models import (
     Contact,
@@ -55,6 +54,7 @@ from esmerald.routing._internal import (
 from esmerald.security.oauth2.oauth import SecurityBase
 from esmerald.typing import Undefined
 from esmerald.utils.dependencies import is_base_requires
+from esmerald.utils.enums import MediaType
 from esmerald.utils.helpers import is_class_and_subclass, is_union
 
 ADDITIONAL_TYPES = ["bool", "list", "dict"]

@@ -7,7 +7,6 @@ from lilya.responses import Response as LilyaResponse
 from lilya.types import ASGIApp, Receive, Scope, Send
 from pydantic import BaseModel
 
-from esmerald.enums import MediaType, ScopeType
 from esmerald.exception_handlers import http_exception_handler
 from esmerald.exceptions import HTTPException, WebSocketException
 from esmerald.middleware._exception_handlers import wrap_app_handling_exceptions
@@ -15,6 +14,7 @@ from esmerald.middleware.errors import ServerErrorMiddleware
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.types import ExceptionHandler, ExceptionHandlerMap
+from esmerald.utils.enums import MediaType, ScopeType
 from esmerald.websockets import WebSocket
 
 

@@ -20,6 +20,8 @@ hide:
 - Event lifecycle fully delegated to Lilya internals removing duplication.
 - Cleanup internals for thr path and delegate to Lilya.
 - Background tasks pointing 100% to Lilya.
+- Moved `concurrecy` to `esmerald.utils.concurrency`.
+- Moved `esmerald.enums` to `esmerald.utils.enums`.
 
 ### Fixed
 

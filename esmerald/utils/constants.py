@@ -1,6 +1,6 @@
 from lilya import status
 
-from esmerald.enums import HttpMethod
+from esmerald.utils.enums import HttpMethod
 
 RESERVED_KWARGS = {
     "state",

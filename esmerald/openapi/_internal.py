@@ -3,7 +3,7 @@ from typing import Any, Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
-from esmerald.enums import MediaType
+from esmerald.utils.enums import MediaType
 
 
 class InternalResponse(BaseModel):

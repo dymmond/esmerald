@@ -5,9 +5,9 @@ from lilya._internal._connection import Connection
 from lilya.types import ASGIApp, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
-from esmerald.enums import ScopeType
 from esmerald.parsers import ArbitraryBaseModel
 from esmerald.protocols.middleware import MiddlewareProtocol
+from esmerald.utils.enums import ScopeType
 
 
 class AuthResult(ArbitraryBaseModel):

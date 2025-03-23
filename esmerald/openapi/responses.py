@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING, Any, Dict, Union, cast
 from typing_extensions import get_args, get_origin
 
 from esmerald.datastructures import File, Redirect, Stream, Template
-from esmerald.enums import MediaType
 from esmerald.openapi._internal import InternalResponse
 from esmerald.responses import Response as EsmeraldResponse
+from esmerald.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.routing.router import HTTPHandler
-    from esmerald.typing import AnyCallable
+    from esmerald.typing import AnyCallable as AnyCallable  # noqa
 
 
 def create_internal_response(

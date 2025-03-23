@@ -1,6 +1,6 @@
 from esmerald import ChildEsmerald, Gateway, Include, Response, get
-from esmerald.enums import MediaType
 from esmerald.testclient import create_client
+from esmerald.utils.enums import MediaType
 
 
 @get()

@@ -6,7 +6,7 @@ from pydantic import FilePath, model_validator  # noqa
 from typing_extensions import Annotated, Doc
 
 from esmerald.datastructures.base import ResponseContainer
-from esmerald.enums import MediaType
+from esmerald.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald

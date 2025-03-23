@@ -46,7 +46,6 @@ from typing_extensions import Annotated, Doc
 from esmerald.conf import settings
 from esmerald.core.urls import include
 from esmerald.datastructures import File, Redirect
-from esmerald.enums import HttpMethod, MediaType
 from esmerald.exceptions import (
     ImproperlyConfigured,
     MethodNotAllowed,
@@ -70,6 +69,7 @@ from esmerald.transformers.signature import SignatureModel
 from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
+from esmerald.utils.enums import HttpMethod, MediaType
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass, is_optional_union
 from esmerald.websockets import WebSocket, WebSocketClose
 
@@ -553,9 +553,9 @@ class BaseRouter(LilyaRouter):
             path = "/"
         else:
             assert path.startswith("/"), "A path prefix must start with '/'"
-            assert not path.endswith("/"), (
-                "A path must not end with '/', as the routes will start with '/'"
-            )
+            assert not path.endswith(
+                "/"
+            ), "A path must not end with '/', as the routes will start with '/'"
 
         new_routes: list[Any] = []
         for route in routes or []:
@@ -585,9 +585,9 @@ class BaseRouter(LilyaRouter):
                 )
             new_routes.append(route)
 
-        assert lifespan is None or (on_startup is None and on_shutdown is None), (
-            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
-        )
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [

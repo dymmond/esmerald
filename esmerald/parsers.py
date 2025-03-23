@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
 
 from esmerald.datastructures import UploadFile
-from esmerald.enums import EncodingType
+from esmerald.utils.enums import EncodingType
 
 if TYPE_CHECKING:  # pragma: no cover
     from lilya.datastructures import FormData

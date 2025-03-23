@@ -12,8 +12,8 @@ from esmerald import Gateway, Router
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.terminal import OutputColour, Print, Terminal
-from esmerald.enums import HttpMethod
 from esmerald.routing.apis.base import View
+from esmerald.utils.enums import HttpMethod
 
 if TYPE_CHECKING:
     from lilya.routing import BasePath

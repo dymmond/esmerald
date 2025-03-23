@@ -8,10 +8,10 @@ from pydantic.fields import FieldInfo
 
 from esmerald.datastructures import UploadFile
 from esmerald.encoders import LILYA_ENCODER_TYPES, is_body_encoder
-from esmerald.enums import EncodingType
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body
 from esmerald.utils.constants import DATA, PAYLOAD
+from esmerald.utils.enums import EncodingType
 from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:
