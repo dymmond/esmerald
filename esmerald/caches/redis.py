@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import time
 from typing import Any
 
 import anyio
@@ -164,16 +165,25 @@ class RedisCache(CacheBackend):
         anyio.to_thread.run_sync(set_cached)  # type: ignore
 
     def sync_delete(self, key: str) -> None:
-        """Deletes a value from the Redis cache synchronously.
+        """Deletes a value from the Redis cache synchronously and ensures it is removed.
 
         This method wraps the asynchronous `delete` method inside a thread-safe
-        AnyIO execution to allow usage in synchronous contexts.
+        AnyIO execution to allow usage in synchronous contexts. It also ensures
+        that Redis has actually removed the key before proceeding.
 
         Args:
             key (str): The cache key to delete.
         """
 
         def delete_cached() -> None:
+            """Runs the deletion and verifies the key is gone."""
             anyio.run(self.async_client.delete, key)
+
+            # Wait until the key is actually removed
+            for _ in range(50):  # Retry for up to 5 seconds
+                remaining_keys = anyio.run(self.async_client.keys, "*")
+                if key.encode() not in remaining_keys:
+                    break
+                time.sleep(0.1)  # Small delay to let Redis process deletion
 
         anyio.to_thread.run_sync(delete_cached)  # type: ignore
