@@ -1,6 +1,8 @@
-import pytest
-from .conftest import CACHE_TTL
 import asyncio
+
+import pytest
+
+from .conftest import CACHE_TTL
 
 
 def test_memory_cache_basic_operations(memory_cache) -> None:

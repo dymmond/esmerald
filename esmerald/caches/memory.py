@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import time
 import logging
+import time
+from typing import Any
+
 import anyio
 import orjson
 
 from esmerald.protocols.cache import CacheBackend
-from typing import Any
 
 logger = logging.getLogger(__name__)
 

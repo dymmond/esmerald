@@ -17,8 +17,8 @@ from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
-from esmerald.routing import gateways
 from esmerald.protocols.cache import CacheBackend
+from esmerald.routing import gateways
 from esmerald.types import (
     APIGateHandler,
     Dependencies,

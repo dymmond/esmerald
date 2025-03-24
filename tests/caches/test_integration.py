@@ -1,7 +1,6 @@
 import pytest
+
 from esmerald.conf import settings
-from esmerald.testclient import EsmeraldTestClient
-from esmerald import Esmerald, Gateway
 from esmerald.testclient import override_settings
 
 
@@ -23,7 +22,7 @@ def test_esmerald_memory_cache(client) -> None:
 
     response = client.get(f"/cache/{key}")
     assert response.status_code == 200
-    assert response.text is ""
+    assert response.text == ""
 
 
 @pytest.mark.asyncio
@@ -33,7 +32,6 @@ async def xtest_esmerald_redis_cache(redis_cache, client) -> None:
     with override_settings(cache_backend=await redis_cache):
         settings.cache_backend = redis_cache
 
-        breakpoint()
         key, value = "redis_api_key", "cached_value"
 
         response = await client.get(f"/set-cache/{key}/{value}")

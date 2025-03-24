@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import pytest
-from esmerald import Esmerald, Gateway, get
-from esmerald.testclient import EsmeraldTestClient
-from esmerald.conf import settings
-from esmerald.protocols.cache import CacheBackend
-
 from typing import Any
 
+import pytest
+
+from esmerald import Esmerald, Gateway, get
 from esmerald.caches.memory import InMemoryCache
 from esmerald.caches.redis import RedisCache
+from esmerald.conf import settings
+from esmerald.protocols.cache import CacheBackend
+from esmerald.testclient import EsmeraldTestClient
 
 try:
     import aioredis
