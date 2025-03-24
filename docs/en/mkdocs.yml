@@ -126,6 +126,7 @@ nav:
   - requests.md
   - context.md
   - responses.md
+  - caching.md
   - encoders.md
   - msgspec.md
   - background-tasks.md

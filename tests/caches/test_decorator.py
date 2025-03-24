@@ -165,7 +165,6 @@ async def xtest_esmerald_integration_in_memory(memory_cache):
 
         memory_cache.sync_delete("cached_endpoint:10")
         response3 = client.get("/cached/10")
-        print(memory_cache._store.keys())
 
         assert response3.status_code == 200
         assert response3.json() != response1.json()  # Recomputed value
