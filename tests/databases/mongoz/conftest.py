@@ -8,6 +8,10 @@ from esmerald import settings
 client = settings.mongoz_registry
 
 
+def pytest_configure(config):
+    config.option.asyncio_mode = "strict"
+
+
 @pytest.fixture(scope="module")
 def anyio_backend():
     return ("asyncio", {"debug": False})
