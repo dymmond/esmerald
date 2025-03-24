@@ -175,7 +175,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
-        return request.app_settings.model_dump_json()
+        return request.app_settings.model_dump_json(exclude={"cache_backend"})
 
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],
@@ -208,7 +208,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
-        return request.app_settings.model_dump_json()  # pragma: no cover
+        return request.app_settings.model_dump_json(exclude={"cache_backend"})  # pragma: no cover
 
     secret = get_random_secret_key()
     child = ChildEsmerald(
@@ -240,7 +240,7 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
-        return request.app_settings.model_dump_json()
+        return request.app_settings.model_dump_json(exclude={"cache_backend"})
 
     child = ChildEsmerald(
         routes=[Gateway(handler=_app_settings)],

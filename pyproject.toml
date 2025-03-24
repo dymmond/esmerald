@@ -280,7 +280,6 @@ ignore_errors = true
 addopts = ["--strict-config", "--strict-markers"]
 xfail_strict = true
 junit_family = "xunit2"
-asyncio_mode = "auto"
 
 
 [tool.hatch.build.targets.sdist]

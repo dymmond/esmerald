@@ -20,6 +20,10 @@ except ImportError:
 CACHE_TTL = 10  # 10 seconds for quick TTL tests
 
 
+def pytest_configure(config):
+    config.option.asyncio_mode = "auto"
+
+
 @pytest.fixture(scope="function")
 def memory_cache() -> InMemoryCache:
     """Fixture providing a fresh InMemoryCache instance."""
@@ -49,7 +53,12 @@ async def redis_cache(event_loop) -> RedisCache:
 @pytest.fixture(scope="function")
 async def redis_settings(redis_cache) -> TestSettings:
     """Fixture providing Redis settings for testing."""
-    return TestSettings(cache_backend=redis_cache)
+
+    class RefisSettings(TestSettings):
+        cache_backend: RedisCache = redis_cache
+
+    setts = RefisSettings()
+    return setts
 
 
 @pytest.fixture(scope="function")
