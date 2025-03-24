@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Annotated, Doc
 
 from esmerald import __version__
+from esmerald.cache.memory import InMemoryCache
 from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
@@ -29,11 +30,24 @@ from esmerald.types import (
 )
 
 if TYPE_CHECKING:
+    from esmerald.protocols.cache import CacheBackend
     from esmerald.routing.router import Include  # pragma: no cover
     from esmerald.types import TemplateConfig  # pragma: no cover
 
 
-class EsmeraldAPISettings(BaseSettings):
+class CacheBackendSettings(BaseSettings):
+    """
+    `CacheBackendSettings` settings object. The main entry-point for any settings
+    used by **any** Esmerald application.
+
+    Esmerald uses these settings to set the `@cache` decorator and use it across
+    the application.
+    """
+
+    cache_backend: Optional["CacheBackend"] = InMemoryCache()
+
+
+class EsmeraldAPISettings(CacheBackendSettings):
     """
     `EsmeraldAPISettings` settings object. The main entry-point for any settings
     used by **any** Esmerald application.
