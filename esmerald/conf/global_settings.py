@@ -69,6 +69,7 @@ class CacheBackendSettings(BaseSettings):
             """
         ),
     ] = InMemoryCache()
+    cache_default_ttl: Annotated[int, Doc("Default time-to-live (TTL) for cached items.")] = 300
 
 
 class EsmeraldAPISettings(CacheBackendSettings):

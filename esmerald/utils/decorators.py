@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import re
 import threading
 from functools import update_wrapper, wraps
 from typing import (
@@ -307,12 +308,15 @@ def controller(**kwargs: Unpack[ControllerOptions]) -> Callable[[type], type]:
 
 def generate_cache_key(func: Callable, args: Any, kwargs: Any) -> str:
     """
-    Generates a unique cache key based on function name and hashed arguments.
-    Uses `orjson` for fast and efficient serialization.
+    Generates a stable cache key ensuring it does not include `<locals>`.
     """
+    # Get module and function name
     key_base = f"{func.__module__}.{func.__qualname__}"
 
-    # Convert args & kwargs into an orjson-serializable format
+    # Ensure that nested function names do not include <locals>
+    key_base = re.sub(r"\.<locals>\.", ".", key_base)
+
+    # Convert args & kwargs into a deterministic format
     def convert(value: Any) -> Any:
         if isinstance(value, tuple):
             return list(value)  # Convert tuples to lists
@@ -328,7 +332,9 @@ def generate_cache_key(func: Callable, args: Any, kwargs: Any) -> str:
         option=orjson.OPT_SORT_KEYS,  # Ensures deterministic output
     )
 
+    # Use a stable hash to ensure key format remains consistent
     key_hash = hashlib.md5(serialized_data).hexdigest()
+
     return f"{key_base}:{key_hash}"
 
 
@@ -367,7 +373,7 @@ class cache:  # noqa
             ttl (Optional[int]): Time in seconds before a cache entry expires.
             backend (Optional[CacheBackend]): The cache backend implementation.
         """
-        self.ttl = ttl
+        self.ttl = ttl or settings.cache_default_ttl
         self.backend = backend or settings.cache_backend
 
     def __call__(self, func: Callable) -> Any:

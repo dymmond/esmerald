@@ -131,5 +131,6 @@ class InMemoryCache(CacheBackend):
         """
         try:
             self._store.pop(key, None)
+            time.sleep(0.1)
         except Exception as e:
             logger.exception(f"Cache delete error: {e}")
