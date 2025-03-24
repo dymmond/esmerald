@@ -1,19 +1,23 @@
 from __future__ import annotations
 
-from typing import Any, Protocol
+from typing import Any
+from abc import ABC, abstractmethod
 
 
-class CacheBackend(Protocol):
-    """Protocol for cache backends, ensuring compatibility with the decorator."""
+class CacheBackend(ABC):
+    """Protocol for caches backends, ensuring compatibility with the decorator."""
 
+    @abstractmethod
     async def get(self, key: str) -> Any | None:
         """Retrieve a cached value by key."""
-        ...
+        raise NotImplementedError("Cache backend must implement get method.")
 
+    @abstractmethod
     async def set(self, key: str, value: Any, ttl: int | None = None) -> None:
-        """Store a value in the cache with an optional TTL."""
-        ...
+        """Store a value in the caches with an optional TTL."""
+        raise NotImplementedError("Cache backend must implement set method.")
 
+    @abstractmethod
     async def delete(self, key: str) -> None:
-        """Remove a value from the cache."""
-        ...
+        """Remove a value from the caches."""
+        raise NotImplementedError("Cache backend must implement delete method.")

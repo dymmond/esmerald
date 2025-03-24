@@ -6,8 +6,8 @@ from pydantic import AnyUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Annotated, Doc
 
-from esmerald import __version__
-from esmerald.cache.memory import InMemoryCache
+from esmerald import __version__  # noqa
+from esmerald.caches.memory import InMemoryCache
 from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
@@ -18,6 +18,7 @@ from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
 from esmerald.routing import gateways
+from esmerald.protocols.cache import CacheBackend
 from esmerald.types import (
     APIGateHandler,
     Dependencies,
@@ -30,7 +31,6 @@ from esmerald.types import (
 )
 
 if TYPE_CHECKING:
-    from esmerald.protocols.cache import CacheBackend
     from esmerald.routing.router import Include  # pragma: no cover
     from esmerald.types import TemplateConfig  # pragma: no cover
 
@@ -40,11 +40,35 @@ class CacheBackendSettings(BaseSettings):
     `CacheBackendSettings` settings object. The main entry-point for any settings
     used by **any** Esmerald application.
 
-    Esmerald uses these settings to set the `@cache` decorator and use it across
+    Esmerald uses these settings to set the `@caches` decorator and use it across
     the application.
     """
 
-    cache_backend: Optional["CacheBackend"] = InMemoryCache()
+    model_config = SettingsConfigDict(
+        extra="allow",
+        ignored_types=(cached_property,),
+        arbitrary_types_allowed=True,
+    )
+
+    cache_backend: Annotated[
+        Optional["CacheBackend"],
+        Doc(
+            """
+            Defines the cache backend to be used for caching operations within the application.
+            By default, an in-memory cache is used, but this can be replaced with other
+            implementations such as Redis or Memcached.
+
+            The cache backend should implement the necessary methods for storing, retrieving,
+            and invalidating cached data.
+
+            Read more about this in the official [Esmerald documentation](https://esmerald.dev/caching/).
+
+            !!! Tip
+                For distributed applications, consider using an external caching backend
+                like Redis instead of the default in-memory cache.
+            """
+        ),
+    ] = InMemoryCache()
 
 
 class EsmeraldAPISettings(CacheBackendSettings):
@@ -750,9 +774,6 @@ class EsmeraldAPISettings(CacheBackendSettings):
             """
         ),
     ] = "https://esmerald.dev/statics/images/favicon.ico"
-
-    # Model configuration
-    model_config = SettingsConfigDict(extra="allow", ignored_types=(cached_property,))
 
     # Shell configuration
     ipython_args: List[str] = ["--no-banner"]
