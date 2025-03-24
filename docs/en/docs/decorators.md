@@ -1,5 +1,3 @@
-from esmerald.utils.decorators import controller
-
 # Decorators
 
 ## What are Decorators?
