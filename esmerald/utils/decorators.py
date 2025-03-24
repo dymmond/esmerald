@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import threading
 from functools import update_wrapper, wraps
 from typing import (
@@ -40,6 +41,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 T = TypeVar("T", bound=Callable[..., Any])
+logger = logging.getLogger(__name__)
 
 
 class ControllerOptions(TypedDict, total=False):
@@ -334,31 +336,93 @@ def generate_cache_key(func: Callable, args: Any, kwargs: Any) -> str:
 cache_lock = threading.Lock()
 
 
-class Cache:
-    """Cache decorator with invalidation and flexible backends (AnyIO & Thread-Safe)."""
+class cache:  # noqa
+    """
+    A function-based caching decorator with TTL support, cache invalidation, and flexible backends.
+
+    This decorator works with both **synchronous** and **asynchronous** functions, supporting AnyIO-based
+    thread safety for cache operations. It prevents repeated expensive computations by caching the result
+    of function calls and returning cached values when available.
+
+    If the cache backend fails, the function executes normally, and errors are logged without
+    affecting the function's behavior.
+
+    Args:
+        ttl (Optional[int]): Time-to-live (TTL) in seconds for cached entries.
+            - If `None`, the cache entry never expires.
+        backend (Optional[CacheBackend]): Custom cache backend to store the data.
+            - Defaults to `settings.cache_backend` if not provided.
+
+    Example:
+        >>> @cache(ttl=10)
+        >>> async def get_data():
+        >>>     return "expensive_computation"
+    """
 
     def __init__(self, ttl: Optional[int] = None, backend: Optional[CacheBackend] = None) -> None:
+        """
+        Initializes the caching decorator with optional TTL and a cache backend.
+
+        Args:
+            ttl (Optional[int]): Time in seconds before a cache entry expires.
+            backend (Optional[CacheBackend]): The cache backend implementation.
+        """
         self.ttl = ttl
         self.backend = backend or settings.cache_backend
 
     def __call__(self, func: Callable) -> Any:
         """
-        Wraps a function with caching logic.
-        Supports both synchronous and asynchronous functions.
+        Wraps a function with caching logic to store and retrieve results from cache.
+
+        This method determines whether the function is **synchronous** or **asynchronous**
+        and applies the appropriate caching mechanism.
+
+        - **For async functions**, it awaits the result and caches it.
+        - **For sync functions**, it uses `anyio.run()` to interact with the async cache backend.
+
+        If a cache backend failure occurs, the function runs as usual, and the error is logged.
+
+        Args:
+            func (Callable): The function to be decorated.
+
+        Returns:
+            Callable: A wrapped function that integrates caching.
         """
         if is_async_callable(func):  # Handle async functions
 
             @wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+                """
+                Asynchronous cache wrapper.
+
+                Attempts to retrieve the cached value before calling the actual function.
+                If the cache fails, it logs the error and continues execution.
+
+                Args:
+                    *args: Positional arguments for the decorated function.
+                    **kwargs: Keyword arguments for the decorated function.
+
+                Returns:
+                    Any: The cached value if available, otherwise the function result.
+                """
                 key = generate_cache_key(func, args, kwargs)
+
                 async with anyio.Lock():  # Ensure async thread safety
-                    cached_value = await self.backend.get(key)
+                    try:
+                        cached_value = await self.backend.get(key)
+                        if cached_value is not None:
+                            return cached_value
+                    except Exception as e:
+                        logger.error(f"Cache backend failure in get(): {e}", exc_info=True)
 
-                    if cached_value is not None:
-                        return cached_value
-
+                    # Proceed with function execution if cache fails
                     result = await func(*args, **kwargs)
-                    await self.backend.set(key, result, self.ttl)
+
+                    try:
+                        await self.backend.set(key, result, self.ttl)
+                    except Exception as e:
+                        logger.error(f"Cache backend failure in set(): {e}", exc_info=True)
+
                     return result
 
             return async_wrapper
@@ -367,41 +431,82 @@ class Cache:
 
             @wraps(func)
             def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+                """
+                Synchronous cache wrapper.
+
+                Uses `anyio.run()` to interact with the async cache backend safely.
+
+                Args:
+                    *args: Positional arguments for the decorated function.
+                    **kwargs: Keyword arguments for the decorated function.
+
+                Returns:
+                    Any: The cached value if available, otherwise the function result.
+                """
                 key = generate_cache_key(func, args, kwargs)
 
                 with cache_lock:  # Ensure sync thread safety
+                    try:
 
-                    async def get_cached() -> Any:
-                        return await self.backend.get(key)
+                        async def get_cached() -> Any:
+                            """Retrieve a cached value asynchronously inside a sync function."""
+                            return await self.backend.get(key)
 
-                    cached_value = anyio.run(get_cached)
+                        cached_value = anyio.run(get_cached)
 
-                    if cached_value is not None:
-                        return cached_value
+                        if cached_value is not None:
+                            return cached_value
+                    except Exception as e:
+                        logger.error(f"Cache backend failure in get(): {e}", exc_info=True)
 
+                    # Proceed with function execution if cache fails
                     result = func(*args, **kwargs)
 
-                    async def set_cache() -> None:
-                        await self.backend.set(key, result, self.ttl)
+                    try:
 
-                    anyio.run(set_cache)
+                        async def set_cache() -> None:
+                            """Store a computed value asynchronously inside a sync function."""
+                            await self.backend.set(key, result, self.ttl)
+
+                        anyio.run(set_cache)
+                    except Exception as e:
+                        logger.error(f"Cache backend failure in set(): {e}", exc_info=True)
+
                     return result
 
             return sync_wrapper
 
     def invalidate(self, func: Callable, *args: Any, **kwargs: Any) -> None:
         """
-        Invalidates the cache for a specific function call with given arguments.
-        Thread-safe with AnyIO.
+        Invalidates the cache entry for a specific function call with given arguments.
+
+        This removes the cached value for a particular function signature, ensuring
+        fresh execution the next time it is called.
+
+        Args:
+            func (Callable): The decorated function whose cache entry should be invalidated.
+            *args: Positional arguments used to generate the cache key.
+            **kwargs: Keyword arguments used to generate the cache key.
+
+        Example:
+            >>> @cache(ttl=30)
+            >>> async def get_user_data(user_id: int):
+            >>>     return fetch_from_db(user_id)
+
+            >>> cache.invalidate(get_user_data, user_id=42)  # Removes cache for user 42
         """
         key = generate_cache_key(func, args, kwargs)
 
         with cache_lock:  # Prevent multiple threads from invalidating at the same time
+            try:
 
-            async def delete_cache() -> None:
-                await self.backend.delete(key)
+                async def delete_cache() -> None:
+                    """Delete a cache entry asynchronously."""
+                    await self.backend.delete(key)
 
-            anyio.run(delete_cache)
+                anyio.run(delete_cache)
+            except Exception as e:
+                logger.error(f"Cache backend failure in delete(): {e}", exc_info=True)
 
 
-cache = Cache()
+memory_cache = cache()
