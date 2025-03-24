@@ -1,86 +1,98 @@
 from __future__ import annotations
 
+import asyncio
+from typing import Any
+
 import anyio
+import orjson
 
 from esmerald.protocols.cache import CacheBackend
 
 try:
-    import aioredis
-    import redis
+    import redis.asyncio as redis
 except ImportError:
-    aioredis = None
     redis = None
-
-from typing import Any
-
-import orjson
 
 
 class RedisCache(CacheBackend):
-    """Redis caches backend supporting both sync and async operations with orjson serialization."""
+    """Redis cache backend using asyncio with orjson serialization."""
 
     def __init__(self, redis_url: str) -> None:
-        if aioredis is None or redis is None:
-            raise ImportError(
-                "You must install 'aioredis' and 'redis' to use this caches backend."
+        if redis is None:
+            raise ImportError("You must install 'redis' to use this cache backend.")
+        self.redis_url: str = redis_url
+        self._async_clients: dict[int, redis.Redis] = {}  # Store clients per event loop
+
+    @property
+    def async_client(self) -> redis.Redis:
+        """Ensure a separate Redis client per event loop to prevent loop conflicts."""
+        loop_id = id(asyncio.get_running_loop())  # ✅ FIXED
+
+        if loop_id not in self._async_clients:
+            self._async_clients[loop_id] = redis.Redis.from_url(
+                self.redis_url, decode_responses=False
             )
 
-        self.redis_url: str = redis_url
-        self.sync_client: redis.Redis = redis.Redis.from_url(redis_url, decode_responses=False)
-        self.async_client: aioredis.Redis | None = None  # Lazy initialization
+        return self._async_clients[loop_id]
 
-    async def _get_async_client(self) -> aioredis.Redis:
-        """Lazy initialization for the async Redis client."""
-        if self.async_client is None:
-            self.async_client = await aioredis.from_url(self.redis_url, decode_responses=False)  # type: ignore[no-untyped-call]
-        return self.async_client
+    @async_client.setter
+    def async_client(self, client: redis.Redis) -> None:
+        """Set a custom Redis client (useful for testing)."""
+        loop_id = id(asyncio.get_running_loop())  # ✅ FIXED
+
+        if not isinstance(client, redis.Redis):
+            raise ValueError("async_client must be an instance of redis.Redis")
+
+        self._async_clients[loop_id] = client
 
     async def get(self, key: str) -> Any | None:
-        """Retrieve a value from caches asynchronously."""
-        client = await self._get_async_client()
-        value = await client.get(key)
+        """Retrieve a value from cache asynchronously."""
+        value = await self.async_client.get(key)
         return orjson.loads(value) if value is not None else None
 
     async def set(self, key: str, value: Any, ttl: int | None = None) -> None:
-        """Set a value in the caches asynchronously with an optional TTL."""
-        client = await self._get_async_client()
+        """Set a value in the cache asynchronously with an optional TTL."""
         data: bytes = orjson.dumps(value)
-
         if ttl:
-            await client.setex(key, ttl, data)
+            await self.async_client.setex(key, ttl, data)
         else:
-            await client.set(key, data)
+            await self.async_client.set(key, data)
 
     async def delete(self, key: str) -> None:
-        """Remove a value from the caches asynchronously."""
-        client = await self._get_async_client()
-        await client.delete(key)
+        """Remove a value from the cache asynchronously."""
+        await self.async_client.delete(key)
+
+    async def close(self) -> None:
+        """Ensure Redis connections are closed properly per event loop."""
+        for client in self._async_clients.values():
+            await client.aclose()
+        self._async_clients.clear()
 
     def sync_get(self, key: str) -> Any | None:
-        """Retrieve a value from the caches synchronously (thread-safe with AnyIO)."""
+        """Retrieve a value from cache synchronously (thread-safe with AnyIO)."""
 
-        def get_cached() -> bytes | None:
-            return self.sync_client.get(key)  # type: ignore
+        def get_cached() -> bytes | None | Any:
+            return anyio.run(self.async_client.get, key)
 
         value = anyio.to_thread.run_sync(get_cached)
         return orjson.loads(value) if value is not None else None  # type: ignore
 
     def sync_set(self, key: str, value: Any, ttl: int | None = None) -> None:
-        """Store a value in the caches synchronously (thread-safe with AnyIO)."""
+        """Store a value in the cache synchronously (thread-safe with AnyIO)."""
 
         def set_cached() -> None:
             data: bytes = orjson.dumps(value)
             if ttl:
-                self.sync_client.setex(key, ttl, data)
+                anyio.run(self.async_client.setex, key, ttl, data)
             else:
-                self.sync_client.set(key, data)
+                anyio.run(self.async_client.set, key, data)
 
         anyio.to_thread.run_sync(set_cached)  # type: ignore
 
     def sync_delete(self, key: str) -> None:
-        """Delete a caches entry synchronously (thread-safe with AnyIO)."""
+        """Delete a cache entry synchronously (thread-safe with AnyIO)."""
 
         def delete_cached() -> None:
-            self.sync_client.delete(key)
+            anyio.run(self.async_client.delete, key)
 
         anyio.to_thread.run_sync(delete_cached)  # type: ignore

@@ -3,20 +3,21 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+import pytest_asyncio
 
 from esmerald import Esmerald, Gateway, get
 from esmerald.caches.memory import InMemoryCache
 from esmerald.caches.redis import RedisCache
 from esmerald.conf import settings
-from esmerald.protocols.cache import CacheBackend
 from esmerald.testclient import EsmeraldTestClient
+from tests.settings import TestSettings
 
 try:
-    import aioredis
+    import redis.asyncio as redis
 except ImportError:
-    aioredis = None
+    redis = None
 
-CACHE_TTL = 10  # 2 seconds for quick TTL tests
+CACHE_TTL = 10  # 10 seconds for quick TTL tests
 
 
 @pytest.fixture(scope="function")
@@ -25,21 +26,35 @@ def memory_cache() -> InMemoryCache:
     return InMemoryCache()
 
 
+@pytest_asyncio.fixture(scope="function")
+async def redis_cache(event_loop) -> RedisCache:
+    """Fixture providing a fresh RedisCache instance with proper setup and cleanup."""
+    cache = RedisCache("redis://localhost")
+
+    # Ensure async_client is set before tests
+    cache.async_client = redis.Redis.from_url("redis://localhost", decode_responses=False)
+
+    await cache.async_client.flushdb()  # Ensure a clean test environment
+
+    yield cache
+
+    # Ensure Redis connection is properly closed before loop ends
+    try:
+        await cache.close()
+    except RuntimeError as e:
+        if "Event loop is closed" not in str(e):
+            raise
+
+
 @pytest.fixture(scope="function")
-async def redis_cache() -> RedisCache:
-    """Fixture providing a fresh RedisCache instance."""
-    if aioredis is None:
-        pytest.skip("aioredis is required for RedisCache tests")
-
-    redis = await aioredis.from_url("redis://localhost", decode_responses=False)
-    await redis.flushdb()  # Ensure clean test environment
-    return RedisCache("redis://localhost")
+async def redis_settings(redis_cache) -> TestSettings:
+    """Fixture providing Redis settings for testing."""
+    return TestSettings(cache_backend=redis_cache)
 
 
 @pytest.fixture(scope="function")
-def esmerald_app(memory_cache: CacheBackend) -> Esmerald:
+def esmerald_app(redis_cache) -> Esmerald:
     """Fixture for an Esmerald app with caching."""
-    settings.cache_backend = memory_cache
 
     @get("/cache/{key}")
     async def get_cache_value(key: str) -> Any:
@@ -60,7 +75,7 @@ def esmerald_app(memory_cache: CacheBackend) -> Esmerald:
             Gateway(handler=get_cache_value),
             Gateway(handler=set_cache_value),
             Gateway(handler=delete_cache_value),
-        ]
+        ],
     )
 
 

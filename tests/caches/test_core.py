@@ -20,7 +20,6 @@ def test_memory_cache_basic_operations(memory_cache) -> None:
 async def test_redis_cache_basic_operations(redis_cache) -> None:
     """Test setting, getting, and deleting values in RedisCache."""
     key, value = "redis_key", {"number": 42}
-    redis_cache = await redis_cache
 
     await redis_cache.set(key, value, CACHE_TTL)
     assert await redis_cache.get(key) == value
@@ -45,7 +44,6 @@ async def test_memory_cache_ttl_expiry(memory_cache) -> None:
 async def test_redis_cache_ttl_expiry(redis_cache) -> None:
     """Ensure RedisCache entries expire correctly."""
     key, value = "redis_expiry", "will_disappear"
-    redis_cache = await redis_cache
 
     await redis_cache.set(key, value, 1)
     assert await redis_cache.get(key) == value

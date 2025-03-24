@@ -779,6 +779,9 @@ class EsmeraldAPISettings(CacheBackendSettings):
     ipython_args: List[str] = ["--no-banner"]
     ptpython_config_file: str = "~/.config/ptpython/config.py"
 
+    # For the reload settings
+    ignore_reload: Annotated[bool, Doc("""Ignore the reload settings.""")] = False
+
     @property
     def reload(self) -> bool:
         """
