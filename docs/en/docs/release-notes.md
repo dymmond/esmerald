@@ -5,15 +5,17 @@ hide:
 
 # Release Notes
 
-### 3.6.9
+### 3.7.0
 
 ### Added
 
 - Decorator `controller`. This decorator allows to, as the name suggests, create a controller from
 a normal python objects. This is a simple way of creating a controller without the need of subclassing the `Controller` class.
+- [Decorators](./decorators.md) documentation section with the available Esmerald decorators.
+- Support for [**native** caching](./caching.md) with support for custom backends.
 - [Observables](./observables.md) documentation section. This is a new feature that allows to create
 observables that can be used to create a more reactive programming style.
-
+-
 #### Example
 
 ```python

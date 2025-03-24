@@ -31,6 +31,6 @@ class ApplicationSettingsMiddleware(MiddlewareProtocol):
         if getattr(app, "settings_module", None) is not None:
             settings.configure(app.settings)
         else:
-            if not get_override_settings():
+            if not get_override_settings() and not settings.ignore_reload:
                 settings.configure(__lazy_settings__._wrapped)
         await self.app(scope, receive, send)

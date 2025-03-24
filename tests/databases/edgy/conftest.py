@@ -4,6 +4,10 @@ from typing import Generator
 import pytest
 
 
+def pytest_configure(config):
+    config.option.asyncio_mode = "strict"
+
+
 @pytest.fixture(scope="module")
 def anyio_backend():
     return ("asyncio", {"debug": True})
