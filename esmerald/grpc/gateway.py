@@ -1,57 +1,59 @@
 from __future__ import annotations
 
-import asyncio
 from typing import Any
 
+import grpc
+from google.protobuf.json_format import MessageToDict
+from grpc import aio
 from lilya._internal._path import clean_path
 
-from esmerald import (
-    HTTPException,
-    Inject,
-    Injects,
-    Request,
-    route,
-)
+from esmerald import HTTPException, Request, route
+from esmerald.injector import Inject
+from esmerald.params import Injects
 from esmerald.responses import JSONResponse
 from esmerald.utils.helpers import make_callable
 
-try:
-    from grpclib.exceptions import GRPCError, Status
-    from grpclib.server import Server
-except ImportError:
-    Server = None
-    GRPCError = None
-    Status = None
-
-# Mapping HTTP methods to Esmerald decorators
+# Allowed HTTP methods for endpoints.
 HTTP_ALLOWED_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE"]
+
+
+class HTTPContext:
+    """
+    A minimal dummy gRPC context for HTTP calls.
+    It implements only the methods required to satisfy the service signature.
+    """
+
+    def __init__(self) -> None:
+        self._code = grpc.StatusCode.OK
+        self._details = ""
+
+    def set_code(self, code: grpc.StatusCode) -> None:
+        self._code = code
+
+    def set_details(self, details: str) -> None:
+        self._details = details
+
+    @property
+    def code(self) -> grpc.StatusCode:
+        return self._code
+
+    @property
+    def details(self) -> str:
+        return self._details
 
 
 class GrpcGateway:
     """
-    GrpcGateway is a class that bridges gRPC services and HTTP endpoints.
-    It exposes the methods of gRPC services as HTTP endpoints using Esmerald.
+    GrpcGateway bridges gRPC services (using grpcio) and HTTP endpoints in an Esmerald app.
+    It registers the gRPC services with a grpc.aio.Server and (optionally) exposes HTTP endpoints
+    that call the service methods directly.
 
     Attributes:
-        services (list[type]): List of gRPC service types that should be exposed over HTTP.
-        grpc_server (Server): The gRPC server instance that handles the communication with the gRPC services.
-        path (str): The base path to be used for generating HTTP routes. Default is "/grpc".
-
-    Methods:
-        __init__(services: list[type], expose_http: bool = True, **kwargs: Any) -> None:
-            Initializes the GrpcGateway instance, setting up the gRPC server and optionally exposing HTTP endpoints.
-
-        startup() -> None:
-            Starts the gRPC server asynchronously.
-
-        shutdown() -> None:
-            Shuts down the gRPC server asynchronously.
-
-        _register_http_endpoints() -> None:
-            Registers HTTP endpoints for each gRPC service method, converting them into HTTP routes.
-
-        __grpc_to_http_status(grpc_status: Status) -> int:
-            Converts gRPC status codes to their corresponding HTTP status codes for error handling.
+        services (list[type]): List of gRPC service classes.
+        grpc_server (aio.Server): The grpc.aio server instance.
+        path (str): The base HTTP path used for generating endpoints.
+        server_options (dict): Options such as host and port for the gRPC server.
+        http_methods (list[str]): Allowed HTTP methods for the endpoints.
     """
 
     def __init__(
@@ -63,26 +65,24 @@ class GrpcGateway:
         **server_options: Any,
     ) -> None:
         """
-        Initializes the GrpcGateway instance. Sets up the gRPC server and optionally exposes HTTP endpoints.
+        Initializes the GrpcGateway instance.
 
         Args:
-            services (list[type]): List of gRPC service types that should be exposed over HTTP.
-            expose_http (bool): Whether to automatically expose HTTP endpoints for the services. Default is True.
-            http_methods (list[str]): If a list is provided,it will only enable the http methods when expose_http is true
-            **kwargs (Any): Additional keyword arguments (e.g., to customize path).
+            path (str): Base HTTP path (must start with '/').
+            services (list[type]): List of gRPC service classes to expose.
+            expose_http (bool): Whether to register HTTP endpoints that map to gRPC methods.
+            http_methods (list[str] | None): If provided, limits the HTTP methods allowed.
+            **server_options (Any): Additional options (e.g., host and port) for the gRPC server.
 
         Raises:
-            AssertionError: If grpclib is not available.
+            AssertionError: If the provided path does not start with '/'.
         """
-        assert (
-            Server
-        ), "grpclib is required for gRPC support. Install it with `pip install grpclib`."
-
         assert path.startswith("/"), "Paths must start with '/'"
 
         self.path = clean_path(path)
         self.services = services
-        self.grpc_server = Server([service() for service in services])
+        # Create a grpc.aio.Server instance.
+        self.grpc_server = aio.server()
         self.server_options = server_options
         self.http_methods = (
             [method.upper() for method in http_methods]
@@ -90,31 +90,41 @@ class GrpcGateway:
             else HTTP_ALLOWED_METHODS
         )
 
+        # Register each service with the grpc.aio server.
+        for service in services:
+            instance = service()
+            # We expect each service type to have a callable '__add_to_server__'
+            # which registers the service with a grpc.aio.Server.
+            add_fn = getattr(service, "__add_to_server__", None)
+            if add_fn is None or not callable(add_fn):
+                raise ValueError(
+                    f"Service {service.__name__} must provide a '__add_to_server__' callable."
+                )
+            add_fn(instance, self.grpc_server)
+
         if expose_http:
             self._register_http_endpoints()
 
-        if "host" not in server_options:
-            server_options["host"] = "127.0.0.1"
-
-        if "port" not in server_options:
-            server_options["port"] = 50051
+        # Set default host/port if not provided.
+        if "host" not in self.server_options:
+            self.server_options["host"] = "127.0.0.1"
+        if "port" not in self.server_options:
+            self.server_options["port"] = 50051
 
     async def startup(self) -> None:
         """
-        Starts the gRPC server asynchronously.
-
-        This method creates an event loop task to start the server on `127.0.0.1` and listens on port `50051`.
+        Starts the grpc.aio server asynchronously.
         """
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.grpc_server.start(**self.server_options))
+        host = self.server_options["host"]
+        port = self.server_options["port"]
+        self.grpc_server.add_insecure_port(f"{host}:{port}")
+        await self.grpc_server.start()
 
     async def shutdown(self) -> None:
         """
-        Shuts down the gRPC server asynchronously.
-
-        This method ensures that the server closes properly when the application shuts down.
+        Shuts down the grpc.aio server asynchronously.
         """
-        await self.grpc_server.close()  # type: ignore
+        await self.grpc_server.stop(0)
 
     def _register_http_endpoints(self) -> Any:
         """
@@ -182,13 +192,29 @@ class GrpcGateway:
                             with the appropriate HTTP status code and error message.
                         """
                         method = getattr(service, service_method)
+
                         try:
-                            data = await request.json()  # Extract request data
-                            response = await method(data)  # Call the gRPC method
+                            data = await request.json()  # Expecting a dict.
+                            http_context = HTTPContext()  # Create a dummy context.
+                            response = await method(
+                                data, http_context
+                            )  # Call the gRPC method with (data, context).
+                            # If response is a protobuf message, convert it to dict.
+                            if http_context.code != grpc.StatusCode.OK:
+                                raise HTTPException(
+                                    status_code=self.__grpc_to_http_status(http_context.code),
+                                    detail=http_context.details,
+                                )
+
+                            if hasattr(response, "SerializeToString"):
+                                response = MessageToDict(
+                                    response, preserving_proto_field_name=True
+                                )
                             return JSONResponse(response)
-                        except GRPCError as e:
+                        except grpc.aio.AioRpcError as e:
                             raise HTTPException(
-                                status_code=self.__grpc_to_http_status(e.status), detail=e.message
+                                status_code=self.__grpc_to_http_status(e.code()),
+                                detail=e.details(),
                             ) from e
 
                     # Yield the HTTP method, route, and handler for use by the framework
@@ -196,7 +222,7 @@ class GrpcGateway:
                     http_wrapper.fn.__name__ = http_name
                     yield http_wrapper
 
-    def __grpc_to_http_status(self, grpc_status: Status) -> int:
+    def __grpc_to_http_status(self, grpc_status: grpc.StatusCode) -> int:
         """
         Converts gRPC status codes to HTTP status codes.
 
@@ -211,22 +237,22 @@ class GrpcGateway:
                  is not mapped.
         """
         mapping = {
-            Status.OK: 200,
-            Status.CANCELLED: 499,
-            Status.UNKNOWN: 500,
-            Status.INVALID_ARGUMENT: 400,
-            Status.DEADLINE_EXCEEDED: 504,
-            Status.NOT_FOUND: 404,
-            Status.ALREADY_EXISTS: 409,
-            Status.PERMISSION_DENIED: 403,
-            Status.UNAUTHENTICATED: 401,
-            Status.RESOURCE_EXHAUSTED: 429,
-            Status.FAILED_PRECONDITION: 400,
-            Status.ABORTED: 409,
-            Status.OUT_OF_RANGE: 400,
-            Status.UNIMPLEMENTED: 501,
-            Status.INTERNAL: 500,
-            Status.UNAVAILABLE: 503,
-            Status.DATA_LOSS: 500,
+            grpc.StatusCode.OK: 200,
+            grpc.StatusCode.CANCELLED: 499,
+            grpc.StatusCode.UNKNOWN: 500,
+            grpc.StatusCode.INVALID_ARGUMENT: 400,
+            grpc.StatusCode.DEADLINE_EXCEEDED: 504,
+            grpc.StatusCode.NOT_FOUND: 404,
+            grpc.StatusCode.ALREADY_EXISTS: 409,
+            grpc.StatusCode.PERMISSION_DENIED: 403,
+            grpc.StatusCode.UNAUTHENTICATED: 401,
+            grpc.StatusCode.RESOURCE_EXHAUSTED: 429,
+            grpc.StatusCode.FAILED_PRECONDITION: 400,
+            grpc.StatusCode.ABORTED: 409,
+            grpc.StatusCode.OUT_OF_RANGE: 400,
+            grpc.StatusCode.UNIMPLEMENTED: 501,
+            grpc.StatusCode.INTERNAL: 500,
+            grpc.StatusCode.UNAVAILABLE: 503,
+            grpc.StatusCode.DATA_LOSS: 500,
         }
         return mapping.get(grpc_status, 500)  # Default to 500 if the status code is unknown
