@@ -8,7 +8,7 @@ from esmerald.security.scopes import Scopes
 from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
 from esmerald.utils.enums import EncodingType, ParamType
-from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.helpers import is_class_and_subclass, make_callable
 
 _PyUndefined: Any = Undefined
 
@@ -665,6 +665,9 @@ class BaseRequires:
         """
         self.dependency = dependency
         self.use_cache = use_cache
+
+        if not callable(dependency):
+            dependency = make_callable(dependency)
         self.signature_model = inspect.signature(dependency) if dependency else None
 
     def __repr__(self) -> str:
