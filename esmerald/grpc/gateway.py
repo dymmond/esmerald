@@ -8,6 +8,7 @@ from grpc import aio
 from lilya._internal._path import clean_path
 
 from esmerald import HTTPException, Request, route
+from esmerald.exceptions import ImproperlyMiddlewareConfigured
 from esmerald.injector import Inject
 from esmerald.params import Injects
 from esmerald.responses import JSONResponse
@@ -62,6 +63,8 @@ class GrpcGateway:
         services: list[type],
         expose_http: bool = True,
         http_methods: list[str] | None = None,
+        is_secure: bool = False,
+        server_credentials: grpc.ServerCredentials | None = None,
         **server_options: Any,
     ) -> None:
         """
@@ -111,13 +114,27 @@ class GrpcGateway:
         if "port" not in self.server_options:
             self.server_options["port"] = 50051
 
+        self.is_secure = is_secure
+        self.server_credentials = server_credentials
+
+        if self.is_secure and not self.server_credentials:
+            raise ImproperlyMiddlewareConfigured(
+                "When `is_secure` is true, you must provide the `server_credentials`."
+            )
+
     async def startup(self) -> None:
         """
         Starts the grpc.aio server asynchronously.
         """
         host = self.server_options["host"]
         port = self.server_options["port"]
-        self.grpc_server.add_insecure_port(f"{host}:{port}")
+
+        if not self.is_secure:
+            self.grpc_server.add_insecure_port(f"{host}:{port}")
+        else:
+            self.grpc_server.add_secure_port(
+                f"{host}:{port}", server_credentials=self.server_credentials
+            )
         await self.grpc_server.start()
 
     async def shutdown(self) -> None:
