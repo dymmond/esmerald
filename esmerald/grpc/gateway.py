@@ -3,20 +3,23 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
+from lilya._internal._path import clean_path
+
 from esmerald import (
     HTTPException,
     Inject,
     Injects,
     Request,
-    delete,
     get,
     options,
     patch,
     post,
     put,
+    route,
     trace,
 )
 from esmerald.responses import JSONResponse
+from esmerald.utils.helpers import make_callable
 
 try:
     from grpclib.exceptions import GRPCError, Status
@@ -31,11 +34,13 @@ HTTP_METHODS = {
     "get": get,
     "post": post,
     "put": put,
-    "delete": delete,
+    # "delete": delete,
     "patch": patch,
     "options": options,
     "trace": trace,
 }
+
+HTTP_ALLOWED_METHODS = ["GET", "POST", "PUT", "PATCH", "OPTIONS", "TRACE"]
 
 
 class GrpcGateway:
@@ -65,7 +70,13 @@ class GrpcGateway:
             Converts gRPC status codes to their corresponding HTTP status codes for error handling.
     """
 
-    def __init__(self, services: list[type], expose_http: bool = True, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        path: str,
+        services: list[type],
+        expose_http: bool = True,
+        **server_options: Any,
+    ) -> None:
         """
         Initializes the GrpcGateway instance. Sets up the gRPC server and optionally exposes HTTP endpoints.
 
@@ -81,12 +92,21 @@ class GrpcGateway:
             Server
         ), "grpclib is required for gRPC support. Install it with `pip install grpclib`."
 
-        self.path = kwargs.get("path", "/grpc")
+        assert path.startswith("/"), "Paths must start with '/'"
+
+        self.path = clean_path(path)
         self.services = services
         self.grpc_server = Server([service() for service in services])
+        self.server_options = server_options
 
         if expose_http:
             self._register_http_endpoints()
+
+        if "host" not in server_options:
+            server_options["host"] = "127.0.0.1"
+
+        if "port" not in server_options:
+            server_options["port"] = 50051
 
     async def startup(self) -> None:
         """
@@ -95,7 +115,7 @@ class GrpcGateway:
         This method creates an event loop task to start the server on `127.0.0.1` and listens on port `50051`.
         """
         loop = asyncio.get_event_loop()
-        loop.create_task(self.grpc_server.start("127.0.0.1", 50051))
+        loop.create_task(self.grpc_server.start(**self.server_options))
 
     async def shutdown(self) -> None:
         """
@@ -105,7 +125,7 @@ class GrpcGateway:
         """
         await self.grpc_server.close()  # type: ignore
 
-    def _register_http_endpoints(self) -> None:
+    def _register_http_endpoints(self) -> Any:
         """
         Registers HTTP endpoints for each gRPC service method.
 
@@ -125,55 +145,65 @@ class GrpcGateway:
 
                 method = getattr(service_instance, method_name)
                 if callable(method):
-                    for http_method, decorator in HTTP_METHODS.items():
-                        # Construct the HTTP route
-                        route = f"/{self.path}/{service.__name__.lower()}/{method_name.lower()}"
+                    route_path = clean_path(
+                        f"/{self.path}/{service.__name__.lower()}/{method_name.lower()}"
+                    )
+                    name = route_path.replace("/", "_").replace(".", "_").replace("__", "_")
 
-                        # Define a dependency for the service instance
-                        def service_dependency() -> Any:
-                            return service_instance  # noqa
+                    if name.startswith("_"):
+                        name = name[1:]
 
-                        def get_method() -> Any:
-                            return method  # noqa
+                    # Define a dependency for the service instance
+                    def service_dependency() -> Any:
+                        return service_instance  # noqa
 
-                        @decorator(  # type: ignore
-                            path=route,
-                            tags=["gRPC"],
-                            dependencies={
-                                "service": Inject(service_dependency),
-                                "method": Inject(get_method),
-                            },
-                        )
-                        async def http_wrapper(
-                            request: Request, service: Any = Injects(), method: Any = Injects()
-                        ) -> JSONResponse:
-                            """
-                            HTTP handler that wraps the gRPC method. It receives HTTP requests, converts them into
-                            data that can be processed by the gRPC method, and returns the result as an HTTP response.
+                    callable_fn = make_callable(method_name)
 
-                            Args:
-                                request (Request): The HTTP request object containing input data.
-                                service (Any): The gRPC service instance injected from dependencies.
-                                method (Any): The gRPC method to be invoked, injected from dependencies.
+                    @route(  # type: ignore
+                        path=route_path,
+                        tags=["gRPC"],
+                        methods=HTTP_ALLOWED_METHODS,
+                        name=name,
+                        dependencies={
+                            "service": Inject(service_dependency),
+                            "service_method": Inject(callable_fn),
+                        },
+                    )
+                    async def http_wrapper(
+                        request: Request,
+                        service: Any = Injects(),
+                        service_method: Any = Injects(),
+                    ) -> Any:
+                        """
+                        HTTP handler that wraps the gRPC method. It receives HTTP requests, converts them into
+                        data that can be processed by the gRPC method, and returns the result as an HTTP response.
 
-                            Returns:
-                                JSONResponse: The response that will be sent back to the client, wrapped as a JSON response.
+                        Args:
+                            request (Request): The HTTP request object containing input data.
+                            service (Any): The gRPC service instance injected from dependencies.
+                            service_method (Any): The gRPC method to be invoked, injected from dependencies.
 
-                            Raises:
-                                HTTPException: If an error occurs while invoking the gRPC method, this exception is raised
-                                with the appropriate HTTP status code and error message.
-                            """
-                            try:
-                                data = await request.json()  # Extract request data
-                                response = await method(data)  # Call the gRPC method
-                                return JSONResponse(response)
-                            except GRPCError as e:
-                                raise HTTPException(
-                                    status_code=self.__grpc_to_http_status(e.status), detail=str(e)
-                                ) from e
+                        Returns:
+                            JSONResponse: The response that will be sent back to the client, wrapped as a JSON response.
 
-                        # Yield the HTTP method, route, and handler for use by the framework
-                        yield http_method, route, http_wrapper
+                        Raises:
+                            HTTPException: If an error occurs while invoking the gRPC method, this exception is raised
+                            with the appropriate HTTP status code and error message.
+                        """
+                        method = getattr(service, service_method)
+                        try:
+                            data = await request.json()  # Extract request data
+                            response = await method(data)  # Call the gRPC method
+                            return JSONResponse(response)
+                        except GRPCError as e:
+                            raise HTTPException(
+                                status_code=self.__grpc_to_http_status(e.status), detail=str(e)
+                            ) from e
+
+                    # Yield the HTTP method, route, and handler for use by the framework
+                    http_name = f"http_handler_{service_instance.__class__.__name__.lower()}_{method.__name__.lower()}"
+                    http_wrapper.fn.__name__ = http_name
+                    yield http_wrapper
 
     def __grpc_to_http_status(self, grpc_status: Status) -> int:
         """

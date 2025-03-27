@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 from lilya.types import ASGIApp
 
 from esmerald.grpc.gateway import GrpcGateway
 
 
-def register_grpc_http_routes(app: ASGIApp, grpc_gateway: GrpcGateway) -> None:
+def register_grpc_http_routes(
+    app: ASGIApp, grpc_gateways: list[GrpcGateway], base_path: str | None = None
+) -> None:
     """
     Registers HTTP routes corresponding to gRPC service methods to the Esmerald app.
 
@@ -17,12 +21,17 @@ def register_grpc_http_routes(app: ASGIApp, grpc_gateway: GrpcGateway) -> None:
 
     Args:
         app (ASGIApp): The Esmerald app instance where the HTTP routes will be registered.
-        grpc_gateway (GrpcGateway): The GrpcGateway instance that contains the gRPC services
+        grpc_gateways (list[GrpcGateway]): The GrpcGateway list of instances that contains the gRPC services
                                     and their method mappings to HTTP routes.
+        base_path (str, optional): The base path for the HTTP routes. Defaults to None.
+
 
     Yields:
         None: This function does not return any values, but it registers routes in-place.
     """
-    for http_method, route, handler in grpc_gateway._register_grpc_http_endpoints():
-        # Registers the HTTP route with the corresponding method and handler
-        app.add_route(http_method, route, handler)
+    if not base_path:
+        base_path = "/"
+
+    for grpc_gateway in grpc_gateways:
+        for handler in grpc_gateway._register_http_endpoints():
+            app.add_route(base_path, handler)
