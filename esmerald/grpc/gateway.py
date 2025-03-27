@@ -10,13 +10,7 @@ from esmerald import (
     Inject,
     Injects,
     Request,
-    get,
-    options,
-    patch,
-    post,
-    put,
     route,
-    trace,
 )
 from esmerald.responses import JSONResponse
 from esmerald.utils.helpers import make_callable
@@ -30,17 +24,7 @@ except ImportError:
     Status = None
 
 # Mapping HTTP methods to Esmerald decorators
-HTTP_METHODS = {
-    "get": get,
-    "post": post,
-    "put": put,
-    # "delete": delete,
-    "patch": patch,
-    "options": options,
-    "trace": trace,
-}
-
-HTTP_ALLOWED_METHODS = ["GET", "POST", "PUT", "PATCH", "OPTIONS", "TRACE"]
+HTTP_ALLOWED_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE"]
 
 
 class GrpcGateway:
@@ -197,7 +181,7 @@ class GrpcGateway:
                             return JSONResponse(response)
                         except GRPCError as e:
                             raise HTTPException(
-                                status_code=self.__grpc_to_http_status(e.status), detail=str(e)
+                                status_code=self.__grpc_to_http_status(e.status), detail=e.message
                             ) from e
 
                     # Yield the HTTP method, route, and handler for use by the framework

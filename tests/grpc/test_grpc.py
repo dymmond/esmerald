@@ -53,7 +53,7 @@ def test_grpc_http_goodbye(client):
     assert response.json() == {"message": "Goodbye, Esmerald!"}
 
 
-def xtest_grpc_http_error(client):
+def test_grpc_http_error(client):
     response = client.post("/grpc/mockgrpcservice/sayhello", json={"name": "error"})
     assert response.status_code == 400
     assert response.json()["detail"] == "Invalid request"
