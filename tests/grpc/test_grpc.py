@@ -31,7 +31,12 @@ class MockGrpcService:
 
 
 grpc_gateway = GrpcGateway(path="/grpc", services=[MockGrpcService])
-app = Esmerald(routes=[], on_startup=[grpc_gateway.startup], on_shutdown=[grpc_gateway.shutdown])
+app = Esmerald(
+    routes=[],
+    on_startup=[grpc_gateway.startup],
+    on_shutdown=[grpc_gateway.shutdown],
+    enable_openapi=True,
+)
 register_grpc_http_routes(app=app, grpc_gateways=[grpc_gateway])
 
 
@@ -57,3 +62,11 @@ def test_grpc_http_error(client):
     response = client.post("/grpc/mockgrpcservice/sayhello", json={"name": "error"})
     assert response.status_code == 400
     assert response.json()["detail"] == "Invalid request"
+
+
+def test_openapi(client):
+    response = client.get("/openapi.json")
+    assert response.status_code == 200
+
+    assert "/grpc/mockgrpcservice/saygoodbye" in response.json()["paths"]
+    assert "/grpc/mockgrpcservice/sayhello" in response.json()["paths"]

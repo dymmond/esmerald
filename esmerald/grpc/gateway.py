@@ -59,6 +59,7 @@ class GrpcGateway:
         path: str,
         services: list[type],
         expose_http: bool = True,
+        http_methods: list[str] | None = None,
         **server_options: Any,
     ) -> None:
         """
@@ -67,6 +68,7 @@ class GrpcGateway:
         Args:
             services (list[type]): List of gRPC service types that should be exposed over HTTP.
             expose_http (bool): Whether to automatically expose HTTP endpoints for the services. Default is True.
+            http_methods (list[str]): If a list is provided,it will only enable the http methods when expose_http is true
             **kwargs (Any): Additional keyword arguments (e.g., to customize path).
 
         Raises:
@@ -82,6 +84,11 @@ class GrpcGateway:
         self.services = services
         self.grpc_server = Server([service() for service in services])
         self.server_options = server_options
+        self.http_methods = (
+            [method.upper() for method in http_methods]
+            if http_methods is not None
+            else HTTP_ALLOWED_METHODS
+        )
 
         if expose_http:
             self._register_http_endpoints()
@@ -146,7 +153,7 @@ class GrpcGateway:
                     @route(  # type: ignore
                         path=route_path,
                         tags=["gRPC"],
-                        methods=HTTP_ALLOWED_METHODS,
+                        methods=self.http_methods,
                         name=name,
                         dependencies={
                             "service": Inject(service_dependency),
