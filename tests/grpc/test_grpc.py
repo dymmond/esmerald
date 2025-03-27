@@ -46,22 +46,38 @@ def client():
 
 
 # 3️⃣ Test HTTP → gRPC Mapping
-def test_grpc_http_success(client):
+def test_grpc_http_success_post(client: EsmeraldTestClient) -> None:
+    # Test using POST to call SayHello.
     response = client.post("/grpc/mockgrpcservice/sayhello", json={"name": "Esmerald"})
     assert response.status_code == 200
     assert response.json() == {"message": "Hello, Esmerald!"}
 
 
-def test_grpc_http_goodbye(client):
+def test_grpc_http_success_put(client: EsmeraldTestClient) -> None:
+    # Test using PUT to call SayHello (should work since all allowed methods are enabled).
+    response = client.put("/grpc/mockgrpcservice/sayhello", json={"name": "Esmerald"})
+    assert response.status_code == 200
+    assert response.json() == {"message": "Hello, Esmerald!"}
+
+
+def test_grpc_http_goodbye(client: EsmeraldTestClient) -> None:
+    # Test using POST to call SayGoodbye.
     response = client.post("/grpc/mockgrpcservice/saygoodbye", json={"name": "Esmerald"})
     assert response.status_code == 200
     assert response.json() == {"message": "Goodbye, Esmerald!"}
 
 
-def test_grpc_http_error(client):
+def test_grpc_http_error(client: EsmeraldTestClient) -> None:
+    # Test that an error in SayHello is correctly translated to an HTTP 400.
     response = client.post("/grpc/mockgrpcservice/sayhello", json={"name": "error"})
     assert response.status_code == 400
     assert response.json()["detail"] == "Invalid request"
+
+
+def test_nonexistent_route(client: EsmeraldTestClient) -> None:
+    # Test that a route that doesn't exist returns a 404.
+    response = client.get("/grpc/mockgrpcservice/nonexistent")
+    assert response.status_code == 404
 
 
 def test_openapi(client):
