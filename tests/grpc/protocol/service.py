@@ -34,15 +34,16 @@ class GreeterService(greeter_pb2_grpc.GreeterServicer):
             # Return a protobuf message.
             return greeter_pb2.HelloReply(message=message)
 
+    @classmethod
+    def __add_to_server__(cls, instance, server):
+        greeter_pb2_grpc.add_GreeterServicer_to_server(instance, server)
+
 
 # -------------------------------
 # GRPC Gateway and HTTP Exposure
 # -------------------------------
 # Here we wrap our GreeterService in a GrpcGateway. This will expose HTTP endpoints
 # that internally call the gRPC service.
-# Attach the generated registration function as a class attribute.
-GreeterService.__add_to_server__ = staticmethod(greeter_pb2_grpc.add_GreeterServicer_to_server)
-
 grpc_gateway = GrpcGateway(path="/grpc", services=[GreeterService])
 app = Esmerald(
     routes=[],

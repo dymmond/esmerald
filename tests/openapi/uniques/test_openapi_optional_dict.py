@@ -39,7 +39,11 @@ def test_open_api(test_app_client_factory):
                                 "deprecated": False,
                                 "allowEmptyValue": False,
                                 "allowReserved": False,
-                                "schema": {"type": "object", "title": "A Value"},
+                                "schema": {
+                                    "additionalProperties": True,
+                                    "type": "object",
+                                    "title": "A Value",
+                                },
                             }
                         ],
                         "responses": {

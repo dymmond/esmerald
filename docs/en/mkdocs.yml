@@ -191,6 +191,9 @@ nav:
     - Intro: deployment/intro.md
     - Using docker: deployment/docker.md
   - external.md
+  - Experimental:
+    - experimental/index.md
+    - experimental/grpc.md
 - API Reference:
   - references/index.md
   - references/esmerald.md
