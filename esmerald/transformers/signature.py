@@ -35,7 +35,7 @@ from esmerald.transformers.utils import get_connection_info, get_field_definitio
 from esmerald.typing import Undefined
 from esmerald.utils.constants import IS_DEPENDENCY, SKIP_VALIDATION
 from esmerald.utils.dependencies import async_resolve_dependencies, is_requires
-from esmerald.utils.helpers import is_lambda, is_optional_union
+from esmerald.utils.helpers import is_optional_union
 from esmerald.utils.schema import extract_arguments
 from esmerald.websockets import WebSocket
 
@@ -103,16 +103,15 @@ class Parameter(ArbitraryBaseModel):
     parameter: Optional[InspectParameter] = None
 
     def __init__(
-        self, fn_name: str, param_name: str, parameter: InspectParameter, fn: Any, **kwargs: Any
+        self, fn_name: str, param_name: str, parameter: InspectParameter, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
-        self.__fn__ = fn
-        if parameter.annotation is InspectParameter.empty and not is_lambda(self.__fn__):
+        if parameter.annotation is InspectParameter.empty:
             raise ImproperlyConfigured(
                 f"The parameter '{param_name}' from '{fn_name}' does not have a type annotation. "
                 "If it should receive any value, use 'Any' as type."
             )
-        self.annotation = parameter.annotation if not is_lambda(self.__fn__) else Union[Any, None]
+        self.annotation = parameter.annotation
 
         self.default = (
             tuple(parameter.default)
@@ -468,7 +467,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         for name, param in self.signature.parameters.items():
             if name in CLASS_SPECIAL_WORDS:
                 continue
-            yield Parameter(self.fn_name, name, param, self.fn)
+            yield Parameter(self.fn_name, name, param)
 
     def skip_parameter_validation(self, param: "Parameter") -> bool:
         """

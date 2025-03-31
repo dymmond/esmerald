@@ -107,8 +107,6 @@ testing = [
     "fakeredis>=2.27.0",
     "flask>=1.1.2,<4.0.0",
     "freezegun>=1.2.2,<2.0.0",
-    "grpclib>=0.4.7",
-    "grpcio-tools>=1.71.0",
     "mongoz>=0.6.0",
     "mypy==1.15.0",
     "pytest>=7.1.3,<9.0.0",
@@ -174,8 +172,8 @@ test_man = "hatch test -- {args} -s -vv"
 coverage = "hatch test -- --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
 check_types = "mypy -p esmerald"
 
-  #[[tool.hatch.envs.hatch-test.matrix]]
-  #python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+#[[tool.hatch.envs.hatch-test.matrix]]
+#python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
 [tool.hatch.envs.hatch-test]
 features = ["all", "testing"]
@@ -274,8 +272,6 @@ module = [
     "passlib.*",
     "esmerald.contrib.auth.saffier.*",
     "esmerald.contrib.auth.edgy.*",
-    "grpc.*",
-    "google.*"
 ]
 ignore_missing_imports = true
 ignore_errors = true

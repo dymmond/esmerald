@@ -1,10 +1,9 @@
 import sys
-import types
-from typing import Any, Callable, Union
+from typing import Any, Union
 
 import slugify
-from lilya._utils import is_class_and_subclass as is_class_and_subclass  # noqa
-from lilya.compat import is_async_callable as is_async_callable  # noqa
+from lilya._utils import is_class_and_subclass as is_class_and_subclass
+from lilya.compat import is_async_callable as is_async_callable
 from typing_extensions import get_args, get_origin
 
 if sys.version_info >= (3, 10):
@@ -52,20 +51,3 @@ def is_union(annotation: Any) -> bool:
         bool: True if the annotation is a Union type, False otherwise.
     """
     return get_origin(annotation) in UNION_TYPES
-
-
-def make_callable(obj: Any) -> Callable[..., Any]:
-    """
-    Returns a callable (a function) that, when called, always returns the given object.
-
-    Args:
-        obj: Any non-callable object.
-
-    Returns:
-        function: A function that returns obj.
-    """
-    return lambda *args, **kwargs: obj
-
-
-def is_lambda(fn: Callable[..., Any]) -> bool:
-    return isinstance(fn, types.LambdaType) and fn.__name__ == "<lambda>"
