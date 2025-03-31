@@ -53,6 +53,7 @@ def test_openapi_schema(test_client_factory):
                             "content": {
                                 "application/json": {
                                     "schema": {
+                                        "additionalProperties": True,
                                         "type": "object",
                                         "title": "Body_itemhandler_items_post",
                                     }
