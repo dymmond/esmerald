@@ -16,6 +16,10 @@ hide:
 - [GRPC](./grpc.md) - Support for GRPC endpoints and introduction to the newly `GrpcGateway` wrapper. This functionality
 is experimental to test in the next releases. If successful, it will be marked as final.
 
+### Fixed
+
+- Bump Pydantic internal version to 2.11+.
+
 ## 3.7.0
 
 ### Added
