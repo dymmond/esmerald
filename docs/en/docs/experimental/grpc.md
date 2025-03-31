@@ -1,8 +1,10 @@
 # gRPC Integration in Esmerald (Experimental)
 
-> **⚠️ Experimental Feature**
->
-> The gRPC integration in Esmerald is currently experimental and subject to change. While it is stable enough for real use-cases, APIs may evolve based on community feedback.
+!!! Warning
+    **⚠️ Experimental Feature**
+
+    The gRPC integration in Esmerald is currently experimental and subject to change.
+    While it is stable enough for real use-cases, APIs may evolve based on community feedback.
 
 ---
 
@@ -64,7 +66,7 @@ GrpcGateway(
 - `path`: HTTP base path for the exposed routes.
 - `services`: List of gRPC service classes (must implement `__add_to_server__`).
 - `expose_http`: Whether to expose HTTP endpoints for service methods.
-- `http_methods`: Restrict allowed HTTP methods.
+- `http_methods`: Restrict allowed HTTP methods. If none are provided, all methods are allowed.
 - `is_secure`: Enables TLS if set to `True`.
 - `server_credentials`: Credentials required for TLS if `is_secure=True`.
 
@@ -238,4 +240,4 @@ With the experimental `GrpcGateway`, Esmerald provides a powerful way to combine
 
 As this feature evolves, expect improvements in type safety, streaming support, and tooling integration.
 
-> Want more? Let us know what features or improvements you'd like to see for gRPC support in Esmerald!
+Want more? Let us know what features or improvements you'd like to see for gRPC support in Esmerald!
