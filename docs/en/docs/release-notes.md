@@ -10,10 +10,12 @@ hide:
 ### Added
 
 - When using `Requires` and a callable is not passed, Esmerald will generate a lambda callable automatically.
+- New [experimental](./experimental/index.md) documentation section with the new features that are being tested.
+- New [gRPC](./experimental/grpc.md) documentation section with the new gRPC functionality.
 
 #### Experimental
 
-- [GRPC](./grpc.md) - Support for GRPC endpoints and introduction to the newly `GrpcGateway` wrapper. This functionality
+- [GRPC](experimental/grpc.md) - Support for GRPC endpoints and introduction to the newly `GrpcGateway` wrapper. This functionality
 is experimental to test in the next releases. If successful, it will be marked as final.
 
 ### Fixed
