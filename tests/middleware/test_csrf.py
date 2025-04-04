@@ -4,7 +4,7 @@ import pytest
 from lilya import status
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED
 
-from esmerald.config import CSRFConfig
+from esmerald.core.config import CSRFConfig
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import delete, get, patch, post, put, websocket
 from esmerald.testclient import create_client

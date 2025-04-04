@@ -11,7 +11,13 @@ from esmerald.injector import Factory, Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .background import BackgroundTask, BackgroundTasks
-from .config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
+from .core.config import (
+    CORSConfig,
+    CSRFConfig,
+    OpenAPIConfig,
+    SessionConfig,
+    StaticFilesConfig,
+)
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,

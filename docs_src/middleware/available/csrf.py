@@ -1,5 +1,5 @@
 from esmerald import Esmerald, EsmeraldAPISettings
-from esmerald.config import CSRFConfig
+from esmerald.core.config import CSRFConfig
 from esmerald.middleware import CSRFMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 

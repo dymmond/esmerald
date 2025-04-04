@@ -13,9 +13,9 @@ from pydantic import BaseModel
 
 from esmerald import Esmerald, Gateway, Include, JSONResponse, Request, get, post, status
 from esmerald.conf import settings
-from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.edgy.base_user import AbstractUser
 from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
+from esmerald.core.config.jwt import JWTConfig
 from esmerald.security.jwt.token import Token
 from esmerald.testclient import create_client
 

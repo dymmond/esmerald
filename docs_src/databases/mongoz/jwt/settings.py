@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, List
 
 from esmerald import EsmeraldAPISettings
-from esmerald.config.jwt import JWTConfig
+from esmerald.core.config.jwt import JWTConfig
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
 from lilya._internal._module_loading import import_string
 from lilya.middleware import DefineMiddleware as LilyaMiddleware

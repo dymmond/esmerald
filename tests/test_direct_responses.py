@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from esmerald import Esmerald, Form, Redirect, Request, Template
-from esmerald.config.template import TemplateConfig
+from esmerald.core.config.template import TemplateConfig
 from esmerald.responses.base import RedirectResponse
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get, route

@@ -3,8 +3,8 @@ from typing import Any, TypeVar
 from lilya.types import ASGIApp
 from saffier.exceptions import DoesNotFound
 
-from esmerald.config.jwt import JWTConfig
 from esmerald.contrib.auth.common.middleware import CommonJWTAuthMiddleware
+from esmerald.core.config.jwt import JWTConfig
 from esmerald.exceptions import AuthenticationError, NotAuthorized
 
 T = TypeVar("T")

@@ -24,10 +24,14 @@ from typing_extensions import Annotated, Doc
 
 from esmerald.conf import __lazy_settings__, settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
-from esmerald.config.openapi import OpenAPIConfig
-from esmerald.config.static_files import StaticFilesConfig
 from esmerald.contrib.schedulers.base import SchedulerConfig
+from esmerald.core.config import (
+    CORSConfig,
+    CSRFConfig,
+    OpenAPIConfig,
+    SessionConfig,
+    StaticFilesConfig,
+)
 from esmerald.core.datastructures import State
 from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
@@ -52,7 +56,13 @@ from esmerald.pluggables import Extension, ExtensionDict, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.apis import base
-from esmerald.routing.router import HTTPHandler, Include, Router, WebhookHandler, WebSocketHandler
+from esmerald.routing.router import (
+    HTTPHandler,
+    Include,
+    Router,
+    WebhookHandler,  # noqa
+    WebSocketHandler,
+)
 from esmerald.types import (
     APIGateHandler,
     ASGIApp,

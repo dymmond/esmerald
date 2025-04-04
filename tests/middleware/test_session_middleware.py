@@ -5,7 +5,7 @@ import pytest
 from lilya.responses import JSONResponse
 from pydantic import ValidationError
 
-from esmerald.config import SessionConfig
+from esmerald.core.config import SessionConfig
 from esmerald.core.datastructures import Secret
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway

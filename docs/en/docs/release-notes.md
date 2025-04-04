@@ -26,6 +26,7 @@ is experimental to test in the next releases. If successful, it will be marked a
 
 - `esmerald.datastructures` is now `esmerald.core.datastructures`.
 - `esmerald.caches` is now `esmerald.core.caches`.
+- `esmerald.config` is now `esmerald.core.config`.
 
 ## 3.7.0
 
@@ -1374,12 +1375,12 @@ If you already had template configurations, jwt, schedulers or all the features 
 
 - **TemplateConfig**:
     ```python
-    from esmerald.config.template import TemplateConfig
+    from esmerald.core.config.template import TemplateConfig
     ```
 
 - **JWTConfig**:
     ```python
-    from esmerald.config.jwt import JWTConfig
+    from esmerald.core.config.jwt import JWTConfig
     ```
 - Scheduler class is now imported directly from `asyncz`:
     ```python

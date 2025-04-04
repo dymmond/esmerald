@@ -6,8 +6,8 @@ import pytest
 from pydantic import ValidationError
 
 from esmerald import Include, get
-from esmerald.config import StaticFilesConfig
-from esmerald.config.template import TemplateConfig
+from esmerald.core.config import StaticFilesConfig
+from esmerald.core.config.template import TemplateConfig
 from esmerald.testclient import create_client
 
 

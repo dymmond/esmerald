@@ -37,7 +37,7 @@ P = ParamSpec("P")
 if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import Literal
 
-    from esmerald.config import (
+    from esmerald.core.config import (
         CORSConfig,
         CSRFConfig,
         OpenAPIConfig,

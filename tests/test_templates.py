@@ -3,7 +3,7 @@ import os
 import pytest
 
 from esmerald.applications import Esmerald
-from esmerald.config.template import TemplateConfig
+from esmerald.core.config.template import TemplateConfig
 from esmerald.core.datastructures import Template
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
