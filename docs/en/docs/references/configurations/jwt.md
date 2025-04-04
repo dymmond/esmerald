@@ -11,4 +11,4 @@ application and leverage the system.
 from esmerald import JWTConfig
 ```
 
-::: esmerald.config.jwt.JWTConfig
+::: esmerald.core.config.jwt.JWTConfig

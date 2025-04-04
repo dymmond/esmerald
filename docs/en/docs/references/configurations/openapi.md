@@ -11,7 +11,7 @@ application and leverage the system.
 from esmerald import OpenAPIConfig
 ```
 
-::: esmerald.config.openapi.OpenAPIConfig
+::: esmerald.core.config.openapi.OpenAPIConfig
     options:
         filters:
         - "!^openapi"

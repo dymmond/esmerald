@@ -11,7 +11,7 @@ application and leverage the system.
 from esmerald import StaticFilesConfig
 ```
 
-::: esmerald.config.static_files.StaticFilesConfig
+::: esmerald.core.config.static_files.StaticFilesConfig
     options:
         filters:
         - "!^validate_path"

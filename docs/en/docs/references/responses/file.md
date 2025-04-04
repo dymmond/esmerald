@@ -1,6 +1,6 @@
 # **`File`** class
 
-::: esmerald.datastructures.file.File
+::: esmerald.core.datastructures.file.File
     options:
         inherited_members: false
         filters:

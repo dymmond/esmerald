@@ -11,4 +11,4 @@ application and leverage the system.
 from esmerald import CSRFConfig
 ```
 
-::: esmerald.config.csrf.CSRFConfig
+::: esmerald.core.config.csrf.CSRFConfig

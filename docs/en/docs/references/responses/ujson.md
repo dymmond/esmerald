@@ -1,6 +1,6 @@
 # **`UJSON`** class
 
-::: esmerald.datastructures.encoders.UJSON
+::: esmerald.core.datastructures.encoders.UJSON
     options:
         inherited_members: false
         filters:
