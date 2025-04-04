@@ -4,7 +4,7 @@ from __future__ import annotations
 import grpc
 
 from esmerald import Esmerald
-from esmerald.contrib.grpc import GrpcGateway
+from esmerald.contrib.grpc.gateway import GrpcGateway
 from esmerald.contrib.grpc.register import register_grpc_http_routes
 
 # Import generated classes

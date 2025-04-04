@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-import grpc
+try:
+    import grpc
+except ImportError:
+    raise ImportError(
+        "You must have the official `grpcio-tools` installed to use this module."
+    ) from None
+
 from google.protobuf.json_format import MessageToDict
 from grpc import aio
 from lilya._internal._path import clean_path
