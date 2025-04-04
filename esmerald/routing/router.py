@@ -78,7 +78,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
-        AsyncAnyCallable,
         BackgroundTaskType,
         Dependencies,
         ExceptionHandlerMap,
@@ -2903,7 +2902,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
 
         kwargs = await self.get_kwargs(websocket=websocket)
 
-        fn = cast(AsyncAnyCallable, self.fn)
+        fn = self.fn
         if isinstance(self.parent, View):
             await fn(self.parent, **kwargs)
         else:
