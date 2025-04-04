@@ -33,6 +33,12 @@ from typing_extensions import TypedDict
 
 from esmerald import status
 from esmerald.core.datastructures import ResponseContainer, UploadFile
+from esmerald.core.transformers import get_signature
+from esmerald.core.transformers.model import (
+    TransformerModel,
+    create_signature as transformer_create_signature,
+)
+from esmerald.core.transformers.signature import SignatureFactory
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions import BasePermission
@@ -40,12 +46,6 @@ from esmerald.permissions.utils import continue_or_raise_permission_exception, w
 from esmerald.requests import Request
 from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
-from esmerald.transformers.model import (
-    TransformerModel,
-    create_signature as transformer_create_signature,
-)
-from esmerald.transformers.signature import SignatureFactory
-from esmerald.transformers.utils import get_signature
 from esmerald.typing import AnyCallable, Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
@@ -59,7 +59,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
-        APIGateHandler as APIGateHandler,
+        APIGateHandler,
         Cookie,
         Dependencies,
         ResponseCookies,
@@ -999,7 +999,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         """
         awaitable: BasePermission = cast("BasePermission", await permission())
         request: Request = cast("Request", connection)
-        handler = cast("APIGateHandler", self)
+        handler = cast(APIGateHandler, self)
         await continue_or_raise_permission_exception(request, handler, awaitable)
 
     async def dispatch_allow_connection(

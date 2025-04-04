@@ -46,6 +46,9 @@ from typing_extensions import Annotated, Doc
 from esmerald.conf import settings
 from esmerald.core.datastructures import File, Redirect
 from esmerald.core.interceptors.types import Interceptor
+from esmerald.core.transformers import get_signature
+from esmerald.core.transformers.model import TransformerModel
+from esmerald.core.transformers.signature import SignatureModel
 from esmerald.core.urls import include
 from esmerald.exceptions import (
     ImproperlyConfigured,
@@ -64,9 +67,6 @@ from esmerald.routing._internal import OpenAPIFieldInfoMixin
 from esmerald.routing.apis.base import View
 from esmerald.routing.base import Dispatcher
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from esmerald.transformers.model import TransformerModel
-from esmerald.transformers.signature import SignatureModel
-from esmerald.transformers.utils import get_signature
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
 from esmerald.utils.enums import HttpMethod, MediaType
@@ -79,7 +79,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
-        AsyncAnyCallable as AsyncAnyCallable,
+        AsyncAnyCallable,
         BackgroundTaskType,
         Dependencies,
         ExceptionHandlerMap,
@@ -2904,7 +2904,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
 
         kwargs = await self.get_kwargs(websocket=websocket)
 
-        fn = cast("AsyncAnyCallable", self.fn)
+        fn = cast(AsyncAnyCallable, self.fn)
         if isinstance(self.parent, View):
             await fn(self.parent, **kwargs)
         else:

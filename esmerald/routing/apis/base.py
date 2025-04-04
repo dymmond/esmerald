@@ -10,11 +10,11 @@ from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.core.interceptors.types import Interceptor
+    from esmerald.core.transformers.model import TransformerModel
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
     from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
-    from esmerald.transformers.model import TransformerModel
     from esmerald.types import (
         Dependencies,
         ExceptionHandlerMap,

@@ -2,8 +2,8 @@ import pytest
 from pydantic import BaseModel
 
 from esmerald import File, ImproperlyConfigured, Param, ValidationErrorException, get
-from esmerald.transformers.model import ParamSetting
-from esmerald.transformers.utils import get_request_params, get_signature
+from esmerald.core.transformers import get_request_params, get_signature
+from esmerald.core.transformers.model import ParamSetting
 from esmerald.utils.enums import ParamType
 
 
