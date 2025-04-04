@@ -16,7 +16,7 @@ from typing import (
 from lilya.responses import StreamingResponse  # noqa
 from typing_extensions import Annotated, Doc
 
-from esmerald.datastructures.base import ResponseContainer  # noqa
+from esmerald.core.datastructures.base import ResponseContainer  # noqa
 from esmerald.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover

@@ -32,7 +32,7 @@ from lilya.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
 from esmerald import status
-from esmerald.datastructures import ResponseContainer, UploadFile
+from esmerald.core.datastructures import ResponseContainer, UploadFile
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions import BasePermission
@@ -46,7 +46,7 @@ from esmerald.transformers.model import (
 )
 from esmerald.transformers.signature import SignatureFactory
 from esmerald.transformers.utils import get_signature
-from esmerald.typing import Void, VoidType
+from esmerald.typing import AnyCallable, Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
@@ -59,13 +59,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
-        APIGateHandler,
+        APIGateHandler,  # noqa
         Cookie,
         Dependencies,
         ResponseCookies,
         ResponseHeaders,
     )
-    from esmerald.typing import AnyCallable
 
 param_type_map = {
     "str": str,
@@ -124,7 +123,7 @@ class BaseSignature:
         """
         if not self.signature_model:
             self.signature_model = SignatureFactory(
-                fn=cast("AnyCallable", self.fn),
+                fn=cast(AnyCallable, self.fn),
                 dependency_names=self.dependency_names,
             ).create_signature()
 
@@ -244,12 +243,12 @@ class BaseResponseHandler:
 
         if isinstance(route.parent, View):
             fn = partial(
-                cast("AnyCallable", route.fn),
+                cast(AnyCallable, route.fn),
                 route.parent,
                 **parsed_kwargs,
             )
         else:
-            fn = partial(cast("AnyCallable", route.fn), **parsed_kwargs)
+            fn = partial(cast(AnyCallable, route.fn), **parsed_kwargs)
 
         if is_async_callable(fn):
             return await fn()
@@ -565,7 +564,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The `from_callable` method takes a callable object (in this case, the handler function) as input and returns a Signature object.
         - The Signature object can be used to inspect the parameters and return type of the handler function.
         """
-        return Signature.from_callable(cast("AnyCallable", self.fn))
+        return Signature.from_callable(cast(AnyCallable, self.fn))
 
     @property
     def path_parameters(self) -> Set[str]:

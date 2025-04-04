@@ -1,7 +1,7 @@
 from typing import Generator
 
 from esmerald import Esmerald, Gateway, get
-from esmerald.datastructures import Stream
+from esmerald.core.datastructures import Stream
 
 
 def my_generator() -> Generator[str, None, None]:

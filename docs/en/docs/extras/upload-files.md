@@ -10,7 +10,7 @@ this work you will need to type your uploads accordingly.
 To access the `UploadFile` datastructrure.
 
 ```python
-from esmerald.datastructures import UploadFile
+from esmerald.core.datastructures import UploadFile
 ```
 
 or
@@ -112,11 +112,11 @@ be used to set and create a new `file` like the one from *File in datastructures
 To import it:
 
 ```python
-from esmerald.datastructures import File # datastructure
+from esmerald.core.datastructures import File  # datastructure
 
 # or
 
-from esmerald.params import File # param
+from esmerald.params import File  # param
 ```
 
 ## API Reference

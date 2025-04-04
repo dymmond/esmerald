@@ -4,7 +4,7 @@ import msgspec
 from pydantic import BaseModel
 from typing_extensions import Annotated
 
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import post
 from esmerald.testclient import create_client

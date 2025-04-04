@@ -1,5 +1,5 @@
 from esmerald import Esmerald
-from esmerald.datastructures import State
+from esmerald.core.datastructures import State
 
 app = Esmerald()
 

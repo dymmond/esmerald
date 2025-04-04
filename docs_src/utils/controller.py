@@ -1,5 +1,5 @@
 from esmerald import get, post
-from esmerald.datastructures import ResponseHeader
+from esmerald.core.datastructures import ResponseHeader
 from esmerald.utils.decorators import controller
 
 

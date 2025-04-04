@@ -4,7 +4,7 @@ import pytest
 
 from esmerald.applications import Esmerald
 from esmerald.config.template import TemplateConfig
-from esmerald.datastructures import Template
+from esmerald.core.datastructures import Template
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get

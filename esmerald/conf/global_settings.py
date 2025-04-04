@@ -11,7 +11,7 @@ from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
 from esmerald.core.caches.memory import InMemoryCache
-from esmerald.datastructures import Secret
+from esmerald.core.datastructures import Secret
 from esmerald.encoders import Encoder
 from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme

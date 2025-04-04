@@ -3,7 +3,7 @@ from typing import Union
 from pydantic import BaseModel, ConfigDict, constr, field_validator
 from typing_extensions import Annotated, Doc, Literal
 
-from esmerald.datastructures import Secret
+from esmerald.core.datastructures import Secret
 
 SECONDS_IN_A_DAY: Annotated[
     int,

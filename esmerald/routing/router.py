@@ -44,8 +44,8 @@ from lilya.types import ASGIApp, Lifespan, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
+from esmerald.core.datastructures import File, Redirect
 from esmerald.core.urls import include
-from esmerald.datastructures import File, Redirect
 from esmerald.exceptions import (
     ImproperlyConfigured,
     MethodNotAllowed,
@@ -79,7 +79,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
-        AsyncAnyCallable,
+        AsyncAnyCallable,  # noqa
         BackgroundTaskType,
         Dependencies,
         ExceptionHandlerMap,

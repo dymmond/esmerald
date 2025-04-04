@@ -3,7 +3,7 @@ from typing import Any, List, Optional, Type, Union
 from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
 
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 from esmerald.utils.enums import MediaType
 
 

@@ -6,7 +6,7 @@ from lilya.datastructures import DataUpload
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
-from esmerald.datastructures import UploadFile
+from esmerald.core.datastructures import UploadFile
 from esmerald.encoders import LILYA_ENCODER_TYPES, is_body_encoder
 from esmerald.openapi.params import ResponseParam
 from esmerald.params import Body

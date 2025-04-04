@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from typing_extensions import Annotated, Doc
 
-from esmerald.datastructures.base import ResponseContainer  # noqa
+from esmerald.core.datastructures.base import ResponseContainer  # noqa
 from esmerald.responses import JSONResponse  # noqa
 from esmerald.utils.enums import MediaType
 

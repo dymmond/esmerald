@@ -1,5 +1,5 @@
 from esmerald import APIView, Esmerald, Gateway, Request, get, post, status
-from esmerald.datastructures.encoders import OrJSON
+from esmerald.core.datastructures.encoders import OrJSON
 
 
 class World(APIView):

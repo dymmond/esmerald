@@ -6,12 +6,12 @@ from lilya import status
 from esmerald.conf import __lazy_settings__, settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.context import Context
+from esmerald.core.datastructures import JSON, Redirect, Stream, Template, UploadFile
 from esmerald.injector import Factory, Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .background import BackgroundTask, BackgroundTasks
 from .config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
-from .datastructures import JSON, Redirect, Stream, Template, UploadFile
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,

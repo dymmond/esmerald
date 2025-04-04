@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr
 from typing_extensions import Annotated
 
 from esmerald import Esmerald, Gateway, post
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 
 StreetAddress = Annotated[str, msgspec.Meta(min_length=5)]
 PostCode = Annotated[str, msgspec.Meta(min_length=5)]

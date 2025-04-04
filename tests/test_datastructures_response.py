@@ -1,8 +1,8 @@
 import pytest
 
 from esmerald import Gateway, get, status
-from esmerald.datastructures import JSON
-from esmerald.datastructures.encoders import ORJSON, UJSON
+from esmerald.core.datastructures import JSON
+from esmerald.core.datastructures.encoders import ORJSON, UJSON
 from esmerald.testclient import create_client
 
 

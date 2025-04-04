@@ -4,7 +4,7 @@ import msgspec
 from typing_extensions import Annotated
 
 from esmerald import Esmerald, Gateway, post
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 
 Name = Annotated[str, msgspec.Meta(min_length=5)]
 Email = Annotated[str, msgspec.Meta(min_length=5, max_length=100, pattern="[^@]+@[^@]+\\.[^@]+")]

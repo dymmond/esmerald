@@ -63,11 +63,11 @@ This cookie is a datastructure that contains unique fields to create a `cookie` 
 To import it:
 
 ```python
-from esmerald.datastructures import Cookie
+from esmerald.core.datastructures import Cookie
 
 # or
 
-from esmerald.datastructures import Cookie as ResponseCookie
+from esmerald.core.datastructures import Cookie as ResponseCookie
 ```
 
 ### Cookie from params

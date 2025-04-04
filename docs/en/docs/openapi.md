@@ -144,7 +144,7 @@ Let us use the following API as example from before.
 from typing import List
 
 from esmerald import Request, get
-from esmerald.datastructures import OpenAPIResponse
+from esmerald.core.datastructures import OpenAPIResponse
 
 from .daos import UserDAO
 from .schemas import Error, UserOut
