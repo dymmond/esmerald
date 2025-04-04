@@ -12,6 +12,12 @@ hide:
 - When using `Requires` and a callable is not passed, Esmerald will generate a lambda callable automatically.
 - New [experimental](./experimental/index.md) documentation section with the new features that are being tested.
 - New [gRPC](./experimental/grpc.md) documentation section with the new gRPC functionality.
+- New `wrap_middleware` from `esmerald.utils.middleware`. This serves as alternative when setting up a middleware
+which **also allows** the fully module naming to be passed.
+
+    ```python
+    from esmerald.utils.middleware import wrap_middleware
+    ```
 
 #### Experimental
 

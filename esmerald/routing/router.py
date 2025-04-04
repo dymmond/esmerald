@@ -46,8 +46,7 @@ from typing_extensions import Annotated, Doc
 from esmerald.conf import settings
 from esmerald.core.datastructures import File, Redirect
 from esmerald.core.interceptors.types import Interceptor
-from esmerald.core.transformers import get_signature
-from esmerald.core.transformers.model import TransformerModel
+from esmerald.core.transformers.model import TransformerModel, get_signature
 from esmerald.core.transformers.signature import SignatureModel
 from esmerald.core.urls import include
 from esmerald.exceptions import (

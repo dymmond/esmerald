@@ -33,10 +33,10 @@ from typing_extensions import TypedDict
 
 from esmerald import status
 from esmerald.core.datastructures import ResponseContainer, UploadFile
-from esmerald.core.transformers import get_signature
 from esmerald.core.transformers.model import (
     TransformerModel,
     create_signature as transformer_create_signature,
+    get_signature,
 )
 from esmerald.core.transformers.signature import SignatureFactory
 from esmerald.exceptions import ImproperlyConfigured
