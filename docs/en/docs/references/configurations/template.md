@@ -11,7 +11,7 @@ application and leverage the system.
 from esmerald import TemplateConfig
 ```
 
-::: esmerald.config.template.TemplateConfig
+::: esmerald.core.config.template.TemplateConfig
     options:
         filters:
         - "!^model_config"

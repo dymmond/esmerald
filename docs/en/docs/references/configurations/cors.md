@@ -11,4 +11,4 @@ application and leverage the system.
 from esmerald import CORSConfig
 ```
 
-::: esmerald.config.cors.CORSConfig
+::: esmerald.core.config.cors.CORSConfig

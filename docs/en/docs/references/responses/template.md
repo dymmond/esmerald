@@ -1,6 +1,6 @@
 # **`Template`** class
 
-::: esmerald.datastructures.template.Template
+::: esmerald.core.datastructures.template.Template
     options:
         inherited_members: false
         filters:

@@ -11,7 +11,7 @@ application and leverage the system.
 from esmerald import SessionConfig
 ```
 
-::: esmerald.config.session.SessionConfig
+::: esmerald.core.config.session.SessionConfig
     options:
         members:
             - secret_key

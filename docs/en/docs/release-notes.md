@@ -7,6 +7,12 @@ hide:
 
 ## 3.7.1
 
+!!! Warning
+    This release introduces some import changes as part of the ongoing internal restructure of Esmerald.
+    This will be done in different phases during different releasing but you can already see the **Changed**
+    section to understand where the new imports must be done. Very likely that you won't need to do this but
+    those serve as a reference.
+
 ### Added
 
 - When using `Requires` and a callable is not passed, Esmerald will generate a lambda callable automatically.
@@ -14,6 +20,8 @@ hide:
 - New [gRPC](./experimental/grpc.md) documentation section with the new gRPC functionality.
 - New `wrap_middleware` from `esmerald.utils.middleware`. This serves as alternative when setting up a middleware
 which **also allows** the fully module naming to be passed.
+- New [Learning and Examples](./guides/index.md) section. This section will be growing in time and will help newcomers
+to understand a bit more about Esmerald.
 
     ```python
     from esmerald.utils.middleware import wrap_middleware

@@ -194,6 +194,37 @@ nav:
   - Experimental:
     - experimental/index.md
     - experimental/grpc.md
+- Learning and Examples:
+  - guides/index.md
+  - Getting Started:
+    - guides/beginner/index.md
+    - guides/beginner/02-building-your-first-api.md
+    - guides/beginner/03-request-and-response-models.md
+    - guides/beginner/04-handling-errors.md
+    - guides/beginner/05-routing.md
+    - guides/beginner/06-middlewares.md
+    - guides/beginner/07-background-tasks.md
+    - guides/beginner/08-dependencies.md
+    - guides/beginner/09-requests-and-responses.md
+    - guides/beginner/10-routing.md
+  - Getting deeper into Esmerald:
+    - guides/more-advanced/index.md
+    - guides/more-advanced/01-security.md
+    - guides/more-advanced/02-testing.md
+    - guides/more-advanced/03-deployment.md
+    - guides/more-advanced/04-scaling.md
+    - guides/more-advanced/05-architecture-patterns.md
+    - guides/more-advanced/06-dependency-injection.md
+    - guides/more-advanced/07-advanced-concepts.md
+    - guides/more-advanced/08-caching.md
+    - guides/more-advanced/09-path-params.md
+    - guides/more-advanced/10-query-params.md
+    - guides/more-advanced/11-request-data.md
+    - guides/more-advanced/12-upload-files.md
+    - guides/more-advanced/13-forms.md
+    - guides/more-advanced/14-body.md
+    - guides/more-advanced/15-headers.md
+    - guides/more-advanced/16-cookies.md
 - API Reference:
   - references/index.md
   - references/esmerald.md

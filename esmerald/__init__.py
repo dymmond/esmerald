@@ -1,4 +1,4 @@
-__version__ = "3.7.0"
+__version__ = "3.7.1"
 
 
 from lilya import status
@@ -51,6 +51,7 @@ from .routing.webhooks import (
     whroute,
     whtrace,
 )
+from .utils.decorators import observable
 from .websockets import WebSocket, WebSocketDisconnect, WebSocketState
 
 __all__ = [
@@ -119,6 +120,7 @@ __all__ = [
     "delete",
     "get",
     "head",
+    "observable",
     "options",
     "patch",
     "post",

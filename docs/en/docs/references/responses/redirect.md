@@ -1,6 +1,6 @@
 # **`Redirect`** class
 
-::: esmerald.datastructures.redirect.Redirect
+::: esmerald.core.datastructures.redirect.Redirect
     options:
         inherited_members: false
         filters:
