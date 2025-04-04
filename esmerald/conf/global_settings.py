@@ -7,10 +7,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Annotated, Doc
 
 from esmerald import __version__  # noqa
-from esmerald.caches.memory import InMemoryCache
 from esmerald.conf.enums import EnvironmentType
 from esmerald.config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
 from esmerald.config.asyncexit import AsyncExitConfig
+from esmerald.core.caches.memory import InMemoryCache
 from esmerald.datastructures import Secret
 from esmerald.encoders import Encoder
 from esmerald.interceptors.types import Interceptor

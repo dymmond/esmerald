@@ -68,7 +68,7 @@ def test_multiple_tasks(test_client_factory: Callable[..., EsmeraldTestClient]):
 
 
 def test_multi_tasks_failure_avoids_next_execution(
-    test_client_factory: Callable[..., EsmeraldTestClient]
+    test_client_factory: Callable[..., EsmeraldTestClient],
 ) -> None:
     TASK_COUNTER = 0
 

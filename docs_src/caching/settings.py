@@ -1,5 +1,5 @@
 from esmerald import EsmeraldAPISettings
-from esmerald.caches.redis import RedisCache
+from esmerald.core.caches.redis import RedisCache
 
 
 class CustomSettings(EsmeraldAPISettings):

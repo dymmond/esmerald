@@ -1,5 +1,5 @@
 from esmerald import get
-from esmerald.caches.redis import RedisCache
+from esmerald.core.caches.redis import RedisCache
 from esmerald.utils.decorators import cache
 
 redis_cache = RedisCache(redis_url="redis://localhost:6379")

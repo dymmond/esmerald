@@ -357,7 +357,9 @@ class View:
         those permissions are inserted at the beginning of the 'permissions' and '__base_permissions__' lists of the current instance.
         """
         for base in self.__class__.__bases__:
-            if hasattr(base, "permissions") and isinstance(getattr(base, "permissions", None), (list, tuple)):
+            if hasattr(base, "permissions") and isinstance(
+                getattr(base, "permissions", None), (list, tuple)
+            ):
                 unique_perms = [perm for perm in base.permissions if perm not in self.permissions]
                 self.permissions[:0] = unique_perms
                 self.__base_permissions__[:0] = unique_perms
