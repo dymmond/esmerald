@@ -22,6 +22,11 @@ is experimental to test in the next releases. If successful, it will be marked a
 
 - Bump Pydantic internal version to 2.11+.
 
+### Changed
+
+- `esmerald.datastructures` is now `esmerald.core.datastructures`.
+- `esmerald.caches` is now `esmerald.core.caches`.
+
 ## 3.7.0
 
 ### Added
