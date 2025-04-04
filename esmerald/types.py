@@ -35,7 +35,7 @@ except MissingDependency:
 if TYPE_CHECKING:
     from esmerald.applications import Application, Esmerald
     from esmerald.conf.global_settings import EsmeraldAPISettings
-    from esmerald.datastructures import Cookie, ResponseHeader, State as State
+    from esmerald.core.datastructures import Cookie, ResponseHeader, State as State
     from esmerald.injector import Inject
     from esmerald.protocols.middleware import MiddlewareProtocol as MiddlewareProtocol
     from esmerald.requests import Request
