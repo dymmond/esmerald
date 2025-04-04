@@ -24,6 +24,10 @@ is experimental to test in the next releases. If successful, it will be marked a
 
 ### Changed
 
+The following **must be updated if you are using any of these**.
+
+This is now part of the phase migration of modules to make them more consistent and easier to use.
+
 - `esmerald.datastructures` is now `esmerald.core.datastructures`.
 - `esmerald.caches` is now `esmerald.core.caches`.
 - `esmerald.config` is now `esmerald.core.config`.
