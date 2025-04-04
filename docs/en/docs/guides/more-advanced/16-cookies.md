@@ -4,7 +4,7 @@ Cookies are small pieces of data stored on the client's browser, commonly used f
 
 ## Accessing Cookie Parameters in Requests
 
-Esmerald allows you to access cookies sent with incoming requests seamlessly by utilizing the `Cookie` class. This approach is akin to FastAPI's methodology for handling cookie parameters.
+Esmerald allows you to access cookies sent with incoming requests seamlessly by utilizing the `Cookie` class.
 
 **Example: Accessing Cookies from Requests**
 
@@ -135,7 +135,7 @@ app = Esmerald(routes=[Gateway(handler=create_user)])
 
 ## Summary
 
-- **Accessing Request Cookies:** Use Esmerald's `Cookie` class to extract cookie values from incoming requests, similar to FastAPI's approach.
+- **Accessing Request Cookies:** Use Esmerald's `Cookie` class to extract cookie values from incoming requests.
 - **Setting Response Cookies:** Utilize Esmerald's `Cookie` data structure to define and include cookies in HTTP responses.
 - **Combining Data Sources:** Esmerald allows combining cookie parameters with other request data types, such as JSON bodies, within endpoint functions.
 
