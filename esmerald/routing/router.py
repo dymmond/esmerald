@@ -45,6 +45,7 @@ from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
 from esmerald.core.datastructures import File, Redirect
+from esmerald.core.interceptors.types import Interceptor
 from esmerald.core.urls import include
 from esmerald.exceptions import (
     ImproperlyConfigured,
@@ -53,7 +54,6 @@ from esmerald.exceptions import (
     OpenAPIException,
     ValidationErrorException,
 )
-from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.openapi.utils import is_status_code_allowed
 from esmerald.params import Form
@@ -79,7 +79,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.permissions.types import Permission
     from esmerald.types import (
         APIGateHandler,
-        AsyncAnyCallable,  # noqa
+        AsyncAnyCallable as AsyncAnyCallable,
         BackgroundTaskType,
         Dependencies,
         ExceptionHandlerMap,

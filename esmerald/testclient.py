@@ -44,7 +44,7 @@ if TYPE_CHECKING:  # pragma: no cover
         SessionConfig,
         StaticFilesConfig,
     )
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.pluggables import Extension, Pluggable
     from esmerald.routing.gateways import WebhookGateway

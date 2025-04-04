@@ -33,6 +33,7 @@ from esmerald.core.config import (
     StaticFilesConfig,
 )
 from esmerald.core.datastructures import State
+from esmerald.core.interceptors.types import Interceptor
 from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
@@ -40,7 +41,6 @@ from esmerald.exception_handlers import (
     validation_error_exception_handler,
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.interceptors.types import Interceptor
 from esmerald.middleware.app_settings import ApplicationSettingsMiddleware
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
@@ -60,7 +60,7 @@ from esmerald.routing.router import (
     HTTPHandler,
     Include,
     Router,
-    WebhookHandler,  # noqa
+    WebhookHandler,
     WebSocketHandler,
 )
 from esmerald.types import (
@@ -1849,7 +1849,7 @@ class Application(Lilya):
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gate = gateways.WebhookGateway(
-                        handler=cast("WebhookHandler", route_handler),
+                        handler=cast(WebhookHandler, route_handler),
                         name=route_handler.fn.__name__,
                     )
 

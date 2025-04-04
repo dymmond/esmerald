@@ -5,7 +5,7 @@ from esmerald import EsmeraldAPISettings
 from .myapp.interceptors import RequestParamInterceptor
 
 if TYPE_CHECKING:
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.types import Interceptor
 
 
 class AppSettings(EsmeraldAPISettings):

@@ -27,6 +27,7 @@ is experimental to test in the next releases. If successful, it will be marked a
 - `esmerald.datastructures` is now `esmerald.core.datastructures`.
 - `esmerald.caches` is now `esmerald.core.caches`.
 - `esmerald.config` is now `esmerald.core.config`.
+- `esmerald.interceptors` is now `esmerald.core.interceptors`.
 
 ## 3.7.0
 

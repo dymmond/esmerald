@@ -53,13 +53,13 @@ from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.interceptors.interceptor import EsmeraldInterceptor
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
+    from esmerald.core.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
-        APIGateHandler,  # noqa
+        APIGateHandler as APIGateHandler,
         Cookie,
         Dependencies,
         ResponseCookies,

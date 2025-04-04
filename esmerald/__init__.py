@@ -18,6 +18,7 @@ from .core.config import (
     SessionConfig,
     StaticFilesConfig,
 )
+from .core.interceptors.interceptor import EsmeraldInterceptor
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -28,7 +29,6 @@ from .exceptions import (
     ServiceUnavailable,
     ValidationErrorException,
 )
-from .interceptors.interceptor import EsmeraldInterceptor
 from .param_functions import Requires, Security
 from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll

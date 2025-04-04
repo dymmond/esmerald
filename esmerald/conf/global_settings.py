@@ -18,8 +18,8 @@ from esmerald.core.config import (
 )
 from esmerald.core.config.asyncexit import AsyncExitConfig
 from esmerald.core.datastructures import Secret
+from esmerald.core.interceptors.types import Interceptor
 from esmerald.encoders import Encoder
-from esmerald.interceptors.types import Interceptor
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
