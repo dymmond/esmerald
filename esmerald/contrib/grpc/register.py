@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from lilya.types import ASGIApp
 
-from esmerald.grpc.gateway import GrpcGateway
+from esmerald.contrib.grpc.gateway import GrpcGateway
 
 
 def register_grpc_http_routes(

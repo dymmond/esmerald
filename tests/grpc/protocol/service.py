@@ -4,8 +4,8 @@ from __future__ import annotations
 import grpc
 
 from esmerald import Esmerald
-from esmerald.grpc.gateway import GrpcGateway
-from esmerald.grpc.register import register_grpc_http_routes
+from esmerald.contrib.grpc import GrpcGateway
+from esmerald.contrib.grpc.register import register_grpc_http_routes
 
 # Import generated classes
 from tests.grpc.protocol import greeter_pb2, greeter_pb2_grpc
