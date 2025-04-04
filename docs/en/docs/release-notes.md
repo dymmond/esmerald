@@ -71,7 +71,7 @@ class ItemHandler:
 
 The rest remains as per normal usage of Esmerald.
 
-### 3.6.8
+## 3.6.8
 
 ### Added
 
@@ -101,7 +101,7 @@ The rest remains as per normal usage of Esmerald.
 
 - Official support for Mako template engine as previously announced.
 
-### 3.6.7
+## 3.6.7
 
 ### Added
 
@@ -118,7 +118,7 @@ for consistency reasons of the framework.
 
 - `override_settings` was not taking into account async functions.
 
-### 3.6.6
+## 3.6.6
 
 ### Added
 
@@ -170,7 +170,7 @@ system.
 
 ## 3.6.3
 
-## Added
+### Added
 
 - [Requires()](./dependencies.md#requires-and-security) as a new independent way to manage dependencies.
 - A more thorough explanation about the [Security()](./dependencies.md#requires-and-security), how to use it and examples.
