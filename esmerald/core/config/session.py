@@ -3,7 +3,7 @@ from typing import Union
 from pydantic import BaseModel, ConfigDict, constr, field_validator
 from typing_extensions import Annotated, Doc, Literal
 
-from esmerald.datastructures import Secret
+from esmerald.core.datastructures import Secret
 
 SECONDS_IN_A_DAY: Annotated[
     int,
@@ -12,7 +12,9 @@ SECONDS_IN_A_DAY: Annotated[
         Total seconds in a day.
         """
     ),
-] = 60 * 60 * 24
+] = (
+    60 * 60 * 24
+)
 
 
 class SessionConfig(BaseModel):
@@ -72,7 +74,9 @@ class SessionConfig(BaseModel):
             The number in seconds until the cookie expires.
             """
         ),
-    ] = SECONDS_IN_A_DAY * 180
+    ] = (
+        SECONDS_IN_A_DAY * 180
+    )
     https_only: Annotated[
         bool,
         Doc(

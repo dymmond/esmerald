@@ -3,7 +3,7 @@ from typing import Union
 from pydantic import BaseModel
 
 from esmerald import Cookie, Gateway, Param, Response, post
-from esmerald.datastructures import Cookie as ResponseCookie
+from esmerald.core.datastructures import Cookie as ResponseCookie
 from esmerald.responses.encoders import ORJSONResponse
 from esmerald.testclient import create_client
 from esmerald.utils.enums import MediaType

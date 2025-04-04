@@ -124,7 +124,8 @@ def test_dependency_isolation() -> None:  # pragma: no cover
             WebSocketGateway(path="/", handler=SecondController),
         ]
     )
-    with pytest.raises(WebSocketDisconnect), client.websocket_connect(
-        "/second/abcdef?query_param=12345"
-    ) as ws:
+    with (
+        pytest.raises(WebSocketDisconnect),
+        client.websocket_connect("/second/abcdef?query_param=12345") as ws,
+    ):
         ws.send_json({"data": "123"})

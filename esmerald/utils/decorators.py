@@ -28,7 +28,7 @@ from esmerald.conf import settings
 from esmerald.protocols.cache import CacheBackend
 
 if TYPE_CHECKING:  # pragma: no cover
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.types import (

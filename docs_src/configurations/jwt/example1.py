@@ -1,7 +1,7 @@
 from myapp.models import User
 
 from esmerald import Esmerald, settings
-from esmerald.config.jwt import JWTConfig
+from esmerald.core.config.jwt import JWTConfig
 from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 

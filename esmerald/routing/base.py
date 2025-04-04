@@ -32,7 +32,13 @@ from lilya.types import Receive, Scope, Send
 from typing_extensions import TypedDict
 
 from esmerald import status
-from esmerald.datastructures import ResponseContainer, UploadFile
+from esmerald.core.datastructures import ResponseContainer, UploadFile
+from esmerald.core.transformers.model import (
+    TransformerModel,
+    create_signature as transformer_create_signature,
+    get_signature,
+)
+from esmerald.core.transformers.signature import SignatureFactory
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions import BasePermission
@@ -40,21 +46,15 @@ from esmerald.permissions.utils import continue_or_raise_permission_exception, w
 from esmerald.requests import Request
 from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
-from esmerald.transformers.model import (
-    TransformerModel,
-    create_signature as transformer_create_signature,
-)
-from esmerald.transformers.signature import SignatureFactory
-from esmerald.transformers.utils import get_signature
-from esmerald.typing import Void, VoidType
+from esmerald.typing import AnyCallable, Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.interceptors.interceptor import EsmeraldInterceptor
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
+    from esmerald.core.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
@@ -65,7 +65,6 @@ if TYPE_CHECKING:  # pragma: no cover
         ResponseCookies,
         ResponseHeaders,
     )
-    from esmerald.typing import AnyCallable
 
 param_type_map = {
     "str": str,
@@ -124,7 +123,7 @@ class BaseSignature:
         """
         if not self.signature_model:
             self.signature_model = SignatureFactory(
-                fn=cast("AnyCallable", self.fn),
+                fn=cast(AnyCallable, self.fn),
                 dependency_names=self.dependency_names,
             ).create_signature()
 
@@ -244,12 +243,12 @@ class BaseResponseHandler:
 
         if isinstance(route.parent, View):
             fn = partial(
-                cast("AnyCallable", route.fn),
+                cast(AnyCallable, route.fn),
                 route.parent,
                 **parsed_kwargs,
             )
         else:
-            fn = partial(cast("AnyCallable", route.fn), **parsed_kwargs)
+            fn = partial(cast(AnyCallable, route.fn), **parsed_kwargs)
 
         if is_async_callable(fn):
             return await fn()
@@ -565,7 +564,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The `from_callable` method takes a callable object (in this case, the handler function) as input and returns a Signature object.
         - The Signature object can be used to inspect the parameters and return type of the handler function.
         """
-        return Signature.from_callable(cast("AnyCallable", self.fn))
+        return Signature.from_callable(cast(AnyCallable, self.fn))
 
     @property
     def path_parameters(self) -> Set[str]:

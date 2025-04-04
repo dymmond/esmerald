@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 from esmerald import Esmerald, Gateway, Response, post
-from esmerald.datastructures import Cookie
+from esmerald.core.datastructures import Cookie
 
 
 class User(BaseModel):

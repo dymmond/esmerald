@@ -6,9 +6,9 @@ import pytest
 import pytest_asyncio
 
 from esmerald import Esmerald, Gateway, get
-from esmerald.caches.memory import InMemoryCache
-from esmerald.caches.redis import RedisCache
 from esmerald.conf import settings
+from esmerald.core.caches.memory import InMemoryCache
+from esmerald.core.caches.redis import RedisCache
 from esmerald.testclient import EsmeraldTestClient
 from tests.settings import TestSettings
 

@@ -12,6 +12,12 @@ hide:
 - When using `Requires` and a callable is not passed, Esmerald will generate a lambda callable automatically.
 - New [experimental](./experimental/index.md) documentation section with the new features that are being tested.
 - New [gRPC](./experimental/grpc.md) documentation section with the new gRPC functionality.
+- New `wrap_middleware` from `esmerald.utils.middleware`. This serves as alternative when setting up a middleware
+which **also allows** the fully module naming to be passed.
+
+    ```python
+    from esmerald.utils.middleware import wrap_middleware
+    ```
 
 #### Experimental
 
@@ -21,6 +27,18 @@ is experimental to test in the next releases. If successful, it will be marked a
 ### Fixed
 
 - Bump Pydantic internal version to 2.11+.
+
+### Changed
+
+The following **must be updated if you are using any of these**.
+
+This is now part of the phase migration of modules to make them more consistent and easier to use.
+
+- `esmerald.datastructures` is now `esmerald.core.datastructures`.
+- `esmerald.caches` is now `esmerald.core.caches`.
+- `esmerald.config` is now `esmerald.core.config`.
+- `esmerald.interceptors` is now `esmerald.core.interceptors`.
+- `esmerald.transformers` is now `esmerald.core.transformers`.
 
 ## 3.7.0
 
@@ -53,7 +71,7 @@ class ItemHandler:
 
 The rest remains as per normal usage of Esmerald.
 
-### 3.6.8
+## 3.6.8
 
 ### Added
 
@@ -83,7 +101,7 @@ The rest remains as per normal usage of Esmerald.
 
 - Official support for Mako template engine as previously announced.
 
-### 3.6.7
+## 3.6.7
 
 ### Added
 
@@ -100,7 +118,7 @@ for consistency reasons of the framework.
 
 - `override_settings` was not taking into account async functions.
 
-### 3.6.6
+## 3.6.6
 
 ### Added
 
@@ -152,7 +170,7 @@ system.
 
 ## 3.6.3
 
-## Added
+### Added
 
 - [Requires()](./dependencies.md#requires-and-security) as a new independent way to manage dependencies.
 - A more thorough explanation about the [Security()](./dependencies.md#requires-and-security), how to use it and examples.
@@ -1369,12 +1387,12 @@ If you already had template configurations, jwt, schedulers or all the features 
 
 - **TemplateConfig**:
     ```python
-    from esmerald.config.template import TemplateConfig
+    from esmerald.core.config.template import TemplateConfig
     ```
 
 - **JWTConfig**:
     ```python
-    from esmerald.config.jwt import JWTConfig
+    from esmerald.core.config.jwt import JWTConfig
     ```
 - Scheduler class is now imported directly from `asyncz`:
     ```python

@@ -6,12 +6,19 @@ from lilya import status
 from esmerald.conf import __lazy_settings__, settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.context import Context
+from esmerald.core.datastructures import JSON, Redirect, Stream, Template, UploadFile
 from esmerald.injector import Factory, Inject
 
 from .applications import ChildEsmerald, Esmerald
 from .background import BackgroundTask, BackgroundTasks
-from .config import CORSConfig, CSRFConfig, OpenAPIConfig, SessionConfig, StaticFilesConfig
-from .datastructures import JSON, Redirect, Stream, Template, UploadFile
+from .core.config import (
+    CORSConfig,
+    CSRFConfig,
+    OpenAPIConfig,
+    SessionConfig,
+    StaticFilesConfig,
+)
+from .core.interceptors.interceptor import EsmeraldInterceptor
 from .exceptions import (
     HTTPException,
     ImproperlyConfigured,
@@ -22,7 +29,6 @@ from .exceptions import (
     ServiceUnavailable,
     ValidationErrorException,
 )
-from .interceptors.interceptor import EsmeraldInterceptor
 from .param_functions import Requires, Security
 from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
 from .permissions import AllowAny, BasePermission, DenyAll

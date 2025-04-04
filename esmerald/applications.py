@@ -24,11 +24,16 @@ from typing_extensions import Annotated, Doc
 
 from esmerald.conf import __lazy_settings__, settings as esmerald_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.config import CORSConfig, CSRFConfig, SessionConfig
-from esmerald.config.openapi import OpenAPIConfig
-from esmerald.config.static_files import StaticFilesConfig
 from esmerald.contrib.schedulers.base import SchedulerConfig
-from esmerald.datastructures import State
+from esmerald.core.config import (
+    CORSConfig,
+    CSRFConfig,
+    OpenAPIConfig,
+    SessionConfig,
+    StaticFilesConfig,
+)
+from esmerald.core.datastructures import State
+from esmerald.core.interceptors.types import Interceptor
 from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
@@ -36,7 +41,6 @@ from esmerald.exception_handlers import (
     validation_error_exception_handler,
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.interceptors.types import Interceptor
 from esmerald.middleware.app_settings import ApplicationSettingsMiddleware
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
@@ -52,7 +56,13 @@ from esmerald.pluggables import Extension, ExtensionDict, Pluggable
 from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.apis import base
-from esmerald.routing.router import HTTPHandler, Include, Router, WebhookHandler, WebSocketHandler
+from esmerald.routing.router import (
+    HTTPHandler,
+    Include,
+    Router,
+    WebhookHandler,
+    WebSocketHandler,
+)
 from esmerald.types import (
     APIGateHandler,
     ASGIApp,
@@ -70,7 +80,7 @@ from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.conf import EsmeraldLazySettings
-    from esmerald.datastructures import Secret
+    from esmerald.core.datastructures import Secret
     from esmerald.types import SettingsType, TemplateConfig
 
 AppType = TypeVar("AppType", bound="Esmerald")
@@ -1589,9 +1599,9 @@ class Application(Lilya):
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (on_startup is None and on_shutdown is None), (
-            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
-        )
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
@@ -1839,7 +1849,7 @@ class Application(Lilya):
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gate = gateways.WebhookGateway(
-                        handler=cast("WebhookHandler", route_handler),
+                        handler=cast(WebhookHandler, route_handler),
                         name=route_handler.fn.__name__,
                     )
 

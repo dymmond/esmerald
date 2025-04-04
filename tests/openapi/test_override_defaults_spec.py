@@ -3,7 +3,7 @@ from typing import Dict
 from pydantic import BaseModel
 
 from esmerald import Esmerald, Gateway, post
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import EsmeraldTestClient
 from tests.settings import TestSettings

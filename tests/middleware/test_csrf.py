@@ -4,7 +4,7 @@ import pytest
 from lilya import status
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED
 
-from esmerald.config import CSRFConfig
+from esmerald.core.config import CSRFConfig
 from esmerald.routing.gateways import Gateway, WebSocketGateway
 from esmerald.routing.handlers import delete, get, patch, post, put, websocket
 from esmerald.testclient import create_client
@@ -140,10 +140,13 @@ def test_websocket_ignored() -> None:
         await socket.send_json({"data": "123"})
         await socket.close()
 
-    with create_client(
-        routes=[WebSocketGateway(path="/", handler=websocket_handler)],
-        csrf_config=CSRFConfig(secret=get_random_secret_key()),
-    ) as client, client.websocket_connect("/") as ws:
+    with (
+        create_client(
+            routes=[WebSocketGateway(path="/", handler=websocket_handler)],
+            csrf_config=CSRFConfig(secret=get_random_secret_key()),
+        ) as client,
+        client.websocket_connect("/") as ws,
+    ):
         response = ws.receive_json()
         assert response is not None
 

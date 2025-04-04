@@ -3,8 +3,8 @@ from loguru import logger
 from pydantic import BaseModel
 
 from esmerald import ChildEsmerald, Gateway, Include, JSONResponse, Request, post
+from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
 from esmerald.exceptions import NotAuthorized
-from esmerald.interceptors.interceptor import EsmeraldInterceptor
 from esmerald.params import Cookie
 from esmerald.testclient import create_client
 

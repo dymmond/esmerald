@@ -1,5 +1,5 @@
 from esmerald import Esmerald, EsmeraldAPISettings
-from esmerald.config import CORSConfig
+from esmerald.core.config import CORSConfig
 from esmerald.middleware import CORSMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 

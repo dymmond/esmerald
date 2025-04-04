@@ -28,26 +28,25 @@ except ImportError:
     AsyncIOScheduler = Any  # type: ignore
 
 try:
-    from esmerald.config.template import TemplateConfig as TemplateConfig
+    from esmerald.core.config.template import TemplateConfig as TemplateConfig
 except MissingDependency:
     TemplateConfig = Any  # type: ignore
 
 if TYPE_CHECKING:
     from esmerald.applications import Application, Esmerald
-    from esmerald.conf.global_settings import EsmeraldAPISettings
-    from esmerald.datastructures import Cookie, ResponseHeader, State as State
+    from esmerald.conf.global_settings import EsmeraldAPISettings  # noqa
+    from esmerald.core.datastructures import Cookie, ResponseHeader
     from esmerald.injector import Inject
-    from esmerald.protocols.middleware import MiddlewareProtocol as MiddlewareProtocol
     from esmerald.requests import Request
     from esmerald.responses import Response
     from esmerald.routing.apis.base import View
-    from esmerald.routing.gateways import Gateway, WebhookGateway
+    from esmerald.routing.gateways import Gateway, WebhookGateway  # noqa
     from esmerald.routing.router import (
-        HTTPHandler as HTTPHandler,
+        HTTPHandler as HTTPHandler,  # noqa
         Router,
-        WebSocketHandler as WebSocketHandler,
+        WebSocketHandler as WebSocketHandler,  # noqa
     )
-    from esmerald.websockets import WebSocket
+    from esmerald.websockets import WebSocket  # noqa
 else:
     HTTPHandler = Any
     Application = Any

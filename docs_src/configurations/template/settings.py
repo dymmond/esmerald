@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from esmerald import EsmeraldAPISettings
-from esmerald.config.template import TemplateConfig
+from esmerald.core.config.template import TemplateConfig
 from esmerald.template.jinja import JinjaTemplateEngine
 
 

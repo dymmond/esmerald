@@ -1,6 +1,6 @@
 from typing import Union
 
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import post

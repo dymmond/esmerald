@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from esmerald import Esmerald, Gateway, Response, get
-from esmerald.datastructures import Cookie
+from esmerald.core.datastructures import Cookie
 
 
 class Item(BaseModel):

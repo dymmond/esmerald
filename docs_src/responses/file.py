@@ -1,5 +1,5 @@
 from esmerald import Esmerald, Gateway, get
-from esmerald.datastructures import File
+from esmerald.core.datastructures import File
 
 
 @get(

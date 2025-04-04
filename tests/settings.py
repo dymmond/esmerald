@@ -9,7 +9,7 @@ from pydantic import ConfigDict
 from saffier import Database, Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
-from esmerald.config.jwt import JWTConfig
+from esmerald.core.config.jwt import JWTConfig
 
 TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@localhost:27017")
 

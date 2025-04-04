@@ -16,7 +16,7 @@ other ways to validate data too, [msgspec](https://jcristharif.com/msgspec/) bec
 and widely adopted by the community and therefore it made sense also to provide support in Esmerald.
 
 ```python
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 ```
 
 !!! Warning
@@ -75,7 +75,7 @@ Nothing to worry about, we will be covering this in detail.
 As mentioned at the very top of this document, to import the `msgspec` module you will need to:
 
 ```python
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 ```
 
 Now, this can be a bit confusing, right? Why we need to import from this place instead of using
@@ -266,7 +266,7 @@ of the powerful `msgspec` library and the elegance of Esmerald.
 This section covers the dos and dont's of the `Struct` and once again, use:
 
 ```python
-from esmerald.datastructures.msgspec import Struct
+from esmerald.core.datastructures.msgspec import Struct
 ```
 
 And have fun!

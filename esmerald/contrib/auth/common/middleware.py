@@ -4,7 +4,7 @@ from jwt.exceptions import PyJWTError
 from lilya._internal._connection import Connection
 from lilya.types import ASGIApp
 
-from esmerald.config.jwt import JWTConfig
+from esmerald.core.config.jwt import JWTConfig
 from esmerald.exceptions import AuthenticationError, NotAuthorized
 from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
 from esmerald.security.jwt.token import Token

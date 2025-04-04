@@ -1,5 +1,5 @@
 from esmerald import Esmerald, Gateway, JSONResponse, Request, get
-from esmerald.datastructures import State
+from esmerald.core.datastructures import State
 
 
 @get()

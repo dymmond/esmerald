@@ -1,5 +1,5 @@
 from esmerald import Esmerald, EsmeraldAPISettings
-from esmerald.config import SessionConfig
+from esmerald.core.config import SessionConfig
 from esmerald.middleware import SessionMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 

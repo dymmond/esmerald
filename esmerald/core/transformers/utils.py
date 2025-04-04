@@ -29,8 +29,8 @@ from esmerald.utils.helpers import is_class_and_subclass, is_union
 from esmerald.utils.schema import should_skip_json_schema
 
 if TYPE_CHECKING:  # pragma: no cover
+    from esmerald.core.transformers.signature import Parameter, SignatureModel
     from esmerald.injector import Inject
-    from esmerald.transformers.signature import Parameter, SignatureModel
     from esmerald.types import ConnectionType
 
 

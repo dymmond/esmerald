@@ -37,14 +37,14 @@ P = ParamSpec("P")
 if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import Literal
 
-    from esmerald.config import (
+    from esmerald.core.config import (
         CORSConfig,
         CSRFConfig,
         OpenAPIConfig,
         SessionConfig,
         StaticFilesConfig,
     )
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.types import Interceptor
     from esmerald.permissions.types import Permission
     from esmerald.pluggables import Extension, Pluggable
     from esmerald.routing.gateways import WebhookGateway

@@ -19,7 +19,8 @@ from lilya.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
 from pydantic import ValidationError
 
 from esmerald.background import BackgroundTask
-from esmerald.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
+from esmerald.core.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
+from esmerald.core.transformers.signature import SignatureFactory
 from esmerald.requests import Request
 from esmerald.responses import Response, TemplateResponse
 from esmerald.responses.encoders import UJSONResponse
@@ -27,7 +28,6 @@ from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get, post, route
 from esmerald.routing.router import HTTPHandler
 from esmerald.testclient import create_client
-from esmerald.transformers.signature import SignatureFactory
 from esmerald.utils.enums import HttpMethod, MediaType
 from tests.models import Individual, IndividualFactory
 

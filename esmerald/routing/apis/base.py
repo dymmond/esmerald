@@ -9,12 +9,12 @@ from typing_extensions import Annotated, Doc
 from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 
 if TYPE_CHECKING:  # pragma: no cover
-    from esmerald.interceptors.types import Interceptor
+    from esmerald.core.interceptors.types import Interceptor
+    from esmerald.core.transformers.model import TransformerModel
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.routing.gateways import Gateway, WebSocketGateway
     from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
-    from esmerald.transformers.model import TransformerModel
     from esmerald.types import (
         Dependencies,
         ExceptionHandlerMap,
@@ -357,7 +357,9 @@ class View:
         those permissions are inserted at the beginning of the 'permissions' and '__base_permissions__' lists of the current instance.
         """
         for base in self.__class__.__bases__:
-            if hasattr(base, "permissions") and isinstance(getattr(base, "permissions", None), (list, tuple)):
+            if hasattr(base, "permissions") and isinstance(
+                getattr(base, "permissions", None), (list, tuple)
+            ):
                 unique_perms = [perm for perm in base.permissions if perm not in self.permissions]
                 self.permissions[:0] = unique_perms
                 self.__base_permissions__[:0] = unique_perms

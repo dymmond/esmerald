@@ -1,7 +1,7 @@
 from typing import Optional
 
 from esmerald.utils.concurrency import AsyncExitStack
-from esmerald.config import AsyncExitConfig
+from esmerald.core.config import AsyncExitConfig
 from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.types import ASGIApp, Receive, Scope, Send
 

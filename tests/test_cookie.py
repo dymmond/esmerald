@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from freezegun import freeze_time
 
-from esmerald.datastructures import Cookie
+from esmerald.core.datastructures import Cookie
 
 
 def test_basic_cookie_as_header() -> None:
