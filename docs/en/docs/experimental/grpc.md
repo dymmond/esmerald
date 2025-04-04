@@ -127,7 +127,7 @@ class GreeterService(GreeterServicer):
 To create a gRPC gateway, instantiate `GrpcGateway` with the desired parameters:
 
 ```python
-from esmerald.grpc.gateway import GrpcGateway
+from esmerald.contrib.grpc import GrpcGateway
 
 grpc_gateway = GrpcGateway(
     path="/grpc",
@@ -142,7 +142,7 @@ To register the gRPC service with Esmerald, use the `register_grpc_http_routes` 
 
 ```python
 from esmerald import Esmerald
-from esmerald.grpc.register import register_grpc_http_routes
+from esmerald.contrib.grpc.register import register_grpc_http_routes
 
 app = Esmerald()
 
