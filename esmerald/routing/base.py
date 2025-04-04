@@ -999,7 +999,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         """
         awaitable: BasePermission = cast("BasePermission", await permission())
         request: Request = cast("Request", connection)
-        handler = cast(APIGateHandler, self)
+        handler = cast("APIGateHandler", self)
         await continue_or_raise_permission_exception(request, handler, awaitable)
 
     async def dispatch_allow_connection(
