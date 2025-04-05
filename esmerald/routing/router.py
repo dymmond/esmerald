@@ -63,8 +63,8 @@ from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 from esmerald.requests import Request
 from esmerald.responses import Response
 from esmerald.routing.apis.base import View
-from esmerald.routing.base import Dispatcher
 from esmerald.routing.core._internal import OpenAPIFieldInfoMixin
+from esmerald.routing.core.base import Dispatcher
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.typing import Void, VoidType
 from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
