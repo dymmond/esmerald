@@ -36,7 +36,7 @@ from .pluggables import Extension, Pluggable
 from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
 from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
-from .routing.apis import APIView, Controller, SimpleAPIView
+from .routing.apis import APIView, Controller, SimpleAPIView, View
 from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
 from .routing.router import Host, Include, Router
@@ -112,6 +112,7 @@ __all__ = [
     "TemplateResponse",
     "UploadFile",
     "ValidationErrorException",
+    "View",
     "WebhookGateway",
     "WebSocket",
     "WebSocketDisconnect",

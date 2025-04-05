@@ -10,6 +10,8 @@ hide:
 ### Changed
 
 - `esmerald shell` now also imports the `reverse` function from Lilya to make it simpler to test in the command-line.
+- `esmerald.routing.views` to import the APIView must now be done via `esmerald.routing.apis`. The reason for this change
+it was to keep the consistency in the codebase. Previously it was just an alias.
 
 ### Fixed
 
