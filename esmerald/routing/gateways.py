@@ -10,7 +10,7 @@ from typing_extensions import Annotated, Doc
 
 from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 from esmerald.routing.apis.base import View
-from esmerald.routing.base import Dispatcher
+from esmerald.routing.core.base import Dispatcher
 from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string
 

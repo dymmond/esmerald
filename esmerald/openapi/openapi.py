@@ -48,7 +48,7 @@ from esmerald.openapi.utils import (
 )
 from esmerald.params import Param
 from esmerald.routing import gateways, router
-from esmerald.routing._internal import (
+from esmerald.routing.core._internal import (
     convert_annotation_to_pydantic_model,
 )
 from esmerald.security.oauth2.oauth import SecurityBase

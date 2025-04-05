@@ -7,8 +7,8 @@ from esmerald.conf import settings
 from esmerald.contrib.auth.edgy.base_user import User as EdgyUser
 from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
 from esmerald.core.config.jwt import JWTConfig
+from esmerald.routing.apis import APIView
 from esmerald.routing.handlers import get, post, put
-from esmerald.routing.views import APIView
 from esmerald.testclient import create_client
 
 models = edgy.Registry(settings.edgy_database)
