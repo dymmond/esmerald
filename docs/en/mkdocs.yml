@@ -275,7 +275,6 @@ nav:
   - about.md
   - sponsorship.md
   - esmerald-people.md
-  - examples.md
   - contributing.md
 - release-notes.md
 extra_css:
