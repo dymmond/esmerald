@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.7.2
+
+### Changed
+
+- `esmerald shell` now also imports the `reverse` function from Lilya to make it simpler to test in the command-line.
+
+### Fixed
+
+- `esmerald show_urls` was displaying an extra parameter in the reverse lookup.
+
 ## 3.7.1
 
 !!! Warning

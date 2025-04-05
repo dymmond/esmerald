@@ -2,6 +2,7 @@ import datetime
 from collections import OrderedDict
 from typing import Any, Dict
 
+import lilya
 import pydantic
 from lilya._internal._module_loading import import_string
 
@@ -20,6 +21,7 @@ defaults.update(
         "FieldInfo": pydantic.fields,
         "Field": pydantic.fields,
         "ConfigDict": pydantic,
+        "reverse": lilya.compat,
         "settings": esmerald,
         "Body": esmerald.params,
         "File": esmerald.params,
