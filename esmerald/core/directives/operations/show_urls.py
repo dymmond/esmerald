@@ -113,7 +113,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
 
                 # We need to escape the character ':' to avoid the error
                 # of the table not being able to render the string
-                route_name = ":\u200d".join(names)
+                route_name = ":".join(names)
 
                 http_methods = ", ".join(sorted(route.methods))
                 parameters = ", ".join(sorted(route.stringify_parameters))

@@ -671,7 +671,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             current = current.parent
         return list(reversed(levels))
 
-    def get_lookup_path(self) -> List[str]:
+    def get_lookup_path(self, ignore_first: bool = True) -> List[str]:
         """
         Constructs and returns the lookup path for the current object by traversing
         its parent hierarchy.
@@ -687,11 +687,14 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
 
         names = []
         current: Any = self
+        counter: int = 0 if ignore_first else 1
 
         while current:
             if getattr(current, "name", None) is not None:
-                names.append(current.name)
+                if counter >= 1:
+                    names.append(current.name)
             current = current.parent
+            counter += 1
         return list(reversed(names))
 
     @property

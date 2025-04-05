@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.7.2
+
+### Changed
+
+- `esmerald shell` now also imports the `reverse` function from Lilya to make it simpler to test in the command-line.
+
+### Fixed
+
+- `esmerald show_urls` was displaying an extra parameter in the reverse lookup.
+
 ## 3.7.1
 
 !!! Warning
@@ -20,16 +30,17 @@ hide:
 - New [gRPC](./experimental/grpc.md) documentation section with the new gRPC functionality.
 - New `wrap_middleware` from `esmerald.utils.middleware`. This serves as alternative when setting up a middleware
 which **also allows** the fully module naming to be passed.
-- New [Learning and Examples](./guides/index.md) section. This section will be growing in time and will help newcomers
-to understand a bit more about Esmerald.
 
     ```python
     from esmerald.utils.middleware import wrap_middleware
     ```
 
+- New [Learning and Examples](./guides/index.md) section. This section will be growing in time and will help newcomers
+to understand a bit more about Esmerald.
+
 #### Experimental
 
-- [GRPC](experimental/grpc.md) - Support for GRPC endpoints and introduction to the newly `GrpcGateway` wrapper. This functionality
+- [GRPC](./experimental/grpc.md) - Support for GRPC endpoints and introduction to the newly `GrpcGateway` wrapper. This functionality
 is experimental to test in the next releases. If successful, it will be marked as final.
 
 ### Fixed
