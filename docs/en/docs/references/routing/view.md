@@ -6,7 +6,7 @@ attributes and functions.
 The `View` server as the base of alll object oriented views of [Esmerald](../esmerald.md) such as
 [`APIView`](#esmerald.APIView), [`SimpleAPIView`](#esmerald.SimpleAPIView) and all the generics.
 
-::: esmerald.routing.views.View
+::: esmerald.routing.apis.View
     options:
         filters:
         - "!^__slots__"
