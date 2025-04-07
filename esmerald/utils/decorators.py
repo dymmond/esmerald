@@ -513,6 +513,3 @@ class cache:  # noqa
                 anyio.run(delete_cache)
             except Exception as e:
                 logger.error(f"Cache backend failure in delete(): {e}", exc_info=True)
-
-
-memory_cache = cache()
