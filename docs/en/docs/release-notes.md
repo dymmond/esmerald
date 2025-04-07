@@ -17,6 +17,10 @@ it was to keep the consistency in the codebase. Previously it was just an alias.
 
 - `esmerald show_urls` was displaying an extra parameter in the reverse lookup.
 
+### Removed
+
+- `memory_cache` as this is not documented and should not be used. This is a leftover from internal testing.
+
 ## 3.7.1
 
 !!! Warning
