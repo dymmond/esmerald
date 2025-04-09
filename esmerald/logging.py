@@ -12,7 +12,7 @@ class InterceptHandler(logging.Handler):  # pragma: no cover
             level = str(record.levelno)
 
         frame, depth = logging.currentframe(), 2
-        while frame.f_code.co_filename == logging.__file__:  # noqa: WPS609
+        while frame.f_code.co_filename == logging.__file__:
             frame = frame.f_back
             depth += 1
 
