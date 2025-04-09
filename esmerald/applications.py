@@ -1786,6 +1786,8 @@ class Application(Lilya):
 
         self.extensions = ExtensionDict(_extensions, app=cast(Esmerald, self))
         self.extensions.extend()
+        # persist
+        self.settings_module = self.settings
         self._configure()
 
     @property
@@ -2787,7 +2789,7 @@ class Application(Lilya):
         return monkay_for_settings.settings
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        with monkay_for_settings.with_settings(self.settings_module):
+        with monkay_for_settings.with_settings(self.settings):
             if scope["type"] == "lifespan":
                 await self.router.lifespan(scope, receive, send)
                 return
