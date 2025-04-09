@@ -2,15 +2,17 @@ from esmerald import Esmerald
 from esmerald.conf import settings
 from esmerald.core.config.jwt import JWTConfig
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
-from lilya._internal._module_loading import import_string
+from monkay import load
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
-jwt_config = JWTConfig(signing_key=settings.secret_key, auth_header_types=["Bearer", "Token"])
+jwt_config = JWTConfig(
+    signing_key=settings.secret_key, auth_header_types=["Bearer", "Token"]
+)
 
 jwt_auth_middleware = LilyaMiddleware(
     JWTAuthMiddleware,
     config=jwt_config,
-    user_model=import_string("myapp.models.User"),
+    user_model=load("myapp.models.User"),
 )
 
 app = Esmerald(middleware=[jwt_auth_middleware])

@@ -6,6 +6,10 @@ from esmerald.testclient import create_client
 async def home() -> JSONResponse:
     return JSONResponse({"title": settings.title, "debug": settings.debug})
 
+@get()
+async def home_inner() -> JSONResponse:
+    return JSONResponse({"title": settings.title, "debug": settings.debug})
+
 
 class NewSettings(EsmeraldAPISettings):
     title: str = "Settings being parsed by the middleware and make it app global"
@@ -40,7 +44,7 @@ def test_app_settings_middleware_nested_with_child_esmerald(test_client_factory)
                 app=Esmerald(
                     settings_module=NestedAppSettings,
                     routes=[
-                        Gateway("/home", handler=home),
+                        Gateway("/home", handler=home_inner),
                     ],
                 ),
             ),

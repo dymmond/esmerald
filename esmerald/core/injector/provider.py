@@ -5,7 +5,7 @@ Functions to use with the Factory dependency injection.
 from importlib import import_module
 from typing import Any, Callable, Tuple, cast
 
-from lilya._internal._module_loading import import_string  # noqa
+from monkay import load  # noqa
 
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -99,7 +99,7 @@ def load_provider(provider: str) -> Tuple[Callable, bool]:  # pragma: no cover
     provider_callable: Callable
 
     try:
-        provider_callable = import_string(provider)
+        provider_callable = load(provider)
     except ModuleNotFoundError:
         provider_callable = _get_provider_callable(provider)
         is_nested = True

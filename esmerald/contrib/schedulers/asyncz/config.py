@@ -5,11 +5,11 @@ from asyncz.schedulers import AsyncIOScheduler
 from asyncz.schedulers.types import SchedulerType
 from asyncz.triggers.types import TriggerType
 from asyncz.typing import Undefined, undefined
+from monkay import load
 
 from esmerald.conf import settings
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.utils.module_loading import import_string
 
 SchedulerCallable = Callable[..., Any]
 
@@ -68,7 +68,7 @@ class AsynczConfig(SchedulerConfig):
         """
         for task, _module in tasks.items():
             imported_task = f"{_module}.{task}"
-            scheduled_task: "Task" = import_string(imported_task)
+            scheduled_task: "Task" = load(imported_task)
 
             if not scheduled_task.is_enabled:
                 continue

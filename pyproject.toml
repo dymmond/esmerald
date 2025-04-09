@@ -52,6 +52,7 @@ dependencies = [
     "msgspec>=0.18.5,<1.0.0",
     "rich>=13.3.1,<15.0.0",
     "typing_extensions>=4.11.0",
+    "monkay>=0.3.0",
 ]
 keywords = [
     "api",

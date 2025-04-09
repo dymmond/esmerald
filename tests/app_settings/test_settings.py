@@ -16,6 +16,7 @@ from esmerald import (
     get,
     settings,
 )
+from esmerald.conf import _monkay
 from esmerald.core.config import CORSConfig, CSRFConfig
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.middleware import RequestSettingsMiddleware
@@ -302,4 +303,4 @@ def test_default_settings():
         redirect_slashes=False,
     )
 
-    assert id(app.default_settings) == id(settings)
+    assert id(app.default_settings) == id(_monkay.settings)

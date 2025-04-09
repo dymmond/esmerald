@@ -23,7 +23,6 @@ from typing import (
 
 from lilya import status
 from lilya._internal._connection import Connection
-from lilya._internal._module_loading import import_string
 from lilya._internal._path import clean_path
 from lilya.concurrency import run_in_threadpool
 from lilya.datastructures import URLPath
@@ -41,6 +40,7 @@ from lilya.routing import (
     compile_path,
 )
 from lilya.types import ASGIApp, Lifespan, Receive, Scope, Send
+from monkay import load
 from typing_extensions import Annotated, Doc
 
 from esmerald.conf import settings
@@ -67,9 +67,19 @@ from esmerald.routing.core._internal import OpenAPIFieldInfoMixin
 from esmerald.routing.core.base import Dispatcher
 from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from esmerald.typing import Void, VoidType
-from esmerald.utils.constants import DATA, PAYLOAD, REDIRECT_STATUS_CODES, REQUEST, SOCKET
+from esmerald.utils.constants import (
+    DATA,
+    PAYLOAD,
+    REDIRECT_STATUS_CODES,
+    REQUEST,
+    SOCKET,
+)
 from esmerald.utils.enums import HttpMethod, MediaType
-from esmerald.utils.helpers import is_async_callable, is_class_and_subclass, is_optional_union
+from esmerald.utils.helpers import (
+    is_async_callable,
+    is_class_and_subclass,
+    is_optional_union,
+)
 from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -273,7 +283,9 @@ class BaseRouter(LilyaRouter):
             ),
         ] = None,
         routes: Annotated[
-            Optional[Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]],
+            Optional[
+                Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]
+            ],
             Doc(
                 """
                 A `list` of esmerald routes. Those routes may vary and those can
@@ -669,7 +681,9 @@ class BaseRouter(LilyaRouter):
         if "app" in scope:
             raise NotFound(status_code=status.HTTP_404_NOT_FOUND)
         else:
-            response = JSONResponse({"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND)
+            response = JSONResponse(
+                {"detail": "Not Found"}, status_code=status.HTTP_404_NOT_FOUND
+            )
         await response(scope, receive, send)
 
     def path_for(self, name: str, **path_params: Any) -> URLPath:
@@ -688,7 +702,9 @@ class BaseRouter(LilyaRouter):
 
         raise NoMatchFound(name, path_params)
 
-    def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
+    def add_event_handler(
+        self, event_type: str, func: Callable
+    ) -> None:  # pragma: no cover
         assert event_type in ("startup", "shutdown")
 
         if event_type == "startup":
@@ -741,7 +757,9 @@ class BaseRouter(LilyaRouter):
 
         if isinstance(value, (Include, Gateway, WebSocketGateway, WebhookGateway)):
             if not value.parent and not override:
-                value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
+                value.parent = cast(
+                    "Union[Router, Include, Gateway, WebSocketGateway]", self
+                )
 
         if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
             if not is_class_and_subclass(value.handler, View) and not isinstance(
@@ -817,15 +835,17 @@ class Router(BaseRouter):
         if not value.handler.parent:  # pragma: no cover
             value.handler(parent=self)
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_routes(
-            path=value.path,
-            middleware=value.middleware,
-            interceptors=value.interceptors,
-            permissions=value.permissions,
-            exception_handlers=value.exception_handlers,
-            include_in_schema=value.include_in_schema,
-            before_request=value.before_request,
-            after_request=value.after_request,
+        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = (
+            value.handler.get_routes(
+                path=value.path,
+                middleware=value.middleware,
+                interceptors=value.interceptors,
+                permissions=value.permissions,
+                exception_handlers=value.exception_handlers,
+                include_in_schema=value.include_in_schema,
+                before_request=value.before_request,
+                after_request=value.after_request,
+            )
         )
         if route_handlers:
             self.routes.extend(route_handlers)
@@ -1218,7 +1238,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -1330,7 +1352,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -1442,7 +1466,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -1554,7 +1580,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -1666,7 +1694,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -1778,7 +1808,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -1890,7 +1922,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -2002,7 +2036,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -2125,7 +2161,9 @@ class Router(BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -2320,7 +2358,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self._permissions: Union[List[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
 
-        self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
+        self._response_handler: Union[
+            Callable[[Any], Awaitable[LilyaResponse]], VoidType
+        ] = Void
 
         self.parent: ParentType = None
         self.path = path
@@ -2353,7 +2393,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.dependencies: Dependencies = dependencies or {}
 
         if not description:
-            description = inspect.cleandoc(self.handler.__doc__ or "") if self.handler else ""
+            description = (
+                inspect.cleandoc(self.handler.__doc__ or "") if self.handler else ""
+            )
 
         self.description = description
 
@@ -2402,7 +2444,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
                 )
 
             if not is_status_code_allowed(status_code):
-                raise OpenAPIException(detail="The status is not a valid OpenAPI status response.")
+                raise OpenAPIException(
+                    detail="The status is not a valid OpenAPI status response."
+                )
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> Any:
         await self.handle_dispatch(scope=scope, receive=receive, send=send)
@@ -2467,7 +2511,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
                 filtered_cookies.append(cookie)
         return filtered_cookies
 
-    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(
+        self, scope: "Scope", receive: "Receive", send: "Send"
+    ) -> None:
         """
         Handles the dispatching of a request.
         This method processes the incoming request by performing the following steps:
@@ -2512,7 +2558,12 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             dispatch_call = super().handle_dispatch
 
             await self.dispatch_allow_connection(
-                permissions, connection, scope, receive, send, dispatch_call=dispatch_call
+                permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=dispatch_call,
             )
 
         response = await self.get_response_for_request(
@@ -2580,7 +2631,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             )
         if (
             self.status_code < status.HTTP_200_OK
-            or self.status_code in {status.HTTP_204_NO_CONTENT, status.HTTP_304_NOT_MODIFIED}
+            or self.status_code
+            in {status.HTTP_204_NO_CONTENT, status.HTTP_304_NOT_MODIFIED}
         ) and return_annotation not in [NoReturn, None]:
             raise ImproperlyConfigured(
                 "A status code 204, 304 or in the range below 200 does not support a response body."
@@ -2610,7 +2662,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
                     raise ImproperlyConfigured(
                         f"'{special}' argument unsupported when only body-less methods like 'GET' and 'HEAD' are handled"
                     )
-                elif not is_optional_union(self.handler_signature.parameters[special].annotation):
+                elif not is_optional_union(
+                    self.handler_signature.parameters[special].annotation
+                ):
                     raise ImproperlyConfigured(
                         f"'{special}' argument must be optional when body-less methods like 'GET' and 'HEAD' are handled"
                     )
@@ -2635,7 +2689,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         """
 
         if SOCKET in self.handler_signature.parameters:
-            raise ImproperlyConfigured("The 'socket' argument is not supported with http handlers")
+            raise ImproperlyConfigured(
+                "The 'socket' argument is not supported with http handlers"
+            )
 
     def validate_handler(self) -> None:
         self.check_handler_function()
@@ -2807,7 +2863,9 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self._permissions: Union[List[Permission], VoidType] = Void
         self._lilya_permissions: Union[List[DefinePermission], VoidType] = Void
         self._dependencies: Dependencies = {}
-        self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
+        self._response_handler: Union[
+            Callable[[Any], Awaitable[LilyaResponse]], VoidType
+        ] = Void
         self._interceptors: Union[List[Interceptor], VoidType] = Void
         self.interceptors: Sequence[Interceptor] = []
         self.handler = handler
@@ -2856,13 +2914,17 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.validate_reserved_words(signature=signature)
 
         if SOCKET not in signature.parameters:
-            raise ImproperlyConfigured("Websocket handlers must set a 'socket' argument.")
+            raise ImproperlyConfigured(
+                "Websocket handlers must set a 'socket' argument."
+            )
         if not is_async_callable(self.fn):
             raise ImproperlyConfigured(
                 "Functions decorated with 'asgi, get, patch, put, post and delete' must be async functions."
             )
 
-    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+    async def handle_dispatch(
+        self, scope: "Scope", receive: "Receive", send: "Send"
+    ) -> None:
         """
         Handles the dispatching of a request.
         This method processes the incoming request by handling interceptors,
@@ -2897,7 +2959,12 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             dispatch_call = super().handle_dispatch
 
             await self.dispatch_allow_connection(
-                permissions, websocket, scope, receive, send, dispatch_call=dispatch_call
+                permissions,
+                websocket,
+                scope,
+                receive,
+                send,
+                dispatch_call=dispatch_call,
             )
 
         kwargs = await self.get_kwargs(websocket=websocket)
@@ -2931,10 +2998,14 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         signature_model = get_signature(self)
         kwargs = await self.websocket_parameter_model.to_kwargs(connection=websocket)
         for dependency in self.websocket_parameter_model.dependencies:
-            kwargs[dependency.key] = await self.websocket_parameter_model.get_dependencies(
-                dependency=dependency, connection=websocket, **kwargs
+            kwargs[dependency.key] = (
+                await self.websocket_parameter_model.get_dependencies(
+                    dependency=dependency, connection=websocket, **kwargs
+                )
             )
-        return await signature_model.parse_values_for_connection(connection=websocket, **kwargs)
+        return await signature_model.parse_values_for_connection(
+            connection=websocket, **kwargs
+        )
 
 
 class Include(LilyaInclude):
@@ -3057,7 +3128,9 @@ class Include(LilyaInclude):
             ),
         ] = None,
         routes: Annotated[
-            Optional[Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]],
+            Optional[
+                Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]
+            ],
             Doc(
                 """
                 A global `list` of esmerald routes. Those routes may vary and those can
@@ -3313,10 +3386,14 @@ class Include(LilyaInclude):
             raise ImproperlyConfigured("It can only be namespace or routes, not both.")
 
         if namespace and not isinstance(namespace, str):
-            raise ImproperlyConfigured("Namespace must be a string. Example: 'myapp.routes'.")
+            raise ImproperlyConfigured(
+                "Namespace must be a string. Example: 'myapp.routes'."
+            )
 
         if pattern and not isinstance(pattern, str):
-            raise ImproperlyConfigured("Pattern must be a string. Example: 'route_patterns'.")
+            raise ImproperlyConfigured(
+                "Pattern must be a string. Example: 'route_patterns'."
+            )
 
         if pattern and routes:
             raise ImproperlyConfigured("Pattern must be used only with namespace.")
@@ -3337,7 +3414,7 @@ class Include(LilyaInclude):
                 )
 
         if isinstance(app, str):
-            app = import_string(app)
+            app = load(app)
 
         self.app = self.resolve_app_parent(app=app)
 
@@ -3395,7 +3472,8 @@ class Include(LilyaInclude):
         return app
 
     def resolve_route_path_handler(
-        self, routes: Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]]
+        self,
+        routes: Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]],
     ) -> List[Union[Gateway, WebSocketGateway, Include]]:
         """
         Make sure the paths are properly configured from the handler handler.
@@ -3456,7 +3534,9 @@ class Include(LilyaInclude):
                 route = WebSocketGateway(handler=route)
 
             if not isinstance(route, (Include, Gateway, WebSocketGateway)):
-                raise ImproperlyConfigured("The route must be of type Gateway or Include")
+                raise ImproperlyConfigured(
+                    "The route must be of type Gateway or Include"
+                )
 
             route.parent = self
             if isinstance(route, Include):
@@ -3468,7 +3548,9 @@ class Include(LilyaInclude):
                 routing.append(route)
                 continue
 
-            if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
+            if is_class_and_subclass(route.handler, View) or isinstance(
+                route.handler, View
+            ):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)
 
@@ -3485,6 +3567,9 @@ class Include(LilyaInclude):
                 )
                 if route_handlers:
                     routing.extend(
-                        cast(List[Union[Gateway, WebSocketGateway, Include]], route_handlers)
+                        cast(
+                            List[Union[Gateway, WebSocketGateway, Include]],
+                            route_handlers,
+                        )
                     )
         return routing

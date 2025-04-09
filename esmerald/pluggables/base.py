@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from inspect import isclass
 from typing import TYPE_CHECKING, Any, Iterator, Optional, cast
 
-from lilya._internal._module_loading import import_string
+from monkay import load
 from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -67,7 +67,7 @@ class Pluggable:
     def cls(self) -> type[ExtensionProtocol]:
         cls_or_string = self.cls_or_string
         if isinstance(cls_or_string, str):
-            self.cls_or_string = cls_or_string = import_string(cls_or_string)
+            self.cls_or_string = cls_or_string = load(cls_or_string)
         return cast(type["ExtensionProtocol"], cls_or_string)
 
     def __iter__(self) -> Iterator:
