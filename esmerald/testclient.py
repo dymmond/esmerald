@@ -19,7 +19,7 @@ from lilya.testclient import TestClient  # noqa
 from pydantic import AnyUrl
 
 from esmerald.applications import Esmerald
-from esmerald.conf import _monkay as monkay_for_settings
+from esmerald.conf import monkay as monkay_for_settings
 from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.encoders import Encoder
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme

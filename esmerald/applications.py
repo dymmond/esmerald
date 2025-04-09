@@ -20,7 +20,7 @@ from monkay import load
 from pydantic import AnyUrl, ValidationError
 from typing_extensions import Annotated, Doc
 
-from esmerald.conf import _monkay as monkay_for_settings
+from esmerald.conf import monkay as monkay_for_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.core.config import (
@@ -1786,8 +1786,6 @@ class Application(Lilya):
 
         self.extensions = ExtensionDict(_extensions, app=cast(Esmerald, self))
         self.extensions.extend()
-        # persist
-        self.settings_module = self.settings
         self._configure()
 
     @property

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
 
-_monkay: Monkay[None, EsmeraldAPISettings] = Monkay(
+monkay: Monkay[None, EsmeraldAPISettings] = Monkay(
     globals(),
     settings_path=os.environ.get(
         ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
@@ -20,10 +20,10 @@ _monkay: Monkay[None, EsmeraldAPISettings] = Monkay(
 
 class SettingsForward:
     def __getattribute__(self, name: str) -> Any:
-        return getattr(_monkay.settings, name)
+        return getattr(monkay.settings, name)
 
     def __setattr__(self, name: str, value: Any) -> None:
-        return setattr(_monkay.settings, name, value)
+        return setattr(monkay.settings, name, value)
 
 
 settings: EsmeraldAPISettings = cast("EsmeraldAPISettings", SettingsForward())
@@ -33,6 +33,6 @@ def reload_settings() -> None:
     """
     Reloads the global settings.
     """
-    _monkay.settings = os.environ.get(  # type: ignore
+    monkay.settings = os.environ.get(  # type: ignore
         ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
     )

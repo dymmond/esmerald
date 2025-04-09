@@ -1,4 +1,5 @@
 from esmerald import Esmerald, EsmeraldAPISettings, Gateway, Include, JSONResponse, get, settings
+from esmerald.conf import monkay
 from esmerald.testclient import create_client
 
 
@@ -7,8 +8,9 @@ async def home() -> JSONResponse:
     return JSONResponse({"title": settings.title, "debug": settings.debug})
 
 @get()
-async def home_inner() -> JSONResponse:
-    return JSONResponse({"title": settings.title, "debug": settings.debug})
+async def home_unset() -> JSONResponse:
+    with monkay.with_settings(None):
+        return JSONResponse({"title": settings.title, "debug": settings.debug})
 
 
 class NewSettings(EsmeraldAPISettings):
@@ -44,7 +46,7 @@ def test_app_settings_middleware_nested_with_child_esmerald(test_client_factory)
                 app=Esmerald(
                     settings_module=NestedAppSettings,
                     routes=[
-                        Gateway("/home", handler=home_inner),
+                        Gateway("/home", handler=home),
                     ],
                 ),
             ),
@@ -81,6 +83,7 @@ def test_app_settings_middleware_nested_with_child_esmerald_and_global(test_clie
                 app=Esmerald(
                     routes=[
                         Gateway("/home", handler=home),
+                        Gateway("/unset", handler=home_unset),
                     ],
                 ),
             ),
@@ -99,4 +102,9 @@ def test_app_settings_middleware_nested_with_child_esmerald_and_global(test_clie
 
         response = client.get("/another-child/home")
 
+        # should be propagated
+        assert response.json() == {"title": "Settings being parsed by the middleware and make it app global", "debug": False}
+
+        # should use the defaults
+        response = client.get("/another-child/unset")
         assert response.json() == {"title": "Esmerald", "debug": False}
