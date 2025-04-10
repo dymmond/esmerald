@@ -14,6 +14,7 @@ from typing import (
 )
 
 from lilya.apps import Lilya
+from lilya.conf import _monkay
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
 from monkay import load
@@ -1593,9 +1594,9 @@ class Application(Lilya):
             settings_module = load(settings_module)
 
         if settings_module is not None:
-            if not isinstance(
+            if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
                 settings_module, EsmeraldAPISettings
-            ) and not is_class_and_subclass(settings_module, EsmeraldAPISettings):
+            ):
                 raise ImproperlyConfigured(
                     "settings_module must be a subclass of EsmeraldSettings"
                 )
@@ -1604,14 +1605,12 @@ class Application(Lilya):
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         if allow_origins and cors_config:
-            raise ImproperlyConfigured(
-                "It can be only allow_origins or cors_config but not both."
-            )
+            raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
 
         self.parent = parent
 
@@ -1622,14 +1621,10 @@ class Application(Lilya):
         self.app_name = self.load_settings_value("app_name", app_name)
         self.description = self.load_settings_value("description", description)
         self.version = self.load_settings_value("version", version)
-        self.openapi_version = self.load_settings_value(
-            "openapi_version", openapi_version
-        )
+        self.openapi_version = self.load_settings_value("openapi_version", openapi_version)
         self.summary = self.load_settings_value("summary", summary)
         self.contact = self.load_settings_value("contact", contact)
-        self.terms_of_service = self.load_settings_value(
-            "terms_of_service", terms_of_service
-        )
+        self.terms_of_service = self.load_settings_value("terms_of_service", terms_of_service)
         self.license = self.load_settings_value("license", license)
         self.servers = self.load_settings_value("servers", servers)
         self.secret_key = self.load_settings_value("secret_key", secret_key)
@@ -1641,20 +1636,14 @@ class Application(Lilya):
         self.csrf_config = self.load_settings_value("csrf_config", csrf_config)
         self.cors_config = self.load_settings_value("cors_config", cors_config)
         self.openapi_config = self.load_settings_value("openapi_config", openapi_config)
-        self.template_config = self.load_settings_value(
-            "template_config", template_config
-        )
+        self.template_config = self.load_settings_value("template_config", template_config)
         self.static_files_config = self.load_settings_value(
             "static_files_config", static_files_config
         )
         self.session_config = self.load_settings_value("session_config", session_config)
         self.response_class = self.load_settings_value("response_class", response_class)
-        self.response_cookies = self.load_settings_value(
-            "response_cookies", response_cookies
-        )
-        self.response_headers = self.load_settings_value(
-            "response_headers", response_headers
-        )
+        self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
+        self.response_headers = self.load_settings_value("response_headers", response_headers)
         self.enable_scheduler = self.load_settings_value(
             "enable_scheduler", enable_scheduler, is_boolean=True
         )
@@ -1664,12 +1653,8 @@ class Application(Lilya):
         self.timezone = self.load_settings_value("timezone", timezone)
         self.root_path = self.load_settings_value("root_path", root_path)
         self._middleware = self.load_settings_value("middleware", middleware) or []
-        _exception_handlers = self.load_settings_value(
-            "exception_handlers", exception_handlers
-        )
-        self.exception_handlers = (
-            {} if _exception_handlers is None else dict(_exception_handlers)
-        )
+        _exception_handlers = self.load_settings_value("exception_handlers", exception_handlers)
+        self.exception_handlers = {} if _exception_handlers is None else dict(_exception_handlers)
         self.on_startup = self.load_settings_value("on_startup", on_startup)
         self.on_shutdown = self.load_settings_value("on_shutdown", on_shutdown)
         self.lifespan = self.load_settings_value("lifespan", lifespan)
@@ -1732,18 +1717,14 @@ class Application(Lilya):
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
-            for permission in self.load_settings_value(
-                "permissions", self.__base_permissions__
-            )
+            for permission in self.load_settings_value("permissions", self.__base_permissions__)
             or []
             if not is_esmerald_permission(permission)
         ]
 
         self.permissions: Sequence[Permission] = [
             permission
-            for permission in self.load_settings_value(
-                "permissions", self.__base_permissions__
-            )
+            for permission in self.load_settings_value("permissions", self.__base_permissions__)
             or []
             if is_esmerald_permission(permission)
         ]
@@ -1769,6 +1750,8 @@ class Application(Lilya):
             after_request=self.after_request_callbacks,
         )
         self.get_default_exception_handlers()
+        if self.register_as_global_instance:
+            _monkay.set_instance(self)
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.template_engine = self.get_template_engine(self.template_config)
@@ -1822,9 +1805,7 @@ class Application(Lilya):
                 if isinstance(self.static_files_config, (list, tuple))
                 else [self.static_files_config]
             ):
-                static_route = Include(
-                    path=config.path, app=config.to_app(), name=config.name
-                )
+                static_route = Include(path=config.path, app=config.to_app(), name=config.name)
                 self.router.validate_root_route_parent(static_route)
                 self.router.routes.append(static_route)
 
@@ -1855,9 +1836,7 @@ class Application(Lilya):
             name,
         )
 
-    def create_webhooks_signature_model(
-        self, webhooks: Sequence[gateways.WebhookGateway]
-    ) -> None:
+    def create_webhooks_signature_model(self, webhooks: Sequence[gateways.WebhookGateway]) -> None:
         """
         Creates the signature model for the webhooks.
         """
@@ -2441,9 +2420,7 @@ class Application(Lilya):
         ```
         """
         if not isinstance(child, ChildEsmerald):
-            raise ImproperlyConfigured(
-                "The child must be an instance of a ChildEsmerald."
-            )
+            raise ImproperlyConfigured("The child must be an instance of a ChildEsmerald.")
 
         self.router.routes.append(
             Include(
@@ -2510,9 +2487,7 @@ class Application(Lilya):
                         middleware=cast("List[Middleware]", route.middleware),
                         interceptors=route.interceptors,
                         permissions=route.permissions,
-                        routes=cast(
-                            "Sequence[Union[APIGateHandler, Include]]", route.routes
-                        ),
+                        routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
                         parent=self.router,
                         security=route.security,
                         before_request=route.before_request,
@@ -2572,9 +2547,7 @@ class Application(Lilya):
             ValidationErrorException, validation_error_exception_handler
         )
 
-        self.exception_handlers.setdefault(
-            ValidationError, pydantic_validation_error_handler
-        )
+        self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
 
     def build_routes_exception_handlers(
         self,
@@ -2619,9 +2592,7 @@ class Application(Lilya):
 
         if self.allowed_hosts:
             user_middleware.append(
-                DefineMiddleware(
-                    TrustedHostMiddleware, allowed_hosts=self.allowed_hosts
-                )
+                DefineMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
             )
         if self.cors_config:
             user_middleware.append(
@@ -2771,9 +2742,7 @@ class Application(Lilya):
         ```
         """
         general_settings = (
-            self.settings_module
-            if self.settings_module
-            else monkay_for_settings.settings
+            self.settings_module if self.settings_module else monkay_for_settings.settings
         )
         return general_settings
 
@@ -2799,9 +2768,7 @@ class Application(Lilya):
             await super().__call__(scope, receive, send)
 
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
-        raise ImproperlyConfigured(
-            "`websocket_route` is not valid. Use WebSocketGateway instead."
-        )
+        raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
 
     def on_event(self, event_type: str) -> Callable:  # pragma: nocover
         """
@@ -2812,9 +2779,7 @@ class Application(Lilya):
         """
         return self.router.on_event(event_type)
 
-    def add_event_handler(
-        self, event_type: str, func: Callable
-    ) -> None:  # pragma: no cover
+    def add_event_handler(self, event_type: str, func: Callable) -> None:  # pragma: no cover
         self.router.add_event_handler(event_type, func)
 
     def register_encoder(self, encoder: Encoder) -> None:
@@ -3930,4 +3895,4 @@ class ChildEsmerald(Esmerald):
     ```
     """
 
-    ...
+    register_as_global_instance: bool = False

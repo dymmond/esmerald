@@ -1,5 +1,4 @@
 import asyncio
-import sys
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
@@ -24,14 +23,6 @@ from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.encoders import Encoder
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.utils.crypto import get_random_secret_key
-
-if sys.version_info >= (3, 10):  # pragma: no cover
-    from typing import ParamSpec
-else:  # pragma: no cover
-    from typing_extensions import ParamSpec
-
-P = ParamSpec("P")
-
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import Literal
@@ -272,11 +263,7 @@ class override_settings:
             None
         """
         _original_settings: EsmeraldAPISettings = monkay_for_settings.settings
-        opts = _original_settings.model_dump()
-        opts.update(self.options)
-        self._innermanager = monkay_for_settings.with_settings(
-            type(_original_settings)(**opts)
-        )
+        self._innermanager = monkay_for_settings.with_settings(_original_settings.model_copy(update=self.options))
         self._innermanager.__enter__()
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
