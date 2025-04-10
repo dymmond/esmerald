@@ -5,6 +5,7 @@ from inspect import isclass
 from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
     Dict,
     List,
     Optional,
@@ -112,6 +113,8 @@ class Application(BaseLilya):
     app = Esmerald()
     ```
     """
+
+    register_as_global_instance: ClassVar[bool] = True
 
     __slots__ = (
         "allow_origins",
