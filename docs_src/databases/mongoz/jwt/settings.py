@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from esmerald import EsmeraldAPISettings
 from esmerald.core.config.jwt import JWTConfig
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
-from lilya._internal._module_loading import import_string
+from monkay import load
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 if TYPE_CHECKING:
@@ -16,7 +16,9 @@ class CustomSettings(EsmeraldAPISettings):
         """
         A JWT object configuration to be passed to the application middleware
         """
-        return JWTConfig(signing_key=self.secret_key, auth_header_types=["Bearer", "Token"])
+        return JWTConfig(
+            signing_key=self.secret_key, auth_header_types=["Bearer", "Token"]
+        )
 
     @property
     def middleware(self) -> List["Middleware"]:
@@ -27,6 +29,6 @@ class CustomSettings(EsmeraldAPISettings):
             LilyaMiddleware(
                 JWTAuthMiddleware,
                 config=self.jwt_config,
-                user_model=import_string("myapp.models.User"),
+                user_model=load("myapp.models.User"),
             )
         ]

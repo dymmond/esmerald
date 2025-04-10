@@ -1,7 +1,6 @@
 import warnings
 from collections.abc import Callable, Iterable, Sequence
 from datetime import timezone as dtimezone
-from functools import cached_property
 from inspect import isclass
 from typing import (
     TYPE_CHECKING,
@@ -9,20 +8,20 @@ from typing import (
     Dict,
     List,
     Optional,
-    Type,
     TypeVar,
     Union,
     cast,
 )
 
-from lilya._internal._module_loading import import_string
 from lilya.apps import Lilya
+from lilya.conf import _monkay
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
+from monkay import load
 from pydantic import AnyUrl, ValidationError
 from typing_extensions import Annotated, Doc
 
-from esmerald.conf import __lazy_settings__, settings as esmerald_settings
+from esmerald.conf import monkay as monkay_for_settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.core.config import (
@@ -34,18 +33,25 @@ from esmerald.core.config import (
 )
 from esmerald.core.datastructures import State
 from esmerald.core.interceptors.types import Interceptor
-from esmerald.encoders import Encoder, MsgSpecEncoder, PydanticEncoder, register_esmerald_encoder
+from esmerald.encoders import (
+    Encoder,
+    MsgSpecEncoder,
+    PydanticEncoder,
+    register_esmerald_encoder,
+)
 from esmerald.exception_handlers import (
     improperly_configured_exception_handler,
     pydantic_validation_error_handler,
     validation_error_exception_handler,
 )
 from esmerald.exceptions import ImproperlyConfigured, ValidationErrorException
-from esmerald.middleware.app_settings import ApplicationSettingsMiddleware
 from esmerald.middleware.asyncexitstack import AsyncExitStackMiddleware
 from esmerald.middleware.cors import CORSMiddleware
 from esmerald.middleware.csrf import CSRFMiddleware
-from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware, ExceptionMiddleware
+from esmerald.middleware.exceptions import (
+    EsmeraldAPIExceptionMiddleware,
+    ExceptionMiddleware,
+)
 from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
@@ -79,7 +85,6 @@ from esmerald.types import (
 from esmerald.utils.helpers import is_class_and_subclass
 
 if TYPE_CHECKING:  # pragma: no cover
-    from esmerald.conf import EsmeraldLazySettings
     from esmerald.core.datastructures import Secret
     from esmerald.types import SettingsType, TemplateConfig
 
@@ -153,6 +158,7 @@ class Application(Lilya):
         "before_request",
         "after_request",
     )
+    settings_module: Optional[EsmeraldAPISettings]  # type: ignore
 
     def __init__(
         self,
@@ -1585,7 +1591,7 @@ class Application(Lilya):
         self.settings_module = None
 
         if settings_module is not None and isinstance(settings_module, str):
-            settings_module = import_string(settings_module)
+            settings_module = load(settings_module)
 
         if settings_module is not None:
             if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
@@ -1599,9 +1605,9 @@ class Application(Lilya):
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
@@ -1691,7 +1697,7 @@ class Application(Lilya):
                 """
             ),
         ] = State()
-        self.async_exit_config = esmerald_settings.async_exit_config
+        self.async_exit_config = monkay_for_settings.settings.async_exit_config
 
         self.encoders = list(
             cast(
@@ -1744,6 +1750,8 @@ class Application(Lilya):
             after_request=self.after_request_callbacks,
         )
         self.get_default_exception_handlers()
+        if self.register_as_global_instance:
+            _monkay.set_instance(self)
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.template_engine = self.get_template_engine(self.template_config)
@@ -1814,14 +1822,18 @@ class Application(Lilya):
         if not is_boolean:
             if not value:
                 return self.get_settings_value(
-                    cast("EsmeraldAPISettings", self.settings_module), esmerald_settings, name
+                    self.settings_module,
+                    monkay_for_settings.settings,
+                    name,
                 )
             return value
 
         if value is not None:
             return value
         return self.get_settings_value(
-            cast("EsmeraldAPISettings", self.settings_module), esmerald_settings, name
+            self.settings_module,
+            monkay_for_settings.settings,
+            name,
         )
 
     def create_webhooks_signature_model(self, webhooks: Sequence[gateways.WebhookGateway]) -> None:
@@ -1898,7 +1910,7 @@ class Application(Lilya):
     def get_settings_value(
         self,
         local_settings: Optional["EsmeraldAPISettings"],
-        global_settings: Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]],
+        global_settings: "EsmeraldAPISettings",
         value: str,
     ) -> Any:
         """Obtains the value from a settings module or defaults to the global settings"""
@@ -1991,7 +2003,9 @@ class Application(Lilya):
             return None
 
         engine: "TemplateEngineProtocol" = template_config.engine(
-            template_config.directory, env=template_config.env, **template_config.env_options
+            template_config.directory,
+            env=template_config.env,
+            **template_config.env_options,
         )
         return engine
 
@@ -2639,7 +2653,6 @@ class Application(Lilya):
             ]
             + self.user_middleware
             + [
-                DefineMiddleware(ApplicationSettingsMiddleware),
                 DefineMiddleware(
                     ExceptionMiddleware,
                     handlers=exception_handlers,
@@ -2712,7 +2725,7 @@ class Application(Lilya):
         self.add_extension(name, extension)
 
     @property
-    def settings(self) -> Type["EsmeraldAPISettings"]:
+    def settings(self) -> "EsmeraldAPISettings":
         """
         Returns the Esmerald settings object for easy access.
 
@@ -2728,36 +2741,31 @@ class Application(Lilya):
         app.settings
         ```
         """
-        general_settings = self.settings_module if self.settings_module else esmerald_settings
-        return cast("Type[EsmeraldAPISettings]", general_settings)
+        general_settings = (
+            self.settings_module if self.settings_module else monkay_for_settings.settings
+        )
+        return general_settings
 
-    @cached_property
+    @property
     def default_settings(
         self,
-    ) -> Union[Type["EsmeraldAPISettings"], Type["EsmeraldLazySettings"]]:
+    ) -> "EsmeraldAPISettings":
         """
         Returns the default global settings.
         """
-        return esmerald_settings
-
-    async def globalise_settings(self) -> None:
-        """
-        Making sure the global settings remain as is
-        after the request is done.
-        """
-        esmerald_settings.configure(__lazy_settings__._wrapped)
+        return monkay_for_settings.settings
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if scope["type"] == "lifespan":
-            await self.router.lifespan(scope, receive, send)
-            return
+        with monkay_for_settings.with_settings(self.settings):
+            if scope["type"] == "lifespan":
+                await self.router.lifespan(scope, receive, send)
+                return
 
-        if self.root_path:
-            scope["root_path"] = self.root_path
+            if self.root_path:
+                scope["root_path"] = self.root_path
 
-        scope["state"] = {}
-        await super().__call__(scope, receive, send)
-        await self.globalise_settings()
+            scope["state"] = {}
+            await super().__call__(scope, receive, send)
 
     def websocket_route(self, path: str, name: Optional[str] = None) -> Callable:
         raise ImproperlyConfigured("`websocket_route` is not valid. Use WebSocketGateway instead.")
@@ -3887,4 +3895,4 @@ class ChildEsmerald(Esmerald):
     ```
     """
 
-    ...
+    register_as_global_instance: bool = False

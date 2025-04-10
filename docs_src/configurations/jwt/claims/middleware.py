@@ -1,12 +1,14 @@
 from jose import JWSError, JWTError
 
 from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware as EsmeraldMiddleware
+from esmerald.contrib.auth.edgy.middleware import (
+    JWTAuthMiddleware as EsmeraldMiddleware,
+)
 from esmerald.exceptions import AuthenticationError, NotAuthorized
 from esmerald.middleware.authentication import AuthResult
 from esmerald.security.jwt.token import Token
 from lilya._internal._connection import Connection
-from lilya._internal._module_loading import import_string
+from monkay import load
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
@@ -60,5 +62,5 @@ class JWTAuthMiddleware(EsmeraldMiddleware):
 AuthMiddleware = LilyaMiddleware(
     JWTAuthMiddleware,
     config=settings.jwt_config,
-    user_model=import_string("accounts.models.User"),
+    user_model=load("accounts.models.User"),
 )

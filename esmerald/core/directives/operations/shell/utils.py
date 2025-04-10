@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 import lilya
 import pydantic
-from lilya._internal._module_loading import import_string
+from monkay import load
 
 import esmerald
 from esmerald.core.terminal import OutputColour, Print
@@ -43,7 +43,9 @@ def welcome_message(app: Any) -> None:
     esmerald_info_date = f"Esmerald {esmerald.__version__} (interactive shell, {now})"
     info = "Interactive shell that imports the application defaults."
 
-    application_text = printer.message(f"{app.app_name}, version: ", colour=OutputColour.CYAN3)
+    application_text = printer.message(
+        f"{app.app_name}, version: ", colour=OutputColour.CYAN3
+    )
     application_name = printer.message(app.version, colour=OutputColour.GREEN3)
     application = f"{application_text}{application_name}"
 
@@ -72,9 +74,13 @@ def import_objects(app: Any) -> Dict[Any, Any]:
             is_module: bool = True
             names = ", ".join(sorted(name_set))
             try:
-                directive = import_statement.format(module_path=module.__module__, model=names)
+                directive = import_statement.format(
+                    module_path=module.__module__, model=names
+                )
             except AttributeError:
-                directive = import_statement.format(module_path=module.__name__, model=names)
+                directive = import_statement.format(
+                    module_path=module.__name__, model=names
+                )
                 is_module = False
 
             printer.write_success(directive, colour=OutputColour.CYAN3)
@@ -84,7 +90,7 @@ def import_objects(app: Any) -> Dict[Any, Any]:
                     imported_objects[name] = module
                 else:
                     dotted_path = f"{module.__name__}.{name}"
-                    class_object = import_string(dotted_path)
+                    class_object = load(dotted_path)
                     imported_objects[name] = class_object
 
     extract_same_module_objects()

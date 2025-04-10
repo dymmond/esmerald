@@ -4,7 +4,7 @@ import math
 import warnings
 from typing import Any, Callable, Dict, Optional, Sequence, Union
 
-from lilya._internal._module_loading import import_string
+from monkay import load
 from passlib.context import CryptContext
 
 from esmerald.conf import settings
@@ -68,7 +68,9 @@ def make_password(password: Optional[str], hasher: str = "default") -> str:
     access to staff or superuser accounts. See ticket #20079 for more info.
     """
     if password is None:
-        return UNUSABLE_PASSWORD_PREFIX + get_random_string(UNUSABLE_PASSWORD_SUFFIX_LENGTH)
+        return UNUSABLE_PASSWORD_PREFIX + get_random_string(
+            UNUSABLE_PASSWORD_SUFFIX_LENGTH
+        )
     if not isinstance(password, (bytes, str)):
         raise TypeError(
             "Password must be a string or bytes, got %s." % type(password).__qualname__
@@ -90,7 +92,7 @@ def get_hashers() -> Sequence["BasePasswordHasher"]:
         return hashers
 
     for hasher_path in settings.password_hashers:
-        hasher_cls = import_string(hasher_path)
+        hasher_cls = load(hasher_path)
         hasher = hasher_cls()
         if not hasher.algorithm:
             raise ImproperlyConfigured(

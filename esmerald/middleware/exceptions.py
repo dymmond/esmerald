@@ -26,7 +26,9 @@ class ExceptionMiddleware(LilyaExceptionMiddleware):
     def __init__(
         self,
         app: ASGIApp,
-        handlers: Optional[Mapping[Any, Callable[[Request, Exception], Response]]] = None,
+        handlers: Optional[
+            Mapping[Any, Callable[[Request, Exception], Response]]
+        ] = None,
         debug: bool = False,
     ) -> None:
         self.app = app
@@ -108,7 +110,9 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             event = {"type": "websocket.close", "code": code, "reason": reason}
             await send(event)
 
-    def default_http_exception_handler(self, request: Request, exc: Exception) -> "LilyaResponse":
+    def default_http_exception_handler(
+        self, request: Request, exc: Exception
+    ) -> "LilyaResponse":
         """Default handler for exceptions subclassed from HTTPException."""
         status_code = (
             exc.status_code
@@ -116,7 +120,9 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             else status.HTTP_500_INTERNAL_SERVER_ERROR
         )
         if status_code == status.HTTP_500_INTERNAL_SERVER_ERROR and self.debug:
-            server_error = ServerErrorMiddleware(app=self.app, handler=self.error_handler)
+            server_error = ServerErrorMiddleware(
+                app=self.app, handler=self.error_handler
+            )
             return server_error.debug_response(request=request, exc=exc)
         return self.create_exception_response(exc)
 
@@ -133,7 +139,11 @@ class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
             media_type=MediaType.JSON,
             content=content.model_dump(exclude_none=True),
             status_code=content.status_code,
-            headers=(exc.headers if isinstance(exc, (HTTPException, LilyaException)) else None),
+            headers=(
+                exc.headers
+                if isinstance(exc, (HTTPException, LilyaException))
+                else None
+            ),
         )
 
     def get_exception_handler(

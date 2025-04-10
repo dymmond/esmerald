@@ -1,5 +1,4 @@
 import asyncio
-import sys
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
@@ -15,28 +14,20 @@ from typing import (
 )
 
 from httpx._client import CookieTypes
-from lilya.conf.context_vars import set_override_settings
 from lilya.testclient import TestClient  # noqa
 from pydantic import AnyUrl
 
 from esmerald.applications import Esmerald
-from esmerald.conf import settings
+from esmerald.conf import monkay as monkay_for_settings
 from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.encoders import Encoder
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.utils.crypto import get_random_secret_key
 
-if sys.version_info >= (3, 10):  # pragma: no cover
-    from typing import ParamSpec
-else:  # pragma: no cover
-    from typing_extensions import ParamSpec
-
-P = ParamSpec("P")
-
-
 if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import Literal
 
+    from esmerald.conf.global_settings import EsmeraldAPISettings
     from esmerald.core.config import (
         CORSConfig,
         CSRFConfig,
@@ -134,7 +125,10 @@ def create_client(
     raise_server_exceptions: bool = True,
     root_path: str = "",
     static_files_config: Union[
-        "StaticFilesConfig", list["StaticFilesConfig"], tuple["StaticFilesConfig", ...], None
+        "StaticFilesConfig",
+        list["StaticFilesConfig"],
+        tuple["StaticFilesConfig", ...],
+        None,
     ] = None,
     template_config: Optional["TemplateConfig"] = None,
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
@@ -233,7 +227,7 @@ class override_settings:
         """
         self.app = kwargs.pop("app", None)
         self.options = kwargs
-        self._original_settings = None
+        self._innermanager: Any = None
 
     async def __aenter__(self) -> None:
         """
@@ -268,10 +262,9 @@ class override_settings:
         Returns:
             None
         """
-        settings._setup()
-        self._original_settings = settings._wrapped
-        settings._wrapped = self._original_settings.__class__(settings._wrapped, **self.options)
-        set_override_settings(True)
+        _original_settings: EsmeraldAPISettings = monkay_for_settings.settings
+        self._innermanager = monkay_for_settings.with_settings(_original_settings.model_copy(update=self.options))
+        self._innermanager.__enter__()
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         """
@@ -282,9 +275,7 @@ class override_settings:
             exc_value (Any): The exception instance raised, if any.
             traceback (Any): The traceback for the exception raised, if any.
         """
-        settings._wrapped = self._original_settings
-        settings._setup()
-        set_override_settings(False)
+        self._innermanager.__exit__(exc_type, exc_value, traceback)
 
     def __call__(self, func: Callable[..., Any]) -> Callable[..., Any]:
         """

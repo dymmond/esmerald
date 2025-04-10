@@ -3,7 +3,7 @@ __version__ = "3.7.2"
 
 from lilya import status
 
-from esmerald.conf import __lazy_settings__, settings
+from esmerald.conf import settings
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.context import Context
 from esmerald.core.datastructures import JSON, Redirect, Stream, Template, UploadFile
@@ -38,7 +38,18 @@ from .requests import Request
 from .responses import JSONResponse, Response, TemplateResponse
 from .routing.apis import APIView, Controller, SimpleAPIView, View
 from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from .routing.handlers import delete, get, head, options, patch, post, put, route, trace, websocket
+from .routing.handlers import (
+    delete,
+    get,
+    head,
+    options,
+    patch,
+    post,
+    put,
+    route,
+    trace,
+    websocket,
+)
 from .routing.router import Host, Include, Router
 from .routing.webhooks import (
     whdelete,
@@ -140,5 +151,4 @@ __all__ = [
     "whput",
     "whroute",
     "whtrace",
-    "__lazy_settings__",
 ]

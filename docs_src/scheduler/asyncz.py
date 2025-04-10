@@ -76,7 +76,7 @@ class AsynczConfig(SchedulerConfig):
         """
         for task, _module in tasks.items():
             imported_task = f"{_module}.{task}"
-            scheduled_task: "Task" = import_string(imported_task)
+            scheduled_task: "Task" = load(imported_task)
 
             if not scheduled_task.is_enabled:
                 continue

@@ -1,8 +1,10 @@
 from typing import Dict, Union
 
+import pytest
 from pydantic import BaseModel
 
 from esmerald import JSON, ChildEsmerald, Gateway, Include, get
+from esmerald.conf import monkay as monkay_for_settings
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.testclient import create_client
 from tests.settings import TestSettings
@@ -25,6 +27,11 @@ def read_people() -> Dict[str, str]:
 async def read_item() -> JSON:
     """ """
 
+
+@pytest.fixture(scope="function", autouse=True)
+def isolate_global_settings():
+    with monkay_for_settings.with_settings(TestSettings()):
+        yield
 
 def test_child_nested_esmerald_disabled_openapi():
     with create_client(
@@ -50,7 +57,6 @@ def test_child_nested_esmerald_disabled_openapi():
                 ),
             ),
         ],
-        settings_module=TestSettings,
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -122,7 +128,6 @@ def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
             ),
             Gateway(handler=read_people),
         ],
-        settings_module=TestSettings(),
     ) as client:
         response = client.get("/openapi.json")
         assert response.status_code == 200, response.text
@@ -194,7 +199,6 @@ def test_access_nested_child_esmerald_openapi_only(test_client_factory):
                 ),
             ),
         ],
-        settings_module=TestSettings,
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text
@@ -274,7 +278,6 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
                 ),
             ),
         ],
-        settings_module=TestSettings(),
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text
@@ -352,7 +355,6 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_include_openapi_
                 ),
             ),
         ],
-        settings_module=TestSettings(),
     ) as client:
         response = client.get("/child/another-child/openapi.json")
         assert response.status_code == 200, response.text
