@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 3.7.3
+
+### Changed
+
+- Bump Lilya version.
+- Update settings loading module with [Monkay](https://monkay.dymmond.com).
+- Change base of Esmerald to BaseLilya.
+
 ## 3.7.2
 
 ### Changed

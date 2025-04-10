@@ -43,9 +43,7 @@ def welcome_message(app: Any) -> None:
     esmerald_info_date = f"Esmerald {esmerald.__version__} (interactive shell, {now})"
     info = "Interactive shell that imports the application defaults."
 
-    application_text = printer.message(
-        f"{app.app_name}, version: ", colour=OutputColour.CYAN3
-    )
+    application_text = printer.message(f"{app.app_name}, version: ", colour=OutputColour.CYAN3)
     application_name = printer.message(app.version, colour=OutputColour.GREEN3)
     application = f"{application_text}{application_name}"
 
@@ -74,13 +72,9 @@ def import_objects(app: Any) -> Dict[Any, Any]:
             is_module: bool = True
             names = ", ".join(sorted(name_set))
             try:
-                directive = import_statement.format(
-                    module_path=module.__module__, model=names
-                )
+                directive = import_statement.format(module_path=module.__module__, model=names)
             except AttributeError:
-                directive = import_statement.format(
-                    module_path=module.__name__, model=names
-                )
+                directive = import_statement.format(module_path=module.__name__, model=names)
                 is_module = False
 
             printer.write_success(directive, colour=OutputColour.CYAN3)

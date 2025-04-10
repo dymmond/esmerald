@@ -7,6 +7,7 @@ from esmerald.testclient import create_client
 async def home() -> JSONResponse:
     return JSONResponse({"title": settings.title, "debug": settings.debug})
 
+
 @get()
 async def home_unset() -> JSONResponse:
     with monkay.with_settings(None):
@@ -103,7 +104,10 @@ def test_app_settings_middleware_nested_with_child_esmerald_and_global(test_clie
         response = client.get("/another-child/home")
 
         # should be propagated
-        assert response.json() == {"title": "Settings being parsed by the middleware and make it app global", "debug": False}
+        assert response.json() == {
+            "title": "Settings being parsed by the middleware and make it app global",
+            "debug": False,
+        }
 
         # should use the defaults
         response = client.get("/another-child/unset")

@@ -13,8 +13,8 @@ from typing import (
     cast,
 )
 
-from lilya.apps import Lilya
-from lilya.conf import _monkay
+from lilya.apps import BaseLilya
+from lilya.conf import _monkay  # noqa
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
 from monkay import load
@@ -91,7 +91,7 @@ if TYPE_CHECKING:  # pragma: no cover
 AppType = TypeVar("AppType", bound="Esmerald")
 
 
-class Application(Lilya):
+class Application(BaseLilya):
     """
     `Esmerald` application object. The main entry-point for any application/API
     with Esmerald.
@@ -158,7 +158,7 @@ class Application(Lilya):
         "before_request",
         "after_request",
     )
-    settings_module: Optional[EsmeraldAPISettings]  # type: ignore
+    settings_module: Optional[EsmeraldAPISettings]
 
     def __init__(
         self,
@@ -1605,9 +1605,9 @@ class Application(Lilya):
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (on_startup is None and on_shutdown is None), (
-            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
-        )
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
