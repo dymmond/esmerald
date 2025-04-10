@@ -114,7 +114,7 @@ class Application(BaseLilya):
     ```
     """
 
-    register_as_global_instance: ClassVar[bool] = True
+    register_as_global_instance: ClassVar[bool] = False
 
     __slots__ = (
         "allow_origins",
@@ -2813,6 +2813,8 @@ class Esmerald(Application):
     app = Esmerald()
     ```
     """
+
+    register_as_global_instance: ClassVar[bool] = True
 
     def get(
         self,
