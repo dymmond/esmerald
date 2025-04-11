@@ -1,6 +1,6 @@
 from myapp.accounts import User
 from pydantic import BaseModel
-from saffier.exceptions import ObjectNotFound, SaffierException
+from edgy.exceptions import ObjectNotFound, SaffierException
 
 from esmerald import Esmerald, Gateway, post
 

@@ -47,14 +47,14 @@ The permissions can also be `async` in case you need to run awaitables.
 
 ## Esmerald and permissions
 
-Esmerald giving support to [Saffier ORM](./databases/saffier/motivation.md) and [Edgy](./databases/edgy/motivation.md) also provides some default permissions
+Esmerald giving support to [Edgy](./databases/edgy/motivation.md) also provides some default permissions
 that can be linked to the models also provided by **Esmerald**.
 
 ### IsAdminUser and example of provided permissions
 
 This is a simple permission that extends the `BaseAbstractUserPermission` and checks if a user is authenticated or not.
 The functionality of verifying if a user might be or not authenticated was separated from the
-[Saffier](./databases/saffier/motivation.md) and instead you must implement the `is_user_authenticated()`
+[Edgy](./databases/edgy/motivation.md) and instead you must implement the `is_user_authenticated()`
 function when inheriting from `BaseAbstractUserPermission` or `IsAdminUser`.
 
 ## Esmerald and provided permissions

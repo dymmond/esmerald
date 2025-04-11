@@ -33,7 +33,7 @@ It is better to explain by using an example.
 
 Let's imagine you need one handler that manages the creation of a user. Your application will have:
 
-* `Database connections`. Let's use the current supported [Saffier](./databases/saffier/motivation.md).
+* `Database connections`. Let's use the current supported [Edgy](./databases/edgy/motivation.md).
 * `Database models`. What is used to map python classes and database obbjects.
 * `The handler`. What you will be calling.
 
@@ -42,7 +42,7 @@ Let's imagine you need one handler that manages the creation of a user. Your app
 ```
 
 !!! Check
-    Since we are using saffier, all the database connections and configurations are handled by our settings.
+    Since we are using Edgy, all the database connections and configurations are handled by our settings.
 
 In this example, the handler manages to check if there is a user already with these details and creates if not but all
 of this is managed in the handler itself. Sometimes is ok when is this simple but sometimes you might want to extend

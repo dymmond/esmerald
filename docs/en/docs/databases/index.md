@@ -1,6 +1,6 @@
 # Database Integrations
 
-Esmerald out of the box supports [Edgy](https://edgy.dymmond.com), [Saffier](https://saffier.tarsild.io) and [Mongoz](https://mongoz.dymmond.com).
+Esmerald out of the box supports [Edgy](https://edgy.dymmond.com) and [Mongoz](https://mongoz.dymmond.com).
 
 Explore the documentation for more details how to use them.
 

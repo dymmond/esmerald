@@ -157,7 +157,7 @@ example.
 * **Pluggables**: Create plugins for Esmerald and hook them into any application and/or
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
-* **ORM Support**: Native support for [Saffier][saffier_orm] and [Edgy][edgy_orm].
+* **ORM Support**: Native support for [Edgy][edgy_orm].
 * **ODM Support**: Native support for [Mongoz][mongoz_odm].
 * **Controller**: Class Based endpoints for your beloved OOP design.
 * **JSON serialization/deserialization**: Both UJSON and ORJSON support.
@@ -559,6 +559,5 @@ Worth mentioning who is helping us.
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
-[saffier_orm]: ./databases/saffier/motivation.md
 [edgy_orm]: ./databases/edgy/motivation.md
 [mongoz_odm]: ./databases/mongoz/motivation.md

@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 from pydantic import BaseModel
-from saffier import Database, Registry
+from edgy import Database, Registry
 
 from esmerald import Esmerald, Gateway, post
 
@@ -25,10 +25,8 @@ async def create_user(data: User) -> None:
 @asynccontextmanager
 async def lifespan(app: Esmerald):
     # What happens on startup
-    await database.connect()
-    yield
-    # What happens on shutdown
-    await database.disconnect()
+    async with registry:
+        yield
 
 
 app = Esmerald(

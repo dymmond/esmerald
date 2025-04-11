@@ -1,15 +1,15 @@
-import saffier
-from saffier import Database, Registry
+import edgy
+from edgy import Database, Registry
 
 from esmerald import Esmerald
-from esmerald.contrib.auth.saffier.base_user import AbstractUser
+from esmerald.contrib.auth.edgy.base_user import AbstractUser
 
 database = Database("postgres://postgres:password@localhost:5432/my_db")
 registry = Registry(database=database)
 
 
 class User(AbstractUser):
-    date_of_birth = saffier.DateField(null=True)
+    date_of_birth = edgy.DateField(null=True)
 
     class Meta:
         registry = registry
@@ -22,8 +22,8 @@ def get_application():
 
     app = Esmerald(
         routes=[],
-        on_startup=[database.connect],
-        on_shutdown=[database.disconnect],
+        on_startup=[database.__anter__],
+        on_shutdown=[database.__aexit__],
     )
 
     return app

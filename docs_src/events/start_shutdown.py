@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from saffier import Database, Registry
+from edgy import Database, Registry
 
 from esmerald import Esmerald, Gateway, post
 
@@ -22,6 +22,6 @@ async def create_user(data: User) -> None:
 
 app = Esmerald(
     routes=[Gateway(handler=create_user)],
-    on_startup=[database.connect],
-    on_shutdown=[database.disconnect],
+    on_startup=[database.__aenter__],
+    on_shutdown=[database.__aexit__],
 )
