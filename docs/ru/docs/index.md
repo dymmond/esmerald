@@ -151,7 +151,7 @@ $ pip install esmerald[test]
 * **Interceptors**: Перехватывайте запросы и добавляйте логику перед обработкой.
 * **Плагины**: Создавайте плагины для Esmerald и интегрируйте их в любое приложение, или опубликуйте свой пакет.
 * **DAO и AsyncDAO**: Избегайте вызовов базы данных напрямую из API, используйте бизнес-объекты.
-* **Поддержка ORM**: Поддержка [Saffier][saffier_orm] и [Edgy][_orm].
+* **Поддержка ORM**: Поддержка [Edgy][_orm].
 * **Поддержка ODM**: Поддержка [Mongoz][mongoz_odm].
 * **APIView**: Контроллеры в виде классов.
 * **JSON сериализация/десериализация**: Поддержка UJSON и ORJSON.
@@ -544,6 +544,5 @@ Esmerald автоматически запускает документацию 
 В настоящее время у Esmerald нет спонсоров, но вы можете финансово помочь и поддержать автора через
 [GitHub sponsors](https://github.com/sponsors/tarsil) и стать **Особенным** или **Легендой**.
 
-[saffier_orm]: ./databases/saffier/motivation.md
 [edgy_orm]: ./databases/edgy/motivation.md
 [mongoz_odm]: ./databases/mongoz/motivation.md

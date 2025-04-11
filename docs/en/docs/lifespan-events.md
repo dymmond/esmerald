@@ -51,7 +51,7 @@ also do not want to do it for every request, you then want this on an applicatio
 
 Let us then see how that it would look like using the current available events.
 
-We will be using [Saffier](https://saffier.tarsild.io) as example as it is also supoprted by
+We will be using [Edgy](https://edgy.dymmond.com) as example as it is also supported by
 Esmerald.
 
 ### on_startup and on_shutdown
@@ -134,7 +134,7 @@ the way of **declaring is different** and an `app: Esmerald` parameter is **alwa
 In general when using an async context the principle is the same as a normal context manager with
 the key difference that we use `async` before the `with`.
 
-Let use see an example still using the [Saffier](https://saffier.tarsild.io) ORM.
+Let use see an example still using the [Saffier](https://edgy.dymmond.com) ORM.
 
 !!! Warning
     Again, this is for general purposes, not for the use of the Esmerald lifespan. That example
@@ -154,7 +154,7 @@ context manager and the `yield` is what manages the `enter` and `exit` behaviour
 What if we were to build one async context manager with Python classes? Well this is actually
 even better as you can "visually" see and understand the behaviour.
 
-Let us get back to the same example with [Saffier](https://saffier.tarsild.io) ORM.
+Let us get back to the same example with [Edgy](https://edgy.dymmond.com) ORM.
 
 ```python hl_lines="9-10 13-14 17"
 {!> ../../../docs_src/events/curiosities/classes.py !}

@@ -116,7 +116,6 @@ testing = [
     "pytest-asyncio>=0.26.0",
     "polyfactory>=2.5.0,<3.0.0",
     "pytz",
-    "saffier[postgres]>=1.4.2",
     "ujson>=5.7.0,<6",
 
     # types
@@ -248,7 +247,6 @@ omit = [
     "esmerald/contrib/*",
     "esmerald/openapi/openapi.py",
     "esmerald/openapi/security/*",
-    "tests/databases/saffier/*",
     "tests/databases/edgy/*",
     "tests/utils/functional.py",
     "tests/cli/*",
@@ -273,7 +271,6 @@ module = [
     "pytz",
     "pyjwt.*",
     "passlib.*",
-    "esmerald.contrib.auth.saffier.*",
     "esmerald.contrib.auth.edgy.*",
     "grpc.*",
     "google.*",

@@ -5,7 +5,7 @@ from lilya.types import ASGIApp
 from esmerald import Gateway, Include, Request
 from esmerald.conf import settings
 from esmerald.contrib.auth.edgy.base_user import User as EdgyUser
-from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
+from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from esmerald.core.config.jwt import JWTConfig
 from esmerald.routing.apis import APIView
 from esmerald.routing.handlers import get, post, put

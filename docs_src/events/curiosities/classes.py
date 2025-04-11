@@ -1,4 +1,4 @@
-from saffier import Database, Registry
+from edgy import Database, Registry
 
 database = Database("postgresql+asyncpg://user:password@host:port/database")
 registry = Registry(database=database)

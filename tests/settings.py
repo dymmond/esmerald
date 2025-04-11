@@ -4,9 +4,9 @@ from functools import cached_property
 from typing import Optional, Tuple
 
 import mongoz
+from edgy import Database, Registry
 from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
 from pydantic import ConfigDict
-from saffier import Database, Registry
 
 from esmerald.conf.global_settings import EsmeraldAPISettings
 from esmerald.core.config.jwt import JWTConfig

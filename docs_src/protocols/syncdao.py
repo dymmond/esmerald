@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, List
 
 from myapp.accounts.models import User
 from pydantic import BaseModel
-from saffier.exceptions import ObjectNotFound, SaffierException
+from edgy.exceptions import ObjectNotFound, EdgyException
 
 from esmerald import AsyncDAOProtocol, DaoProtocol, Esmerald, Gateway, post
 
@@ -71,7 +71,7 @@ class AsyncUserDAO(AsyncDAOProtocol):
         # save in a different external database
         try:
             await self.model.create(**user)
-        except SaffierException:
+        except EdgyException:
             ...
 
 

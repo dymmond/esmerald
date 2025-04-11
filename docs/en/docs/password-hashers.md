@@ -7,9 +7,9 @@ making a possible password even more secure.
 
 ## Esmerald and password hashing
 
-Esmerald supporting [Saffier](./databases/saffier/motivation.md) also means providing some of the features internally.
+Esmerald supporting [Edgy](./databases/edgy/motivation.md) also means providing some of the features internally.
 
-A lof of what is explained here is explained in more detail in the [Saffier orm support](./databases/saffier/motivation.md).
+A lof of what is explained here is explained in more detail in the [Edgy orm support](./databases/edgy/motivation.md).
 
 Esmerald already brings some pre-defined password hashers that are available in the
 [Esmerald settings](./application/settings.md) and ready to be used.
@@ -31,7 +31,7 @@ You can always override the property `password_hashers` in your
 [custom settings](./application/settings.md#custom-settings) and use your own.
 
 ```python
-{!> ../../../docs_src/databases/saffier/hashers.py !}
+{!> ../../../docs_src/databases/edgy/hashers.py !}
 ```
 
 ## Current supported hashing

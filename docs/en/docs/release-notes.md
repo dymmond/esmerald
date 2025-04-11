@@ -15,6 +15,15 @@ hide:
 - `whead` renamed to `whhead` for naming consistency.
 - Monkay lazy loading now its at the `__init__` of Esmerald.
 
+### Deprecated
+
+- [Saffier](https://saffier.tarsild.io) was the beginning of a big journey to what it later on became [Edgy](https://edgy.dymmond.com)
+and for that reason, it makes no longer sense of keeping the support where Saffier is not growing as the same as Edgy.
+
+!!! Note
+    [Saffier](https://saffier.tarsild.io) is under the name of its creator and he is more than happy to donate the ORM and the pypi
+    package to anyone who would like to continue maintaining it.
+
 ## 3.7.2
 
 ### Changed

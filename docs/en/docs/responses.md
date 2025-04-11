@@ -172,7 +172,7 @@ Check out the [API Reference for Template](./references/responses/template.md) f
 
 ####  Async templates
 
-If you want to iterate over QuerySets of edgy/saffier you may need to checkout:
+If you want to iterate over QuerySets of Edgy you may need to checkout:
 [Async Templates](./configurations/template.md) how to enable the async feature of
 jinja.
 

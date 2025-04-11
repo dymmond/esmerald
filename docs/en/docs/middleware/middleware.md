@@ -120,7 +120,7 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
 3. Implement the `authenticate` and assign the `user` result to the `AuthResult`.
 
 !!! Info
-    We use [Saffier](./../databases/saffier/motivation.md) for this example because Esmerald supports S
+    We use [Edgy](./../databases/edgy/motivation.md) for this example because Esmerald supports S
     and contains functionalities linked with that support (like the User table) but **Esmerald**
     **is not dependent of ANY specific ORM** which means that you are free to use whatever you prefer.
 
@@ -178,7 +178,7 @@ to use to start an Esmerald application.
 
     ```shell
     ESMERALD_SETTINGS_MODULE=configs.live.AppSettings uvicorn src:app
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]
@@ -190,7 +190,7 @@ to use to start an Esmerald application.
 
     ```shell
     $env:ESMERALD_SETTINGS_MODULE="configs.live.AppSettings"; uvicorn src:app
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]

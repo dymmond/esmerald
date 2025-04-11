@@ -339,7 +339,7 @@ execute the operations. This way you only need one place to manage the needed ap
 Let us run an example of a custom directive for your application. Since we keep mentioning the
 `createsuperuser` often, let us then create that same directive and apply to our Esmerald application.
 
-For this example we will be using [Saffier][saffier] since it is from the same author and will
+For this example we will be using [Edgy][edgy] since it is from the same author and will
 allow us to do a complete end-to-end directive using the async approach.
 
 This example is very simple in its own design.
@@ -348,8 +348,8 @@ For production you should have your models inside a models dedicated place and y
 and `database` settings somewhere in your `settings` where you can access it anywhere in your code via
 [esmerald settings](../application/settings.md), for example.
 
-P.S.: For the registry and database strategy with [saffier][saffier], it is good to have a read
-the [tips and tricks](https://saffier.tarsild.io/tips-and-tricks/) with saffier.
+P.S.: For the registry and database strategy with [edgy][edgy], it is good to have a read
+the [tips and tricks](https://edgy.dymmond.com/tips-and-tricks/) with edgy.
 
 The design is up to you.
 
@@ -360,7 +360,7 @@ What we will be creating:
 
 In the end we simply run the directive.
 
-We will be also using the [saffier support from Esmerald models](../databases/saffier/models.md)
+We will be also using the [edgy support from Esmerald models](../databases/edgy/models.md)
 as this will make the example simpler.
 
 ### The application entrypoint
@@ -405,4 +405,4 @@ $ esmerald run --directive createsuperuser --first-name Esmerald --last-name Fra
 
 After the command is executed, you should be able to see the superuser created in your database.
 
-[saffier]: https://saffier.tarsild.io
+[edgy]: https://edgy.dymmond.com
