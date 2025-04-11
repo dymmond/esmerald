@@ -429,7 +429,7 @@ def whget(
     return cast(WebhookHandler, wrapper)
 
 
-def whead(
+def whhead(
     path: Annotated[
         Optional[str],
         Doc(

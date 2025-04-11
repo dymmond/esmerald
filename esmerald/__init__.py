@@ -1,4 +1,4 @@
-__version__ = "3.7.2"
+__version__ = "3.7.3"
 
 from typing import TYPE_CHECKING
 
@@ -57,8 +57,8 @@ if TYPE_CHECKING:
     from .routing.router import Host, Include, Router
     from .routing.webhooks import (
         whdelete,
-        whead,
         whget,
+        whhead,
         whoptions,
         whpatch,
         whpost,
@@ -147,7 +147,7 @@ __all__ = [
     "trace",
     "websocket",
     "whdelete",
-    "whead",
+    "whhead",
     "whget",
     "whoptions",
     "whpatch",
