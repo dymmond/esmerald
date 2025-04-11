@@ -813,8 +813,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         Default:
             ```python
             [
-                "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
-                "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+                "esmerald.contrib.auth.hashers.BcryptPasswordHasher",
             ]
             ```
 
@@ -822,10 +821,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
 
         ```python
         from esmerald import EsmeraldAPISettings
-        from esmerald.contrib.auth.hashers import PBKDF2PasswordHasher
+        from esmerald.contrib.auth.hashers import BcryptPasswordHasher
 
         # myapp.hashers.py
-        class CustomHasher(PBKDF2PasswordHasher):
+        class CustomHasher(BcryptPasswordHasher):
             '''
             All the hashers inherit from BasePasswordHasher
             '''
@@ -842,8 +841,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ```
         """
         return [
-            "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
-            "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+            "esmerald.contrib.auth.hashers.BcryptPasswordHasher",
         ]
 
     @property

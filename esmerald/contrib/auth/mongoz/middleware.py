@@ -32,14 +32,14 @@ class JWTAuthMiddleware(CommonJWTAuthMiddleware):
 
             1. User table
 
-                from esmerald.contrib.auth.saffier.base_user import User as BaseUser
+                from esmerald.contrib.auth.mongoz.base_user import User as BaseUser
 
                 class User(BaseUser):
                     ...
 
             2. Middleware
 
-                from esmerald.contrib.auth.saffier.middleware import JWTAuthMiddleware
+                from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
                 from esmerald.config import JWTConfig
 
                 jwt_config = JWTConfig(...)

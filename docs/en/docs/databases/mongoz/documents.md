@@ -131,8 +131,7 @@ Esmerald already brings some pre-defined password hashers that are available in 
 @property
 def password_hashers(self) -> List[str]:
     return [
-        "esmerald.contrib.auth.hashers.PBKDF2PasswordHasher",
-        "esmerald.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+        "esmerald.contrib.auth.hashers.BcryptPasswordHasher",
     ]
 
 ```
