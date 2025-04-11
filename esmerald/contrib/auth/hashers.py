@@ -68,9 +68,7 @@ def make_password(password: Optional[str], hasher: str = "default") -> str:
     access to staff or superuser accounts. See ticket #20079 for more info.
     """
     if password is None:
-        return UNUSABLE_PASSWORD_PREFIX + get_random_string(
-            UNUSABLE_PASSWORD_SUFFIX_LENGTH
-        )
+        return UNUSABLE_PASSWORD_PREFIX + get_random_string(UNUSABLE_PASSWORD_SUFFIX_LENGTH)
     if not isinstance(password, (bytes, str)):
         raise TypeError(
             "Password must be a string or bytes, got %s." % type(password).__qualname__

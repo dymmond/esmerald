@@ -33,6 +33,7 @@ def isolate_global_settings():
     with monkay_for_settings.with_settings(TestSettings()):
         yield
 
+
 def test_child_nested_esmerald_disabled_openapi():
     with create_client(
         routes=[

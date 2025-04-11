@@ -263,7 +263,9 @@ class override_settings:
             None
         """
         _original_settings: EsmeraldAPISettings = monkay_for_settings.settings
-        self._innermanager = monkay_for_settings.with_settings(_original_settings.model_copy(update=self.options))
+        self._innermanager = monkay_for_settings.with_settings(
+            _original_settings.model_copy(update=self.options)
+        )
         self._innermanager.__enter__()
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
