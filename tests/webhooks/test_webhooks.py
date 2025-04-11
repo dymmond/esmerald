@@ -6,8 +6,8 @@ from esmerald import (
     ImproperlyConfigured,
     WebhookGateway,
     whdelete,
-    whead,
     whget,
+    whhead,
     whoptions,
     whpatch,
     whpost,
@@ -60,7 +60,7 @@ def test_can_generate_webhooks_from_apiview(test_client_factory):
     [
         (whpost, False),
         (whdelete, False),
-        (whead, False),
+        (whhead, False),
         (whget, False),
         (whoptions, False),
         (whpatch, False),

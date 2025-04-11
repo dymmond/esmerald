@@ -12,6 +12,8 @@ hide:
 - Bump Lilya version.
 - Update settings loading module with [Monkay](https://monkay.dymmond.com).
 - Change base of Esmerald to BaseLilya.
+- `whead` renamed to `whhead` for naming consistency.
+- Monkay lazy loading now its at the `__init__` of Esmerald.
 
 ## 3.7.2
 

@@ -1,8 +1,8 @@
-from .handlers import whdelete, whead, whget, whoptions, whpatch, whpost, whput, whroute, whtrace
+from .handlers import whdelete, whget, whhead, whoptions, whpatch, whpost, whput, whroute, whtrace
 
 __all__ = [
     "whdelete",
-    "whead",
+    "whhead",
     "whget",
     "whoptions",
     "whpatch",

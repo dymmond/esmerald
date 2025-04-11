@@ -77,7 +77,7 @@ but **dedicated** only to the **WebhookGateway**. The available handlers are:
 * **whput** - For the `PUT`.
 * **whpatch** - For the `PATCH`.
 * **whdelete** - For the `DELETE`.
-* **whead** - For the `HEAD`.
+* **whhead** - For the `HEAD`.
 * **whoptions** - For the `OPTION`.
 * **whtrace** - For the `TRACE`.
 * **whroute** - Used to specificy for which `http verbs` is available. This handler has the special
@@ -102,7 +102,7 @@ You can import them directly:
 ```python
 from esmerald import (
     whdelete,
-    whead,
+    whhead,
     whget,
     whoptions,
     whpatch,
@@ -118,7 +118,7 @@ Or via full path.
 ```python
 from esmerald.routing.webhooks.handlers import (
     whdelete,
-    whead,
+    whhead,
     whget,
     whoptions,
     whpatch,
