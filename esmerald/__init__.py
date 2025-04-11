@@ -164,7 +164,11 @@ _monkay: Monkay = Monkay(
         "settings": ".conf.settings",
         "EsmeraldAPISettings": ".conf.global_settings.EsmeraldAPISettings",
         "Context": "esmerald.context.Context",
-        "JSON": "core.datastructures.JSON", "Redirect": "core.datastructures.Redirect", "Stream": "core.datastructures.Stream", "Template": "core.datastructures.Template", "UploadFile": "core.datastructures.UploadFile",
+        "JSON": ".core.datastructures.JSON",
+        "Redirect": ".core.datastructures.Redirect",
+        "Stream": ".core.datastructures.Stream",
+        "Template": ".core.datastructures.Template",
+        "UploadFile": ".core.datastructures.UploadFile",
         "Factory": "esmerald.injector.Factory",
         "Inject": "esmerald.injector.Inject",
         "ChildEsmerald": ".applications.ChildEsmerald",
@@ -225,19 +229,9 @@ _monkay: Monkay = Monkay(
         "WebSocketState": ".websockets.WebSocketState",
     },
     skip_all_update=True,
-    package="esmerald"
+    package="esmerald",
 )
-for name in [
-    "delete",
-    "get",
-    "head",
-    "options",
-    "patch",
-    "post",
-    "put",
-    "route",
-    "trace"
-]:
+for name in ["delete", "get", "head", "options", "patch", "post", "put", "route", "trace"]:
     _monkay.add_lazy_import(name, f".routing.handlers.{name}")
     _monkay.add_lazy_import(f"wh{name}", f".routing.webhooks.wh{name}")
 del name
