@@ -1,10 +1,10 @@
 from typing import List
 
 from esmerald import EsmeraldAPISettings
-from esmerald.contrib.auth.hashers import PBKDF2PasswordHasher
+from esmerald.contrib.auth.hashers import BcryptPasswordHasher
 
 
-class CustomHasher(PBKDF2PasswordHasher):
+class CustomHasher(BcryptPasswordHasher):
     """
     All the hashers inherit from BasePasswordHasher
     """

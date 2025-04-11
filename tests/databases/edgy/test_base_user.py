@@ -70,7 +70,6 @@ async def test_create_superuser():
             email=f"mail@{get_random_string(12)}.com",
             password=get_random_string(8),
         )
-
     superusers = await User.query.filter(is_superuser=True)
     assert len(superusers) == 5
 

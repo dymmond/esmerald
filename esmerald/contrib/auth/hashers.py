@@ -1,11 +1,10 @@
 import functools
-import hashlib
 import math
 import warnings
 from typing import Any, Callable, Dict, Optional, Sequence, Union
 
+import bcrypt
 from monkay import load
-from passlib.context import CryptContext
 
 from esmerald.conf import settings
 from esmerald.exceptions import ImproperlyConfigured
@@ -34,7 +33,7 @@ async def check_password(
 ) -> bool:
     """
     Return a boolean of whether the raw password matches the three
-    part encoded digest.
+    part encoded.
 
     If setter is specified, it'll be called when you need to
     regenerate the password.
@@ -51,7 +50,7 @@ async def check_password(
 
     hasher_changed = hasher_handler.algorithm != preferred_hasher.algorithm
     must_update: bool = hasher_changed or preferred_hasher.must_update(encoded)
-    is_correct: bool = hasher_handler.hasher.verify(password, encoded)
+    is_correct: bool = hasher_handler.verify(password, encoded)
 
     if setter and is_correct and must_update:
         await setter(password)
@@ -76,7 +75,6 @@ def make_password(password: Optional[str], hasher: str = "default") -> str:
 
     hasher_handler: BasePasswordHasher = get_hasher(hasher)
 
-    # Passlib includes salt in almost every hash
     return hasher_handler.get_hashed_password(password)
 
 
@@ -116,10 +114,6 @@ def get_random_string(length: int, allowed_chars: str = RANDOM_STRING_CHARS) -> 
 
     The bit length of the returned value can be calculated with the formula:
         log_2(len(allowed_chars)^length)
-
-    For example, with default `allowed_chars` (26+26+10), this gives:
-      * length: 12, bit length =~ 71 bits
-      * length: 22, bit length =~ 131 bits
     """
     return _get_random_string(length=length, allowed_chars=allowed_chars)
 
@@ -141,8 +135,7 @@ def get_hasher(algorithm: str = "default") -> "BasePasswordHasher":
         except KeyError as e:
             raise ValueError(
                 "Unknown password hashing algorithm '%s'. "
-                "Did you specify it in your settings? "
-                "setting?" % algorithm
+                "Did you specify it in your settings?" % algorithm
             ) from e
 
 
@@ -150,29 +143,24 @@ def identify_hasher(encoded: str) -> "BasePasswordHasher":
     """
     Return an instance of a loaded password hasher.
 
-    Identify hasher algorithm by examining encoded hash, and call
-    get_hasher() to return hasher. Raise ValueError if
+    Identify hasher algorithm by examining the encoded hash and call
+    get_hasher() to return the correct hasher. Raise ValueError if
     algorithm cannot be identified, or if hasher is not loaded.
     """
-    # Ancient versions of some framworks created plain MD5 passwords
-    # and accepted MD5 passwords with an empty salt.
-    if (len(encoded) == 32 and "$" not in encoded) or (
-        len(encoded) == 37 and encoded.startswith("md5$$")
-    ):
-        algorithm = "unsalted_md5"
-    elif len(encoded) == 46 and encoded.startswith("sha1$$"):
-        algorithm = "unsalted_sha1"
+    if encoded.startswith("$2b$") or encoded.startswith("$2a$") or encoded.startswith("$2y$"):
+        # Identify bcrypt hash format
+        algorithm = "bcrypt"
     else:
+        # Extract algorithm identifier from the encoded string (split by '$' and get the first part)
         algorithm = encoded.split("$", 1)[0]
+
     return get_hasher(algorithm)
 
 
 class BasePasswordHasher:
-    hasher: CryptContext
+    hasher: Any
     algorithm: str
     algorithm_name: str
-    digest: Any
-    library = None
     salt_entropy: int = 128
 
     def __init__(self, **kwargs: Any) -> None:
@@ -180,77 +168,68 @@ class BasePasswordHasher:
             raise NotImplementedError(
                 "subclasses of BasePasswordHasher must provide an algorithm and algorithm_name."
             )
-        self.hasher = CryptContext(schemes=[self.algorithm], deprecated="auto")
 
     def get_hashed_password(self, password: str) -> Union[str, Any]:
-        return self.hasher.hash(password)
-
-    def salt(self) -> str:
-        """
-        Generate a cryptographically secure nonce salt in ASCII with an entropy
-        of at least `salt_entropy` bits.
-        """
-        # Each character in the salt provides
-        # log_2(len(alphabet)) bits of entropy.
-        char_count = math.ceil(self.salt_entropy / math.log2(len(RANDOM_STRING_CHARS)))
-        return get_random_string(char_count, allowed_chars=RANDOM_STRING_CHARS)
+        # Use bcrypt to hash the password
+        salt = bcrypt.gensalt().decode("utf-8")
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt.encode("utf-8"))
+        return hashed_password.decode("utf-8")
 
     def decode(self, encoded: str) -> Dict[str, Any]:
         """
-        Return a decoded database value.
-
-        The result is a dictionary and should contain `algorithm`, `hash`, and
-        `salt`. Extra keys can be algorithm specific like `iterations` or
-        `work_factor`.
+        Since bcrypt includes the salt in the hash, we don't need to manually decode.
         """
-        raise NotImplementedError(
-            "subclasses of BasePasswordHasher must provide a decode() method."
-        )
-
-    def _check_encode_args(self, password: str, salt: str) -> None:
-        if password is None:
-            raise TypeError("password must be provided.")
-        if not salt or "$" in salt:
-            raise ValueError("salt must be provided and cannot contain $.")
+        return {"algorithm": self.algorithm_name, "hash": encoded}
 
     def must_update(self, encoded: str) -> bool:
+        # bcrypt hashes don't require manual salt updates
         return False
 
 
-class PBKDF2PasswordHasher(BasePasswordHasher):
+class BcryptPasswordHasher(BasePasswordHasher):
     """
-    Handles PBKDF2 passwords
+    Handles bcrypt password hashing in a similar way to PBKDF2PasswordHasher.
     """
 
-    algorithm = "django_pbkdf2_sha256"
-    algorithm_name = "pbkdf2_sha256"
-    iterations = 390000
-    digest = hashlib.sha256
+    algorithm = "bcrypt"
+    algorithm_name = "bcrypt"
+    salt_entropy: int = 128
+    rounds: int = 10  # Default cost factor for bcrypt
+
+    def verify(self, password: str, encoded: str) -> bool:
+        """
+        Verify the password against the encoded hash.
+        """
+        # Use bcrypt's checkpw to verify password against full encoded hash
+        return bcrypt.checkpw(password.encode("utf-8"), encoded.encode("utf-8"))
+
+    def get_hashed_password(self, password: str) -> Union[str, Any]:
+        """
+        Hashes the password using bcrypt, returning a hash in the passlib-compatible format.
+        """
+        # Generate bcrypt salt
+        salt = bcrypt.gensalt(rounds=self.rounds).decode("utf-8")
+        # Hash the password with the generated salt
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt.encode("utf-8"))
+        return hashed_password.decode("utf-8")  # Return full bcrypt hash (salt + hash)
 
     def decode(self, encoded: str) -> Dict[str, Any]:
-        algorithm, iterations, salt, _hash = encoded.split("$", 3)
-        assert algorithm == self.algorithm_name
+        """
+        Decode the bcrypt hash, splitting the salt and hash components.
+        """
+        salt, _hash = encoded[:29], encoded[29:]
         return {
-            "algorithm": algorithm,
+            "algorithm": self.algorithm_name,
             "hash": _hash,
-            "iterations": int(iterations),
             "salt": salt,
+            "rounds": self.rounds,  # Include the rounds cost factor
         }
 
     def must_update(self, encoded: str) -> bool:
+        """
+        Check if the bcrypt hash requires an update, such as updating salt entropy or rounds.
+        """
         decoded = self.decode(encoded)
         update_salt = must_update_salt(decoded["salt"], self.salt_entropy)
-        return (decoded["iterations"] != self.iterations) or update_salt
 
-
-class PBKDF2SHA1PasswordHasher(PBKDF2PasswordHasher):
-    """
-    Alternate PBKDF2 hasher which uses SHA1, the default PRF
-    recommended by PKCS #5. This is compatible with other
-    implementations of PBKDF2, such as openssl's
-    PKCS5_PBKDF2_HMAC_SHA1().
-    """
-
-    algorithm = "django_pbkdf2_sha1"
-    algorithm_name = "pbkdf2_sha1"
-    digest = hashlib.sha1
+        return update_salt or decoded["rounds"] != self.rounds

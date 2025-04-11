@@ -24,6 +24,13 @@ and for that reason, it makes no longer sense of keeping the support where Saffi
     [Saffier](https://saffier.tarsild.io) is under the name of its creator and he is more than happy to donate the ORM and the pypi
     package to anyone who would like to continue maintaining it.
 
+### Breaking Change
+
+- This is not 100% sure but since passlib stopped maintainance a long time ago, since python 3.13 some other issues will
+arise and therefore the decision to move away from it to bcrypt. Unfortunataly this means that the `password` hashing will not be compatible with the previous versions of Esmerald and
+we know this might not be ideal but this is the best way to move forward due to security contraints.
+
+
 ## 3.7.2
 
 ### Changed

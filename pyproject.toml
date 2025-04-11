@@ -96,7 +96,7 @@ dev = [
     "uvicorn[standard]>=0.24.0",
 ]
 
-jwt = ["passlib==1.7.4", "pyjwt>=2.10.1,<3"]
+jwt = ["bcrypt>=4.3.0", "pyjwt>=2.10.1,<3"]
 schedulers = ["asyncz>=0.11.0"]
 all = ["esmerald[test,dev,jwt,schedulers]", "ipython", "ptpython", "a2wsgi"]
 testing = [
@@ -270,7 +270,7 @@ module = [
     "slugify.*",
     "pytz",
     "pyjwt.*",
-    "passlib.*",
+    "bcrypt.*",
     "esmerald.contrib.auth.edgy.*",
     "grpc.*",
     "google.*",
