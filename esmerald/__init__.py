@@ -157,7 +157,7 @@ __all__ = [
     "whtrace",
 ]
 
-_monkay= Monkay(
+_monkay: Monkay = Monkay(
     globals(),
     lazy_imports={
         "status": "lilya.status",
