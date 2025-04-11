@@ -787,7 +787,7 @@ class Application(BaseLilya):
 
                 ```python
                 from esmerald import Esmerald
-                from esmerald.config.template import TemplateConfig
+                from esmerald.core.config.template import TemplateConfig
                 from esmerald.template.jinja import JinjaTemplateEngine
 
                 template_config = TemplateConfig(
@@ -1968,7 +1968,7 @@ class Application(BaseLilya):
 
                 ```python
                 from esmerald import Esmerald
-                from esmerald.config.template import TemplateConfig
+                from esmerald.core.config.template import TemplateConfig
                 from esmerald.template.jinja import JinjaTemplateEngine
 
                 template_config = TemplateConfig(
@@ -1990,7 +1990,7 @@ class Application(BaseLilya):
 
         ```python
         from esmerald import Esmerald
-        from esmerald.config.template import TemplateConfig
+        from esmerald.core.config.template import TemplateConfig
         from esmerald.template.jinja import JinjaTemplateEngine
 
         template_config = TemplateConfig(
