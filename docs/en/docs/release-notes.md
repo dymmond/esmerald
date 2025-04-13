@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.7.4
+
+### Fixed
+
+- Partial imports on CSRF typing was causing the app to sometimes crash.
+
 ## 3.7.3
 
 ### Changed

@@ -118,9 +118,7 @@ testing = [
     "pytz",
     "ujson>=5.7.0,<6",
 
-    # types
     "ipdb",
-    "pdbpp",
     "types-ujson==5.10.0.20250326",
     "types-orjson==3.6.2",
 ]
