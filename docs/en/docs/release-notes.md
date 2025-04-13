@@ -26,10 +26,9 @@ and for that reason, it makes no longer sense of keeping the support where Saffi
 
 ### Breaking Change
 
-- This is not 100% sure but since passlib stopped maintainance a long time ago, since python 3.13 some other issues will
-arise and therefore the decision to move away from it to bcrypt. Unfortunataly this means that the `password` hashing will not be compatible with the previous versions of Esmerald and
-we know this might not be ideal but this is the best way to move forward due to security contraints.
-
+- This is not 100% sure but since passlib stopped maintenance a long time ago, since python 3.13 some other issues will
+arise and therefore the decision to move away from it to bcrypt. Unfortunately this means that the `password` hashing will not be compatible with the previous versions of Esmerald and
+we know this might not be ideal but this is the best way to move forward due to security constraints.
 
 ## 3.7.2
 
