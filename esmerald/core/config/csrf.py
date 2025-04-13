@@ -1,10 +1,7 @@
-from typing import TYPE_CHECKING, Optional, Set
+from typing import Optional, Set
 
 from pydantic import BaseModel
 from typing_extensions import Annotated, Doc, Literal
-
-if TYPE_CHECKING:
-    from esmerald.types import HTTPMethod
 
 
 class CSRFConfig(BaseModel):
@@ -99,7 +96,7 @@ class CSRFConfig(BaseModel):
         ),
     ] = None
     safe_methods: Annotated[
-        Set["HTTPMethod"],
+        Set[str],
         Doc(
             """
             A set of allowed safe methods that can set the cookie.
