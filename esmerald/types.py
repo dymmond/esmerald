@@ -23,11 +23,6 @@ from esmerald.routing.gateways import WebSocketGateway
 from esmerald.routing.router import Include
 
 try:
-    from asyncz.schedulers import AsyncIOScheduler
-except ImportError:
-    AsyncIOScheduler = Any  # type: ignore
-
-try:
     from esmerald.core.config.template import TemplateConfig as TemplateConfig
 except MissingDependency:
     TemplateConfig = Any  # type: ignore
@@ -47,6 +42,12 @@ if TYPE_CHECKING:
         WebSocketHandler as WebSocketHandler,  # noqa
     )
     from esmerald.websockets import WebSocket  # noqa
+
+    # prevent ciruclar imports by only exposing when type checking and it is available
+    try:
+        from asyncz.schedulers import AsyncIOScheduler
+    except ImportError:
+        AsyncIOScheduler = Any  # type: ignore
 else:
     HTTPHandler = Any
     Application = Any
@@ -69,6 +70,7 @@ else:
     WebhookGateway = Any
     Esmerald = Any
     EsmeraldAPISettings = Any
+    AsyncIOScheduler = Any
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
