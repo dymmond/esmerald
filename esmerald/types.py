@@ -43,11 +43,13 @@ if TYPE_CHECKING:
     )
     from esmerald.websockets import WebSocket  # noqa
 
-    # prevent ciruclar imports by only exposing when type checking and it is available
+    # prevent ciruclar and unneccessary imports
+    # by only exposing it when type checking
+    # also only expose if available otherwise fallback to Any
     try:
-        from asyncz.schedulers import AsyncIOScheduler
+        from asyncz.schedulers.types import SchedulerType as SchedulerType  # noqa
     except ImportError:
-        AsyncIOScheduler = Any  # type: ignore
+        SchedulerType = Any  # type: ignore
 else:
     HTTPHandler = Any
     Application = Any
@@ -70,7 +72,7 @@ else:
     WebhookGateway = Any
     Esmerald = Any
     EsmeraldAPISettings = Any
-    AsyncIOScheduler = Any
+    SchedulerType = Any
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 HTTPMethod = Literal["GET", "POST", "DELETE", "PATCH", "PUT", "HEAD"]
@@ -96,7 +98,6 @@ ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
 AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
 
-SchedulerType = AsyncIOScheduler
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
 ParentType = Union[View, Router, Gateway, WebSocketGateway, Esmerald, Include, Application]
