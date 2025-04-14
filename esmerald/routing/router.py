@@ -777,7 +777,7 @@ class BaseRouter(LilyaRouter):
                 self.routes.pop(self.routes.index(value))
 
 
-class RoutingMethodMixin:
+class RoutingMethodsMixin:
     def get(
         self,
         path: Annotated[
@@ -1828,7 +1828,7 @@ class RoutingMethodMixin:
         raise NotImplementedError()
 
 
-class Router(BaseRouter):
+class Router(RoutingMethodsMixin, BaseRouter):
     """
     The `Router` object used by `Esmerald` upon instantiation.
 
