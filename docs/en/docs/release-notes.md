@@ -5,11 +5,17 @@ hide:
 
 # Release Notes
 
+
 ## 3.7.4
 
 ### Fixed
 
 - Partial imports on CSRF typing was causing the app to sometimes crash.
+- Partial imports in types was causing the asyncz tests to crash.
+
+### Changed
+
+- Move router methods in a mixin, so we have it in only two places.
 
 ## 3.7.3
 
