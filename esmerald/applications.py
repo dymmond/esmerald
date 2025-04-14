@@ -67,7 +67,7 @@ from esmerald.routing.router import (
     HTTPHandler,
     Include,
     Router,
-    RoutingMethodMixin,
+    RoutingMethodsMixin,
     WebhookHandler,
     WebSocketHandler,
 )
@@ -2794,7 +2794,7 @@ class Application(BaseLilya):
         register_esmerald_encoder(encoder)
 
 
-class Esmerald(RoutingMethodMixin, Application):
+class Esmerald(RoutingMethodsMixin, Application):
     """
     `Esmerald` application object. The main entry-point for any application/API
     with Esmerald.
