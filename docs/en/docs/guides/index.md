@@ -97,7 +97,7 @@ app = Esmerald(routes=[...], enable_openapi=True)
 
 Now that your Esmerald app is running, the next step is to learn how to structure routes and build a real API.
 
-👉 Continue to [the next section](./02-building-your-first-api.md) to start building out real endpoints and working with query and path parameters.
+👉 Continue to [the next section](./beginner/02-building-your-first-api.md) to start building out real endpoints and working with query and path parameters.
 
 ---
 
