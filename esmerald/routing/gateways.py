@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Type, Union, cast
 
 from lilya._internal._path import clean_path
 from lilya._utils import is_class_and_subclass
@@ -140,7 +140,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         ] = None,
         *,
         handler: Annotated[
-            Union["HTTPHandler", View],
+            Union["HTTPHandler", View, Type[View], Type["HTTPHandler"]],
             Doc(
                 """
             An instance of [handler](https://esmerald.dev/routing/handlers/#http-handlers).
@@ -353,14 +353,14 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         if not name:
             if not isinstance(handler, View):
-                name = handler.name or clean_string(handler.fn.__name__)
+                name = handler.name or clean_string(handler.fn.__name__)  # type: ignore
             else:
                 name = clean_string(handler.__class__.__name__)
 
         else:
             route_name_list = [name]
-            if not isinstance(handler, View) and handler.name:
-                route_name_list.append(handler.name)
+            if not isinstance(handler, View) and handler.name:  # type: ignore
+                route_name_list.append(handler.name)  # type: ignore
                 name = ":".join(route_name_list)
 
         # Handle middleware
@@ -523,7 +523,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         ] = None,
         *,
         handler: Annotated[
-            Union["WebSocketHandler", View],
+            Union["WebSocketHandler", View, Type[View], Type["WebSocketHandler"]],
             Doc(
                 """
             An instance of [handler](https://esmerald.dev/routing/handlers/#websocket-handler).
@@ -632,14 +632,14 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         if not name:
             if not isinstance(handler, View):
-                name = handler.name or clean_string(handler.fn.__name__)
+                name = handler.name or clean_string(handler.fn.__name__)  # type: ignore
             else:
                 name = clean_string(handler.__class__.__name__)
 
         else:
             route_name_list = [name]
-            if not isinstance(handler, View) and handler.name:
-                route_name_list.append(handler.name)
+            if not isinstance(handler, View) and handler.name:  # type: ignore
+                route_name_list.append(handler.name)  # type: ignore
                 name = ":".join(route_name_list)
 
         # Handle middleware
@@ -749,7 +749,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self,
         *,
         handler: Annotated[
-            Union["WebhookHandler", View],
+            Union["WebhookHandler", View, Type[View], Type["WebhookHandler"]],
             Doc(
                 """
                 An instance of [handler](https://esmerald.dev/routing/webhooks/#handlers).
@@ -852,7 +852,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
 
         if not name:
             if not isinstance(handler, View):
-                name = clean_string(handler.fn.__name__)
+                name = clean_string(handler.fn.__name__)  # type: ignore
             else:
                 name = clean_string(handler.__class__.__name__)
 

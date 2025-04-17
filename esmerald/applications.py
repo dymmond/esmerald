@@ -1610,9 +1610,9 @@ class Application(BaseLilya):
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (on_startup is None and on_shutdown is None), (
-            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
-        )
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")

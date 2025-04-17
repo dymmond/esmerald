@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+### 3.7.5
+
+### Fixed
+
+- Typing for handler on Gateway/WebSocketGateway.
+- Partial imports on handlers.
 
 ## 3.7.4
 
