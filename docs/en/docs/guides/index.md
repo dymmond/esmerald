@@ -7,7 +7,7 @@ examples and practices using it.
 
 ## Introduction to Esmerald
 
-Welcome to the Esmerald framework! This guide will walk you through everything you need to get started with Esmerald, a powerful and flexible Python web framework built on top of Starlette with modern features inspired by NestJS, FastAPI, and Angular.
+Welcome to the Esmerald framework! This guide will walk you through everything you need to get started with Esmerald, a powerful and flexible Python web framework built on top of [Lylia](https://www.lilya.dev/) with modern features inspired by NestJS, FastAPI, and Angular.
 
 ## What is Esmerald?
 
@@ -31,7 +31,7 @@ Esmerald is a feature-rich, highly extensible ASGI web framework that provides a
 | Interceptors                  | ✅        | ❌       | ❌      |
 | Multi-tenancy support         | ✅ (Edgy) | ❌       | ⚠️      |
 | Async/Await Native            | ✅        | ✅       | ⚠️      |
-| Background Jobs Scheduler     | ✅ (Asyncz)| ❌       | ⚠️      |
+| Background Jobs Scheduler     | ✅ (Asyncz)| ❌      | ⚠️      |
 | gRPC + HTTP Hybrid            | ✅        | ❌       | ❌      |
 
 If you are looking for structured codebases, advanced routing, and full control over your application lifecycle, Esmerald is the way to go.
