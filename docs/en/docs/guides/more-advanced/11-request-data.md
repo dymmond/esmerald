@@ -17,9 +17,9 @@ class User(BaseModel):
     email: EmailStr
     hobbies: list[str]  # Pydantic model handles type validation
 
-    @post("/create")
-    async def create_user(data: User) -> None:
-        pass
+@post("/create")
+async def create_user(data: User) -> None:
+    pass
 
 app = Esmerald(routes=[Gateway(handler=create_user)])
 ```
