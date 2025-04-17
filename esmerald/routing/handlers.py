@@ -7,20 +7,20 @@ from esmerald.exceptions import ImproperlyConfigured
 from esmerald.openapi.datastructures import OpenAPIResponse
 from esmerald.permissions.types import Permission
 from esmerald.routing.router import HTTPHandler, WebSocketHandler
-from esmerald.types import (
-    BackgroundTaskType,
-    Dependencies,
-    ExceptionHandlerMap,
-    Middleware,
-    ResponseCookies,
-    ResponseHeaders,
-    ResponseType,
-)
 from esmerald.utils.constants import AVAILABLE_METHODS
 from esmerald.utils.enums import HttpMethod, MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.openapi.schemas.v3_1_0 import SecurityScheme
+    from esmerald.types import (
+        BackgroundTaskType,
+        Dependencies,
+        ExceptionHandlerMap,
+        Middleware,
+        ResponseCookies,
+        ResponseHeaders,
+        ResponseType,
+    )
 
 
 SUCCESSFUL_RESPONSE = "Successful response"
