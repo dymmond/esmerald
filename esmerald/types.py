@@ -82,7 +82,7 @@ Middleware = DefineMiddleware
 
 ResponseType = Type[Response]
 
-Dependencies = Dict[str, Inject]
+Dependencies = Union[Dict[str, Inject], Dict[str, Any], Any]
 
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]

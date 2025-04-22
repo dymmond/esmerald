@@ -7,7 +7,6 @@ from typing import Any
 from loguru import logger
 
 from esmerald.conf.enums import EnvironmentType
-from esmerald.logging import InterceptHandler
 from esmerald.types import LifeSpanHandler
 
 from ..configs.settings import AppSettings
@@ -17,6 +16,25 @@ async def start_database(): ...
 
 
 async def close_database(): ...
+
+
+class InterceptHandler(logging.Handler):  # pragma: no cover
+    def emit(self, record: logging.LogRecord) -> None:
+        level: str
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = str(record.levelno)
+
+        frame, depth = logging.currentframe(), 2
+        while frame.f_code.co_filename == logging.__file__:
+            frame = frame.f_back
+            depth += 1
+
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level,
+            record.getMessage(),
+        )
 
 
 class DevelopmentSettings(AppSettings):

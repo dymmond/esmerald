@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from .core.config import (
         CORSConfig,
         CSRFConfig,
+        LoggingConfig,
         OpenAPIConfig,
         SessionConfig,
         StaticFilesConfig,
@@ -102,6 +103,7 @@ __all__ = [
     "ImproperlyConfigured",
     "JSON",
     "JSONResponse",
+    "LoggingConfig",
     "MethodNotAllowed",
     "MiddlewareProtocol",
     "NotAuthenticated",
@@ -180,6 +182,7 @@ _monkay: Monkay = Monkay(
         "OpenAPIConfig": ".core.config.OpenAPIConfig",
         "SessionConfig": ".core.config.SessionConfig",
         "StaticFilesConfig": ".core.config.StaticFilesConfig",
+        "LoggingConfig": ".core.config.LoggingConfig",
         "EsmeraldInterceptor": ".core.interceptors.interceptor.EsmeraldInterceptor",
         "HTTPException": ".exceptions.HTTPException",
         "ImproperlyConfigured": ".exceptions.ImproperlyConfigured",

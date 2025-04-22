@@ -12,6 +12,7 @@ from esmerald.core.caches.memory import InMemoryCache
 from esmerald.core.config import (
     CORSConfig,
     CSRFConfig,
+    LoggingConfig,
     OpenAPIConfig,
     SessionConfig,
     StaticFilesConfig,
@@ -35,6 +36,7 @@ from esmerald.types import (
     ResponseHeaders,
     ResponseType,
 )
+from esmerald.utils.logging import StandardLoggingConfig
 
 if TYPE_CHECKING:
     from esmerald.routing.router import Include  # pragma: no cover
@@ -1064,6 +1066,33 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ```
         """
         return None
+
+    @property
+    def logging_config(self) -> Optional[LoggingConfig]:  # noqa
+        """
+        An instance of [LoggingConfig](https://esmerald.dev/configurations/logging/).
+
+        Default:
+            StandardLogging()
+
+        **Example**
+
+        ```python
+        from esmerald import EsmeraldAPISettings
+
+
+        class AppSettings(EsmeraldAPISettings):
+
+            @property
+            def logging_config(self) -> LoggingConfig:
+                LoggingConfig(
+                    log_level="INFO",
+                    log_format="%(levelname)s - %(message)s",
+                    log_file="app.log"
+                )
+        ```
+        """
+        return StandardLoggingConfig()
 
     @property
     def openapi_config(self) -> OpenAPIConfig:

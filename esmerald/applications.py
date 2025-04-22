@@ -28,6 +28,7 @@ from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.core.config import (
     CORSConfig,
     CSRFConfig,
+    LoggingConfig,
     OpenAPIConfig,
     SessionConfig,
     StaticFilesConfig,
@@ -85,6 +86,7 @@ from esmerald.types import (
     RouteParent,
 )
 from esmerald.utils.helpers import is_class_and_subclass
+from esmerald.utils.logging import setup_logging
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.core.datastructures import Secret
@@ -823,6 +825,15 @@ class Application(BaseLilya):
 
                 app = Esmerald(session_config=session_config)
                 ```
+                """
+            ),
+        ] = None,
+        logging_config: Annotated[
+            Optional["LoggingConfig"],
+            Doc(
+                """
+                An instance of [LoggingConfig](https://esmerald.dev/configurations/logging/).
+
                 """
             ),
         ] = None,
@@ -1646,6 +1657,7 @@ class Application(BaseLilya):
             "static_files_config", static_files_config
         )
         self.session_config = self.load_settings_value("session_config", session_config)
+        self.logging_config = self.load_settings_value("logging_config", logging_config)
         self.response_class = self.load_settings_value("response_class", response_class)
         self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
         self.response_headers = self.load_settings_value("response_headers", response_headers)
@@ -1802,7 +1814,7 @@ class Application(BaseLilya):
 
     def _configure(self) -> None:
         """
-        Starts the Esmerald configurations.
+        Starts the Esmerald configurations and extras.
         """
         if self.static_files_config:
             for config in (
@@ -1816,6 +1828,9 @@ class Application(BaseLilya):
 
         self.create_webhooks_signature_model(self.webhooks)
         self.activate_openapi()
+
+        if self.logging_config is not None:
+            setup_logging(self.logging_config)
 
     def load_settings_value(
         self, name: str, value: Optional[Any] = None, is_boolean: bool = False
