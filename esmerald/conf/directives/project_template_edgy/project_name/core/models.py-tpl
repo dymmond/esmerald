@@ -1,0 +1,12 @@
+import edgy
+
+from esmerald.conf import settings
+
+
+registry = settings.registry
+
+
+class BaseModel(edgy.Model):
+    class Meta:
+        abstract = True
+        registry = registry

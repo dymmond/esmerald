@@ -1,0 +1,4 @@
+esmerald>={{ esmerald_version }}
+edgy[postgres]
+gunicorn
+uvicorn

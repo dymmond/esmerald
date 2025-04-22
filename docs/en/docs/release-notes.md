@@ -24,6 +24,8 @@ optional.
 !!! Warning
     If you use loguru and this might now "break" your code, simple run `pip install loguru` and add it into your dependencies.
 
+- New `esmerald createproject --edgy <PROJECT-NAME>` directive to create a new project with the scaffold for Edgy ORM.
+
 ### Changed
 
 - As part the continuous effort to make Esmerald cleaner, the `esmerald.protocols` now lives inside `esmerald.core.protocols`.
