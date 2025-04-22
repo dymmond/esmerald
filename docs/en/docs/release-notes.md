@@ -5,7 +5,7 @@ hide:
 
 # Release Notes
 
-### 3.7.5
+## 3.7.5
 
 ### Added
 
