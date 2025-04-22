@@ -37,6 +37,7 @@ class TemplateDirective(BaseDirective):
         self.with_basic_controller = options.get("with_basic_controller", False)
         self.simple = options.get("simple", False)
         self.app_context = options.get("app_context", False)
+        self.edgy = options.get("edgy", False)
 
         if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
             self.validate_name(name)
@@ -60,9 +61,13 @@ class TemplateDirective(BaseDirective):
             base_subdir = f"{app_or_project}_template_simple"
         elif self.app_context and self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
             base_subdir = f"{app_or_project}_template_context"
-            self.with_basic_controller = True
+            self.with_basic_controller = True  # noqa
         else:
             base_subdir = f"{app_or_project}_template"
+
+        # If it is an edgy project
+        if self.edgy and self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
+            base_subdir = f"{app_or_project}_template_edgy"
 
         base_deployment = "deployment_template"
 

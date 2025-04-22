@@ -24,18 +24,31 @@ printer = Print()
     help="The name of the folder for the deployment files.",
 )
 @click.option(
-    "-v",
+    "-s",
     "--simple",
     is_flag=True,
     show_default=True,
     default=False,
-    help="generates a simple project.",
+    help="Generates a project in simple mode",
+)
+@click.option(
+    "-e",
+    "--edgy",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Generates a project with configurations for Edgy ORM.",
 )
 @click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated.")
 @click.argument("name", type=str)
 @click.command(name="createproject")
 def create_project(
-    name: str, verbosity: int, with_deployment: bool, deployment_folder_name: str, simple: bool
+    name: str,
+    verbosity: int,
+    with_deployment: bool,
+    deployment_folder_name: str,
+    simple: bool,
+    edgy: bool,
 ) -> None:
     """
     Creates the scaffold of a project.
@@ -50,6 +63,7 @@ def create_project(
         "with_deployment": with_deployment,
         "deployment_folder_name": deployment_folder_name,
         "simple": simple,
+        "edgy": edgy,
     }
     directive = TemplateDirective()
 

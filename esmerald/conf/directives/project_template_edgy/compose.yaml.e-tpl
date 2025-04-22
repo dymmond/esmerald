@@ -1,0 +1,18 @@
+services:
+  db:
+    restart: always
+    image: postgres:latest
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "{{ project_name }}"
+    command: >-
+        --jit=false
+    ports:
+      - "5433:5432"
+    volumes:
+      - "{{ project_name }}:/var/lib/postgresql/data"
+
+volumes:
+  {{ project_name }}:
