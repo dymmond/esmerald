@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.7.6
+
+### Changed
+
+- `esmerald createproject <PROJECT-NAME> --edgy` Now generates the settings also plugged with `DatabaseSettings` automatically.
+
 ## 3.7.5
 
 ### Added
