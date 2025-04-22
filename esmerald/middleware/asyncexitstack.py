@@ -5,7 +5,7 @@ from typing import Optional
 from lilya.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.core.config import AsyncExitConfig
-from esmerald.protocols.middleware import MiddlewareProtocol
+from esmerald.core.protocols.middleware import MiddlewareProtocol
 
 
 class AsyncExitStackMiddleware(MiddlewareProtocol):

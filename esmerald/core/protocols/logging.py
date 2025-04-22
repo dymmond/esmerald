@@ -1,0 +1,16 @@
+from typing import Any
+
+from typing_extensions import Protocol, runtime_checkable
+
+
+@runtime_checkable
+class LoggerProtocol(Protocol):  # pragma: no cover
+    def debug(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
+
+    def info(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
+
+    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
+
+    def error(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
+
+    def critical(self, msg: str, *args: Any, **kwargs: Any) -> None: ...

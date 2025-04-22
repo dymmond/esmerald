@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Any, Set
 
-from lilya._internal._connection import Connection
+from lilya._internal._connection import Connection  # noqa
 from lilya.types import ASGIApp, Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
+from esmerald.core.protocols.middleware import MiddlewareProtocol
 from esmerald.parsers import ArbitraryBaseModel
-from esmerald.protocols.middleware import MiddlewareProtocol
 from esmerald.utils.enums import ScopeType
 
 

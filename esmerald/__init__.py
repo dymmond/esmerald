@@ -18,11 +18,13 @@ if TYPE_CHECKING:
     from .core.config import (
         CORSConfig,
         CSRFConfig,
+        LoggingConfig,
         OpenAPIConfig,
         SessionConfig,
         StaticFilesConfig,
     )
     from .core.interceptors.interceptor import EsmeraldInterceptor
+    from .core.protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
     from .exceptions import (
         HTTPException,
         ImproperlyConfigured,
@@ -37,7 +39,6 @@ if TYPE_CHECKING:
     from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
     from .permissions import AllowAny, BasePermission, DenyAll
     from .pluggables import Extension, Pluggable
-    from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
     from .requests import Request
     from .responses import JSONResponse, Response, TemplateResponse
     from .routing.apis import APIView, Controller, SimpleAPIView, View
@@ -102,6 +103,7 @@ __all__ = [
     "ImproperlyConfigured",
     "JSON",
     "JSONResponse",
+    "LoggingConfig",
     "MethodNotAllowed",
     "MiddlewareProtocol",
     "NotAuthenticated",
@@ -180,6 +182,7 @@ _monkay: Monkay = Monkay(
         "OpenAPIConfig": ".core.config.OpenAPIConfig",
         "SessionConfig": ".core.config.SessionConfig",
         "StaticFilesConfig": ".core.config.StaticFilesConfig",
+        "LoggingConfig": ".core.config.LoggingConfig",
         "EsmeraldInterceptor": ".core.interceptors.interceptor.EsmeraldInterceptor",
         "HTTPException": ".exceptions.HTTPException",
         "ImproperlyConfigured": ".exceptions.ImproperlyConfigured",
@@ -205,9 +208,9 @@ _monkay: Monkay = Monkay(
         "DenyAll": ".permissions.DenyAll",
         "Extension": ".pluggables.Extension",
         "Pluggable": ".pluggables.Pluggable",
-        "AsyncDAOProtocol": ".protocols.AsyncDAOProtocol",
-        "DaoProtocol": ".protocols.DaoProtocol",
-        "MiddlewareProtocol": ".protocols.MiddlewareProtocol",
+        "AsyncDAOProtocol": ".core.protocols.AsyncDAOProtocol",
+        "DaoProtocol": ".core.protocols.DaoProtocol",
+        "MiddlewareProtocol": ".core.protocols.MiddlewareProtocol",
         "Request": ".requests.Request",
         "JSONResponse": ".responses.JSONResponse",
         "Response": ".responses.Response",

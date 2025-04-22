@@ -5,6 +5,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: check-added-large-files
+        stages: [pre-commit]
       - id: check-toml
       - id: debug-statements
       - id: check-yaml
@@ -12,25 +13,12 @@ repos:
           - --unsafe
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.3
-    hooks:
-      - id: pyupgrade
-        args:
-          - --py3-plus
-          - --keep-runtime-typing
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.3
-    hooks:
-      - id: pyupgrade
-        args:
-          - --py3-plus
-          - --keep-runtime-typing
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.3.0
+    rev: v0.11.5
     hooks:
       - id: ruff
         args: ["--fix", "--line-length=99"]
+
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
   autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate

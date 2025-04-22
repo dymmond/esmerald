@@ -31,6 +31,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.core.config import (
         CORSConfig,
         CSRFConfig,
+        LoggingConfig,
         OpenAPIConfig,
         SessionConfig,
         StaticFilesConfig,
@@ -130,6 +131,7 @@ def create_client(
         tuple["StaticFilesConfig", ...],
         None,
     ] = None,
+    logging_config: Optional["LoggingConfig"] = None,
     template_config: Optional["TemplateConfig"] = None,
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
     cookies: Optional[CookieTypes] = None,
@@ -185,6 +187,7 @@ def create_client(
             encoders=encoders,
             before_request=before_request,
             after_request=after_request,
+            logging_config=logging_config,
         ),
         base_url=base_url,
         backend=backend,

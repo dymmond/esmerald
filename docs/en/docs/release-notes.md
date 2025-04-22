@@ -7,6 +7,28 @@ hide:
 
 ### 3.7.5
 
+### Added
+
+- New [LoggingConfig](./configurations/logging.md) for the logging configuration. This now allows you to setup
+your own logging system and plug it with anything you want and then use the global logger from Esmerald to log your
+messages by simply using:
+
+```python
+from esmerald.logging import logger
+
+logger.info("My message in my logger.")
+```
+- `StandardLogging` as the new default logging system of Esmerald, removing the dependency of `loguru` and make this one
+optional.
+
+!!! Warning
+    If you use loguru and this might now "break" your code, simple run `pip install loguru` and add it into your dependencies.
+
+### Changed
+
+- As part the continuous effort to make Esmerald cleaner, the `esmerald.protocols` now lives inside `esmerald.core.protocols`.
+The only thing that needs changing **its just that small import**. The rest remains the same.
+
 ### Fixed
 
 - Typing for handler on Gateway/WebSocketGateway.

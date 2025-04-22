@@ -141,7 +141,7 @@ To create a custom backend, you need to implement the `CacheBackend` interface.
 That can be imported from:
 
 ```python
-from esmerald.protocols.cache import CacheBackend
+from esmerald.core.protocols.cache import CacheBackend
 ```
 
 ### Example

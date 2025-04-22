@@ -10,8 +10,8 @@ from esmerald.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.background import BackgroundTask, BackgroundTasks
+    from esmerald.core.protocols.template import TemplateEngineProtocol
     from esmerald.encoders import Encoder
-    from esmerald.protocols.template import TemplateEngineProtocol
     from esmerald.types import ResponseCookies
 
 

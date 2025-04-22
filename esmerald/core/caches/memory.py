@@ -7,7 +7,7 @@ from typing import Any
 import anyio
 import orjson
 
-from esmerald.protocols.cache import CacheBackend
+from esmerald.core.protocols.cache import CacheBackend
 
 logger = logging.getLogger(__name__)
 

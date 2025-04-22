@@ -2,7 +2,7 @@ from typing import Dict
 
 from lilya.types import ASGIApp, Receive, Scope, Send
 
-from esmerald.protocols.middleware import MiddlewareProtocol
+from esmerald.core.protocols.middleware import MiddlewareProtocol
 from esmerald.requests import Request
 from esmerald.routing.gateways import Gateway
 from esmerald.routing.handlers import get

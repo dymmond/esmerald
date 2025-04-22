@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any, Iterator, Optional, cast
 from monkay import load
 from typing_extensions import Annotated, Doc
 
+from esmerald.core.protocols.extension import ExtensionProtocol
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.protocols.extension import ExtensionProtocol
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
