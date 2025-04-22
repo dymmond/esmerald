@@ -2,7 +2,7 @@ import json
 import os
 from typing import Any
 
-from esmerald.protocols.cache import CacheBackend
+from esmerald.core.protocols.cache import CacheBackend
 
 
 class FileCache(CacheBackend):

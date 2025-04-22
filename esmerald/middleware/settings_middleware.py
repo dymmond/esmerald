@@ -1,7 +1,7 @@
 from lilya.types import ASGIApp, Receive, Scope, Send
 
 from esmerald.conf import settings as esmerald_settings
-from esmerald.protocols.middleware import MiddlewareProtocol
+from esmerald.core.protocols.middleware import MiddlewareProtocol
 
 
 class RequestSettingsMiddleware(MiddlewareProtocol):

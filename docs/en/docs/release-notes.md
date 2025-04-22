@@ -24,6 +24,11 @@ optional.
 !!! Warning
     If you use loguru and this might now "break" your code, simple run `pip install loguru` and add it into your dependencies.
 
+### Changed
+
+- As part the continuous effort to make Esmerald cleaner, the `esmerald.protocols` now lives inside `esmerald.core.protocols`.
+The only thing that needs changing **its just that small import**. The rest remains the same.
+
 ### Fixed
 
 - Typing for handler on Gateway/WebSocketGateway.

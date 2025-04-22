@@ -20,9 +20,10 @@ To add middleware to your Esmerald application, use the `middleware` argument:
 
 ```python
 from esmerald import Esmerald, Request
-from esmerald.protocols import MiddlewareProtocol
+from esmerald.core.protocols.middleware import MiddlewareProtocol
 from lilya.types import ASGIApp, Scope, Receive, Send
 from lilya.middleware import DefineMiddleware
+
 
 class LogMiddleware(MiddlewareProtocol):
 

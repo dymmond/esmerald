@@ -55,7 +55,8 @@ Then configure Esmerald to use Redis:
 ```python
 from esmerald.conf import EsmeraldAPISettings
 from esmerald.core.caches.redis import RedisCache
-from esmerald.protocols.cache import CacheBackend
+from esmerald.core.protocols.cache import CacheBackend
+
 
 class Settings(EsmeraldAPISettings):
     cache_backend: CacheBackend = RedisCache("redis://localhost:6379")
@@ -93,7 +94,8 @@ You can customize this behavior by writing a custom key builder.
 You can implement your own cache backend by subclassing `BaseCacheBackend`.
 
 ```python
-from esmerald.protocols.cache import CacheBackend
+from esmerald.core.protocols.cache import CacheBackend
+
 
 class CustomCache(CacheBackend):
     async def get(self, key):

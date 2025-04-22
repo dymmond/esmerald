@@ -24,6 +24,7 @@ if TYPE_CHECKING:
         StaticFilesConfig,
     )
     from .core.interceptors.interceptor import EsmeraldInterceptor
+    from .core.protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
     from .exceptions import (
         HTTPException,
         ImproperlyConfigured,
@@ -38,7 +39,6 @@ if TYPE_CHECKING:
     from .params import Body, Cookie, File, Form, Header, Injects, Param, Path, Query
     from .permissions import AllowAny, BasePermission, DenyAll
     from .pluggables import Extension, Pluggable
-    from .protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
     from .requests import Request
     from .responses import JSONResponse, Response, TemplateResponse
     from .routing.apis import APIView, Controller, SimpleAPIView, View

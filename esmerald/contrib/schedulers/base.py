@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict
 
-from esmerald.protocols.scheduler import SchedulerProtocol
+from esmerald.core.protocols.scheduler import SchedulerProtocol
 
 if TYPE_CHECKING:
     pass

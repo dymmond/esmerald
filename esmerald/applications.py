@@ -35,6 +35,7 @@ from esmerald.core.config import (
 )
 from esmerald.core.datastructures import State
 from esmerald.core.interceptors.types import Interceptor
+from esmerald.core.protocols.template import TemplateEngineProtocol
 from esmerald.encoders import (
     Encoder,
     MsgSpecEncoder,
@@ -61,7 +62,6 @@ from esmerald.openapi.schemas.v3_1_0.open_api import OpenAPI
 from esmerald.permissions.types import Permission
 from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
 from esmerald.pluggables import Extension, ExtensionDict, Pluggable
-from esmerald.protocols.template import TemplateEngineProtocol
 from esmerald.routing import gateways
 from esmerald.routing.apis import base
 from esmerald.routing.router import (

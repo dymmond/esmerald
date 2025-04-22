@@ -1,7 +1,7 @@
 from typing import Any
 
 from esmerald import Factory, Gateway, JSONResponse, get
-from esmerald.protocols.asyncdao import AsyncDAOProtocol
+from esmerald.core.protocols.asyncdao import AsyncDAOProtocol
 from esmerald.testclient import create_client
 
 

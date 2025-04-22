@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Type, Union
 from pydantic import BaseModel, ConfigDict, DirectoryPath
 from typing_extensions import Annotated, Doc
 
-from esmerald.protocols.template import TemplateEngineProtocol
+from esmerald.core.protocols.template import TemplateEngineProtocol
 from esmerald.template.jinja import JinjaTemplateEngine
 
 

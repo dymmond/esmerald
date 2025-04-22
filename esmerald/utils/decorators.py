@@ -25,7 +25,7 @@ from typing_extensions import Annotated, Doc, Unpack
 
 from esmerald import Controller
 from esmerald.conf import settings
-from esmerald.protocols.cache import CacheBackend
+from esmerald.core.protocols.cache import CacheBackend
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.core.interceptors.types import Interceptor

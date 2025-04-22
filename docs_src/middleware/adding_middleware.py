@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from esmerald import Esmerald
-from esmerald.protocols.middleware import MiddlewareProtocol
+from esmerald.core.protocols.middleware import MiddlewareProtocol
 from esmerald.types import ASGIApp, Receive, Scope, Send
 
 

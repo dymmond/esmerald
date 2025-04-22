@@ -2,7 +2,7 @@ from abc import ABC
 
 from lilya.types import Receive, Scope, Send
 
-from esmerald.protocols.interceptor import InterceptorProtocol
+from esmerald.core.protocols.interceptor import InterceptorProtocol
 
 
 class EsmeraldInterceptor(ABC, InterceptorProtocol):
