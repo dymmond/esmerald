@@ -43,7 +43,7 @@ class DatabaseSettings(EsmeraldAPISettings):
         """
         return Registry(database=self.database)
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(DatabaseSettings):
     app_name: str = "My application in production mode."
     title: str = "My {{ project_name }}"
     environment: Optional[str] = EnvironmentType.PRODUCTION
