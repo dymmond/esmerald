@@ -38,6 +38,7 @@ class LoggingConfig(ABC):
         **kwargs: Any,
     ) -> None:
         self.level = level
+        self.options = kwargs
 
     @abstractmethod
     def configure(self) -> None:
