@@ -98,6 +98,7 @@ nav:
     - configurations/session.md
     - configurations/staticfiles.md
     - configurations/template.md
+    - configurations/logging.md
     - configurations/jwt.md
     - configurations/scheduler.md
     - configurations/openapi/config.md

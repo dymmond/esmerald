@@ -208,7 +208,7 @@ _monkay: Monkay = Monkay(
         "DenyAll": ".permissions.DenyAll",
         "Extension": ".pluggables.Extension",
         "Pluggable": ".pluggables.Pluggable",
-        "AsyncDAOProtocol": ".core..protocols.AsyncDAOProtocol",
+        "AsyncDAOProtocol": ".core.protocols.AsyncDAOProtocol",
         "DaoProtocol": ".core.protocols.DaoProtocol",
         "MiddlewareProtocol": ".core.protocols.MiddlewareProtocol",
         "Request": ".requests.Request",

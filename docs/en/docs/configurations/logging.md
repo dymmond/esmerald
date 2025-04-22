@@ -1,5 +1,3 @@
-from typing import Optional
-
 # LoggingConfig
 
 ## Why Esmerald Introduced `LoggingConfig`
@@ -18,8 +16,6 @@ The goals of introducing `LoggingConfig` were:
 - **Extensibility**: Developers can easily subclass and provide their own custom logging configurations.
 
 Esmerald now automatically configures a global `logger` instance, based on the `LoggingConfig` provided during startup.
-
----
 
 ## How `LoggingConfig` Works
 
