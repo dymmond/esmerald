@@ -1,18 +1,25 @@
-from typing import Any
+from __future__ import annotations
+
+from typing import Any, cast
+
+from esmerald.protocols.logging import LoggerProtocol
 
 
-# Default placeholder logger until properly configured
-class EsmeraldLogger:
-    def info(self, *args: Any, **kwargs: Any) -> None: ...
+class LoggerProxy:
+    """
+    Proxy for the real logger used by Esmerald.
+    """
 
-    def debug(self, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(self) -> None:
+        self._logger: LoggerProtocol | None = None
 
-    def warning(self, *args: Any, **kwargs: Any) -> None: ...
+    def bind_logger(self, logger: LoggerProtocol | None) -> None:  # noqa
+        self._logger = logger
 
-    def error(self, *args: Any, **kwargs: Any) -> None: ...
+    def __getattr__(self, item: str) -> Any:
+        if not self._logger:
+            raise RuntimeError("Logger is not configured yet. Please call setup_logging() first.")
+        return getattr(self._logger, item)
 
-    def critical(self, *args: Any, **kwargs: Any) -> None: ...
 
-
-# Global logger used by Esmerald
-logger: EsmeraldLogger = EsmeraldLogger()
+logger: LoggerProtocol = cast(LoggerProtocol, LoggerProxy())

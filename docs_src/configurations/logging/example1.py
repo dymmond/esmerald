@@ -1,16 +1,16 @@
 import sys
 
 from typing import Any
+import loguru
 
 from esmerald import LoggingConfig, Esmerald
+
 
 class LoguruConfig(LoggingConfig):
     def __init__(self, level: str, **kwargs):
         self.level = level
 
     def configure(self):
-        import loguru
-
         loguru.logger.remove()
         loguru.logger.add(
             sink=sys.stdout,
@@ -20,9 +20,8 @@ class LoguruConfig(LoggingConfig):
         )
 
     def get_logger(self) -> Any:
-        import loguru
-
         return loguru.logger
+
 
 logging_config = LoguruConfig(level="INFO")
 

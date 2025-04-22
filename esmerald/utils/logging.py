@@ -66,6 +66,5 @@ def setup_logging(logging_config: LoggingConfig | None = None) -> None:
     config.configure()
 
     # Gets the logger instance from the logging_config
-    logger = logging_config.get_logger()
-    global_logger.__class__ = logger.__class__
-    global_logger.__dict__ = logger.__dict__
+    logger = config.get_logger()
+    global_logger.bind_logger(logger)

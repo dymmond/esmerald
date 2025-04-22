@@ -3,7 +3,9 @@ import sys
 from typing import Any
 
 import loguru
+
 from esmerald import LoggingConfig
+
 
 class CustomLoggingConfig(LoggingConfig):
     def __init__(self, level: str, **kwargs):
