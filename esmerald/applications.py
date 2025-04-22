@@ -2637,7 +2637,7 @@ class Application(BaseLilya):
 
     def build_middleware_stack(self) -> "ASGIApp":
         """
-        Esmerald uses the [esmerald.protocols.MiddlewareProtocol] (interfaces) and therefore we
+        Esmerald uses the [esmerald.core.protocols.MiddlewareProtocol] (interfaces) and therefore we
         wrap the DefineMiddleware in a slighly different manner.
 
         Overriding the default build_middleware_stack will allow to control the initial
