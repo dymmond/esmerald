@@ -16,6 +16,7 @@ from typing import (
 
 from lilya.apps import BaseLilya
 from lilya.conf import _monkay  # noqa
+from lilya.logging import setup_logging
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
 from monkay import load
@@ -86,7 +87,6 @@ from esmerald.types import (
     RouteParent,
 )
 from esmerald.utils.helpers import is_class_and_subclass
-from esmerald.utils.logging import setup_logging
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.core.datastructures import Secret
@@ -164,6 +164,7 @@ class Application(BaseLilya):
         "encoders",
         "before_request",
         "after_request",
+        "logging_config",
     )
     settings_module: Optional[EsmeraldAPISettings]
 

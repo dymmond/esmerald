@@ -1,10 +1,9 @@
-from abc import ABC, abstractmethod
-from typing import Any
+from abc import ABC
 
-from typing_extensions import Annotated, Doc, Literal
+from lilya.logging import LoggingConfig as LilyaLoggingConfig
 
 
-class LoggingConfig(ABC):
+class LoggingConfig(LilyaLoggingConfig, ABC):
     """
     An instance of [LoggingConfig](https://esmerald.dev/configurations/logging/).
 
@@ -25,31 +24,4 @@ class LoggingConfig(ABC):
     ```
     """
 
-    def __init__(
-        self,
-        level: Annotated[
-            Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-            Doc(
-                """
-                The logging level.
-                """
-            ),
-        ] = "DEBUG",
-        **kwargs: Any,
-    ) -> None:
-        self.level = level
-        self.options = kwargs
-
-    @abstractmethod
-    def configure(self) -> None:
-        """
-        Configures the logging settings.
-        """
-        raise NotImplementedError("`configure()` must be implemented in subclasses.")
-
-    @abstractmethod
-    def get_logger(self) -> Any:
-        """
-        Returns the logger instance.
-        """
-        raise NotImplementedError("`get_logger()` must be implemented in subclasses.")
+    ...

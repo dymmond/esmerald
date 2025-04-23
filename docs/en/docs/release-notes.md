@@ -10,6 +10,9 @@ hide:
 ### Changed
 
 - `esmerald createproject <PROJECT-NAME> --edgy` Now generates the settings also plugged with `DatabaseSettings` automatically.
+- Bump internal Lilya version to 0.13.0 minimum.
+- `esmerald.logging` is now delegated to the thread-safe version of `lilya.logging`. Nothing changes in the Esmerald
+interface.
 
 ## 3.7.5
 
