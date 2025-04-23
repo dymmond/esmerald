@@ -8,7 +8,7 @@ from esmerald import LoggingConfig, Esmerald
 
 class LoguruConfig(LoggingConfig):
     def __init__(self, level: str, **kwargs):
-        self.level = level
+        super().__init__(level=level, **kwargs)
 
     def configure(self):
         loguru.logger.remove()

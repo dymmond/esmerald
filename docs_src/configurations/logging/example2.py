@@ -9,7 +9,7 @@ from esmerald import LoggingConfig
 
 class CustomLoggingConfig(LoggingConfig):
     def __init__(self, level: str, **kwargs):
-        self.level = level
+        super().__init__(level=level, **kwargs)
         self.options = kwargs
 
     def configure(self):

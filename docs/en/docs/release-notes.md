@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.7.7
+
+### Fixed
+
+- Typing for the handlers (@get, @post...) that was causing mypy to give false positives.
+- Documentation examples.
+
 ## 3.7.6
 
 ### Changed
