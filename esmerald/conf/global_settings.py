@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union, cast
 
 from lilya.types import Lifespan
 from pydantic import AnyUrl
@@ -22,6 +22,7 @@ from esmerald.core.datastructures import Secret
 from esmerald.core.interceptors.types import Interceptor
 from esmerald.core.protocols.cache import CacheBackend
 from esmerald.encoders import Encoder
+from esmerald.logging import StandardLoggingConfig
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.permissions.types import Permission
 from esmerald.pluggables import Extension, Pluggable
@@ -36,7 +37,6 @@ from esmerald.types import (
     ResponseHeaders,
     ResponseType,
 )
-from esmerald.utils.logging import StandardLoggingConfig
 
 if TYPE_CHECKING:
     from esmerald.routing.router import Include  # pragma: no cover
@@ -1092,7 +1092,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
                 )
         ```
         """
-        return StandardLoggingConfig()
+        return cast(LoggingConfig, StandardLoggingConfig())
 
     @property
     def openapi_config(self) -> OpenAPIConfig:
