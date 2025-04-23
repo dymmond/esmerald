@@ -1,4 +1,14 @@
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+)
 
 from lilya import status
 from typing_extensions import Annotated, Doc
@@ -24,6 +34,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 SUCCESSFUL_RESPONSE = "Successful response"
+
+F = TypeVar("F", bound=Callable[..., Any])
 
 
 def get(
@@ -401,7 +413,7 @@ def get(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `get` and
     all of its operatations.
@@ -453,7 +465,7 @@ def get(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def head(
@@ -708,7 +720,7 @@ def head(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `head` and
     all of its operatations.
@@ -749,7 +761,7 @@ def head(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def post(
@@ -1132,7 +1144,7 @@ def post(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `post` and
     all of its operatations.
@@ -1184,7 +1196,7 @@ def post(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def put(
@@ -1562,7 +1574,7 @@ def put(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `put` and
     all of its operatations.
@@ -1614,7 +1626,7 @@ def put(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def patch(
@@ -1992,7 +2004,7 @@ def patch(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `path` and
     all of its operatations.
@@ -2044,7 +2056,7 @@ def patch(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def delete(
@@ -2422,7 +2434,7 @@ def delete(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `delete` and
     all of its operatations.
@@ -2474,7 +2486,7 @@ def delete(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def options(
@@ -2729,7 +2741,7 @@ def options(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `options` and
     all of its operatations.
@@ -2770,7 +2782,7 @@ def options(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def trace(
@@ -3025,7 +3037,7 @@ def trace(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for the HTTP method `trace` and
     all of its operatations.
@@ -3067,7 +3079,7 @@ def trace(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def route(
@@ -3464,7 +3476,7 @@ def route(
                 """
         ),
     ] = None,
-) -> HTTPHandler:
+) -> Callable[[F], HTTPHandler]:
     """
     Handler responsible for allowing multiple HTTP verbs in one go
     all of its operatations.
@@ -3532,7 +3544,7 @@ def route(
         handler.validate_handler()
         return handler
 
-    return cast(HTTPHandler, wrapper)
+    return wrapper
 
 
 def websocket(
@@ -3615,7 +3627,7 @@ def websocket(
                 """
         ),
     ] = None,
-) -> WebSocketHandler:
+) -> Callable[[F], WebSocketHandler]:
     def wrapper(func: Any) -> WebSocketHandler:
         handler = WebSocketHandler(
             path=path,
@@ -3632,4 +3644,4 @@ def websocket(
         handler.validate_websocket_handler_function()
         return handler
 
-    return cast(WebSocketHandler, wrapper)
+    return wrapper
