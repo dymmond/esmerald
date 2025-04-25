@@ -101,7 +101,9 @@ def runserver(
     try:
         import uvicorn
     except ImportError:
-        raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald.") from None
+        raise DirectiveError(
+            detail="Uvicorn needs to be installed to run Esmerald `runserver`."
+        ) from None
 
     server_environment: str = ""
     if os.environ.get("ESMERALD_SETTINGS_MODULE"):
@@ -109,6 +111,11 @@ def runserver(
 
         server_environment = f"{esmerald_settings.environment} "
     app = env.app
+
+    warning = "Do not run this in production. This is for development purposes only."
+    printer.write_warning(warning)
+    terminal.rule(warning, align="left")
+
     message = terminal.write_info(
         f"Starting {server_environment}server @ {host}",
         colour=OutputColour.BRIGHT_CYAN,

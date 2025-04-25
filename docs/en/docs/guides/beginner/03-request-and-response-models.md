@@ -49,12 +49,11 @@ class UserResponse(BaseModel):
     id: int
     name: str
 
-@get("/users/{user_id}", response_model=UserResponse)
+@get("/users/{user_id}")
 def get_user(user_id: int) -> UserResponse:
     return UserResponse(id=user_id, name=f"User {user_id}")
 ```
 
-- `response_model` controls the shape of the output in docs and response
 - Esmerald converts the returned model into JSON automatically
 
 ---
@@ -82,7 +81,7 @@ def get_profile() -> UserProfile:
 Returning a list? Just use `list[Model]` or `List[Model]`.
 
 ```python
-@get("/users", response_model=list[UserResponse])
+@get("/users")
 def list_users() -> list[UserResponse]:
     return [UserResponse(id=1, name="Alice"), UserResponse(id=2, name="Bob")]
 ```

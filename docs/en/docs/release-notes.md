@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.7.7
+
+### Changed
+
+- Added warning message to `runserver` explaining the usage in development mode only.
+
+### Fixed
+
+- Documentation references.
+
 ## 3.7.6
 
 ### Changed
