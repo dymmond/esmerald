@@ -7,10 +7,15 @@ hide:
 
 ## 3.7.7
 
+### Changed
+
+- Added warning message to `runserver` explaining the usage in development mode only.
+
 ### Fixed
 
 - Typing for the handlers (@get, @post...) that was causing mypy to give false positives.
 - Documentation examples.
+- Documentation references.
 
 ## 3.7.6
 
