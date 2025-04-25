@@ -13,6 +13,8 @@ hide:
 
 ### Fixed
 
+- Typing for the handlers (@get, @post...) that was causing mypy to give false positives.
+- Documentation examples.
 - Documentation references.
 
 ## 3.7.6

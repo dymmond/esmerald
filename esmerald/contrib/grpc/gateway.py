@@ -183,7 +183,7 @@ class GrpcGateway:
 
                     callable_fn = make_callable(method_name)
 
-                    @route(  # type: ignore
+                    @route(
                         path=route_path,
                         tags=["gRPC"],
                         methods=self.http_methods,
