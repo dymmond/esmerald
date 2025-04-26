@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.7.8
+
+### Fixed
+
+- `encoders` ENCODER_TYPES was a static snapshot of a ContextVar. Leverage a TransparentCage instead.
+
 ## 3.7.7
 
 ### Changed

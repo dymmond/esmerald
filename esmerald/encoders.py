@@ -21,7 +21,8 @@ from esmerald.utils.helpers import is_union
 
 T = TypeVar("T")
 
-ENCODER_TYPES = LILYA_ENCODER_TYPES.get()
+# it is a TransparentCage now
+ENCODER_TYPES = LILYA_ENCODER_TYPES
 
 
 class Encoder(EncoderProtocol, Generic[T]):
