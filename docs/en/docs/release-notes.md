@@ -10,12 +10,16 @@ hide:
 ### Changed
 
 - Added warning message to `runserver` explaining the usage in development mode only.
+- Lazy evaluate the environment variable for the settings import. This relaxes the restraints on the import order.
+  You can e.g. import lilya settings before adjusting `ESMERALD_SETTINGS_MODULE` as long as you don't access the settings object.
+
 
 ### Fixed
 
 - Typing for the handlers (@get, @post...) that was causing mypy to give false positives.
 - Documentation examples.
 - Documentation references.
+- `encoders` ENCODER_TYPES was a static snapshot of a ContextVar. Leverage a TransparentCage instead.
 
 ## 3.7.6
 

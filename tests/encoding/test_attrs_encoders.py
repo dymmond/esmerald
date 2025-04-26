@@ -5,7 +5,6 @@ from attrs import asdict, define, field, has
 
 from esmerald import Gateway, post
 from esmerald.encoders import (
-    ENCODER_TYPES,
     LILYA_ENCODER_TYPES,
     Encoder,
     register_esmerald_encoder,
@@ -42,7 +41,7 @@ class AttrItem:
 
 
 def test_working_overwrite():
-    assert LILYA_ENCODER_TYPES.get() is not ENCODER_TYPES
+    assert LILYA_ENCODER_TYPES.get() is not LILYA_ENCODER_TYPES.monkay_original
 
 
 def test_can_parse_attrs():
