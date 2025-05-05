@@ -114,7 +114,6 @@ def runserver(
 
     warning = "Do not run this in production. This is for development purposes only."
     printer.write_warning(warning)
-    terminal.rule(warning, align="left")
 
     message = terminal.write_info(
         f"Starting {server_environment}server @ {host}",
