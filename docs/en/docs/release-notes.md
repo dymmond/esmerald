@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 3.7.8
+
+### Fixed
+
+- Bump Lilya version
+- Removed constraints for rich.
+- Fixed `runserver` extra display message.
+
 ## 3.7.7
 
 ### Changed
