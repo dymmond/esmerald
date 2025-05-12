@@ -57,6 +57,7 @@ class TemplateDirective(BaseDirective):
         else:
             base_name = "project_name"
 
+        base_subdir = f"{app_or_project}_template"
         if self.app_or_project not in TREAT_AS_PROJECT_DIRECTIVE:
             if self.edgy:
                 base_subdir = f"{app_or_project}_template_edgy"
@@ -65,8 +66,7 @@ class TemplateDirective(BaseDirective):
             elif self.app_context:
                 base_subdir = f"{app_or_project}_template_context"
                 self.with_basic_controller = True  # noqa
-            else:
-                base_subdir = f"{app_or_project}_template"
+
         base_deployment = "deployment_template"
 
         context = {
