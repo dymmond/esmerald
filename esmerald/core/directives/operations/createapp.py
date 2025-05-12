@@ -12,16 +12,12 @@ printer = Print()
 @click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
 @click.option(
     "--with-basic-controller",
-    default=False,
     is_flag=True,
-    type=bool,
     help="Should generate a basic controller",
 )
 @click.option(
     "--context",
-    default=False,
     is_flag=True,
-    type=bool,
     help="Should generate an application with a controller, service, repository, dto.",
 )
 @click.argument("name", type=str)

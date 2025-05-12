@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-import time
 from typing import Any
 
 import anyio
+import anyio.from_thread
 import orjson
 
 from esmerald.core.protocols.cache import CacheBackend
@@ -136,12 +136,8 @@ class RedisCache(CacheBackend):
         Returns:
             Any | None: The deserialized value if found, otherwise `None`.
         """
-
-        def get_cached() -> bytes | None | Any:
-            return anyio.run(self.async_client.get, key)
-
-        value = anyio.to_thread.run_sync(get_cached)
-        return orjson.loads(value) if value is not None else None  # type: ignore
+        with anyio.from_thread.start_blocking_portal() as portal:
+            return portal.call(self.get, key)
 
     def sync_set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """Stores a value in the Redis cache synchronously.
@@ -154,15 +150,8 @@ class RedisCache(CacheBackend):
             value (Any): The value to be cached.
             ttl (int | None, optional): Time-to-live in seconds. If `None`, the value never expires.
         """
-
-        def set_cached() -> None:
-            data: bytes = orjson.dumps(value)
-            if ttl:
-                anyio.run(self.async_client.setex, key, ttl, data)
-            else:
-                anyio.run(self.async_client.set, key, data)
-
-        anyio.to_thread.run_sync(set_cached)  # type: ignore
+        with anyio.from_thread.start_blocking_portal() as portal:
+            portal.call(self.set, key, value, ttl)
 
     def sync_delete(self, key: str) -> None:
         """Deletes a value from the Redis cache synchronously and ensures it is removed.
@@ -174,16 +163,5 @@ class RedisCache(CacheBackend):
         Args:
             key (str): The cache key to delete.
         """
-
-        def delete_cached() -> None:
-            """Runs the deletion and verifies the key is gone."""
-            anyio.run(self.async_client.delete, key)
-
-            # Wait until the key is actually removed
-            for _ in range(50):  # Retry for up to 5 seconds
-                remaining_keys = anyio.run(self.async_client.keys, "*")
-                if key.encode() not in remaining_keys:
-                    break
-                time.sleep(0.1)  # Small delay to let Redis process deletion
-
-        anyio.to_thread.run_sync(delete_cached)  # type: ignore
+        with anyio.from_thread.start_blocking_portal() as portal:
+            portal.call(self.delete, key)
