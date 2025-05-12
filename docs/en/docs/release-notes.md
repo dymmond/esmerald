@@ -12,6 +12,9 @@ hide:
 - Bump Lilya version
 - Removed constraints for rich.
 - Fixed `runserver` extra display message.
+- Fix for new click versions.
+- Fix redis cache.
+- Fix memory cache (it was much slower as it had to be).
 
 ## 3.7.7
 
