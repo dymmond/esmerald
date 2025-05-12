@@ -4,7 +4,6 @@ import logging
 import time
 from typing import Any
 
-import anyio
 import orjson
 
 from esmerald.core.protocols.cache import CacheBackend
@@ -41,7 +40,7 @@ class InMemoryCache(CacheBackend):
         Returns:
             Any | None: The deserialized value if found and not expired, otherwise `None`.
         """
-        return await anyio.to_thread.run_sync(self.sync_get, key)
+        return self.sync_get(key)
 
     async def set(self, key: str, value: Any, ttl: int | None = None) -> None:
         """Store a value in cache asynchronously with an optional TTL.
@@ -54,7 +53,7 @@ class InMemoryCache(CacheBackend):
             value (Any): The value to be cached.
             ttl (int | None, optional): Time-to-live in seconds. If `None`, the value never expires.
         """
-        await anyio.to_thread.run_sync(self.sync_set, key, value, ttl)
+        self.sync_set(key, value, ttl)
 
     async def delete(self, key: str) -> None:
         """Remove a value from cache asynchronously.
@@ -65,7 +64,7 @@ class InMemoryCache(CacheBackend):
         Args:
             key (str): The cache key to delete.
         """
-        await anyio.to_thread.run_sync(self.sync_delete, key)
+        self.sync_delete(key)
 
     def sync_get(self, key: str) -> Any | None:
         """Retrieve a value from cache synchronously.
@@ -131,6 +130,5 @@ class InMemoryCache(CacheBackend):
         """
         try:
             self._store.pop(key, None)
-            time.sleep(0.1)
         except Exception as e:
             logger.exception(f"Cache delete error: {e}")

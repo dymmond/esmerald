@@ -12,8 +12,6 @@ printer = Print()
 @click.option(
     "--with-deployment",
     is_flag=True,
-    show_default=True,
-    default=False,
     help="Creates a project with base deployment files.",
 )
 @click.option(
@@ -27,16 +25,12 @@ printer = Print()
     "-s",
     "--simple",
     is_flag=True,
-    show_default=True,
-    default=False,
     help="Generates a project in simple mode",
 )
 @click.option(
     "-e",
     "--edgy",
     is_flag=True,
-    show_default=True,
-    default=False,
     help="Generates a project with configurations for Edgy ORM.",
 )
 @click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated.")
