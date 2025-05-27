@@ -1,28 +1,22 @@
-import click
+from __future__ import annotations
+
+from typing import Annotated
+
+from sayer import Argument, Option, command, error, success
 
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.operations._constants import SECRET_KEY_INSECURE_PREFIX
 from esmerald.core.directives.templates import TemplateDirective
-from esmerald.core.terminal import Print
 from esmerald.utils.crypto import get_random_secret_key
 
-printer = Print()
 
-
-@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
-@click.option(
-    "--with-basic-controller",
-    is_flag=True,
-    help="Should generate a basic controller",
-)
-@click.option(
-    "--context",
-    is_flag=True,
-    help="Should generate an application with a controller, service, repository, dto.",
-)
-@click.argument("name", type=str)
-@click.command(name="createapp")
-def create_app(name: str, with_basic_controller: bool, context: bool, verbosity: int) -> None:
+@command(name="createapp")  # type: ignore
+def create_app(
+    name: Annotated[str, Argument(help="The name of the app.")],
+    verbosity: Annotated[int, Option(1, "-v", help="Displays the files generated")],
+    with_basic_controller: Annotated[bool, Option(False, help="Should generate a basic controller")],
+    context: Annotated[bool, Option(False, help="Should generate an application with a controller, service, repository, dto.")],
+) -> None:
     """Creates the scaffold of an application
 
     How to run: `esmerald createapp <NAME>`
@@ -40,6 +34,6 @@ def create_app(name: str, with_basic_controller: bool, context: bool, verbosity:
 
     try:
         directive.handle("app", name=name, **options)
-        printer.write_success(f"App {name} generated successfully!")
+        success(f"App {name} generated successfully!")
     except DirectiveError as e:
-        printer.write_error(str(e))
+        error(str(e))

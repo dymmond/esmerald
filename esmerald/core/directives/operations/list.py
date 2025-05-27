@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-import click
+from sayer import command
 
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.operations._constants import PATH
@@ -8,8 +8,8 @@ from esmerald.core.directives.utils import get_application_directives, get_direc
 from esmerald.core.terminal import OutputColour, Terminal
 
 
-@click.command(name="directives")
-def list(env: DirectiveEnv) -> None:
+@command
+def directives(env: DirectiveEnv) -> None:
     """
     Lists the available directives
 

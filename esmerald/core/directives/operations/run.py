@@ -1,24 +1,23 @@
+from __future__ import annotations
+
 import os
 import sys
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
+from typing import Annotated, Any, TypeVar
 
 import click
-from lilya._internal._events import generate_lifespan_events
+from lilya._internal._events import generate_lifespan_events  # noqa
 from lilya.compat import run_sync
 from lilya.types import Lifespan
+from sayer import Argument, Option, command, error
 
+from esmerald.applications import ChildEsmerald, Esmerald
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.utils import fetch_directive
-from esmerald.core.terminal.print import Print
-
-if TYPE_CHECKING:
-    from esmerald.applications import ChildEsmerald, Esmerald
 
 T = TypeVar("T")
 
-printer = Print()
 
 
 class Position(int, Enum):
@@ -26,20 +25,26 @@ class Position(int, Enum):
     BACK = 3
 
 
-@click.option(
-    "--directive",
-    "directive",
-    required=True,
-    help=("The name of the file of the custom directive to run."),
-)
-@click.argument("directive_args", nargs=-1, type=click.UNPROCESSED)
-@click.command(
-    name="run",
+@command(  # type: ignore
     context_settings={
         "ignore_unknown_options": True,
-    },
+        "allow_extra_args": True,
+    }
 )
-def run(env: DirectiveEnv, directive: str, directive_args: Any) -> None:
+def run(
+    env: DirectiveEnv,
+    directive: Annotated[
+        str, Option(required=True, help="The name of the file of the custom directive to run.")
+    ],
+    directive_args: Annotated[
+        list[str],
+        Argument(
+            nargs=-1,
+            type=click.UNPROCESSED,
+            help="The arguments needed to be passed to the custom directive",
+        ),
+    ],
+) -> None:
     """
     Runs every single custom directive in the system.
 
@@ -49,17 +54,16 @@ def run(env: DirectiveEnv, directive: str, directive_args: Any) -> None:
     """
     name = directive
     if name is not None and getattr(env, "app", None) is None:
-        error = (
+        error(
             "You cannot specify a custom directive without specifying the --app or setting "
             "ESMERALD_DEFAULT_APP environment variable."
         )
-        printer.write_error(error)
         sys.exit(1)
 
     # Loads the directive object
     directive = fetch_directive(name, env.command_path, True)
     if not directive:
-        printer.write_error("Unknown directive: %r" % name)
+        error("Unknown directive: %r" % name)
         sys.exit(1)
 
     # Execute the directive
@@ -86,7 +90,7 @@ def get_position() -> int:
 
 
 async def execute_lifespan(
-    app: Optional[Union["Esmerald", "ChildEsmerald"]],
+    app: Esmerald | ChildEsmerald | None,
     lifespan: Lifespan,
     directive: Any,
     program_name: str,
