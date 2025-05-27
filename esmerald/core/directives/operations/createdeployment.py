@@ -1,23 +1,28 @@
-import click
+from __future__ import annotations
+
+from typing import Annotated
+
+from sayer import Argument, Option, command, error, success
 
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.templates import TemplateDirective
-from esmerald.core.terminal import Print
-
-printer = Print()
 
 
-@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated")
-@click.option(
-    "--deployment-folder-name",
-    default="deployment",
-    show_default=True,
-    type=str,
-    help="The name of the folder for the deployment files.",
-)
-@click.argument("name", type=str)
-@click.command(name="createdeployment")
-def create_deployment(name: str, verbosity: int, deployment_folder_name: str) -> None:
+@command(name="createdeployment")  # type: ignore
+def create_deployment(
+    name: Annotated[str, Argument(help="The name of the current project.")],
+    verbosity: Annotated[
+        int, Option(1, "-v", help="Displays the files generated", show_default=True)
+    ],
+    deployment_folder_name: Annotated[
+        str,
+        Option(
+            default="deployment",
+            help="The name of the folder for the deployment files.",
+            show_default=True,
+        ),
+    ],
+) -> None:
     """
     Generates the scaffold for the deployment of an Esmerald application.
 
@@ -39,6 +44,6 @@ def create_deployment(name: str, verbosity: int, deployment_folder_name: str) ->
 
     try:
         directive.handle("deployment", name=name, **options)
-        printer.write_success(f"Deployment for {name} generated successfully!")
+        success(f"Deployment for {name} generated successfully!")
     except DirectiveError as e:
-        printer.write_error(str(e))
+        error(str(e))

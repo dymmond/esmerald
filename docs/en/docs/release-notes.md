@@ -5,6 +5,21 @@ hide:
 
 # Release Notes
 
+## 3.8.0
+
+Due to advanced changes in the internals of Esmerald, this release is a major one and it will be under the version `3.8`
+and it will follow Lilya's integration which means, we will be dropping the support for Python 3.9 and focus solely on 3.10+
+for syntaxes and tooling.
+
+### Added
+
+- Integration with the newest client, [Sayer](https://sayer.dymmond.com). This brings a whole new experience to the Esmerald
+cli and allows to have a more interactive experience with the framework.
+
+### Changed
+
+- Drop support for Python 3.9 due technology advancements.
+
 ## 3.7.8
 
 ### Fixed

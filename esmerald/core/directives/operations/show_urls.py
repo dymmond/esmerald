@@ -3,15 +3,15 @@ import os
 import sys
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-import click
 from lilya._internal._path import clean_path
 from rich.console import Console
 from rich.table import Table
+from sayer import command, echo, error
 
 from esmerald import Gateway, Router
 from esmerald.core.directives.constants import ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
-from esmerald.core.terminal import OutputColour, Print, Terminal
+from esmerald.core.terminal import OutputColour
 from esmerald.routing.apis.base import View
 from esmerald.utils.enums import HttpMethod
 
@@ -20,8 +20,6 @@ if TYPE_CHECKING:
 
     from esmerald.applications import ChildEsmerald, Esmerald
 
-printer = Print()
-writer = Terminal()
 console = Console()
 
 DOCS_ELEMENTS = [
@@ -54,7 +52,7 @@ def get_http_verb(mapping: Any) -> str:
     return HttpMethod.GET.value
 
 
-@click.command(name="show_urls")
+@command
 def show_urls(env: DirectiveEnv) -> None:
     """Shows the information regarding the urls of a given application
 
@@ -63,17 +61,16 @@ def show_urls(env: DirectiveEnv) -> None:
     Example: `esmerald show_urls`
     """
     if os.getenv(ESMERALD_DISCOVER_APP) is None and getattr(env, "app", None) is None:
-        error = (
+        error(
             "You cannot specify a custom directive without specifying the --app or setting "
             "ESMERALD_DEFAULT_APP environment variable."
         )
-        printer.write_error(error)
         sys.exit(1)
 
     app = env.app
     table = Table(title=app.app_name)
     table = get_routes_table(app, table)
-    printer.write(table)
+    echo(table)
 
 
 def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: Table) -> Table:

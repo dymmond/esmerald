@@ -1,48 +1,57 @@
-import click
+from __future__ import annotations
+
+from typing import Annotated
+
+from sayer import Argument, Option, command, error, success
 
 from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.operations._constants import SECRET_KEY_INSECURE_PREFIX
 from esmerald.core.directives.templates import TemplateDirective
-from esmerald.core.terminal import Print
 from esmerald.utils.crypto import get_random_secret_key
 
-printer = Print()
 
-
-@click.option(
-    "--with-deployment",
-    is_flag=True,
-    help="Creates a project with base deployment files.",
-)
-@click.option(
-    "--deployment-folder-name",
-    default="deployment",
-    show_default=True,
-    type=str,
-    help="The name of the folder for the deployment files.",
-)
-@click.option(
-    "-s",
-    "--simple",
-    is_flag=True,
-    help="Generates a project in simple mode",
-)
-@click.option(
-    "-e",
-    "--edgy",
-    is_flag=True,
-    help="Generates a project with configurations for Edgy ORM.",
-)
-@click.option("-v", "--verbosity", default=1, type=int, help="Displays the files generated.")
-@click.argument("name", type=str)
-@click.command(name="createproject")
+@command(name="createproject")  # type: ignore
 def create_project(
-    name: str,
-    verbosity: int,
-    with_deployment: bool,
-    deployment_folder_name: str,
-    simple: bool,
-    edgy: bool,
+    name: Annotated[str, Argument(help="The name of the project to create.")],
+    verbosity: Annotated[int, Option(1, "-v", help="Verbosity level for the output.")],
+    with_deployment: Annotated[
+        bool,
+        Option(False, help="Creates a project with base deployment files.", show_default=True),
+    ],
+    deployment_folder_name: Annotated[
+        str,
+        Option(
+            "deployment",
+            help="The name of the folder for the deployment files.",
+            show_default=True,
+        ),
+    ],
+    with_structure: Annotated[
+        bool,
+        Option(
+            False,
+            help="Creates a project with a given structure of folders and files.",
+            show_default=True,
+        ),
+    ],
+    simple: Annotated[
+        bool,
+        Option(
+            False,
+            "-s",
+            help="Generates a project in simple mode.",
+            show_default=True,
+        ),
+    ],
+    edgy: Annotated[
+        bool,
+        Option(
+            False,
+            "-e",
+            help="Generates a project with configurations for Edgy ORM.",
+            show_default=True,
+        ),
+    ],
 ) -> None:
     """
     Creates the scaffold of a project.
@@ -63,6 +72,6 @@ def create_project(
 
     try:
         directive.handle("project", name=name, **options)
-        printer.write_success(f"Project {name} generated successfully!")
+        success(f"Project {name} generated successfully!")
     except DirectiveError as e:
-        printer.write_error(str(e))
+        error(str(e))
