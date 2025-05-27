@@ -31,7 +31,7 @@ def memory_cache() -> InMemoryCache:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def redis_cache(event_loop) -> RedisCache:
+async def redis_cache() -> RedisCache:
     """Fixture providing a fresh RedisCache instance with proper setup and cleanup."""
     cache = RedisCache("redis://localhost")
 
