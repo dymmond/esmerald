@@ -58,7 +58,7 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 ## Requirements
 
-* Python 3.9+
+* Python 3.10+
 
 Esmerald wouldn't be possible without two pillars:
 
