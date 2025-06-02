@@ -27,4 +27,4 @@ class ORJSONTransformMixin:
         transform_kwargs.setdefault("post_transform_fn", orjson.loads)
 
         with cls.with_transform_kwargs(transform_kwargs):
-            return super().transform(value)  # type: ignore
+            return super().transform(value)

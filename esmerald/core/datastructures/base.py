@@ -34,7 +34,6 @@ from pydantic._internal._schema_generation_shared import (  # noqa
 from pydantic.json_schema import JsonSchemaValue as JsonSchemaValue
 from pydantic_core.core_schema import (
     CoreSchema,
-    PlainValidatorFunctionSchema,
     with_info_plain_validator_function as general_plain_validator_function,
 )
 from typing_extensions import Literal
@@ -79,7 +78,7 @@ class UploadFile(LilyaUploadFile):  # pragma: no cover
     def __get_pydantic_core_schema__(
         cls, source: Type[Any], handler: Callable[[Any], CoreSchema]
     ) -> CoreSchema:
-        return cast(PlainValidatorFunctionSchema, general_plain_validator_function(cls._validate))
+        return general_plain_validator_function(cls._validate)
 
 
 class Cookie(BaseModel):

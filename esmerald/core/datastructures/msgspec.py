@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Type, cast
+from typing import Any, Callable, Iterable, Type
 
 import msgspec
 from msgspec import ValidationError
@@ -7,7 +7,6 @@ from pydantic._internal._schema_generation_shared import (
 )
 from pydantic_core.core_schema import (
     CoreSchema,
-    PlainValidatorFunctionSchema,
     with_info_plain_validator_function,
 )
 
@@ -77,7 +76,4 @@ class Struct(msgspec.Struct):
     def __get_pydantic_core_schema__(
         cls, source: Type[Any], handler: Callable[[Any], CoreSchema]
     ) -> CoreSchema:
-        return cast(
-            PlainValidatorFunctionSchema,
-            with_info_plain_validator_function(cls._validate),
-        )
+        return with_info_plain_validator_function(cls._validate)

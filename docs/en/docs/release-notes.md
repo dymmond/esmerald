@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+### 3.8.1
+
+### Changed
+
+- Update to latest mypy and removed old code.
+- Updated the internals to support the latest Lilya version.
+
 ## 3.8.0
 
 Due to advanced changes in the internals of Esmerald, this release is a major one and it will be under the version `3.8`

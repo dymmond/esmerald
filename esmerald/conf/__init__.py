@@ -33,6 +33,6 @@ def reload_settings() -> None:
     """
     Reloads the global settings.
     """
-    monkay.settings = os.environ.get(  # type: ignore
+    monkay.settings = os.environ.get(
         ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
     )

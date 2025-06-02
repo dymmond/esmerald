@@ -11,12 +11,12 @@ if TYPE_CHECKING:  # pragma: no cover
 try:
     from esmerald.responses.encoders import ORJSONResponse
 except ImportError:  # pragma: no cover
-    ORJSONResponse = None  # type: ignore
+    ORJSONResponse = None
 
 try:
     from esmerald.responses.encoders import UJSONResponse
 except ImportError:  # pragma: no cover
-    UJSONResponse = None  # type: ignore
+    UJSONResponse = None
 
 
 class ORJSON(ResponseContainer[ORJSONResponse]):

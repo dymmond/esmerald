@@ -50,7 +50,7 @@ def construct_open_api_with_schema_class(
 
     schema_classes = [
         (
-            (cls, MODE)  # type: ignore
+            (cls, MODE)
             if not hasattr(cls, SCHEMA_NAME_ATTRIBUTE)
             else (create_model(getattr(cls, SCHEMA_NAME_ATTRIBUTE), __base__=cls), MODE)
         )

@@ -7,7 +7,7 @@ from typing import Callable, TypeVar
 
 import click
 from sayer import Argument, Option, Sayer, error
-from sayer.core.groups import SayerGroup
+from sayer.core.groups.sayer import SayerGroup
 
 from esmerald import __version__
 from esmerald.core.directives.constants import (

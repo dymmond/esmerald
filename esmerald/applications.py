@@ -1618,7 +1618,7 @@ class Application(BaseLilya):
                     "settings_module must be a subclass of EsmeraldSettings"
                 )
             elif isinstance(settings_module, EsmeraldAPISettings):
-                self.settings_module = settings_module  # type: ignore
+                self.settings_module = settings_module
             elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
                 self.settings_module = settings_module()  # type: ignore
 
@@ -1872,7 +1872,7 @@ class Application(BaseLilya):
                 route.handler, base.View
             ):
                 if not route.handler.parent:
-                    route.handler.parent = route  # type: ignore
+                    route.handler.parent = route
                     webhooks.append(route)
             else:
                 if not route.handler.parent:  # pragma: no cover
