@@ -1,7 +1,66 @@
-#!/bin/sh -e
+#!/usr/bin/env python3
+import os
+import re
 
-for file in `find . -name '*.py' -not -name '__init__.py' -not -name '__main__.py'`; do
-    [ -f "$file" ] || break
-    echo "$file"
-    sed -i '1 i\from __future__ import annotations' $file
-done
+
+def process_file(path: str) -> None:
+    """
+    Read a .py file, replace standalone List→list and Dict→dict in every line
+    except if that line is part of an import statement (single- or multi-line).
+    Overwrite the file if anything changed.
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    new_lines = []
+    modified = False
+    inside_import_block = False
+
+    for line in lines:
+        stripped = line.lstrip()
+
+        # If we're inside a multi-line import block, just copy the line.
+        if inside_import_block:
+            new_lines.append(line)
+            # If this line has a closing ")", assume the import block ends here.
+            if ")" in line:
+                inside_import_block = False
+            continue
+
+        # Check if this line starts a multi-line "from ... import (" or "import ("
+        if re.match(r'^\s*from\s+\S+\s+import\s*\(', line) or \
+           re.match(r'^\s*import\s*\(', line):
+            inside_import_block = True
+            new_lines.append(line)
+            continue
+
+        # Check if this is a single-line import (no "(" )
+        if stripped.startswith("import ") or stripped.startswith("from "):
+            # If there's a "(" here, it would have matched above.
+            new_lines.append(line)
+            continue
+
+        # Otherwise, replace standalone 'List'→'list' and 'Dict'→'dict'
+        replaced = re.sub(r'\bList\b', 'list', line)
+        replaced = re.sub(r'\bDict\b', 'dict', replaced)
+
+        if replaced != line:
+            modified = True
+        new_lines.append(replaced)
+
+    if modified:
+        with open(path, "w", encoding="utf-8") as f:
+            f.writelines(new_lines)
+        print(f"Updated: {path}")
+
+
+if __name__ == "__main__":
+    for root, dirs, files in os.walk("."):
+        # Exclude 'docs_src' and 'tests' directories from traversal:
+        dirs[:] = [d for d in dirs if d not in ("docs_src", "tests")]
+
+        for filename in files:
+            if not filename.endswith(".py"):
+                continue
+            full_path = os.path.join(root, filename)
+            process_file(full_path)
