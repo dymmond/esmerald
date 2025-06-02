@@ -1,6 +1,8 @@
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     Mapping,
     NamedTuple,
     Set,
@@ -10,6 +12,7 @@ from typing import (
     cast,
     get_args,
     get_origin,
+    get_type_hints,
 )
 
 from lilya.datastructures import URL
@@ -45,7 +48,11 @@ class ParamSetting(NamedTuple):
 
 class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
     def __init__(
-        self, key: str, inject: "Inject", dependencies: list["Dependency"], **kwargs: Any
+        self,
+        key: str,
+        inject: "Inject",
+        dependencies: list["Dependency"],
+        **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
         self.key = key
@@ -75,7 +82,9 @@ def _merge_difference_parameters(difference: Set[ParamSetting]) -> Set[ParamSett
     return merged_result
 
 
-def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
+def merge_sets(
+    first_set: Set[ParamSetting], second_set: Set[ParamSetting]
+) -> Set[ParamSetting]:
     """
     Merge two sets of parameter settings.
 
@@ -230,15 +239,21 @@ async def get_request_params(
             elif is_class_and_subclass(origin, dict):
                 values[param.field_name] = dict(params.items()) if params else None
             else:
-                values[param.field_name] = params.get(param.field_alias, param.default_value)
+                values[param.field_name] = params.get(
+                    param.field_alias, param.default_value
+                )
         elif is_union(param.field_info.annotation):
             arguments = get_args(param.field_info.annotation)
-            if any(is_class_and_subclass(origin, (list, tuple)) for origin in arguments):
+            if any(
+                is_class_and_subclass(origin, (list, tuple)) for origin in arguments
+            ):
                 values[param.field_name] = params.values()
             elif any(is_class_and_subclass(origin, dict) for origin in arguments):
                 values[param.field_name] = dict(params.items()) if params else None
             else:
-                values[param.field_name] = params.get(param.field_alias, param.default_value)
+                values[param.field_name] = params.get(
+                    param.field_alias, param.default_value
+                )
     return values
 
 
@@ -246,7 +261,9 @@ def get_connection_info(connection: "ConnectionType") -> Tuple[str, "URL"]:
     """
     Extacts the information from the ConnectionType.
     """
-    method = connection.method if isinstance(connection, Request) else ScopeType.WEBSOCKET
+    method = (
+        connection.method if isinstance(connection, Request) else ScopeType.WEBSOCKET
+    )
     return method, connection.url
 
 
@@ -254,20 +271,34 @@ def get_signature(value: Any) -> Type["SignatureModel"]:
     try:
         return cast("Type[SignatureModel]", value.signature_model)
     except AttributeError as exc:
-        raise ImproperlyConfigured(f"The 'signature' attribute for {value} is not set.") from exc
+        raise ImproperlyConfigured(
+            f"The 'signature' attribute for {value} is not set."
+        ) from exc
 
 
-def get_field_definition_from_param(param: "Parameter") -> Tuple[Any, Any]:
+def get_field_definition_from_param(
+    fn: Callable[..., Any], param: "Parameter"
+) -> Tuple[Any, Any]:
     """
     This method will make sure that __future__ references are resolved by
     the Any type. This is necessary because the signature model will be
     generated before the actual type is resolved.
     """
-    annotation: Union[Any, FieldInfo]
+    annotation: Any | FieldInfo
 
     if param.optional:
         annotation = should_skip_json_schema(param)
-    annotation = Any if isinstance(param.annotation, str) else param.annotation
+    if isinstance(param.annotation, str):
+        try:
+            hints = get_type_hints(
+                fn, globalns=sys.modules[fn.__module__].__dict__, include_extras=True
+            )
+            annotation = hints.get(param.param_name)
+        except NameError:
+            # This is to handle cases where the annotation is a string from the TYPE_CHECKING block
+            annotation = Any
+    else:
+        annotation = param.annotation
 
     if param.default_defined:
         definition = annotation, param.default
