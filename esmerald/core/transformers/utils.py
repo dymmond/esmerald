@@ -289,10 +289,14 @@ def get_field_definition_from_param(
     if param.optional:
         annotation = should_skip_json_schema(param)
     if isinstance(param.annotation, str):
-        hints = get_type_hints(
-            fn, globalns=sys.modules[fn.__module__].__dict__, include_extras=True
-        )
-        annotation = hints.get(param.param_name)
+        try:
+            hints = get_type_hints(
+                fn, globalns=sys.modules[fn.__module__].__dict__, include_extras=True
+            )
+            annotation = hints.get(param.param_name)
+        except NameError:
+            # This is to handle cases where the annotation is a string from the TYPE_CHECKING block
+            annotation = Any
     else:
         annotation = param.annotation
 
