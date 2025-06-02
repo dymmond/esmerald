@@ -11,6 +11,11 @@ hide:
 
 - Update to latest mypy and removed old code.
 - Updated the internals to support the latest Lilya version.
+- Make sure the str types when annotations are passed and parsed are discovered by `get_type_hints` when the create signature is triggered.
+
+### Fixed
+
+- Documentation references.
 
 ## 3.8.0
 
