@@ -63,10 +63,10 @@ app = Esmerald(routes=[user_router])
 You can nest routers with prefixes:
 
 ```python
-api_router = Router(prefix="/api")
-api_router.include_router(user_router)
+api_router = Router(path="/api")
 
-app = Esmerald(routes=[api_router])
+app = Esmerald(routes=[...])
+app.add_router(user_router)
 ```
 
 ---
