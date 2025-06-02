@@ -642,7 +642,7 @@ class BaseRouter(LilyaRouter):
         # copy routes shallow, fixes bug with tests/dependencies/test_http_handler_dependency_injection.py
         # routes are modified by validate_root_route_parent
         for route in list(self.routes):
-            self.validate_root_route_parent(route)  # type: ignore
+            self.validate_root_route_parent(route)
 
         for route in self.routes:
             self.create_signature_models(route)
@@ -727,7 +727,7 @@ class BaseRouter(LilyaRouter):
 
         if isinstance(route, (Gateway, WebhookGateway)):
             if not route.handler.parent:  # pragma: no cover
-                route.handler.parent = route  # type: ignore
+                route.handler.parent = route
 
             if not is_class_and_subclass(route.handler, View) and not isinstance(
                 route.handler, View
@@ -758,7 +758,7 @@ class BaseRouter(LilyaRouter):
                 value.handler, View
             ):
                 if not value.handler.parent:
-                    value.handler.parent = value  # type: ignore
+                    value.handler.parent = value
             else:
                 if not value.handler.parent:  # pragma: no cover
                     value(parent=self)  # type: ignore
@@ -2029,7 +2029,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             name=name,
             include_in_schema=include_in_schema,
             dependencies=dependencies,
-            exception_handlers=cast("ExceptionHandlerMap", exception_handlers),
+            exception_handlers=exception_handlers,
             interceptors=interceptors,
             permissions=permissions,
             middleware=middleware,
@@ -2731,7 +2731,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             )
 
         if not settings.enable_sync_handlers:  # pragma: no cover
-            fn = cast("AnyCallable", self.fn)
+            fn = self.fn
             if not is_async_callable(fn):
                 raise ImproperlyConfigured(
                     "Functions decorated with 'route, websocket, get, patch, put, post and delete' must be async functions"

@@ -96,7 +96,7 @@ ReservedKwargs = get_args(_ReservedKwargs)
 
 ResponseHeaders = Dict[str, ResponseHeader]
 ResponseCookies = List[Cookie]
-AsyncAnyCallable = Callable[..., Awaitable[Any]]  # type: ignore
+AsyncAnyCallable = Callable[..., Awaitable[Any]]
 
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 

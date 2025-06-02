@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Union, cast
 
 from pydantic import AnyUrl, BaseModel
 from typing_extensions import Annotated, Doc
@@ -381,7 +381,7 @@ class OpenAPIConfig(BaseModel):
             webhooks=self.webhooks,
         )
         app.openapi_schema = openapi_schema
-        return app.openapi_schema
+        return cast(dict[str, Any], app.openapi_schema)
 
     def enable(self, app: Any) -> None:
         """Enables the OpenAPI documentation"""

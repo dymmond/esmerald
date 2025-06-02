@@ -243,12 +243,12 @@ class BaseResponseHandler:
 
         if isinstance(route.parent, View):
             fn = partial(
-                cast(AnyCallable, route.fn),
+                route.fn,
                 route.parent,
-                **parsed_kwargs,
+                **parsed_kwargs
             )
         else:
-            fn = partial(cast(AnyCallable, route.fn), **parsed_kwargs)
+            fn = partial(route.fn, **parsed_kwargs)
 
         if is_async_callable(fn):
             return await fn()
@@ -852,7 +852,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
                         key=key,
                         injector=value,
                     )
-                    self._dependencies[key] = value
+                    self._dependencies[key] = value # type: ignore[assignment]
         return self._dependencies
 
     @staticmethod
