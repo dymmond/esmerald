@@ -1,7 +1,7 @@
 import functools
 import math
 import warnings
-from typing import Any, Callable, Dict, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 import bcrypt
 from monkay import load
@@ -99,7 +99,7 @@ def get_hashers() -> Sequence["BasePasswordHasher"]:
 
 
 @functools.lru_cache
-def get_hashers_by_algorithm() -> Dict[str, "BasePasswordHasher"]:
+def get_hashers_by_algorithm() -> dict[str, "BasePasswordHasher"]:
     return {hasher.algorithm_name: hasher for hasher in get_hashers()}
 
 
@@ -175,7 +175,7 @@ class BasePasswordHasher:
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt.encode("utf-8"))
         return hashed_password.decode("utf-8")
 
-    def decode(self, encoded: str) -> Dict[str, Any]:
+    def decode(self, encoded: str) -> dict[str, Any]:
         """
         Since bcrypt includes the salt in the hash, we don't need to manually decode.
         """
@@ -213,7 +213,7 @@ class BcryptPasswordHasher(BasePasswordHasher):
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt.encode("utf-8"))
         return hashed_password.decode("utf-8")  # Return full bcrypt hash (salt + hash)
 
-    def decode(self, encoded: str) -> Dict[str, Any]:
+    def decode(self, encoded: str) -> dict[str, Any]:
         """
         Decode the bcrypt hash, splitting the salt and hash components.
         """

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 
 from typing_extensions import Annotated, Doc
 
@@ -17,7 +17,7 @@ class Scopes:
     def __init__(
         self,
         scopes: Annotated[
-            Union[List[str], None],
+            Union[list[str], None],
             Doc(
                 """
                 This will be filled by Esmerald.
@@ -26,7 +26,7 @@ class Scopes:
         ] = None,
     ):
         self.scopes: Annotated[
-            List[str],
+            list[str],
             Doc(
                 """
                 The list of all the scopes required by dependencies.

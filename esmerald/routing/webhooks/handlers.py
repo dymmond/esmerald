@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, Sequence, Union, cast
 
 from lilya import status
 from typing_extensions import Annotated, Doc
@@ -156,7 +156,7 @@ def whget(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -164,7 +164,7 @@ def whget(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -290,7 +290,7 @@ def whget(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -337,7 +337,7 @@ def whget(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -526,7 +526,7 @@ def whhead(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -534,7 +534,7 @@ def whhead(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -605,7 +605,7 @@ def whhead(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -643,7 +643,7 @@ def whhead(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -833,7 +833,7 @@ def whpost(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -841,7 +841,7 @@ def whpost(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -967,7 +967,7 @@ def whpost(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -1014,7 +1014,7 @@ def whpost(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -1236,7 +1236,7 @@ def whput(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1244,7 +1244,7 @@ def whput(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -1370,7 +1370,7 @@ def whput(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -1417,7 +1417,7 @@ def whput(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -1639,7 +1639,7 @@ def whpatch(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1647,7 +1647,7 @@ def whpatch(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -1773,7 +1773,7 @@ def whpatch(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -1820,7 +1820,7 @@ def whpatch(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -2042,7 +2042,7 @@ def whdelete(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2050,7 +2050,7 @@ def whdelete(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -2176,7 +2176,7 @@ def whdelete(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -2223,7 +2223,7 @@ def whdelete(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -2412,7 +2412,7 @@ def whoptions(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2420,7 +2420,7 @@ def whoptions(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -2491,7 +2491,7 @@ def whoptions(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -2529,7 +2529,7 @@ def whoptions(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -2681,7 +2681,7 @@ def whtrace(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2689,7 +2689,7 @@ def whtrace(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -2760,7 +2760,7 @@ def whtrace(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -2798,7 +2798,7 @@ def whtrace(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described
@@ -2879,10 +2879,10 @@ def whroute(
     ] = None,
     *,
     methods: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
-                List of strings of methods allowed by the handler.
+                list of strings of methods allowed by the handler.
 
                 **Example**
 
@@ -3003,7 +3003,7 @@ def whroute(
         ),
     ] = None,
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -3011,7 +3011,7 @@ def whroute(
         ),
     ] = None,
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -3137,7 +3137,7 @@ def whroute(
         ),
     ] = None,
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -3184,7 +3184,7 @@ def whroute(
         ),
     ] = SUCCESSFUL_RESPONSE,
     responses: Annotated[
-        Optional[Dict[int, OpenAPIResponse]],
+        Optional[dict[int, OpenAPIResponse]],
         Doc(
             """
                 Additional responses that are handled by the handler and need to be described

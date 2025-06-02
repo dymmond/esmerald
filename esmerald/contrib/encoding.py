@@ -103,7 +103,7 @@ def force_bytes(
     return str(s).encode(encoding, errors)
 
 
-# List of byte values that uri_to_iri() decodes from percent encoding.
+# list of byte values that uri_to_iri() decodes from percent encoding.
 # First, the unreserved characters from RFC 3986:
 _ascii_ranges = [[45, 46, 95, 126], range(65, 91), range(97, 123)]
 _hextobyte = {

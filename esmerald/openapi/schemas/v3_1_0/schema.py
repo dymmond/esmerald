@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -28,7 +28,7 @@ class Schema(BaseModel):
     and follow the same specifications:
     """
 
-    allOf: Optional[List[Union[Reference, "Schema"]]] = None
+    allOf: Optional[list[Union[Reference, "Schema"]]] = None
     """
     This keyword's value MUST be a non-empty array.  Each item of the
     array MUST be a valid JSON Schema.
@@ -38,7 +38,7 @@ class Schema(BaseModel):
     value.
     """
 
-    anyOf: Optional[List[Union[Reference, "Schema"]]] = None
+    anyOf: Optional[list[Union[Reference, "Schema"]]] = None
     """
     This keyword's value MUST be a non-empty array.  Each item of the
     array MUST be a valid JSON Schema.
@@ -50,7 +50,7 @@ class Schema(BaseModel):
     each subschema that validates successfully.
     """
 
-    oneOf: Optional[List[Union[Reference, "Schema"]]] = None
+    oneOf: Optional[list[Union[Reference, "Schema"]]] = None
     """
     This keyword's value MUST be a non-empty array.  Each item of the
     array MUST be a valid JSON Schema.
@@ -118,7 +118,7 @@ class Schema(BaseModel):
     or annotation collection purposes, in such cases.
     """
 
-    dependentSchemas: Optional[Dict[str, Union[Reference, "Schema"]]] = None
+    dependentSchemas: Optional[dict[str, Union[Reference, "Schema"]]] = None
     """
     This keyword specifies subschemas that are evaluated if the instance
     is an object and contains a certain property.
@@ -133,7 +133,7 @@ class Schema(BaseModel):
     Omitting this keyword has the same behavior as an empty object.
     """
 
-    prefixItems: Optional[List[Union[Reference, "Schema"]]] = None
+    prefixItems: Optional[list[Union[Reference, "Schema"]]] = None
     """
     The value of "prefixItems" MUST be a non-empty array of valid JSON
     Schemas.
@@ -204,7 +204,7 @@ class Schema(BaseModel):
     array to which this keyword's schema applies is empty.
     """
 
-    properties: Optional[Dict[str, Union[Reference, "Schema"]]] = None
+    properties: Optional[dict[str, Union[Reference, "Schema"]]] = None
     """
     The value of "properties" MUST be an object.  Each value of this
     object MUST be a valid JSON Schema.
@@ -221,7 +221,7 @@ class Schema(BaseModel):
     object.
     """
 
-    patternProperties: Optional[Dict[str, Union[Reference, "Schema"]]] = None
+    patternProperties: Optional[dict[str, Union[Reference, "Schema"]]] = None
     """
     The value of "patternProperties" MUST be an object.  Each property
     name of this object SHOULD be a valid regular expression, according
@@ -354,7 +354,7 @@ class Schema(BaseModel):
     and follow the same specifications:
     """
 
-    type: Optional[Union[str, List[str]]] = None
+    type: Optional[Union[str, list[str]]] = None
     """
     The value of this keyword MUST be either a string or an array.  If it
     is an array, elements of the array MUST be strings and MUST be
@@ -368,7 +368,7 @@ class Schema(BaseModel):
     sets listed for this keyword.
     """
 
-    enum: Optional[List[Any]] = Field(default=None, min_length=1)
+    enum: Optional[list[Any]] = Field(default=None, min_length=1)
     """
     The value of this keyword MUST be an array.  This array SHOULD have
     at least one element.  Elements in the array SHOULD be unique.
@@ -554,7 +554,7 @@ class Schema(BaseModel):
     Omitting this keyword has the same behavior as a value of 0.
     """
 
-    required: Optional[List[str]] = None
+    required: Optional[list[str]] = None
     """
     The value of this keyword MUST be an array.  Elements of this array,
     if any, MUST be strings, and MUST be unique.
@@ -565,7 +565,7 @@ class Schema(BaseModel):
     Omitting this keyword has the same behavior as an empty array.
     """
 
-    dependentRequired: Optional[Dict[str, List[str]]] = None
+    dependentRequired: Optional[dict[str, list[str]]] = None
     """
     The value of this keyword MUST be an object.  Properties in this
     object, if any, MUST be arrays.  Elements in each array, if any, MUST
@@ -774,7 +774,7 @@ class Schema(BaseModel):
     Omitting these keywords has the same behavior as values of false.
     """
 
-    examples: Optional[List[Any]] = None
+    examples: Optional[list[Any]] = None
     """
     The value of this keyword MUST be an array.  There are no
     restrictions placed on the values within the array.  When multiple

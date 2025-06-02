@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
@@ -41,7 +41,7 @@ class Encoding(BaseModel):
     or a comma-separated list of the two types.
     """
 
-    headers: Optional[Dict[str, Union["Header", Reference]]] = None
+    headers: Optional[dict[str, Union["Header", Reference]]] = None
     """
     A map allowing additional information to be provided as headers, for example `Content-Disposition`.
 

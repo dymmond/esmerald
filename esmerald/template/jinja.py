@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from lilya.templating.jinja import Jinja2Template
 
@@ -16,7 +16,7 @@ except ImportError as exc:  # pragma: no cover
 class JinjaTemplateEngine(Jinja2Template):
     def __init__(
         self,
-        directory: Union["DirectoryPath", List["DirectoryPath"]],
+        directory: Union["DirectoryPath", list["DirectoryPath"]],
         env: Union[Environment, None] = None,
         **env_options: Any,
     ) -> None:

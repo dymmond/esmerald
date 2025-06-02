@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Type, Union
+from typing import Any, Optional, Type, Union
 
 from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
@@ -37,11 +37,11 @@ class OpenAPIResponse(BaseModel):
     model: Annotated[
         Union[
             Type[BaseModel],
-            List[Type[BaseModel]],
+            list[Type[BaseModel]],
             Type[Struct],
-            List[Type[Struct]],
+            list[Type[Struct]],
             Type[Any],
-            List[Type[Any]],
+            list[Type[Any]],
         ],
         Doc(
             """
@@ -64,7 +64,7 @@ class OpenAPIResponse(BaseModel):
             # Single
             OpenAPIResponse(model=Error)
 
-            # List
+            # list
             OpenAPIResponse(model=[Error])
             ```
             """
@@ -102,19 +102,19 @@ class OpenAPIResponse(BaseModel):
         cls,
         model: Union[
             Type[BaseModel],
-            List[Type[BaseModel]],
+            list[Type[BaseModel]],
             Type[Struct],
-            List[Type[Struct]],
+            list[Type[Struct]],
             Type[Any],
-            List[Type[Any]],
+            list[Type[Any]],
         ],
     ) -> Union[
         Type[BaseModel],
-        List[Type[BaseModel]],
+        list[Type[BaseModel]],
         Type[Struct],
-        List[Type[Struct]],
+        list[Type[Struct]],
         Type[Any],
-        List[Type[Any]],
+        list[Type[Any]],
     ]:
         if isinstance(model, list) and len(model) > 1:
             raise ValueError(

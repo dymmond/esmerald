@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -35,7 +35,7 @@ class Link(BaseModel):
     This field is mutually exclusive of the `operationRef` field.
     """
 
-    parameters: Optional[Dict[str, Any]] = None
+    parameters: Optional[dict[str, Any]] = None
     """
     A map representing parameters to pass to an operation
     as specified with `operationId` or identified via `operationRef`.

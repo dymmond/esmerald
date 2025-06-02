@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, Union
 
 from typing_extensions import Annotated, Doc
 
@@ -28,7 +28,7 @@ class Template(ResponseContainer[TemplateResponse]):
         ),
     ]
     context: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Doc(
             """
             Any context that should be sent to the templates to be rendered.
@@ -73,7 +73,7 @@ class Template(ResponseContainer[TemplateResponse]):
 
     def to_response(
         self,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],
@@ -84,7 +84,7 @@ class Template(ResponseContainer[TemplateResponse]):
         if not app.template_engine:
             raise ImproperlyConfigured("Template engine is not configured")
 
-        data: Dict[str, Any] = {
+        data: dict[str, Any] = {
             "background": self.background,
             "context": self.context,
             "headers": headers,

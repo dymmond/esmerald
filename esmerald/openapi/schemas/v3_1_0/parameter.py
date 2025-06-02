@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -111,7 +111,7 @@ class Parameter(BaseModel):
     a string value can contain the example with escaping where necessary.
     """
 
-    examples: Optional[Dict[str, Union[Example, Reference]]] = None
+    examples: Optional[dict[str, Union[Example, Reference]]] = None
     """
     Examples of the parameter's potential value.
     Each example SHOULD contain a value in the correct format as specified in the parameter encoding.
@@ -126,7 +126,7 @@ class Parameter(BaseModel):
     the example MUST follow the prescribed serialization strategy for the parameter.
     """
 
-    content: Optional[Dict[str, MediaType]] = None
+    content: Optional[dict[str, MediaType]] = None
     """
     A map containing the representations for the parameter.
     The key is the media type and the value describes it.

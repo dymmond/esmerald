@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from inspect import Signature
-from typing import TYPE_CHECKING, Any, Dict, Union, cast
+from typing import TYPE_CHECKING, Any, Union, cast
 
 from typing_extensions import get_args, get_origin
 
@@ -18,7 +18,7 @@ def create_internal_response(
     handler: Union["HTTPHandler", Any],
 ) -> InternalResponse:  # pragma: no cover
     signature = Signature.from_callable(cast("AnyCallable", handler.fn))
-    default_descriptions: Dict[Any, str] = {
+    default_descriptions: dict[Any, str] = {
         Stream: "Stream Response",
         Redirect: "Redirect Response",
         File: "File Download",

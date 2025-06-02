@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, Type, Union, cast
 
 from lilya.responses import FileResponse  # noqa
 from pydantic import FilePath, model_validator  # noqa
@@ -39,14 +39,14 @@ class File(ResponseContainer[FileResponse]):
     ] = None
 
     @model_validator(mode="before")
-    def validate_fields(cls, values: Dict[str, Any]) -> Any:
+    def validate_fields(cls, values: dict[str, Any]) -> Any:
         stat_result = values.get("stat_result")
         values["stat_result"] = stat_result or os.stat(cast("str", values.get("path")))
         return values
 
     def to_response(
         self,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],

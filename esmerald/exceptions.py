@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Optional, Tuple, Union, cast
 
 from lilya import status
 from lilya.exceptions import (
@@ -83,7 +83,7 @@ class HTTPException(LilyaHTTPException, EsmeraldAPIException):
             ),
         ] = None,
         headers: Annotated[
-            Optional[Dict[str, Any]],
+            Optional[dict[str, Any]],
             Doc(
                 """
                 Any python dictionary containing headers.
@@ -155,7 +155,7 @@ class ValidationError(HTTPException):
 
     def __init__(
         self,
-        detail: Union[str, List[str], Dict[str, Any], Tuple[str]] = None,
+        detail: Union[str, list[str], dict[str, Any], Tuple[str]] = None,
         status_code: Annotated[
             Optional[int],
             Doc(
@@ -165,7 +165,7 @@ class ValidationError(HTTPException):
             ),
         ] = None,
         headers: Annotated[
-            Optional[Dict[str, Any]],
+            Optional[dict[str, Any]],
             Doc(
                 """
                 Any python dictionary containing headers.

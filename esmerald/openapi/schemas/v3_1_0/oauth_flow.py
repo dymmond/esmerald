@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from pydantic import AnyUrl, BaseModel, ConfigDict
 
@@ -29,7 +29,7 @@ class OAuthFlow(BaseModel):
     The OAuth2 standard requires the use of TLS.
     """
 
-    scopes: Optional[Dict[str, str]] = None
+    scopes: Optional[dict[str, str]] = None
     """
     **REQUIRED** for `oauth2`. The available scopes for the OAuth2 security scheme.
     A map between the scope name and a short description for it.

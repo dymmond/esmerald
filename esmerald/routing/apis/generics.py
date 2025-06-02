@@ -1,4 +1,4 @@
-from typing import ClassVar, List
+from typing import ClassVar
 
 from typing_extensions import Annotated, Doc
 
@@ -46,7 +46,7 @@ class CreateAPIView(GenericMixin, SimpleAPIView):
     """
 
     http_allowed_methods: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
             Allowed methods for the given base class.
@@ -83,7 +83,7 @@ class DeleteAPIView(GenericMixin, SimpleAPIView):
     """
 
     http_allowed_methods: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
             Allowed methods for the given base class.
@@ -120,7 +120,7 @@ class ReadAPIView(GenericMixin, SimpleAPIView):
     """
 
     http_allowed_methods: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
             Allowed methods for the given base class.

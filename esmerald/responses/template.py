@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from mimetypes import guess_type
 from pathlib import PurePath
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from lilya.types import Receive, Scope, Send
 
@@ -21,9 +21,9 @@ class TemplateResponse(Response):
         template_name: str,
         template_engine: "TemplateEngineProtocol",
         status_code: int = 200,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict[str, Any]] = None,
         background: Optional[Union["BackgroundTask", "BackgroundTasks"]] = None,
-        headers: Optional[Dict[str, Any]] = None,
+        headers: Optional[dict[str, Any]] = None,
         cookies: Optional["ResponseCookies"] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
         encoders: Union[Sequence["Encoder"], None] = None,

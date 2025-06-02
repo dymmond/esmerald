@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
@@ -35,7 +35,7 @@ class OpenAPI(BaseModel):
     contained within this OAS document. This MUST be in the form of a URI.
     """
 
-    servers: List[Server] = [Server(url="/")]
+    servers: list[Server] = [Server(url="/")]
     """
     An array of Server Objects, which provide connectivity information to a target server.
     If the `servers` property is not provided, or is an empty array,
@@ -48,7 +48,7 @@ class OpenAPI(BaseModel):
     The available paths and operations for the API.
     """
 
-    webhooks: Optional[Dict[str, Union[PathItem, Reference]]] = None
+    webhooks: Optional[dict[str, Union[PathItem, Reference]]] = None
     """
     The incoming webhooks that MAY be received as part of this API and that the API consumer MAY choose to implement.
     Closely related to the `callbacks` feature, this section describes requests initiated other than by an API call,
@@ -64,7 +64,7 @@ class OpenAPI(BaseModel):
     An element to hold various schemas for the document.
     """
 
-    security: Optional[List[SecurityRequirement]] = None
+    security: Optional[list[SecurityRequirement]] = None
     """
     A declaration of which security mechanisms can be used across the API.
     The list of values includes alternative security requirement objects that can be used.
@@ -73,7 +73,7 @@ class OpenAPI(BaseModel):
     To make security optional, an empty security requirement (`{}`) can be included in the array.
     """
 
-    tags: Optional[List[Tag]] = None
+    tags: Optional[list[Tag]] = None
     """
     A list of tags used by the document with additional metadata.
     The order of the tags can be used to reflect on their order by the parsing tools.

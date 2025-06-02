@@ -1,5 +1,5 @@
 from datetime import datetime, timezone as dtimezone
-from typing import Any, Callable, Dict, Type, Union
+from typing import Any, Callable, Type, Union
 
 from asyncz.schedulers import AsyncIOScheduler
 from asyncz.schedulers.types import SchedulerType
@@ -23,10 +23,10 @@ class AsynczConfig(SchedulerConfig):
     def __init__(
         self,
         scheduler_class: Type[SchedulerType] = AsyncIOScheduler,
-        tasks: Union[Dict[str, str]] = None,
+        tasks: Union[dict[str, str]] = None,
         timezone: Union[dtimezone, str, None] = None,
-        configurations: Union[Dict[str, Dict[str, str]], None] = None,
-        **kwargs: Dict[str, Any],
+        configurations: Union[dict[str, dict[str, str]], None] = None,
+        **kwargs: dict[str, Any],
     ):
         """
         Initializes the AsynczConfig object.
@@ -47,7 +47,7 @@ class AsynczConfig(SchedulerConfig):
 
         for task, module in self.tasks.items():
             if not isinstance(task, str) or not isinstance(module, str):
-                raise ImproperlyConfigured("The dict of tasks must be Dict[str, str].")
+                raise ImproperlyConfigured("The dict of tasks must be dict[str, str].")
 
         # Load the scheduler object
         self.handler = self.get_scheduler(
@@ -59,7 +59,7 @@ class AsynczConfig(SchedulerConfig):
 
         self.register_tasks(tasks=self.tasks)
 
-    def register_tasks(self, tasks: Dict[str, str]) -> None:
+    def register_tasks(self, tasks: dict[str, str]) -> None:
         """
         Registers the tasks in the Scheduler.
 
@@ -82,8 +82,8 @@ class AsynczConfig(SchedulerConfig):
         self,
         scheduler: Type[SchedulerType],
         timezone: Union[dtimezone, str, None] = None,
-        configurations: Union[Dict[str, Any], None] = None,
-        **options: Dict[str, Any],
+        configurations: Union[dict[str, Any], None] = None,
+        **options: dict[str, Any],
     ) -> SchedulerType:
         """
         Initiates the scheduler from the given time.
@@ -148,7 +148,7 @@ class Task:
         executor: Union[str, None] = None,
         replace_existing: bool = False,
         args: Union[Any, None] = None,
-        kwargs: Union[Dict[str, Any], None] = None,
+        kwargs: Union[dict[str, Any], None] = None,
         is_enabled: bool = True,
     ) -> None:
         """
@@ -167,8 +167,8 @@ class Task:
             executor (str, optional): Alias of the executor to run the task with.
             replace_existing (bool, optional): True to replace an existing task with the same id
                 (but retain the number of runs from the existing one).
-            args (Any, optional): List of positional arguments to call func with.
-            kwargs (Dict[str, Any], optional): Dict of keyword arguments to call func with.
+            args (Any, optional): list of positional arguments to call func with.
+            kwargs (dict[str, Any], optional): dict of keyword arguments to call func with.
             is_enabled (bool, optional): True if the task is to be added to the scheduler.
         """
         self.name = name

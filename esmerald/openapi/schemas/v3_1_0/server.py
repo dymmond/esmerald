@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -23,7 +23,7 @@ class Server(BaseModel):
     [CommonMark syntax](https://spec.commonmark.org/) MAY be used for rich text representation.
     """
 
-    variables: Optional[Dict[str, ServerVariable]] = None
+    variables: Optional[dict[str, ServerVariable]] = None
     """
     A map between a variable name and its value.
 

@@ -4,8 +4,6 @@ import json
 import warnings
 from typing import (
     Any,
-    Dict,
-    List,
     Optional,
     Sequence,
     Set,
@@ -62,7 +60,7 @@ TRANSFORMER_TYPES_KEYS = list(TRANSFORMER_TYPES.keys())
 TRANSFORMER_TYPES_KEYS += ADDITIONAL_TYPES
 
 
-def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: List[str]) -> List[Any]:
+def get_flat_params(route: Union[router.HTTPHandler, Any], body_fields: list[str]) -> list[Any]:
     """
     Gets all the neded params of the request and route.
     """
@@ -134,11 +132,11 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
 
 
 def get_fields_from_routes(
-    routes: Sequence[BasePath], request_fields: Optional[List[FieldInfo]] = None
-) -> List[FieldInfo]:
+    routes: Sequence[BasePath], request_fields: Optional[list[FieldInfo]] = None
+) -> list[FieldInfo]:
     """Extracts the fields from the given routes of Esmerald"""
-    body_fields: List[FieldInfo] = []
-    response_from_routes: List[FieldInfo] = []
+    body_fields: list[FieldInfo] = []
+    response_from_routes: list[FieldInfo] = []
 
     if not request_fields:
         request_fields = []
@@ -171,7 +169,7 @@ def get_fields_from_routes(
 
 def get_openapi_operation(
     *, route: gateways.Gateway, operation_ids: Set[str]
-) -> Dict[str, Any]:  # pragma: no cover
+) -> dict[str, Any]:  # pragma: no cover
     operation = Operation()
     operation.tags = route.handler.get_handler_tags()
 
@@ -213,8 +211,8 @@ def get_openapi_operation(
 def get_openapi_operation_parameters(
     *,
     all_route_params: Sequence[FieldInfo],
-    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> List[Dict[str, Any]]:  # pragma: no cover
+    field_mapping: dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+) -> list[dict[str, Any]]:  # pragma: no cover
     parameters = []
     for param in all_route_params:
         field_info = cast(Param, param)
@@ -247,8 +245,8 @@ def get_openapi_operation_parameters(
 def get_openapi_operation_request_body(
     *,
     data_field: Optional[FieldInfo],
-    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> Optional[Dict[str, Any]]:  # pragma: no cover
+    field_mapping: dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+) -> Optional[dict[str, Any]]:  # pragma: no cover
     if not data_field:
         return None
 
@@ -256,15 +254,15 @@ def get_openapi_operation_request_body(
     schema = get_schema_from_model_field(field=data_field, field_mapping=field_mapping)
 
     field_info = data_field
-    extra = cast("Dict[str, Any]", data_field.json_schema_extra)
+    extra = cast("dict[str, Any]", data_field.json_schema_extra)
     request_media_type = extra.get("media_type").value
     required = field_info.is_required()
 
-    request_data_oai: Dict[str, Any] = {}
+    request_data_oai: dict[str, Any] = {}
     if required:
         request_data_oai["required"] = required
 
-    request_media_content: Dict[str, Any] = {"schema": schema}
+    request_media_content: dict[str, Any] = {"schema": schema}
     if field_info.examples is not None:
         request_media_content["example"] = json.dumps(field_info.examples)
     request_data_oai["content"] = {request_media_type: request_media_content}
@@ -275,12 +273,12 @@ def get_openapi_path(
     *,
     route: Union[gateways.Gateway, gateways.WebhookGateway],
     operation_ids: Set[str],
-    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+    field_mapping: dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
     is_deprecated: bool = False,
-) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:  # pragma: no cover
-    path: Dict[str, Any] = {}
-    security_schemes: Dict[str, Any] = {}
-    definitions: Dict[str, Any] = {}
+) -> Tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:  # pragma: no cover
+    path: dict[str, Any] = {}
+    security_schemes: dict[str, Any] = {}
+    definitions: dict[str, Any] = {}
 
     assert route.handler.methods is not None, "Methods must be a list"
     route_response_media_type: str = None
@@ -306,7 +304,7 @@ def get_openapi_path(
         if is_deprecated or route.deprecated:
             operation["deprecated"] = is_deprecated if is_deprecated else route.deprecated
 
-        parameters: List[Dict[str, Any]] = []
+        parameters: list[dict[str, Any]] = []
         security_definitions, operation_security = get_openapi_security_schemes(
             handler.get_security_schemes()
         )
@@ -375,7 +373,7 @@ def get_openapi_path(
                 openapi_response = operation_responses.setdefault(status_code_key, {})
 
                 field = handler.response_models.get(additional_status_code)
-                additional_field_schema: Optional[Dict[str, Any]] = None
+                additional_field_schema: Optional[dict[str, Any]] = None
                 model_schema = process_response.model_json_schema()
 
                 if field:
@@ -492,13 +490,13 @@ def get_openapi(
     summary: Optional[str] = None,
     description: Optional[str] = None,
     routes: Sequence[BasePath],
-    tags: Optional[List[str]] = None,
-    servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
+    tags: Optional[list[str]] = None,
+    servers: Optional[list[dict[str, Union[str, Any]]]] = None,
     terms_of_service: Optional[Union[str, AnyUrl]] = None,
     contact: Optional[Contact] = None,
     license: Optional[License] = None,
     webhooks: Optional[Sequence[BasePath]] = None,
-) -> Dict[str, Any]:  # pragma: no cover
+) -> dict[str, Any]:  # pragma: no cover
     """
     Builds the whole OpenAPI route structure and object
     """
@@ -516,7 +514,7 @@ def get_openapi(
     if license:
         info.license = license
 
-    output: Dict[str, Any] = {
+    output: dict[str, Any] = {
         "openapi": openapi_version,
         "info": info.model_dump(exclude_none=True, by_alias=True),
     }
@@ -524,9 +522,9 @@ def get_openapi(
     if servers:
         output["servers"] = servers
 
-    components: Dict[str, Dict[str, Any]] = {}
-    paths: Dict[str, Dict[str, Any]] = {}
-    webhooks_paths: Dict[str, Dict[str, Any]] = {}
+    components: dict[str, dict[str, Any]] = {}
+    paths: dict[str, dict[str, Any]] = {}
+    webhooks_paths: dict[str, dict[str, Any]] = {}
     operation_ids: Set[str] = set()
     all_fields = get_fields_from_routes(list(routes or []) + list(webhooks or []))
     schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
@@ -544,7 +542,7 @@ def get_openapi(
         prefix: Optional[str] = "",
         is_webhook: bool = False,
         is_deprecated: bool = False,
-    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    ) -> Tuple[dict[str, Any], dict[str, Any]]:
         for route in routes:
             if app.router.deprecated:
                 is_deprecated = True
@@ -628,4 +626,4 @@ def get_openapi(
 
     openapi = OpenAPI(**output)
     model_dump = openapi.model_dump_json(by_alias=True, exclude_none=True)
-    return cast(Dict[str, Any], loads(model_dump))
+    return cast(dict[str, Any], loads(model_dump))

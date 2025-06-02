@@ -4,7 +4,6 @@ from functools import partial
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Generic,
     NoReturn,
     Optional,
@@ -111,7 +110,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
             ),
         ] = None,
         headers: Annotated[
-            Optional[Dict[str, Any]],
+            Optional[dict[str, Any]],
             Doc(
                 """
                 Any additional headers being passed to the response.

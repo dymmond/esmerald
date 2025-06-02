@@ -1,8 +1,6 @@
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Mapping,
     NamedTuple,
     Set,
@@ -47,7 +45,7 @@ class ParamSetting(NamedTuple):
 
 class Dependency(HashableBaseModel, ArbitraryExtraBaseModel):
     def __init__(
-        self, key: str, inject: "Inject", dependencies: List["Dependency"], **kwargs: Any
+        self, key: str, inject: "Inject", dependencies: list["Dependency"], **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
         self.key = key
@@ -129,7 +127,7 @@ def create_parameter_setting(
     Returns:
         ParamSetting: Parameter setting definition.
     """
-    extra = cast("Dict[str, Any]", field_info.json_schema_extra) or {}
+    extra = cast("dict[str, Any]", field_info.json_schema_extra) or {}
     is_required = extra.get(REQUIRED, True)
     default_value = _get_default_value(field_info)
 
@@ -172,7 +170,7 @@ def create_parameter_setting(
     return param_settings
 
 
-def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> List[str]:
+def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> list[str]:
     """
     Get missing required parameters.
 
@@ -181,7 +179,7 @@ def _get_missing_required_params(params: Any, expected: Set[ParamSetting]) -> Li
         expected (Set[ParamSetting]): Set of expected parameters.
 
     Returns:
-        List[str]: List of missing required parameters.
+        list[str]: list of missing required parameters.
     """
     missing_params = []
     for param in expected:
@@ -215,7 +213,7 @@ async def get_request_params(
             f"Missing required parameter(s) {', '.join(missing_params)} for URL {url}."
         )
 
-    values: Dict[Any, Any] = {}
+    values: dict[Any, Any] = {}
     for param in expected:
         is_requires_dependency = is_requires(param.default_value)
 

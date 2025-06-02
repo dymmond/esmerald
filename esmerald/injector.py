@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, Union
 
 from esmerald.core.injector.provider import load_provider
 from esmerald.core.transformers.signature import SignatureModel
@@ -25,7 +25,7 @@ class Factory:
             }
         """
         self.__args: Tuple[Any, ...] = args
-        self.__kwargs: Dict[str, Any] = kwargs
+        self.__kwargs: dict[str, Any] = kwargs
         self.is_nested: bool = False
 
         if isinstance(provides, str):
@@ -71,7 +71,7 @@ class Inject(ArbitraryHashableBaseModel):
         self.use_cache = use_cache
         self.value: Any = Void
 
-    async def __call__(self, **kwargs: Dict[str, Any]) -> Any:
+    async def __call__(self, **kwargs: dict[str, Any]) -> Any:
         if self.use_cache and self.value is not Void:
             return self.value
 
@@ -94,7 +94,7 @@ class Inject(ArbitraryHashableBaseModel):
         )
 
     def __hash__(self) -> int:
-        values: Dict[str, Any] = {}
+        values: dict[str, Any] = {}
         for key, value in self.__dict__.items():
             values[key] = None
             if isinstance(value, (list, set)):

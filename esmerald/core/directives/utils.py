@@ -1,7 +1,3 @@
-"""
-Utils used by the Esmerald core management.
-"""
-
 import functools
 import importlib
 import os
@@ -24,7 +20,7 @@ OPERATIONS = "operations"
 EXCUDED_DIRECTIVES = ["list", "run"]
 
 
-def find_directives(management_dir: str) -> typing.List[str]:
+def find_directives(management_dir: str) -> list[str]:
     """
     Shows the available directives from Esmerald.
     """
@@ -39,7 +35,7 @@ def find_directives(management_dir: str) -> typing.List[str]:
 
 def find_application_directives(
     management_dir: str,
-) -> typing.Sequence[typing.Union[typing.Dict[Any, Any], str]]:
+) -> typing.Sequence[dict[Any, Any] | str]:
     """
     Iterates through the application tree and finds the directives available
     to run.
@@ -81,7 +77,7 @@ def load_directive_class_by_filename(app_name: str, location: str) -> Any:
 
 
 @functools.lru_cache(maxsize=None)
-def get_directives(location: str) -> typing.Sequence[typing.Union[typing.Dict[Any, Any], str]]:
+def get_directives(location: str) -> typing.Sequence[dict[Any, Any] | str]:
     command_list = find_directives(location)
     directives = []
 
@@ -93,7 +89,7 @@ def get_directives(location: str) -> typing.Sequence[typing.Union[typing.Dict[An
 @functools.lru_cache(maxsize=None)
 def get_application_directives(
     location: str,
-) -> typing.Sequence[typing.Dict[Any, Any]]:
+) -> typing.Sequence[dict[Any, Any]]:
     command_list = find_application_directives(location)
     directives = []
 

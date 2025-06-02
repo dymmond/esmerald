@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 from typing_extensions import Protocol, runtime_checkable
 
@@ -21,7 +21,7 @@ class DaoProtocol(Protocol):  # pragma: no cover
 
     def get(self, obj_id: Any, **kwargs: Any) -> Any: ...
 
-    def get_all(self, **kwargs: Any) -> List[Any]: ...
+    def get_all(self, **kwargs: Any) -> list[Any]: ...
 
     def update(self, obj_id: Any, **kwargs: Any) -> Any: ...
 

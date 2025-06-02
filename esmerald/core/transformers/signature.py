@@ -4,9 +4,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
     Generator,
-    List,
     Optional,
     Set,
     Type,
@@ -143,7 +141,7 @@ class SignatureModel(ArbitraryBaseModel):
             This attribute is used to store names of dependencies required by the function signature.
         return_annotation (ClassVar[Any]): Class variable holding the return annotation type.
             This attribute represents the type annotation indicating the expected return type of the signature.
-        encoders (ClassVar[Dict[str, "Encoder"]]): Class variable holding a dictionary of encoders.
+        encoders (ClassVar[dict[str, "Encoder"]]): Class variable holding a dictionary of encoders.
             This attribute stores encoder instances associated with parameter names,
             allowing customized encoding and decoding of function parameters.
 
@@ -154,10 +152,10 @@ class SignatureModel(ArbitraryBaseModel):
 
     dependency_names: ClassVar[Set[str]]
     return_annotation: ClassVar[Any]
-    encoders: ClassVar[Dict["Encoder", Any]]
+    encoders: ClassVar[dict["Encoder", Any]]
 
     @classmethod
-    async def parse_encoders(cls, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    async def parse_encoders(cls, kwargs: dict[str, Any]) -> dict[str, Any]:
         """
         Parses the kwargs into a proper structure for the encoder itself.
 
@@ -166,10 +164,10 @@ class SignatureModel(ArbitraryBaseModel):
         custom `encode()` functionality.
 
         Args:
-            kwargs (Dict[str, Any]): The keyword arguments to be parsed.
+            kwargs (dict[str, Any]): The keyword arguments to be parsed.
 
         Returns:
-            Dict[str, Any]: The parsed keyword arguments with appropriate encoding applied.
+            dict[str, Any]: The parsed keyword arguments with appropriate encoding applied.
         """
 
         def encode_value(encoder: "Encoder", annotation: Any, value: Any) -> Any:
@@ -190,7 +188,7 @@ class SignatureModel(ArbitraryBaseModel):
 
         for key, value in kwargs.items():
             if key in cls.encoders:
-                encoder_info: Dict[str, "Encoder"] = cls.encoders[key]  # type: ignore
+                encoder_info: dict[str, "Encoder"] = cls.encoders[key]  # type: ignore
                 encoder: "Encoder" = encoder_info["encoder"]
                 annotation = encoder_info["annotation"]
 
@@ -232,7 +230,7 @@ class SignatureModel(ArbitraryBaseModel):
 
     @classmethod
     async def parse_values_for_connection(
-        cls, connection: Union[Request, WebSocket], **kwargs: Dict[str, Any]
+        cls, connection: Union[Request, WebSocket], **kwargs: dict[str, Any]
     ) -> Any:
         """
         Parses keyword arguments for connection, applies encoders if defined,
@@ -243,7 +241,7 @@ class SignatureModel(ArbitraryBaseModel):
             kwargs (Any): Keyword arguments to parse.
 
         Returns:
-            Dict[str, Any]: Dictionary of validated model fields.
+            dict[str, Any]: Dictionary of validated model fields.
 
         Raises:
             BaseSystemException: If validation error occurs.
@@ -282,7 +280,7 @@ class SignatureModel(ArbitraryBaseModel):
             Exception: Constructed exception with detailed error message and context.
         """
 
-        def extract_error_message(exception: Exception) -> Dict[str, Any]:
+        def extract_error_message(exception: Exception) -> dict[str, Any]:
             """
             Extracts error message from the exception and organizes it into a dictionary format.
 
@@ -336,7 +334,7 @@ class SignatureModel(ArbitraryBaseModel):
             Categorizes errors into server errors and client errors.
 
             Args:
-                errors (list): List of errors to categorize.
+                errors (list): list of errors to categorize.
 
             Returns:
                 tuple: Two lists containing server errors and client errors respectively.
@@ -377,9 +375,9 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         fn (AnyCallable): The callable function or method.
         signature (InspectSignature): Signature object obtained from inspecting `fn`.
         fn_name (str): Name of the function.
-        defaults (Dict[str, Any]): Dictionary holding default values for function parameters.
+        defaults (dict[str, Any]): Dictionary holding default values for function parameters.
         dependency_names (Set[str]): Set of dependency names required by the function.
-        field_definitions (Dict[Any, Any]): Dictionary holding field definitions for the signature model.
+        field_definitions (dict[Any, Any]): Dictionary holding field definitions for the signature model.
 
     Raises:
         ImproperlyConfigured: If there is an error during signature creation.
@@ -405,9 +403,9 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         self.fn = fn
         self.signature = InspectSignature.from_callable(self.fn)
         self.fn_name = fn.__name__ if hasattr(fn, "__name__") else "anonymous"
-        self.defaults: Dict[str, Any] = {}
+        self.defaults: dict[str, Any] = {}
         self.dependency_names = dependency_names
-        self.field_definitions: Dict[Any, Any] = {}
+        self.field_definitions: dict[Any, Any] = {}
 
     def validate_missing_dependency(self, param: Any) -> None:
         """
@@ -483,19 +481,19 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
     def extract_arguments(
-        self, param: Union["Parameter", None] = None, argument_list: Union[List[Any], None] = None
-    ) -> List[Type[type]]:
+        self, param: Union["Parameter", None] = None, argument_list: Union[list[Any], None] = None
+    ) -> list[Type[type]]:
         """
         Recursively extracts unique types from a parameter's type annotation.
 
         Args:
             param (Union[Parameter, None], optional): The parameter with type annotation to extract from.
-            argument_list (Union[List[Any], None], optional): The list of arguments extracted so far.
+            argument_list (Union[list[Any], None], optional): The list of arguments extracted so far.
 
         Returns:
-            List[Type[type]]: A list of unique types extracted from the parameter's type annotation.
+            list[Type[type]]: A list of unique types extracted from the parameter's type annotation.
         """
-        arguments: List[Any] = list(argument_list) if argument_list is not None else []
+        arguments: list[Any] = list(argument_list) if argument_list is not None else []
         args = get_args(param)
 
         for arg in args:
@@ -528,14 +526,14 @@ class SignatureFactory(ArbitraryExtraBaseModel):
                 f"Error creating signature for '{self.fn_name}': '{e}'."
             ) from e
 
-    def _handle_encoders(self) -> Dict[str, Any]:
+    def _handle_encoders(self) -> dict[str, Any]:
         """
         Extracts encoders for parameters based on their annotations.
 
         Returns:
-            Dict[str, Any]: A dictionary mapping parameter names to encoder details.
+            dict[str, Any]: A dictionary mapping parameter names to encoder details.
         """
-        encoders: Dict[str, Any] = {}
+        encoders: dict[str, Any] = {}
         for param in self.parameters:
             if not self._should_skip_parameter(param):
                 encoder = self._find_encoder(param.annotation)
@@ -591,12 +589,12 @@ class SignatureFactory(ArbitraryExtraBaseModel):
             else:
                 self.field_definitions[param.name] = (Any, ...)
 
-    def _build_signature_model(self, encoders: Dict[str, Any]) -> Type[SignatureModel]:
+    def _build_signature_model(self, encoders: dict[str, Any]) -> Type[SignatureModel]:
         """
         Builds the SignatureModel using field definitions, encoders, and return annotation.
 
         Args:
-            encoders (Dict[str, Any]): A dictionary mapping parameter names to encoder details.
+            encoders (dict[str, Any]): A dictionary mapping parameter names to encoder details.
 
         Returns:
             Type[SignatureModel]: The created SignatureModel class.

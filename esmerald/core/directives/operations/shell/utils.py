@@ -1,6 +1,6 @@
 import datetime
 from collections import OrderedDict
-from typing import Any, Dict
+from typing import Any
 
 import lilya
 import pydantic
@@ -52,12 +52,12 @@ def welcome_message(app: Any) -> None:
     printer.write_plain(application)
 
 
-def import_objects(app: Any) -> Dict[Any, Any]:
+def import_objects(app: Any) -> dict[Any, Any]:
     """
     Imports all the needed objects needed for the shell.
     """
     imported_objects = {}
-    filtered_defaults: Dict[Any, Any] = {}
+    filtered_defaults: dict[Any, Any] = {}
     import_statement = "from {module_path} import {model}"
 
     welcome_message(app)

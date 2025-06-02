@@ -1,5 +1,5 @@
 import re
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, Type, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Type, Union, cast
 
 from lilya._internal._path import clean_path
 from lilya._utils import is_class_and_subclass
@@ -24,12 +24,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class BaseMiddleware:
     def handle_middleware(
-        self, handler: Any, base_middleware: List["Middleware"]
-    ) -> List["Middleware"]:
+        self, handler: Any, base_middleware: list["Middleware"]
+    ) -> list["Middleware"]:
         """
         Handles both types of middlewares for Gateway and WebSocketGateway
         """
-        _middleware: List["Middleware"] = []
+        _middleware: list["Middleware"] = []
 
         if not is_class_and_subclass(handler, View) and not isinstance(handler, View):
             base_middleware += handler.middleware or []
@@ -182,7 +182,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[list["Middleware"]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -365,7 +365,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         # Handle middleware
         self.middleware = middleware or []
-        self._middleware: List["Middleware"] = self.handle_middleware(
+        self._middleware: list["Middleware"] = self.handle_middleware(
             handler=handler, base_middleware=self.middleware
         )
 
@@ -408,7 +408,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             for after in self.after_request:
                 handler.after_request.append(after)
 
-        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
+        self._interceptors: Union[list["Interceptor"], "VoidType"] = Void
         self.name = name
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
@@ -557,7 +557,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[list["Middleware"]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of a Gateway will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -644,7 +644,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         # Handle middleware
         self.middleware = middleware or []
-        self._middleware: List["Middleware"] = self.handle_middleware(
+        self._middleware: list["Middleware"] = self.handle_middleware(
             handler=handler, base_middleware=self.middleware
         )
         self.is_middleware: bool = False
@@ -687,7 +687,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             for after in self.after_request:
                 handler.after_request.append(after)
 
-        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
+        self._interceptors: Union[list["Interceptor"], "VoidType"] = Void
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
@@ -859,7 +859,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self.handler = cast("Callable", handler)
         self.include_in_schema = include_in_schema
 
-        self._interceptors: Union[List["Interceptor"], "VoidType"] = Void
+        self._interceptors: Union[list["Interceptor"], "VoidType"] = Void
         self.name = name
         self.dependencies: Any = {}
         self.interceptors: Sequence["Interceptor"] = []

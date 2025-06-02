@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Union, cast
 
 from lilya.types import Lifespan
 from pydantic import AnyUrl
@@ -226,7 +226,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = None
     security: Annotated[
-        Optional[List[SecurityScheme]],
+        Optional[list[SecurityScheme]],
         Doc(
             """
             Used by OpenAPI definition, the security must be compliant with the norms.
@@ -242,7 +242,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = None
     servers: Annotated[
-        List[Dict[str, Union[str, Any]]],
+        list[dict[str, Union[str, Any]]],
         Doc(
             """
             A `list` of python dictionaries with the information regarding the connectivity
@@ -303,7 +303,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = "3.1.0"
     allowed_hosts: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         Doc(
             """
             A `list` of allowed hosts for the application. The allowed hosts when not specified
@@ -315,7 +315,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = ["*"]
     allow_origins: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         Doc(
             """
             A `list` of allowed origins hosts for the application.
@@ -380,7 +380,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = True
     tags: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         Doc(
             """
             A list of strings tags to be applied to the *path operation*.
@@ -642,7 +642,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = "https://esmerald.dev/statics/images/favicon.ico"
     swagger_ui_init_oauth: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Doc(
             """
             String default relative URL where the Swagger Init Auth documentation
@@ -653,7 +653,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ),
     ] = None
     swagger_ui_parameters: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Doc(
             """
             A mapping with parameters to be passed onto Swagger.
@@ -785,7 +785,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
     ] = "https://esmerald.dev/statics/images/favicon.ico"
 
     # Shell configuration
-    ipython_args: List[str] = ["--no-banner"]
+    ipython_args: list[str] = ["--no-banner"]
     ptpython_config_file: str = "~/.config/ptpython/config.py"
 
     ignore_reload: Annotated[bool, Doc("""Ignore the reload settings.""")] = False
@@ -801,16 +801,16 @@ class EsmeraldAPISettings(CacheBackendSettings):
         return False
 
     @property
-    def password_hashers(self) -> List[str]:
+    def password_hashers(self) -> list[str]:
         """
-        List of available password hashers of Esmerald.
+        list of available password hashers of Esmerald.
         These password hashers are used withing the `esmerald.contrib.*` and aims
         to simplify the process of creating and validating password.
 
         Read more about the [password hashers](https://esmerald.dev/password-hashers/?h=passwor).
 
         Return:
-            List of strings with the module and object location of the password hashers.
+            list of strings with the module and object location of the password hashers.
 
         Default:
             ```python
@@ -837,7 +837,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         class AppSettings(EsmeraldAPISettings):
 
             @property
-            def password_hashers(self) -> List[str]:
+            def password_hashers(self) -> list[str]:
                 return ["myapp.hashers.CustomHasher"]
                 ```
         ```
@@ -847,7 +847,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         ]
 
     @property
-    def routes(self) -> List[Union[APIGateHandler, "Include"]]:
+    def routes(self) -> list[Union[APIGateHandler, "Include"]]:
         """
         A global `list` of esmerald routes. Those routes may vary and those can
         be `Gateway`, `WebSocketGateWay` or even `Include`.
@@ -859,7 +859,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         the [Esmerald routing system](https://esmerald.dev/routing/routes/).
 
         Returns:
-            List of routes
+            list of routes
 
         Default:
             []
@@ -882,7 +882,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         class APPSettings(EsmeraldAPISettings):
 
             @property
-            def routes(self) -> List[Union[APIGateHandler, "Include"]]:
+            def routes(self) -> list[Union[APIGateHandler, "Include"]]:
                 return [
                     Gateway(handler=homepage)
                     Include("/nested",
@@ -1028,7 +1028,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
 
 
         class AppSettings(EsmeraldAPISettings):
-            allow_origins: List[str] = ['www.example.com', 'www.foobar.com']
+            allow_origins: list[str] = ['www.example.com', 'www.foobar.com']
 
             @property
             def cors_config(self) -> CORSConfig:
@@ -1181,7 +1181,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         class AppSettings(EsmeraldAPISettings):
 
             @property
-            def middleware(self) -> List[Middleware]:
+            def middleware(self) -> list[Middleware]:
                 return [
                     StarletteMiddleware(
                         TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]
@@ -1212,7 +1212,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         return None
 
     @property
-    def interceptors(self) -> List[Interceptor]:
+    def interceptors(self) -> list[Interceptor]:
         """
         A `list` of global interceptors from objects inheriting from
         `esmerald.interceptors.interceptor.EsmeraldInterceptor`.
@@ -1223,7 +1223,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         these interceptors on a Esmerald instance, means **the whole application**.
 
         Returns:
-            List of interceptors
+            list of interceptors
 
         Default:
             []
@@ -1244,7 +1244,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
 
 
         class AppSettings(EsmeraldAPISettings):
-            def interceptors(self) -> List[Interceptor]:
+            def interceptors(self) -> list[Interceptor]:
                 return [LoggingInterceptor]
 
         ```
@@ -1252,7 +1252,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         return []
 
     @property
-    def permissions(self) -> List[Permission]:
+    def permissions(self) -> list[Permission]:
         """
         A `list` of global permissions from objects inheriting from
         `esmerald.permissions.BasePermission`.
@@ -1266,7 +1266,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
             []
 
         Returns:
-            List of global permissions (not permissions on levels).
+            list of global permissions (not permissions on levels).
 
         **Example**
 
@@ -1285,7 +1285,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
 
 
         class AppSettings(EsmeraldAPISettings):
-            def permissions(self) -> List[Permission]:
+            def permissions(self) -> list[Permission]:
                 return [IsAdmin]
         ```
         """
@@ -1376,7 +1376,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         return {}
 
     @property
-    def on_startup(self) -> Union[List[LifeSpanHandler], None]:
+    def on_startup(self) -> Union[list[LifeSpanHandler], None]:
         """
         A `list` of events that are trigger upon the application
         starts.
@@ -1384,7 +1384,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         Read more about the [events](https://esmerald.dev/lifespan-events/).
 
         Returns:
-            List of events
+            list of events
 
         Default:
             None
@@ -1404,7 +1404,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         class AppSettings(EsmeraldAPISettings):
 
             @property
-            def on_startup(self) -> Union[List[LifeSpanHandler], None]:
+            def on_startup(self) -> Union[list[LifeSpanHandler], None]:
                 return [
                     database.connect
                 ]
@@ -1413,7 +1413,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         return None
 
     @property
-    def on_shutdown(self) -> Union[List[LifeSpanHandler], None]:
+    def on_shutdown(self) -> Union[list[LifeSpanHandler], None]:
         """
         A `list` of events that are trigger upon the application
         shuts down.
@@ -1421,7 +1421,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         Read more about the [events](https://esmerald.dev/lifespan-events/).
 
         Returns:
-            List of events
+            list of events
 
         Default:
             None
@@ -1441,7 +1441,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         class AppSettings(EsmeraldAPISettings):
 
             @property
-            def on_shutdown(self) -> Union[List[LifeSpanHandler], None]:
+            def on_shutdown(self) -> Union[list[LifeSpanHandler], None]:
                 return [
                     database.connect
                 ]
@@ -1508,20 +1508,20 @@ class EsmeraldAPISettings(CacheBackendSettings):
         return {}
 
     @property
-    def pluggables(self) -> Dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
+    def pluggables(self) -> dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
         """
         Deprecated
         """
         return {}
 
     @property
-    def encoders(self) -> Union[List[Encoder], None]:
+    def encoders(self) -> Union[list[Encoder], None]:
         """
         A `list` of encoders to be used by the application once it
         starts.
 
         Returns:
-            List of encoders
+            list of encoders
 
         **Example**
 
@@ -1547,14 +1547,14 @@ class EsmeraldAPISettings(CacheBackendSettings):
         class AppSettings(EsmeraldAPISettings):
 
             @property
-            def encoders(self) -> Union[List[Encoder], None]:
+            def encoders(self) -> Union[list[Encoder], None]:
                 return [AttrsEncoder]
         ```
         """
         return []
 
     def __hash__(self) -> int:
-        values: Dict[str, Any] = {}
+        values: dict[str, Any] = {}
         for key, value in self.__dict__.items():
             values[key] = None
             if isinstance(value, (list, set)):

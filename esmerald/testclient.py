@@ -5,8 +5,6 @@ from typing import (
     Any,
     AsyncContextManager,
     Callable,
-    Dict,
-    List,
     Optional,
     Sequence,
     Union,
@@ -61,9 +59,9 @@ class EsmeraldTestClient(TestClient):
         raise_server_exceptions: bool = True,
         root_path: str = "",
         backend: "Literal['asyncio', 'trio']" = "asyncio",
-        backend_options: Optional[Dict[str, Any]] = None,
+        backend_options: Optional[dict[str, Any]] = None,
         cookies: Optional[CookieTypes] = None,
-        headers: Dict[str, str] = None,
+        headers: dict[str, str] = None,
     ):
         super().__init__(
             app=app,
@@ -76,12 +74,12 @@ class EsmeraldTestClient(TestClient):
             headers=headers,
         )
 
-    def __enter__(self, *args: Any, **kwargs: Dict[str, Any]) -> "EsmeraldTestClient":
+    def __enter__(self, *args: Any, **kwargs: dict[str, Any]) -> "EsmeraldTestClient":
         return cast("EsmeraldTestClient", super().__enter__(*args, **kwargs))
 
 
 def create_client(
-    routes: Union["APIGateHandler", List["APIGateHandler"]],
+    routes: Union["APIGateHandler", list["APIGateHandler"]],
     *,
     settings_module: Union[Optional["SettingsType"], Optional[str]] = None,
     debug: Optional[bool] = None,
@@ -93,29 +91,29 @@ def create_client(
     contact: Optional[Contact] = None,
     terms_of_service: Optional[AnyUrl] = None,
     license: Optional[License] = None,
-    security: Optional[List[SecurityScheme]] = None,
-    servers: Optional[List[Dict[str, Union[str, Any]]]] = None,
+    security: Optional[list[SecurityScheme]] = None,
+    servers: Optional[list[dict[str, Union[str, Any]]]] = None,
     secret_key: Optional[str] = get_random_secret_key(),
-    allowed_hosts: Optional[List[str]] = None,
-    allow_origins: Optional[List[str]] = None,
+    allowed_hosts: Optional[list[str]] = None,
+    allow_origins: Optional[list[str]] = None,
     base_url: str = "http://testserver",
     backend: "Literal['asyncio', 'trio']" = "asyncio",
-    backend_options: Optional[Dict[str, Any]] = None,
-    interceptors: Optional[List["Interceptor"]] = None,
+    backend_options: Optional[dict[str, Any]] = None,
+    interceptors: Optional[list["Interceptor"]] = None,
     pluggables: Optional[
-        Dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
+        dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
     ] = None,
     extensions: Optional[
-        Dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
+        dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
     ] = None,
-    permissions: Optional[List["Permission"]] = None,
+    permissions: Optional[list["Permission"]] = None,
     dependencies: Optional["Dependencies"] = None,
-    middleware: Optional[List["Middleware"]] = None,
+    middleware: Optional[list["Middleware"]] = None,
     csrf_config: Optional["CSRFConfig"] = None,
     exception_handlers: Optional["ExceptionHandlerMap"] = None,
     openapi_config: Optional["OpenAPIConfig"] = None,
-    on_shutdown: Optional[List["LifeSpanHandler"]] = None,
-    on_startup: Optional[List["LifeSpanHandler"]] = None,
+    on_shutdown: Optional[list["LifeSpanHandler"]] = None,
+    on_startup: Optional[list["LifeSpanHandler"]] = None,
     cors_config: Optional["CORSConfig"] = None,
     session_config: Optional["SessionConfig"] = None,
     scheduler_config: Optional[SchedulerConfig] = None,
@@ -136,7 +134,7 @@ def create_client(
     lifespan: Optional[Callable[["Esmerald"], "AsyncContextManager"]] = None,
     cookies: Optional[CookieTypes] = None,
     redirect_slashes: Optional[bool] = None,
-    tags: Optional[List[str]] = None,
+    tags: Optional[list[str]] = None,
     webhooks: Optional[Sequence["WebhookGateway"]] = None,
     encoders: Optional[Sequence[Encoder]] = None,
     before_request: Union[Sequence[Callable[..., Any]], None] = None,

@@ -12,8 +12,6 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Dict,
-    List,
     Set,
     Type,
     TypeVar,
@@ -93,14 +91,14 @@ class PathParameterSchema(TypedDict):
 
 
 class OpenAPIDefinitionMixin:  # pragma: no cover
-    def parse_path(self, path: str) -> List[Union[str, PathParameterSchema]]:
+    def parse_path(self, path: str) -> list[Union[str, PathParameterSchema]]:
         """
         Using the Lilya TRANSFORMERS and the application registered convertors,
         transforms the path into a PathParameterSchema used for the OpenAPI definition.
         """
         _, path, variables, _ = compile_path(path)
 
-        parsed_components: List[Union[str, PathParameterSchema]] = []
+        parsed_components: list[Union[str, PathParameterSchema]] = []
 
         for name, convertor in variables.items():
             _type = CONV2TYPE[convertor]
@@ -178,7 +176,7 @@ class BaseResponseHandler:
         signature_model = get_signature(route)
 
         if parameter_model.has_kwargs:
-            kwargs: Dict[str, Any] = await parameter_model.to_kwargs(
+            kwargs: dict[str, Any] = await parameter_model.to_kwargs(
                 connection=request, handler=route
             )
 
@@ -273,28 +271,28 @@ class BaseResponseHandler:
     def _get_response_container_handler(
         self,
         cookies: ResponseCookies,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: str,
     ) -> Callable[
-        [Union[ResponseContainer, LilyaResponse], Type[Esmerald], Dict[str, Any]], LilyaResponse
+        [Union[ResponseContainer, LilyaResponse], Type[Esmerald], dict[str, Any]], LilyaResponse
     ]:
         """
         Creates a handler for ResponseContainer types.
 
         Args:
             cookies (ResponseCookies): The response cookies.
-            headers (Dict[str, Any]): The response headers.
+            headers (dict[str, Any]): The response headers.
             media_type (str): The media type.
 
         Returns:
-            Callable[[ResponseContainer, Type["Esmerald"], Dict[str, Any]], LilyaResponse]: The response container handler function.
+            Callable[[ResponseContainer, Type["Esmerald"], dict[str, Any]], LilyaResponse]: The response container handler function.
 
         """
 
         async def response_content(
             data: Union[ResponseContainer, LilyaResponse],
             app: Type["Esmerald"],
-            **kwargs: Dict[str, Any],
+            **kwargs: dict[str, Any],
         ) -> LilyaResponse:
             _headers = {**self.get_headers(headers), **data.headers}
             _cookies = self.get_cookies(data.cookies, cookies)
@@ -313,27 +311,27 @@ class BaseResponseHandler:
 
         return cast(
             Callable[
-                [Union[ResponseContainer, LilyaResponse], Type["Esmerald"], Dict[str, Any]],
+                [Union[ResponseContainer, LilyaResponse], Type["Esmerald"], dict[str, Any]],
                 LilyaResponse,
             ],
             response_content,
         )
 
     def _get_json_response_handler(
-        self, cookies: ResponseCookies, headers: Dict[str, Any]
-    ) -> Callable[[Response, Dict[str, Any]], LilyaResponse]:
+        self, cookies: ResponseCookies, headers: dict[str, Any]
+    ) -> Callable[[Response, dict[str, Any]], LilyaResponse]:
         """
         Creates a handler function for JSON responses.
 
         Args:
             cookies (ResponseCookies): The response cookies.
-            headers (Dict[str, Any]): The response headers.
+            headers (dict[str, Any]): The response headers.
 
         Returns:
-            Callable[[Response, Dict[str, Any]], LilyaResponse]: The JSON response handler function.
+            Callable[[Response, dict[str, Any]], LilyaResponse]: The JSON response handler function.
         """
 
-        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> LilyaResponse:
+        async def response_content(data: Response, **kwargs: dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(cookies)
             _headers = {
                 **self.get_headers(headers),
@@ -350,24 +348,24 @@ class BaseResponseHandler:
                 data.status_code = status_code
             return data
 
-        return cast(Callable[[Response, Dict[str, Any]], LilyaResponse], response_content)
+        return cast(Callable[[Response, dict[str, Any]], LilyaResponse], response_content)
 
     def _get_response_handler(
-        self, cookies: ResponseCookies, headers: Dict[str, Any], media_type: str
-    ) -> Callable[[Response, Dict[str, Any]], LilyaResponse]:
+        self, cookies: ResponseCookies, headers: dict[str, Any], media_type: str
+    ) -> Callable[[Response, dict[str, Any]], LilyaResponse]:
         """
         Creates a handler function for Response types.
 
         Args:
             cookies (ResponseCookies): The response cookies.
-            headers (Dict[str, Any]): The response headers.
+            headers (dict[str, Any]): The response headers.
             media_type (str): The media type.
 
         Returns:
-            Callable[[Response, Dict[str, Any]], LilyaResponse]: The response handler function.
+            Callable[[Response, dict[str, Any]], LilyaResponse]: The response handler function.
         """
 
-        async def response_content(data: Response, **kwargs: Dict[str, Any]) -> LilyaResponse:
+        async def response_content(data: Response, **kwargs: dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(data.cookies, cookies)
             _headers = {
                 **self.get_headers(headers),
@@ -387,23 +385,23 @@ class BaseResponseHandler:
                 data.headers[header] = value
             return data
 
-        return cast(Callable[[Response, Dict[str, Any]], LilyaResponse], response_content)
+        return cast(Callable[[Response, dict[str, Any]], LilyaResponse], response_content)
 
     def _get_lilya_response_handler(
-        self, cookies: ResponseCookies, headers: Dict[str, Any]
-    ) -> Callable[[LilyaResponse, Dict[str, Any]], LilyaResponse]:
+        self, cookies: ResponseCookies, headers: dict[str, Any]
+    ) -> Callable[[LilyaResponse, dict[str, Any]], LilyaResponse]:
         """
         Creates a handler function for Lilya Responses.
 
         Args:
             cookies (ResponseCookies): The response cookies.
-            headers (Dict[str, Any]): The response headers.
+            headers (dict[str, Any]): The response headers.
 
         Returns:
-            Callable[[LilyaResponse, Dict[str, Any]], LilyaResponse]: The Lilya response handler function.
+            Callable[[LilyaResponse, dict[str, Any]], LilyaResponse]: The Lilya response handler function.
         """
 
-        async def response_content(data: LilyaResponse, **kwargs: Dict[str, Any]) -> LilyaResponse:
+        async def response_content(data: LilyaResponse, **kwargs: dict[str, Any]) -> LilyaResponse:
             _cookies = self.get_cookies(cookies)
             _headers = {
                 **self.get_headers(headers),
@@ -417,29 +415,29 @@ class BaseResponseHandler:
 
             return data
 
-        return cast(Callable[[LilyaResponse, Dict[str, Any]], LilyaResponse], response_content)
+        return cast(Callable[[LilyaResponse, dict[str, Any]], LilyaResponse], response_content)
 
     def _get_default_handler(
         self,
         cookies: ResponseCookies,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: str,
         response_class: Any,
-    ) -> Callable[[Any, Dict[str, Any]], LilyaResponse]:
+    ) -> Callable[[Any, dict[str, Any]], LilyaResponse]:
         """
         Creates a default handler function.
 
         Args:
             cookies (ResponseCookies): The response cookies.
-            headers (Dict[str, Any]): The response headers.
+            headers (dict[str, Any]): The response headers.
             media_type (str): The media type.
             response_class (Any): The response class.
 
         Returns:
-            Callable[[Any, Dict[str, Any]], LilyaResponse]: The default handler function.
+            Callable[[Any, dict[str, Any]], LilyaResponse]: The default handler function.
         """
 
-        async def response_content(data: Any, **kwargs: Dict[str, Any]) -> LilyaResponse:
+        async def response_content(data: Any, **kwargs: dict[str, Any]) -> LilyaResponse:
             data = await self.get_response_data(data=data)
             _cookies = self.get_cookies(cookies)
             if isinstance(data, LilyaResponse):
@@ -459,7 +457,7 @@ class BaseResponseHandler:
                 response.set_cookie(**cookie)  # pragma: no cover
             return response
 
-        return cast(Callable[[Response, Dict[str, Any]], LilyaResponse], response_content)
+        return cast(Callable[[Response, dict[str, Any]], LilyaResponse], response_content)
 
 
 class BaseDispatcher(BaseResponseHandler):
@@ -594,7 +592,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         return parameters
 
     @property
-    def stringify_parameters(self) -> List[str]:  # pragma: no cover
+    def stringify_parameters(self) -> list[str]:  # pragma: no cover
         """
         Gets the param:type in string like list.
         Used for the directive `esmerald show_urls`.
@@ -612,7 +610,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         Finally, the method returns the list of stringified parameters.
 
         Returns:
-        - List[str]: A list of strings representing the parameter name and type in the format "param:type".
+        - list[str]: A list of strings representing the parameter name and type in the format "param:type".
 
         Example:
         >>> dispatcher = Dispatcher()
@@ -634,7 +632,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         return stringified_parameters
 
     @property
-    def parent_levels(self) -> List[Any]:
+    def parent_levels(self) -> list[Any]:
         """
         Returns the handler from the app down to the route handler.
 
@@ -658,7 +656,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         Finally, it reverses the list to maintain the correct order of parent levels.
 
         Returns:
-        - List[Any]: A list of parent levels, starting from the current handler and going up to the app level.
+        - list[Any]: A list of parent levels, starting from the current handler and going up to the app level.
 
         Note:
         - The parent levels are determined based on the `parent` attribute of each handler.
@@ -671,7 +669,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             current = current.parent
         return list(reversed(levels))
 
-    def get_lookup_path(self, ignore_first: bool = True) -> List[str]:
+    def get_lookup_path(self, ignore_first: bool = True) -> list[str]:
         """
         Constructs and returns the lookup path for the current object by traversing
         its parent hierarchy.
@@ -681,7 +679,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         (from the root ancestor to the current object).
 
         Returns:
-            List[str]: A list of names representing the lookup path from the root
+            list[str]: A list of names representing the lookup path from the root
             ancestor to the current object.
         """
 
@@ -720,7 +718,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         level_dependencies = (level.dependencies or {} for level in self.parent_levels)
         return {name for level in level_dependencies for name in level.keys()}
 
-    def get_permissions(self) -> List[AsyncCallable]:
+    def get_permissions(self) -> list[AsyncCallable]:
         """
         Returns all the permissions in the handler scope from the ownership layers.
 
@@ -728,7 +726,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         It collects the permissions defined in each level and stores them in a list.
 
         Returns:
-        - List[AsyncCallable]: A list of permissions associated with the handler.
+        - list[AsyncCallable]: A list of permissions associated with the handler.
 
         Example:
         >>> handler = Dispatcher()
@@ -742,16 +740,16 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The permissions are collected from all parent levels, ensuring that there are no duplicate permissions in the final list.
         """
         if self._permissions is Void:
-            self._permissions: Union[List[Permission], VoidType] = []
+            self._permissions: Union[list[Permission], VoidType] = []
             for layer in self.parent_levels:
                 self._permissions.extend(layer.permissions or [])
             self._permissions = cast(
-                "List[Permission]",
+                "list[Permission]",
                 [wrap_permission(permission) for permission in self._permissions],
             )
-        return cast("List[AsyncCallable]", self._permissions)
+        return cast("list[AsyncCallable]", self._permissions)
 
-    def get_lilya_permissions(self) -> List[DefinePermission]:
+    def get_lilya_permissions(self) -> list[DefinePermission]:
         """
         Retrieves the list of Lilya permissions for the current instance.
         If the `_lilya_permissions` attribute is set to `Void`, it initializes it as an empty list
@@ -759,23 +757,23 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         a list of `Permission` objects.
 
         Returns:
-            List[AsyncCallable]: A list of asynchronous callable permissions.
+            list[AsyncCallable]: A list of asynchronous callable permissions.
         """
 
         if self._lilya_permissions is Void:
-            self._lilya_permissions: Union[List[DefinePermission], VoidType] = []
+            self._lilya_permissions: Union[list[DefinePermission], VoidType] = []
             for layer in self.parent_levels:
                 self._lilya_permissions.extend(
                     wrap_permission(permission) for permission in layer.__lilya_permissions__ or []
                 )
-        return cast("List[DefinePermission]", self._lilya_permissions)
+        return cast("list[DefinePermission]", self._lilya_permissions)
 
-    def get_application_permissions(self) -> Dict[int, Union[AsyncCallable, DefinePermission]]:
+    def get_application_permissions(self) -> dict[int, Union[AsyncCallable, DefinePermission]]:
         """
         Retrieves the list of permissions for the current instance from the application level.
 
         Returns:
-            List[AsyncCallable | DefinePermission]: A list of permissions from the application level.
+            list[AsyncCallable | DefinePermission]: A list of permissions from the application level.
 
         Example:
         >>> handler = Dispatcher()
@@ -787,7 +785,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The permissions are represented by instances of the AsyncCallable or DefinePermission classes.
         - If no permissions are defined at the application level, an empty list will be returned.
         """
-        application_permissions: List[Union[AsyncCallable, DefinePermission]] = []
+        application_permissions: list[Union[AsyncCallable, DefinePermission]] = []
         for layer in self.parent_levels:
             application_permissions.extend(
                 wrap_permission(permission) for permission in (layer.__base_permissions__ or [])
@@ -795,7 +793,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
 
         # Extract the dictionary of permissions
         if self._application_permissions is Void:
-            self._application_permissions: Dict[int, Union[AsyncCallable, DefinePermission]] = {}
+            self._application_permissions: dict[int, Union[AsyncCallable, DefinePermission]] = {}
 
         for index, value in enumerate(application_permissions):
             self._application_permissions[index] = value
@@ -803,15 +801,15 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         return self._application_permissions
 
     @property
-    def lilya_permissions(self) -> List[DefinePermission]:
+    def lilya_permissions(self) -> list[DefinePermission]:
         """
         Returns the list of permissions defined for Lilya.
 
         Returns:
-            List[DefinePermission]: A list of permissions.
+            list[DefinePermission]: A list of permissions.
         """
 
-        return cast("List[DefinePermission]", self._lilya_permissions)
+        return cast("list[DefinePermission]", self._lilya_permissions)
 
     def get_dependencies(self) -> Dependencies:
         """
@@ -894,7 +892,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         self,
         local_cookies: ResponseCookies | None,
         other_cookies: ResponseCookies | None = None,
-    ) -> List[Dict[str, Any]]:  # pragma: no cover
+    ) -> list[dict[str, Any]]:  # pragma: no cover
         """
         Returns a unique list of cookies.
 
@@ -906,7 +904,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - other_cookies (ResponseCookies): The set of other cookies.
 
         Returns:
-        - List[Dict[str, Any]]: A list of dictionaries representing the normalized cookies.
+        - list[dict[str, Any]]: A list of dictionaries representing the normalized cookies.
 
         The method first creates a filtered list of cookies by combining the `local_cookies`
         and `other_cookies` sets. It ensures that only unique cookies are included in the list.
@@ -937,7 +935,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             for cookie in filtered_cookies.values()
         ]
 
-    def get_headers(self, headers: ResponseHeaders) -> Dict[str, Any]:
+    def get_headers(self, headers: ResponseHeaders) -> dict[str, Any]:
         """
         Returns a dictionary of response headers.
 
@@ -1007,7 +1005,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
 
     async def dispatch_allow_connection(
         self,
-        permissions: Dict[int, Union[AsyncCallable, DefinePermission]],
+        permissions: dict[int, Union[AsyncCallable, DefinePermission]],
         connection: "Connection",
         scope: Scope,
         receive: Receive,
@@ -1018,7 +1016,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         Dispatches a connection based on the provided permissions.
 
         Args:
-            permissions (Dict[int, Union[AsyncCallable, DefinePermission]]):
+            permissions (dict[int, Union[AsyncCallable, DefinePermission]]):
                 A dictionary mapping permission levels to either an asynchronous
                 callable or a DefinePermission instance.
             connection (Connection): The connection object to be dispatched.
@@ -1035,7 +1033,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
                 # Dispatches to lilya permissions
                 await dispatch_call(scope, receive, send)
 
-    def get_security_schemes(self) -> List[SecurityScheme]:
+    def get_security_schemes(self) -> list[SecurityScheme]:
         """
         Returns a list of all security schemes associated with the handler.
 
@@ -1043,7 +1041,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         The collected security schemes are stored in a list and returned.
 
         Returns:
-        - List[SecurityScheme]: A list of security schemes associated with the handler.
+        - list[SecurityScheme]: A list of security schemes associated with the handler.
 
         Example:
         >>> handler = Dispatcher()
@@ -1056,12 +1054,12 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - Each security scheme is represented by an instance of the SecurityScheme class.
         - The SecurityScheme class has attributes such as name, type, scheme, bearer_format, in_, and name, which provide information about the security scheme.
         """
-        security_schemes: List[SecurityScheme] = []
+        security_schemes: list[SecurityScheme] = []
         for layer in self.parent_levels:
             security_schemes.extend(layer.security or [])
         return security_schemes
 
-    def get_handler_tags(self) -> List[str]:
+    def get_handler_tags(self) -> list[str]:
         """
         Returns all the tags associated with the handler by checking the parents as well.
 
@@ -1069,7 +1067,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         It collects the tags defined in each level and stores them in a list.
 
         Returns:
-        - List[str]: A list of tags associated with the handler.
+        - list[str]: A list of tags associated with the handler.
 
         Example:
         >>> handler = Dispatcher()
@@ -1082,24 +1080,24 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - Each tag is represented as a string.
         - The tags are collected from all parent levels, ensuring that there are no duplicate tags in the final list.
         """
-        tags: List[str] = []
+        tags: list[str] = []
         for layer in self.parent_levels:
             tags.extend(layer.tags or [])
 
-        tags_clean: List[str] = []
+        tags_clean: list[str] = []
         for tag in tags:
             if tag not in tags_clean:
                 tags_clean.append(tag)
 
         return tags_clean if tags_clean else None
 
-    def get_interceptors(self) -> List[AsyncCallable]:
+    def get_interceptors(self) -> list[AsyncCallable]:
         """
         Returns a list of all the interceptors in the handler scope from the ownership layers.
         If the interceptors have not been initialized, it initializes them by collecting interceptors from each parent level.
 
         Returns:
-        - List[AsyncCallable]: A list of all the interceptors in the handler scope.
+        - list[AsyncCallable]: A list of all the interceptors in the handler scope.
 
         Example:
         >>> handler = Dispatcher()
@@ -1113,14 +1111,14 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The AsyncCallable class provides a way to call the interceptor asynchronously.
         """
         if self._interceptors is Void:
-            self._interceptors: Union[List[Interceptor], VoidType] = []
+            self._interceptors: Union[list[Interceptor], VoidType] = []
             for layer in self.parent_levels:
                 self._interceptors.extend(layer.interceptors or [])
             self._interceptors = cast(
-                "List[Interceptor]",
+                "list[Interceptor]",
                 [AsyncCallable(interceptors) for interceptors in self._interceptors],
             )
-        return cast("List[AsyncCallable]", self._interceptors)
+        return cast("list[AsyncCallable]", self._interceptors)
 
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
