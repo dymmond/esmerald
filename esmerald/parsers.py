@@ -1,6 +1,6 @@
 from contextlib import suppress
 from json import JSONDecodeError
-from typing import TYPE_CHECKING, Any, Dict, List, get_args, get_origin
+from typing import TYPE_CHECKING, Any, get_args, get_origin
 
 from lilya.datastructures import DataUpload as LilyaUploadFile
 from orjson import loads
@@ -24,7 +24,7 @@ class HashableBaseModel(BaseModel):  # pragma: no cover
     """
 
     def __hash__(self) -> int:
-        values: Dict[str, Any] = {}
+        values: dict[str, Any] = {}
         for key, value in self.__dict__.items():
             values[key] = None
             if isinstance(value, (list, set)):
@@ -54,7 +54,7 @@ class ArbitraryExtraBaseModel(BaseModel):
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
 
-def flatten(values: List[Any]) -> List[Any]:
+def flatten(values: list[Any]) -> list[Any]:
     """
     Flattens a list
     """
@@ -89,13 +89,13 @@ def parse_json_value(value: Any) -> Any:
     return value  # type: ignore
 
 
-def merge_values(values_dict: Dict[str, Any], key: str, value: Any) -> None:
+def merge_values(values_dict: dict[str, Any], key: str, value: Any) -> None:
     """
     Merges values into a dictionary, ensuring that multiple values for the same key
     are stored in a list.
 
     Args:
-        values_dict (Dict[str, Any]): The dictionary storing parsed form data.
+        values_dict (dict[str, Any]): The dictionary storing parsed form data.
         key (str): The key for the form field.
         value (Any): The value to be added.
     """
@@ -109,7 +109,7 @@ def merge_values(values_dict: Dict[str, Any], key: str, value: Any) -> None:
         values_dict[key] = value
 
 
-def process_form_data(form_data: "FormData") -> Dict[str, Any]:
+def process_form_data(form_data: "FormData") -> dict[str, Any]:
     """
     Processes form data, converting JSON-encoded strings and organizing values into a dictionary.
 
@@ -117,9 +117,9 @@ def process_form_data(form_data: "FormData") -> Dict[str, Any]:
         form_data (FormData): The form data to be processed.
 
     Returns:
-        Dict[str, Any]: Parsed and structured form data.
+        dict[str, Any]: Parsed and structured form data.
     """
-    values_dict: Dict[str, Any] = {}
+    values_dict: dict[str, Any] = {}
 
     for key, value in form_data.multi_items():
         parsed_value = value if isinstance(value, LilyaUploadFile) else parse_json_value(value)
@@ -128,13 +128,13 @@ def process_form_data(form_data: "FormData") -> Dict[str, Any]:
     return values_dict
 
 
-def handle_multipart_encoding(field: "FieldInfo", values_dict: Dict[str, Any]) -> Any:
+def handle_multipart_encoding(field: "FieldInfo", values_dict: dict[str, Any]) -> Any:
     """
     Handles parsing of multipart form data based on field annotations.
 
     Args:
         field (FieldInfo): Field metadata including expected data types.
-        values_dict (Dict[str, Any]): Parsed form data.
+        values_dict (dict[str, Any]): Parsed form data.
 
     Returns:
         Any: The processed value, formatted correctly according to field type.

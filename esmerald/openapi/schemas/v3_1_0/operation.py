@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
@@ -15,7 +15,7 @@ from .server import Server
 class Operation(BaseModel):
     """Describes a single API operation on a path."""
 
-    tags: Optional[List[str]] = None
+    tags: Optional[list[str]] = None
     """
     A list of tags for API documentation control.
     Tags can be used for logical grouping of operations by resources or any other qualifier.
@@ -46,7 +46,7 @@ class Operation(BaseModel):
     therefore, it is RECOMMENDED to follow common programming naming conventions.
     """
 
-    parameters: Optional[List[Union[Parameter, Reference]]] = None
+    parameters: Optional[list[Union[Parameter, Reference]]] = None
     """
     A list of parameters that are applicable for this operation.
     If a parameter is already defined at the [Path Item](https://spec.openapis.org/oas/v3.1.0#pathItemParameters),
@@ -74,7 +74,7 @@ class Operation(BaseModel):
     The list of possible responses as they are returned from executing this operation.
     """
 
-    callbacks: Optional[Dict[str, Union[Callback, Reference]]] = None
+    callbacks: Optional[dict[str, Union[Callback, Reference]]] = None
     """
     A map of possible out-of band callbacks related to the parent operation.
     The key is a unique identifier for the Callback Object.
@@ -89,7 +89,7 @@ class Operation(BaseModel):
     Default value is `false`.
     """
 
-    security: Optional[List[SecurityRequirement]] = None
+    security: Optional[list[SecurityRequirement]] = None
     """
     A declaration of which security mechanisms can be used for this operation.
     The list of values includes alternative security requirement objects that can be used.
@@ -99,7 +99,7 @@ class Operation(BaseModel):
     To remove a top-level security declaration, an empty array can be used.
     """
 
-    servers: Optional[List[Server]] = None
+    servers: Optional[list[Server]] = None
     """
     An alternative `server` array to service this operation.
     If an alternative `server` object is specified at the Path Item Object or Root level,

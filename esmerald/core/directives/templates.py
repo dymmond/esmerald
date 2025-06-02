@@ -3,7 +3,7 @@ import shutil
 import stat
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -116,7 +116,7 @@ class TemplateDirective(BaseDirective):
         base_name: str,
         app_or_project: str,
         template_dir: str,
-        context: Dict[str, Any],
+        context: dict[str, Any],
         with_deployment: bool = False,
         deployment_folder_name: Union[str, None] = None,
     ) -> None:
@@ -184,7 +184,7 @@ class TemplateDirective(BaseDirective):
         template: Union[str, Path],
         destination: Union[str, Path],
         template_dir: Union[str, Path],
-        context: Dict[str, Any],
+        context: dict[str, Any],
     ) -> None:
         """
         Goes through every file generated and replaces the variables with the given

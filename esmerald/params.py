@@ -1,6 +1,6 @@
 import inspect
 from functools import cached_property
-from typing import Any, Callable, Dict, List, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 from pydantic.fields import AliasChoices, AliasPath, FieldInfo
 
@@ -45,7 +45,7 @@ class Param(FieldInfo):
         max_digits: Optional[int] = _PyUndefined,
         strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
@@ -60,7 +60,7 @@ class Param(FieldInfo):
         self.include_in_schema = include_in_schema
         self.allow_none = allow_none
 
-        extra: Dict[str, Any] = {}
+        extra: dict[str, Any] = {}
         extra.update(header=header)
         extra.update(cookie=cookie)
         extra.update(query=query)
@@ -135,7 +135,7 @@ class Header(Param):
         max_digits: Optional[int] = _PyUndefined,
         strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
@@ -210,7 +210,7 @@ class Cookie(Param):
         max_digits: Optional[int] = _PyUndefined,
         strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
@@ -285,7 +285,7 @@ class Query(Param):
         max_digits: Optional[int] = _PyUndefined,
         strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
@@ -355,7 +355,7 @@ class Path(Param):
         max_digits: Optional[int] = _PyUndefined,
         strict: Optional[bool] = _PyUndefined,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         deprecated: Optional[bool] = None,
         include_in_schema: bool = True,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
@@ -422,7 +422,7 @@ class Body(FieldInfo):
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
         discriminator: Optional[str] = None,
         frozen: Optional[bool] = None,
@@ -430,9 +430,9 @@ class Body(FieldInfo):
         init_var: bool = True,
         kw_only: bool = True,
         include_in_schema: bool = True,
-        json_schema_extra: Optional[Dict[str, Any]] = None,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
-        extra: Dict[str, Any] = {}
+        extra: dict[str, Any] = {}
         self.media_type = media_type
         self.content_encoding = content_encoding
         self.examples = examples
@@ -499,7 +499,7 @@ class Form(Body):
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
         discriminator: Optional[str] = None,
         max_digits: Optional[int] = _PyUndefined,
@@ -563,7 +563,7 @@ class File(Form):
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         pattern: Optional[str] = None,
-        examples: Optional[List[Any]] = None,
+        examples: Optional[list[Any]] = None,
         validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
         discriminator: Optional[str] = None,
         max_digits: Optional[int] = _PyUndefined,
@@ -626,7 +626,7 @@ class Injects(FieldInfo):
         allow_none: bool = True,
     ) -> None:
         self.allow_none = allow_none
-        self.extra: Dict[str, Any] = {
+        self.extra: dict[str, Any] = {
             IS_DEPENDENCY: True,
             SKIP_VALIDATION: skip_validation,
             "allow_none": self.allow_none,
@@ -710,7 +710,7 @@ class Security(BaseRequires):
 
     @cached_property
     def is_security_scope_dependency(self) -> bool:
-        parameters: Dict[str, inspect.Parameter] = dict(self.signature_model.parameters.items())
+        parameters: dict[str, inspect.Parameter] = dict(self.signature_model.parameters.items())
         return any(
             is_class_and_subclass(param.annotation, Scopes) for param in parameters.values()
         )

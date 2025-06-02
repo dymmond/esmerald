@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union
+from typing import Any, Callable, Mapping, Optional, Type, Union
 
 from lilya import status
 from lilya.exceptions import HTTPException as LilyaException
@@ -31,8 +31,8 @@ class ExceptionMiddleware(LilyaExceptionMiddleware):
     ) -> None:
         self.app = app
         self.debug = debug
-        self._status_handlers: Dict[int, Callable] = {}
-        self._exception_handlers: Dict[Type[Exception], Callable] = {
+        self._status_handlers: dict[int, Callable] = {}
+        self._exception_handlers: dict[Type[Exception], Callable] = {
             HTTPException: http_exception_handler,
             LilyaException: http_exception_handler,
             WebSocketException: self.websocket_exception,
@@ -64,8 +64,8 @@ class ExceptionMiddleware(LilyaExceptionMiddleware):
 
 class ResponseContent(BaseModel):
     detail: Optional[str]
-    extra: Optional[Union[Dict[str, Any], List[Any]]] = None
-    headers: Optional[Dict[str, str]] = None
+    extra: Optional[Union[dict[str, Any], list[Any]]] = None
+    headers: Optional[dict[str, str]] = None
     status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 

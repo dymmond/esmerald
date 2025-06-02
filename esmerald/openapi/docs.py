@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from lilya.responses import HTMLResponse
 
@@ -20,8 +20,8 @@ def get_swagger_ui_html(
     swagger_css_url: str,
     swagger_favicon_url: str,
     oauth2_redirect_url: Optional[str] = None,
-    init_oauth: Optional[Dict[str, Any]] = None,
-    swagger_ui_parameters: Optional[Dict[str, Any]] = None,
+    init_oauth: Optional[dict[str, Any]] = None,
+    swagger_ui_parameters: Optional[dict[str, Any]] = None,
 ) -> HTMLResponse:  # pragma: no cover
     current_swagger_ui_parameters = swagger_ui_default_parameters.copy()
     if swagger_ui_parameters:

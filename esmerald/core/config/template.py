@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Type, Union
+from typing import Any, Type, Union
 
 from pydantic import BaseModel, ConfigDict, DirectoryPath
 from typing_extensions import Annotated, Doc
@@ -41,7 +41,7 @@ class TemplateConfig(BaseModel):
     ] = JinjaTemplateEngine
 
     directory: Annotated[
-        Union[DirectoryPath, List[DirectoryPath]],
+        Union[DirectoryPath, list[DirectoryPath]],
         Doc(
             """
             The directory for the templates in the format of a path like.
@@ -62,7 +62,7 @@ class TemplateConfig(BaseModel):
         ),
     ] = None
     env_options: Annotated[
-        Union[Dict[Any, Any], None],
+        Union[dict[Any, Any], None],
         Doc(
             """
             The options for the template engine. These options are passed to the template engine.

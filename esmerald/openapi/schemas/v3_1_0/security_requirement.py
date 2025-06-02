@@ -1,6 +1,5 @@
-from typing import Dict, List
 
-SecurityRequirement = Dict[str, List[str]]
+SecurityRequirement = dict[str, list[str]]
 """
 Lists the required security schemes to execute this operation.
 The name used for each property MUST correspond to a security scheme declared in the
@@ -17,7 +16,7 @@ only one of the Security Requirement Objects in the list needs to be satisfied t
 
 Patterned Fields
 
-{name}: List[str]
+{name}: list[str]
 Each name MUST correspond to a security scheme which is declared
 in the [Security Schemes](https://spec.openapis.org/oas/v3.1.0#componentsSecuritySchemes) under the [Components Object](https://spec.openapis.org/oas/v3.1.0#componentsObject).
 If the security scheme is of type `"oauth2"` or `"openIdConnect"`,

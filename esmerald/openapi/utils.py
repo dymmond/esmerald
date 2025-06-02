@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Tuple, Union
 
 from pydantic import TypeAdapter
 from pydantic.fields import FieldInfo
@@ -15,7 +15,7 @@ VALIDATION_ERROR_RESPONSE_DEFINITION = validation_error_response_definition.mode
     exclude_none=True
 )
 
-STATUS_CODE_RANGES: Dict[str, str] = {
+STATUS_CODE_RANGES: dict[str, str] = {
     "1XX": "Information",
     "2XX": "Success",
     "3XX": "Redirection",
@@ -37,11 +37,11 @@ REF_TEMPLATE = "#/components/schemas/{name}"
 
 def get_definitions(
     *,
-    fields: List[FieldInfo],
+    fields: list[FieldInfo],
     schema_generator: GenerateJsonSchema,
 ) -> Tuple[
-    Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-    Dict[str, Dict[str, Any]],
+    dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+    dict[str, dict[str, Any]],
 ]:
     inputs = [(field, "validation", TypeAdapter(field.annotation).core_schema) for field in fields]
     field_mapping, definitions = schema_generator.generate_definitions(
@@ -54,8 +54,8 @@ def get_definitions(
 def get_schema_from_model_field(
     *,
     field: FieldInfo,
-    field_mapping: Dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
-) -> Dict[str, Any]:
+    field_mapping: dict[Tuple[FieldInfo, Literal["validation", "serialization"]], JsonSchemaValue],
+) -> dict[str, Any]:
     json_schema = field_mapping[(field, "validation")]
     if "$ref" not in json_schema:
         json_schema["title"] = field.title or field.alias.title().replace("_", " ")
@@ -77,7 +77,7 @@ def is_status_code_allowed(status_code: Union[int, str, None]) -> bool:
 
 
 def dict_update(
-    original_dict: Dict[Any, Any], update_dict: Dict[Any, Any]
+    original_dict: dict[Any, Any], update_dict: dict[Any, Any]
 ) -> None:  # pragma: no cover
     for key, value in update_dict.items():
         if (

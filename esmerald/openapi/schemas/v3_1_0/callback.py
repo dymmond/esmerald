@@ -1,10 +1,10 @@
-from typing import TYPE_CHECKING, Dict, Union
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from esmerald.openapi.schemas.v3_1_0.path_item import PathItem
     from esmerald.openapi.schemas.v3_1_0.reference import Reference
 
-Callback = Dict[str, Union["PathItem", "Reference"]]
+Callback = dict[str, Union["PathItem", "Reference"]]
 """
 A map of possible out-of band callbacks related to the parent operation.
 Each value in the map is a [Path Item Object](https://spec.openapis.org/oas/v3.1.0#pathItemObject)

@@ -8,8 +8,6 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Dict,
-    List,
     Mapping,
     NoReturn,
     Optional,
@@ -182,7 +180,7 @@ class BaseRouter(LilyaRouter):
             ),
         ] = None,
         on_startup: Annotated[
-            Optional[List[LifeSpanHandler]],
+            Optional[list[LifeSpanHandler]],
             Doc(
                 """
                 A `list` of events that are trigger upon the application
@@ -224,7 +222,7 @@ class BaseRouter(LilyaRouter):
             ),
         ] = None,
         on_shutdown: Annotated[
-            Optional[List[LifeSpanHandler]],
+            Optional[list[LifeSpanHandler]],
             Doc(
                 """
                 A `list` of events that are trigger upon the application
@@ -368,7 +366,7 @@ class BaseRouter(LilyaRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -649,7 +647,7 @@ class BaseRouter(LilyaRouter):
 
         self.activate()
 
-    def reorder_routes(self) -> List[Sequence[Union[APIGateHandler, Include]]]:
+    def reorder_routes(self) -> list[Sequence[Union[APIGateHandler, Include]]]:
         routes = sorted(
             self.routes,
             key=lambda router: router.path != "" and router.path != "/",
@@ -822,7 +820,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -930,7 +928,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1038,7 +1036,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1146,7 +1144,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1254,7 +1252,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1362,7 +1360,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1470,7 +1468,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1578,7 +1576,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1658,7 +1656,7 @@ class RoutingMethodsMixin:
             ),
         ],
         methods: Annotated[
-            Optional[List[str]],
+            Optional[list[str]],
             Doc(
                 """
                 A list of HTTP methods to serve the Gateway.
@@ -1698,7 +1696,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1801,7 +1799,7 @@ class RoutingMethodsMixin:
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -1878,7 +1876,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
         if not value.handler.parent:  # pragma: no cover
             value.handler(parent=self)
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_routes(
+        route_handlers: list[Union[HTTPHandler, WebSocketHandler]] = value.handler.get_routes(
             path=value.path,
             middleware=value.middleware,
             interceptors=value.interceptors,
@@ -1948,7 +1946,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2101,7 +2099,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2184,7 +2182,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             ),
         ],
         methods: Annotated[
-            Optional[List[str]],
+            Optional[list[str]],
             Doc(
                 """
                 A list of HTTP methods to serve the Gateway.
@@ -2224,7 +2222,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2281,7 +2279,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
                 handler=func,
                 methods=methods,
                 dependencies=dependencies,
-                permissions=cast(List["Permission"], permissions),
+                permissions=cast(list["Permission"], permissions),
                 exception_handlers=exception_handlers,
                 middleware=middleware,
                 include_in_schema=include_in_schema,
@@ -2347,7 +2345,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2375,7 +2373,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
             handler = WebSocketHandler(
                 dependencies=dependencies,
                 exception_handlers=exception_handlers,
-                permissions=cast(List["Permission"], permissions),
+                permissions=cast(list["Permission"], permissions),
                 middleware=middleware,
                 before_request=before_request,
                 after_request=after_request,
@@ -2443,8 +2441,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         background: Optional[BackgroundTaskType] = None,
         dependencies: Optional[Dependencies] = None,
         exception_handlers: Optional[ExceptionHandlerMap] = None,
-        permissions: Optional[List[Permission]] = None,
-        middleware: Optional[List[Middleware]] = None,
+        permissions: Optional[list[Permission]] = None,
+        middleware: Optional[list[Middleware]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
         response_class: Optional[ResponseType] = None,
         response_cookies: Optional[ResponseCookies] = None,
@@ -2454,8 +2452,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[int, OpenAPIResponse]] = None,
-        security: Optional[List[SecurityScheme]] = None,
+        responses: Optional[dict[int, OpenAPIResponse]] = None,
+        security: Optional[list[SecurityScheme]] = None,
         operation_id: Optional[str] = None,
     ) -> None:
         """
@@ -2464,10 +2462,10 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         if not path:
             path = "/"
 
-        self._application_permissions: Union[Dict[int, Any], VoidType] = Void  # type: ignore
+        self._application_permissions: Union[dict[int, Any], VoidType] = Void  # type: ignore
         self.__base_permissions__ = permissions or []
 
-        self._lilya_permissions: Union[List[DefinePermission], VoidType] = Void
+        self._lilya_permissions: Union[list[DefinePermission], VoidType] = Void
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
@@ -2482,7 +2480,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             name=name,
             permissions=self.__lilya_permissions__,  # type: ignore
         )
-        self._permissions: Union[List[Permission], VoidType] = Void
+        self._permissions: Union[list[Permission], VoidType] = Void
         self._dependencies: Dependencies = {}
 
         self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
@@ -2545,10 +2543,10 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.content_media_type = content_media_type
 
         self.fn: Optional[AnyCallable] = None
-        self.route_map: Dict[str, Tuple[HTTPHandler, TransformerModel]] = {}
+        self.route_map: dict[str, Tuple[HTTPHandler, TransformerModel]] = {}
         self.path_regex, self.path_format, self.param_convertors, _ = compile_path(path)
-        self._middleware: List[Middleware] = []
-        self._interceptors: Union[List[Interceptor], VoidType] = Void
+        self._middleware: list[Middleware] = []
+        self._interceptors: Union[list[Interceptor], VoidType] = Void
         self.__type__: Union[str, None] = None
         self.before_request = list(before_request or [])
         self.after_request = list(after_request or [])
@@ -2556,7 +2554,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         if self.responses:
             self.validate_responses(responses=self.responses)
 
-    def validate_responses(self, responses: Dict[int, OpenAPIResponse]) -> None:
+    def validate_responses(self, responses: dict[int, OpenAPIResponse]) -> None:
         """
         Checks if the responses are valid or raises an exception otherwise.
         """
@@ -2573,14 +2571,14 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         await self.handle_dispatch(scope=scope, receive=receive, send=send)
 
     @property
-    def http_methods(self) -> List[str]:
+    def http_methods(self) -> list[str]:
         """
         Converts the methods set into a list of methods.
         """
         return list(self.methods)
 
     async def allowed_methods(
-        self, scope: "Scope", receive: "Receive", send: "Send", methods: List[str]
+        self, scope: "Scope", receive: "Receive", send: "Send", methods: list[str]
     ) -> None:
         """
         Validates if the scope method is available within the handler and raises
@@ -2868,8 +2866,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         background: Optional[BackgroundTaskType] = None,
         dependencies: Optional[Dependencies] = None,
         exception_handlers: Optional[ExceptionHandlerMap] = None,
-        permissions: Optional[List[Permission]] = None,
-        middleware: Optional[List[Middleware]] = None,
+        permissions: Optional[list[Permission]] = None,
+        middleware: Optional[list[Middleware]] = None,
         media_type: Union[MediaType, str] = MediaType.JSON,
         response_class: Optional[ResponseType] = None,
         response_cookies: Optional[ResponseCookies] = None,
@@ -2879,8 +2877,8 @@ class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
         tags: Optional[Sequence[str]] = None,
         deprecated: Optional[bool] = None,
         response_description: Optional[str] = "Successful Response",
-        responses: Optional[Dict[int, OpenAPIResponse]] = None,
-        security: Optional[List[SecurityScheme]] = None,
+        responses: Optional[dict[int, OpenAPIResponse]] = None,
+        security: Optional[list[SecurityScheme]] = None,
         operation_id: Optional[str] = None,
     ) -> None:
         _path: str = None
@@ -2943,8 +2941,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         handler: Callable[..., Any] = None,
         dependencies: Optional[Dependencies] = None,
         exception_handlers: Optional[ExceptionHandlerMap] = None,
-        permissions: Optional[List[Permission]] = None,
-        middleware: Optional[List[Middleware]] = None,
+        permissions: Optional[list[Permission]] = None,
+        middleware: Optional[list[Middleware]] = None,
         name: Annotated[
             Optional[str],
             Doc(
@@ -2959,7 +2957,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         if not path:
             path = "/"
 
-        self._application_permissions: Union[Dict[int, Any], VoidType] = Void  # type: ignore
+        self._application_permissions: Union[dict[int, Any], VoidType] = Void  # type: ignore
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
@@ -2974,11 +2972,11 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             before_request=before_request,
             after_request=after_request,
         )
-        self._permissions: Union[List[Permission], VoidType] = Void
-        self._lilya_permissions: Union[List[DefinePermission], VoidType] = Void
+        self._permissions: Union[list[Permission], VoidType] = Void
+        self._lilya_permissions: Union[list[DefinePermission], VoidType] = Void
         self._dependencies: Dependencies = {}
         self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
-        self._interceptors: Union[List[Interceptor], VoidType] = Void
+        self._interceptors: Union[list[Interceptor], VoidType] = Void
         self.interceptors: Sequence[Interceptor] = []
         self.handler = handler
         self.parent: ParentType = None
@@ -3393,7 +3391,7 @@ class Include(LilyaInclude):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -3572,7 +3570,7 @@ class Include(LilyaInclude):
     def resolve_route_path_handler(
         self,
         routes: Sequence[Union[APIGateHandler, Include, HTTPHandler, WebSocketHandler]],
-    ) -> List[Union[Gateway, WebSocketGateway, Include]]:
+    ) -> list[Union[Gateway, WebSocketGateway, Include]]:
         """
         Make sure the paths are properly configured from the handler handler.
         The handler can be a Lilya function, an View or a HTTPHandler.
@@ -3620,7 +3618,7 @@ class Include(LilyaInclude):
             ]
 
         """
-        routing: List[Union[Gateway, WebSocketGateway, Include]] = []
+        routing: list[Union[Gateway, WebSocketGateway, Include]] = []
 
         for route in routes:  # pragma: no cover
             if isinstance(route, WebhookHandler):
@@ -3648,7 +3646,7 @@ class Include(LilyaInclude):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)
 
-                route_handlers: List[Union[Gateway, WebhookGateway, Include]] = (
+                route_handlers: list[Union[Gateway, WebhookGateway, Include]] = (
                     route.handler.get_routes(
                         path=route.path,
                         middleware=route.middleware,
@@ -3662,7 +3660,7 @@ class Include(LilyaInclude):
                 if route_handlers:
                     routing.extend(
                         cast(
-                            List[Union[Gateway, WebSocketGateway, Include]],
+                            list[Union[Gateway, WebSocketGateway, Include]],
                             route_handlers,
                         )
                     )

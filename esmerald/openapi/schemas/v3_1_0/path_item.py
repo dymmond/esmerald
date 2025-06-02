@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -77,12 +77,12 @@ class PathItem(BaseModel):
     A definition of a TRACE operation on this path.
     """
 
-    servers: Optional[List[Server]] = None
+    servers: Optional[list[Server]] = None
     """
     An alternative `server` array to service all operations in this path.
     """
 
-    parameters: Optional[List[Union[Parameter, Reference]]] = None
+    parameters: Optional[list[Union[Parameter, Reference]]] = None
     """
     A list of parameters that are applicable for all the operations described under this path.
     These parameters can be overridden at the operation level, but cannot be removed there.

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, Union
 
 from typing_extensions import Annotated, Doc
 
@@ -16,7 +16,7 @@ class JSON(ResponseContainer[JSONResponse]):
     """
 
     content: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Doc(
             """
             The content being sent to the response.
@@ -43,7 +43,7 @@ class JSON(ResponseContainer[JSONResponse]):
 
     def __init__(
         self,
-        content: Optional[Dict[str, Any]] = None,
+        content: Optional[dict[str, Any]] = None,
         status_code: Optional[int] = None,
         **kwargs: Any,
     ):
@@ -54,7 +54,7 @@ class JSON(ResponseContainer[JSONResponse]):
 
     def to_response(
         self,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],

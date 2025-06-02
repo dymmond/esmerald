@@ -4,10 +4,8 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
     Generic,
     Iterable,
-    List,
     Optional,
     Type,
     TypeVar,
@@ -108,14 +106,14 @@ class Cookie(BaseModel):
 class ResponseContainer(BaseModel, ABC, Generic[R]):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     background: Optional[Union[BackgroundTask, BackgroundTasks]] = None
-    headers: Dict[str, Any] = {}
-    cookies: List[Cookie] = []
+    headers: dict[str, Any] = {}
+    cookies: list[Cookie] = []
     status_code: Optional[int] = None
 
     @abstractmethod
     def to_response(
         self,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],
@@ -127,6 +125,6 @@ class ResponseHeader(BaseModel):
     value: Optional[Any] = None
 
     @field_validator("value")  # type: ignore
-    def validate_value(cls, value: Any, values: Dict[str, Any]) -> Any:
+    def validate_value(cls, value: Any, values: dict[str, Any]) -> Any:
         if value is not None:
             return value

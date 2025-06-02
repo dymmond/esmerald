@@ -1,5 +1,5 @@
 from copy import copy
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Tuple, Union, cast
 
 from lilya._internal._path import clean_path
 from lilya.routing import compile_path
@@ -98,7 +98,7 @@ class View:
         ),
     ]
     permissions: Annotated[
-        Optional[List["Permission"]],
+        Optional[list["Permission"]],
         Doc(
             """
             A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -114,7 +114,7 @@ class View:
         ),
     ]
     middleware: Annotated[
-        Optional[List["Middleware"]],
+        Optional[list["Middleware"]],
         Doc(
             """
             A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -275,7 +275,7 @@ class View:
         ),
     ]
     tags: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         Doc(
             """
             A list of strings tags to be applied to the *path operation*.
@@ -297,7 +297,7 @@ class View:
         ),
     ]
     security: Annotated[
-        Optional[List["SecurityScheme"]],
+        Optional[list["SecurityScheme"]],
         Doc(
             """
             Used by OpenAPI definition, the security must be compliant with the norms.
@@ -329,9 +329,9 @@ class View:
         self.path = clean_path(self.path or "/")
         self.path_regex, self.path_format, self.param_convertors, _ = compile_path(self.path)
         self.parent = parent
-        self.route_map: Dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
+        self.route_map: dict[str, Tuple["HTTPHandler", "TransformerModel"]] = {}
         self.operation_id: Optional[str] = None
-        self.methods: List[str] = []
+        self.methods: list[str] = []
 
         self.__base_permissions__ = self.permissions or []
 
@@ -364,7 +364,7 @@ class View:
                 self.permissions[:0] = unique_perms
                 self.__base_permissions__[:0] = unique_perms
 
-    def get_filtered_handler(self) -> List[str]:
+    def get_filtered_handler(self) -> list[str]:
         """
         Filters out the names of the functions that are not part of the handler itself.
         """
@@ -386,7 +386,7 @@ class View:
 
     def get_route_handlers(
         self,
-    ) -> List[Union["HTTPHandler", "WebSocketHandler", "WebhookHandler"]]:
+    ) -> list[Union["HTTPHandler", "WebSocketHandler", "WebhookHandler"]]:
         """A getter for the apiview's route handlers that sets their parent.
 
         Returns:
@@ -394,7 +394,7 @@ class View:
         """
         from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = []
+        route_handlers: list[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = []
         filtered_handlers = self.get_filtered_handler()
 
         for handler in filtered_handlers:
@@ -466,14 +466,14 @@ class View:
     def get_routes(
         self,
         path: Union[str, None] = None,
-        middleware: Union[Sequence["Middleware"], List["Middleware"], None] = None,
+        middleware: Union[Sequence["Middleware"], list["Middleware"], None] = None,
         permissions: Union[Sequence["Permission"], Any, None] = None,
-        interceptors: Union[Sequence["Interceptor"], List["Interceptor"], None] = None,
+        interceptors: Union[Sequence["Interceptor"], list["Interceptor"], None] = None,
         exception_handlers: Union["ExceptionHandlerMap", None] = None,
         include_in_schema: Union[bool, None] = None,
         before_request: Union[Sequence[Callable[..., Any]], None] = None,
         after_request: Union[Sequence[Callable[..., Any]], None] = None,
-    ) -> List[Union["Gateway", "WebSocketGateway"]]:
+    ) -> list[Union["Gateway", "WebSocketGateway"]]:
         """
         Builds the routes and wraps them in a list containing the Gateway and WebSocketGateway.
         """
@@ -483,10 +483,10 @@ class View:
         if path is None:
             path = "/"
 
-        route_handlers: List[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = (
+        route_handlers: list[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = (
             self.get_route_handlers()
         )
-        handlers: List[Union[Gateway, WebSocketGateway]] = []
+        handlers: list[Union[Gateway, WebSocketGateway]] = []
 
         for route_handler in route_handlers:
             route_path: Union[Gateway, WebSocketGateway]

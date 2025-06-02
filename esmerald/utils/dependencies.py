@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Dict, Union
+from typing import Any, Union
 
 from lilya.compat import run_sync
 from lilya.context import request_context
@@ -59,13 +59,13 @@ def is_requires(param: Any) -> bool:
     return isinstance(param, params.Requires)
 
 
-async def async_resolve_dependencies(func: Any, overrides: Union[Dict[str, Any]] = None) -> Any:
+async def async_resolve_dependencies(func: Any, overrides: Union[dict[str, Any]] = None) -> Any:
     """
     Resolves dependencies for an asynchronous function by inspecting its signature and
     recursively resolving any dependencies specified using the `params.Requires` class.
     Args:
         func (Any): The target function whose dependencies need to be resolved.
-        overrides (Union[Dict[str, Any]], optional): A dictionary of overrides for dependencies.
+        overrides (Union[dict[str, Any]], optional): A dictionary of overrides for dependencies.
             This can be used for testing or customization. Defaults to None.
     Returns:
         Any: The result of the target function with its dependencies resolved.
@@ -99,13 +99,13 @@ async def async_resolve_dependencies(func: Any, overrides: Union[Dict[str, Any]]
         return func(**kwargs)
 
 
-def resolve_dependencies(func: Any, overrides: Union[Dict[str, Any]] = None) -> Any:
+def resolve_dependencies(func: Any, overrides: Union[dict[str, Any]] = None) -> Any:
     """
     Resolves the dependencies for a given function.
 
     Parameters:
         func (Any): The function for which dependencies need to be resolved.
-        overrides (Union[Dict[str, Any], None], optional): A dictionary of dependency overrides. Defaults to None.
+        overrides (Union[dict[str, Any], None], optional): A dictionary of dependency overrides. Defaults to None.
         Raises:
         ValueError: If the provided function is asynchronous.
 

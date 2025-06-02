@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Optional, Union, cast
 
 from asyncz.triggers.types import TriggerType
 from asyncz.typing import Undefined, undefined
@@ -20,7 +20,7 @@ def scheduler(
     executor: Union[str, None] = None,
     replace_existing: bool = True,
     extra_args: Optional[Any] = None,
-    extra_kwargs: Optional[Dict[str, Any]] = None,
+    extra_kwargs: Optional[dict[str, Any]] = None,
     is_enabled: bool = True,
 ) -> "Task":
     def wrapper(func: Any) -> Task:

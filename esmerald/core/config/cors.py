@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 from typing_extensions import Annotated, Doc
@@ -23,7 +23,7 @@ class CORSConfig(BaseModel):
     """
 
     allow_origins: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
             A list of origins that are allowed.
@@ -38,20 +38,20 @@ class CORSConfig(BaseModel):
         ),
     ] = ["*"]
     allow_methods: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
-            List of allowed HTTP verbs/methods.
+            list of allowed HTTP verbs/methods.
 
             This option sets the 'Access-Control-Allow-Methods' header.
             """
         ),
     ] = ["*"]
     allow_headers: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
-            List of allowed headers.
+            list of allowed headers.
 
             This option sets the 'Access-Control-Allow-Headers' header.
             """
@@ -74,10 +74,10 @@ class CORSConfig(BaseModel):
         ),
     ] = None
     expose_headers: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
-            List of headers that are exposed.
+            list of headers that are exposed.
 
             This option sets the 'Access-Control-Expose-Headers' header.
             """

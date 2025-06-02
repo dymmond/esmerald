@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Sequence, Union, cast
+from typing import Any, Optional, Sequence, Union, cast
 
 from pydantic import AnyUrl, BaseModel
 from typing_extensions import Annotated, Doc
@@ -111,7 +111,7 @@ class OpenAPIConfig(BaseModel):
         ),
     ] = None
     security: Annotated[
-        Optional[List[SecurityScheme]],
+        Optional[list[SecurityScheme]],
         Doc(
             """
             API Security requirements information. This is an OpenAPI schema security, meaning, in a dictionary format compatible with OpenAPI or an instance of `esmerald.openapi.schemas.v3_1_0.security_requirement.SecurityScheme`.
@@ -119,7 +119,7 @@ class OpenAPIConfig(BaseModel):
         ),
     ] = None
     servers: Annotated[
-        Optional[List[Dict[str, Union[str, Any]]]],
+        Optional[list[dict[str, Union[str, Any]]]],
         Doc(
             """
             A python list with dictionary compatible with OpenAPI specification.
@@ -127,7 +127,7 @@ class OpenAPIConfig(BaseModel):
         ),
     ] = None
     tags: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         Doc(
             """
             A list of OpenAPI compatible tag (string) information.
@@ -218,7 +218,7 @@ class OpenAPIConfig(BaseModel):
         ),
     ] = None
     swagger_ui_init_oauth: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Doc(
             """
             String default relative URL where the Swagger Init Auth documentation
@@ -227,7 +227,7 @@ class OpenAPIConfig(BaseModel):
         ),
     ] = None
     swagger_ui_parameters: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Doc(
             """
             A mapping with parameters to be passed onto Swagger.
@@ -363,7 +363,7 @@ class OpenAPIConfig(BaseModel):
         ),
     ] = None
 
-    def openapi(self, app: Any) -> Dict[str, Any]:
+    def openapi(self, app: Any) -> dict[str, Any]:
         """Loads the OpenAPI routing schema"""
         openapi_schema = get_openapi(
             app=app,

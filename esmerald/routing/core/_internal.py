@@ -1,6 +1,6 @@
 import inspect
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Type, Union, _GenericAlias, cast, get_args
+from typing import TYPE_CHECKING, Any, Type, Union, _GenericAlias, cast, get_args
 
 from lilya.datastructures import DataUpload
 from pydantic import BaseModel, create_model
@@ -29,7 +29,7 @@ def create_field_model(*, field: FieldInfo, name: str, model_name: str) -> Type[
     return data_field_model
 
 
-def get_base_annotations(base_annotation: Any, is_class: bool = False) -> Dict[str, Any]:
+def get_base_annotations(base_annotation: Any, is_class: bool = False) -> dict[str, Any]:
     """
     Returns the annotations of the base class.
 
@@ -37,9 +37,9 @@ def get_base_annotations(base_annotation: Any, is_class: bool = False) -> Dict[s
         base_annotation (Any): The base class.
         is_class (bool): Whether the base class is a class or not.
     Returns:
-        Dict[str, Any]: The annotations of the base class.
+        dict[str, Any]: The annotations of the base class.
     """
-    base_annotations: Dict[str, Any] = {}
+    base_annotations: dict[str, Any] = {}
     if not is_class:
         bases = base_annotation.__bases__
     else:
@@ -75,10 +75,10 @@ def convert_object_annotation_to_pydantic_model(field_annotation: Any) -> BaseMo
         field_annotation.__args__ = annotations
         return cast(BaseModel, field_annotation)
 
-    field_definitions: Dict[str, Any] = {}
+    field_definitions: dict[str, Any] = {}
 
     # Get any possible annotations from the base classes
-    base_annotations: Dict[str, Any] = {**get_base_annotations(field_annotation, is_class=True)}
+    base_annotations: dict[str, Any] = {**get_base_annotations(field_annotation, is_class=True)}
     field_annotations = {
         **base_annotations,
         **field_annotation.__annotations__,
@@ -125,11 +125,11 @@ def convert_annotation_to_pydantic_model(field_annotation: Any) -> Any:
         and inspect.isclass(field_annotation)
         and any(encoder.is_type(field_annotation) for encoder in LILYA_ENCODER_TYPES.get())
     ):
-        field_definitions: Dict[str, Any] = {}
+        field_definitions: dict[str, Any] = {}
 
         # Get any possible annotations from the base classes
         # This can be useful for inheritance with custom encoders
-        base_annotations: Dict[str, Any] = {**get_base_annotations(field_annotation)}
+        base_annotations: dict[str, Any] = {**get_base_annotations(field_annotation)}
         field_annotations = {
             **base_annotations,
             **field_annotation.__annotations__,
@@ -183,7 +183,7 @@ def get_upload_body(handler: Union["HTTPHandler"]) -> Any:
             body.title = f"Body_{handler.operation_id}"
 
         # For everything else that is not MULTI_PART
-        extra = cast("Dict[str, Any]", body.json_schema_extra) or {}
+        extra = cast("dict[str, Any]", body.json_schema_extra) or {}
         if extra.get(
             "media_type", EncodingType.JSON
         ) != EncodingType.MULTI_PART and not is_class_and_subclass(
@@ -224,7 +224,7 @@ def get_original_data_field(
             body.title = f"Body_{handler.operation_id}"
 
         # For everything else that is not MULTI_PART
-        extra = cast("Dict[str, Any]", body.json_schema_extra) or {}
+        extra = cast("dict[str, Any]", body.json_schema_extra) or {}
         if extra.get("media_type", EncodingType.JSON) != EncodingType.MULTI_PART:
             return body
 
@@ -234,7 +234,7 @@ def get_original_data_field(
 
 
 def get_complex_data_field(
-    handler: Union["HTTPHandler", "WebhookHandler", Any], fields: Dict[str, FieldInfo]
+    handler: Union["HTTPHandler", "WebhookHandler", Any], fields: dict[str, FieldInfo]
 ) -> Any:  # pragma: no cover
     """
     The field used for the payload body.
@@ -243,7 +243,7 @@ def get_complex_data_field(
     being passed and builds a model if a datastructure is evaluated.
     """
     body_fields_set = set()
-    body_fields: Dict[str, FieldInfo] = {}
+    body_fields: dict[str, FieldInfo] = {}
 
     for name, field in fields.items():
         if name in body_fields_set:
@@ -324,7 +324,7 @@ class OpenAPIFieldInfoMixin:
     """
 
     @cached_property
-    def body_encoder_fields(self) -> Dict[str, FieldInfo]:
+    def body_encoder_fields(self) -> dict[str, FieldInfo]:
         """
         The fields that are body encoders.
 
@@ -345,20 +345,20 @@ class OpenAPIFieldInfoMixin:
         return body_encoder_fields
 
     @cached_property
-    def response_models(self) -> Dict[int, Any]:
+    def response_models(self) -> dict[int, Any]:
         """
         The models converted into pydantic fields with the model used for OpenAPI.
 
         The response models can be a list representation or a single object representation.
         If another type of object is passed through the `model`, an Assertation error is raised.
         """
-        responses: Dict[int, ResponseParam] = {}
+        responses: dict[int, ResponseParam] = {}
         if self.responses:
             for status_code, response in self.responses.items():
                 model = response.model[0] if isinstance(response.model, list) else response.model
 
                 annotation = (
-                    List[model] if isinstance(response.model, list) else model  # type: ignore
+                    list[model] if isinstance(response.model, list) else model  # type: ignore
                 )
 
                 responses[status_code] = ResponseParam(

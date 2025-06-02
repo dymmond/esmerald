@@ -1,4 +1,4 @@
-from typing import Any, List, TypeVar
+from typing import Any, TypeVar
 
 from typing_extensions import Protocol, runtime_checkable
 
@@ -23,7 +23,7 @@ class AsyncDAOProtocol(Protocol):  # pragma: no cover
 
     async def get(self, obj_id: Any, **kwargs: Any) -> Any: ...
 
-    async def get_all(self, **kwargs: Any) -> List[Any]: ...
+    async def get_all(self, **kwargs: Any) -> list[Any]: ...
 
     async def update(self, obj_id: Any, **kwargs: Any) -> Any: ...
 

@@ -6,7 +6,7 @@ from pydantic.json_schema import models_json_schema
 from esmerald.openapi.schemas import v3_1_0
 
 if TYPE_CHECKING:
-    from typing import Dict
+    pass
 
 REF_PREFIX = "#/components/schemas/"
 SCHEMA_NAME_ATTRIBUTE = "__schema_name__"
@@ -46,7 +46,7 @@ def construct_open_api_with_schema_class(
     if not copied_schema.components:
         copied_schema.components = v3_1_0.Components(schemas={})
     if copied_schema.components.schemas is None:  # pragma: no cover
-        copied_schema.components.schemas = cast("Dict[str, Any]", {})
+        copied_schema.components.schemas = cast("dict[str, Any]", {})
 
     schema_classes = [
         (

@@ -1,8 +1,6 @@
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Mapping,
     Optional,
     Sequence,
@@ -136,7 +134,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return self.headers
 
-    def get_security_params(self) -> Dict[str, ParamSetting]:
+    def get_security_params(self) -> dict[str, ParamSetting]:
         """
         Get header parameters.
 
@@ -145,7 +143,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         """
         return {field.field_name: field for field in self.get_query_params() if field.is_security}
 
-    def get_security_scope_params(self) -> Dict[str, ParamSetting]:
+    def get_security_scope_params(self) -> dict[str, ParamSetting]:
         """
         Get header parameters.
 
@@ -158,7 +156,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
             if field.is_security and is_security_scope(field.field_info.annotation)
         }
 
-    def get_security_definition(self) -> Dict[str, ParamSetting]:
+    def get_security_definition(self) -> dict[str, ParamSetting]:
         """
         Get header parameters for security.
 
@@ -171,7 +169,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
             if field.is_security and is_security_scheme(field.default_value)
         }
 
-    def get_requires_definition(self) -> Dict[str, ParamSetting]:
+    def get_requires_definition(self) -> dict[str, ParamSetting]:
         """
         Get header parameters for requires.
 
@@ -272,7 +270,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
         Returns:
             bool: True if security dependencies are present, False otherwise.
         """
-        security_scopes_list: Union[Sequence[str], List[str]] = []
+        security_scopes_list: Union[Sequence[str], list[str]] = []
         for name, dependency in kwargs.items():
             if isinstance(dependency, Security):
                 security_scopes_list = dependency.scopes
@@ -280,7 +278,7 @@ class TransformerModel(ArbitraryExtraBaseModel):
                 break
 
         # Check for security scopes objects
-        security_scopes: Dict[str, Any] = self.get_security_scope_params()
+        security_scopes: dict[str, Any] = self.get_security_scope_params()
         if security_scopes:
             for name, value in security_scopes.items():
                 kwargs[name] = value.field_info.annotation(scopes=security_scopes_list)
@@ -430,15 +428,15 @@ def dependency_tree(key: str, dependencies: "Dependencies", first_run: bool = Tr
 
 
 def get_parameter_settings(
-    path_parameters: Set[str], dependencies: Dict[str, Any], signature_fields: Dict[str, Any]
+    path_parameters: Set[str], dependencies: dict[str, Any], signature_fields: dict[str, Any]
 ) -> Tuple[Set[ParamSetting], Set[Dependency]]:
     """
     Get parameter settings and dependencies based on input data.
 
     Args:
         path_parameters (Set[str]): Set of path parameters.
-        dependencies (Dict[str, Any]): Dictionary of dependencies.
-        signature_fields (Dict[str, Any]): Dictionary containing field information.
+        dependencies (dict[str, Any]): Dictionary of dependencies.
+        signature_fields (dict[str, Any]): Dictionary containing field information.
 
     Returns:
         Tuple[Set[ParamSetting], Set[Dependency]]: Tuple containing sets of parameter settings
@@ -730,12 +728,12 @@ def validate_data(
         )
 
 
-def _get_names_from_model_fields(model_fields: Dict[str, FieldInfo]) -> Set[str]:
+def _get_names_from_model_fields(model_fields: dict[str, FieldInfo]) -> Set[str]:
     """
     Extract names from model fields that have additional metadata relevant for parameters.
 
     Args:
-        model_fields (Dict[str, FieldInfo]): Dictionary of model fields.
+        model_fields (dict[str, FieldInfo]): Dictionary of model fields.
 
     Returns:
         Set[str]: Set of names extracted from model fields.
@@ -743,7 +741,7 @@ def _get_names_from_model_fields(model_fields: Dict[str, FieldInfo]) -> Set[str]
     names = set()
     for key, value in model_fields.items():
         if value.json_schema_extra is not None:
-            extra = cast(Dict[str, Any], value.json_schema_extra)
+            extra = cast(dict[str, Any], value.json_schema_extra)
             if (
                 extra.get(ParamType.QUERY)
                 or extra.get(ParamType.HEADER)
@@ -754,15 +752,15 @@ def _get_names_from_model_fields(model_fields: Dict[str, FieldInfo]) -> Set[str]
 
 
 def _check_ambiguity_in_kwargs(
-    path_parameters: Set[str], dependencies: Dict[str, Any], model_fields: Dict[str, FieldInfo]
+    path_parameters: Set[str], dependencies: dict[str, Any], model_fields: dict[str, FieldInfo]
 ) -> None:
     """
     Check for ambiguity in keyword argument resolution.
 
     Args:
         path_parameters (Set[str]): Set of path parameters.
-        dependencies (Dict[str, Any]): Dependency information.
-        model_fields (Dict[str, FieldInfo]): Dictionary of model fields.
+        dependencies (dict[str, Any]): Dependency information.
+        model_fields (dict[str, FieldInfo]): Dictionary of model fields.
 
     Raises:
         ImproperlyConfigured: If ambiguity in keyword argument resolution is detected.
@@ -784,16 +782,16 @@ def _check_ambiguity_in_kwargs(
 
 def validate_kwargs(
     path_parameters: Set[str],
-    dependencies: Dict[str, Any],
-    model_fields: Dict[str, FieldInfo],
+    dependencies: dict[str, Any],
+    model_fields: dict[str, FieldInfo],
 ) -> None:
     """
     Validate keyword arguments for parameter and dependency definitions.
 
     Args:
         path_parameters (Set[str]): Set of path parameters.
-        dependencies (Dict[str, Any]): Dependency information.
-        model_fields (Dict[str, FieldInfo]): Dictionary of model fields.
+        dependencies (dict[str, Any]): Dependency information.
+        model_fields (dict[str, FieldInfo]): Dictionary of model fields.
 
     Raises:
         ImproperlyConfigured: If keyword arguments are invalid.

@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import jwt
 from jwt.exceptions import PyJWTError
@@ -50,7 +50,7 @@ class Token(BaseModel):
         self,
         key: str,
         algorithm: str,
-        claims_extra: Union[Dict[str, Any], None] = None,
+        claims_extra: Union[dict[str, Any], None] = None,
         **kwargs: Any,
     ) -> Union[str, Any]:  # pragma: no cover
         """
@@ -59,7 +59,7 @@ class Token(BaseModel):
         if claims_extra is None:
             claims_extra = {}
 
-        payload: Dict = {**self.model_dump(exclude_none=True), **claims_extra}
+        payload: dict = {**self.model_dump(exclude_none=True), **claims_extra}
         try:
             return jwt.encode(
                 payload=payload,
@@ -72,7 +72,7 @@ class Token(BaseModel):
 
     @classmethod
     def decode(
-        cls, token: str, key: Union[str, bytes, jwt.PyJWK], algorithms: List[str], **kwargs: Any
+        cls, token: str, key: Union[str, bytes, jwt.PyJWK], algorithms: list[str], **kwargs: Any
     ) -> "Token":  # pragma: no cover
         """
         Decodes the given token.

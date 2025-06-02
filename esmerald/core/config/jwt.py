@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import List, Union
+from typing import Union
 
 from pydantic import BaseModel
 from typing_extensions import Annotated, Doc
@@ -105,7 +105,7 @@ class JWTConfig(BaseModel):
         ),
     ] = timedelta(days=1)
     auth_header_types: Annotated[
-        List[str],
+        list[str],
         Doc(
             """
             Header to be sent with the token value.

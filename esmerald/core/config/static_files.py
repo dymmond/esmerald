@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Optional, Tuple, Union
 
 from lilya._internal._path import clean_path
 from lilya.staticfiles import StaticFiles
@@ -61,7 +61,7 @@ class StaticFilesConfig(BaseModel):
         ),
     ] = False
     packages: Annotated[
-        Optional[List[Union[str, Tuple[str, str]]]],
+        Optional[list[Union[str, Tuple[str, str]]]],
         Doc(
             """
             A list of strings or list of tuples of strings of python packages.

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -7,7 +7,7 @@ class ServerVariable(BaseModel):
     """An object representing a Server Variable for server URL template
     substitution."""
 
-    enum: Optional[List[str]] = None
+    enum: Optional[list[str]] = None
     """
     An enumeration of string values to be used if the substitution options are from a limited set.
     The array SHOULD NOT be empty.

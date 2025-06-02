@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 from pydantic.fields import AliasChoices, AliasPath
 
@@ -53,7 +53,7 @@ def Form(
     min_length: Optional[int] = None,
     max_length: Optional[int] = None,
     pattern: Optional[str] = None,
-    examples: Optional[List[Any]] = None,
+    examples: Optional[list[Any]] = None,
     validation_alias: Optional[Union[str, AliasPath, AliasChoices]] = None,
     discriminator: Optional[str] = None,
     max_digits: Optional[int] = _PyUndefined,

@@ -4,8 +4,6 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Dict,
-    List,
     Mapping,
     Type,
     TypeVar,
@@ -82,7 +80,7 @@ Middleware = DefineMiddleware
 
 ResponseType = Type[Response]
 
-Dependencies = Union[Dict[str, Inject], Dict[str, Any], Any]
+Dependencies = Union[dict[str, Inject], dict[str, Any], Any]
 
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]
@@ -94,8 +92,8 @@ _ReservedKwargs = Literal[
 
 ReservedKwargs = get_args(_ReservedKwargs)
 
-ResponseHeaders = Dict[str, ResponseHeader]
-ResponseCookies = List[Cookie]
+ResponseHeaders = dict[str, ResponseHeader]
+ResponseCookies = list[Cookie]
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
 
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
@@ -109,11 +107,11 @@ APIGateHandler = Union[
 RouteParent = Union["Router", "Include", ASGIApp, "Gateway", "WebSocketGateway", "WebhookGateway"]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
-SecurityScheme = Dict[str, List[str]]
+SecurityScheme = dict[str, list[str]]
 
 ConnectionType = Union["Request", "WebSocket"]
-DictStr = Dict[str, str]
-DictAny = Dict[str, Any]
+DictStr = dict[str, str]
+DictAny = dict[str, Any]
 SettingsType = Type["EsmeraldAPISettings"]
 
 LifeSpanHandler = Union[Callable[[], None], Callable[[], Awaitable[None]]]

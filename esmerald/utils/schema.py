@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Any, List, Type, TypeVar, Union, _GenericAlias, cast, get_args
+from typing import Any, Type, TypeVar, Union, _GenericAlias, cast, get_args
 
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import SkipJsonSchema
@@ -29,10 +29,10 @@ def should_skip_json_schema(field_info: Union[FieldInfo, Any]) -> FieldInfo:
     This is applied for complex fields in query params.
 
     Example:
-        1. Union[Dict[str, str], None]
-        2. Optional[Dict[str, str]]
-        3. Union[List[str], None]
-        4. Optional[List[str]]
+        1. Union[dict[str, str], None]
+        2. Optional[dict[str, str]]
+        3. Union[list[str], None]
+        4. Optional[list[str]]
     """
     union_args = get_args(field_info.annotation)
 
@@ -41,7 +41,7 @@ def should_skip_json_schema(field_info: Union[FieldInfo, Any]) -> FieldInfo:
     ) or not isinstance(field_info.annotation, _GenericAlias):
         return field_info
 
-    arguments: List[Type[Any]] = []
+    arguments: list[Type[Any]] = []
 
     for argument in union_args:
         if argument is not type(None):
@@ -55,19 +55,19 @@ def should_skip_json_schema(field_info: Union[FieldInfo, Any]) -> FieldInfo:
 
 
 def extract_arguments(
-    param: Union[Any, None] = None, argument_list: Union[List[Any], None] = None
-) -> List[Type[type]]:
+    param: Union[Any, None] = None, argument_list: Union[list[Any], None] = None
+) -> list[Type[type]]:
     """
     Recursively extracts unique types from a parameter's type annotation.
 
     Args:
         param (Union[Parameter, None], optional): The parameter with type annotation to extract from.
-        argument_list (Union[List[Any], None], optional): The list of arguments extracted so far.
+        argument_list (Union[list[Any], None], optional): The list of arguments extracted so far.
 
     Returns:
-        List[Type[type]]: A list of unique types extracted from the parameter's type annotation.
+        list[Type[type]]: A list of unique types extracted from the parameter's type annotation.
     """
-    arguments: List[Any] = list(argument_list) if argument_list is not None else []
+    arguments: list[Any] = list(argument_list) if argument_list is not None else []
     args = get_args(param)
 
     for arg in args:

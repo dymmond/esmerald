@@ -6,8 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
-    List,
     Optional,
     TypeVar,
     Union,
@@ -414,7 +412,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         security: Annotated[
-            Optional[List[SecurityScheme]],
+            Optional[list[SecurityScheme]],
             Doc(
                 """
                 Used by OpenAPI definition, the security must be compliant with the norms.
@@ -439,7 +437,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         servers: Annotated[
-            Optional[List[Dict[str, Union[str, Any]]]],
+            Optional[list[dict[str, Union[str, Any]]]],
             Doc(
                 """
                 A `list` of python dictionaries with the information regarding the connectivity
@@ -509,7 +507,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         allowed_hosts: Annotated[
-            Optional[List[str]],
+            Optional[list[str]],
             Doc(
                 """
                 A `list` of allowed hosts for the application. The allowed hosts when not specified
@@ -531,7 +529,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         allow_origins: Annotated[
-            Optional[List[str]],
+            Optional[list[str]],
             Doc(
                 """
                 A `list` of allowed origins hosts for the application.
@@ -1072,7 +1070,7 @@ class Application(BaseLilya):
             starts.
 
             Returns:
-                List of encoders
+                list of encoders
 
             **Example**
 
@@ -1098,7 +1096,7 @@ class Application(BaseLilya):
             class AppSettings(EsmeraldAPISettings):
 
                 @property
-                def encoders(self) -> Union[List[Encoder], None]:
+                def encoders(self) -> Union[list[Encoder], None]:
                     return [AttrsEncoder]
             ```
             """
@@ -1151,7 +1149,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         on_startup: Annotated[
-            Optional[List["LifeSpanHandler"]],
+            Optional[list["LifeSpanHandler"]],
             Doc(
                 """
                 A `list` of events that are trigger upon the application
@@ -1193,7 +1191,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         on_shutdown: Annotated[
-            Optional[List["LifeSpanHandler"]],
+            Optional[list["LifeSpanHandler"]],
             Doc(
                 """
                 A `list` of events that are trigger upon the application
@@ -1313,7 +1311,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         tags: Annotated[
-            Optional[List[str]],
+            Optional[list[str]],
             Doc(
                 """
                 A list of strings tags to be applied to the *path operation*.
@@ -1341,7 +1339,7 @@ class Application(BaseLilya):
                 from esmerald import Esmerald, Gateway, get
 
                 @get("/home", tags=["home"])
-                async def home() -> Dict[str, str]:
+                async def home() -> dict[str, str]:
                     return {"hello": "world"}
 
 
@@ -1451,7 +1449,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         extensions: Annotated[
-            Optional[Dict[str, Union[Extension, Pluggable, type[Extension], str]]],
+            Optional[dict[str, Union[Extension, Pluggable, type[Extension], str]]],
             Doc(
                 """
                 A `list` of global extensions from objects inheriting from
@@ -1498,7 +1496,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         pluggables: Annotated[
-            Optional[Dict[str, Union[Extension, Pluggable, type[Extension], str]]],
+            Optional[dict[str, Union[Extension, Pluggable, type[Extension], str]]],
             Doc(
                 """
                 THIS PARAMETER IS DEPRECATED USE extensions INSTEAD
@@ -2127,7 +2125,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[list["Middleware"]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2294,7 +2292,7 @@ class Application(BaseLilya):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List["Middleware"]],
+            Optional[list["Middleware"]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -2414,11 +2412,11 @@ class Application(BaseLilya):
         middleware: Optional[Sequence["Middleware"]] = None,
         dependencies: Optional["Dependencies"] = None,
         exception_handlers: Optional["ExceptionHandlerMap"] = None,
-        interceptors: Optional[List["Interceptor"]] = None,
-        permissions: Optional[List["Permission"]] = None,
+        interceptors: Optional[list["Interceptor"]] = None,
+        permissions: Optional[list["Permission"]] = None,
         include_in_schema: Optional[bool] = True,
         deprecated: Optional[bool] = None,
-        security: Optional[List["SecurityScheme"]] = None,
+        security: Optional[list["SecurityScheme"]] = None,
         before_request: Union[Sequence[Callable[..., Any]], None] = None,
         after_request: Union[Sequence[Callable[..., Any]], None] = None,
     ) -> None:
@@ -2450,7 +2448,7 @@ class Application(BaseLilya):
                 app=child,
                 parent=self.router,
                 dependencies=dependencies,
-                middleware=cast("List[Middleware]", middleware),
+                middleware=cast("list[Middleware]", middleware),
                 exception_handlers=exception_handlers,
                 interceptors=interceptors,
                 permissions=permissions,
@@ -2505,7 +2503,7 @@ class Application(BaseLilya):
                         dependencies=route.dependencies,
                         exception_handlers=route.exception_handlers,
                         name=route.name,
-                        middleware=cast("List[Middleware]", route.middleware),
+                        middleware=cast("list[Middleware]", route.middleware),
                         interceptors=route.interceptors,
                         permissions=route.permissions,
                         routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
@@ -2573,8 +2571,8 @@ class Application(BaseLilya):
     def build_routes_exception_handlers(
         self,
         route: "RouteParent",
-        exception_handlers: Optional[Dict[str, Callable[..., Any]]] = None,
-    ) -> Dict[str, Callable[..., Any]]:
+        exception_handlers: Optional[dict[str, Callable[..., Any]]] = None,
+    ) -> dict[str, Callable[..., Any]]:
         """
         Builds the exception handlers stack from the top to the bottom of the routes.
         """
@@ -2599,7 +2597,7 @@ class Application(BaseLilya):
 
         return exception_handlers
 
-    def build_user_middleware_stack(self) -> List["DefineMiddleware"]:
+    def build_user_middleware_stack(self) -> list["DefineMiddleware"]:
         """
         Configures all the passed settings
         and wraps inside an exception handler.
@@ -2850,7 +2848,7 @@ class Esmerald(RoutingMethodsMixin, Application):
             ),
         ],
         methods: Annotated[
-            Optional[List[str]],
+            Optional[list[str]],
             Doc(
                 """
                 A list of HTTP methods to serve the Gateway.
@@ -2890,7 +2888,7 @@ class Esmerald(RoutingMethodsMixin, Application):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
@@ -3006,7 +3004,7 @@ class Esmerald(RoutingMethodsMixin, Application):
             ),
         ] = None,
         middleware: Annotated[
-            Optional[List[Middleware]],
+            Optional[list[Middleware]],
             Doc(
                 """
                 A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).

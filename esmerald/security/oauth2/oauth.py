@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Optional, Union, cast
 
 from lilya.requests import Request
 from lilya.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
@@ -108,7 +108,7 @@ class OAuth2PasswordRequestForm(BaseModel):
         ),
     ]
     scope: Annotated[
-        Union[str, List[str]],
+        Union[str, list[str]],
         Form(),
         Doc(
             """
@@ -168,14 +168,14 @@ class OAuth2PasswordRequestForm(BaseModel):
 
     @field_validator("scope", mode="before")
     @classmethod
-    def validate_scope(cls, value: Union[str, List[str]]) -> Any:
+    def validate_scope(cls, value: Union[str, list[str]]) -> Any:
         if isinstance(value, str) and len(value) == 0:
             return []
         if isinstance(value, str):
             return value.split(" ")
         return value
 
-    def model_dump(self, **kwargs: Any) -> Dict[str, Any]:
+    def model_dump(self, **kwargs: Any) -> dict[str, Any]:
         """
         Making sure the "scope" is not included in the model dump
         as the scopes should be the one being used by Esmerald.
@@ -358,7 +358,7 @@ class OAuth2(SecurityBase):
         self,
         *,
         flows: Annotated[
-            Union[OAuthFlowsModel, Dict[str, Dict[str, Any]]],
+            Union[OAuthFlowsModel, dict[str, dict[str, Any]]],
             Doc(
                 """
                 The dictionary containing the OAuth2 flows.
@@ -434,7 +434,7 @@ class OAuth2PasswordBearer(OAuth2):
                         operation that has `OAuth2PasswordRequestForm` as a dependency.
         scheme_name (Optional[str], optional): The security scheme name. This will appear
                                                in the OpenAPI documentation. Defaults to None.
-        scopes (Optional[Dict[str, str]], optional): The OAuth2 scopes required by the
+        scopes (Optional[dict[str, str]], optional): The OAuth2 scopes required by the
                                                      path operations using this dependency.
                                                      Defaults to None.
         description (Optional[str], optional): The security scheme description. This will
@@ -482,7 +482,7 @@ class OAuth2PasswordBearer(OAuth2):
             ),
         ] = None,
         scopes: Annotated[
-            Optional[Dict[str, str]],
+            Optional[dict[str, str]],
             Doc(
                 """
                 A dictionary of OAuth2 scopes associated with this configuration.
@@ -599,7 +599,7 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             ),
         ] = None,
         scopes: Annotated[
-            Optional[Dict[str, str]],
+            Optional[dict[str, str]],
             Doc(
                 """
                 Dictionary of OAuth2 scopes required for API access.

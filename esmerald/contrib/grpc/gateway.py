@@ -56,7 +56,7 @@ class GrpcGateway:
     that call the service methods directly.
 
     Attributes:
-        services (list[type]): List of gRPC service classes.
+        services (list[type]): list of gRPC service classes.
         grpc_server (aio.Server): The grpc.aio server instance.
         path (str): The base HTTP path used for generating endpoints.
         server_options (dict): Options such as host and port for the gRPC server.
@@ -78,7 +78,7 @@ class GrpcGateway:
 
         Args:
             path (str): Base HTTP path (must start with '/').
-            services (list[type]): List of gRPC service classes to expose.
+            services (list[type]): list of gRPC service classes to expose.
             expose_http (bool): Whether to register HTTP endpoints that map to gRPC methods.
             http_methods (list[str] | None): If provided, limits the HTTP methods allowed.
             **server_options (Any): Additional options (e.g., host and port) for the gRPC server.

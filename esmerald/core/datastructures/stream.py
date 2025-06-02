@@ -5,7 +5,6 @@ from typing import (
     AsyncIterable,
     AsyncIterator,
     Callable,
-    Dict,
     Generator,
     Iterable,
     Iterator,
@@ -41,7 +40,7 @@ class Stream(ResponseContainer[StreamingResponse]):
 
     def to_response(
         self,
-        headers: Dict[str, Any],
+        headers: dict[str, Any],
         media_type: Union["MediaType", str],
         status_code: int,
         app: Type["Esmerald"],

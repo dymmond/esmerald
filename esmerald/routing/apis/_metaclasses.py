@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, ClassVar, List, Set, Tuple, Type, cast
+from typing import TYPE_CHECKING, Any, ClassVar, Set, Tuple, Type, cast
 
 if TYPE_CHECKING:
     from esmerald import SimpleAPIView
@@ -11,8 +11,8 @@ class SimpleAPIMeta(type):
     only the CRUD objects are allowed.
     """
 
-    __filtered_handlers__: ClassVar[List[str]]
-    extra_allowed: List[str] = None
+    __filtered_handlers__: ClassVar[list[str]]
+    extra_allowed: list[str] = None
 
     def __new__(cls, name: str, bases: Tuple[Type, ...], attrs: Any) -> Any:
         """
@@ -28,7 +28,7 @@ class SimpleAPIMeta(type):
         if not parents:
             return view(cls, name, bases, attrs)
 
-        http_allowed_methods: List[str] = []
+        http_allowed_methods: list[str] = []
         simple_view = cast("SimpleAPIView", view(cls, name, bases, attrs))
         cls.__filtered_handlers__ = [
             attr
