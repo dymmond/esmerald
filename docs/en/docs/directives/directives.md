@@ -485,6 +485,14 @@ This directive helps you starting your local development in a simple way, very s
 
     <sup>Default: `on`</sup>
 
+* **--workers** - Number of workers to run the server with.
+
+    <sup>Default: `None`</sup>
+
+* **--proxy-headers** - Enable proxy headers. This is useful when running behind a reverse proxy.
+
+    <sup>Default: `True`</sup>
+
 * **--settings** - Start the server with specific settings. This is an alternative to
 [ESMERALD_SETTINGS_MODULE][settings_module] way of starting.
 

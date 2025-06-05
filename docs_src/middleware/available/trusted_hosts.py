@@ -1,15 +1,13 @@
 from typing import List
 
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 from esmerald.middleware import TrustedHostMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
 
 # Option one
-middleware = [
-    LilyaMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com", "*.example.com"])
-]
+middleware = [LilyaMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com", "*.example.com"])]
 
 app = Esmerald(routes=routes, middleware=middleware)
 
@@ -22,5 +20,5 @@ app = Esmerald(routes=routes, allowed_hosts=allowed_hosts)
 
 # Option three - Using the settings module
 # Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     allowed_hosts: List[str] = ["www.example.com", "*.example.com"]

@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from esmerald import EsmeraldAPISettings, StaticFilesConfig
+from esmerald import EsmeraldSettings, StaticFilesConfig
 
 
-class CustomSettings(EsmeraldAPISettings):
+class CustomSettings(EsmeraldSettings
     @property
     def static_files_config(self) -> StaticFilesConfig:
         """

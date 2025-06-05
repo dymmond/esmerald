@@ -1,8 +1,7 @@
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 
 
-class AppSettings(EsmeraldAPISettings):
-
+class AppSettings(EsmeraldSettings):
     # default is False
     enable_scheduler: bool = True
 

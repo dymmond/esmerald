@@ -1,6 +1,6 @@
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 
 
 # Create a ChildEsmeraldSettings object
-class InstanceSettings(EsmeraldAPISettings):
+class InstanceSettings(EsmeraldSettings):
     app_name: str = "my instance"

@@ -1,4 +1,4 @@
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 from esmerald.core.config import SessionConfig
 from esmerald.middleware import SessionMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
@@ -19,7 +19,7 @@ app = Esmerald(routes=routes, session_config=session_config)
 
 # Option three - Using the settings module
 # Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def session_config(self) -> SessionConfig:
         return SessionConfig(secret_key=...)

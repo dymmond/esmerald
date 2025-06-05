@@ -80,9 +80,9 @@ class CacheBackendSettings(BaseSettings):
     cache_default_ttl: Annotated[int, Doc("Default time-to-live (TTL) for cached items.")] = 300
 
 
-class EsmeraldAPISettings(CacheBackendSettings):
+class EsmeraldSettings(CacheBackendSettings):
     """
-    `EsmeraldAPISettings` settings object. The main entry-point for any settings
+    `EsmeraldSettings` settings object. The main entry-point for any settings
     used by **any** Esmerald application.
 
     Usually, when creating an application you will need some sort of organisation
@@ -106,10 +106,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
     **Example**
 
     ```python
-    from esmerald import EsmeraldAPISettings
+    from esmerald import EsmeraldSettings
     from esmerald.conf.enums import EnvironmentType
 
-    class AppSettings(EsmeraldAPISettings):
+    class AppSettings(EsmeraldSettings):
         '''
         Create your own custom settings.
         '''
@@ -822,7 +822,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
         from esmerald.contrib.auth.hashers import BcryptPasswordHasher
 
         # myapp.hashers.py
@@ -834,7 +834,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
 
         # settings.py
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def password_hashers(self) -> list[str]:
@@ -867,7 +867,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import Esmerald, Gateway, Request, get, Include, EsmeraldAPISettings
+        from esmerald import Esmerald, Gateway, Request, get, Include, EsmeraldSettings
 
         @get()
         async def homepage(request: Request) -> str:
@@ -879,7 +879,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
             return "Hello, another!"
 
 
-        class APPSettings(EsmeraldAPISettings):
+        class APPSettings(EsmeraldSettings):
 
             @property
             def routes(self) -> list[Union[APIGateHandler, "Include"]]:
@@ -915,10 +915,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             secret: str = "n(0t=%_amauq1m&6sde4z#3mkdmfcad1942ny&#sjp1oygk-5_"
 
             @property
@@ -946,10 +946,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             @property
             def async_exit_config(self) -> AsyncExitConfig:
                 ...
@@ -974,10 +974,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             @property
             def template_config(self) -> TemplateConfig:
                 TemplateConfig(directory='templates')
@@ -1001,9 +1001,9 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             @property
             def static_files_config(self) -> StaticFilesConfig:
                 StaticFilesConfig(path='/', directories=...)
@@ -1024,10 +1024,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             allow_origins: list[str] = ['www.example.com', 'www.foobar.com']
 
             @property
@@ -1052,10 +1052,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def session_config(self) -> SessionConfig:
@@ -1078,10 +1078,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def logging_config(self) -> LoggingConfig:
@@ -1092,7 +1092,17 @@ class EsmeraldAPISettings(CacheBackendSettings):
                 )
         ```
         """
-        return cast(LoggingConfig, StandardLoggingConfig())
+        return cast(LoggingConfig, StandardLoggingConfig(level=self.logging_level))
+
+    logging_level: Annotated[
+        str,
+        Doc(
+            """
+            The logging level for the application. Defaults to `DEBUG`.
+            This is used by the `StandardLoggingConfig` to set the logging level.
+            """
+        ),
+    ] = "INFO"
 
     @property
     def openapi_config(self) -> OpenAPIConfig:
@@ -1114,10 +1124,10 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def openapi_config(self) -> OpenAPIConfig:
@@ -1173,12 +1183,12 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import EsmeraldAPISettings
+        from esmerald import EsmeraldSettings
         from esmerald.middleware import HTTPSRedirectMiddleware, TrustedHostMiddleware
         from lilya.middleware import Middleware as StarletteMiddleware
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def middleware(self) -> list[Middleware]:
@@ -1234,7 +1244,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         from loguru import logger
         from lilya.types import Receive, Scope, Send
 
-        from esmerald import Esmerald, EsmeraldInterceptor, EsmeraldAPISettings
+        from esmerald import Esmerald, EsmeraldInterceptor, EsmeraldSettings
 
 
         class LoggingInterceptor(EsmeraldInterceptor):
@@ -1243,7 +1253,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
                 logger.info("This is my interceptor being called before reaching the handler.")
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             def interceptors(self) -> list[Interceptor]:
                 return [LoggingInterceptor]
 
@@ -1271,7 +1281,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import Esmerald, EsmeraldAPISettings, BasePermission, Request
+        from esmerald import Esmerald, EsmeraldSettings, BasePermission, Request
         from esmerald.types import APIGateHandler
 
 
@@ -1284,7 +1294,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
                 return bool(is_admin)
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             def permissions(self) -> list[Permission]:
                 return [IsAdmin]
         ```
@@ -1308,12 +1318,12 @@ class EsmeraldAPISettings(CacheBackendSettings):
         **Example**
 
         ```python
-        from esmerald import Esmerald, EsmeraldAPISettings, Inject
+        from esmerald import Esmerald, EsmeraldSettings, Inject
 
         def is_valid(number: int) -> bool:
             return number >= 5
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
             def dependencies(self) -> Dependencies:
                 return {
                     "is_valid": Inject(is_valid)
@@ -1342,7 +1352,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         from pydantic.error_wrappers import ValidationError
         from esmerald import (
             Esmerald,
-            EsmeraldAPISettings,
+            EsmeraldSettings,
             JSONResponse,
             Request,
             ValidationErrorException,
@@ -1364,7 +1374,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
                 )
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def exception_handlers(self) -> ExceptionHandlerMap:
@@ -1395,13 +1405,13 @@ class EsmeraldAPISettings(CacheBackendSettings):
         from pydantic import BaseModel
         from saffier import Database, Registry
 
-        from esmerald import Esmerald, EsmeraldAPISettings, Gateway, post
+        from esmerald import Esmerald, EsmeraldSettings, Gateway, post
 
         database = Database("postgresql+asyncpg://user:password@host:port/database")
         registry = Registry(database=database)
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def on_startup(self) -> Union[list[LifeSpanHandler], None]:
@@ -1432,13 +1442,13 @@ class EsmeraldAPISettings(CacheBackendSettings):
         from pydantic import BaseModel
         from saffier import Database, Registry
 
-        from esmerald import Esmerald, EsmeraldAPISettings, Gateway, post
+        from esmerald import Esmerald, EsmeraldSettings, Gateway, post
 
         database = Database("postgresql+asyncpg://user:password@host:port/database")
         registry = Registry(database=database)
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def on_shutdown(self) -> Union[list[LifeSpanHandler], None]:
@@ -1481,7 +1491,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
         from loguru import logger
         from pydantic import BaseModel
 
-        from esmerald import Esmerald, EsmeraldAPISettings, Extension, Pluggable
+        from esmerald import Esmerald, EsmeraldSettings, Extension, Pluggable
         from esmerald.types import DictAny
 
 
@@ -1493,7 +1503,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
             def extend(self, config: PluggableConfig = None) -> None:
                 logger.success(f"Successfully passed a config {config.name}")
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def extensions(self) -> dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
@@ -1544,7 +1554,7 @@ class EsmeraldAPISettings(CacheBackendSettings):
                 return annotation(**value)
 
 
-        class AppSettings(EsmeraldAPISettings):
+        class AppSettings(EsmeraldSettings):
 
             @property
             def encoders(self) -> Union[list[Encoder], None]:
@@ -1562,3 +1572,6 @@ class EsmeraldAPISettings(CacheBackendSettings):
             else:
                 values[key] = value
         return hash((type(self),) + tuple(values))
+
+
+EsmeraldSettings = EsmeraldSettings

@@ -1,11 +1,11 @@
 from asyncz.executors import AsyncIOExecutor, ThreadPoolExecutor
 from asyncz.stores.mongo import MongoDBStore
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.contrib.schedulers import SchedulerConfig
 from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
 
-class CustomSettings(EsmeraldAPISettings):
+class CustomSettings(EsmeraldSettings):
     @property
     def scheduler_config(self) -> SchedulerConfig:
         stores = {"default": MongoDBStore()}

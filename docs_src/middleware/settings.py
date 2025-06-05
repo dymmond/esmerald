@@ -1,12 +1,12 @@
 from typing import List
 
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.middleware import GZipMiddleware, HTTPSRedirectMiddleware
 from esmerald.types import Middleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def middleware(self) -> List["Middleware"]:
         """

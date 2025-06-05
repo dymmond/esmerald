@@ -4,7 +4,7 @@ from typing import List
 
 import pytest
 
-from esmerald import CORSConfig, Esmerald, EsmeraldAPISettings
+from esmerald import CORSConfig, Esmerald, EsmeraldSettings
 from esmerald.conf.enums import EnvironmentType
 from esmerald.exceptions import ImproperlyConfigured
 
@@ -17,15 +17,15 @@ def monkey_import_importerror(name, globals=None, locals=None, fromlist=(), leve
     return real_import(name, globals=globals, locals=locals, fromlist=fromlist, level=level)
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     environment: str = EnvironmentType.PRODUCTION
 
 
-class SchedulerClassSettings(EsmeraldAPISettings):
+class SchedulerClassSettings(EsmeraldSettings):
     enable_scheduler: bool = True
 
 
-class CorsAppSettings(EsmeraldAPISettings):
+class CorsAppSettings(EsmeraldSettings):
     allow_origins: List[str] = ["*"]
 
 
@@ -62,6 +62,5 @@ def test_scheduler_class_raises_error(monkeypatch):
 
 
 def test_scheduler_config():
-
     with pytest.raises(ImproperlyConfigured):
         Esmerald(routes=[], settings_module=SchedulerClassSettings)

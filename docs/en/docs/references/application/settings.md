@@ -1,6 +1,6 @@
-# **`EsmeraldAPISettings`** class
+# **`EsmeraldSettings`** class
 
-Reference for the `EsmeraldAPISettings` class object and how to use it.
+Reference for the `EsmeraldSettings` class object and how to use it.
 
 Read more about [how to use the settings](https://esmerald.dev/application/settings/) in your
 application and leverage the system.
@@ -29,7 +29,7 @@ app = Esmerald()
 app.settings
 ```
 
-::: esmerald.EsmeraldAPISettings
+::: esmerald.EsmeraldSettings
     options:
         filters:
         - "!^model_config"

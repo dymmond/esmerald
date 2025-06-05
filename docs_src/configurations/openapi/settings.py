@@ -1,7 +1,7 @@
-from esmerald import EsmeraldAPISettings, OpenAPIConfig
+from esmerald import EsmeraldSettings, OpenAPIConfig
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def openapi_config(self) -> OpenAPIConfig:
         """

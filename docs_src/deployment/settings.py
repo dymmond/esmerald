@@ -1,5 +1,5 @@
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     enable_openapi: bool = False

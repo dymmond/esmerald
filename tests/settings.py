@@ -8,13 +8,13 @@ from edgy import Database, Registry
 from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
 from pydantic import ConfigDict
 
-from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.conf.global_settings import EsmeraldSettings
 from esmerald.core.config.jwt import JWTConfig
 
 TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@localhost:27017")
 
 
-class TestSettings(EsmeraldAPISettings):
+class TestSettings(EsmeraldSettings):
     __test__ = False
     app_name: str = "test_client"
     debug: bool = False

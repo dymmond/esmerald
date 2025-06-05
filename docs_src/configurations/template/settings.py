@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.core.config.template import TemplateConfig
 from esmerald.template.jinja import JinjaTemplateEngine
 
 
-class CustomSettings(EsmeraldAPISettings):
+class CustomSettings(EsmeraldSettings):
     @property
     def template_config(self) -> TemplateConfig:
         """

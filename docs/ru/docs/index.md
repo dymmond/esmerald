@@ -301,7 +301,7 @@ app = Esmerald(app_name='My App', title='My title')
 
 При запуске приложения система ищет переменную окружения
 `ESMERALD_SETTINGS_MODULE`. Если переменная не указана, система по умолчанию использует настройки
-`EsmeraldAPISettings` и запускается.
+`EsmeraldSettings` и запускается.
 
 ### Пользовательские настройки
 
@@ -313,11 +313,11 @@ app = Esmerald(app_name='My App', title='My title')
 Окружение по умолчанию — **production**.
 
 ```python
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.conf.enums import EnvironmentType
 
 
-class Development(EsmeraldAPISettings):
+class Development(EsmeraldSettings):
     app_name: str = 'My app in dev'
     environment: str = EnvironmentType.DEVELOPMENT
 

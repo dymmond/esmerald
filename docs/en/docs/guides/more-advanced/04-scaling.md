@@ -101,13 +101,13 @@ Use built-in or external caching to reduce database load and speed up requests:
 - Memory: `InMemoryCache`
 - Redis: `RedisCache`
 
-Configure via `EsmeraldAPISettings`:
+Configure via `EsmeraldSettings`:
 
 ```python
-from esmerald.conf import EsmeraldAPISettings
+from esmerald.conf import EsmeraldSettings
 from esmerald.core.caches.redis import RedisCache
 
-class Settings(EsmeraldAPISettings):
+class Settings(EsmeraldSettings):
     cache_backend = RedisCache(url="redis://localhost:6379")
 ```
 

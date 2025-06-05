@@ -52,11 +52,11 @@ There are many ways of doing this but in the documentation of Pydantic (even a f
 `parse_env` and handle the parsing there.
 
 ```python
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from pydantic import Field
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     allowed_hosts: List[str] = Field(..., env='ALLOWED_HOSTS')
 
     class Config:

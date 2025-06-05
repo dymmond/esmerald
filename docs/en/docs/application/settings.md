@@ -25,10 +25,15 @@ There are two ways of using the settings object within an Esmerald application.
 
 Each one of them has particular use cases but they also work together in perfect harmony.
 
-## EsmeraldAPISettings and the application
+## EsmeraldSettings and the application
 
 When starting a Esmerald instance, if no parameters are provided, it will automatically load the defaults from the
-system settings object, the `EsmeraldAPISettings`.
+system settings object, the `EsmeraldSettings`.
+
+!!! Warning
+    In the past `EsmeraldSettings` was called `EsmeraldAPISettings` and that name will remain for now for backwards compatibility.
+
+    It is advised to simply use the new naming convention to avoid disruption in the future. The only change was the name.
 
 === "No parameters"
 
@@ -44,11 +49,11 @@ system settings object, the `EsmeraldAPISettings`.
 
 ## Custom settings
 
-Using the defaults from `EsmeraldAPISettings` generally will not do too much for majority of the applications.
+Using the defaults from `EsmeraldSettings` generally will not do too much for majority of the applications.
 
 For that reason custom settings are needed.
 
-**All the custom settings should be inherited from the `EsmeraldAPISettings`**.
+**All the custom settings should be inherited from the `EsmeraldSettings`**.
 
 Let's assume we have three environments for one application: `production`, `testing`, `development` and a base settings
 file that contains common settings across the three environments.
@@ -79,7 +84,7 @@ file that contains common settings across the three environments.
 
 What just happened?
 
-1. Created an `AppSettings` inherited from the `EsmeraldAPISettings` with common cross environment properties.
+1. Created an `AppSettings` inherited from the `EsmeraldSettings` with common cross environment properties.
 2. Created one settings file per environment and inherited from the base `AppSettings`.
 3. Imported specific database settings per environment and added the events `on_startup` and `on_shutdown` specific
 to each.
@@ -139,8 +144,8 @@ The `settings_module` is a parameter available in every single `Esmerald` instan
 ### Creating a settings_module
 
 The configurations have **literally the same concept**
-as the [EsmeraldAPISettings](#esmeraldapisettings-and-the-application), which means that every single
-`settings_module` **must be derived from the EsmeraldAPISettings** or an `ImproperlyConfigured` exception
+as the [EsmeraldSettings](#esmeralsettings-and-the-application), which means that every single
+`settings_module` **must be derived from the EsmeraldSettings** or an `ImproperlyConfigured` exception
 is thrown.
 
 The reason why the above is to keep the integrity of the application and settings.
@@ -172,7 +177,7 @@ anything else. Let us imagine the following:
 
 In the example above we:
 
-1. Created a settings object derived from the main `EsmeraldAPISettings` and
+1. Created a settings object derived from the main `EsmeraldSettings` and
 passed some defaults.
 1. Passed the `ChildEsmeraldSettings` into the `ChildEsmerald` instance.
 2. Passed the `ChildEsmerald` into the `Esmerald` application.
@@ -258,7 +263,7 @@ and how Esmerald reads them out.
 
 ## Parameters
 
-The parameters available inside `EsmeraldAPISettings` can be overridden by any custom settings
+The parameters available inside `EsmeraldSettings` can be overridden by any custom settings
 and those are available in the [settings reference](../references/application/settings.md).
 
 !!! Check
@@ -306,14 +311,14 @@ When you instantiate an application **or you pass parameters directly or you use
 Passing parameters in the object will always override the values from the default settings.
 
 ```python
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.conf.enums import EnvironmentType
 from esmerald.middleware.https import HTTPSRedirectMiddleware
 from esmerald.types import Middleware
 from lilya.middleware import DefineMiddleware
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     debug: bool = False
 
     @property

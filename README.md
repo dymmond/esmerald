@@ -303,7 +303,7 @@ So how does Esmerald know about the default settings? Enters [Esmerald settings 
 
 This is the way Esmerald defaults the values. When starting an application, the system looks for a
 `ESMERALD_SETTINGS_MODULE` environment variable. If no variable is supplied then the system will default to
-`EsmeraldAPISettings` settings and start.
+`EsmeraldSettings` settings and start.
 
 ### Custom Settings
 
@@ -316,10 +316,10 @@ The environment defaults to **production**.
 
 ```python
 
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.conf.enums import EnvironmentType
 
-class Development(EsmeraldAPISettings):
+class Development(EsmeraldSettings):
     app_name: str = 'My app in dev'
     environment: str = EnvironmentType.DEVELOPMENT
 

@@ -78,7 +78,7 @@ from esmerald import Esmerald
 app = Esmerald(logging_config=CustomLoggingConfig())
 ```
 
-## Using `logging_config` via `EsmeraldAPISettings`
+## Using `logging_config` via `EsmeraldSettings`
 
 If you are using settings classes to configure your app, you can pass the logging configuration there too:
 
