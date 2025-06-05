@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from esmerald import (
     ChildEsmerald,
     Esmerald,
-    EsmeraldAPISettings,
+    EsmeraldSettings,
     Gateway,
     Include,
     JSONResponse,
@@ -83,7 +83,7 @@ async def _app_settings(request: Request) -> str:
     return request.app.settings.app_name
 
 
-class DisableOpenAPI(EsmeraldAPISettings):
+class DisableOpenAPI(EsmeraldSettings):
     enable_openapi: bool = True
 
 
@@ -127,19 +127,15 @@ def test_inner_settings_module(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> str:
-        return JSONResponse(
-            {"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]}
-        )
+        return JSONResponse({"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]})
 
-    with create_client(
-        routes=[Gateway(handler=_app_settings)], settings_module=AppSettings
-    ) as client:
+    with create_client(routes=[Gateway(handler=_app_settings)], settings_module=AppSettings) as client:
         response = client.get("/app-settings")
         assert client.app.settings.app_name == "new app"
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_module, EsmeraldAPISettings)
+        assert isinstance(client.app.settings_module, EsmeraldSettings)
 
 
 def test_inner_settings_module_as_instance(test_client_factory):
@@ -153,20 +149,16 @@ def test_inner_settings_module_as_instance(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> str:
-        return JSONResponse(
-            {"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]}
-        )
+        return JSONResponse({"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]})
 
-    with create_client(
-        routes=[Gateway(handler=_app_settings)], settings_module=AppSettings()
-    ) as client:
+    with create_client(routes=[Gateway(handler=_app_settings)], settings_module=AppSettings()) as client:
         response = client.get("/app-settings")
 
         assert client.app.settings.app_name == "new app"
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_module, EsmeraldAPISettings)
+        assert isinstance(client.app.settings_module, EsmeraldSettings)
 
 
 def test_child_esmerald_independent_settings(test_client_factory):
@@ -272,7 +264,7 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
 
 @pytest.mark.parametrize("settings_module", [Esmerald, ChildEsmerald, DummySettings, DummyObject])
 def test_raises_exception_on_wrong_settings(settings_module, test_client_factory):
-    """If a settings_module is thrown but not type EsmeraldAPISettings"""
+    """If a settings_module is thrown but not type EsmeraldSettings"""
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[], settings_module=settings_module):
             """ """

@@ -25,7 +25,7 @@ from esmerald.utils.crypto import get_random_secret_key
 if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import Literal
 
-    from esmerald.conf.global_settings import EsmeraldAPISettings
+    from esmerald.conf.global_settings import EsmeraldSettings
     from esmerald.core.config import (
         CORSConfig,
         CSRFConfig,
@@ -100,12 +100,8 @@ def create_client(
     backend: "Literal['asyncio', 'trio']" = "asyncio",
     backend_options: Optional[dict[str, Any]] = None,
     interceptors: Optional[list["Interceptor"]] = None,
-    pluggables: Optional[
-        dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
-    ] = None,
-    extensions: Optional[
-        dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
-    ] = None,
+    pluggables: Optional[dict[str, Union["Extension", "Pluggable", type["Extension"], str]]] = None,
+    extensions: Optional[dict[str, Union["Extension", "Pluggable", type["Extension"], str]]] = None,
     permissions: Optional[list["Permission"]] = None,
     dependencies: Optional["Dependencies"] = None,
     middleware: Optional[list["Middleware"]] = None,
@@ -263,10 +259,8 @@ class override_settings:
         Returns:
             None
         """
-        _original_settings: EsmeraldAPISettings = monkay_for_settings.settings
-        self._innermanager = monkay_for_settings.with_settings(
-            _original_settings.model_copy(update=self.options)
-        )
+        _original_settings: EsmeraldSettings = monkay_for_settings.settings
+        self._innermanager = monkay_for_settings.with_settings(_original_settings.model_copy(update=self.options))
         self._innermanager.__enter__()
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:

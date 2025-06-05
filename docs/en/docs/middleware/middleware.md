@@ -141,12 +141,12 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
     ```python
     from typing import List
 
-    from esmerald import EsmeraldAPISettings
+    from esmerald import EsmeraldSettings
     from esmerald.types import Middleware
     from .middleware.jwt import JWTAuthMiddleware
 
 
-    class AppSettings(EsmeraldAPISettings):
+    class AppSettings(EsmeraldSettings):
 
         @property
         def middleware(self) -> List["Middleware"]:

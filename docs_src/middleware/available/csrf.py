@@ -1,4 +1,4 @@
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 from esmerald.core.config import CSRFConfig
 from esmerald.middleware import CSRFMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
@@ -19,7 +19,7 @@ app = Esmerald(routes=routes, csrf_config=csrf_config)
 
 # Option three - Using the settings module
 # Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def csrf_config(self) -> CSRFConfig:
         return CSRFConfig(allow_origins=["*"])

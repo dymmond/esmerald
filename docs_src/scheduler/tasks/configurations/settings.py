@@ -1,10 +1,10 @@
 from typing import Dict, Union
 
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     enable_scheduler: bool = True
 
     @property

@@ -1,6 +1,6 @@
 from typing import List
 
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 from esmerald.middleware.security import SecurityMiddleware
 from lilya.middleware import DefineMiddleware
 
@@ -31,8 +31,7 @@ app = Esmerald(routes=routes, middleware=middleware)
 
 # Option two - Using the settings module
 # Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldAPISettings):
-
+class AppSettings(EsmeraldSettings):
     def middleware(self) -> List[DefineMiddleware]:
         return [
             DefineMiddleware(SecurityMiddleware, content_policy=content_policy_dict),

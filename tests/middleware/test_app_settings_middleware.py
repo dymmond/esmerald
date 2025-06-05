@@ -1,4 +1,4 @@
-from esmerald import Esmerald, EsmeraldAPISettings, Gateway, Include, JSONResponse, get, settings
+from esmerald import Esmerald, EsmeraldSettings, Gateway, Include, JSONResponse, get, settings
 from esmerald.conf import monkay
 from esmerald.testclient import create_client
 
@@ -14,12 +14,12 @@ async def home_unset() -> JSONResponse:
         return JSONResponse({"title": settings.title, "debug": settings.debug})
 
 
-class NewSettings(EsmeraldAPISettings):
+class NewSettings(EsmeraldSettings):
     title: str = "Settings being parsed by the middleware and make it app global"
     debug: bool = False
 
 
-class NestedAppSettings(EsmeraldAPISettings):
+class NestedAppSettings(EsmeraldSettings):
     title: str = "Nested app title"
     debug: bool = True
 

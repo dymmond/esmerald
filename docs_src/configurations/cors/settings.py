@@ -1,7 +1,7 @@
-from esmerald import CORSConfig, EsmeraldAPISettings
+from esmerald import CORSConfig, EsmeraldSettings
 
 
-class CustomSettings(EsmeraldAPISettings):
+class CustomSettings(EsmeraldSettings
     @property
     def cors_config(self) -> CORSConfig:
         """

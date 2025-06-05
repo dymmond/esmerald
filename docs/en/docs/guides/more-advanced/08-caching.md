@@ -53,12 +53,12 @@ pip install redis
 Then configure Esmerald to use Redis:
 
 ```python
-from esmerald.conf import EsmeraldAPISettings
+from esmerald.conf import EsmeraldSettings
 from esmerald.core.caches.redis import RedisCache
 from esmerald.core.protocols.cache import CacheBackend
 
 
-class Settings(EsmeraldAPISettings):
+class Settings(EsmeraldSettings):
     cache_backend: CacheBackend = RedisCache("redis://localhost:6379")
 ```
 

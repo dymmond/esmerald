@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.core.config.jwt import JWTConfig
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
 from monkay import load
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from esmerald.types import Middleware
 
 
-class CustomSettings(EsmeraldAPISettings):
+class CustomSettings(EsmeraldSettings):
     @property
     def jwt_config(self) -> JWTConfig:
         """

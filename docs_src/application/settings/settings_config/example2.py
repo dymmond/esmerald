@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from esmerald import Esmerald, EsmeraldAPISettings
+from esmerald import Esmerald, EsmeraldSettings
 from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
 
 if TYPE_CHECKING:
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 # Create a ChildEsmeraldSettings object
-class EsmeraldSettings(EsmeraldAPISettings):
+class EsmeraldSettings(EsmeraldSettings):
     app_name: str = "my application"
     secret_key: str = "a child secret"
 

@@ -1,7 +1,7 @@
-from esmerald import EsmeraldAPISettings, ImproperlyConfigured, SessionConfig
+from esmerald import EsmeraldSettings, ImproperlyConfigured, SessionConfig
 
 
-class CustomSettings(EsmeraldAPISettings):
+class CustomSettings(EsmeraldSettings):
     @property
     def session_config(self) -> SessionConfig:
         """

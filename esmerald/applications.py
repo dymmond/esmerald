@@ -22,7 +22,7 @@ from pydantic import AnyUrl, ValidationError
 from typing_extensions import Annotated, Doc
 
 from esmerald.conf import monkay as monkay_for_settings
-from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.conf.global_settings import EsmeraldSettings
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.core.config import (
     CORSConfig,
@@ -164,7 +164,7 @@ class Application(BaseLilya):
         "after_request",
         "logging_config",
     )
-    settings_module: Optional[EsmeraldAPISettings]
+    settings_module: Optional[EsmeraldSettings]
 
     def __init__(
         self,
@@ -1093,7 +1093,7 @@ class Application(BaseLilya):
                     return annotation(**value)
 
 
-            class AppSettings(EsmeraldAPISettings):
+            class AppSettings(EsmeraldSettings):
 
                 @property
                 def encoders(self) -> Union[list[Encoder], None]:
@@ -1609,20 +1609,18 @@ class Application(BaseLilya):
             settings_module = load(settings_module)
 
         if settings_module is not None:
-            if not isinstance(settings_module, EsmeraldAPISettings) and not is_class_and_subclass(
-                settings_module, EsmeraldAPISettings
+            if not isinstance(settings_module, EsmeraldSettings) and not is_class_and_subclass(
+                settings_module, EsmeraldSettings
             ):
-                raise ImproperlyConfigured(
-                    "settings_module must be a subclass of EsmeraldSettings"
-                )
-            elif isinstance(settings_module, EsmeraldAPISettings):
+                raise ImproperlyConfigured("settings_module must be a subclass of EsmeraldSettings")
+            elif isinstance(settings_module, EsmeraldSettings):
                 self.settings_module = settings_module
-            elif is_class_and_subclass(settings_module, EsmeraldAPISettings):
+            elif is_class_and_subclass(settings_module, EsmeraldSettings):
                 self.settings_module = settings_module()  # type: ignore
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
@@ -1652,20 +1650,14 @@ class Application(BaseLilya):
         self.cors_config = self.load_settings_value("cors_config", cors_config)
         self.openapi_config = self.load_settings_value("openapi_config", openapi_config)
         self.template_config = self.load_settings_value("template_config", template_config)
-        self.static_files_config = self.load_settings_value(
-            "static_files_config", static_files_config
-        )
+        self.static_files_config = self.load_settings_value("static_files_config", static_files_config)
         self.session_config = self.load_settings_value("session_config", session_config)
         self.logging_config = self.load_settings_value("logging_config", logging_config)
         self.response_class = self.load_settings_value("response_class", response_class)
         self.response_cookies = self.load_settings_value("response_cookies", response_cookies)
         self.response_headers = self.load_settings_value("response_headers", response_headers)
-        self.enable_scheduler = self.load_settings_value(
-            "enable_scheduler", enable_scheduler, is_boolean=True
-        )
-        self.scheduler_config: "SchedulerConfig" = self.load_settings_value(
-            "scheduler_config", scheduler_config
-        )
+        self.enable_scheduler = self.load_settings_value("enable_scheduler", enable_scheduler, is_boolean=True)
+        self.scheduler_config: "SchedulerConfig" = self.load_settings_value("scheduler_config", scheduler_config)
         self.timezone = self.load_settings_value("timezone", timezone)
         self.root_path = self.load_settings_value("root_path", root_path)
         self._middleware = self.load_settings_value("middleware", middleware) or []
@@ -1675,16 +1667,10 @@ class Application(BaseLilya):
         self.on_shutdown = self.load_settings_value("on_shutdown", on_shutdown)
         self.lifespan = self.load_settings_value("lifespan", lifespan)
         self.tags = self.load_settings_value("tags", security)
-        self.include_in_schema = self.load_settings_value(
-            "include_in_schema", include_in_schema, is_boolean=True
-        )
+        self.include_in_schema = self.load_settings_value("include_in_schema", include_in_schema, is_boolean=True)
         self.security = self.load_settings_value("security", security)
-        self.enable_openapi = self.load_settings_value(
-            "enable_openapi", enable_openapi, is_boolean=True
-        )
-        self.redirect_slashes = self.load_settings_value(
-            "redirect_slashes", redirect_slashes, is_boolean=True
-        )
+        self.enable_openapi = self.load_settings_value("enable_openapi", enable_openapi, is_boolean=True)
+        self.redirect_slashes = self.load_settings_value("redirect_slashes", redirect_slashes, is_boolean=True)
 
         # OpenAPI Related
         self.root_path_in_servers = self.load_settings_value(
@@ -1733,25 +1719,19 @@ class Application(BaseLilya):
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
-            for permission in self.load_settings_value("permissions", self.__base_permissions__)
-            or []
+            for permission in self.load_settings_value("permissions", self.__base_permissions__) or []
             if not is_esmerald_permission(permission)
         ]
 
         self.permissions: Sequence[Permission] = [
             permission
-            for permission in self.load_settings_value("permissions", self.__base_permissions__)
-            or []
+            for permission in self.load_settings_value("permissions", self.__base_permissions__) or []
             if is_esmerald_permission(permission)
         ]
 
-        self.before_request_callbacks = (
-            self.load_settings_value("before_request", before_request) or []
-        )
+        self.before_request_callbacks = self.load_settings_value("before_request", before_request) or []
 
-        self.after_request_callbacks = (
-            self.load_settings_value("after_request", after_request) or []
-        )
+        self.after_request_callbacks = self.load_settings_value("after_request", after_request) or []
 
         self.router = Router(
             on_shutdown=self.on_shutdown,
@@ -1831,9 +1811,7 @@ class Application(BaseLilya):
         if self.logging_config is not None:
             setup_logging(self.logging_config)
 
-    def load_settings_value(
-        self, name: str, value: Optional[Any] = None, is_boolean: bool = False
-    ) -> Any:
+    def load_settings_value(self, name: str, value: Optional[Any] = None, is_boolean: bool = False) -> Any:
         """
         Loader used to get the settings defaults and custom settings
         of the application.
@@ -1866,9 +1844,7 @@ class Application(BaseLilya):
                     f"The webhooks should be an instances of 'WebhookGateway', got '{route.__class__.__name__}' instead."
                 )
 
-            if not is_class_and_subclass(route.handler, base.View) and not isinstance(
-                route.handler, base.View
-            ):
+            if not is_class_and_subclass(route.handler, base.View) and not isinstance(route.handler, base.View):
                 if not route.handler.parent:
                     route.handler.parent = route
                     webhooks.append(route)
@@ -1909,9 +1885,7 @@ class Application(BaseLilya):
         :raises ImportError: If the scheduler modules are not installed.
         """
         if self.scheduler_config is None:
-            raise ImproperlyConfigured(
-                "It cannot start the scheduler if there is no scheduler_config declared."
-            )
+            raise ImproperlyConfigured("It cannot start the scheduler if there is no scheduler_config declared.")
 
         if self.lifespan is not None:
             return None
@@ -1928,8 +1902,8 @@ class Application(BaseLilya):
 
     def get_settings_value(
         self,
-        local_settings: Optional["EsmeraldAPISettings"],
-        global_settings: "EsmeraldAPISettings",
+        local_settings: Optional["EsmeraldSettings"],
+        global_settings: "EsmeraldSettings",
         value: str,
     ) -> Any:
         """Obtains the value from a settings module or defaults to the global settings"""
@@ -2515,11 +2489,7 @@ class Application(BaseLilya):
                 )
                 continue
 
-            gateway = (
-                gateways.Gateway
-                if not isinstance(route.handler, WebSocketHandler)
-                else gateways.WebSocketGateway
-            )
+            gateway = gateways.Gateway if not isinstance(route.handler, WebSocketHandler) else gateways.WebSocketGateway
 
             if self.on_startup:
                 self.on_startup.extend(router.on_startup)
@@ -2559,12 +2529,8 @@ class Application(BaseLilya):
             app.add_event_handler(ValidationError, my_new_422_handler)
 
         """
-        self.exception_handlers.setdefault(
-            ImproperlyConfigured, improperly_configured_exception_handler
-        )
-        self.exception_handlers.setdefault(
-            ValidationErrorException, validation_error_exception_handler
-        )
+        self.exception_handlers.setdefault(ImproperlyConfigured, improperly_configured_exception_handler)
+        self.exception_handlers.setdefault(ValidationErrorException, validation_error_exception_handler)
 
         self.exception_handlers.setdefault(ValidationError, pydantic_validation_error_handler)
 
@@ -2586,9 +2552,7 @@ class Application(BaseLilya):
                 return exception_handlers
 
             for _route in route.routes:
-                exception_handlers = self.build_routes_exception_handlers(
-                    _route, exception_handlers
-                )
+                exception_handlers = self.build_routes_exception_handlers(_route, exception_handlers)
 
         if isinstance(route, (gateways.Gateway, gateways.WebSocketGateway)):
             exception_handlers.update(route.exception_handlers)
@@ -2610,22 +2574,14 @@ class Application(BaseLilya):
         user_middleware = []
 
         if self.allowed_hosts:
-            user_middleware.append(
-                DefineMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts)
-            )
+            user_middleware.append(DefineMiddleware(TrustedHostMiddleware, allowed_hosts=self.allowed_hosts))
         if self.cors_config:
-            user_middleware.append(
-                DefineMiddleware(CORSMiddleware, **self.cors_config.model_dump())
-            )
+            user_middleware.append(DefineMiddleware(CORSMiddleware, **self.cors_config.model_dump()))
         if self.csrf_config:
-            user_middleware.append(
-                DefineMiddleware(CSRFMiddleware, **self.csrf_config.model_dump())
-            )
+            user_middleware.append(DefineMiddleware(CSRFMiddleware, **self.csrf_config.model_dump()))
 
         if self.session_config:
-            user_middleware.append(
-                DefineMiddleware(SessionMiddleware, **self.session_config.model_dump())
-            )
+            user_middleware.append(DefineMiddleware(SessionMiddleware, **self.session_config.model_dump()))
 
         for middleware in self._middleware or []:
             if isinstance(middleware, DefineMiddleware):
@@ -2690,9 +2646,7 @@ class Application(BaseLilya):
             app = cls(app=app, *args, **kwargs)  # noqa
         return app
 
-    def add_extension(
-        self, name: str, extension: Union[Extension, Pluggable, type[Extension]]
-    ) -> None:
+    def add_extension(self, name: str, extension: Union[Extension, Pluggable, type[Extension]]) -> None:
         """
         Adds a [Pluggable](https://esmerald.dev/pluggables/) directly to the active application router.
 
@@ -2733,9 +2687,7 @@ class Application(BaseLilya):
         """
         self.extensions[name] = extension
 
-    def add_pluggable(
-        self, name: str, extension: Union[Extension, Pluggable, type[Extension]]
-    ) -> None:
+    def add_pluggable(self, name: str, extension: Union[Extension, Pluggable, type[Extension]]) -> None:
         warnings.warn(
             "The `add_pluggable` method is deprecated use `add_extension` instead",
             DeprecationWarning,
@@ -2744,7 +2696,7 @@ class Application(BaseLilya):
         self.add_extension(name, extension)
 
     @property
-    def settings(self) -> "EsmeraldAPISettings":
+    def settings(self) -> "EsmeraldSettings":
         """
         Returns the Esmerald settings object for easy access.
 
@@ -2760,15 +2712,13 @@ class Application(BaseLilya):
         app.settings
         ```
         """
-        general_settings = (
-            self.settings_module if self.settings_module else monkay_for_settings.settings
-        )
+        general_settings = self.settings_module if self.settings_module else monkay_for_settings.settings
         return general_settings
 
     @property
     def default_settings(
         self,
-    ) -> "EsmeraldAPISettings":
+    ) -> "EsmeraldSettings":
         """
         Returns the default global settings.
         """

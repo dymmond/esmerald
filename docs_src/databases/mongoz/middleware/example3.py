@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from esmerald import EsmeraldAPISettings
+from esmerald import EsmeraldSettings
 from esmerald.conf import settings
 from esmerald.core.config.jwt import JWTConfig
 from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
@@ -22,7 +22,7 @@ class AppAuthMiddleware(JWTAuthMiddleware):
         super().__init__(app, config=self.jwt_config, user_model=load("myapp.models.User"))
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def middleware(self) -> List["Middleware"]:
         """

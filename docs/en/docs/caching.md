@@ -112,7 +112,7 @@ from esmerald.utils.decorators import cache
 
 ### **5.1 Using Esmerald Settings to Set a Default Cache Backend**
 
-Instead of specifying the backend every time, we can configure a global cache backend using `EsmeraldAPISettings`.
+Instead of specifying the backend every time, we can configure a global cache backend using `EsmeraldSettings`.
 
 #### **Example: Setting Redis as the Default Backend**
 
@@ -168,5 +168,5 @@ Now you can use the custom backend in your Esmerald application.
 
 ✅ **Esmerald provides an easy-to-use caching system with multiple backends.**
 ✅ **You can use the `@cache` decorator to cache responses.**
-✅ **You can set a global cache backend via `EsmeraldAPISettings`.**
+✅ **You can set a global cache backend via `EsmeraldSettings`.**
 ✅ **You can create custom caching backends to store data in different ways.**

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from lilya import status
 
     from esmerald.conf import settings
-    from esmerald.conf.global_settings import EsmeraldSettings, EsmeraldSettings
+    from esmerald.conf.global_settings import EsmeraldSettings
     from esmerald.context import Context
     from esmerald.core.datastructures import JSON, Redirect, Stream, Template, UploadFile
     from esmerald.injector import Factory, Inject

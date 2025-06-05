@@ -1,8 +1,8 @@
-from esmerald import ChildEsmerald, Esmerald, EsmeraldAPISettings, Include
+from esmerald import ChildEsmerald, Esmerald, EsmeraldSettingsnclude
 
 
 # Create a ChildEsmeraldSettings object
-class ChildEsmeraldSettings(EsmeraldAPISettings):
+class ChildEsmeraldSettings(EsmeraldSettings):
     app_name: str = "child app"
     secret_key: str = "a child secret"
 

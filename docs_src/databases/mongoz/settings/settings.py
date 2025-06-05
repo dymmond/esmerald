@@ -1,9 +1,9 @@
 from mongoz import Registry
 
-from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.conf.global_settings import EsmeraldSettings
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def registry(self) -> Registry:
         database = "<YOUR-SQL-QUERY-STRING"

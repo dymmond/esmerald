@@ -27,7 +27,7 @@ except MissingDependency:
 
 if TYPE_CHECKING:
     from esmerald.applications import Application, Esmerald
-    from esmerald.conf.global_settings import EsmeraldAPISettings  # noqa
+    from esmerald.conf.global_settings import EsmeraldSettings  # noqa
     from esmerald.core.datastructures import Cookie, ResponseHeader
     from esmerald.injector import Inject
     from esmerald.requests import Request
@@ -69,7 +69,7 @@ else:
     Gateway = Any
     WebhookGateway = Any
     Esmerald = Any
-    EsmeraldAPISettings = Any
+    EsmeraldSettings = Any
     SchedulerType = Any
 
 AsyncAnyCallable = Callable[..., Awaitable[Any]]
@@ -86,9 +86,7 @@ ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]
 ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
-_ReservedKwargs = Literal[
-    "request", "socket", "headers", "query", "cookies", "state", "data", "payload"
-]
+_ReservedKwargs = Literal["request", "socket", "headers", "query", "cookies", "state", "data", "payload"]
 
 ReservedKwargs = get_args(_ReservedKwargs)
 
@@ -112,6 +110,6 @@ SecurityScheme = dict[str, list[str]]
 ConnectionType = Union["Request", "WebSocket"]
 DictStr = dict[str, str]
 DictAny = dict[str, Any]
-SettingsType = Type["EsmeraldAPISettings"]
+SettingsType = Type["EsmeraldSettings"]
 
 LifeSpanHandler = Union[Callable[[], None], Callable[[], Awaitable[None]]]

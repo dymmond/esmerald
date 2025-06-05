@@ -9,12 +9,12 @@ from functools import cached_property
 
 from edgy import Database, Registry
 from esmerald.conf.enums import EnvironmentType
-from esmerald.conf.global_settings import EsmeraldAPISettings
+from esmerald.conf.global_settings import EsmeraldSettings
 from lilya.environments import EnvironLoader
 
 loader: EnvironLoader = EnvironLoader()
 
-class DatabaseSettings(EsmeraldAPISettings):
+class DatabaseSettings(EsmeraldSettings):
     """
     Clean object for database manipulation access.
     """

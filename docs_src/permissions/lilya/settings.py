@@ -1,4 +1,4 @@
-from esmerald import EsmeraldAPISettings, Request
+from esmerald import EsmeraldSettings, Request
 from esmerald.exceptions import PermissionDenied
 from lilya.permissions import DefinePermission
 from lilya.protocols.permissions import PermissionProtocol
@@ -19,7 +19,7 @@ class AllowAccess(PermissionProtocol):
         raise PermissionDenied()
 
 
-class AppSettings(EsmeraldAPISettings):
+class AppSettings(EsmeraldSettings):
     @property
     def permissions(self) -> list[DefinePermission]:
         """

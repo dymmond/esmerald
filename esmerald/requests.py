@@ -15,7 +15,7 @@ from esmerald.typing import Void
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.conf.global_settings import EsmeraldAPISettings
+    from esmerald.conf.global_settings import EsmeraldSettings
     from esmerald.types import HTTPMethod
 
 
@@ -42,20 +42,16 @@ class Request(LilyaRequest):
         """
         Access to the global settings via `request.global_settings`.
         """
-        assert (
-            "global_settings" in self.scope
-        ), "RequestSettingsMiddleware must be added to the middlewares"
-        return cast("EsmeraldAPISettings", self.scope["global_settings"])
+        assert "global_settings" in self.scope, "RequestSettingsMiddleware must be added to the middlewares"
+        return cast("EsmeraldSettings", self.scope["global_settings"])
 
     @property
     def app_settings(self) -> Any:
         """
         Access to the app settings via `request.app_settings`.
         """
-        assert (
-            "app_settings" in self.scope
-        ), "RequestSettingsMiddleware must be added to the middlewares"
-        return cast("EsmeraldAPISettings", self.scope["app_settings"])
+        assert "app_settings" in self.scope, "RequestSettingsMiddleware must be added to the middlewares"
+        return cast("EsmeraldSettings", self.scope["app_settings"])
 
     async def json(self) -> Any:
         if self._json is Void:
