@@ -15,7 +15,9 @@ def create_app(
     name: Annotated[str, Argument(help="The name of the app.")],
     verbosity: Annotated[int, Option(1, "-v", help="Displays the files generated")],
     with_basic_controller: Annotated[bool, Option(False, help="Should generate a basic controller")],
-    context: Annotated[bool, Option(False, help="Should generate an application with a controller, service, repository, dto.")],
+    context: Annotated[
+        bool, Option(False, help="Should generate an application with a controller, service, repository, dto.")
+    ],
 ) -> None:
     """Creates the scaffold of an application
 
@@ -34,6 +36,6 @@ def create_app(
 
     try:
         directive.handle("app", name=name, **options)
-        success(f"App {name} generated successfully!")
+        success(f" App {name} generated successfully!")
     except DirectiveError as e:
         error(str(e))

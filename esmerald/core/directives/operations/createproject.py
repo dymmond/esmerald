@@ -72,6 +72,6 @@ def create_project(
 
     try:
         directive.handle("project", name=name, **options)
-        success(f"Project {name} generated successfully!")
+        success(f" Project {name} generated successfully!")
     except DirectiveError as e:
         error(str(e))

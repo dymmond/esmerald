@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 
 from monkay import Monkay
 
-__version__ = "3.8.1"
+__version__ = "3.8.2"
 
 if TYPE_CHECKING:
     from lilya import status
 
     from esmerald.conf import settings
-    from esmerald.conf.global_settings import EsmeraldAPISettings
+    from esmerald.conf.global_settings import EsmeraldSettings, EsmeraldSettings
     from esmerald.context import Context
     from esmerald.core.datastructures import JSON, Redirect, Stream, Template, UploadFile
     from esmerald.injector import Factory, Inject
@@ -88,6 +88,7 @@ __all__ = [
     "DenyAll",
     "Esmerald",
     "EsmeraldAPISettings",
+    "EsmeraldSettings",
     "EsmeraldInterceptor",
     "Extension",
     "File",
@@ -165,6 +166,7 @@ _monkay: Monkay = Monkay(
         "status": "lilya.status",
         "settings": ".conf.settings",
         "EsmeraldAPISettings": ".conf.global_settings.EsmeraldAPISettings",
+        "EsmeraldSettings": ".conf.global_settings.EsmeraldSettings",
         "Context": "esmerald.context.Context",
         "JSON": ".core.datastructures.JSON",
         "Redirect": ".core.datastructures.Redirect",

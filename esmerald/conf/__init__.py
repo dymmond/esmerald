@@ -6,15 +6,13 @@ from typing import TYPE_CHECKING, Any, cast
 from monkay import Monkay
 
 if TYPE_CHECKING:
-    from esmerald.conf.global_settings import EsmeraldAPISettings
+    from esmerald.conf.global_settings import EsmeraldSettings
 
 ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
 
-monkay: Monkay[None, EsmeraldAPISettings] = Monkay(
+monkay: Monkay[None, EsmeraldSettings] = Monkay(
     globals(),
-    settings_path=lambda: os.environ.get(
-        ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
-    ),
+    settings_path=lambda: os.environ.get(ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldSettings"),
 )
 
 
@@ -26,13 +24,11 @@ class SettingsForward:
         return setattr(monkay.settings, name, value)
 
 
-settings: EsmeraldAPISettings = cast("EsmeraldAPISettings", SettingsForward())
+settings: EsmeraldSettings = cast("EsmeraldSettings", SettingsForward())
 
 
 def reload_settings() -> None:
     """
     Reloads the global settings.
     """
-    monkay.settings = os.environ.get(
-        ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldAPISettings"
-    )
+    monkay.settings = os.environ.get(ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldSettings")

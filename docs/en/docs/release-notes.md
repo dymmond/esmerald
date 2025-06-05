@@ -5,6 +5,20 @@ hide:
 
 # Release Notes
 
+### 3.8.2
+
+### Added
+
+- Missing `logging_level` in the EsmeraldAPISettings.
+- New naming convention for `EsmeraldAPISettings` to be now called `EsmeraldSettings`. The old `EsmeraldAPISettings` will remain
+as is for backwards compatibility but it will eventually be removed in the future.
+
+### Changed
+
+- Upgraded the internal requirements and Lilya.
+- Revamped `runserver` to be modern and more informative.
+- Updated the documentation for the `EsmeraldSettings`.
+
 ### 3.8.1
 
 ### Changed
