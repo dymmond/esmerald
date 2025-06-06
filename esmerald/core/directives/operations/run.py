@@ -42,6 +42,7 @@ def run(
             nargs=-1,
             type=click.UNPROCESSED,
             help="The arguments needed to be passed to the custom directive",
+            required=False
         ),
     ],
 ) -> None:
