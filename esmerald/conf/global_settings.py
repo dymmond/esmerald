@@ -1574,4 +1574,4 @@ class EsmeraldSettings(CacheBackendSettings):
         return hash((type(self),) + tuple(values))
 
 
-EsmeraldSettings = EsmeraldSettings
+EsmeraldAPISettings = EsmeraldSettings
