@@ -10,6 +10,7 @@ hide:
 ### Fixed
 
 - `EsmeraldAPISettings` was not properly declared for backwards compatibility.
+- Migration to Sayer missed the `run` directive argument required as False.
 
 ### 3.8.2
 
