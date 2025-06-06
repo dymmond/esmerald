@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+### 3.8.3
+
+### Fixed
+
+- `EsmeraldAPISettings` was not properly declared for backwards compatibility.
+
 ### 3.8.2
 
 ### Added
