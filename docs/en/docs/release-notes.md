@@ -7,10 +7,17 @@ hide:
 
 ### 3.8.3
 
+### Added
+
+- Support for a second form of declaring [directives](./directives/directive-decorator.md).
+- Support for `@directive` decorator on top of a [Sayer](https://sayer.dymmond.com) command making it a directive as
+long as it still follows the directive lookup for files.
+
 ### Fixed
 
 - `EsmeraldAPISettings` was not properly declared for backwards compatibility.
 - Migration to Sayer missed the `run` directive argument required as False.
+- Fix a regression on `EsmeraldAPISettings` when importing from `esmerald`.
 
 ### 3.8.2
 
