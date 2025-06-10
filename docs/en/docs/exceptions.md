@@ -34,7 +34,7 @@ Status code: 401
 
 ### PermissionDenied
 
-Exception raised when a [permission](./permissions.md) fails. It can be used in any context also outside of the
+Exception raised when a [permission](./permissions/index.md) fails. It can be used in any context also outside of the
 permissions context and it should be raised any time the access to a resource should be blocked.
 
 ```python

@@ -98,7 +98,7 @@ You can add as many `ChildEsmerald` as you desire, there are no limits.
 ```
 
 The example above shows that you could even add the same application within nested includes, and for each
-include, you can add specific unique [permissions](../permissions.md), [middlewares](../middleware/middleware.md),
+include, you can add specific unique [permissions](../permissions/index.md), [middlewares](../middleware/middleware.md),
 [exception handlers](../exception-handlers.md) and [dependencies](../dependencies.md), which are available on each
 instance of the `Include`. The options are endless.
 
@@ -129,7 +129,7 @@ The `Router` object has some available functionalities that can be useful.
 * **name** - Name of the route.
 * **include_in_schema** - If route should be added to the OpenAPI Schema
 * [handler](./handlers.md#http-handlers) - A HTTP handler.
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
+* **permissions** - A list of [permissions](../permissions/index.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
 top-down.
@@ -152,7 +152,7 @@ functions on an application top level. Exception handler callables should be of 
 
 * **name** - Name of the route.
 * [Websocket handler](./handlers.md#websocket-handler) - A websocket handler.
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
+* **permissions** - A list of [permissions](../permissions/index.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **interceptors** - A list of [interceptors](../interceptors.md).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from
@@ -177,7 +177,7 @@ functions on an application top level. Exception handler callables should be of 
 * **child** - The [ChildEsmerald](#child-esmerald-application) instance.
 * **name** - Name of the route.
 * [Websocket handler](./handlers.md#websocket-handler) - A websocket handler.
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
+* **permissions** - A list of [permissions](../permissions/index.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **interceptors** - A list of [interceptors](../interceptors.md).
 * **middleware** - A list of middleware to run for every request. The middlewares of a Include will be checked from

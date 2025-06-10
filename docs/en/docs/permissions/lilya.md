@@ -82,7 +82,7 @@ parameter **should always be an app** and the `__call__` should **always return 
 ## Permissions and the settings
 
 One of the advantages of Lilya is leveraging the settings to make the codebase tidy, clean and easy to maintain.
-As mentioned in the [settings](./settings.md) document, the permissions is one of the properties available
+As mentioned in the [settings](../application/settings.md) document, the permissions is one of the properties available
 to use to start a Lilya application.
 
 ```python

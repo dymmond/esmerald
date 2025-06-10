@@ -122,5 +122,3 @@ def get_config(settings = Requires(get_settings)):
 ## What's Next?
 
 You now understand how to use dependency injection in Esmerald, from simple values to complex services.
-
-👉 Continue to [advanced concepts](./17-background-tasks.md) to learn about running background operations with ease.

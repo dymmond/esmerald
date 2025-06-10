@@ -1,7 +1,7 @@
 services:
   db:
     restart: always
-    image: postgres:12.3
+    image: docker.artifactory-7.eu.scor.local/postgres:17
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_USER: "postgres"
@@ -16,7 +16,7 @@ services:
 
   mongodb:
     restart: always
-    image: mongo:latest
+    image: docker.artifactory-7.eu.scor.local/mongo:latest
     container_name: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -29,14 +29,14 @@ services:
 
   redis:
     restart: always
-    image: redis:latest
+    image: docker.artifactory-7.eu.scor.local/redis:latest
     expose:
       - 6379
     ports:
       - "6379:6379"
 
   mongo-express:
-    image: mongo-express
+    image: docker.artifactory-7.eu.scor.local/mongo-express
     restart: always
     ports:
       - "8081:8081"
