@@ -305,7 +305,7 @@ We will be using Gateway for it can be replaced by any of the above as it is com
 
 As specified before, the [middleware](../middleware/middleware.md) of a Gateway are read from top down,
 from the parent to the very handler and the same is applied to [exception handlers](../exception-handlers.md),
-[dependencies](../dependencies.md) and [permissions](../permissions.md).
+[dependencies](../dependencies.md) and [permissions](../permissions/index.md).
 
 ```python hl_lines="23 29-30"
 {!> ../../../docs_src/routing/routes/middleware.py !}
@@ -356,7 +356,7 @@ More than one dependency can be added to each mapping.
 
 Permissions are a must in **every** application. It is very hard to control flows of APIs only with
 dependency injection as that can be very hard to maintain in the future whereas with a permission based
-system, that can be done in the cleanest way possible. More on [permissions](../permissions.md) and how
+system, that can be done in the cleanest way possible. More on [permissions](../permissions/index.md) and how
 to use them.
 
 ```python hl_lines="14 19 33 35"

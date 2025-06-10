@@ -74,7 +74,7 @@ A list of [Gateway](../routing/routes.md#gateway), [WebSocketGateway](../routing
 or [Include](../routing/routes.md#include)
 * **interceptors** - A list of [interceptors](../interceptors.md) to serve the application incoming
 requests (HTTP and Websockets).
-* **permissions** - A list of [permissions](../permissions.md) to serve the application incoming
+* **permissions** - A list of [permissions](../permissions/index.md) to serve the application incoming
 requests (HTTP and Websockets).
 * **middleware** - A list of middleware to run for every request. A Esmerald application will always include the
 middlewares from the configurations passed (CSRF, CORS, JWT...) and the custom user middleware. The middlewares

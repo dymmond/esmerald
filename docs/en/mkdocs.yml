@@ -162,6 +162,7 @@ nav:
     - directives/discovery.md
     - directives/directives.md
     - directives/custom-directives.md
+    - directives/directive-decorator.md
     - directives/shell.md
 - Database Integrations:
   - databases/index.md

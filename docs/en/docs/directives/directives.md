@@ -8,7 +8,7 @@ pieces of code for **Esmerald**.
 ## Built-in Esmerald directives
 
 Starting a project can be troublesome for some people mostly because there questions about the structure of the files
-and folders and how to maintain the consistency. This was mentioned in the [Esmerald scaffold](../examples.md).
+and folders and how to maintain the consistency.
 
 A lot of people cannot be bothered with running cookiecutters and go straight to their own design.
 

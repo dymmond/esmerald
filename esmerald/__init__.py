@@ -2,14 +2,13 @@ from typing import TYPE_CHECKING
 
 from monkay import Monkay
 
-__version__ = "3.8.2"
+__version__ = "3.8.3"
 
 if TYPE_CHECKING:
     from lilya import status
 
     from esmerald.conf import settings
-    from esmerald.conf.global_settings import EameraldAPISettings
-    from esmerald.conf.global_settings import EsmeraldSettings
+    from esmerald.conf.global_settings import EsmeraldAPISettings, EsmeraldSettings
     from esmerald.context import Context
     from esmerald.core.datastructures import JSON, Redirect, Stream, Template, UploadFile
     from esmerald.injector import Factory, Inject
@@ -24,6 +23,7 @@ if TYPE_CHECKING:
         SessionConfig,
         StaticFilesConfig,
     )
+    from .core.directives.decorator import directive
     from .core.interceptors.interceptor import EsmeraldInterceptor
     from .core.protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
     from .exceptions import (
@@ -85,6 +85,7 @@ __all__ = [
     "CORSConfig",
     "CSRFConfig",
     "Cookie",
+    "directive",
     "DaoProtocol",
     "DenyAll",
     "Esmerald",
@@ -233,6 +234,7 @@ _monkay: Monkay = Monkay(
         "WebSocket": ".websockets.WebSocket",
         "WebSocketDisconnect": ".websockets.WebSocketDisconnect",
         "WebSocketState": ".websockets.WebSocketState",
+        "directive": ".core.directives.decorator.directive",
     },
     skip_all_update=True,
     package="esmerald",

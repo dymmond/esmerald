@@ -52,7 +52,7 @@
 но у каждого правила есть исключения. Хотя это независимый экземпляр с собственными правилами,
 они не применяются ко **всем** параметрам.
 
-[Middleware](../middleware/middleware.md) и [Permissions](../permissions.md) являются глобальными,
+[Middleware](../middleware/middleware.md) и [Permissions](../permissions/index.md) являются глобальными,
 и правила приоритета могут применяться между экземпляром `Esmerald` и соответствующими приложениями
 `ChildEsmerald`.
 

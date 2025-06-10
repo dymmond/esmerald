@@ -53,7 +53,7 @@ also **first level** as independent instance.
 `ChildEsmerald`, as per **warning** above, has its own rules, but there are always exceptions to any almost every rule.
 Although it is an independent instance with its own rules, this is not applied to **every** parameter.
 
-[Middlewares](../middleware/middleware.md) and [Permissions](../permissions.md) are actually global and the rules of
+[Middlewares](../middleware/middleware.md) and [Permissions](../permissions/index.md) are actually global and the rules of
 precedence can be applied between an `Esmerald` instance and the corresponding `ChildEsmerald` apps.
 
 In other words, you **don't need** to create/repeat the same permissions and middlewares (common to both) across

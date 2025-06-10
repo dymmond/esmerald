@@ -186,7 +186,7 @@ on `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` objects.
 ### How to use it
 
 Like everything in Lilya, this behaves similarly to an ASGI app **except** you don't need to declare
-the `app` parameter like you do in the [middleware](./middleware.md) and [permissions](./permissions.md).
+the `app` parameter like you do in the [middleware](./middleware/middleware.md) and [permissions](./permissions/index.md).
 
 In fact, you **need to declare only** a function, `sync` or `async` with `scope`, `receive` and `send`
 as paramters and you **don't need to return anything**.

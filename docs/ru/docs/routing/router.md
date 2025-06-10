@@ -96,7 +96,7 @@ Router является главным объектом, который связ
 ```
 
 Приведенный выше пример показывает, что вы даже можете добавить то же самое приложение внутри вложенных includes,
-и для каждого include вы можете добавить уникальные [permissions](../permissions.md), [middlewares](../middleware/middleware.md),
+и для каждого include вы можете добавить уникальные [permissions](../permissions/index.md), [middlewares](../middleware/middleware.md),
 [обработчики исключений](../exception-handlers.md) и [зависимости](../dependencies.md), которые доступны для каждого экземпляра `Include`.
 Вариантов бесконечно много.
 
@@ -127,7 +127,7 @@ Router является главным объектом, который связ
 * **name** - Название маршрута.
 * **include_in_schema** - Добавлять ли маршрут в схему OpenAPI.
 * **[handler](./handlers.md#http-handlers)** - HTTP обработчик.
-* **permissions** - Список [permissions](../permissions.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
+* **permissions** - Список [permissions](../permissions/index.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
 * **middleware** - Список middleware выполняемых для каждого запроса. Middlewares из Include будут проверяться сверху вниз.
 * **interceptors** - Список [interceptors](../interceptors.md) или <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a>,
 поскольку они оба внутренне преобразуются. Узнайте больше о [Python Protocols](https://peps.python.org/pep-0544/).
@@ -145,7 +145,7 @@ Router является главным объектом, который связ
 
 * **name** - Название маршрута.
 * [Websocket handler](./handlers.md#websocket-handler) - Websocket обработчик.
-* **permissions** - Список [permissions](../permissions.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
+* **permissions** - Список [permissions](../permissions/index.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
 * **interceptors** - Список [interceptors](../interceptors.md).
 * **middleware** - Список middleware выполняемых для каждого запроса. Middlewares из Include будут проверяться сверху вниз.
 Или <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a>, поскольку они оба внутренне преобразуются.
@@ -166,7 +166,7 @@ Router является главным объектом, который связ
 * **child** - Экземпляр [ChildEsmerald](#child-esmerald-application).
 * **name** - Название маршрута.
 * [Websocket handler](./handlers.md#websocket-handler) - Websocket обработчик.
-* **permissions** - Список [permissions](../permissions.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
+* **permissions** - Список [permissions](../permissions/index.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
 * **interceptors** - Список [interceptors](../interceptors.md).
 * **middleware** - Список middleware выполняемых для каждого запроса. Middlewares из Include будут проверяться сверху вниз.
 Или <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a>, поскольку они оба внутренне преобразуются.

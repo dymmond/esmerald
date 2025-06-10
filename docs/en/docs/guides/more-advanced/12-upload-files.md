@@ -197,7 +197,7 @@ This distinction allows you to handle files with different configurations based 
 
 ## 📄 API Reference
 
-For more detailed information on `UploadFile` and its methods, check the [Esmerald API Reference](../references/uploadfile.md).
+For more detailed information on `UploadFile` and its methods, check the [Esmerald API Reference](../../references/uploadfile.md).
 
 ---
 
