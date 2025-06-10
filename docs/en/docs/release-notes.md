@@ -18,6 +18,7 @@ long as it still follows the directive lookup for files.
 - `EsmeraldAPISettings` was not properly declared for backwards compatibility.
 - Migration to Sayer missed the `run` directive argument required as False.
 - Fix a regression on `EsmeraldAPISettings` when importing from `esmerald`.
+- Broken documentation references.
 
 ### 3.8.2
 

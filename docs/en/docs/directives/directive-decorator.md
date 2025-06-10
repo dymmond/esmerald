@@ -263,7 +263,7 @@ Let's do the `createsuperuser` now using the `@directive`.
 And this should be it. We now have a `createsuperuser` and an application and now we can run
 in the command line:
 
-**Using the --app or LILYA_DEFAULT_APP**
+**Using the --app or ESMERALD_DEFAULT_APP**
 
 ```shell
 $ esmerald --app myproject.main:app run createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
@@ -272,7 +272,7 @@ $ esmerald --app myproject.main:app run createsuperuser --first-name Esmerald --
 Or
 
 ```shell
-$ export LILYA_DEFAULT_APP=myproject.main:app
+$ export ESMERALD_DEFAULT_APP=myproject.main:app
 $ esmerald run createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
 ```
 
