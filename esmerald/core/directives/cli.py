@@ -33,7 +33,6 @@ from esmerald.core.directives.operations.show_urls import show_urls as show_urls
 T = TypeVar("T")
 
 
-
 class DirectiveGroup(SayerGroup):
     """Custom directive group to handle with the context and directives commands"""
 
@@ -118,6 +117,7 @@ esmerald_cli = Sayer(
     group_class=DirectiveGroup,
 )
 
+
 @esmerald_cli.callback(invoke_without_command=True)
 def esmerald_callback(
     ctx: click.Context,
@@ -125,7 +125,8 @@ def esmerald_callback(
     app: typing.Annotated[
         str,
         Option(
-            required=False, help="Module path to the Esmerald application. In a module:path format."
+            required=False,
+            help="Module path to the Esmerald application. In a module:path format.",
         ),
     ],
 ) -> None: ...

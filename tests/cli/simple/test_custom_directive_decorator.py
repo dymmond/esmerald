@@ -82,9 +82,7 @@ async def test_custom_directive(create_folders):
 
     # Execute custom directive
     name = "Esmerald"
-    (o, e, ss) = run_cmd(
-        "tests.cli.main:app", f"esmerald run createuser -n {name}"
-    )
+    (o, e, ss) = run_cmd("tests.cli.main:app", f"esmerald run createuser -n {name}")
 
     users = await User.query.all()
 

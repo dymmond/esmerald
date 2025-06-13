@@ -89,7 +89,6 @@ def load_directive_class_by_filename(app_name: str, location: str) -> Any:
     sys.exit(1)
 
 
-
 @functools.lru_cache(maxsize=None)
 def get_directives(location: str) -> typing.Sequence[dict[Any, Any] | str]:
     command_list = find_directives(location)

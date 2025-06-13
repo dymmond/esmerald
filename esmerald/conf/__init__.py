@@ -12,7 +12,9 @@ ENVIRONMENT_VARIABLE = "ESMERALD_SETTINGS_MODULE"
 
 monkay: Monkay[None, EsmeraldSettings] = Monkay(
     globals(),
-    settings_path=lambda: os.environ.get(ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldSettings"),
+    settings_path=lambda: os.environ.get(
+        ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldSettings"
+    ),
 )
 
 
@@ -31,4 +33,6 @@ def reload_settings() -> None:
     """
     Reloads the global settings.
     """
-    monkay.settings = os.environ.get(ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldSettings")
+    monkay.settings = os.environ.get(
+        ENVIRONMENT_VARIABLE, "esmerald.conf.global_settings.EsmeraldSettings"
+    )

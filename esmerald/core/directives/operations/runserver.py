@@ -3,8 +3,9 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated
 
+import click
 from rich.tree import Tree
-from sayer import Option, command, error
+from sayer import Argument, Option, command, error
 
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.exceptions import DirectiveError
@@ -45,13 +46,31 @@ def get_app_tree(module_paths: list[Path], discovery_file: str) -> Tree:
 
 @command
 def runserver(
-    env: DirectiveEnv,
-    port: Annotated[int, Option(8000, "-p", help="Port to run the development server.", show_default=True)],
-    reload: Annotated[bool, Option(True, "-r", help="Reload server on file changes.", show_default=True)],
-    host: Annotated[str, Option(default="localhost", help="Host to run the server on.", show_default=True)],
-    debug: Annotated[bool, Option(default=True, help="Run the server in debug mode.", show_default=True)],
-    log_level: Annotated[str, Option(default="debug", help="Log level for the server.", show_default=True)],
-    lifespan: Annotated[str, Option(default="on", help="Enable lifespan events.", show_default=True)],
+    path: Annotated[
+        str | None,
+        Argument(
+            required=False,
+            help="A path to a Python file or package directory with ([blue]__init__.py[/blue] files) containing a [bold]Lilya[/bold] app. If not provided, Esmerald will try to discover.",
+        ),
+    ],
+    port: Annotated[
+        int, Option(8000, "-p", help="Port to run the development server.", show_default=True)
+    ],
+    reload: Annotated[
+        bool, Option(True, "-r", help="Reload server on file changes.", show_default=True)
+    ],
+    host: Annotated[
+        str, Option(default="localhost", help="Host to run the server on.", show_default=True)
+    ],
+    debug: Annotated[
+        bool, Option(default=True, help="Run the server in debug mode.", show_default=True)
+    ],
+    log_level: Annotated[
+        str, Option(default="debug", help="Log level for the server.", show_default=True)
+    ],
+    lifespan: Annotated[
+        str, Option(default="on", help="Enable lifespan events.", show_default=True)
+    ],
     settings: Annotated[
         str | None,
         Option(help="Any custom settings to be initialised.", required=False, show_default=False),
@@ -85,6 +104,9 @@ def runserver(
 
     How to run: `esmerald runserver`
     """
+    ctx = click.get_current_context()
+    env = ctx.ensure_object(DirectiveEnv)
+
     with get_ui_toolkit() as toolkit:
         toolkit.print(
             "[gray50]Identifying package structures based on directories with [green]__init__.py[/green] files[/gray50]"
@@ -103,7 +125,9 @@ def runserver(
         try:
             import uvicorn
         except ImportError:
-            raise DirectiveError(detail="Uvicorn needs to be installed to run Esmerald `runserver`.") from None
+            raise DirectiveError(
+                detail="Uvicorn needs to be installed to run Esmerald `runserver`."
+            ) from None
 
         server_environment: str = ""
         if os.environ.get("ESMERALD_SETTINGS_MODULE"):
@@ -119,7 +143,9 @@ def runserver(
         toolkit.print(f"Importing module '{env.path}'", tag="Esmerald")
         toolkit.print_line()
 
-        root_tree = get_app_tree(env.module_info.module_paths, discovery_file=env.module_info.discovery_file)
+        root_tree = get_app_tree(
+            env.module_info.module_paths, discovery_file=env.module_info.discovery_file
+        )
 
         toolkit.print(root_tree, tag="module")
         toolkit.print_line()
@@ -173,7 +199,7 @@ def runserver(
             app.debug = debug
 
         uvicorn.run(
-            app=env.path,
+            app=path or env.path,
             port=port,
             host=host,
             reload=reload,

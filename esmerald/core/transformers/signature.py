@@ -70,9 +70,7 @@ def is_server_error(error: Any, klass: Type["SignatureModel"]) -> bool:
 
 def is_dependency_field(val: Any) -> bool:
     json_schema_extra = getattr(val, "json_schema_extra", None) or {}
-    return bool(
-        isinstance(val, FieldInfo) and bool(json_schema_extra.get(IS_DEPENDENCY))
-    )
+    return bool(isinstance(val, FieldInfo) and bool(json_schema_extra.get(IS_DEPENDENCY)))
 
 
 def should_skip_dependency_validation(val: Any) -> bool:
@@ -119,16 +117,12 @@ class Parameter(ArbitraryBaseModel):
     ) -> None:
         super().__init__(**kwargs)
         self.__fn__ = fn
-        if parameter.annotation is InspectParameter.empty and not is_lambda(
-            self.__fn__
-        ):
+        if parameter.annotation is InspectParameter.empty and not is_lambda(self.__fn__):
             raise ImproperlyConfigured(
                 f"The parameter '{param_name}' from '{fn_name}' does not have a type annotation. "
                 "If it should receive any value, use 'Any' as type."
             )
-        self.annotation = (
-            parameter.annotation if not is_lambda(self.__fn__) else Union[Any, None]
-        )
+        self.annotation = parameter.annotation if not is_lambda(self.__fn__) else Union[Any, None]
 
         self.default = (
             tuple(parameter.default)
@@ -374,9 +368,7 @@ class SignatureModel(ArbitraryBaseModel):
             error_message = f"Validation failed for {url} with method {method}."
 
             if client_errors:
-                return ValidationErrorException(
-                    detail=error_message, extra=client_errors
-                )
+                return ValidationErrorException(detail=error_message, extra=client_errors)
             return InternalServerError(detail=error_message, extra=server_errors)
         except Exception as e:
             # Handle any unexpected errors here
@@ -407,9 +399,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         - `field_definitions` is used to define fields for the signature model.
     """
 
-    def __init__(
-        self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: Any
-    ) -> None:
+    def __init__(self, fn: "AnyCallable", dependency_names: Set[str], **kwargs: Any) -> None:
         """
         Initializes a SignatureFactory instance.
 
@@ -500,9 +490,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         Returns:
             bool: True if validation should be skipped, False otherwise.
         """
-        return param.name in VALIDATION_NAMES or should_skip_dependency_validation(
-            param.default
-        )
+        return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
     def extract_arguments(
         self,
@@ -524,9 +512,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
 
         for arg in args:
             if isinstance(arg, _GenericAlias):
-                arguments.extend(
-                    self.extract_arguments(param=arg, argument_list=arguments)
-                )
+                arguments.extend(self.extract_arguments(param=arg, argument_list=arguments))
             else:
                 if arg not in arguments:
                     arguments.append(arg)
@@ -582,9 +568,7 @@ class SignatureFactory(ArbitraryExtraBaseModel):
         Returns:
             bool: True if validation should be skipped, False otherwise.
         """
-        return param.name in VALIDATION_NAMES or should_skip_dependency_validation(
-            param.default
-        )
+        return param.name in VALIDATION_NAMES or should_skip_dependency_validation(param.default)
 
     def _find_encoder(self, annotation: Any) -> Any:
         """

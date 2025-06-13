@@ -82,9 +82,7 @@ def _merge_difference_parameters(difference: Set[ParamSetting]) -> Set[ParamSett
     return merged_result
 
 
-def merge_sets(
-    first_set: Set[ParamSetting], second_set: Set[ParamSetting]
-) -> Set[ParamSetting]:
+def merge_sets(first_set: Set[ParamSetting], second_set: Set[ParamSetting]) -> Set[ParamSetting]:
     """
     Merge two sets of parameter settings.
 
@@ -239,21 +237,15 @@ async def get_request_params(
             elif is_class_and_subclass(origin, dict):
                 values[param.field_name] = dict(params.items()) if params else None
             else:
-                values[param.field_name] = params.get(
-                    param.field_alias, param.default_value
-                )
+                values[param.field_name] = params.get(param.field_alias, param.default_value)
         elif is_union(param.field_info.annotation):
             arguments = get_args(param.field_info.annotation)
-            if any(
-                is_class_and_subclass(origin, (list, tuple)) for origin in arguments
-            ):
+            if any(is_class_and_subclass(origin, (list, tuple)) for origin in arguments):
                 values[param.field_name] = params.values()
             elif any(is_class_and_subclass(origin, dict) for origin in arguments):
                 values[param.field_name] = dict(params.items()) if params else None
             else:
-                values[param.field_name] = params.get(
-                    param.field_alias, param.default_value
-                )
+                values[param.field_name] = params.get(param.field_alias, param.default_value)
     return values
 
 
@@ -261,9 +253,7 @@ def get_connection_info(connection: "ConnectionType") -> Tuple[str, "URL"]:
     """
     Extacts the information from the ConnectionType.
     """
-    method = (
-        connection.method if isinstance(connection, Request) else ScopeType.WEBSOCKET
-    )
+    method = connection.method if isinstance(connection, Request) else ScopeType.WEBSOCKET
     return method, connection.url
 
 
@@ -271,14 +261,10 @@ def get_signature(value: Any) -> Type["SignatureModel"]:
     try:
         return cast("Type[SignatureModel]", value.signature_model)
     except AttributeError as exc:
-        raise ImproperlyConfigured(
-            f"The 'signature' attribute for {value} is not set."
-        ) from exc
+        raise ImproperlyConfigured(f"The 'signature' attribute for {value} is not set.") from exc
 
 
-def get_field_definition_from_param(
-    fn: Callable[..., Any], param: "Parameter"
-) -> Tuple[Any, Any]:
+def get_field_definition_from_param(fn: Callable[..., Any], param: "Parameter") -> Tuple[Any, Any]:
     """
     This method will make sure that __future__ references are resolved by
     the Any type. This is necessary because the signature model will be

@@ -127,9 +127,13 @@ def test_inner_settings_module(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> str:
-        return JSONResponse({"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]})
+        return JSONResponse(
+            {"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]}
+        )
 
-    with create_client(routes=[Gateway(handler=_app_settings)], settings_module=AppSettings) as client:
+    with create_client(
+        routes=[Gateway(handler=_app_settings)], settings_module=AppSettings
+    ) as client:
         response = client.get("/app-settings")
         assert client.app.settings.app_name == "new app"
         assert client.app.app_name == "new app"
@@ -149,9 +153,13 @@ def test_inner_settings_module_as_instance(test_client_factory):
 
     @get("/app-settings")
     async def _app_settings(request: Request) -> str:
-        return JSONResponse({"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]})
+        return JSONResponse(
+            {"middleware": [middleware.__name__ for middleware in request.app.settings.middleware]}
+        )
 
-    with create_client(routes=[Gateway(handler=_app_settings)], settings_module=AppSettings()) as client:
+    with create_client(
+        routes=[Gateway(handler=_app_settings)], settings_module=AppSettings()
+    ) as client:
         response = client.get("/app-settings")
 
         assert client.app.settings.app_name == "new app"
