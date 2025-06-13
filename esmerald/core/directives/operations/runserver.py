@@ -57,7 +57,7 @@ def runserver(
         int, Option(8000, "-p", help="Port to run the development server.", show_default=True)
     ],
     reload: Annotated[
-        bool, Option(True, "-r", help="Reload server on file changes.", show_default=True)
+        bool, Option(False, "-r", help="Reload server on file changes.", show_default=True)
     ],
     host: Annotated[
         str, Option(default="localhost", help="Host to run the server on.", show_default=True)
