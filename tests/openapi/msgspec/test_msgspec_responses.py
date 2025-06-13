@@ -25,9 +25,7 @@ def user(payload: BaseUser) -> None: ...
 
 
 def test_user_msgspec_with_pydantic_openapi(test_client_factory):
-    with create_client(
-        routes=[Gateway(handler=user)], settings_module=TestSettings
-    ) as client:
+    with create_client(routes=[Gateway(handler=user)], settings_module=TestSettings) as client:
         response = client.get("/openapi.json")
         assert response.json() == {
             "openapi": "3.1.0",
@@ -102,9 +100,7 @@ def test_user_msgspec_with_pydantic_openapi(test_client_factory):
                             "user": {
                                 "properties": {
                                     "name": {"type": "string"},
-                                    "email": {
-                                        "anyOf": [{"type": "string"}, {"type": "null"}]
-                                    },
+                                    "email": {"anyOf": [{"type": "string"}, {"type": "null"}]},
                                 },
                                 "type": "object",
                                 "required": ["name"],
@@ -118,9 +114,7 @@ def test_user_msgspec_with_pydantic_openapi(test_client_factory):
                     "HTTPValidationError": {
                         "properties": {
                             "detail": {
-                                "items": {
-                                    "$ref": "#/components/schemas/ValidationError"
-                                },
+                                "items": {"$ref": "#/components/schemas/ValidationError"},
                                 "type": "array",
                                 "title": "Detail",
                             }
@@ -131,9 +125,7 @@ def test_user_msgspec_with_pydantic_openapi(test_client_factory):
                     "ValidationError": {
                         "properties": {
                             "loc": {
-                                "items": {
-                                    "anyOf": [{"type": "string"}, {"type": "integer"}]
-                                },
+                                "items": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
                                 "type": "array",
                                 "title": "Location",
                             },

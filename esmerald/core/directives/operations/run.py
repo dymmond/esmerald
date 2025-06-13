@@ -20,7 +20,6 @@ from esmerald.core.directives.utils import fetch_directive
 T = TypeVar("T")
 
 
-
 class Position(int, Enum):
     DEFAULT = 5
     BACK = 3
@@ -35,9 +34,7 @@ class Position(int, Enum):
 async def run(
     directive: Annotated[
         str | None,
-        Option(
-            required=False, help="The name of the file of the custom directive to run."
-        )
+        Option(required=False, help="The name of the file of the custom directive to run."),
     ],
     directive_args: Annotated[
         list[str],
@@ -45,7 +42,7 @@ async def run(
             nargs=-1,
             type=click.UNPROCESSED,
             help="The arguments needed to be passed to the custom directive",
-            required=False
+            required=False,
         ),
     ],
 ) -> None:

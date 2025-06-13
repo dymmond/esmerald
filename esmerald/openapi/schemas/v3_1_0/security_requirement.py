@@ -1,4 +1,3 @@
-
 SecurityRequirement = dict[str, list[str]]
 """
 Lists the required security schemes to execute this operation.

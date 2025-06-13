@@ -15,7 +15,9 @@ my_config = PluggableConfig(name="my extension")
 
 
 class MyExtension(Extension):
-    def __init__(self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"):
+    def __init__(
+        self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+    ):
         super().__init__(app, **kwargs)
         self.app = app
 

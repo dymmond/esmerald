@@ -11,7 +11,9 @@ from esmerald.core.directives.templates import TemplateDirective
 @command(name="createdeployment")  # type: ignore
 def create_deployment(
     name: Annotated[str, Argument(help="The name of the current project.")],
-    verbosity: Annotated[int, Option(1, "-v", help="Displays the files generated", show_default=True)],
+    verbosity: Annotated[
+        int, Option(1, "-v", help="Displays the files generated", show_default=True)
+    ],
     deployment_folder_name: Annotated[
         str,
         Option(

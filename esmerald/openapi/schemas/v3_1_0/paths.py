@@ -1,4 +1,3 @@
-
 from .path_item import PathItem
 
 Paths = dict[str, PathItem]

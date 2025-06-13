@@ -74,10 +74,14 @@ class DirectiveEnv:
             path=_app.path,
             app=_app.app,
             command_path=command_path,
-            module_info=self.get_module_data_from_path(_app.app_location, _app.path, _app.discovery_file),
+            module_info=self.get_module_data_from_path(
+                _app.app_location, _app.path, _app.discovery_file
+            ),
         )
 
-    def get_module_data_from_path(self, path: Path, module_import: str, discovery_file: str) -> ModuleInfo:
+    def get_module_data_from_path(
+        self, path: Path, module_import: str, discovery_file: str
+    ) -> ModuleInfo:
         """
         Returns the module information based on the path provided.
         It resolves the path, checks if it is a file or a directory,
@@ -121,7 +125,9 @@ class DirectiveEnv:
 
     def import_app_from_string(cls, path: str | None = None) -> Scaffold:
         if path is None:
-            raise OSError("Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead.")
+            raise OSError(
+                "Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
+            )
         module_str_path, app_name = path.split(":")
         module = import_module(module_str_path)
         app = getattr(module, app_name)

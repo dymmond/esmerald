@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.8.4
+
+### Added
+
+- `path` to runserver allowing the user to customise the path location of a Lilya app.
+
 ### 3.8.3
 
 ### Added

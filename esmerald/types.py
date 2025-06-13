@@ -86,7 +86,9 @@ ExceptionType = TypeVar("ExceptionType", bound=Exception)
 ExceptionHandler = Callable[[Request, ExceptionType], Response]
 ExceptionHandlerMap = Mapping[Union[int, Type[Exception]], ExceptionHandler]
 
-_ReservedKwargs = Literal["request", "socket", "headers", "query", "cookies", "state", "data", "payload"]
+_ReservedKwargs = Literal[
+    "request", "socket", "headers", "query", "cookies", "state", "data", "payload"
+]
 
 ReservedKwargs = get_args(_ReservedKwargs)
 

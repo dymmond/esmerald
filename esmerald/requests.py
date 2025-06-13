@@ -42,7 +42,9 @@ class Request(LilyaRequest):
         """
         Access to the global settings via `request.global_settings`.
         """
-        assert "global_settings" in self.scope, "RequestSettingsMiddleware must be added to the middlewares"
+        assert (
+            "global_settings" in self.scope
+        ), "RequestSettingsMiddleware must be added to the middlewares"
         return cast("EsmeraldSettings", self.scope["global_settings"])
 
     @property
@@ -50,7 +52,9 @@ class Request(LilyaRequest):
         """
         Access to the app settings via `request.app_settings`.
         """
-        assert "app_settings" in self.scope, "RequestSettingsMiddleware must be added to the middlewares"
+        assert (
+            "app_settings" in self.scope
+        ), "RequestSettingsMiddleware must be added to the middlewares"
         return cast("EsmeraldSettings", self.scope["app_settings"])
 
     async def json(self) -> Any:
