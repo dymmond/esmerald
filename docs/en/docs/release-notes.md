@@ -9,7 +9,11 @@ hide:
 
 ### Added
 
-- `path` to runserver allowing the user to customise the path location of a Lilya app.
+- `path` to runserver allowing the user to customise the path location of an Esmerald app.
+
+### Changed
+
+- Make `reload` in the runserver `False` by default.
 
 ### 3.8.3
 

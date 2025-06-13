@@ -10,7 +10,7 @@ tasks:
   run:
     desc: Starts {{ project_name }} in development mode
     cmds:
-      - esmerald runserver
+      - esmerald runserver --reload
 
   requirements:
     desc: Install requirements
