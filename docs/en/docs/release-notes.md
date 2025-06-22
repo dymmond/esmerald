@@ -44,7 +44,7 @@ as is for backwards compatibility but it will eventually be removed in the futur
 - Revamped `runserver` to be modern and more informative.
 - Updated the documentation for the `EsmeraldSettings`.
 
-### 3.8.1
+## 3.8.1
 
 ### Changed
 
