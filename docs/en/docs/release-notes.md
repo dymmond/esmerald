@@ -15,7 +15,7 @@ hide:
 
 - Make `reload` in the runserver `False` by default.
 
-### 3.8.3
+## 3.8.3
 
 ### Added
 
@@ -30,7 +30,7 @@ long as it still follows the directive lookup for files.
 - Fix a regression on `EsmeraldAPISettings` when importing from `esmerald`.
 - Broken documentation references.
 
-### 3.8.2
+## 3.8.2
 
 ### Added
 
