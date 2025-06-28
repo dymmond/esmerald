@@ -54,6 +54,7 @@ class Param(FieldInfo):
         validate_default: bool = True,
         init_var: bool = True,
         kw_only: bool = True,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
         self.deprecated = deprecated
         self.examples = examples
@@ -72,6 +73,9 @@ class Param(FieldInfo):
         extra.update(deprecated=self.deprecated)
         extra.update(include_in_schema=self.include_in_schema)
         extra.update(allow_none=self.allow_none)
+
+        if json_schema_extra is not None:
+            extra.update(json_schema_extra)
 
         super().__init__(
             annotation=annotation,
@@ -144,6 +148,7 @@ class Header(Param):
         validate_default: bool = True,
         init_var: bool = True,
         kw_only: bool = True,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
         super().__init__(
             default=default,
@@ -178,6 +183,7 @@ class Header(Param):
             frozen=frozen,
             init_var=init_var,
             kw_only=kw_only,
+            json_schema_extra=json_schema_extra,
         )
 
 
@@ -219,6 +225,7 @@ class Cookie(Param):
         validate_default: bool = True,
         init_var: bool = True,
         kw_only: bool = True,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
         super().__init__(
             default=default,
@@ -253,6 +260,7 @@ class Cookie(Param):
             frozen=frozen,
             init_var=init_var,
             kw_only=kw_only,
+            json_schema_extra=json_schema_extra,
         )
 
 
@@ -294,6 +302,7 @@ class Query(Param):
         validate_default: bool = True,
         init_var: bool = True,
         kw_only: bool = True,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
         super().__init__(
             default=default,
@@ -328,6 +337,7 @@ class Query(Param):
             frozen=frozen,
             init_var=init_var,
             kw_only=kw_only,
+            json_schema_extra=json_schema_extra,
         )
 
 
@@ -364,6 +374,7 @@ class Path(Param):
         validate_default: bool = True,
         init_var: bool = True,
         kw_only: bool = True,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
         super().__init__(
             default=default,
@@ -393,6 +404,7 @@ class Path(Param):
             frozen=frozen,
             init_var=init_var,
             kw_only=kw_only,
+            json_schema_extra=json_schema_extra,
         )
 
 
@@ -509,6 +521,7 @@ class Form(Body):
         init_var: bool = True,
         kw_only: bool = True,
         include_in_schema: bool = True,
+        json_schema_extra: Optional[dict[str, Any]] = None,
     ) -> None:
         super().__init__(
             default=default,
@@ -539,6 +552,7 @@ class Form(Body):
             include_in_schema=include_in_schema,
             max_digits=max_digits,
             strict=strict,
+            json_schema_extra=json_schema_extra,
         )
 
 

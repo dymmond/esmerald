@@ -3644,10 +3644,10 @@ class Include(LilyaInclude):
 
             if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
                 if not route.handler.parent:
-                    route.handler = route.handler(parent=self)
+                    route.handler = route.handler(parent=self)  # type: ignore
 
                 route_handlers: list[Union[Gateway, WebhookGateway, Include]] = (
-                    route.handler.get_routes(
+                    route.handler.get_routes(  # type: ignore
                         path=route.path,
                         middleware=route.middleware,
                         interceptors=self.interceptors,

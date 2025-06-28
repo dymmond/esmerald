@@ -473,7 +473,7 @@ class View:
         include_in_schema: Union[bool, None] = None,
         before_request: Union[Sequence[Callable[..., Any]], None] = None,
         after_request: Union[Sequence[Callable[..., Any]], None] = None,
-    ) -> list[Union["Gateway", "WebSocketGateway"]]:
+    ) -> list[Any]:
         """
         Builds the routes and wraps them in a list containing the Gateway and WebSocketGateway.
         """

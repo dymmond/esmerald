@@ -63,6 +63,7 @@ def Form(
     init_var: bool = True,
     kw_only: bool = True,
     include_in_schema: bool = True,
+    json_schema_extra: Optional[dict[str, Any]] = None,
 ) -> Any:
     return params.Form(
         default=default,
@@ -92,4 +93,5 @@ def Form(
         init_var=init_var,
         kw_only=kw_only,
         include_in_schema=include_in_schema,
+        json_schema_extra=json_schema_extra,
     )
