@@ -559,9 +559,9 @@ class BaseRouter(LilyaRouter):
             path = "/"
         else:
             assert path.startswith("/"), "A path prefix must start with '/'"
-            assert not path.endswith(
-                "/"
-            ), "A path must not end with '/', as the routes will start with '/'"
+            assert not path.endswith("/"), (
+                "A path must not end with '/', as the routes will start with '/'"
+            )
 
         new_routes: list[Any] = []
         for route in routes or []:
@@ -591,9 +591,9 @@ class BaseRouter(LilyaRouter):
                 )
             new_routes.append(route)
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
@@ -3644,10 +3644,10 @@ class Include(LilyaInclude):
 
             if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
                 if not route.handler.parent:
-                    route.handler = route.handler(parent=self)
+                    route.handler = route.handler(parent=self)  # type: ignore
 
                 route_handlers: list[Union[Gateway, WebhookGateway, Include]] = (
-                    route.handler.get_routes(
+                    route.handler.get_routes(  # type: ignore
                         path=route.path,
                         middleware=route.middleware,
                         interceptors=self.interceptors,
