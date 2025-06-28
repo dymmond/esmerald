@@ -342,7 +342,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         if not path:
             path = "/"
         if is_class_and_subclass(handler, View):
-            handler = handler(parent=self)  # type: ignore
+            handler = handler(parent=self)
 
         if not is_from_router:
             self.path = clean_path(path + handler.path)
@@ -623,8 +623,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         if not path:
             path = "/"
         if is_class_and_subclass(handler, View):
-            handler = handler(parent=self)  # type: ignore
-
+            handler = handler(parent=self)
         if not is_from_router:
             self.path = clean_path(path + handler.path)
         else:

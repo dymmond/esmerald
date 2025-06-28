@@ -10,10 +10,17 @@ hide:
 ### Added
 
 - `path` to runserver allowing the user to customise the path location of an Esmerald app.
+- `refreshUrl` to OAuth2PasswordBearer.
+- Missing `json_schema_extra` into the parameters.
 
 ### Changed
 
 - Make `reload` in the runserver `False` by default.
+- Minimum default of Lilya as base.
+
+### Fixed
+
+- Allowed hosts return default.
 
 ## 3.8.3
 

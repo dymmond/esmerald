@@ -97,7 +97,7 @@ class OAuth2PasswordRequestForm(BaseModel):
     ]
     password: Annotated[
         str,
-        Form(),
+        Form(json_schema_extra={"format": "password"}),
         Doc(
             """
             The password of the user for OAuth2 authentication.
@@ -149,7 +149,7 @@ class OAuth2PasswordRequestForm(BaseModel):
     ] = None
     client_secret: Annotated[
         Union[str, None],
-        Form(),
+        Form(json_schema_extra={"format": "password"}),
         Doc(
             """
             Optional client secret for authenticating the client application.
@@ -522,10 +522,20 @@ class OAuth2PasswordBearer(OAuth2):
                 """
             ),
         ] = True,
+        refreshUrl: Annotated[
+            Optional[str],
+            Doc(
+                """
+                The URL to perform the refresh of the token and obtain a brand new one.
+                """
+            ),
+        ] = None,
     ):
         if not scopes:
             scopes = {}
-        flows = OAuthFlowsModel(password=cast(Any, {"tokenUrl": tokenUrl, "scopes": scopes}))
+        flows = OAuthFlowsModel(
+            password=cast(Any, {"tokenUrl": tokenUrl, "refreshUrl": refreshUrl, "scopes": scopes})
+        )
         super().__init__(
             flows=flows,
             scheme_name=scheme_name,

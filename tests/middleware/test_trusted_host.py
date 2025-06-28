@@ -57,7 +57,7 @@ def test_trusted_host_middleware(test_client_factory):
 def test_default_allowed_hosts():
     app = Esmerald()
     middleware = TrustedHostMiddleware(app)
-    assert middleware.allowed_hosts == ["*"]
+    assert middleware.allowed_hosts == {"*"}
 
 
 def test_www_redirect(test_client_factory):
