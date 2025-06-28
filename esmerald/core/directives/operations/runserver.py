@@ -50,7 +50,7 @@ def runserver(
         str | None,
         Argument(
             required=False,
-            help="A path to a Python file or package directory with ([blue]__init__.py[/blue] files) containing a [bold]Lilya[/bold] app. If not provided, Esmerald will try to discover.",
+            help="A path to a Python file or package directory with ([blue]__init__.py[/blue] files) containing a [bold]Esmerald[/bold] app. If not provided, Esmerald will try to discover.",
         ),
     ],
     port: Annotated[

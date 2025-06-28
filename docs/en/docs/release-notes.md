@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## Unreleased
+
+### Fixed
+
+- Typo in the description of `runserver`.
+
 ## 3.8.4
 
 ### Added
