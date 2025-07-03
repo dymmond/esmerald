@@ -1,11 +1,12 @@
 import asyncio
 import os
 from functools import cached_property
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 import mongoz
 from edgy import Database, Registry
 from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
+from lilya.middleware.global_context import GlobalContextMiddleware
 from pydantic import ConfigDict
 
 from esmerald.conf.global_settings import EsmeraldSettings
@@ -46,6 +47,10 @@ class TestSettings(EsmeraldSettings):
     @property
     def jwt_config(self) -> JWTConfig:
         return JWTConfig(signing_key=self.secret_key)
+
+    @property
+    def middleware(self) -> Any:
+        return [GlobalContextMiddleware]
 
 
 class TestConfig(TestSettings):

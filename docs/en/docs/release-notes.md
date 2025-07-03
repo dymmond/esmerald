@@ -5,11 +5,16 @@ hide:
 
 # Release Notes
 
-## Unreleased
+## 3.8.5
 
 ### Fixed
 
 - Typo in the description of `runserver`.
+
+### Changed
+
+- `run` directive now injects a global context for the directive using the lilya `g`. This is available anywhere by using
+`from lilya.context import g`.
 
 ## 3.8.4
 

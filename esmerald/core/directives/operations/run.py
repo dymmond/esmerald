@@ -9,6 +9,7 @@ from typing import Annotated, Any, TypeVar
 import click
 from lilya._internal._events import generate_lifespan_events  # noqa
 from lilya.cli.base import BaseDirective
+from lilya.context import G, g_context
 from lilya.types import Lifespan
 from sayer import Argument, Option, command, error
 
@@ -113,6 +114,27 @@ def get_position() -> int:
     return Position.BACK
 
 
+async def set_global_context() -> Any:
+    """
+    Sets the global context for the directive.
+    This is used to store any global variables that can be accessed
+    by the directive.
+    """
+    initial_context: Any = None
+
+    # Set the global context to an empty dictionary
+    token = g_context.set(G(initial_context))
+    return token
+
+
+async def reset_global_context(token: Any) -> None:
+    """
+    Resets the global context for the directive.
+    This is used to clear any global variables that were set by the directive.
+    """
+    g_context.reset(token)
+
+
 async def execute_lifespan(
     app: Esmerald | ChildEsmerald | None,
     lifespan: Lifespan,
@@ -124,15 +146,15 @@ async def execute_lifespan(
     Executes the lifespan events and the directive.
     """
     async with lifespan(app):
+        token = await set_global_context()
+
         if isinstance(directive, BaseDirective):
             await directive.execute_from_command(sys.argv[:], program_name, position)
         elif callable(directive):
             if inspect.iscoroutinefunction(directive):
                 await directive()
             else:
-                args_to_run = [
-                    "--help" if arg in ["-h", "--h"] else arg for arg in sys.argv[position:]
-                ]
+                args_to_run = ["--help" if arg in ["-h", "--h"] else arg for arg in sys.argv[position:]]
 
                 # Build CLI context and parse args
                 ctx = directive.make_context(directive.name, args_to_run, resilient_parsing=False)
@@ -149,3 +171,5 @@ async def execute_lifespan(
                     callback(**kwargs)
         else:
             raise TypeError("Invalid directive type. Must be a BaseDirective or a callable.")
+
+        await reset_global_context(token)
