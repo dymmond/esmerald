@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.8.7
+
+### Fixed
+
+- Leftover `breakpoint()`
+
+### Changed
+
+- Reformat with ruff and really apply line length limit.
+
 ## 3.8.6
 
 ### Fixed
