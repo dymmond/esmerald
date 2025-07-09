@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.8.6
+
+### Fixed
+
+- The way the permissions was being manipulated, although working 100% as they should, it was not respecting the ASGI life cycle.
+- ake Esmerald permissions similar to ASGI Lilya in the internal life cycle.
+
 ## 3.8.5
 
 ### Fixed

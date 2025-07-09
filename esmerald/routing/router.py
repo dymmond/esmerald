@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import types
 from enum import IntEnum
 from inspect import Signature
 from typing import (
@@ -100,7 +101,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.typing import AnyCallable
 
 
-class BaseRouter(LilyaRouter):
+class BaseRouter(Dispatcher, LilyaRouter):
     __slots__ = (
         "redirect_slashes",
         "default",
@@ -559,9 +560,7 @@ class BaseRouter(LilyaRouter):
             path = "/"
         else:
             assert path.startswith("/"), "A path prefix must start with '/'"
-            assert not path.endswith(
-                "/"
-            ), "A path must not end with '/', as the routes will start with '/'"
+            assert not path.endswith("/"), "A path must not end with '/', as the routes will start with '/'"
 
         new_routes: list[Any] = []
         for route in routes or []:
@@ -571,7 +570,24 @@ class BaseRouter(LilyaRouter):
             elif isinstance(route, HTTPHandler):
                 route = Gateway(handler=route)
             elif is_class_and_subclass(route, View):
-                route = Gateway(handler=cast(View, route))
+                route = Gateway(
+                    handler=cast(View, route),
+                    permissions=route.permissions if not self.is_member_descriptor(route.permissions) else [],
+                    interceptors=route.interceptors if not self.is_member_descriptor(route.interceptors) else [],
+                    exception_handlers=route.exception_handlers
+                    if not self.is_member_descriptor(route.exception_handlers)
+                    else {},
+                    dependencies=route.dependencies if not self.is_member_descriptor(route.dependencies) else {},
+                    middleware=route.middleware if not self.is_member_descriptor(route.middleware) else [],
+                    before_request=route.before_request if not self.is_member_descriptor(route.before_request) else [],
+                    after_request=route.after_request if not self.is_member_descriptor(route.after_request) else [],
+                    security=route.security if not self.is_member_descriptor(route.security) else [],
+                    tags=route.tags if not self.is_member_descriptor(route.tags) else [],
+                    include_in_schema=route.include_in_schema
+                    if not self.is_member_descriptor(route.include_in_schema)
+                    else True,
+                    deprecated=route.deprecated if not self.is_member_descriptor(route.deprecated) else None,
+                )
             elif isinstance(route, WebSocketHandler):
                 route = WebSocketGateway(handler=route)
             if not isinstance(
@@ -591,9 +607,9 @@ class BaseRouter(LilyaRouter):
                 )
             new_routes.append(route)
 
-        assert lifespan is None or (
-            on_startup is None and on_shutdown is None
-        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        assert lifespan is None or (on_startup is None and on_shutdown is None), (
+            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
+        )
 
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
@@ -621,11 +637,24 @@ class BaseRouter(LilyaRouter):
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
 
-        self.permissions: Sequence[Permission] = [
-            permission
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]  # type: ignore
+        # Filter out the lilya unique permissions
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = {
+                index: permission in self.__lilya_permissions__
+                for index, permission in enumerate(self.__lilya_permissions__)
+            }
+        else:
+            self.lilya_permissions = {}
+
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions: Any = {
+                index: wrap_permission(permission)
+                for index, permission in enumerate(permissions)
+                if is_esmerald_permission(permission)
+            }
+        else:
+            self.permissions = {}
 
         self.routes: Any = new_routes
         self.middleware = middleware or []
@@ -647,6 +676,17 @@ class BaseRouter(LilyaRouter):
 
         self.activate()
 
+    def is_member_descriptor(self, value: Any) -> bool:
+        """
+        Checks if the value is a member descriptor type.
+        This is used to determine if the value is a class attribute or not.
+        """
+        return isinstance(value, types.MemberDescriptorType)
+
+    async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        await self.handle_permissions(scope, receive, send)
+        await super().__call__(scope, receive, send)
+
     def reorder_routes(self) -> list[Sequence[Union[APIGateHandler, Include]]]:
         routes = sorted(
             self.routes,
@@ -658,9 +698,47 @@ class BaseRouter(LilyaRouter):
     def activate(self) -> None:
         self.routes = self.reorder_routes()
 
-    async def not_found(
-        self, scope: "Scope", receive: "Receive", send: "Send"
-    ) -> None:  # pragma: no cover
+    async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        Handles the permissions for the Include.
+        This method ensures that the permissions are set correctly
+        and that they are compatible with the Lilya permissions system.
+        """
+        if self.parent and self.parent.permissions:
+            # If the parent has permissions, we need to merge them with the current permissions
+            self.permissions.update(
+                {
+                    index + len(self.permissions): wrap_permission(permission)
+                    for index, permission in enumerate(self.parent.permissions)
+                    if is_esmerald_permission(permission)
+                }
+            )
+
+        if not self.permissions and not self.lilya_permissions:
+            return
+
+        connection = Connection(scope=scope, receive=receive)
+
+        if self.lilya_permissions:
+            await self.dispatch_allow_connection(
+                self.lilya_permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=self.app,
+            )
+        else:
+            await self.dispatch_allow_connection(
+                self.permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=self.app,
+            )
+
+    async def not_found(self, scope: "Scope", receive: "Receive", send: "Send") -> None:  # pragma: no cover
         """Esmerald version of a not found handler when a resource is
         called and cannot be dealt with properly.
 
@@ -727,9 +805,7 @@ class BaseRouter(LilyaRouter):
             if not route.handler.parent:  # pragma: no cover
                 route.handler.parent = route
 
-            if not is_class_and_subclass(route.handler, View) and not isinstance(
-                route.handler, View
-            ):
+            if not is_class_and_subclass(route.handler, View) and not isinstance(route.handler, View):
                 route.handler.create_signature_model()
 
         if isinstance(route, WebSocketGateway):
@@ -752,9 +828,7 @@ class BaseRouter(LilyaRouter):
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
         if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
-            if not is_class_and_subclass(value.handler, View) and not isinstance(
-                value.handler, View
-            ):
+            if not is_class_and_subclass(value.handler, View) and not isinstance(value.handler, View):
                 if not value.handler.parent:
                     value.handler.parent = value
             else:
@@ -762,7 +836,6 @@ class BaseRouter(LilyaRouter):
                     value(parent=self)  # type: ignore
 
                 handler: View = cast("View", value.handler)
-
                 route_handlers = handler.get_routes(
                     path=value.path,
                     middleware=value.middleware,
@@ -2379,9 +2452,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_websocket_route(
-                path=path, handler=handler, name=name, interceptors=interceptors
-            )
+            self.add_websocket_route(path=path, handler=handler, name=name, interceptors=interceptors)
             return func
 
         return wrapper
@@ -2462,7 +2533,6 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         if not path:
             path = "/"
 
-        self._application_permissions: Union[dict[int, Any], VoidType] = Void  # type: ignore
         self.__base_permissions__ = permissions or []
 
         self._lilya_permissions: Union[list[DefinePermission], VoidType] = Void
@@ -2520,11 +2590,25 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
 
         self.description = description
 
-        self.permissions = [
-            cast(Any, permission)
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]
+        # Filter out the lilya unique permissions
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = {
+                index: permission in self.__lilya_permissions__
+                for index, permission in enumerate(self.__lilya_permissions__)
+            }
+        else:
+            self.lilya_permissions = {}
+
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions: Any = {
+                index: wrap_permission(permission)
+                for index, permission in enumerate(permissions)
+                if is_esmerald_permission(permission)
+            }
+        else:
+            self.permissions = {}
+
         self.before_request = list(before_request or [])
         self.after_request = list(after_request or [])
         self.interceptors: Sequence[Interceptor] = []
@@ -2554,15 +2638,55 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         if self.responses:
             self.validate_responses(responses=self.responses)
 
+    async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        Handles the permissions for the Include.
+        This method ensures that the permissions are set correctly
+        and that they are compatible with the Lilya permissions system.
+        """
+        if self.parent and self.parent.permissions:
+            if not self.permissions:
+                # If the parent has permissions, we need to merge them with the current permissions
+                self.permissions.update(self.parent.permissions)
+            else:
+                # If the parent has permissions, we need to merge them with the current permissions
+                all_perms = list(self.parent.permissions.values())  # type: ignore
+                for perm in self.permissions.values():
+                    all_perms.append(perm)
+                self.permissions = dict(enumerate(all_perms))  #
+
+        if not self.permissions and not self.lilya_permissions:
+            return
+
+        connection = Connection(scope=scope, receive=receive)
+
+        if self.lilya_permissions:
+            await self.dispatch_allow_connection(
+                self.lilya_permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=self.app,
+            )
+        else:
+            dispatch_call = super().handle_dispatch
+            await self.dispatch_allow_connection(
+                self.permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=dispatch_call,
+            )
+
     def validate_responses(self, responses: dict[int, OpenAPIResponse]) -> None:
         """
         Checks if the responses are valid or raises an exception otherwise.
         """
         for status_code, response in responses.items():
             if not isinstance(response, OpenAPIResponse):
-                raise OpenAPIException(
-                    detail="An additional response must be an instance of OpenAPIResponse."
-                )
+                raise OpenAPIException(detail="An additional response must be an instance of OpenAPIResponse.")
 
             if not is_status_code_allowed(status_code):
                 raise OpenAPIException(detail="The status is not a valid OpenAPI status response.")
@@ -2577,9 +2701,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         """
         return list(self.methods)
 
-    async def allowed_methods(
-        self, scope: "Scope", receive: "Receive", send: "Send", methods: list[str]
-    ) -> None:
+    async def allowed_methods(self, scope: "Scope", receive: "Receive", send: "Send", methods: list[str]) -> None:
         """
         Validates if the scope method is available within the handler and raises
         a MethodNotAllowed if otherwise.
@@ -2667,21 +2789,8 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         request = Request(scope=scope, receive=receive, send=send)
         route_handler, parameter_model = self.route_map[scope["method"]]
 
-        permissions = self.get_application_permissions()
-        if permissions:
-            connection = Connection(scope=scope, receive=receive)
-            # Call dispatcher with the new dispatch_call
-            # To the super
-            dispatch_call = super().handle_dispatch
-
-            await self.dispatch_allow_connection(
-                permissions,
-                connection,
-                scope,
-                receive,
-                send,
-                dispatch_call=dispatch_call,
-            )
+        # Check the permissions for the application if they exist.
+        await self.handle_permissions(scope, receive, send)
 
         response = await self.get_response_for_request(
             scope=scope,
@@ -2724,9 +2833,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             ImproperlyConfigured if enable_sync_handlers is False and the function is sync.
         """
         if not self.fn:
-            raise ImproperlyConfigured(
-                "Cannot call check_handler_function without first setting self.fn"
-            )
+            raise ImproperlyConfigured("Cannot call check_handler_function without first setting self.fn")
 
         if not settings.enable_sync_handlers:  # pragma: no cover
             fn = self.fn
@@ -2754,10 +2861,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
                 "A status code 204, 304 or in the range below 200 does not support a response body."
                 " If the function should return a value, change the route handler status code to an appropriate value.",
             )
-        if (
-            is_class_and_subclass(return_annotation, Redirect)
-            and self.status_code not in REDIRECT_STATUS_CODES
-        ):
+        if is_class_and_subclass(return_annotation, Redirect) and self.status_code not in REDIRECT_STATUS_CODES:
             raise ValidationErrorException(
                 f"Redirect responses should have one of "
                 f"the following status codes: {', '.join([str(s) for s in REDIRECT_STATUS_CODES])}"
@@ -2957,7 +3061,6 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         if not path:
             path = "/"
 
-        self._application_permissions: Union[dict[int, Any], VoidType] = Void  # type: ignore
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
@@ -2982,11 +3085,24 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.parent: ParentType = None
         self.dependencies = dependencies
 
-        self.permissions: Sequence[Permission] = [
-            permission
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]  # type: ignore
+        # Filter out the lilya unique permissions
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = {
+                index: permission in self.__lilya_permissions__
+                for index, permission in enumerate(self.__lilya_permissions__)
+            }
+        else:
+            self.lilya_permissions = {}
+
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions: Any = {
+                index: wrap_permission(permission)
+                for index, permission in enumerate(permissions)
+                if is_esmerald_permission(permission)
+            }
+        else:
+            self.permissions = {}
 
         self.middleware = middleware
         self.signature_model: Optional[Type[SignatureModel]] = None
@@ -2996,6 +3112,48 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.tags: Sequence[str] = []
         self.__type__: Union[str, None] = None
         self.name = name
+
+    async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        Handles the permissions for the Include.
+        This method ensures that the permissions are set correctly
+        and that they are compatible with the Lilya permissions system.
+        """
+        if self.parent and self.parent.permissions:
+            if not self.permissions:
+                # If the parent has permissions, we need to merge them with the current permissions
+                self.permissions.update(self.parent.permissions)
+            else:
+                # If the parent has permissions, we need to merge them with the current permissions
+                all_perms = list(self.parent.permissions.values())  # type: ignore
+                for perm in self.permissions.values():
+                    all_perms.append(perm)
+                self.permissions = dict(enumerate(all_perms))  #
+
+        if not self.permissions and not self.lilya_permissions:
+            return
+
+        connection = WebSocket(scope=scope, receive=receive, send=send)
+
+        if self.lilya_permissions:
+            await self.dispatch_allow_connection(
+                self.lilya_permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=self.app,
+            )
+        else:
+            dispatch_call = super().handle_dispatch
+            await self.dispatch_allow_connection(
+                self.permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=dispatch_call,
+            )
 
     def validate_reserved_words(self, signature: Signature) -> None:
         """
@@ -3007,9 +3165,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         unsupported_kwargs = [REQUEST, DATA, PAYLOAD]
         for kwarg in unsupported_kwargs:
             if kwarg in signature.parameters:
-                raise ImproperlyConfigured(
-                    f"The '{kwarg}'is not supported with websocket handlers."
-                )
+                raise ImproperlyConfigured(f"The '{kwarg}'is not supported with websocket handlers.")
 
     def validate_websocket_handler_function(self) -> None:  # pragma: no cover
         """
@@ -3017,9 +3173,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         return annotations.
         """
         if not self.fn:
-            raise ImproperlyConfigured(
-                "Cannot call check_handler_function without first setting self.fn"
-            )
+            raise ImproperlyConfigured("Cannot call check_handler_function without first setting self.fn")
         signature = Signature.from_callable(self.fn)
         self.validate_reserved_words(signature=signature)
 
@@ -3058,20 +3212,9 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             await self.intercept(scope, receive, send)
 
         websocket = WebSocket(scope=scope, receive=receive, send=send)
-        permissions = self.get_application_permissions()
-        if permissions:
-            # Call dispatcher with the new dispatch_call
-            # To the super
-            dispatch_call = super().handle_dispatch
 
-            await self.dispatch_allow_connection(
-                permissions,
-                websocket,
-                scope,
-                receive,
-                send,
-                dispatch_call=dispatch_call,
-            )
+        # Manages the permissions for the WebSocket handler.
+        await self.handle_permissions(scope, receive, send)
 
         kwargs = await self.get_kwargs(websocket=websocket)
 
@@ -3110,7 +3253,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         return await signature_model.parse_values_for_connection(connection=websocket, **kwargs)
 
 
-class Include(LilyaInclude):
+class Include(Dispatcher, LilyaInclude):
     """
     `Include` object class that allows scalability and modularity
     to happen with elegance.
@@ -3375,7 +3518,7 @@ class Include(LilyaInclude):
             ),
         ] = None,
         permissions: Annotated[
-            Optional[Sequence[Permission]],
+            Optional[Sequence[Permission] | Any],
             Doc(
                 """
                 A list of [permissions](https://esmerald.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
@@ -3535,6 +3678,7 @@ class Include(LilyaInclude):
             for permission in self.__base_permissions__ or []
             if not is_esmerald_permission(permission)
         ]
+
         super().__init__(
             path=self.path,
             app=self.app,
@@ -3550,12 +3694,25 @@ class Include(LilyaInclude):
             after_request=after_request,
         )
 
+        # Filter out the lilya unique permissions
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = {
+                index: permission in self.__lilya_permissions__
+                for index, permission in enumerate(self.__lilya_permissions__)
+            }
+        else:
+            self.lilya_permissions = {}
+
         # Making sure Esmerald uses the Esmerald permission system and not Lilya's.
-        self.permissions: Sequence[Permission] = [
-            permission
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]  # type: ignore
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions: Any = {
+                index: wrap_permission(permission)
+                for index, permission in enumerate(permissions)
+                if is_esmerald_permission(permission)
+            }
+        else:
+            self.permissions = {}
 
     def resolve_app_parent(self, app: Optional[Any]) -> Optional[Any]:
         """
@@ -3646,16 +3803,14 @@ class Include(LilyaInclude):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)  # type: ignore
 
-                route_handlers: list[Union[Gateway, WebhookGateway, Include]] = (
-                    route.handler.get_routes(  # type: ignore
-                        path=route.path,
-                        middleware=route.middleware,
-                        interceptors=self.interceptors,
-                        permissions=route.permissions,
-                        exception_handlers=route.exception_handlers,
-                        before_request=route.before_request,
-                        after_request=route.after_request,
-                    )
+                route_handlers: list[Union[Gateway, WebhookGateway, Include]] = route.handler.get_routes(  # type: ignore
+                    path=route.path,
+                    middleware=route.middleware,
+                    interceptors=self.interceptors,
+                    permissions=route.permissions,
+                    exception_handlers=route.exception_handlers,
+                    before_request=route.before_request,
+                    after_request=route.after_request,
                 )
                 if route_handlers:
                     routing.extend(
@@ -3665,3 +3820,42 @@ class Include(LilyaInclude):
                         )
                     )
         return routing
+
+    async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        Handles the permissions for the Include.
+        This method ensures that the permissions are set correctly
+        and that they are compatible with the Lilya permissions system.
+        """
+        if not self.permissions and not self.lilya_permissions:
+            return
+
+        connection = Connection(scope=scope, receive=receive)
+
+        if self.lilya_permissions:
+            await self.dispatch_allow_connection(
+                self.lilya_permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=self.app,
+            )
+        else:
+            dispatch_call = super().handle_dispatch
+            await self.dispatch_allow_connection(
+                self.permissions,
+                connection,
+                scope,
+                receive,
+                send,
+                dispatch_call=dispatch_call,
+            )
+
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        In the call we need to make sure we call the permissions and validations first to
+        assure it won't even reach the lower app and run the validation against.
+        """
+        await self.handle_permissions(scope, receive, send)
+        await super().handle_dispatch(scope, receive, send)

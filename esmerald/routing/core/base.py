@@ -40,7 +40,7 @@ from esmerald.core.transformers.signature import SignatureFactory
 from esmerald.exceptions import ImproperlyConfigured
 from esmerald.injector import Inject
 from esmerald.permissions import BasePermission
-from esmerald.permissions.utils import continue_or_raise_permission_exception, wrap_permission
+from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
@@ -54,7 +54,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.core.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
-    from esmerald.permissions.types import Permission
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
         APIGateHandler,
@@ -102,9 +101,7 @@ class OpenAPIDefinitionMixin:  # pragma: no cover
 
         for name, convertor in variables.items():
             _type = CONV2TYPE[convertor]
-            parsed_components.append(
-                PathParameterSchema(name=name, type=param_type_map[_type], full=name)
-            )
+            parsed_components.append(PathParameterSchema(name=name, type=param_type_map[_type], full=name))
         return parsed_components
 
 
@@ -157,9 +154,7 @@ class BaseResponseHandler:
     """
 
     @staticmethod
-    async def _get_response_data(
-        route: "HTTPHandler", parameter_model: "TransformerModel", request: Request
-    ) -> Any:
+    async def _get_response_data(route: "HTTPHandler", parameter_model: "TransformerModel", request: Request) -> Any:
         """
         Determine required kwargs for the given handler, assign to the object dictionary, and get the response data.
 
@@ -176,13 +171,9 @@ class BaseResponseHandler:
         signature_model = get_signature(route)
 
         if parameter_model.has_kwargs:
-            kwargs: dict[str, Any] = await parameter_model.to_kwargs(
-                connection=request, handler=route
-            )
+            kwargs: dict[str, Any] = await parameter_model.to_kwargs(connection=request, handler=route)
 
-            is_data_or_payload = (
-                DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
-            )
+            is_data_or_payload = DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
 
             request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
 
@@ -218,9 +209,7 @@ class BaseResponseHandler:
                     # Assign each key-value pair in the request data to kwargs
                     if isinstance(request_data, (UploadFile, DataUpload)) or (
                         isinstance(request_data, (list, tuple))
-                        and any(
-                            isinstance(value, (UploadFile, DataUpload)) for value in request_data
-                        )
+                        and any(isinstance(value, (UploadFile, DataUpload)) for value in request_data)
                     ):
                         for key, _ in kwargs.items():
                             kwargs[key] = request_data
@@ -233,9 +222,7 @@ class BaseResponseHandler:
                     dependency=dependency, connection=request, **kwargs
                 )
 
-            parsed_kwargs = await signature_model.parse_values_for_connection(
-                connection=request, **kwargs
-            )
+            parsed_kwargs = await signature_model.parse_values_for_connection(connection=request, **kwargs)
         else:
             parsed_kwargs = {}
 
@@ -269,9 +256,7 @@ class BaseResponseHandler:
         cookies: ResponseCookies,
         headers: dict[str, Any],
         media_type: str,
-    ) -> Callable[
-        [Union[ResponseContainer, LilyaResponse], Type[Esmerald], dict[str, Any]], LilyaResponse
-    ]:
+    ) -> Callable[[Union[ResponseContainer, LilyaResponse], Type[Esmerald], dict[str, Any]], LilyaResponse]:
         """
         Creates a handler for ResponseContainer types.
 
@@ -474,9 +459,7 @@ class BaseDispatcher(BaseResponseHandler):
         if self._response_handler is not Void:
             return cast("Callable[[Any], Awaitable[LilyaResponse]]", self._response_handler)
 
-        media_type = (
-            self.media_type.value if isinstance(self.media_type, Enum) else self.media_type
-        )
+        media_type = self.media_type.value if isinstance(self.media_type, Enum) else self.media_type
 
         response_class = self.get_response_class()
         headers = self.get_response_headers()
@@ -622,9 +605,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         path_components = self.parse_path(self.path)
         parameters = [component for component in path_components if isinstance(component, dict)]
 
-        stringified_parameters = [
-            f"{param['name']}:{param['type'].__name__}" for param in parameters
-        ]
+        stringified_parameters = [f"{param['name']}:{param['type'].__name__}" for param in parameters]
         return stringified_parameters
 
     @property
@@ -714,99 +695,6 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         level_dependencies = (level.dependencies or {} for level in self.parent_levels)
         return {name for level in level_dependencies for name in level.keys()}
 
-    def get_permissions(self) -> list[AsyncCallable]:
-        """
-        Returns all the permissions in the handler scope from the ownership layers.
-
-        This method retrieves all the permissions associated with the handler by iterating over each parent level.
-        It collects the permissions defined in each level and stores them in a list.
-
-        Returns:
-        - list[AsyncCallable]: A list of permissions associated with the handler.
-
-        Example:
-        >>> handler = Dispatcher()
-        >>> permissions = handler.get_permissions()
-        >>> print(permissions)
-
-        Note:
-        - If no permissions are defined in any of the parent levels, an empty list will be returned.
-        - Each permission is represented by an instance of the AsyncCallable class.
-        - The AsyncCallable class represents an asynchronous callable object.
-        - The permissions are collected from all parent levels, ensuring that there are no duplicate permissions in the final list.
-        """
-        if self._permissions is Void:
-            self._permissions: Union[list[Permission], VoidType] = []
-            for layer in self.parent_levels:
-                self._permissions.extend(layer.permissions or [])
-            self._permissions = cast(
-                "list[Permission]",
-                [wrap_permission(permission) for permission in self._permissions],
-            )
-        return cast("list[AsyncCallable]", self._permissions)
-
-    def get_lilya_permissions(self) -> list[DefinePermission]:
-        """
-        Retrieves the list of Lilya permissions for the current instance.
-        If the `_lilya_permissions` attribute is set to `Void`, it initializes it as an empty list
-        and extends it with permissions from the parent levels. The permissions are then cast to
-        a list of `Permission` objects.
-
-        Returns:
-            list[AsyncCallable]: A list of asynchronous callable permissions.
-        """
-
-        if self._lilya_permissions is Void:
-            self._lilya_permissions: Union[list[DefinePermission], VoidType] = []
-            for layer in self.parent_levels:
-                self._lilya_permissions.extend(
-                    wrap_permission(permission) for permission in layer.__lilya_permissions__ or []
-                )
-        return cast("list[DefinePermission]", self._lilya_permissions)
-
-    def get_application_permissions(self) -> dict[int, Union[AsyncCallable, DefinePermission]]:
-        """
-        Retrieves the list of permissions for the current instance from the application level.
-
-        Returns:
-            list[AsyncCallable | DefinePermission]: A list of permissions from the application level.
-
-        Example:
-        >>> handler = Dispatcher()
-        >>> permissions = handler.get_application_permissions()
-        >>> print(permissions)
-
-        Note:app_permissions
-        - The permissions are collected from the application level and stored in a list.
-        - The permissions are represented by instances of the AsyncCallable or DefinePermission classes.
-        - If no permissions are defined at the application level, an empty list will be returned.
-        """
-        application_permissions: list[Union[AsyncCallable, DefinePermission]] = []
-        for layer in self.parent_levels:
-            application_permissions.extend(
-                wrap_permission(permission) for permission in (layer.__base_permissions__ or [])
-            )
-
-        # Extract the dictionary of permissions
-        if self._application_permissions is Void:
-            self._application_permissions: dict[int, Union[AsyncCallable, DefinePermission]] = {}
-
-        for index, value in enumerate(application_permissions):
-            self._application_permissions[index] = value
-
-        return self._application_permissions
-
-    @property
-    def lilya_permissions(self) -> list[DefinePermission]:
-        """
-        Returns the list of permissions defined for Lilya.
-
-        Returns:
-            list[DefinePermission]: A list of permissions.
-        """
-
-        return cast("list[DefinePermission]", self._lilya_permissions)
-
     def get_dependencies(self) -> Dependencies:
         """
         Returns all dependencies of the handler function's starting from the parent levels.
@@ -831,9 +719,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The dependencies are collected from all parent levels, ensuring that there are no duplicate dependencies in the final dictionary.
         """
         if not self.signature_model:
-            raise RuntimeError(
-                "get_dependencies cannot be called before a signature model has been generated"
-            )
+            raise RuntimeError("get_dependencies cannot be called before a signature model has been generated")
 
         if not self._dependencies or self._dependencies is Void:
             self._dependencies: Dependencies = {}
@@ -926,10 +812,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         filtered_cookies: dict[str, Cookie] = {}
         for cookie in chain(local_cookies or _empty, other_cookies or _empty):
             filtered_cookies.setdefault(cookie.key, cookie)
-        return [
-            cookie.model_dump(exclude_none=True, exclude={"description"})
-            for cookie in filtered_cookies.values()
-        ]
+        return [cookie.model_dump(exclude_none=True, exclude={"description"}) for cookie in filtered_cookies.values()]
 
     def get_headers(self, headers: ResponseHeaders) -> dict[str, Any]:
         """
@@ -980,9 +863,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             data = await data
         return data
 
-    async def allow_connection(
-        self, connection: "Connection", permission: AsyncCallable
-    ) -> None:  # pragma: no cover
+    async def allow_connection(self, connection: "Connection", permission: AsyncCallable) -> None:  # pragma: no cover
         """
         Asynchronously allows a connection based on the provided permission.
 
@@ -1001,7 +882,7 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
 
     async def dispatch_allow_connection(
         self,
-        permissions: dict[int, Union[AsyncCallable, DefinePermission]],
+        permissions: dict[int, Union[AsyncCallable, DefinePermission]] | Any,
         connection: "Connection",
         scope: Scope,
         receive: Receive,

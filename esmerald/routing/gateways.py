@@ -1,6 +1,7 @@
 import re
 from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Type, Union, cast
 
+from lilya._internal._connection import Connection  # noqa
 from lilya._internal._path import clean_path
 from lilya._utils import is_class_and_subclass
 from lilya.middleware import DefineMiddleware
@@ -8,7 +9,7 @@ from lilya.routing import Path as LilyaPath, WebSocketPath as LilyaWebSocketPath
 from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
-from esmerald.permissions.utils import is_esmerald_permission, wrap_permission
+from esmerald.permissions.utils import is_esmerald_permission, is_lilya_permission, wrap_permission
 from esmerald.routing.apis.base import View
 from esmerald.routing.core.base import Dispatcher
 from esmerald.typing import Void, VoidType
@@ -23,9 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class BaseMiddleware:
-    def handle_middleware(
-        self, handler: Any, base_middleware: list["Middleware"]
-    ) -> list["Middleware"]:
+    def handle_middleware(self, handler: Any, base_middleware: list["Middleware"]) -> list["Middleware"]:
         """
         Handles both types of middlewares for Gateway and WebSocketGateway
         """
@@ -43,9 +42,7 @@ class BaseMiddleware:
 
 
 class GatewayUtil:
-    def is_class_based(
-        self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]
-    ) -> bool:
+    def is_class_based(self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]) -> bool:
         return bool(is_class_and_subclass(handler, View) or isinstance(handler, View))
 
     def is_handler(self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]) -> bool:
@@ -365,15 +362,14 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         # Handle middleware
         self.middleware = middleware or []
-        self._middleware: list["Middleware"] = self.handle_middleware(
-            handler=handler, base_middleware=self.middleware
-        )
+        self._middleware: list["Middleware"] = self.handle_middleware(handler=handler, base_middleware=self.middleware)
 
         self.__base_permissions__ = permissions or []
+
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if is_lilya_permission(permission)
         ]
 
         super().__init__(
@@ -414,11 +410,44 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
 
-        self.permissions: Sequence[Permission] = [
-            permission
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]  # type: ignore
+        # Filter out the lilya unique permissions
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = dict(enumerate(self.__lilya_permissions__))
+            if not self.handler.lilya_permissions:
+                self.handler.lilya_permissions = self.lilya_permissions
+            else:
+                handler_lilya_permissions = {
+                    index + len(self.lilya_permissions): permission
+                    for index, permission in enumerate(self.lilya_permissions.values())
+                }
+                self.handler.lilya_permissions = {
+                    **self.lilya_permissions,
+                    **handler_lilya_permissions,
+                }
+        else:
+            self.lilya_permissions = {}
+
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions: Any = {
+                index: wrap_permission(permission)
+                for index, permission in enumerate(permissions)
+                if is_esmerald_permission(permission)
+            }
+
+            if not self.handler.permissions:
+                self.handler.permissions = self.permissions
+            else:
+                handler_permissions = {
+                    index + len(self.permissions): permission
+                    for index, permission in enumerate(self.permissions.values())
+                }
+                self.handler.permissions = {
+                    **self.permissions,
+                    **handler_permissions,
+                }
+        else:
+            self.permissions = {}
 
         self.response_class = None
         self.response_cookies = None
@@ -427,9 +456,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.parent = parent
         self.security = security
         self.tags = tags or []
-        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
-            self.path
-        )
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(self.path)
         self.operation_id = operation_id
 
         if self.is_handler(self.handler):  # type: ignore
@@ -643,16 +670,14 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         # Handle middleware
         self.middleware = middleware or []
-        self._middleware: list["Middleware"] = self.handle_middleware(
-            handler=handler, base_middleware=self.middleware
-        )
+        self._middleware: list["Middleware"] = self.handle_middleware(handler=handler, base_middleware=self.middleware)
         self.is_middleware: bool = False
 
         self.__base_permissions__ = permissions or []
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if is_lilya_permission(permission)
         ]
         super().__init__(
             path=self.path,
@@ -691,17 +716,48 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
 
-        self.permissions: Sequence[Permission] = [
-            permission
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]  # type: ignore
+        # Filter out the lilya unique permissions
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = dict(enumerate(self.__lilya_permissions__))
+            if not self.handler.lilya_permissions:
+                self.handler.lilya_permissions = self.lilya_permissions
+            else:
+                handler_lilya_permissions = {
+                    index + len(self.lilya_permissions): permission
+                    for index, permission in enumerate(self.lilya_permissions.values())
+                }
+                self.handler.lilya_permissions = {
+                    **self.lilya_permissions,
+                    **handler_lilya_permissions,
+                }
+        else:
+            self.lilya_permissions = {}
+
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions: Any = {
+                index: wrap_permission(permission)
+                for index, permission in enumerate(permissions)
+                if is_esmerald_permission(permission)
+            }
+
+            if not self.handler.permissions:
+                self.handler.permissions = self.permissions
+            else:
+                handler_permissions = {
+                    index + len(self.permissions): permission
+                    for index, permission in enumerate(self.permissions.values())
+                }
+                self.handler.permissions = {
+                    **self.permissions,
+                    **handler_permissions,
+                }
+        else:
+            self.permissions = {}
 
         self.include_in_schema = False
         self.parent = parent
-        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
-            self.path
-        )
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(self.path)
 
     async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
@@ -874,9 +930,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self.before_request = before_request
         self.after_request = after_request
         self.tags = tags or []
-        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
-            self.path
-        )
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(self.path)
 
         if self.is_handler(self.handler):  # type: ignore
             self.handler.name = self.name
