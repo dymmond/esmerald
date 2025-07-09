@@ -11,7 +11,6 @@ from lilya._utils import is_class_and_subclass
 
 
 class MsgSpecEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return isinstance(value, Struct) or is_class_and_subclass(value, Struct)
 
@@ -23,7 +22,6 @@ class MsgSpecEncoder(Encoder):
 
 
 class PydanticEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return isinstance(value, BaseModel) or is_class_and_subclass(value, BaseModel)
 

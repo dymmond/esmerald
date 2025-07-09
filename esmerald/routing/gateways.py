@@ -24,7 +24,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class BaseMiddleware:
-    def handle_middleware(self, handler: Any, base_middleware: list["Middleware"]) -> list["Middleware"]:
+    def handle_middleware(
+        self, handler: Any, base_middleware: list["Middleware"]
+    ) -> list["Middleware"]:
         """
         Handles both types of middlewares for Gateway and WebSocketGateway
         """
@@ -42,7 +44,9 @@ class BaseMiddleware:
 
 
 class GatewayUtil:
-    def is_class_based(self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]) -> bool:
+    def is_class_based(
+        self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]
+    ) -> bool:
         return bool(is_class_and_subclass(handler, View) or isinstance(handler, View))
 
     def is_handler(self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]) -> bool:
@@ -362,7 +366,9 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         # Handle middleware
         self.middleware = middleware or []
-        self._middleware: list["Middleware"] = self.handle_middleware(handler=handler, base_middleware=self.middleware)
+        self._middleware: list["Middleware"] = self.handle_middleware(
+            handler=handler, base_middleware=self.middleware
+        )
 
         self.__base_permissions__ = permissions or []
 
@@ -456,7 +462,9 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.parent = parent
         self.security = security
         self.tags = tags or []
-        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(self.path)
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
+            self.path
+        )
         self.operation_id = operation_id
 
         if self.is_handler(self.handler):  # type: ignore
@@ -670,7 +678,9 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         # Handle middleware
         self.middleware = middleware or []
-        self._middleware: list["Middleware"] = self.handle_middleware(handler=handler, base_middleware=self.middleware)
+        self._middleware: list["Middleware"] = self.handle_middleware(
+            handler=handler, base_middleware=self.middleware
+        )
         self.is_middleware: bool = False
 
         self.__base_permissions__ = permissions or []
@@ -757,7 +767,9 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         self.include_in_schema = False
         self.parent = parent
-        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(self.path)
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
+            self.path
+        )
 
     async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
@@ -930,7 +942,9 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self.before_request = before_request
         self.after_request = after_request
         self.tags = tags or []
-        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(self.path)
+        (handler.path_regex, handler.path_format, handler.param_convertors, _) = compile_path(
+            self.path
+        )
 
         if self.is_handler(self.handler):  # type: ignore
             self.handler.name = self.name

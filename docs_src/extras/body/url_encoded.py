@@ -15,7 +15,7 @@ async def create_user(
         title="Create User",
         description="Creates a new user in the system",
         media_type=EncodingType.URL_ENCODED,
-    )
+    ),
 ) -> None:
     """
     Creates a user in the system and does not return anything.

@@ -288,9 +288,9 @@ def get_openapi_path(
         internal_response = create_internal_response(handler)
         route_response_media_type = internal_response.media_type
     else:
-        assert (
-            handler.response_class.media_type is not None
-        ), "`media_type` is required in the response class."
+        assert handler.response_class.media_type is not None, (
+            "`media_type` is required in the response class."
+        )
         route_response_media_type = handler.response_class.media_type
 
     # If routes do not want to be included in the schema generation
@@ -346,9 +346,9 @@ def get_openapi_path(
                 operation["requestBody"] = request_data_oai
 
         status_code = str(handler.status_code)
-        operation.setdefault("responses", {}).setdefault(status_code, {})[
-            "description"
-        ] = handler.response_description
+        operation.setdefault("responses", {}).setdefault(status_code, {})["description"] = (
+            handler.response_description
+        )
 
         # Media type
         if route_response_media_type and is_status_code_allowed(handler.status_code):

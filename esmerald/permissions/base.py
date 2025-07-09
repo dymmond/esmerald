@@ -61,7 +61,9 @@ class AND:
         request: "Request",
         apiview: "APIGateHandler",
     ) -> bool:
-        return self.op1.has_permission(request, apiview) and self.op2.has_permission(request, apiview)
+        return self.op1.has_permission(request, apiview) and self.op2.has_permission(
+            request, apiview
+        )
 
 
 class OR:
@@ -74,7 +76,9 @@ class OR:
         request: "Request",
         apiview: "APIGateHandler",
     ) -> bool:
-        return self.op1.has_permission(request, apiview) or self.op2.has_permission(request, apiview)
+        return self.op1.has_permission(request, apiview) or self.op2.has_permission(
+            request, apiview
+        )
 
 
 class NOT:
@@ -325,4 +329,6 @@ class IsAuthenticatedOrReadOnly(BaseAbstractUserPermission):
             bool: True or False
         """
         super().has_permission(request, apiview)
-        return bool(request.method in SAFE_METHODS or request.user and self.is_user_authenticated(request))
+        return bool(
+            request.method in SAFE_METHODS or request.user and self.is_user_authenticated(request)
+        )

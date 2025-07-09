@@ -8,7 +8,6 @@ from esmerald.encoders import Encoder
 
 
 class AttrsEncoder(Encoder):
-
     def is_type(self, value: Any) -> bool:
         return has(value)
 

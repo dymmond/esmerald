@@ -13,7 +13,7 @@ async def check_list(a_value: List[str]) -> JSONResponse:
 
 @get("/another-list")
 async def check_another_list(
-    a_value: Annotated[list, Query()] = ["true", "false", "test"]  # noqa
+    a_value: Annotated[list, Query()] = ["true", "false", "test"],  # noqa
 ) -> JSONResponse:
     return JSONResponse({"value": a_value})
 

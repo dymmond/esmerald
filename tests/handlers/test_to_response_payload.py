@@ -17,11 +17,13 @@ async def test_to_response_async_await() -> None:
 
     person_instance = IndividualFactory.build()
     test_function.signature_model = SignatureFactory(
-        test_function.fn, set()  # type:ignore[arg-type]
+        test_function.fn,
+        set(),  # type:ignore[arg-type]
     ).create_signature()
 
     response = await test_function.to_response(
-        data=test_function.fn(payload=person_instance), app=None  # type: ignore
+        data=test_function.fn(payload=person_instance),
+        app=None,  # type: ignore
     )
     assert loads(response.body) == person_instance.model_dump()
 
@@ -35,10 +37,12 @@ async def test_to_response_async_await_with_post_handler() -> None:
 
     person_instance = IndividualFactory.build()
     test_function.signature_model = SignatureFactory(
-        test_function.fn, set()  # type:ignore[arg-type]
+        test_function.fn,
+        set(),  # type:ignore[arg-type]
     ).create_signature()
 
     response = await test_function.to_response(
-        data=test_function.fn(payload=person_instance), app=None  # type: ignore
+        data=test_function.fn(payload=person_instance),
+        app=None,  # type: ignore
     )
     assert loads(response.body) == person_instance.model_dump()

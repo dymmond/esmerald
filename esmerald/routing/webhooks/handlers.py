@@ -3249,7 +3249,7 @@ def whroute(
     for method in methods:
         if method.upper() not in AVAILABLE_METHODS:
             raise ImproperlyConfigured(
-                f"Invalid method {method}. " "An example would be: @route(methods=['GET', 'PUT'])."
+                f"Invalid method {method}. An example would be: @route(methods=['GET', 'PUT'])."
             )
 
     methods = [method.upper() for method in methods]

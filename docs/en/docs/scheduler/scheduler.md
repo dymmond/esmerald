@@ -90,7 +90,7 @@ the `enable_scheduler` can also be set to `True`/`False` there.
 
     ```shell
     ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]
@@ -102,7 +102,7 @@ the `enable_scheduler` can also be set to `True`/`False` there.
 
     ```shell
     $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]
@@ -150,7 +150,7 @@ Start the server with the newly created settings.
 
     ```shell
     ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]
@@ -162,7 +162,7 @@ Start the server with the newly created settings.
 
     ```shell
     $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]

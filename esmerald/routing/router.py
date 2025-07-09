@@ -560,7 +560,9 @@ class BaseRouter(Dispatcher, LilyaRouter):
             path = "/"
         else:
             assert path.startswith("/"), "A path prefix must start with '/'"
-            assert not path.endswith("/"), "A path must not end with '/', as the routes will start with '/'"
+            assert not path.endswith("/"), (
+                "A path must not end with '/', as the routes will start with '/'"
+            )
 
         new_routes: list[Any] = []
         for route in routes or []:
@@ -572,21 +574,37 @@ class BaseRouter(Dispatcher, LilyaRouter):
             elif is_class_and_subclass(route, View):
                 route = Gateway(
                     handler=cast(View, route),
-                    permissions=route.permissions if not self.is_member_descriptor(route.permissions) else [],
-                    interceptors=route.interceptors if not self.is_member_descriptor(route.interceptors) else [],
+                    permissions=route.permissions
+                    if not self.is_member_descriptor(route.permissions)
+                    else [],
+                    interceptors=route.interceptors
+                    if not self.is_member_descriptor(route.interceptors)
+                    else [],
                     exception_handlers=route.exception_handlers
                     if not self.is_member_descriptor(route.exception_handlers)
                     else {},
-                    dependencies=route.dependencies if not self.is_member_descriptor(route.dependencies) else {},
-                    middleware=route.middleware if not self.is_member_descriptor(route.middleware) else [],
-                    before_request=route.before_request if not self.is_member_descriptor(route.before_request) else [],
-                    after_request=route.after_request if not self.is_member_descriptor(route.after_request) else [],
-                    security=route.security if not self.is_member_descriptor(route.security) else [],
+                    dependencies=route.dependencies
+                    if not self.is_member_descriptor(route.dependencies)
+                    else {},
+                    middleware=route.middleware
+                    if not self.is_member_descriptor(route.middleware)
+                    else [],
+                    before_request=route.before_request
+                    if not self.is_member_descriptor(route.before_request)
+                    else [],
+                    after_request=route.after_request
+                    if not self.is_member_descriptor(route.after_request)
+                    else [],
+                    security=route.security
+                    if not self.is_member_descriptor(route.security)
+                    else [],
                     tags=route.tags if not self.is_member_descriptor(route.tags) else [],
                     include_in_schema=route.include_in_schema
                     if not self.is_member_descriptor(route.include_in_schema)
                     else True,
-                    deprecated=route.deprecated if not self.is_member_descriptor(route.deprecated) else None,
+                    deprecated=route.deprecated
+                    if not self.is_member_descriptor(route.deprecated)
+                    else None,
                 )
             elif isinstance(route, WebSocketHandler):
                 route = WebSocketGateway(handler=route)
@@ -738,7 +756,9 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 dispatch_call=self.app,
             )
 
-    async def not_found(self, scope: "Scope", receive: "Receive", send: "Send") -> None:  # pragma: no cover
+    async def not_found(
+        self, scope: "Scope", receive: "Receive", send: "Send"
+    ) -> None:  # pragma: no cover
         """Esmerald version of a not found handler when a resource is
         called and cannot be dealt with properly.
 
@@ -805,7 +825,9 @@ class BaseRouter(Dispatcher, LilyaRouter):
             if not route.handler.parent:  # pragma: no cover
                 route.handler.parent = route
 
-            if not is_class_and_subclass(route.handler, View) and not isinstance(route.handler, View):
+            if not is_class_and_subclass(route.handler, View) and not isinstance(
+                route.handler, View
+            ):
                 route.handler.create_signature_model()
 
         if isinstance(route, WebSocketGateway):
@@ -828,7 +850,9 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
         if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
-            if not is_class_and_subclass(value.handler, View) and not isinstance(value.handler, View):
+            if not is_class_and_subclass(value.handler, View) and not isinstance(
+                value.handler, View
+            ):
                 if not value.handler.parent:
                     value.handler.parent = value
             else:
@@ -2452,7 +2476,9 @@ class Router(RoutingMethodsMixin, BaseRouter):
                 after_request=after_request,
             )
             handler.fn = func
-            self.add_websocket_route(path=path, handler=handler, name=name, interceptors=interceptors)
+            self.add_websocket_route(
+                path=path, handler=handler, name=name, interceptors=interceptors
+            )
             return func
 
         return wrapper
@@ -2686,7 +2712,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         """
         for status_code, response in responses.items():
             if not isinstance(response, OpenAPIResponse):
-                raise OpenAPIException(detail="An additional response must be an instance of OpenAPIResponse.")
+                raise OpenAPIException(
+                    detail="An additional response must be an instance of OpenAPIResponse."
+                )
 
             if not is_status_code_allowed(status_code):
                 raise OpenAPIException(detail="The status is not a valid OpenAPI status response.")
@@ -2701,7 +2729,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         """
         return list(self.methods)
 
-    async def allowed_methods(self, scope: "Scope", receive: "Receive", send: "Send", methods: list[str]) -> None:
+    async def allowed_methods(
+        self, scope: "Scope", receive: "Receive", send: "Send", methods: list[str]
+    ) -> None:
         """
         Validates if the scope method is available within the handler and raises
         a MethodNotAllowed if otherwise.
@@ -2833,7 +2863,9 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             ImproperlyConfigured if enable_sync_handlers is False and the function is sync.
         """
         if not self.fn:
-            raise ImproperlyConfigured("Cannot call check_handler_function without first setting self.fn")
+            raise ImproperlyConfigured(
+                "Cannot call check_handler_function without first setting self.fn"
+            )
 
         if not settings.enable_sync_handlers:  # pragma: no cover
             fn = self.fn
@@ -2861,7 +2893,10 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
                 "A status code 204, 304 or in the range below 200 does not support a response body."
                 " If the function should return a value, change the route handler status code to an appropriate value.",
             )
-        if is_class_and_subclass(return_annotation, Redirect) and self.status_code not in REDIRECT_STATUS_CODES:
+        if (
+            is_class_and_subclass(return_annotation, Redirect)
+            and self.status_code not in REDIRECT_STATUS_CODES
+        ):
             raise ValidationErrorException(
                 f"Redirect responses should have one of "
                 f"the following status codes: {', '.join([str(s) for s in REDIRECT_STATUS_CODES])}"
@@ -3165,7 +3200,9 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         unsupported_kwargs = [REQUEST, DATA, PAYLOAD]
         for kwarg in unsupported_kwargs:
             if kwarg in signature.parameters:
-                raise ImproperlyConfigured(f"The '{kwarg}'is not supported with websocket handlers.")
+                raise ImproperlyConfigured(
+                    f"The '{kwarg}'is not supported with websocket handlers."
+                )
 
     def validate_websocket_handler_function(self) -> None:  # pragma: no cover
         """
@@ -3173,7 +3210,9 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         return annotations.
         """
         if not self.fn:
-            raise ImproperlyConfigured("Cannot call check_handler_function without first setting self.fn")
+            raise ImproperlyConfigured(
+                "Cannot call check_handler_function without first setting self.fn"
+            )
         signature = Signature.from_callable(self.fn)
         self.validate_reserved_words(signature=signature)
 
@@ -3803,14 +3842,16 @@ class Include(Dispatcher, LilyaInclude):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)  # type: ignore
 
-                route_handlers: list[Union[Gateway, WebhookGateway, Include]] = route.handler.get_routes(  # type: ignore
-                    path=route.path,
-                    middleware=route.middleware,
-                    interceptors=self.interceptors,
-                    permissions=route.permissions,
-                    exception_handlers=route.exception_handlers,
-                    before_request=route.before_request,
-                    after_request=route.after_request,
+                route_handlers: list[Union[Gateway, WebhookGateway, Include]] = (
+                    route.handler.get_routes(  # type: ignore
+                        path=route.path,
+                        middleware=route.middleware,
+                        interceptors=self.interceptors,
+                        permissions=route.permissions,
+                        exception_handlers=route.exception_handlers,
+                        before_request=route.before_request,
+                        after_request=route.after_request,
+                    )
                 )
                 if route_handlers:
                     routing.extend(

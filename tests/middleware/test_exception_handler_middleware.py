@@ -81,7 +81,8 @@ def test_default_handle_starlette_http_exception_handling() -> None:
 
 def test_default_handle_python_http_exception_handling() -> None:
     response = middleware.default_http_exception_handler(
-        Request(scope={"type": "http", "method": "GET"}), AttributeError("oops")  # type: ignore
+        Request(scope={"type": "http", "method": "GET"}),
+        AttributeError("oops"),  # type: ignore
     )
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {

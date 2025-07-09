@@ -63,9 +63,9 @@ class ORJSON(ResponseContainer[ORJSONResponse]):
         status_code: int,
         app: Type["Esmerald"],
     ) -> ORJSONResponse:
-        assert (
-            ORJSONResponse is not None
-        ), "You must install the encoders or orjson to use ORJSONResponse"
+        assert ORJSONResponse is not None, (
+            "You must install the encoders or orjson to use ORJSONResponse"
+        )
         status = self.status_code or status_code
 
         return ORJSONResponse(
@@ -124,9 +124,9 @@ class UJSON(ResponseContainer[UJSONResponse]):
         status_code: int,
         app: Type["Esmerald"],
     ) -> UJSONResponse:
-        assert (
-            UJSONResponse is not None
-        ), "You must install the encoders or ujson to use UJSONResponse"
+        assert UJSONResponse is not None, (
+            "You must install the encoders or ujson to use UJSONResponse"
+        )
         status = self.status_code or status_code
 
         return UJSONResponse(
