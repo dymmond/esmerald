@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from monkay import Monkay
 
-__version__ = "3.8.5"
+__version__ = "3.8.6"
 
 if TYPE_CHECKING:
     from lilya import status

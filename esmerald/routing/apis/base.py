@@ -340,13 +340,30 @@ class View:
             for permission in self.__base_permissions__ or []
             if not is_esmerald_permission(permission)
         ]
-        self.permissions: Sequence[Permission] = [
-            permission
-            for permission in self.__base_permissions__ or []
-            if is_esmerald_permission(permission)
-        ]
 
         self.__handle_base_permissions()
+        self.__handle_lilya_permissions()
+
+        # Filter out the esmerald unique permissions
+        if self.__base_permissions__:
+            self.permissions = cast(
+                Any,
+                {
+                    index: wrap_permission(permission)
+                    for index, permission in enumerate(self.__base_permissions__)
+                    if is_esmerald_permission(permission)
+                },
+            )
+        else:
+            self.permissions = {} # type: ignore
+
+        if self.__lilya_permissions__:
+            self.lilya_permissions: Any = {
+                index: permission in self.__lilya_permissions__
+                for index, permission in enumerate(self.__lilya_permissions__)
+            }
+        else:
+            self.lilya_permissions = {}
 
     def __handle_base_permissions(self) -> None:
         """
@@ -357,12 +374,17 @@ class View:
         those permissions are inserted at the beginning of the 'permissions' and '__base_permissions__' lists of the current instance.
         """
         for base in self.__class__.__bases__:
-            if hasattr(base, "permissions") and isinstance(
-                getattr(base, "permissions", None), (list, tuple)
-            ):
+            if hasattr(base, "permissions") and isinstance(getattr(base, "permissions", None), (list, tuple)):
                 unique_perms = [perm for perm in base.permissions if perm not in self.permissions]
-                self.permissions[:0] = unique_perms
                 self.__base_permissions__[:0] = unique_perms
+
+    def __handle_lilya_permissions(self) -> None:
+        for base in self.__class__.__bases__:
+            if hasattr(base, "lilya_permissions") and isinstance(
+                getattr(base, "lilya_permissions", None), (list, tuple)
+            ):
+                unique_perms = [perm for perm in base.lilya_permissions if perm not in self.lilya_permissions]
+                self.__lilya_permissions__[:0] = unique_perms
 
     def get_filtered_handler(self) -> list[str]:
         """
@@ -370,9 +392,7 @@ class View:
         """
         from esmerald.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
-        filtered_handlers = [
-            attr for attr in dir(self) if not attr.startswith("__") and not attr.endswith("__")
-        ]
+        filtered_handlers = [attr for attr in dir(self) if not attr.startswith("__") and not attr.endswith("__")]
         route_handlers = []
 
         for handler_name in filtered_handlers:
@@ -398,9 +418,7 @@ class View:
         filtered_handlers = self.get_filtered_handler()
 
         for handler in filtered_handlers:
-            source_route_handler = cast(
-                Union["HTTPHandler", "WebSocketHandler"], getattr(self, handler)
-            )
+            source_route_handler = cast(Union["HTTPHandler", "WebSocketHandler"], getattr(self, handler))
             route_handler = copy(source_route_handler)
             route_handler.parent = self
 
@@ -451,17 +469,11 @@ class View:
         exception_handlers = {**self.exception_handlers, **handler.exception_handlers}
         return cast("ExceptionHandlerMap", exception_handlers)
 
-    async def handle_dispatch(
-        self, scope: "Scope", receive: "Receive", send: "Send"
-    ) -> None:  # pragma: no cover
-        raise NotImplementedError(
-            f"{self.__class__.__name__} object does not implement handle_dispatch()"
-        )
+    async def handle_dispatch(self, scope: "Scope", receive: "Receive", send: "Send") -> None:  # pragma: no cover
+        raise NotImplementedError(f"{self.__class__.__name__} object does not implement handle_dispatch()")
 
     def create_signature_model(self, is_websocket: bool = False) -> None:  # pragma: no cover
-        raise NotImplementedError(
-            f"{self.__class__.__name__} object does not implement create_signature_model()"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} object does not implement create_signature_model()")
 
     def get_routes(
         self,
@@ -483,9 +495,7 @@ class View:
         if path is None:
             path = "/"
 
-        route_handlers: list[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = (
-            self.get_route_handlers()
-        )
+        route_handlers: list[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = self.get_route_handlers()
         handlers: list[Union[Gateway, WebSocketGateway]] = []
 
         for route_handler in route_handlers:
@@ -496,7 +506,7 @@ class View:
                 "handler": route_handler,
                 "middleware": middleware,
                 "interceptors": interceptors,
-                "permissions": permissions,
+                "permissions": permissions.values() if isinstance(permissions, dict) else permissions,
                 "exception_handlers": exception_handlers,
                 "before_request": before_request,
                 "after_request": after_request,

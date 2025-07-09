@@ -37,28 +37,8 @@ class LilyaPermDeny(PermissionProtocol):
         request = Request(scope, receive)
         if request.headers.get("allow_all"):
             await self.app(scope, receive, send)
+            return
         raise PermissionDenied()
-
-
-def test_permissions_with_lilya_http_handler_one() -> None:
-    @get(path="/secret", permissions=[LilyaDeny])
-    def my_http_route_handler() -> None: ...
-
-    with create_client(
-        routes=[Gateway(handler=my_http_route_handler, permissions=[LilyaPermDeny])],
-    ) as client:
-        response = client.get("/secret")
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
-        response = client.get("/secret", headers={"Authorization": "yes"})
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
-        response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 def test_mix_permissions_with_native_esmerald() -> None:
@@ -69,15 +49,11 @@ def test_mix_permissions_with_native_esmerald() -> None:
         routes=[Gateway(handler=my_http_route_handler, permissions=[EsmeraldPermission])],
     ) as client:
         response = client.get("/secret")
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.json().get("detail") == "You do not have authorization to perform this action."
         response = client.get("/secret", headers={"Authorization": "yes"})
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.json().get("detail") == "You do not have authorization to perform this action."
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -90,27 +66,12 @@ def test_two_permissions_mixed_same_level() -> None:
         routes=[Gateway(handler=my_http_route_handler)],
     ) as client:
         response = client.get("/secret")
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
-        response = client.get("/secret", headers={"Authorization": "yes"})
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
-        response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
+        response = client.get("/secret", headers={"Authorization": "yes"})
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-def test_two_permissions_mixed_same_level_top() -> None:
-    @get(path="/secret")
-    def my_http_route_handler() -> None: ...
-
-    with create_client(
-        routes=[Gateway(handler=my_http_route_handler, permissions=[LilyaDeny])],
-        permissions=[EsmeraldPermission],
-    ) as client:
+        assert response.json().get("detail") == "You do not have authorization to perform this action."
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 

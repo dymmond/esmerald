@@ -119,9 +119,7 @@ exception_handlers = {
     CustomWSException: custom_ws_exception_handler,
 }
 
-middleware = [
-    DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.example.org"])
-]
+middleware = [DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.example.org"])]
 
 app = Esmerald(
     routes=[

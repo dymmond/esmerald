@@ -493,30 +493,59 @@ def test_url_for(test_client_factory):
     with create_client(routes=routes) as client:
         app = client.app
 
-        assert (
-            app.path_for("homepage").make_absolute_url(base_url="https://example.org")
-            == "https://example.org/"
-        )
+        assert app.path_for("homepage").make_absolute_url(base_url="https://example.org") == "https://example.org/"
         assert (
             app.path_for("homepage").make_absolute_url(base_url="https://example.org/root_path/")
             == "https://example.org/root_path/"
         )
         assert (
-            app.path_for("user", username="tomchristie").make_absolute_url(
-                base_url="https://example.org"
-            )
+            app.path_for("user", username="tomchristie").make_absolute_url(base_url="https://example.org")
             == "https://example.org/users/tomchristie"
         )
         assert (
-            app.path_for("user", username="tomchristie").make_absolute_url(
-                base_url="https://example.org/root_path/"
-            )
+            app.path_for("user", username="tomchristie").make_absolute_url(base_url="https://example.org/root_path/")
             == "https://example.org/root_path/users/tomchristie"
         )
         assert (
             app.path_for("websocket_endpoint").make_absolute_url(base_url="https://example.org")
             == "wss://example.org/ws"
         )
+
+
+@pytest.mark.parametrize(
+    "permissions,result",
+    [
+        pytest.param([DenyAll], 403, id="deny"),
+        pytest.param([AllowAny], 200, id="allow"),
+        pytest.param([], 200, id="empty"),
+    ],
+)
+def test_include_permissions_exist(permissions, result, test_client_factory):
+    app = Esmerald(routes=routes)
+    with create_client(routes=[Include(path="/admin", app=app, permissions=permissions)]) as client:
+        response = client.get("/admin/deny")
+        assert response.status_code == 403
+
+        response = client.get("/admin/allow")
+        assert response.status_code == result
+
+
+@pytest.mark.parametrize(
+    "permissions,result",
+    [
+        pytest.param([DenyAll], 403, id="deny"),
+        pytest.param([AllowAny], 404, id="allow"),
+        pytest.param([], 404, id="empty"),
+    ],
+)
+def test_include_permissions_not_exist(permissions, result, test_client_factory):
+    app = Esmerald(routes=routes)
+    with create_client(routes=[Include(path="/admin", app=app, permissions=permissions)]) as client:
+        response = client.get("/fsasfadjkdsojafkjiosad")
+        assert response.status_code == 404
+
+        response = client.get("/admin/fsasfadjkdsojafkjiosad")
+        assert response.status_code == result
 
 
 def test_router_add_route(test_client_factory):
@@ -656,9 +685,7 @@ def test_host_routing(test_client_factory):
         response = client.get("/")
         assert response.status_code == 200
 
-    with create_client(
-        routes=mixed_hosts_app, base_url="https://port.example.org:3600/"
-    ) as client:
+    with create_client(routes=mixed_hosts_app, base_url="https://port.example.org:3600/") as client:
         response = client.get("/users")
         assert response.status_code == 404
 
@@ -669,9 +696,7 @@ def test_host_routing(test_client_factory):
         response = client.get("/")
         assert response.status_code == 200
 
-    with create_client(
-        routes=mixed_hosts_app, base_url="https://port.example.org:5600/"
-    ) as client:
+    with create_client(routes=mixed_hosts_app, base_url="https://port.example.org:5600/") as client:
         response = client.get("/")
         assert response.status_code == 200
 
@@ -679,22 +704,10 @@ def test_host_routing(test_client_factory):
 def test_host_reverse_urls(test_client_factory):
     with create_client(routes=mixed_hosts_app) as client:
         app = client.app
-        assert (
-            app.path_for("homepage").make_absolute_url("https://whatever")
-            == "https://www.example.org/"
-        )
-        assert (
-            app.path_for("users").make_absolute_url("https://whatever")
-            == "https://www.example.org/users"
-        )
-        assert (
-            app.path_for("api:users").make_absolute_url("https://whatever")
-            == "https://api.example.org/users"
-        )
-        assert (
-            app.path_for("port:homepage").make_absolute_url("https://whatever")
-            == "https://port.example.org:3600/"
-        )
+        assert app.path_for("homepage").make_absolute_url("https://whatever") == "https://www.example.org/"
+        assert app.path_for("users").make_absolute_url("https://whatever") == "https://www.example.org/users"
+        assert app.path_for("api:users").make_absolute_url("https://whatever") == "https://api.example.org/users"
+        assert app.path_for("port:homepage").make_absolute_url("https://whatever") == "https://port.example.org:3600/"
 
 
 async def subdomain_app(scope, receive, send):
@@ -702,9 +715,7 @@ async def subdomain_app(scope, receive, send):
     await response(scope, receive, send)
 
 
-subdomain_router = Router(
-    routes=[Host("{subdomain}.example.org", app=subdomain_app, name="subdomains")]
-)
+subdomain_router = Router(routes=[Host("{subdomain}.example.org", app=subdomain_app, name="subdomains")])
 
 
 def test_subdomain_routing(test_client_factory):
@@ -718,9 +729,7 @@ def test_subdomain_routing(test_client_factory):
 def test_subdomain_reverse_urls(test_client_factory):
     client = test_client_factory(subdomain_router, base_url="https://esmerald.example.org/")
     assert (
-        client.app.path_for(
-            "subdomains", subdomain="esmerald", path="/homepage"
-        ).make_absolute_url("https://whatever")
+        client.app.path_for("subdomains", subdomain="esmerald", path="/homepage").make_absolute_url("https://whatever")
         == "https://esmerald.example.org/homepage"
     )
 
@@ -851,9 +860,7 @@ def test_lifespan_async(test_client_factory):
     assert not startup_complete
     assert not shutdown_complete
 
-    with create_client(
-        routes=routes, on_shutdown=[run_shutdown], on_startup=[run_startup]
-    ) as client:
+    with create_client(routes=routes, on_shutdown=[run_shutdown], on_startup=[run_startup]) as client:
         assert startup_complete
         assert not shutdown_complete
         client.get("/")
@@ -876,9 +883,7 @@ def test_lifespan_state_unsupported(test_client_factory):
         del scope["state"]
         await app(scope, receive, send)
 
-    with pytest.raises(
-        RuntimeError, match='The server does not support "state" in the lifespan scope'
-    ):
+    with pytest.raises(RuntimeError, match='The server does not support "state" in the lifespan scope'):
         with test_client_factory(no_state_wrapper):
             raise AssertionError("Should not be called")  # pragma: no cover
 

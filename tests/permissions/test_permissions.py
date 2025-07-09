@@ -45,14 +45,10 @@ def test_permissions_with_http_handler_one() -> None:
     ) as client:
         response = client.get("/secret")
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
         response = client.get("/secret", headers={"Authorization": "yes"})
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == HTTP_200_OK
 
@@ -61,20 +57,14 @@ def test_permissions_with_http_handler_two() -> None:
     @route(methods=["GET"], path="/secret", permissions=[LocalPermission])
     async def my_asgi_handler() -> None: ...
 
-    with create_client(
-        permissions=[ApplicationPermission], routes=[Gateway(handler=my_asgi_handler)]
-    ) as client:
+    with create_client(permissions=[ApplicationPermission], routes=[Gateway(handler=my_asgi_handler)]) as client:
         response = client.get("/secret")
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
         response = client.get("/secret", headers={"Authorization": "yes"})
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == HTTP_200_OK
@@ -107,15 +97,11 @@ def test_permissions_with_child_esmerald() -> None:
     with create_client(permissions=[ApplicationPermission], routes=[Include(app=child)]) as client:
         response = client.get("/secret")
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
         response = client.get("/secret", headers={"Authorization": "yes"})
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == HTTP_200_OK
@@ -130,15 +116,11 @@ def test_permissions_with_child_esmerald_two() -> None:
     with create_client(permissions=[LocalPermission], routes=[Include(app=child)]) as client:
         response = client.get("/secret")
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
         response = client.get("/secret", headers={"Authorization": "allow_all"})
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == HTTP_200_OK
@@ -154,9 +136,7 @@ def test_permissions_with_child_esmerald_three() -> None:
     with create_client(permissions=[DenyAll], routes=[Include(app=child)]) as client:
         response = client.get("/secret")
         assert response.status_code == HTTP_403_FORBIDDEN
-        assert (
-            response.json().get("detail") == "You do not have permission to perform this action."
-        )
+        assert response.json().get("detail") == "You do not have permission to perform this action."
 
 
 class TestPermission:

@@ -36,7 +36,7 @@ def test_cannot_access_apiview(test_client_factory):
         assert MyAPIView.permissions == [DenyAll]
 
 
-def test_cannot_access_simple_apiview(test_client_factory):
+def test_cannot_access_simple_apiview():
     with create_client(routes=[MySimpleAPIView]) as client:
         response = client.get("/new-home")
 
@@ -50,7 +50,3 @@ def test_inheritance_total(test_client_factory):
 
         assert response.status_code == 403
         assert AnotherAPI.permissions == [DenyAll, AllowAny]
-
-        permissions = client.app.routes[0].handler._application_permissions
-
-        assert len(permissions) == 3

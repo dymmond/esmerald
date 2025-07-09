@@ -59,6 +59,17 @@ def is_esmerald_permission(permission: Union["BasePermission", Any]) -> bool:
 
     return is_class_and_subclass(permission, BasePermission)
 
+def is_lilya_permission(permission: Union[DefinePermission, Any]) -> bool:
+    """
+    Checks if the given permission is an instance of DefinePermission.
+
+    Args:
+        permission (Union[DefinePermission, Any]): The permission to check.
+    Returns:
+        bool: True if the permission is an instance of DefinePermission, False otherwise.
+    """
+    return isinstance(permission, DefinePermission)
+
 
 def wrap_permission(
     permission: Union[AsyncCallable, DefinePermission, Any],
@@ -72,10 +83,15 @@ def wrap_permission(
     Returns:
         BasePermission: The wrapped permission instance.
     """
+    if isinstance(permission, AsyncCallable):
+        # If its an instance of AsyncCallable, then return it as a BasePermission.
+        return cast("BasePermission", permission)
+
     if is_esmerald_permission(permission):
         return cast("BasePermission", AsyncCallable(permission))
 
     # If its an instance of a DefinePermission, then return it.
     if isinstance(permission, DefinePermission):
+        breakpoint()
         return permission
     return DefinePermission(cast(Any, permission))
