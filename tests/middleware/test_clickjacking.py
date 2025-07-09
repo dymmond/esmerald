@@ -7,7 +7,6 @@ from esmerald.testclient import override_settings
 
 
 def test_xframe_options_deny_responses(test_client_factory):
-
     @get()
     def homepage() -> PlainText:
         return PlainText("Ok", status_code=200)

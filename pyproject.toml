@@ -144,7 +144,7 @@ clean_pyc = "find . -type f -name \"*.pyc\" -delete"
 clean_pyi = "find . -type f -name \"*.pyi\" -delete"
 clean_pycache = "find . -type d -name \"*__pycache__*\" -delete"
 build_with_check = "hatch build; twine check dist/*"
-lint = "ruff check --fix esmerald tests docs_src {args}; hatch run test:check_types"
+lint = "hatch fmt esmerald tests docs_src {args}; hatch run test:check_types"
 
 [tool.hatch.envs.docs]
 features = ["all", "docs"]
@@ -179,6 +179,11 @@ installer = "pip"
 
 [tool.hatch.envs.hatch-test.env-vars]
 ESMERALD_SETTINGS_MODULE = "tests.settings.TestSettings"
+
+[tool.hatch.envs.hatch-static-analysis]
+# disables custom ruff rules, required to align with pre-commit
+config-path = "none"
+dependencies = ["ruff==0.12.2"]
 
 [tool.hatch.version]
 path = "esmerald/__init__.py"
@@ -248,7 +253,7 @@ omit = [
 ]
 
 [[tool.mypy.overrides]]
-module = "esmerald.tests.*"
+module = "tests.*"
 ignore_missing_imports = true
 check_untyped_defs = true
 ignore_errors = true

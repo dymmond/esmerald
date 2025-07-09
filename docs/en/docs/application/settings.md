@@ -235,7 +235,7 @@ via instantiation. The AppSettings from the main_settings.py is used to call fro
 
     ```shell
     ESMERALD_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]
@@ -247,7 +247,7 @@ via instantiation. The AppSettings from the main_settings.py is used to call fro
 
     ```shell
     $env:ESMERALD_SETTINGS_MODULE="src.configs.main_settings.AppSettings"; uvicorn src:app --reload
-    
+
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
     INFO:     Started server process [28722]

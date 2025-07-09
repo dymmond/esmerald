@@ -59,6 +59,7 @@ def is_esmerald_permission(permission: Union["BasePermission", Any]) -> bool:
 
     return is_class_and_subclass(permission, BasePermission)
 
+
 def is_lilya_permission(permission: Union[DefinePermission, Any]) -> bool:
     """
     Checks if the given permission is an instance of DefinePermission.
@@ -92,6 +93,5 @@ def wrap_permission(
 
     # If its an instance of a DefinePermission, then return it.
     if isinstance(permission, DefinePermission):
-        breakpoint()
         return permission
     return DefinePermission(cast(Any, permission))

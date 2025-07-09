@@ -13,7 +13,6 @@ from esmerald.utils.decorators import cache
 
 
 def test_basic_caching_memory(memory_cache) -> None:
-
     @cache(backend=memory_cache, ttl=10)
     def slow_function(x: int) -> int:
         return x * 2
@@ -27,7 +26,6 @@ def test_basic_caching_memory(memory_cache) -> None:
 
 
 def test_basic_caching_memory_redis(redis_cache) -> None:
-
     @cache(backend=redis_cache, ttl=10)
     def slow_function(x: int) -> int:
         return x * 2
@@ -41,7 +39,6 @@ def test_basic_caching_memory_redis(redis_cache) -> None:
 
 
 async def test_cache_expiry_memory(memory_cache):
-
     @cache(backend=memory_cache, ttl=1)
     async def short_lived_function() -> str:
         return "cached_value"
@@ -52,7 +49,6 @@ async def test_cache_expiry_memory(memory_cache):
 
 
 async def test_cache_expiry_redis(redis_cache):
-
     @cache(backend=redis_cache, ttl=1)
     async def short_lived_function() -> str:
         return "cached_value"
@@ -63,7 +59,6 @@ async def test_cache_expiry_redis(redis_cache):
 
 
 async def test_cache_key_generation_memory(memory_cache):
-
     @cache(backend=memory_cache, ttl=10)
     async def key_test(a: int, b: str) -> str:
         return f"{a}-{b}"
@@ -76,7 +71,6 @@ async def test_cache_key_generation_memory(memory_cache):
 
 
 async def test_cache_key_generation_redis(redis_cache):
-
     @cache(backend=redis_cache, ttl=10)
     async def key_test(a: int, b: str) -> str:
         return f"{a}-{b}"
@@ -158,7 +152,6 @@ async def test_esmerald_integration_in_memory(memory_cache):
     app = Esmerald(routes=[Gateway(handler=endpoint)])
 
     with EsmeraldTestClient(app) as client:
-
         response1 = client.get("/cached/10")
         response2 = client.get("/cached/10")
 
@@ -193,7 +186,6 @@ async def test_esmerald_integration_default():
     app = Esmerald(routes=[Gateway(handler=endpoint)])
 
     with EsmeraldTestClient(app) as client:
-
         response1 = client.get("/cached/10")
         response2 = client.get("/cached/10")
 
@@ -228,7 +220,6 @@ async def test_esmerald_integration_in_redis(redis_cache):
     app = Esmerald(routes=[Gateway(handler=cached_endpoint)])
 
     with EsmeraldTestClient(app) as client:
-
         response1 = client.get("/cached/10")
         response2 = client.get("/cached/10")
 

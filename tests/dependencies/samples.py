@@ -7,7 +7,6 @@ class DocumentCreateDTO(BaseModel):
 
 
 class DocumentService:
-
     async def create(self, dto: DocumentCreateDTO) -> DocumentCreateDTO:
         if isinstance(dto, dict):
             doc = DocumentCreateDTO(**dto)

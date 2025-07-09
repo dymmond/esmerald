@@ -5,7 +5,6 @@ from esmerald.utils.decorators import controller
 
 @controller(path="/items", tags=["controller", "decorator"])
 class ItemHandler:
-
     @get("/{item_id}")
     async def get_item(self, item_id: int) -> dict:
         return {"item_id": item_id}
@@ -17,7 +16,6 @@ class ItemHandler:
 
 def test_controller_decorator(test_client_factory):
     with create_client(routes=[ItemHandler]) as client:
-
         response = client.get("/items/1")
         assert response.status_code == 200
         assert response.json() == {"item_id": 1}

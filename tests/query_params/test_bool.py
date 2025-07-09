@@ -9,7 +9,6 @@ async def check_bool(a_value: bool) -> JSONResponse:
 
 def test_query_param(test_client_factory):
     with create_client(routes=Gateway(handler=check_bool)) as client:
-
         response = client.get("/bool?a_value=true")
 
         assert response.status_code == 200

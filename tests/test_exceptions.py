@@ -152,7 +152,6 @@ async def test_validation_error(test_client_factory):
 
 
 async def test_validation_error_multiple(test_client_factory):
-
     class InputIn(BaseModel):
         value: int
         another: int
@@ -184,7 +183,6 @@ async def test_validation_error_multiple(test_client_factory):
 
 
 async def test_validation_simple(test_client_factory):
-
     class InputIn(BaseModel):
         value: int
         another: int
@@ -208,7 +206,6 @@ async def test_validation_simple(test_client_factory):
 
 
 async def test_validation_as_list(test_client_factory):
-
     class InputIn(BaseModel):
         value: int
         another: int
@@ -232,7 +229,6 @@ async def test_validation_as_list(test_client_factory):
 
 
 async def test_validation_as_tuple(test_client_factory):
-
     class InputIn(BaseModel):
         value: int
         another: int
@@ -256,7 +252,6 @@ async def test_validation_as_tuple(test_client_factory):
 
 
 async def test_validation_different_status_code(test_client_factory):
-
     class InputIn(BaseModel):
         value: int
         another: int

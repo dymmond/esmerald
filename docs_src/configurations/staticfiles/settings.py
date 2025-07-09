@@ -3,7 +3,7 @@ from pathlib import Path
 from esmerald import EsmeraldSettings, StaticFilesConfig
 
 
-class CustomSettings(EsmeraldSettings
+class CustomSettings(EsmeraldSettings):
     @property
     def static_files_config(self) -> StaticFilesConfig:
         """

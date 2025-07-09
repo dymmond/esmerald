@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from esmerald.types import Middleware
 
 
-class CustomSettings(EsmeraldSettings
+class CustomSettings(EsmeraldSettings):
     @property
     def jwt_config(self) -> JWTConfig:
         """

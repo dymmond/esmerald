@@ -10,7 +10,7 @@ class User(BaseModel):
 
 @post("/create")
 async def create_user(
-    data: User = Body(title="Create User", description="Creates a new user in the system")
+    data: User = Body(title="Create User", description="Creates a new user in the system"),
 ) -> None:
     """
     Creates a user in the system and does not return anything.

@@ -12,9 +12,7 @@ SECONDS_IN_A_DAY: Annotated[
         Total seconds in a day.
         """
     ),
-] = (
-    60 * 60 * 24
-)
+] = 60 * 60 * 24
 
 
 class SessionConfig(BaseModel):
@@ -74,9 +72,7 @@ class SessionConfig(BaseModel):
             The number in seconds until the cookie expires.
             """
         ),
-    ] = (
-        SECONDS_IN_A_DAY * 180
-    )
+    ] = SECONDS_IN_A_DAY * 180
     https_only: Annotated[
         bool,
         Doc(

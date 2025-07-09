@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 # Create a ChildEsmeraldSettings object
-class AppSettings(EsmeraldSettings
+class AppSettings(EsmeraldSettings):
     app_name: str = "my application"
     secret_key: str = "main secret key"
 

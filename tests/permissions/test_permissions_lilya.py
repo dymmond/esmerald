@@ -50,10 +50,16 @@ def test_mix_permissions_with_native_esmerald() -> None:
     ) as client:
         response = client.get("/secret")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-        assert response.json().get("detail") == "You do not have authorization to perform this action."
+        assert (
+            response.json().get("detail")
+            == "You do not have authorization to perform this action."
+        )
         response = client.get("/secret", headers={"Authorization": "yes"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-        assert response.json().get("detail") == "You do not have authorization to perform this action."
+        assert (
+            response.json().get("detail")
+            == "You do not have authorization to perform this action."
+        )
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -71,7 +77,10 @@ def test_two_permissions_mixed_same_level() -> None:
         response = client.get("/secret", headers={"Authorization": "yes"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-        assert response.json().get("detail") == "You do not have authorization to perform this action."
+        assert (
+            response.json().get("detail")
+            == "You do not have authorization to perform this action."
+        )
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 

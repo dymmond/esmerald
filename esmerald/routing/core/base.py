@@ -101,7 +101,9 @@ class OpenAPIDefinitionMixin:  # pragma: no cover
 
         for name, convertor in variables.items():
             _type = CONV2TYPE[convertor]
-            parsed_components.append(PathParameterSchema(name=name, type=param_type_map[_type], full=name))
+            parsed_components.append(
+                PathParameterSchema(name=name, type=param_type_map[_type], full=name)
+            )
         return parsed_components
 
 
@@ -154,7 +156,9 @@ class BaseResponseHandler:
     """
 
     @staticmethod
-    async def _get_response_data(route: "HTTPHandler", parameter_model: "TransformerModel", request: Request) -> Any:
+    async def _get_response_data(
+        route: "HTTPHandler", parameter_model: "TransformerModel", request: Request
+    ) -> Any:
         """
         Determine required kwargs for the given handler, assign to the object dictionary, and get the response data.
 
@@ -171,9 +175,13 @@ class BaseResponseHandler:
         signature_model = get_signature(route)
 
         if parameter_model.has_kwargs:
-            kwargs: dict[str, Any] = await parameter_model.to_kwargs(connection=request, handler=route)
+            kwargs: dict[str, Any] = await parameter_model.to_kwargs(
+                connection=request, handler=route
+            )
 
-            is_data_or_payload = DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
+            is_data_or_payload = (
+                DATA if DATA in kwargs else (PAYLOAD if PAYLOAD in kwargs else None)
+            )
 
             request_data = kwargs.get(DATA) or kwargs.get(PAYLOAD)
 
@@ -209,7 +217,9 @@ class BaseResponseHandler:
                     # Assign each key-value pair in the request data to kwargs
                     if isinstance(request_data, (UploadFile, DataUpload)) or (
                         isinstance(request_data, (list, tuple))
-                        and any(isinstance(value, (UploadFile, DataUpload)) for value in request_data)
+                        and any(
+                            isinstance(value, (UploadFile, DataUpload)) for value in request_data
+                        )
                     ):
                         for key, _ in kwargs.items():
                             kwargs[key] = request_data
@@ -222,7 +232,9 @@ class BaseResponseHandler:
                     dependency=dependency, connection=request, **kwargs
                 )
 
-            parsed_kwargs = await signature_model.parse_values_for_connection(connection=request, **kwargs)
+            parsed_kwargs = await signature_model.parse_values_for_connection(
+                connection=request, **kwargs
+            )
         else:
             parsed_kwargs = {}
 
@@ -256,7 +268,9 @@ class BaseResponseHandler:
         cookies: ResponseCookies,
         headers: dict[str, Any],
         media_type: str,
-    ) -> Callable[[Union[ResponseContainer, LilyaResponse], Type[Esmerald], dict[str, Any]], LilyaResponse]:
+    ) -> Callable[
+        [Union[ResponseContainer, LilyaResponse], Type[Esmerald], dict[str, Any]], LilyaResponse
+    ]:
         """
         Creates a handler for ResponseContainer types.
 
@@ -459,7 +473,9 @@ class BaseDispatcher(BaseResponseHandler):
         if self._response_handler is not Void:
             return cast("Callable[[Any], Awaitable[LilyaResponse]]", self._response_handler)
 
-        media_type = self.media_type.value if isinstance(self.media_type, Enum) else self.media_type
+        media_type = (
+            self.media_type.value if isinstance(self.media_type, Enum) else self.media_type
+        )
 
         response_class = self.get_response_class()
         headers = self.get_response_headers()
@@ -605,7 +621,9 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         path_components = self.parse_path(self.path)
         parameters = [component for component in path_components if isinstance(component, dict)]
 
-        stringified_parameters = [f"{param['name']}:{param['type'].__name__}" for param in parameters]
+        stringified_parameters = [
+            f"{param['name']}:{param['type'].__name__}" for param in parameters
+        ]
         return stringified_parameters
 
     @property
@@ -719,7 +737,9 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         - The dependencies are collected from all parent levels, ensuring that there are no duplicate dependencies in the final dictionary.
         """
         if not self.signature_model:
-            raise RuntimeError("get_dependencies cannot be called before a signature model has been generated")
+            raise RuntimeError(
+                "get_dependencies cannot be called before a signature model has been generated"
+            )
 
         if not self._dependencies or self._dependencies is Void:
             self._dependencies: Dependencies = {}
@@ -812,7 +832,10 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
         filtered_cookies: dict[str, Cookie] = {}
         for cookie in chain(local_cookies or _empty, other_cookies or _empty):
             filtered_cookies.setdefault(cookie.key, cookie)
-        return [cookie.model_dump(exclude_none=True, exclude={"description"}) for cookie in filtered_cookies.values()]
+        return [
+            cookie.model_dump(exclude_none=True, exclude={"description"})
+            for cookie in filtered_cookies.values()
+        ]
 
     def get_headers(self, headers: ResponseHeaders) -> dict[str, Any]:
         """
@@ -863,7 +886,9 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
             data = await data
         return data
 
-    async def allow_connection(self, connection: "Connection", permission: AsyncCallable) -> None:  # pragma: no cover
+    async def allow_connection(
+        self, connection: "Connection", permission: AsyncCallable
+    ) -> None:  # pragma: no cover
         """
         Asynchronously allows a connection based on the provided permission.
 

@@ -45,9 +45,9 @@ class SimpleAPIMeta(type):
                 http_allowed_methods.extend(base.http_allowed_methods)
 
         if hasattr(simple_view, "extra_allowed") and simple_view.extra_allowed is not None:
-            assert isinstance(
-                simple_view.extra_allowed, list
-            ), "`extra_allowed` must be a list of strings allowed."
+            assert isinstance(simple_view.extra_allowed, list), (
+                "`extra_allowed` must be a list of strings allowed."
+            )
 
             http_allowed_methods.extend(simple_view.extra_allowed)
 

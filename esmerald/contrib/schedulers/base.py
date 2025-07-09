@@ -7,7 +7,6 @@ if TYPE_CHECKING:
 
 
 class SchedulerConfig(SchedulerProtocol):
-
     def __init__(self, **kwargs: dict[str, Any]):
         super().__init__(**kwargs)
 

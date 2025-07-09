@@ -14,7 +14,6 @@ async def product(product_id: int) -> JSONResponse:
 
 def test_syntax():
     with create_client(routes=[Gateway(handler=user), Gateway(handler=product)]) as client:
-
         response = client.get("/users/1")
         assert response.json() == {"user_id": "1"}
 

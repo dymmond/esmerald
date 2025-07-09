@@ -4,7 +4,6 @@ from esmerald.conf import settings
 
 
 class XFrameOptionsMiddleware(LilyaXFrameOptionsMiddleware):
-
     def get_xframe_options(self) -> str:
         """
         Get the X-Frame-Options value from the settings.

@@ -5,7 +5,6 @@ from esmerald.utils.decorators import controller
 
 @controller(path="/users")
 class UserController:
-
     @get(path="/", response_headers={"X-Custom": ResponseHeader(value="Custom Header")})
     async def list_users(self) -> list[dict]:
         """Retrieve a list of users."""
