@@ -519,6 +519,44 @@ def test_url_for(test_client_factory):
         )
 
 
+@pytest.mark.parametrize(
+    "permissions,result",
+    [
+        pytest.param([DenyAll], 403, id="deny"),
+        pytest.param([AllowAny], 200, id="allow"),
+        pytest.param([], 200, id="empty"),
+    ],
+)
+def test_include_permissions_exist(permissions, result, test_client_factory):
+    app = Esmerald(routes=routes)
+    with create_client(
+        routes=[Include(path="/admin", app=app, permissions=permissions)]
+    ) as client:
+        response = client.get("/admin/deny")
+        assert response.status_code == 403
+        response = client.get("/admin/allow")
+        assert response.status_code == result
+
+
+@pytest.mark.parametrize(
+    "permissions,result",
+    [
+        pytest.param([DenyAll], 403, id="deny"),
+        pytest.param([AllowAny], 404, id="allow"),
+        pytest.param([], 404, id="empty"),
+    ],
+)
+def test_include_permissions_not_exist(permissions, result, test_client_factory):
+    app = Esmerald(routes=routes)
+    with create_client(
+        routes=[Include(path="/admin", app=app, permissions=permissions)]
+    ) as client:
+        response = client.get("/fsasfadjkdsojafkjiosad")
+        assert response.status_code == 404
+        response = client.get("/admin/fsasfadjkdsojafkjiosad")
+        assert response.status_code == result
+
+
 def test_router_add_route(test_client_factory):
     with create_client(routes=routes) as client:
         response = client.get("/func")
