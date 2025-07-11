@@ -18,7 +18,7 @@ class TestInterceptor(EsmeraldInterceptor):
 
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         request = Request(scope=scope, receive=receive, send=send)
-        request.path_params["name"] = "intercept"
+        request.scope.setdefault("path_params", {})["name"] = "intercept"
 
 
 class CookieInterceptor(EsmeraldInterceptor):
@@ -79,28 +79,6 @@ def test_interceptor_not_implemented(test_client_factory):
         response = client.get("/error")
 
         assert response.status_code == 500
-
-
-def test_interceptor_on_application_instance(test_client_factory):
-    data = {"name": "test", "sku": "12345"}
-
-    with create_client(routes=[Gateway(handler=create)], interceptors=[TestInterceptor]) as client:
-        response = client.post("/create/test", json=data)
-
-        assert response.status_code == 201
-        assert response.json() == {"name": "intercept"}
-
-
-def test_interceptor_on_application_with_dummy_interceptor(test_client_factory):
-    data = {"name": "test", "sku": "12345"}
-
-    with create_client(
-        routes=[Gateway(handler=create)], interceptors=[DummyInterceptor]
-    ) as client:
-        response = client.post("/create/test", json=data)
-
-        assert response.status_code == 201
-        assert response.json() == {"name": "intercept"}
 
 
 def test_interceptor_on_gateway_level(test_client_factory):

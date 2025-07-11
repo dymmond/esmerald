@@ -26,6 +26,7 @@ tests/cli/simple/myproject
 **/*.so
 **/*.sqlite
 *.iml
+*.zip
 .DS_Store
 .coverage
 .coverage.*
