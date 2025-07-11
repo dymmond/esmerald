@@ -720,7 +720,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
 
     async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
-        Handles the interceptors for the Websockets.
+        Handles the interceptors for the Router.
         This method ensures that the interceptors are set correctly
         and that they are compatible with the Lilya interceptors system.
         """
@@ -2687,7 +2687,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
 
     async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         """
-        Handles the interceptors for the Websockets.
+        Handles the interceptors for the HTTPHandler.
         This method ensures that the interceptors are set correctly
         and that they are compatible with the Lilya interceptors system.
         """
@@ -3182,22 +3182,6 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.tags: Sequence[str] = []
         self.__type__: Union[str, None] = None
         self.name = name
-
-    async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        """
-        Handles the interceptors for the Websockets.
-        This method ensures that the interceptors are set correctly
-        and that they are compatible with the Lilya interceptors system.
-        """
-        if not self.interceptors:
-            return
-
-        for obj in self.interceptors:
-            interceptor: "EsmeraldInterceptor" = obj()
-            if is_async_callable(interceptor.intercept):
-                await interceptor.intercept(scope, receive, send)
-            else:
-                await run_in_threadpool(interceptor.intercept, scope, receive, send)  # type: ignore
 
     async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
