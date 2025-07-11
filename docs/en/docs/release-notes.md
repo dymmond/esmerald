@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.8.8
+
+### Changed
+
+- Rewrite the interceptor to be on a ASGI bases and not from the base handler only. This makes it 100% ASGI compliant and
+allows to use the interceptor in any level independently.
+
 ## 3.8.7
 
 ### Fixed

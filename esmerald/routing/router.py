@@ -83,6 +83,7 @@ from esmerald.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Application, Esmerald
+    from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.permissions.types import Permission
     from esmerald.types import (
@@ -702,6 +703,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
         return isinstance(value, types.MemberDescriptorType)
 
     async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        await self.handle_interceptors(scope, receive, send)
         await self.handle_permissions(scope, receive, send)
         await super().__call__(scope, receive, send)
 
@@ -715,6 +717,26 @@ class BaseRouter(Dispatcher, LilyaRouter):
 
     def activate(self) -> None:
         self.routes = self.reorder_routes()
+
+    async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interceptors for the Websockets.
+        This method ensures that the interceptors are set correctly
+        and that they are compatible with the Lilya interceptors system.
+        """
+        if self.parent and self.parent.interceptors:
+            for parent_interceptor in self.parent.interceptors:
+                self.interceptors.insert(0, parent_interceptor)
+
+        if not self.interceptors:
+            return
+
+        for obj in self.interceptors:
+            interceptor: "EsmeraldInterceptor" = obj()
+            if is_async_callable(interceptor.intercept):
+                await interceptor.intercept(scope, receive, send)
+            else:
+                await run_in_threadpool(interceptor.intercept, scope, receive, send)  # type: ignore
 
     async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
@@ -2656,13 +2678,28 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.route_map: dict[str, Tuple[HTTPHandler, TransformerModel]] = {}
         self.path_regex, self.path_format, self.param_convertors, _ = compile_path(path)
         self._middleware: list[Middleware] = []
-        self._interceptors: Union[list[Interceptor], VoidType] = Void
         self.__type__: Union[str, None] = None
         self.before_request = list(before_request or [])
         self.after_request = list(after_request or [])
 
         if self.responses:
             self.validate_responses(responses=self.responses)
+
+    async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interceptors for the Websockets.
+        This method ensures that the interceptors are set correctly
+        and that they are compatible with the Lilya interceptors system.
+        """
+        if not self.interceptors:
+            return
+
+        for obj in self.interceptors:
+            interceptor: "EsmeraldInterceptor" = obj()
+            if is_async_callable(interceptor.intercept):
+                await interceptor.intercept(scope, receive, send)
+            else:
+                await run_in_threadpool(interceptor.intercept, scope, receive, send)  # type: ignore
 
     async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
@@ -2810,8 +2847,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             else:
                 await run_in_threadpool(before_request, scope, receive, send)
 
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
+        await self.handle_interceptors(scope, receive, send)
 
         methods = [scope["method"]]
         await self.allowed_methods(scope, receive, send, methods)
@@ -3114,7 +3150,6 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self._lilya_permissions: Union[list[DefinePermission], VoidType] = Void
         self._dependencies: Dependencies = {}
         self._response_handler: Union[Callable[[Any], Awaitable[LilyaResponse]], VoidType] = Void
-        self._interceptors: Union[list[Interceptor], VoidType] = Void
         self.interceptors: Sequence[Interceptor] = []
         self.handler = handler
         self.parent: ParentType = None
@@ -3147,6 +3182,22 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.tags: Sequence[str] = []
         self.__type__: Union[str, None] = None
         self.name = name
+
+    async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interceptors for the Websockets.
+        This method ensures that the interceptors are set correctly
+        and that they are compatible with the Lilya interceptors system.
+        """
+        if not self.interceptors:
+            return
+
+        for obj in self.interceptors:
+            interceptor: "EsmeraldInterceptor" = obj()
+            if is_async_callable(interceptor.intercept):
+                await interceptor.intercept(scope, receive, send)
+            else:
+                await run_in_threadpool(interceptor.intercept, scope, receive, send)  # type: ignore
 
     async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
@@ -3247,8 +3298,8 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             else:
                 await run_in_threadpool(before_request, scope, receive, send)
 
-        if self.get_interceptors():
-            await self.intercept(scope, receive, send)
+        # Handle the interceptors for the WebSocket handler.
+        await self.handle_interceptors(scope, receive, send)
 
         websocket = WebSocket(scope=scope, receive=receive, send=send)
 
@@ -3862,6 +3913,22 @@ class Include(Dispatcher, LilyaInclude):
                     )
         return routing
 
+    async def handle_interceptors(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        """
+        Handles the interceptors for the Include.
+        This method ensures that the interceptors are set correctly
+        and that they are compatible with the Lilya interceptors system.
+        """
+        if not self.interceptors:
+            return
+
+        for obj in self.interceptors:
+            interceptor: "EsmeraldInterceptor" = obj()
+            if is_async_callable(interceptor.intercept):
+                await interceptor.intercept(scope, receive, send)
+            else:
+                await run_in_threadpool(interceptor.intercept, scope, receive, send)  # type: ignore
+
     async def handle_permissions(self, scope: Scope, receive: Receive, send: Send) -> None:
         """
         Handles the permissions for the Include.
@@ -3898,5 +3965,6 @@ class Include(Dispatcher, LilyaInclude):
         In the call we need to make sure we call the permissions and validations first to
         assure it won't even reach the lower app and run the validation against.
         """
+        await self.handle_interceptors(scope, receive, send)
         await self.handle_permissions(scope, receive, send)
         await super().handle_dispatch(scope, receive, send)

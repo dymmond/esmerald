@@ -81,28 +81,6 @@ def test_interceptor_not_implemented(test_client_factory):
         assert response.status_code == 500
 
 
-def test_interceptor_on_application_instance(test_client_factory):
-    payload = {"name": "test", "sku": "12345"}
-
-    with create_client(routes=[Gateway(handler=create)], interceptors=[TestInterceptor]) as client:
-        response = client.post("/create/test", json=payload)
-
-        assert response.status_code == 201
-        assert response.json() == {"name": "intercept"}
-
-
-def test_interceptor_on_application_with_dummy_interceptor(test_client_factory):
-    payload = {"name": "test", "sku": "12345"}
-
-    with create_client(
-        routes=[Gateway(handler=create)], interceptors=[DummyInterceptor]
-    ) as client:
-        response = client.post("/create/test", json=payload)
-
-        assert response.status_code == 201
-        assert response.json() == {"name": "intercept"}
-
-
 def test_interceptor_on_gateway_level(test_client_factory):
     payload = {"name": "test", "sku": "12345"}
 

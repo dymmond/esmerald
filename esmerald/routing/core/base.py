@@ -44,15 +44,13 @@ from esmerald.permissions.utils import continue_or_raise_permission_exception
 from esmerald.requests import Request
 from esmerald.responses.base import JSONResponse, Response
 from esmerald.routing.apis.base import View
-from esmerald.typing import AnyCallable, Void, VoidType
+from esmerald.typing import AnyCallable, Void
 from esmerald.utils.constants import DATA, PAYLOAD
 from esmerald.utils.helpers import is_async_callable, is_class_and_subclass
 from esmerald.utils.sync import AsyncCallable
 
 if TYPE_CHECKING:  # pragma: no cover
     from esmerald.applications import Esmerald
-    from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
-    from esmerald.core.interceptors.types import Interceptor
     from esmerald.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from esmerald.routing.router import HTTPHandler
     from esmerald.types import (
@@ -992,60 +990,3 @@ class Dispatcher(BaseSignature, BaseDispatcher, OpenAPIDefinitionMixin):
                 tags_clean.append(tag)
 
         return tags_clean if tags_clean else None
-
-    def get_interceptors(self) -> list[AsyncCallable]:
-        """
-        Returns a list of all the interceptors in the handler scope from the ownership layers.
-        If the interceptors have not been initialized, it initializes them by collecting interceptors from each parent level.
-
-        Returns:
-        - list[AsyncCallable]: A list of all the interceptors in the handler scope.
-
-        Example:
-        >>> handler = Dispatcher()
-        >>> interceptors = handler.get_interceptors()
-        >>> print(interceptors)
-        [<AsyncCallable object at 0x7f9a2c4e2a90>, <AsyncCallable object at 0x7f9a2c4e2b20>]
-
-        Note:
-        - If no interceptors are defined in any of the parent levels, an empty list will be returned.
-        - Each interceptor is represented by an instance of the AsyncCallable class.
-        - The AsyncCallable class provides a way to call the interceptor asynchronously.
-        """
-        if self._interceptors is Void:
-            self._interceptors: Union[list[Interceptor], VoidType] = []
-            for layer in self.parent_levels:
-                self._interceptors.extend(layer.interceptors or [])
-            self._interceptors = cast(
-                "list[Interceptor]",
-                [AsyncCallable(interceptors) for interceptors in self._interceptors],
-            )
-        return cast("list[AsyncCallable]", self._interceptors)
-
-    async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
-        """
-        Executes all the interceptors in the handler scope before reaching any of the handlers.
-
-        This method iterates over each interceptor in the handler scope and calls the `intercept` method on each of them.
-        The `intercept` method is responsible for executing the logic of the interceptor.
-
-        Parameters:
-        - scope (Scope): The scope object representing the current request.
-        - receive (Receive): The receive channel for receiving messages from the client.
-        - send (Send): The send channel for sending messages to the client.
-
-        Returns:
-        None
-
-        Example:
-        >>> handler = Dispatcher()
-        >>> await handler.intercept(scope, receive, send)
-
-        Note:
-        - The `intercept` method is an asynchronous method, hence it needs to be awaited.
-        - The `intercept` method does not return any value.
-        - The `intercept` method is responsible for executing the interceptors in the handler scope.
-        """
-        for interceptor in self.get_interceptors():
-            awaitable: EsmeraldInterceptor = await interceptor()
-            await awaitable.intercept(scope, receive, send)

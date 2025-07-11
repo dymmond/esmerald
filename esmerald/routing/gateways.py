@@ -12,7 +12,6 @@ from typing_extensions import Annotated, Doc
 from esmerald.permissions.utils import is_esmerald_permission, is_lilya_permission, wrap_permission
 from esmerald.routing.apis.base import View
 from esmerald.routing.core.base import Dispatcher
-from esmerald.typing import Void, VoidType
 from esmerald.utils.helpers import clean_string
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -410,11 +409,17 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             for after in self.after_request:
                 handler.after_request.append(after)
 
-        self._interceptors: Union[list["Interceptor"], "VoidType"] = Void
         self.name = name
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors: Sequence["Interceptor"] = interceptors or []
+
+        if self.interceptors:
+            if not handler.interceptors:
+                handler.interceptors = self.interceptors
+            else:
+                for interceptor in self.interceptors:
+                    handler.interceptors.insert(0, interceptor)
 
         # Filter out the lilya unique permissions
         if self.__lilya_permissions__:
@@ -721,10 +726,16 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             for after in self.after_request:
                 handler.after_request.append(after)
 
-        self._interceptors: Union[list["Interceptor"], "VoidType"] = Void
         self.handler = cast("Callable", handler)
         self.dependencies = dependencies or {}
         self.interceptors = interceptors or []
+
+        if self.interceptors:
+            if not handler.interceptors:
+                handler.interceptors = self.interceptors
+            else:
+                for interceptor in self.interceptors:
+                    handler.interceptors.insert(0, interceptor)
 
         # Filter out the lilya unique permissions
         if self.__lilya_permissions__:
@@ -926,7 +937,6 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self.handler = cast("Callable", handler)
         self.include_in_schema = include_in_schema
 
-        self._interceptors: Union[list["Interceptor"], "VoidType"] = Void
         self.name = name
         self.dependencies: Any = {}
         self.interceptors: Sequence["Interceptor"] = []
