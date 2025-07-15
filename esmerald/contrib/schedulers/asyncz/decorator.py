@@ -1,10 +1,12 @@
 from datetime import datetime
-from typing import Any, Optional, Union, cast
+from typing import Any, Callable, Optional, TypeVar, Union
 
 from asyncz.triggers.types import TriggerType
 from asyncz.typing import Undefined, undefined
 
 from esmerald.contrib.schedulers.asyncz.config import Task
+
+F = TypeVar("F", bound=Callable[..., Any])
 
 
 def scheduler(
@@ -22,8 +24,8 @@ def scheduler(
     extra_args: Optional[Any] = None,
     extra_kwargs: Optional[dict[str, Any]] = None,
     is_enabled: bool = True,
-) -> "Task":
-    def wrapper(func: Any) -> Task:
+) -> Callable[[F], Task]:
+    def wrapper(func: F) -> Task:
         task = Task(
             fn=func,
             name=name,
@@ -42,4 +44,4 @@ def scheduler(
         )
         return task
 
-    return cast(Task, wrapper)
+    return wrapper
