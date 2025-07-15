@@ -1,5 +1,6 @@
 import warnings
 from collections.abc import Callable, Iterable, Sequence
+from contextlib import asynccontextmanager
 from datetime import timezone as dtimezone
 from inspect import isclass
 from typing import (
@@ -1914,17 +1915,28 @@ class Application(BaseLilya):
             )
 
         if self.lifespan is not None:
-            return None
+            original_lifespan = self.lifespan
 
-        if self.on_startup is not None:
-            self.on_startup.append(self.scheduler_config.start)
-        else:
-            self.on_startup = [self.scheduler_config.start]
+            @asynccontextmanager
+            async def wrapped_lifespan(app: Esmerald) -> Any:
+                # Wraps the original lifespan to include the scheduler start and shutdown.
+                await self.scheduler_config.start()
+                async with original_lifespan(app):
+                    yield
+                await self.scheduler_config.shutdown()
 
-        if self.on_shutdown is not None:
-            self.on_shutdown.append(self.scheduler_config.shutdown)
+            self.lifespan = wrapped_lifespan
+
         else:
-            self.on_shutdown = [self.scheduler_config.shutdown]
+            if self.on_startup is not None:
+                self.on_startup.append(self.scheduler_config.start)
+            else:
+                self.on_startup = [self.scheduler_config.start]
+
+            if self.on_shutdown is not None:
+                self.on_shutdown.append(self.scheduler_config.shutdown)
+            else:
+                self.on_shutdown = [self.scheduler_config.shutdown]
 
     def get_settings_value(
         self,
