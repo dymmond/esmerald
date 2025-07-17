@@ -70,8 +70,6 @@ def scheduler(
             def wrapper(*args: Any, **kwargs: Any) -> Any:
                 return func(*args, **kwargs)
 
-        wrapper.__original_func__ = func  # Attach original function
-
         task = Task(
             fn=wrapper,
             name=name,
