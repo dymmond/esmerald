@@ -575,37 +575,53 @@ class BaseRouter(Dispatcher, LilyaRouter):
             elif is_class_and_subclass(route, View):
                 route = Gateway(
                     handler=cast(View, route),
-                    permissions=route.permissions
-                    if not self.is_member_descriptor(route.permissions)
-                    else [],
-                    interceptors=route.interceptors
-                    if not self.is_member_descriptor(route.interceptors)
-                    else [],
-                    exception_handlers=route.exception_handlers
-                    if not self.is_member_descriptor(route.exception_handlers)
-                    else {},
-                    dependencies=route.dependencies
-                    if not self.is_member_descriptor(route.dependencies)
-                    else {},
-                    middleware=route.middleware
-                    if not self.is_member_descriptor(route.middleware)
-                    else [],
-                    before_request=route.before_request
-                    if not self.is_member_descriptor(route.before_request)
-                    else [],
-                    after_request=route.after_request
-                    if not self.is_member_descriptor(route.after_request)
-                    else [],
-                    security=route.security
-                    if not self.is_member_descriptor(route.security)
-                    else [],
+                    permissions=(
+                        route.permissions
+                        if not self.is_member_descriptor(route.permissions)
+                        else []
+                    ),
+                    interceptors=(
+                        route.interceptors
+                        if not self.is_member_descriptor(route.interceptors)
+                        else []
+                    ),
+                    exception_handlers=(
+                        route.exception_handlers
+                        if not self.is_member_descriptor(route.exception_handlers)
+                        else {}
+                    ),
+                    dependencies=(
+                        route.dependencies
+                        if not self.is_member_descriptor(route.dependencies)
+                        else {}
+                    ),
+                    middleware=(
+                        route.middleware if not self.is_member_descriptor(route.middleware) else []
+                    ),
+                    before_request=(
+                        route.before_request
+                        if not self.is_member_descriptor(route.before_request)
+                        else []
+                    ),
+                    after_request=(
+                        route.after_request
+                        if not self.is_member_descriptor(route.after_request)
+                        else []
+                    ),
+                    security=(
+                        route.security if not self.is_member_descriptor(route.security) else []
+                    ),
                     tags=route.tags if not self.is_member_descriptor(route.tags) else [],
-                    include_in_schema=route.include_in_schema
-                    if not self.is_member_descriptor(route.include_in_schema)
-                    else True,
-                    deprecated=route.deprecated
-                    if not self.is_member_descriptor(route.deprecated)
-                    else None,
+                    include_in_schema=(
+                        route.include_in_schema
+                        if not self.is_member_descriptor(route.include_in_schema)
+                        else True
+                    ),
+                    deprecated=(
+                        route.deprecated
+                        if not self.is_member_descriptor(route.deprecated)
+                        else None
+                    ),
                 )
             elif isinstance(route, WebSocketHandler):
                 route = WebSocketGateway(handler=route)

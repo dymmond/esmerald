@@ -1,7 +1,7 @@
 import pytest
 
 
-def test_esmerald_memory_cache(client, test_client_factory) -> None:
+def test_esmerald_memory_cache(client) -> None:
     """Test cache operations in Esmerald routes with MemoryCache."""
     key, value = "api_test_key", "hello_esmerald"
 
