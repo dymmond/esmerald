@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.8.9
+
+### Changed
+
+- Add `wraps` and `__original_func__` to the `scheduler` decorator of Asyncz.
+
 ## 3.8.8
 
 ### Fixed
