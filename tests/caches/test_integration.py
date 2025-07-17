@@ -1,5 +1,7 @@
 import pytest
 
+pytestmark = pytest.mark.anyio
+
 
 def test_esmerald_memory_cache(client) -> None:
     """Test cache operations in Esmerald routes with MemoryCache."""
@@ -22,7 +24,6 @@ def test_esmerald_memory_cache(client) -> None:
     assert response.text == ""
 
 
-@pytest.mark.asyncio
 async def test_esmerald_redis_cache(client, redis_settings) -> None:
     """Test cache operations in Esmerald routes with RedisCache."""
     client.app.settings_module = redis_settings
