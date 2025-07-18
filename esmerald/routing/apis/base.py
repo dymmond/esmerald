@@ -522,9 +522,9 @@ class View:
                 "handler": route_handler,
                 "middleware": middleware,
                 "interceptors": interceptors,
-                "permissions": permissions.values()
-                if isinstance(permissions, dict)
-                else permissions,
+                "permissions": (
+                    permissions.values() if isinstance(permissions, dict) else permissions
+                ),
                 "exception_handlers": exception_handlers,
                 "before_request": before_request,
                 "after_request": after_request,

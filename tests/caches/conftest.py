@@ -54,10 +54,10 @@ async def redis_cache() -> RedisCache:
 async def redis_settings(redis_cache) -> TestSettings:
     """Fixture providing Redis settings for testing."""
 
-    class RefisSettings(TestSettings):
+    class RedisSettings(TestSettings):
         cache_backend: RedisCache = redis_cache
 
-    setts = RefisSettings()
+    setts = RedisSettings()
     return setts
 
 

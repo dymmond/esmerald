@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.8.9
+
+### Changed
+
+- Add `wraps` to the `scheduler` decorator of Asyncz preserving the original state of the function.
+- Update Lilya minimum requirements.
+
 ## 3.8.8
 
 ### Fixed

@@ -1,8 +1,10 @@
 from datetime import datetime
+from functools import wraps
 from typing import Any, Awaitable, Callable, Optional, TypeVar, Union
 
 from asyncz.triggers.types import TriggerType
 from asyncz.typing import Undefined, undefined
+from lilya.compat import is_async_callable
 
 from esmerald.contrib.schedulers.asyncz.config import Task
 
@@ -55,9 +57,21 @@ def scheduler(
             print("Task executed every 10 seconds")
     """
 
-    def wrapper(func: F) -> Task:
+    def decorator(func: Callable) -> "Task":
+        if is_async_callable(func):
+
+            @wraps(func)
+            async def wrapper(*args: Any, **kwargs: Any) -> Any:
+                return await func(*args, **kwargs)
+
+        else:
+
+            @wraps(func)
+            def wrapper(*args: Any, **kwargs: Any) -> Any:
+                return func(*args, **kwargs)
+
         task = Task(
-            fn=func,
+            fn=wrapper,
             name=name,
             trigger=trigger,
             id=id,
@@ -74,4 +88,4 @@ def scheduler(
         )
         return task
 
-    return wrapper
+    return decorator
