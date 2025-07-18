@@ -9,7 +9,8 @@ hide:
 
 ### Changed
 
-- Add `wraps` and `__original_func__` to the `scheduler` decorator of Asyncz.
+- Add `wraps` to the `scheduler` decorator of Asyncz preserving the original state of the function.
+- Update Lilya minimum requirements.
 
 ## 3.8.8
 
