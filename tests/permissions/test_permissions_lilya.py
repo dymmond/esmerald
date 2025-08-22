@@ -58,7 +58,7 @@ def test_mix_permissions_with_native_esmerald() -> None:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert (
             response.json().get("detail")
-            == "You do not have authorization to perform this action."
+            == "Not Authorized."
         )
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
