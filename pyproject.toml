@@ -115,7 +115,7 @@ testing = [
     "loguru>=0.7.0,<0.8.0",
     "structlog>=25.2.0",
     "ipdb",
-    "types-ujson==5.10.0.20250326",
+    "types-ujson==5.10.0.20250822",
     "types-orjson==3.6.2",
     "sayer>=0.3.3",
 ]
