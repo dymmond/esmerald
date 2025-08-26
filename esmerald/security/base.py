@@ -1,12 +1,8 @@
-from typing import Optional
-
-from esmerald.openapi.models import (
-    SecurityScheme,
-)
+from lilya.contrib.security.base import SecurityScheme as LilyaSecurityScheme
 
 
-class SecurityBase(SecurityScheme):
-    scheme_name: Optional[str] = None
+class SecurityBase(LilyaSecurityScheme):
+    scheme_name: str | None = None
     """
     An optional name for the security scheme.
     """
@@ -18,12 +14,12 @@ class SecurityBase(SecurityScheme):
     """A flag to indicate that this is a security scheme. """
 
 
-class HttpSecurityBase(SecurityScheme):
-    scheme_name: Optional[str] = None
+class HttpSecurityBase(LilyaSecurityScheme):
+    scheme_name: str | None = None
     """
     An optional name for the security scheme.
     """
-    realm: Optional[str] = None
+    realm: str | None = None
     """
     An optional realm for the security scheme.
     """
