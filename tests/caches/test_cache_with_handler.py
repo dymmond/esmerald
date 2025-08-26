@@ -22,7 +22,7 @@ def test_basic_caching_memory(memory_cache, test_client_factory) -> None:
         assert response.json() == {"id": 1, "name": "Test Item"}
 
 
-def xtest_controller_caching(memory_cache) -> None:
+def test_controller_caching(memory_cache, test_client_factory) -> None:
     class ItemsController(Controller):
         path = "/items"
 
@@ -32,7 +32,6 @@ def xtest_controller_caching(memory_cache) -> None:
             return data
 
     with create_client(routes=[Gateway(handler=ItemsController)], debug=True) as client:
-        breakpoint()
         response = client.post("/items", json={"id": 1, "name": "Test Item"})
         assert response.status_code == 201
         assert response.json() == {"id": 1, "name": "Test Item"}
