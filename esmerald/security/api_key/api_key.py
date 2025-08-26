@@ -1,20 +1,12 @@
-from typing import Union, cast
-
-from lilya.exceptions import HTTPException
-from lilya.status import HTTP_403_FORBIDDEN
-from pydantic import BaseModel
+from lilya.contrib.security.api_key import (
+    APIKeyInCookie as LilyaAPIKeyInCookie,
+    APIKeyInHeader as LilyaAPIKeyInHeader,
+    APIKeyInQuery as LilyaAPIKeyInQuery,
+)
 from typing_extensions import Annotated, Doc
 
-from esmerald.openapi.models import APIKey, APIKeyIn
-from esmerald.requests import Request
-from esmerald.security.base import SecurityBase
 
-
-class APIKeyBase(SecurityBase):
-    __model__: Union[BaseModel, None] = None
-
-
-class APIKeyInQuery(APIKeyBase):
+class APIKeyInQuery(LilyaAPIKeyInQuery):
     """
     API key authentication using a query parameter.
 
@@ -46,11 +38,11 @@ class APIKeyInQuery(APIKeyBase):
         *,
         name: Annotated[str, Doc("Name of the query parameter.")],
         scheme_name: Annotated[
-            Union[str, None],
+            str | None,
             Doc("Name of the security scheme, shown in OpenAPI documentation."),
         ] = None,
         description: Annotated[
-            Union[str, None],
+            str | None,
             Doc("Description of the security scheme, shown in OpenAPI documentation."),
         ] = None,
         auto_error: Annotated[
@@ -61,26 +53,12 @@ class APIKeyInQuery(APIKeyBase):
             ),
         ] = True,
     ):
-        model: APIKey = APIKey(
-            **{"in": APIKeyIn.query.value},  # type: ignore[arg-type]
-            name=name,
-            description=description,
+        super().__init__(
+            name=name, auto_error=auto_error, scheme_name=scheme_name, description=description
         )
-        super().__init__(**model.model_dump())
-        self.__model__ = model
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Union[str, None]:
-        api_key = request.query_params.get(self.__model__.name)
-        if api_key:
-            return cast(str, api_key)
-        if self.__auto_error__:
-            raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-        return None
 
 
-class APIKeyInHeader(APIKeyBase):
+class APIKeyInHeader(LilyaAPIKeyInHeader):
     """
     API key authentication using a header parameter.
 
@@ -112,11 +90,11 @@ class APIKeyInHeader(APIKeyBase):
         *,
         name: Annotated[str, Doc("The name of the header parameter.")],
         scheme_name: Annotated[
-            Union[str, None],
+            str | None,
             Doc("The name of the security scheme to be shown in the OpenAPI documentation."),
         ] = None,
         description: Annotated[
-            Union[str, None],
+            str | None,
             Doc("A description of the security scheme to be shown in the OpenAPI documentation."),
         ] = None,
         auto_error: Annotated[
@@ -127,26 +105,15 @@ class APIKeyInHeader(APIKeyBase):
             ),
         ] = True,
     ):
-        model: APIKey = APIKey(
-            **{"in": APIKeyIn.header.value},  # type: ignore[arg-type]
+        super().__init__(
             name=name,
+            scheme_name=scheme_name,
             description=description,
+            auto_error=auto_error,
         )
-        super().__init__(**model.model_dump())
-        self.__model__ = model
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Union[str, None]:
-        api_key = request.headers.get(self.__model__.name)
-        if api_key:
-            return cast(str, api_key)
-        if self.__auto_error__:
-            raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-        return None
 
 
-class APIKeyInCookie(APIKeyBase):
+class APIKeyInCookie(LilyaAPIKeyInCookie):
     """
     API key authentication using a cookie parameter.
 
@@ -178,11 +145,11 @@ class APIKeyInCookie(APIKeyBase):
         *,
         name: Annotated[str, Doc("The name of the cookie parameter.")],
         scheme_name: Annotated[
-            Union[str, None],
+            str | None,
             Doc("The name of the security scheme to be shown in the OpenAPI documentation."),
         ] = None,
         description: Annotated[
-            Union[str, None],
+            str | None,
             Doc("A description of the security scheme to be shown in the OpenAPI documentation."),
         ] = None,
         auto_error: Annotated[
@@ -193,20 +160,9 @@ class APIKeyInCookie(APIKeyBase):
             ),
         ] = True,
     ):
-        model: APIKey = APIKey(
-            **{"in": APIKeyIn.cookie.value},  # type: ignore[arg-type]
+        super().__init__(
             name=name,
+            scheme_name=scheme_name,
             description=description,
+            auto_error=auto_error,
         )
-        super().__init__(**model.model_dump())
-        self.__model__ = model
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Union[str, None]:
-        api_key = request.cookies.get(self.__model__.name)
-        if api_key:
-            return api_key
-        if self.__auto_error__:
-            raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-        return None
