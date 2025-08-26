@@ -10,7 +10,6 @@ from typing import (
 )
 
 from lilya import status
-from sqlalchemy import func
 from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -430,8 +429,11 @@ def get(
     ```
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -461,7 +463,7 @@ def get(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.GET.value
         handler.validate_handler()
         return handler
@@ -727,8 +729,11 @@ def head(
     all of its operatations.
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -758,7 +763,7 @@ def head(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.HEAD.value
         handler.validate_handler()
         return handler
@@ -1163,8 +1168,11 @@ def post(
     ```
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -1194,7 +1202,7 @@ def post(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.POST.value
         handler.validate_handler()
         return handler
@@ -1594,8 +1602,11 @@ def put(
     ```
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -1625,7 +1636,7 @@ def put(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.PUT.value
         handler.validate_handler()
         return handler
@@ -2025,8 +2036,11 @@ def patch(
     ```
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -2056,7 +2070,7 @@ def patch(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.PATCH.value
         handler.validate_handler()
         return handler
@@ -2456,8 +2470,11 @@ def delete(
     ```
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -2487,7 +2504,7 @@ def delete(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.DELETE.value
         handler.validate_handler()
         return handler
@@ -2753,8 +2770,11 @@ def options(
     all of its operatations.
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -2784,7 +2804,7 @@ def options(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
         return handler
@@ -3050,8 +3070,11 @@ def trace(
     all of its operatations.
     """
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -3081,7 +3104,7 @@ def trace(
             after_request=after_request,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.TRACE.value
         handler.validate_handler()
         return handler
@@ -3514,8 +3537,11 @@ def route(
     if not status_code:  # pragma: no cover
         status_code = status.HTTP_200_OK
 
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -3546,7 +3572,7 @@ def route(
         )
 
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
         return handler

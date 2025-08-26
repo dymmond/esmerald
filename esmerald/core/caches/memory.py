@@ -5,6 +5,7 @@ import time
 from typing import Any
 
 import orjson
+from lilya._internal._encoders import json_encode
 
 from esmerald.core.protocols.cache import CacheBackend
 
@@ -113,7 +114,7 @@ class InMemoryCache(CacheBackend):
         """
         try:
             expiry = time.time() + ttl if ttl else None
-            self._store[key] = (orjson.dumps(value), expiry)
+            self._store[key] = (orjson.dumps(json_encode(value)), expiry)
         except Exception as e:
             logger.exception(f"Cache set error: {e}")
 

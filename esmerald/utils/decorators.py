@@ -18,6 +18,7 @@ from typing import (
 
 import anyio
 import orjson
+from lilya._internal._encoders import json_encode
 from lilya._internal._path import clean_path  # noqa
 from lilya.compat import is_async_callable
 from lilya.decorators import observable as observable  # noqa
@@ -326,8 +327,8 @@ def generate_cache_key(func: Callable, args: Any, kwargs: Any) -> str:
 
     serialized_data = orjson.dumps(
         {
-            "args": [convert(arg) for arg in args],
-            "kwargs": {k: convert(v) for k, v in kwargs.items()},
+            "args": [convert(json_encode(arg)) for arg in args],
+            "kwargs": {k: convert(json_encode(v)) for k, v in kwargs.items()},
         },
         option=orjson.OPT_SORT_KEYS,  # Ensures deterministic output
     )
