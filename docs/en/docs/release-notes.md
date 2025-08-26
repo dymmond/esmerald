@@ -5,6 +5,8 @@ hide:
 
 # Release Notes
 
+## 3.8.10
+
 ### Fixed
 
 - Handlers were not preserving the original state.
