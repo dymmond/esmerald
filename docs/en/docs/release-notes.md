@@ -5,6 +5,19 @@ hide:
 
 # Release Notes
 
+## 3.8.10
+
+### Changed
+
+- Moved the `security` module imports down to use the Lilya contrib security.
+
+### Fixed
+
+- Handlers were not preserving the original state.
+- `@cache` decorator was not allowing proper serialization when used with handler.
+- Fix cache key generator for classes.
+- Typos in documentation.
+
 ## 3.8.9
 
 ### Changed
@@ -22,7 +35,7 @@ hide:
 
 - Rewrite the interceptor to be on a ASGI bases and not from the base handler only. This makes it 100% ASGI compliant and
 allows to use the interceptor in any level independently.
-- When a scheduler is instantianted and a lifespan is detected, then it should wrap it properly automatically.
+- When a scheduler is instantiated and a lifespan is detected, then it should wrap it properly automatically.
 
 ## 3.8.7
 

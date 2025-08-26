@@ -6,6 +6,7 @@ from typing import Any
 import anyio
 import anyio.from_thread
 import orjson
+from lilya._internal._encoders import json_encode
 
 from esmerald.core.protocols.cache import CacheBackend
 
@@ -100,7 +101,7 @@ class RedisCache(CacheBackend):
             value (Any): The value to be cached.
             ttl (int | None, optional): Time-to-live in seconds. If `None`, the value never expires.
         """
-        data: bytes = orjson.dumps(value)
+        data: bytes = orjson.dumps(json_encode(value))
         if ttl:
             await self.async_client.setex(key, ttl, data)
         else:

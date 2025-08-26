@@ -121,6 +121,24 @@ def test_static_substring_of_self(tmpdir: Any) -> None:
         assert response.text == "content"
 
 
+def test_static_with_settings(tmpdir: Any) -> None:
+    from tests.settings import TestSettings
+
+    class StaticSettings(TestSettings):
+        @property
+        def static_files_config(self) -> Any:
+            return StaticFilesConfig(path="/static", directory=tmpdir)
+
+    path = tmpdir.mkdir("static_part").mkdir("static")
+    path = path.join("test.txt")
+    path.write("content")
+
+    with create_client([], settings_module=StaticSettings) as client:
+        response = client.get("/static/static_part/static/test.txt")
+        assert response.status_code == 200
+        assert response.text == "content"
+
+
 @pytest.mark.parametrize("redirect_slashes", [True, False])
 def test_mixing_static_and_include(tmpdir: Any, redirect_slashes) -> None:
     @get("/include")

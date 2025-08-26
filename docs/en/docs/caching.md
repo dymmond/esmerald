@@ -166,7 +166,7 @@ Now you can use the custom backend in your Esmerald application.
 
 ## Recap
 
-✅ **Esmerald provides an easy-to-use caching system with multiple backends.**
-✅ **You can use the `@cache` decorator to cache responses.**
-✅ **You can set a global cache backend via `EsmeraldSettings`.**
-✅ **You can create custom caching backends to store data in different ways.**
+* Esmerald provides an easy-to-use caching system with multiple backends.
+* You can use the `@cache` decorator to cache responses.
+* You can set a global cache backend via `EsmeraldSettings`.
+* You can create custom caching backends to store data in different ways.

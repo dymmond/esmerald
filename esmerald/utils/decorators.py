@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import inspect
 import logging
 import re
 import threading
@@ -18,6 +19,7 @@ from typing import (
 
 import anyio
 import orjson
+from lilya._internal._encoders import json_encode
 from lilya._internal._path import clean_path  # noqa
 from lilya.compat import is_async_callable
 from lilya.decorators import observable as observable  # noqa
@@ -324,12 +326,21 @@ def generate_cache_key(func: Callable, args: Any, kwargs: Any) -> str:
             return sorted(value)  # Convert sets to sorted lists for consistency
         return value
 
+    try:
+        bound_method = inspect.ismethod(func) or (
+            len(args) > 0 and hasattr(args[0], func.__name__)
+        )
+    except Exception:  # noqa
+        bound_method = False
+
+    args_to_encode = args[1:] if bound_method else args
+
     serialized_data = orjson.dumps(
         {
-            "args": [convert(arg) for arg in args],
-            "kwargs": {k: convert(v) for k, v in kwargs.items()},
+            "args": [convert(json_encode(arg)) for arg in args_to_encode],
+            "kwargs": {k: convert(json_encode(v)) for k, v in kwargs.items()},
         },
-        option=orjson.OPT_SORT_KEYS,  # Ensures deterministic output
+        option=orjson.OPT_SORT_KEYS,
     )
 
     # Use a stable hash to ensure key format remains consistent

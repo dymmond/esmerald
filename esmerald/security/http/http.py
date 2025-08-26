@@ -1,51 +1,23 @@
-import binascii
-from base64 import b64decode
-from typing import Any, Optional, Union
+from typing import Any
 
-from lilya.requests import Request
-from lilya.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
-from pydantic import BaseModel
+from lilya.contrib.security.http import (
+    HTTPAuthorizationCredentials as HTTPAuthorizationCredentials,  # noqa
+    HTTPBase as LilyaHTTPBase,
+    HTTPBasic as LilyaHTTPBasic,
+    HTTPBasicCredentials as HTTPBasicCredentials,  # noqa
+    HTTPBearer as LilyaHTTPBearer,
+    HTTPDigest as LilyaHTTPDigest,
+)
 from typing_extensions import Annotated, Doc
 
-from esmerald.exceptions import HTTPException
-from esmerald.openapi.models import HTTPBase as HTTPBaseModel, HTTPBearer as HTTPBearerModel
-from esmerald.security.base import HttpSecurityBase
-from esmerald.security.utils import get_authorization_scheme_param
 
-
-class HTTPBasicCredentials(BaseModel):
-    """
-    Represents HTTP Basic credentials.
-
-    Attributes:
-        username (str): The username.
-        password (str): The password.
-    """
-
-    username: Annotated[str, Doc("The username for HTTP Basic authentication.")]
-    password: Annotated[str, Doc("The password for HTTP Basic authentication.")]
-
-
-class HTTPAuthorizationCredentials(BaseModel):
-    """
-    Represents HTTP authorization credentials.
-
-    Attributes:
-        scheme (str): The authorization scheme (e.g., "Bearer").
-        credentials (str): The authorization credentials (e.g., token).
-    """
-
-    scheme: Annotated[str, Doc("The authorization scheme extracted from the header.")]
-    credentials: Annotated[str, Doc("The authorization credentials extracted from the header.")]
-
-
-class HTTPBase(HttpSecurityBase):
+class HTTPBase(LilyaHTTPBase):
     def __init__(
         self,
         *,
         scheme: str,
-        scheme_name: Union[str, None] = None,
-        description: Union[str, None] = None,
+        scheme_name: str | None = None,
+        description: str | None = None,
         auto_error: bool = True,
         **kwargs: Any,
     ):
@@ -58,31 +30,16 @@ class HTTPBase(HttpSecurityBase):
             description (str, optional): Description of the security scheme.
             auto_error (bool, optional): Whether to automatically raise an error if authentication fails.
         """
-        model = HTTPBaseModel(scheme=scheme, description=description)
-        model_dump = {**model.model_dump(), **kwargs}
-        super().__init__(**model_dump)
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:
-        authorization = request.headers.get("Authorization")
-        if not authorization:
-            if self.__auto_error__:
-                raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-            return None
-
-        scheme, credentials = get_authorization_scheme_param(authorization)
-        if not (scheme and credentials):
-            if self.__auto_error__:
-                raise HTTPException(
-                    status_code=HTTP_403_FORBIDDEN, detail="Invalid authentication credentials"
-                )
-            return None
-
-        return HTTPAuthorizationCredentials(scheme=scheme, credentials=credentials)
+        super().__init__(
+            scheme=scheme,
+            scheme_name=scheme_name,
+            description=description,
+            auto_error=auto_error,
+            **kwargs,
+        )
 
 
-class HTTPBasic(HTTPBase):
+class HTTPBasic(LilyaHTTPBasic):
     """
     HTTP Basic authentication.
 
@@ -108,11 +65,9 @@ class HTTPBasic(HTTPBase):
     def __init__(
         self,
         *,
-        scheme_name: Annotated[Union[str, None], Doc("The name of the security scheme.")] = None,
-        realm: Annotated[Union[str, None], Doc("The HTTP Basic authentication realm.")] = None,
-        description: Annotated[
-            Union[str, None], Doc("Description of the security scheme.")
-        ] = None,
+        scheme_name: Annotated[str | None, Doc("The name of the security scheme.")] = None,
+        realm: Annotated[str | None, Doc("The HTTP Basic authentication realm.")] = None,
+        description: Annotated[str | None, Doc("Description of the security scheme.")] = None,
         auto_error: Annotated[
             bool,
             Doc(
@@ -121,45 +76,12 @@ class HTTPBasic(HTTPBase):
             ),
         ] = True,
     ):
-        model = HTTPBaseModel(scheme="basic", description=description)
-        super().__init__(**model.model_dump())
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.realm = realm
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Optional[HTTPBasicCredentials]:
-        authorization = request.headers.get("Authorization")
-        scheme, param = get_authorization_scheme_param(authorization)
-
-        unauthorized_headers = {
-            "WWW-Authenticate": f'Basic realm="{self.realm}"' if self.realm else "Basic"
-        }
-
-        if not authorization or scheme.lower() != "basic":
-            if self.__auto_error__:
-                raise HTTPException(
-                    status_code=HTTP_401_UNAUTHORIZED,
-                    detail="Not authenticated",
-                    headers=unauthorized_headers,
-                )
-            return None
-
-        try:
-            data = b64decode(param).decode("ascii")
-            username, separator, password = data.partition(":")
-            if not separator:
-                raise ValueError("Invalid credentials format")
-        except (ValueError, UnicodeDecodeError, binascii.Error):
-            raise HTTPException(
-                status_code=HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-                headers=unauthorized_headers,
-            ) from None
-
-        return HTTPBasicCredentials(username=username, password=password)
+        super().__init__(
+            scheme_name=scheme_name, realm=realm, description=description, auto_error=auto_error
+        )
 
 
-class HTTPBearer(HTTPBase):
+class HTTPBearer(LilyaHTTPBearer):
     """
     HTTP Bearer token authentication.
 
@@ -184,11 +106,9 @@ class HTTPBearer(HTTPBase):
     def __init__(
         self,
         *,
-        bearerFormat: Annotated[Union[str, None], Doc("The format of the Bearer token.")] = None,
-        scheme_name: Annotated[Union[str, None], Doc("The name of the security scheme.")] = None,
-        description: Annotated[
-            Union[str, None], Doc("Description of the security scheme.")
-        ] = None,
+        bearerFormat: Annotated[str | None, Doc("The format of the Bearer token.")] = None,
+        scheme_name: Annotated[str | None, Doc("The name of the security scheme.")] = None,
+        description: Annotated[str | None, Doc("Description of the security scheme.")] = None,
         auto_error: Annotated[
             bool,
             Doc(
@@ -197,31 +117,15 @@ class HTTPBearer(HTTPBase):
             ),
         ] = True,
     ):
-        model = HTTPBearerModel(bearerFormat=bearerFormat, description=description)
-        super().__init__(**model.model_dump())
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:
-        authorization = request.headers.get("Authorization")
-        if not authorization:
-            if self.__auto_error__:
-                raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-            return None
-
-        scheme, credentials = get_authorization_scheme_param(authorization)
-        if not (scheme and credentials) or scheme.lower() != "bearer":
-            if self.__auto_error__:
-                raise HTTPException(
-                    status_code=HTTP_403_FORBIDDEN,
-                    detail="Invalid authentication credentials",
-                )
-            return None
-
-        return HTTPAuthorizationCredentials(scheme=scheme, credentials=credentials)
+        super().__init__(
+            bearerFormat=bearerFormat,
+            scheme_name=scheme_name,
+            description=description,
+            auto_error=auto_error,
+        )
 
 
-class HTTPDigest(HTTPBase):
+class HTTPDigest(LilyaHTTPDigest):
     """
     HTTP Digest authentication.
 
@@ -246,10 +150,8 @@ class HTTPDigest(HTTPBase):
     def __init__(
         self,
         *,
-        scheme_name: Annotated[Union[str, None], Doc("The name of the security scheme.")] = None,
-        description: Annotated[
-            Union[str, None], Doc("Description of the security scheme.")
-        ] = None,
+        scheme_name: Annotated[str | None, Doc("The name of the security scheme.")] = None,
+        description: Annotated[str | None, Doc("Description of the security scheme.")] = None,
         auto_error: Annotated[
             bool,
             Doc(
@@ -258,22 +160,4 @@ class HTTPDigest(HTTPBase):
             ),
         ] = True,
     ):
-        model = HTTPBaseModel(scheme="digest", description=description)
-        super().__init__(**model.model_dump())
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:
-        authorization = request.headers.get("Authorization")
-        scheme, credentials = get_authorization_scheme_param(authorization)
-        if not (authorization and scheme and credentials):
-            if self.__auto_error__:
-                raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-            else:
-                return None
-        if scheme.lower() != "digest":
-            raise HTTPException(
-                status_code=HTTP_403_FORBIDDEN,
-                detail="Invalid authentication credentials",
-            )
-        return HTTPAuthorizationCredentials(scheme=scheme, credentials=credentials)
+        super().__init__(scheme_name=scheme_name, description=description, auto_error=auto_error)

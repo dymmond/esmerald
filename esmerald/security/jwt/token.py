@@ -3,10 +3,10 @@ from typing import Any, Optional, Union
 
 import jwt
 from jwt.exceptions import PyJWTError
+from lilya.contrib.security.utils import convert_time
 from pydantic import BaseModel, Field, conint, constr, field_validator
 
 from esmerald.exceptions import ImproperlyConfigured
-from esmerald.security.utils import convert_time
 
 
 class Token(BaseModel):

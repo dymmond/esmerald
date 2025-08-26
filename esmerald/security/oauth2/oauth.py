@@ -1,18 +1,16 @@
-from typing import Any, Optional, Union, cast
+from typing import Any
 
-from lilya.requests import Request
-from lilya.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
+from lilya.contrib.openapi.models import OAuthFlows as OAuthFlowsModel
+from lilya.contrib.security.base import SecurityBase as SecurityBase  # noqa
+from lilya.contrib.security.oauth2 import (
+    OAuth2 as LilyaOAuth2,
+    OAuth2AuthorizationCodeBearer as LilyaOAuth2AuthorizationCodeBearer,
+    OAuth2PasswordBearer as LilyaOAuth2PasswordBearer,
+)
 from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
 
-from esmerald.exceptions import HTTPException
-from esmerald.openapi.models import (
-    OAuth2 as OAuth2Model,
-    OAuthFlows as OAuthFlowsModel,
-)
 from esmerald.param_functions import Form
-from esmerald.security.base import SecurityBase as SecurityBase
-from esmerald.security.utils import get_authorization_scheme_param
 
 
 class OAuth2PasswordRequestForm(BaseModel):
@@ -68,7 +66,7 @@ class OAuth2PasswordRequestForm(BaseModel):
     model_config = {"extra": "allow"}
 
     grant_type: Annotated[
-        Union[str, None],
+        str | None,
         Form(pattern="^password$"),
         Doc(
             """
@@ -108,7 +106,7 @@ class OAuth2PasswordRequestForm(BaseModel):
         ),
     ]
     scope: Annotated[
-        Union[str, list[str]],
+        str | list[str],
         Form(),
         Doc(
             """
@@ -134,7 +132,7 @@ class OAuth2PasswordRequestForm(BaseModel):
         ),
     ] = []
     client_id: Annotated[
-        Union[str, None],
+        str | None,
         Form(),
         Doc(
             """
@@ -148,7 +146,7 @@ class OAuth2PasswordRequestForm(BaseModel):
         ),
     ] = None
     client_secret: Annotated[
-        Union[str, None],
+        str | None,
         Form(json_schema_extra={"format": "password"}),
         Doc(
             """
@@ -168,7 +166,7 @@ class OAuth2PasswordRequestForm(BaseModel):
 
     @field_validator("scope", mode="before")
     @classmethod
-    def validate_scope(cls, value: Union[str, list[str]]) -> Any:
+    def validate_scope(cls, value: str | list[str]) -> Any:
         if isinstance(value, str) and len(value) == 0:
             return []
         if isinstance(value, str):
@@ -311,7 +309,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
             ),
         ] = "",
         client_id: Annotated[
-            Union[str, None],
+            str | None,
             Form(),
             Doc(
                 """
@@ -322,7 +320,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
             ),
         ] = None,
         client_secret: Annotated[
-            Union[str, None],
+            str | None,
             Form(),
             Doc(
                 """
@@ -344,7 +342,7 @@ class OAuth2PasswordRequestFormStrict(OAuth2PasswordRequestForm):
         )
 
 
-class OAuth2(SecurityBase):
+class OAuth2(LilyaOAuth2):
     """
     This is the base class for OAuth2 authentication, an instance of it would be used
     as a dependency. All other OAuth2 classes inherit from it and customize it for
@@ -358,7 +356,7 @@ class OAuth2(SecurityBase):
         self,
         *,
         flows: Annotated[
-            Union[OAuthFlowsModel, dict[str, dict[str, Any]]],
+            OAuthFlowsModel | dict[str, dict[str, Any]],
             Doc(
                 """
                 The dictionary containing the OAuth2 flows.
@@ -366,7 +364,7 @@ class OAuth2(SecurityBase):
             ),
         ] = OAuthFlowsModel(),
         scheme_name: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 The name of the Security scheme.
@@ -376,7 +374,7 @@ class OAuth2(SecurityBase):
             ),
         ] = None,
         description: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 Security scheme description.
@@ -406,38 +404,27 @@ class OAuth2(SecurityBase):
             ),
         ] = True,
     ) -> None:
-        model = OAuth2Model(
-            flows=cast(OAuthFlowsModel, flows), scheme=scheme_name, description=description
+        super().__init__(
+            flows=flows,
+            scheme_name=scheme_name,
+            description=description,
+            auto_error=auto_error,
         )
-        super().__init__(**model.model_dump())
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Any:
-        authorization = request.headers.get("Authorization")
-
-        if authorization:
-            return authorization
-
-        if self.__auto_error__:
-            raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-
-        return None
 
 
-class OAuth2PasswordBearer(OAuth2):
+class OAuth2PasswordBearer(LilyaOAuth2PasswordBearer):
     """
     This class is typically used as a dependency in path operations.
 
     Args:
         tokenUrl (str): The URL to obtain the OAuth2 token. This should be the path
                         operation that has `OAuth2PasswordRequestForm` as a dependency.
-        scheme_name (Optional[str], optional): The security scheme name. This will appear
+        scheme_name (str | None, optional): The security scheme name. This will appear
                                                in the OpenAPI documentation. Defaults to None.
-        scopes (Optional[dict[str, str]], optional): The OAuth2 scopes required by the
+        scopes (dict[str, str] | None, optional): The OAuth2 scopes required by the
                                                      path operations using this dependency.
                                                      Defaults to None.
-        description (Optional[str], optional): The security scheme description. This will
+        description (str | None, optional): The security scheme description. This will
                                                appear in the OpenAPI documentation. Defaults to None.
         auto_error (bool, optional): If set to True (default), the request will automatically
                                      be canceled and an error sent to the client if no HTTP
@@ -470,7 +457,7 @@ class OAuth2PasswordBearer(OAuth2):
             ),
         ],
         scheme_name: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 The name of the security scheme.
@@ -482,7 +469,7 @@ class OAuth2PasswordBearer(OAuth2):
             ),
         ] = None,
         scopes: Annotated[
-            Optional[dict[str, str]],
+            dict[str, str] | None,
             Doc(
                 """
                 A dictionary of OAuth2 scopes associated with this configuration.
@@ -495,7 +482,7 @@ class OAuth2PasswordBearer(OAuth2):
             ),
         ] = None,
         description: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 A description of the security scheme.
@@ -523,7 +510,7 @@ class OAuth2PasswordBearer(OAuth2):
             ),
         ] = True,
         refreshUrl: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 The URL to perform the refresh of the token and obtain a brand new one.
@@ -531,36 +518,17 @@ class OAuth2PasswordBearer(OAuth2):
             ),
         ] = None,
     ):
-        if not scopes:
-            scopes = {}
-        flows = OAuthFlowsModel(
-            password=cast(Any, {"tokenUrl": tokenUrl, "refreshUrl": refreshUrl, "scopes": scopes})
-        )
         super().__init__(
-            flows=flows,
+            tokenUrl=tokenUrl,
             scheme_name=scheme_name,
+            scopes=scopes,
             description=description,
             auto_error=auto_error,
+            refreshUrl=refreshUrl,
         )
 
-    async def __call__(self, request: Request) -> Optional[str]:
-        authorization = request.headers.get("Authorization")
-        scheme, param = get_authorization_scheme_param(authorization)
 
-        if authorization and scheme.lower() == "bearer":
-            return param
-
-        if self.__auto_error__:
-            raise HTTPException(
-                status_code=HTTP_401_UNAUTHORIZED,
-                detail="Not authenticated",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-        return None
-
-
-class OAuth2AuthorizationCodeBearer(OAuth2):
+class OAuth2AuthorizationCodeBearer(LilyaOAuth2AuthorizationCodeBearer):
     """
     Implements the OAuth2 authorization code flow for obtaining a bearer token.
 
@@ -586,7 +554,7 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             ),
         ],
         refreshUrl: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 Optional URL endpoint for refreshing the OAuth2 access token.
@@ -598,7 +566,7 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             ),
         ] = None,
         scheme_name: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 The name of the OAuth2 security scheme.
@@ -609,7 +577,7 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             ),
         ] = None,
         scopes: Annotated[
-            Optional[dict[str, str]],
+            dict[str, str] | None,
             Doc(
                 """
                 Dictionary of OAuth2 scopes required for API access.
@@ -622,7 +590,7 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             ),
         ] = None,
         description: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 Description of the OAuth2 security scheme for documentation purposes.
@@ -649,38 +617,12 @@ class OAuth2AuthorizationCodeBearer(OAuth2):
             ),
         ] = True,
     ):
-        if not scopes:
-            scopes = {}
-        flows = OAuthFlowsModel(
-            authorizationCode=cast(
-                Any,
-                {
-                    "authorizationUrl": authorizationUrl,
-                    "tokenUrl": tokenUrl,
-                    "refreshUrl": refreshUrl,
-                    "scopes": scopes,
-                },
-            )
-        )
         super().__init__(
-            flows=flows,
+            authorizationUrl=authorizationUrl,
+            tokenUrl=tokenUrl,
+            refreshUrl=refreshUrl,
+            scopes=scopes,
             scheme_name=scheme_name,
             description=description,
             auto_error=auto_error,
         )
-
-    async def __call__(self, request: Request) -> Optional[str]:
-        authorization = request.headers.get("Authorization")
-        scheme, param = get_authorization_scheme_param(authorization)
-
-        if authorization and scheme.lower() == "bearer":
-            return param
-
-        if self.__auto_error__:
-            raise HTTPException(
-                status_code=HTTP_401_UNAUTHORIZED,
-                detail="Not authenticated",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-        return None

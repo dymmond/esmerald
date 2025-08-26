@@ -14,6 +14,9 @@ from typing import (
 )
 
 from lilya._internal._path import clean_path
+from lilya.contrib.security.base import (
+    SecurityScheme as SecurityScheme,
+)
 from lilya.middleware import DefineMiddleware
 from lilya.routing import BasePath
 from lilya.status import HTTP_422_UNPROCESSABLE_ENTITY
@@ -32,7 +35,6 @@ from esmerald.openapi.models import (
     OpenAPI,
     Operation,
     Parameter,
-    SecurityScheme,
 )
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
@@ -119,7 +121,10 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
         if inspect.isclass(security_requirement):
             security_requirement = security_requirement()
 
-        if not isinstance(security_requirement, (SecurityScheme, SecurityBase)):
+        if not isinstance(
+            security_requirement,
+            (SecurityScheme, SecurityBase),
+        ):
             raise ValueError(
                 "Security schemes must subclass from `esmerald.openapi.models.SecurityScheme`"
             )
