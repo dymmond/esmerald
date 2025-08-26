@@ -15,8 +15,7 @@ from typing import (
 
 from lilya._internal._path import clean_path
 from lilya.contrib.security.base import (
-    SecurityBase as LilyaSecurityBase,
-    SecurityScheme as LilyaSecurityScheme,
+    SecurityScheme as SecurityScheme,
 )
 from lilya.middleware import DefineMiddleware
 from lilya.routing import BasePath
@@ -36,7 +35,6 @@ from esmerald.openapi.models import (
     OpenAPI,
     Operation,
     Parameter,
-    SecurityScheme,
 )
 from esmerald.openapi.responses import create_internal_response
 from esmerald.openapi.utils import (
@@ -125,7 +123,7 @@ def get_openapi_security_schemes(schemes: Any) -> Tuple[dict, list]:
 
         if not isinstance(
             security_requirement,
-            (SecurityScheme, SecurityBase, LilyaSecurityScheme, LilyaSecurityBase),
+            (SecurityScheme, SecurityBase),
         ):
             raise ValueError(
                 "Security schemes must subclass from `esmerald.openapi.models.SecurityScheme`"

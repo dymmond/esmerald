@@ -7,6 +7,10 @@ hide:
 
 ## 3.8.10
 
+### Changed
+
+- Moved the `security` module imports down to use the Lilya contrib security.
+
 ### Fixed
 
 - Handlers were not preserving the original state.

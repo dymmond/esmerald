@@ -1,5 +1,6 @@
 from typing import Any
 
+from lilya.contrib.openapi.models import OAuthFlows as OAuthFlowsModel
 from lilya.contrib.security.base import SecurityBase as SecurityBase  # noqa
 from lilya.contrib.security.oauth2 import (
     OAuth2 as LilyaOAuth2,
@@ -9,9 +10,6 @@ from lilya.contrib.security.oauth2 import (
 from pydantic import BaseModel, field_validator
 from typing_extensions import Annotated, Doc
 
-from esmerald.openapi.models import (
-    OAuthFlows as OAuthFlowsModel,
-)
 from esmerald.param_functions import Form
 
 

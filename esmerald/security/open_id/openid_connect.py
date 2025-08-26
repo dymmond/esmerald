@@ -1,15 +1,8 @@
-from typing import Any, Optional
-
-from lilya.exceptions import HTTPException
-from lilya.requests import Request
-from lilya.status import HTTP_403_FORBIDDEN
+from lilya.contrib.security.open_id import OpenIdConnect as LilyaOpenIdConnect
 from typing_extensions import Annotated, Doc
 
-from esmerald.openapi.models import OpenIdConnect as OpenIdConnectModel
-from esmerald.security.base import SecurityBase as SecurityBase
 
-
-class OpenIdConnect(SecurityBase):
+class OpenIdConnect(LilyaOpenIdConnect):
     def __init__(
         self,
         *,
@@ -22,7 +15,7 @@ class OpenIdConnect(SecurityBase):
             ),
         ],
         scheme_name: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 The name of the security scheme.
@@ -30,7 +23,7 @@ class OpenIdConnect(SecurityBase):
             ),
         ] = None,
         description: Annotated[
-            Optional[str],
+            str | None,
             Doc(
                 """
                 A description of the security scheme.
@@ -50,21 +43,9 @@ class OpenIdConnect(SecurityBase):
             ),
         ] = True,
     ):
-        model = OpenIdConnectModel(
-            openIdConnectUrl=openIdConnectUrl, description=description, scheme=scheme_name
+        super().__init__(
+            openIdConnectUrl=openIdConnectUrl,
+            scheme_name=scheme_name,
+            description=description,
+            auto_error=auto_error,
         )
-        model_dump = model.model_dump()
-        super().__init__(**model_dump)
-        self.scheme_name = scheme_name or self.__class__.__name__
-        self.__auto_error__ = auto_error
-
-    async def __call__(self, request: Request) -> Any:
-        authorization = request.headers.get("Authorization")
-
-        if authorization:
-            return authorization
-
-        if self.__auto_error__:
-            raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
-
-        return None
