@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -9,6 +10,7 @@ from typing import (
 )
 
 from lilya import status
+from sqlalchemy import func
 from typing_extensions import Annotated, Doc
 
 from esmerald.exceptions import ImproperlyConfigured
@@ -428,7 +430,8 @@ def get(
     ```
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -724,7 +727,8 @@ def head(
     all of its operatations.
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -1159,7 +1163,8 @@ def post(
     ```
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -1589,7 +1594,8 @@ def put(
     ```
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -2019,7 +2025,8 @@ def patch(
     ```
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -2449,7 +2456,8 @@ def delete(
     ```
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -2745,7 +2753,8 @@ def options(
     all of its operatations.
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -3039,10 +3048,10 @@ def trace(
     """
     Handler responsible for the HTTP method `trace` and
     all of its operatations.
-    ```
     """
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,
@@ -3492,8 +3501,7 @@ def route(
     """
     if not methods or not isinstance(methods, list):
         raise ImproperlyConfigured(
-            "http handler demands `methods` to be declared. "
-            "An example would be: @route(methods=['GET', 'PUT'])."
+            "http handler demands `methods` to be declared. An example would be: @route(methods=['GET', 'PUT'])."
         )
 
     for method in methods:
@@ -3506,7 +3514,8 @@ def route(
     if not status_code:  # pragma: no cover
         status_code = status.HTTP_200_OK
 
-    def wrapper(func: Any) -> HTTPHandler:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> HTTPHandler:
         handler = HTTPHandler(
             path=path,
             name=name,

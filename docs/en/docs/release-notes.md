@@ -5,6 +5,11 @@ hide:
 
 # Release Notes
 
+### Fixed
+
+- Handlers were not preserving the original state.
+- `@cache` decorator was not allowing proper serialization when used with handler.
+
 ## 3.8.9
 
 ### Changed
