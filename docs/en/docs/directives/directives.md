@@ -79,13 +79,17 @@ This is a simple directive that generates a folder structure with some files for
 * **--simple** - Generates a project with a simple structure without too much complications. Useful to quick start your
 projects.
 
-* **edgy** - Flag that indicates that you want to start a new project with integration with [Edgy](https://edgy.dymmond.com)
+* **--edgy** - Flag that indicates that you want to start a new project with integration with [Edgy](https://edgy.dymmond.com)
 already assembled.
 
 !!! Tip
     This only gives you the scaffold and prepares some settings for you as well as the `get_application()` with addition
     to a `core/models.py` that contains a `BaseModel` that you can simply inherit in your models. The rest, you still
     need to implement yourself like running the `edgy init` command to create the migrations folder as per Edgy documentation.
+
+* **--location** - A location where the project should be created.
+  
+  <sup>Default: `.`</sup>
 
 * **-v/--verbosity** - `1` for none and `2` displays all generated files.
 
@@ -196,6 +200,14 @@ by a sample base controller, service, repository and dtos.
 ```shell
 $ esmerald createapp <YOUR-APP-NAME>
 ```
+
+* **--version** - The version of the app to be created.
+  
+  <sup>Default: `v1`</sup>
+
+* **--location** - A location where the project should be created.
+  
+  <sup>Default: `.`</sup>
 
 **Example**:
 

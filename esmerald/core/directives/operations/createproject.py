@@ -52,6 +52,9 @@ def create_project(
             show_default=True,
         ),
     ],
+    location: Annotated[
+        str, Option(".", help="The location where to create the project.", show_default=True)
+    ],
 ) -> None:
     """
     Creates the scaffold of a project.
@@ -67,6 +70,7 @@ def create_project(
         "deployment_folder_name": deployment_folder_name,
         "simple": simple,
         "edgy": edgy,
+        "location": location,
     }
     directive = TemplateDirective()
 

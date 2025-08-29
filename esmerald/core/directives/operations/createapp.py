@@ -24,6 +24,10 @@ def create_app(
             help="Should generate an application with a controller, service, repository, dto.",
         ),
     ],
+    version: Annotated[str, Option("v1", help="The API version of the app.")],
+    location: Annotated[
+        str, Option(".", help="The location where to create the app.", show_default=True)
+    ],
 ) -> None:
     """Creates the scaffold of an application
 
@@ -37,6 +41,8 @@ def create_app(
         "with_basic_controller": with_basic_controller,
         "simple": False,
         "app_context": context,
+        "api_version": version,
+        "location": location,
     }
     directive = TemplateDirective()
 
