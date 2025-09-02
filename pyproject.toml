@@ -37,7 +37,7 @@ classifiers = [
 ]
 dependencies = [
     "lilya[standard]>=0.19.6",
-    "pydantic>=2.11.1,<3.0.0",
+    "pydantic-settings>=2.9.0",
     "orjson>=3.8.5,<4.0.0",
     "msgspec>=0.18.5,<1.0.0",
 ]
