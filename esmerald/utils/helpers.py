@@ -1,8 +1,9 @@
+import re
 import sys
 import types
+import unicodedata
 from typing import Any, Callable, Union
 
-import slugify
 from lilya._utils import is_class_and_subclass as is_class_and_subclass  # noqa
 from lilya.compat import is_async_callable as is_async_callable  # noqa
 from typing_extensions import get_args, get_origin
@@ -15,6 +16,21 @@ else:  # pragma: no cover
     UNION_TYPES = {Union}
 
 
+def slugify(value: str, separator: str = "_") -> str:
+    # Normalize unicode characters to ASCII
+    value = unicodedata.normalize("NFKD", value)
+    value = value.encode("ascii", "ignore").decode("ascii")
+
+    # Convert to lowercase
+    value = value.lower()
+
+    # Remove non-word characters and replace spaces with separator
+    value = re.sub(r"[^\w\s-]", "", value)
+    value = re.sub(r"[\s_-]+", separator, value)
+    value = re.sub(rf"^{separator}+|{separator}+$", "", value)
+    return value
+
+
 def clean_string(value: str) -> str:
     """
     Cleans the given string by removing any special characters and replacing spaces with underscores.
@@ -25,7 +41,7 @@ def clean_string(value: str) -> str:
     Returns:
         str: The cleaned string.
     """
-    return slugify.slugify(value, separator="_")
+    return slugify(value, separator="_")
 
 
 def is_optional_union(annotation: Any) -> bool:

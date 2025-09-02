@@ -668,7 +668,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
         self.on_startup = [] if on_startup is None else list(on_startup)
         self.on_shutdown = [] if on_shutdown is None else list(on_shutdown)
         self.parent: Optional[ParentType] = parent or app
-        self.dependencies = dependencies or {}
+        self.dependencies = dependencies or {}  # type: ignore
         self.exception_handlers = exception_handlers or {}
         self.interceptors: Sequence[Interceptor] = interceptors or []
 
@@ -2647,7 +2647,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             status_code = int(status_code)
         self.status_code = status_code
 
-        self.dependencies: Dependencies = dependencies or {}
+        self.dependencies: Dependencies = dependencies or {}  # type: ignore
 
         if not description:
             description = inspect.cleandoc(self.handler.__doc__ or "") if self.handler else ""
@@ -3169,7 +3169,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.interceptors: Sequence[Interceptor] = []
         self.handler = handler
         self.parent: ParentType = None
-        self.dependencies = dependencies
+        self.dependencies = dependencies  # type: ignore
 
         # Filter out the lilya unique permissions
         if self.__lilya_permissions__:
@@ -3763,7 +3763,7 @@ class Include(Dispatcher, LilyaInclude):
 
         self.app = self.resolve_app_parent(app=app)
 
-        self.dependencies = dependencies or {}
+        self.dependencies = dependencies or {}  # type: ignore
         self.interceptors: Sequence[Interceptor] = interceptors or []
         self.response_class = None
         self.response_cookies = None
