@@ -411,7 +411,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         self.name = name
         self.handler = cast("Callable", handler)
-        self.dependencies = dependencies or {}
+        self.dependencies = dependencies or {}  # type: ignore
         self.interceptors: Sequence["Interceptor"] = interceptors or []
 
         if self.interceptors:
@@ -727,7 +727,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
                 handler.after_request.append(after)
 
         self.handler = cast("Callable", handler)
-        self.dependencies = dependencies or {}
+        self.dependencies = dependencies or {}  # type: ignore
         self.interceptors = interceptors or []
 
         if self.interceptors:
