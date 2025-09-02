@@ -1,12 +1,20 @@
-from functools import cached_property
-from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Annotated,
+    Any,
+    Callable,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
 
 from lilya.types import Lifespan
 from pydantic import AnyUrl
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing_extensions import Annotated, Doc
+from typing_extensions import Doc
 
 from esmerald import __version__  # noqa
+from esmerald.conf._internal.base import BaseSettings
 from esmerald.conf.enums import EnvironmentType
 from esmerald.core.caches.memory import InMemoryCache
 from esmerald.core.config import (
@@ -51,12 +59,6 @@ class CacheBackendSettings(BaseSettings):
     Esmerald uses these settings to set the `@caches` decorator and use it across
     the application.
     """
-
-    model_config = SettingsConfigDict(
-        extra="allow",
-        ignored_types=(cached_property,),
-        arbitrary_types_allowed=True,
-    )
 
     cache_backend: Annotated[
         Optional["CacheBackend"],
@@ -124,11 +126,6 @@ class EsmeraldSettings(CacheBackendSettings):
             """
             Boolean indicating if the application should return the debug tracebacks on
             server errors, in other words, if you want to have debug errors being displayed.
-
-            Read more about this in the official [Lilya documentation](https://www.lilya.dev/applications/#instantiating-the-application).
-
-            !!! Tip
-                Do not use this in production as `True`.
             """
         ),
     ] = False
@@ -487,7 +484,7 @@ class EsmeraldSettings(CacheBackendSettings):
             A `list` of events that are trigger after the application
             processes the request.
 
-            Read more about the [events](https://lilya.dev/lifespan/).
+            Read more about the [events](https://esmerald.dev/lifespan-events/).
 
             **Example**
 
@@ -520,7 +517,7 @@ class EsmeraldSettings(CacheBackendSettings):
             A `list` of events that are trigger after the application
             processes the request.
 
-            Read more about the [events](https://lilya.dev/lifespan/).
+            Read more about the [events](https://esmerald.dev/lifespan-events/).
 
             **Example**
 
@@ -1172,7 +1169,7 @@ class EsmeraldSettings(CacheBackendSettings):
     @property
     def middleware(self) -> Sequence[Middleware]:
         """
-        A global sequence of Lilya middlewares or `esmerald.middlewares` that are
+        A global sequence of Esmerald middlewares or `esmerald.middlewares` that are
         used by the application.
 
         Read more about the [Middleware](https://esmerald.dev/middleware/middleware/).
@@ -1185,7 +1182,7 @@ class EsmeraldSettings(CacheBackendSettings):
         ```python
         from esmerald import EsmeraldSettings
         from esmerald.middleware import HTTPSRedirectMiddleware, TrustedHostMiddleware
-        from lilya.middleware import Middleware as StarletteMiddleware
+        from lilya.middleware import Middleware as LilyaMiddleware
 
 
         class AppSettings(EsmeraldSettings):
@@ -1193,7 +1190,7 @@ class EsmeraldSettings(CacheBackendSettings):
             @property
             def middleware(self) -> list[Middleware]:
                 return [
-                    StarletteMiddleware(
+                    LilyaMiddleware(
                         TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]
                     )
                 ]

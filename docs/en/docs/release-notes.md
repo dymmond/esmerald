@@ -31,6 +31,10 @@ $ pip install esmerald[standard]
 
 This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes.
 
+### Removed
+
+- Hard dependency of `pydantic-settings` in favour of the internal settings system.
+
 ## 3.8.10
 
 ### Changed
