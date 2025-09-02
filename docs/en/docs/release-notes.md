@@ -11,6 +11,25 @@ hide:
 
 - `--version` attribute when running `createapp` directive allowing to generate a versioned scaffold.
 - `--location` attribute when using `createapp` and `createproject` directive allowing to specify the location to be created.
+  
+### Changed
+
+- To make Esmerald cleaner in the installation we have now separated the installation. The [Esmerald native client](./directives/index.md)
+requires some additional packages and not everyone requires this or even desires but for those already using, the change is simple.
+
+#### Before
+
+```shell
+$ pip install esmerald
+```
+
+#### After
+
+```shell
+$ pip install esmerald[standard]
+```
+
+This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes.
 
 ## 3.8.10
 

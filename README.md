@@ -71,6 +71,12 @@ Esmerald wouldn't be possible without two pillars:
 $ pip install esmerald
 ```
 
+**If you want the esmerald client and all the niceties**
+
+```shell
+$ pip install esmerald[standard]
+```
+
 An ASGI server is also needed to run in production, we recommend [Uvicorn](https://www.uvicorn.org) but it is entirely
 up to you.
 
