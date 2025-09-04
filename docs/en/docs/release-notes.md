@@ -14,6 +14,23 @@ hide:
   
 ### Changed
 
+- To make Esmerald lighter and simpler, the some minimal changes for the `SessionMiddleware` import were added.
+
+**Before**
+
+```python
+from esmerald.middleware import SessionMiddleware
+```
+
+**After**
+
+```python
+from esmerald.middleware.sessions import SessionMiddleware
+```
+
+In theory you don't need to worry ever about this as Esmerald injects this for you when using the `session_config` but if you
+are importing directly, the previous change needs to happen.
+
 - To make Esmerald cleaner in the installation we have now separated the installation. The [Esmerald native client](./directives/index.md)
 requires some additional packages and not everyone requires this or even desires but for those already using, the change is simple.
 

@@ -55,7 +55,6 @@ from esmerald.middleware.exceptions import (
     EsmeraldAPIExceptionMiddleware,
     ExceptionMiddleware,
 )
-from esmerald.middleware.sessions import SessionMiddleware
 from esmerald.middleware.trustedhost import TrustedHostMiddleware
 from esmerald.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from esmerald.openapi.schemas.v3_1_0.open_api import OpenAPI
@@ -2635,6 +2634,9 @@ class Application(BaseLilya):
             )
 
         if self.session_config:
+            # We import here to avoid issues with special environments
+            from esmerald.middleware.sessions import SessionMiddleware
+
             user_middleware.append(
                 DefineMiddleware(SessionMiddleware, **self.session_config.model_dump())
             )
