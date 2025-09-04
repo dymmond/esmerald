@@ -1,6 +1,6 @@
 from esmerald import Esmerald, EsmeraldSettings
 from esmerald.core.config import SessionConfig
-from esmerald.middleware import SessionMiddleware
+from esmerald.middleware.sessions import SessionMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]

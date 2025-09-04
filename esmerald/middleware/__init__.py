@@ -6,7 +6,6 @@ from .csrf import CSRFMiddleware
 from .gzip import GZipMiddleware
 from .https import HTTPSRedirectMiddleware
 from .security import SecurityMiddleware
-from .sessions import SessionMiddleware
 from .settings_middleware import RequestSettingsMiddleware
 from .trustedhost import TrustedHostMiddleware
 
@@ -17,7 +16,6 @@ __all__ = [
     "CSRFMiddleware",
     "GZipMiddleware",
     "HTTPSRedirectMiddleware",
-    "SessionMiddleware",
     "RequestSettingsMiddleware",
     "TrustedHostMiddleware",
     "XFrameOptionsMiddleware",

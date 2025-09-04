@@ -14,6 +14,27 @@ hide:
   
 ### Changed
 
+- To make Esmerald lighter and simpler, the some minimal changes for the `SessionMiddleware` import were added.
+
+**Before**
+
+```python
+from esmerald.middleware import SessionMiddleware
+```
+
+**After**
+
+```python
+from esmerald.middleware.sessions import SessionMiddleware
+```
+
+!!! Warning
+    Esmerald `SessionMiddleware` relies on `itsdangerous` Python package. You can install it by yourself or you can install
+    the `esmerald[standard]` package that brings all of the niceties of Esmerald.
+
+In theory you don't need to worry ever about this as Esmerald injects this for you when using the `session_config` but if you
+are importing directly, the previous change needs to happen.
+
 - To make Esmerald cleaner in the installation we have now separated the installation. The [Esmerald native client](./directives/index.md)
 requires some additional packages and not everyone requires this or even desires but for those already using, the change is simple.
 
@@ -29,7 +50,8 @@ $ pip install esmerald
 $ pip install esmerald[standard]
 ```
 
-This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes.
+This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes at all.
+**This is important if you are using the `Form` or `request.form()` as this comes with the `standard` packaging.
 
 ## 3.8.10
 
