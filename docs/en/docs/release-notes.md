@@ -46,7 +46,8 @@ $ pip install esmerald
 $ pip install esmerald[standard]
 ```
 
-This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes.
+This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes at all.
+**This is important if you are using the `Form` or `request.form()` as this comes with the `standard` packaging.
 
 ## 3.8.10
 
