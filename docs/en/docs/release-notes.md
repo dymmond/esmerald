@@ -28,6 +28,10 @@ from esmerald.middleware import SessionMiddleware
 from esmerald.middleware.sessions import SessionMiddleware
 ```
 
+!!! Warning
+    Esmerald `SessionMiddleware` relies on `itsdangerous` Python package. You can install it by yourself or you can install
+    the `esmerald[standard]` package that brings all of the niceties of Esmerald.
+
 In theory you don't need to worry ever about this as Esmerald injects this for you when using the `session_config` but if you
 are importing directly, the previous change needs to happen.
 
