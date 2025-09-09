@@ -6,7 +6,7 @@ All the `Esmerald` native middlewares.
 
 ::: esmerald.middleware.RequestSettingsMiddleware
 
-::: esmerald.middleware.SessionMiddleware
+::: esmerald.middleware.sessions.SessionMiddleware
 
 ::: esmerald.middleware.HTTPSRedirectMiddleware
 
