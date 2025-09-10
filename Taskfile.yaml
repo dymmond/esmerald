@@ -25,6 +25,11 @@ tasks:
     cmds:
       - hatch run lint
 
+  format:
+    desc: Formats the project
+    cmds:
+      - hatch run format
+
   mypy:
     desc: Runs the type checker only, no formatting
     cmds:
