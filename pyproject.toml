@@ -87,7 +87,7 @@ standard = [
     # For WSGI support
     "a2wsgi",
     # For the Email type
-    "email-validator >=2.2.0,<3.0.0",
+    "email-validator>=2.2.0,<3.0.0",
     # For the sessions middleware
     "itsdangerous>=2.1.2,<3.0.0",
     # For template rendering
