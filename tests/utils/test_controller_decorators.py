@@ -20,7 +20,7 @@ def test_controller_decorator(test_client_factory):
         assert response.status_code == 200
         assert response.json() == {"item_id": 1}
 
-        response = client.post("/items/", json={"name": "test"})
+        response = client.post("/items", json={"name": "test"})
         assert response.status_code == 201
         assert response.json() == {"message": "Item created", "data": {"name": "test"}}
 
