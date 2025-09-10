@@ -196,7 +196,7 @@ class TemplateDirective(BaseDirective):
         """
         environment = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
         template = environment.get_template(template)  # type: ignore
-        rendered_template = template.render(context)  # type: ignore
+        rendered_template = template.render(context)
         if os.path.isfile(destination):
             os.unlink(destination)
         with open(destination, "w") as f:
