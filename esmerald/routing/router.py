@@ -2729,7 +2729,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
                 self.permissions.update(self.parent.permissions)
             else:
                 # If the parent has permissions, we need to merge them with the current permissions
-                all_perms = list(self.parent.permissions.values())  # type: ignore
+                all_perms = list(self.parent.permissions.values())
                 for perm in self.permissions.values():
                     all_perms.append(perm)
                 self.permissions = dict(enumerate(all_perms))  #
@@ -3227,10 +3227,10 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
                 self.permissions.update(self.parent.permissions)
             else:
                 # If the parent has permissions, we need to merge them with the current permissions
-                all_perms = list(self.parent.permissions.values())  # type: ignore
+                all_perms = list(self.parent.permissions.values())
                 for perm in self.permissions.values():
                     all_perms.append(perm)
-                self.permissions = dict(enumerate(all_perms))  #
+                self.permissions = dict(enumerate(all_perms))
 
         if not self.permissions and not self.lilya_permissions:
             return

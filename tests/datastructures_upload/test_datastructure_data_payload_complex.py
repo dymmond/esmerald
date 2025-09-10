@@ -22,7 +22,7 @@ def test_upload_file_is_closed_using_complexity(tmp_path: Path):
     app = Esmerald(routes=[Gateway(handler=create_upload_file)])
     client = EsmeraldTestClient(app)
     with path.open("rb") as file:
-        response = client.post("/uploadfile/", files={"file": file})
+        response = client.post("/uploadfile", files={"file": file})
 
     assert response.status_code == 201, response.text
     assert response.json() == {"filename": "test.txt"}

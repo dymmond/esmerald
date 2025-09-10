@@ -104,7 +104,9 @@ APIGateHandler = Union[
     WebSocketGateway,
 ]
 
-RouteParent = Union["Router", "Include", ASGIApp, "Gateway", "WebSocketGateway", "WebhookGateway"]
+RouteParent = Union[
+    "Router", "Include", ASGIApp, "Gateway", "WebSocketGateway", "WebhookGateway", "View"
+]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]
 SecurityScheme = dict[str, list[str]]

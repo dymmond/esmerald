@@ -33,7 +33,7 @@ def directives(env: DirectiveEnv) -> None:
 
     directives_dict = defaultdict(lambda: [])
     for directive in directives:
-        for name, app in directive.items():  # type: ignore
+        for name, app in directive.items():
             if name == "location":
                 continue
 

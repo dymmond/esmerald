@@ -27,7 +27,7 @@ def test_upload_file_is_closed_using_complexity(tmp_path: Path):
     client = EsmeraldTestClient(app)
     data = {"name": "Test"}
     response = client.post(
-        "/uploadfile/",
+        "/uploadfile",
         files={"file": create_dummy_file(size_in_bytes=2 * 1024 * 1024)},
         data=data,
     )

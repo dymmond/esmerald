@@ -5,6 +5,16 @@ hide:
 
 # Release Notes
 
+## 3.8.12
+
+### Fixed
+
+- Fix crash in runserver when no autodiscovery.
+
+### Internal
+
+- Add the new `format` in the `Taskfile` and `pyproject.toml`.
+
 ## 3.8.11
 
 ### Added

@@ -65,9 +65,9 @@ class GatewayUtil:
             operation_id = name + handler.path_format
 
         operation_id = re.sub(r"\W", "_", operation_id)
-        methods = list(handler.methods)  # type: ignore
+        methods = list(handler.methods)
 
-        assert handler.methods  # type: ignore
+        assert handler.methods
         operation_id = f"{operation_id}_{methods[0].lower()}"
         return operation_id
 
@@ -353,14 +353,14 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
 
         if not name:
             if not isinstance(handler, View):
-                name = handler.name or clean_string(handler.fn.__name__)  # type: ignore
+                name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
 
         else:
             route_name_list = [name]
-            if not isinstance(handler, View) and handler.name:  # type: ignore
-                route_name_list.append(handler.name)  # type: ignore
+            if not isinstance(handler, View) and handler.name:
+                route_name_list.append(handler.name)
                 name = ":".join(route_name_list)
 
         # Handle middleware
@@ -671,14 +671,14 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
 
         if not name:
             if not isinstance(handler, View):
-                name = handler.name or clean_string(handler.fn.__name__)  # type: ignore
+                name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
 
         else:
             route_name_list = [name]
-            if not isinstance(handler, View) and handler.name:  # type: ignore
-                route_name_list.append(handler.name)  # type: ignore
+            if not isinstance(handler, View) and handler.name:
+                route_name_list.append(handler.name)
                 name = ":".join(route_name_list)
 
         # Handle middleware
@@ -930,7 +930,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
 
         if not name:
             if not isinstance(handler, View):
-                name = clean_string(handler.fn.__name__)  # type: ignore
+                name = clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
 

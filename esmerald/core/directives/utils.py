@@ -49,7 +49,7 @@ def find_application_directives(
         directive_dir = os.path.join(root, "operations")
         for location, name, is_package in pkgutil.iter_modules([directive_dir]):
             if not is_package and not name.startswith("_"):
-                directive_list.append({"name": name, "location": location.path})  # type: ignore
+                directive_list.append({"name": name, "location": location.path})
     return directive_list
 
 
@@ -177,7 +177,7 @@ def fetch_directive(subdirective: Any, location: Optional[str], is_custom: bool 
         except KeyError:
             counter += 1
 
-            directive = {k: v for k, v in directive.items() if k != "location"}  # type: ignore
+            directive = {k: v for k, v in directive.items() if k != "location"}
             matches.extend(get_close_matches(subdirective, directive))
 
             if matches and len(directives) == counter:

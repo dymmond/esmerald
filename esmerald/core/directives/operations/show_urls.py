@@ -90,7 +90,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
         if getattr(app, "routes", None) is None:
             return
 
-        for route in app.routes:  # type: ignore
+        for route in app.routes:
             if isinstance(route, Gateway):
                 # Path
                 path = clean_path(prefix + route.path)
@@ -121,7 +121,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
             if not route_app:
                 continue
 
-            path = clean_path(prefix + route.path)  # type: ignore
+            path = clean_path(prefix + route.path)
             if any(element in path for element in DOCS_ELEMENTS):
                 continue
             parse_routes(route, table, prefix=f"{path}")

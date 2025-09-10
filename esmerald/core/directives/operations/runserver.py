@@ -143,21 +143,22 @@ def runserver(
         toolkit.print(f"Importing module '{env.path}'", tag="Esmerald")
         toolkit.print_line()
 
-        root_tree = get_app_tree(
-            env.module_info.module_paths, discovery_file=env.module_info.discovery_file
-        )
+        if env.module_info.module_paths:
+            root_tree = get_app_tree(
+                env.module_info.module_paths, discovery_file=env.module_info.discovery_file
+            )
 
-        toolkit.print(root_tree, tag="module")
-        toolkit.print_line()
+            toolkit.print(root_tree, tag="module")
+            toolkit.print_line()
 
-        toolkit.print(
-            "[green]The [bold]Esmerald[/bold] object is imported using the following code:[/green]",
-            tag="code",
-        )
-        toolkit.print(
-            f"[underline]from [bold]{env.module_info.module_import[0]}[/bold] import [bold]{env.module_info.module_import[1]}[/bold]",
-            tag=env.module_info.module_import[1],
-        )
+            toolkit.print(
+                "[green]The [bold]Esmerald[/bold] object is imported using the following code:[/green]",
+                tag="code",
+            )
+            toolkit.print(
+                f"[underline]from [bold]{env.module_info.module_import[0]}[/bold] import [bold]{env.module_info.module_import[1]}[/bold]",
+                tag=env.module_info.module_import[1],
+            )
 
         # For the text access
         url = f"http://{host}:{port}"
