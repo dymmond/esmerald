@@ -76,7 +76,8 @@ class DirectiveGroup(SayerGroup):
         Directives can be ignored depending of the functionality from what is being
         called.
         """
-        path = ctx.params.get("app", None)
+        app = ctx.params.get("app", None)
+        path = ctx.params.get("path", None)
 
         # Process any settings
         self.process_settings(ctx)
@@ -86,7 +87,7 @@ class DirectiveGroup(SayerGroup):
         ):
             try:
                 directive = DirectiveEnv()
-                app_env = directive.load_from_env(path=path)
+                app_env = directive.load_from_env(path=app, cwd=path)
                 ctx.obj = app_env
             except OSError as e:
                 if not any(value in sys.argv for value in IGNORE_DIRECTIVES):
@@ -127,6 +128,13 @@ def esmerald_callback(
         Option(
             required=False,
             help="Module path to the Esmerald application. In a module:path format.",
+        ),
+    ],
+    path: typing.Annotated[
+        str | None,
+        Option(
+            required=False,
+            help="A path to a Python file or package directory with ([blue]__init__.py[/blue] files) containing a [bold]Lilya[/bold] app. If not provided, Lilya will try to discover.",
         ),
     ],
 ) -> None: ...
