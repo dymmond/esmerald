@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import click
 from rich.tree import Tree
-from sayer import Argument, Option, command, error
+from sayer import Option, command, error
 
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.exceptions import DirectiveError
@@ -46,13 +46,6 @@ def get_app_tree(module_paths: list[Path], discovery_file: str) -> Tree:
 
 @command
 def runserver(
-    path: Annotated[
-        str | None,
-        Argument(
-            required=False,
-            help="A path to a Python file or package directory with ([blue]__init__.py[/blue] files) containing a [bold]Esmerald[/bold] app. If not provided, Esmerald will try to discover.",
-        ),
-    ],
     port: Annotated[
         int, Option(8000, "-p", help="Port to run the development server.", show_default=True)
     ],
@@ -196,11 +189,13 @@ def runserver(
         )
         toolkit.print_line()
 
-        if debug:
-            app.debug = debug
+        if debug and env.esmerald_app:
+            env.esmerald_app.debug = debug
 
         uvicorn.run(
-            app=path or env.path,
+            # in case of no reload and workers, we might end up initializing twice when
+            # using a function, so use app instead
+            app=app if not reload and not workers else env.path,
             port=port,
             host=host,
             reload=reload,

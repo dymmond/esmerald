@@ -10,10 +10,9 @@ import click
 from lilya._internal._events import generate_lifespan_events  # noqa
 from lilya.cli.base import BaseDirective
 from lilya.context import G, g_context
-from lilya.types import Lifespan
+from lilya.types import ASGIApp, Lifespan
 from sayer import Argument, Option, command, error
 
-from esmerald.applications import ChildEsmerald, Esmerald
 from esmerald.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
 from esmerald.core.directives.env import DirectiveEnv
 from esmerald.core.directives.utils import fetch_directive
@@ -98,7 +97,11 @@ async def run(
 
     ## Check if application is up and execute any event
     # Shutting down after
-    lifespan = generate_lifespan_events(env.app.on_startup, env.app.on_shutdown, env.app.lifespan)
+    lifespan = generate_lifespan_events(
+        env.esmerald_app.on_startup,
+        env.esmerald_app.on_shutdown,
+        env.esmerald_app.lifespan,
+    )
     await execute_lifespan(env.app, lifespan, directive, program_name, position)
 
 
@@ -136,7 +139,7 @@ async def reset_global_context(token: Any) -> None:
 
 
 async def execute_lifespan(
-    app: Esmerald | ChildEsmerald | None,
+    app: ASGIApp | None,
     lifespan: Lifespan,
     directive: Any,
     program_name: str,

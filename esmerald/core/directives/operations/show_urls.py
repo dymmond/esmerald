@@ -66,8 +66,10 @@ def show_urls(env: DirectiveEnv) -> None:
             "ESMERALD_DEFAULT_APP environment variable."
         )
         sys.exit(1)
-
-    app = env.app
+    if getattr(env, "esmerald_app", None) is None:
+        error("Not an esmerald app.")
+        sys.exit(1)
+    app = env.esmerald_app
     table = Table(title=app.app_name)
     table = get_routes_table(app, table)
     echo(table)
@@ -112,7 +114,7 @@ def get_routes_table(app: Optional[Union["Esmerald", "ChildEsmerald"]], table: T
                 # of the table not being able to render the string
                 route_name = ":".join(names)
 
-                http_methods = ", ".join(sorted(route.methods))
+                http_methods = ", ".join(sorted(route.methods or []))
                 parameters = ", ".join(sorted(route.stringify_parameters))
                 table.add_row(path, parameters, route_name, fn_type, http_methods)
                 continue
