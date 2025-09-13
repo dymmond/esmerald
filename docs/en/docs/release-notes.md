@@ -24,7 +24,7 @@ hide:
 
 ### Breaking
 
-- `esmerald runserver` loses its path argument. You can specify it via `lilya --path foo runserver`.
+- `esmerald runserver` loses its path argument. You can specify it via `esmerald --path foo runserver`.
 
 ## 3.8.11
 
