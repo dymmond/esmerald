@@ -14,6 +14,7 @@ hide:
 ### Internal
 
 - Add the new `format` in the `Taskfile` and `pyproject.toml`.
+- Update internal imports of lilya crypto.
 
 ## 3.8.11
 
@@ -21,7 +22,7 @@ hide:
 
 - `--version` attribute when running `createapp` directive allowing to generate a versioned scaffold.
 - `--location` attribute when using `createapp` and `createproject` directive allowing to specify the location to be created.
-  
+
 ### Changed
 
 - To make Esmerald lighter and simpler, the some minimal changes for the `SessionMiddleware` import were added.
