@@ -141,7 +141,12 @@ class DirectiveEnv:
         module_str_path, app_name = path.split(":")
         module = import_module(module_str_path)
         app = getattr(module, app_name)
-        return Scaffold(path=path, app=app)
+
+        if isinstance(app, Esmerald):
+            esmerald = app
+        else:
+            esmerald = monkay.instance
+        return Scaffold(path=path, app=app, esmerald_app=esmerald)
 
     def _get_folders(self, path: Path) -> list[str]:
         """

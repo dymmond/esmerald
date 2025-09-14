@@ -26,7 +26,7 @@ def directives(env: DirectiveEnv) -> None:
     directives = get_directives(PATH)
 
     # Handles the application directives
-    if getattr(env, "app", None) is not None:
+    if getattr(env, "esmerald_app", None) is not None:
         app_directives = get_application_directives(env.command_path)
         if app_directives:
             directives.extend(app_directives)
