@@ -5,15 +5,25 @@ hide:
 
 # Release Notes
 
-## 3.8.12
+## 3.9.0
+
+### Changed
+
+- Morph path argument into path option and expose it for all commands.
 
 ### Fixed
 
+- Properly detect wrapped Esmerald instances.
+- Fix double initialization of app in runserver.
 - Fix crash in runserver when no autodiscovery.
 
 ### Internal
 
 - Add the new `format` in the `Taskfile` and `pyproject.toml`.
+
+### Breaking
+
+- `esmerald runserver` loses its path argument. You can specify it via `esmerald --path foo runserver`.
 
 ## 3.8.11
 
@@ -21,7 +31,7 @@ hide:
 
 - `--version` attribute when running `createapp` directive allowing to generate a versioned scaffold.
 - `--location` attribute when using `createapp` and `createproject` directive allowing to specify the location to be created.
-  
+
 ### Changed
 
 - To make Esmerald lighter and simpler, the some minimal changes for the `SessionMiddleware` import were added.

@@ -5,6 +5,7 @@ from importlib import import_module
 from pathlib import Path
 
 from esmerald import ChildEsmerald, Esmerald
+from esmerald.conf import monkay
 from esmerald.core.directives.constants import (
     DISCOVERY_ATTRS,
     DISCOVERY_FILES,
@@ -12,6 +13,7 @@ from esmerald.core.directives.constants import (
     ESMERALD_DISCOVER_APP,
 )
 from esmerald.core.terminal import Print
+from esmerald.types import ASGIApp
 
 printer = Print()
 
@@ -25,7 +27,8 @@ class Scaffold:
     """
 
     path: str
-    app: Esmerald | ChildEsmerald
+    app: ASGIApp
+    esmerald_app: Esmerald | ChildEsmerald | None = None
     app_location: Path | None = None
     discovery_file: str | None = None
 
@@ -46,17 +49,23 @@ class DirectiveEnv:
     """
 
     path: str | None = None
-    app: Esmerald | ChildEsmerald | None = None
+    app: ASGIApp | None = None
+    esmerald_app: Esmerald | ChildEsmerald | None = None
     command_path: str | None = None
     module_info: ModuleInfo | None = None
 
-    def load_from_env(self, path: str | None = None) -> "DirectiveEnv":
+    def load_from_env(
+        self, path: str | None = None, cwd: None | str | Path = None
+    ) -> "DirectiveEnv":
         """
         Loads the environment variables into the scaffold.
         """
         # Adds the current path where the command is being invoked
         # To the system path
-        cwd = Path().cwd()
+        if cwd is None:
+            cwd = Path.cwd()
+        if not isinstance(cwd, Path):
+            cwd = Path(cwd)
         command_path = str(cwd)
         if command_path not in sys.path:
             sys.path.append(command_path)
@@ -73,6 +82,7 @@ class DirectiveEnv:
         return DirectiveEnv(
             path=_app.path,
             app=_app.app,
+            esmerald_app=_app.esmerald_app,
             command_path=command_path,
             module_info=self.get_module_data_from_path(
                 _app.app_location, _app.path, _app.discovery_file
@@ -131,7 +141,12 @@ class DirectiveEnv:
         module_str_path, app_name = path.split(":")
         module = import_module(module_str_path)
         app = getattr(module, app_name)
-        return Scaffold(path=path, app=app)
+
+        if isinstance(app, Esmerald):
+            esmerald = app
+        else:
+            esmerald = monkay.instance
+        return Scaffold(path=path, app=app, esmerald_app=esmerald)
 
     def _get_folders(self, path: Path) -> list[str]:
         """
@@ -154,35 +169,52 @@ class DirectiveEnv:
             # Load file from module
             module = import_module(dotted_path)
 
-            # FIrst check some attrs
-            for attr in DISCOVERY_ATTRS:
-                value = getattr(module, attr, None)
-                if value:
-                    app_path = f"{dotted_path}:{attr}"
-                    return Scaffold(
-                        app=value,
-                        path=app_path,
-                        app_location=path,
-                        discovery_file=discovery_file,
-                    )
-
             # Iterates through the elements of the module.
             for attr, value in module.__dict__.items():
                 if isinstance(value, Esmerald):
                     app_path = f"{dotted_path}:{attr}"
-                    return Scaffold(app=value, path=app_path)
-
-            # Iterate over default pattern application functions
-            for func in DISCOVERY_FUNCTIONS:
-                if hasattr(module, func):
-                    app_path = f"{dotted_path}:{func}"
-                    fn = getattr(module, func)
                     return Scaffold(
-                        app=fn(),
+                        app=value,
+                        esmerald_app=value,
                         path=app_path,
                         app_location=path,
                         discovery_file=discovery_file,
                     )
+
+            # Is registered
+            if isinstance((esmerald_instance := monkay.instance), Esmerald):
+                for attr in DISCOVERY_ATTRS:
+                    if (value := getattr(module, attr, None)) is not None:
+                        app_path = f"{dotted_path}:{attr}"
+                        return Scaffold(
+                            app=value,
+                            esmerald_app=esmerald_instance,
+                            path=app_path,
+                            app_location=path,
+                            discovery_file=discovery_file,
+                        )
+
+            # Iterate over default pattern application functions
+            for func in DISCOVERY_FUNCTIONS:
+                if (fn := getattr(module, func, None)) is not None:
+                    app_candidate = fn()
+                    app_path = f"{dotted_path}:{func}"
+                    if isinstance(app_candidate, Esmerald):
+                        return Scaffold(
+                            app=app_candidate,
+                            esmerald_app=app_candidate,
+                            path=app_path,
+                            app_location=path,
+                            discovery_file=discovery_file,
+                        )
+                    if isinstance((esmerald_instance := monkay.instance), Esmerald):
+                        return Scaffold(
+                            app=app_candidate,
+                            esmerald_app=esmerald_instance,
+                            path=app_path,
+                            app_location=path,
+                            discovery_file=discovery_file,
+                        )
         return None
 
     def find_app(self, path: str | None, cwd: Path) -> Scaffold:
