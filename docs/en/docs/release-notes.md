@@ -5,8 +5,7 @@ hide:
 
 # Release Notes
 
-## 3.8.12
-
+## 3.9.0
 
 ### Changed
 
