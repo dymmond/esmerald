@@ -2514,7 +2514,7 @@ class Application(BaseLilya):
                         dependencies=route.dependencies,
                         exception_handlers=route.exception_handlers,
                         name=route.name,
-                        middleware=cast("list[Middleware]", route.middleware),
+                        middleware=route.middleware,
                         interceptors=route.interceptors,
                         permissions=route.permissions,
                         routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
