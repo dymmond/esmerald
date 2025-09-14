@@ -4,9 +4,8 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
-from lilya.conf import _monkay
-
 from esmerald import ChildEsmerald, Esmerald
+from esmerald.conf import monkay
 from esmerald.core.directives.constants import (
     DISCOVERY_ATTRS,
     DISCOVERY_FILES,
@@ -178,7 +177,7 @@ class DirectiveEnv:
                     )
 
             # Is registered
-            if isinstance((esmerald_instance := _monkay.instance), Esmerald):
+            if isinstance((esmerald_instance := monkay.instance), Esmerald):
                 for attr in DISCOVERY_ATTRS:
                     if (value := getattr(module, attr, None)) is not None:
                         app_path = f"{dotted_path}:{attr}"
@@ -203,7 +202,7 @@ class DirectiveEnv:
                             app_location=path,
                             discovery_file=discovery_file,
                         )
-                    if isinstance((esmerald_instance := _monkay.instance), Esmerald):
+                    if isinstance((esmerald_instance := monkay.instance), Esmerald):
                         return Scaffold(
                             app=app_candidate,
                             esmerald_app=esmerald_instance,

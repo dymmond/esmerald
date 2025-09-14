@@ -14,7 +14,6 @@ from typing import (
 )
 
 from lilya.apps import BaseLilya
-from lilya.conf import _monkay  # noqa
 from lilya.logging import setup_logging
 from lilya.middleware import DefineMiddleware  # noqa
 from lilya.types import Lifespan, Receive, Scope, Send
@@ -22,7 +21,10 @@ from monkay import load
 from pydantic import AnyUrl, ValidationError
 from typing_extensions import Annotated, Doc
 
-from esmerald.conf import monkay as monkay_for_settings
+from esmerald.conf import (
+    monkay,  # noqa
+    monkay as monkay_for_settings,
+)
 from esmerald.conf.global_settings import EsmeraldSettings
 from esmerald.contrib.schedulers.base import SchedulerConfig
 from esmerald.core.config import (
@@ -1620,9 +1622,9 @@ class Application(BaseLilya):
             elif is_class_and_subclass(settings_module, EsmeraldSettings):
                 self.settings_module = settings_module()
 
-        assert lifespan is None or (on_startup is None and on_shutdown is None), (
-            "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
-        )
+        assert lifespan is None or (
+            on_startup is None and on_shutdown is None
+        ), "Use either 'lifespan' or 'on_startup'/'on_shutdown', not both."
 
         if allow_origins and cors_config:
             raise ImproperlyConfigured("It can be only allow_origins or cors_config but not both.")
@@ -1767,7 +1769,7 @@ class Application(BaseLilya):
         )
         self.get_default_exception_handlers()
         if self.register_as_global_instance:
-            _monkay.set_instance(self)
+            monkay.set_instance(self)  # type: ignore
         self.user_middleware = self.build_user_middleware_stack()
         self.middleware_stack = self.build_middleware_stack()
         self.template_engine = self.get_template_engine(self.template_config)
@@ -2514,7 +2516,7 @@ class Application(BaseLilya):
                         dependencies=route.dependencies,
                         exception_handlers=route.exception_handlers,
                         name=route.name,
-                        middleware=cast("list[Middleware]", route.middleware),
+                        middleware=route.middleware,
                         interceptors=route.interceptors,
                         permissions=route.permissions,
                         routes=cast("Sequence[Union[APIGateHandler, Include]]", route.routes),
