@@ -25,6 +25,7 @@ from esmerald.core.directives.operations.createproject import (
     create_project as create_project,  # noqa
 )
 from esmerald.core.directives.operations.list import directives as directives  # noqa
+from esmerald.core.directives.operations.mail import mail as mail  # noqa
 from esmerald.core.directives.operations.run import run as run  # noqa
 from esmerald.core.directives.operations.runserver import runserver as runserver  # noqa
 from esmerald.core.directives.operations.shell import shell as shell  # noqa
@@ -148,3 +149,4 @@ esmerald_cli.add_command(create_project)
 esmerald_cli.add_command(create_app)
 esmerald_cli.add_command(create_deployment)
 esmerald_cli.add_command(shell)
+esmerald_cli.add_app("mail", mail)

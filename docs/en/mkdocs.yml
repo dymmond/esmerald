@@ -190,6 +190,10 @@ nav:
   - Experimental:
     - experimental/index.md
     - experimental/grpc.md
+  - Contrib:
+    - contrib/mail.md
+    - contrib/files/send-file.md
+    - contrib/files/jsonify.md
 - Learning and Examples:
   - guides/index.md
   - Getting Started:
