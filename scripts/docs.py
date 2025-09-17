@@ -1,11 +1,13 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 import os
 import shutil
 import subprocess
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from multiprocessing import Pool
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any
 
 import click
 import mkdocs.commands.build
@@ -13,6 +15,7 @@ import mkdocs.commands.serve
 import mkdocs.config
 import mkdocs.utils
 import yaml
+from sayer import Option, Sayer, command, error, info, success, warning
 
 mkdocs_name = "mkdocs.yml"
 
@@ -27,10 +30,6 @@ site_path = Path("site").absolute()
 
 site_lang: str = "site_lang"
 build_site_path = Path(site_lang).absolute()
-
-
-@click.group()
-def cli(): ...
 
 
 def get_en_config() -> dict[str, Any]:
@@ -48,7 +47,7 @@ def get_lang_paths() -> list[Path]:
     Returns a sorted list of paths to language files.
 
     Returns:
-        list[Path]: A sorted list of paths to language files.
+        List[Path]: A sorted list of paths to language files.
     """
     return sorted(docs_path.iterdir())
 
@@ -73,7 +72,7 @@ def get_updated_config_content() -> dict[str, Any]:
     Get the updated configuration content with alternate language links.
 
     Returns:
-        dict[str, Any]: The updated configuration content.
+        Dict[str, Any]: The updated configuration content.
     """
     config = get_en_config()
     languages = [{"en": "/"}]
@@ -107,6 +106,7 @@ def get_updated_config_content() -> dict[str, Any]:
     return config
 
 
+@command
 def update_config() -> None:
     """
     Update the configuration file with the updated content.
@@ -155,9 +155,8 @@ def build_site(lang: str = "en") -> None:
     click.echo(f"Built site for: {lang}")
 
 
-@cli.command()
-@click.option("-l", "--lang")
-def new_lang(lang: str):
+@command(name="new-lang")
+def new_lang(lang: Annotated[str, Option("--l", help="The language to generate", required=True)]):
     """
     Generate a new docs translation directory for the language LANG.
 
@@ -172,7 +171,7 @@ def new_lang(lang: str):
     """
     new_path: Path = Path("docs") / lang
     if new_path.exists():
-        click.echo(f"The language was already created: {lang}")
+        info(f"The language was already created: {lang}")
         raise click.Abort()
     new_path.mkdir()
     new_config_path: Path = Path(new_path) / mkdocs_name
@@ -188,19 +187,18 @@ def new_lang(lang: str):
     new_index_content = f"{missing_translation_snippet}\n\n{en_index_content}"
     new_index_path.write_text(new_index_content, encoding="utf-8")
     click.echo(click.style(f"Successfully initialized: {new_path}", fg="green"))
-    update_languages()
+    update_languages.__original_func()
 
 
-@cli.command()
-@click.option("-l", "--lang", default="en")
-def build_lang(lang: str) -> None:
+@command(name="build-lang")
+def build_lang(lang: Annotated[str, Option("en", "--l", help="The language to generate")]) -> None:
     """
     Build the docs for a language.
     """
     build_site(lang)
 
 
-@cli.command()
+@command(name="build-all")
 def build_all() -> None:
     """
     Build mkdocs site for each language, resulting in a directory structure
@@ -217,7 +215,7 @@ def build_all() -> None:
 
     # Set the process pool size to the number of CPUs
     process_pool_size = cpu_count
-    click.echo(f"Using process pool size: {process_pool_size}")
+    info(f"Using process pool size: {process_pool_size}")
 
     # Create a process pool
     with Pool(process_pool_size) as pool:
@@ -225,17 +223,18 @@ def build_all() -> None:
         pool.map(build_site, lang_paths)
 
 
-@cli.command()
+@command(name="update-languages")
 def update_languages() -> None:
     """
     Update the mkdocs.yml file Languages section including all the available languages.
     """
-    update_config()
+    update_config._original_func()
 
 
-@cli.command()
-@click.option("-p", "--port", default=8000, help="The port to serve the documentation")
-def serve(port: int) -> None:
+@command
+def serve(
+    port: Annotated[int, Option(8000, "-p", help="The port to serve the documentation")],
+) -> None:
     """
     Serve a built site with translations.
 
@@ -248,23 +247,29 @@ def serve(port: int) -> None:
     Returns:
         None
     """
-    click.echo("Warning: this is a very simple server.")
-    click.echo("For development, use the command live instead.")
-    click.echo("This is here only to preview a site with translations already built.")
-    click.echo("Make sure you run the build-all command first.")
+    warning("Warning: this is a very simple server.")
+    info("For development, use the command live instead.")
+    info("This is here only to preview a site with translations already built.")
+    info("Make sure you run the build-all command first.")
     os.chdir("site")
     server_address = ("", port)
     server = HTTPServer(server_address, SimpleHTTPRequestHandler)
-    click.echo(f"Serving at: http://127.0.0.1:{port}")
+    success(f"Serving at: http://127.0.0.1:{port}")
     server.serve_forever()
 
 
-@cli.command()
-@click.option("-l", "--lang", default="en", help="The language code. Defaults to 'en'.")
-@click.option(
-    "-p", "--port", default=8000, help="The port to serve the documentation. Defaults to 8000."
-)
-def live(lang: str, port: int) -> None:
+@command
+def live(
+    lang: Annotated[
+        str,
+        Option(
+            "en",
+            "--l",
+            help="The language to generate",
+        ),
+    ],
+    port: Annotated[int, Option(8000, "-p", help="The port to serve the documentation")],
+) -> None:
     """
     Serve a docs site with livereload for a specific language.
 
@@ -284,7 +289,7 @@ def live(lang: str, port: int) -> None:
     mkdocs.commands.serve.serve(dev_addr=f"127.0.0.1:{port}")
 
 
-@cli.command()
+@command(name="verify-config")
 def verify_config() -> None:
     """
     Verify the main mkdocs.yml content to ensure it uses the latest language names.
@@ -296,11 +301,11 @@ def verify_config() -> None:
     Returns:
         None
     """
-    click.echo("Verifying mkdocs.yml")
+    info("Verifying mkdocs.yml")
     config = get_en_config()
     updated_config = get_updated_config_content()
     if config != updated_config:
-        click.secho(
+        error(
             click.style(
                 "docs/en/mkdocs.yml is outdated from docs/language_names.yml. "
                 "Please update language_names.yml and run 'python ./scripts/docs.py update-languages'.",
@@ -311,5 +316,18 @@ def verify_config() -> None:
     click.echo("Valid mkdocs.yml ✅")
 
 
+docs_cli = Sayer(name="docs", help="The documentation generator", invoke_without_command=True)
+docs_cli.add_command(build_all)
+docs_cli.add_command(serve)
+docs_cli.add_command(live)
+docs_cli.add_command(verify_config)
+docs_cli.add_command(update_languages)
+docs_cli.add_command(update_config)
+docs_cli.add_command()
+
+
+if __name__ == "__main__":  # pragma: no cover
+    docs_cli()
+
 if __name__ == "__main__":
-    cli()
+    docs_cli()
