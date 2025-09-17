@@ -5,6 +5,38 @@ hide:
 
 # Release Notes
 
+## 3.9.1
+
+### Added
+
+- `is_json` and `is_form` properties for `Request`.
+- Introduced [esmerald.contrib.mail](./contrib/mail.md) providing a full-featured, async-first email framework.
+- Includes a high-level `Mailer` API for sending single, multiple, and templated messages.
+- Supports multipart messages (text + HTML), custom headers, attachments (in-memory or files), and metadata.
+- CLI integration, `esmerald mail sendtest`, for sending quick test emails via console backend.
+- [send_file](./contrib/files/send-file.md) to **contrib**.
+- [jsonify](./contrib/files/jsonify.md) to **contrib**.
+
+#### Built-in Backends
+
+These backends are shared with [Lilya](https://lilya.dev) as they are internally used.
+
+- **SMTPBackend**: Async-friendly with connection pooling and TLS/authentication.
+- **ConsoleBackend**: Writes messages to stdout for debugging.
+- **FileBackend**: Saves emails as `.eml` files for inspection or archiving.
+- **InMemoryBackend**: Stores emails in memory for development or testing scenarios.
+  
+#### Application Integration
+
+* New `setup_mail(app, backend, template_dir, attach_lifecycle=True)` utility attaches a `Mailer` to `app.state.mailer`.
+* Automatically opens/closes backend connections via startup/shutdown hooks.
+
+#### Exception Hierarchy
+
+* `MailError`: Base exception for all mail errors.
+* `BackendNotConfigured`: Raised when no backend or template renderer is configured.
+* `InvalidMessage`: Raised when an `EmailMessage` is incomplete or malformed.
+
 ## 3.9.0
 
 ### Changed
