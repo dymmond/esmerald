@@ -1,1 +1,1 @@
-from lilya.contrib.responses.json import jsonify as jsonify  # type: ignore
+from lilya.contrib.responses.json import jsonify as jsonify  # noqa

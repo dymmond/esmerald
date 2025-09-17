@@ -1,1 +1,1 @@
-from lilya.contrib.responses.files import send_file as send_file  # type: ignore
+from lilya.contrib.responses.files import send_file as send_file  # noqa
