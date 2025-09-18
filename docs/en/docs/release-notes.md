@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+
+## 3.9.2
+
+### Fixed
+
+- Generic lifespan support in `run` directive.
+
 ## 3.9.1
 
 ### Added
@@ -25,7 +32,7 @@ These backends are shared with [Lilya](https://lilya.dev) as they are internally
 - **ConsoleBackend**: Writes messages to stdout for debugging.
 - **FileBackend**: Saves emails as `.eml` files for inspection or archiving.
 - **InMemoryBackend**: Stores emails in memory for development or testing scenarios.
-  
+
 #### Application Integration
 
 * New `setup_mail(app, backend, template_dir, attach_lifecycle=True)` utility attaches a `Mailer` to `app.state.mailer`.
