@@ -26,8 +26,8 @@ jobs:
       - name: "Publish to PyPI"
         run: "scripts/release"
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          HATCH_INDEX_USER: __token__
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
       - name: "Deploy docs"
         run: |
           curl -X POST '${{ secrets.DEPLOY_DOCS }}'
