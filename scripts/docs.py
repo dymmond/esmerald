@@ -324,9 +324,5 @@ docs_cli.add_command(verify_config)
 docs_cli.add_command(update_languages)
 docs_cli.add_command(update_config)
 
-
-if __name__ == "__main__":  # pragma: no cover
-    docs_cli()
-
 if __name__ == "__main__":
     docs_cli()
