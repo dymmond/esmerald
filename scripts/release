@@ -24,4 +24,4 @@ fi
 
 set -x
 
-hatch run twine upload dist/*
+hatch publish
