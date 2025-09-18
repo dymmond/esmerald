@@ -37,6 +37,10 @@ These backends are shared with [Lilya](https://lilya.dev) as they are internally
 * `BackendNotConfigured`: Raised when no backend or template renderer is configured.
 * `InvalidMessage`: Raised when an `EmailMessage` is incomplete or malformed.
 
+### Changed
+
+- Simplify `has_permission` function calls from the internals.
+
 ## 3.9.0
 
 ### Changed
