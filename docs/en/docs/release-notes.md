@@ -49,6 +49,7 @@ starting a new set of versions from the 0.1.0.
 ### Fixed
 
 - Autodetection of app in cli.
+- Generic lifespan support in `run` directive.
 
 ## 3.9.4
 
