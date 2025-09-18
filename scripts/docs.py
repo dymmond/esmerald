@@ -323,7 +323,6 @@ docs_cli.add_command(live)
 docs_cli.add_command(verify_config)
 docs_cli.add_command(update_languages)
 docs_cli.add_command(update_config)
-docs_cli.add_command()
 
 
 if __name__ == "__main__":  # pragma: no cover
