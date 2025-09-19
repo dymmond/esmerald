@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 3.9.2
+
+### Changed
+
+- Allow minimum Lilya to be 0.20.5
+- Esmerald cli now loses the `name` argument. This is now handled directly by the newest Sayer that
+was internal refactored for the `@callback`.
+
 ## 3.9.1
 
 ### Added
@@ -25,7 +33,7 @@ These backends are shared with [Lilya](https://lilya.dev) as they are internally
 - **ConsoleBackend**: Writes messages to stdout for debugging.
 - **FileBackend**: Saves emails as `.eml` files for inspection or archiving.
 - **InMemoryBackend**: Stores emails in memory for development or testing scenarios.
-  
+
 #### Application Integration
 
 * New `setup_mail(app, backend, template_dir, attach_lifecycle=True)` utility attaches a `Mailer` to `app.state.mailer`.

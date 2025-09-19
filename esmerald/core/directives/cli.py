@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Callable, TypeVar
 
 import click
-from sayer import Argument, Option, Sayer, error
+from sayer import Option, Sayer, error
 from sayer.core.groups.sayer import SayerGroup
 
 from esmerald import __version__
@@ -123,7 +123,6 @@ esmerald_cli = Sayer(
 @esmerald_cli.callback(invoke_without_command=True)
 def esmerald_callback(
     ctx: click.Context,
-    name: typing.Annotated[str, Argument(help="The directive name.")],
     app: typing.Annotated[
         str,
         Option(
