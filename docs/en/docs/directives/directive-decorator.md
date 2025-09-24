@@ -277,3 +277,59 @@ $ esmerald run createsuperuser --first-name Esmerald --last-name Framework --ema
 ```
 
 As you can see, the `@directive` acts as the class based directives but in a different syntax.
+
+## The `display_in_cli` option
+
+You probably read everything about directives in Esmerald by now and that is awesome.
+
+Now there is one last thing that would be good for you to know, the `display_in_cli`
+
+!!! Warning "Pay Attention!"
+    This only works with `@directive` decorator and nothing else.
+
+Wouldn't you like to have the option when you create a directive, instead of doing:
+
+```shell
+esmerald run <DIRECTIVE>
+```
+
+You could do directly:
+
+```shell
+esmerald <DIRECTIVE
+```
+
+This is nice, isn't it? Well, now it is possible thanks to the `display_in_cli` parameter
+of the `@directive` decorator.
+
+This also means that your directives are now automatically recognised by Esmerald and display as
+one of the available **Esmerald** commands.
+
+Let us redo the `createsuperuser` to use this method.
+
+```python title="myproject/directives/operations/createsuperuser.py"
+{!> ../../../docs_src/directives/example/createsuperuser_decorator_in_cli.py !}
+```
+
+As you can see, the `@directive(display_in_cli=True)` is now present. You can now do
+
+```
+esmerald --help
+```
+
+And your directive should display as if it was a native command of Esmerald. Amazing!
+
+Since this is a [Sayer](https://sayer.dymmond.com) `@command`, this means the way of calling
+your directive is via `create-user`.
+
+```shell
+esmerald create-user --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+```
+
+You can also do now `--help` on the command.
+
+```
+esmerald create-user --help
+```
+
+As per normal Esmerald directives.

@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 3.9.3
+
+### Added
+
+- Support for `@directive` to be display when calling `lilya` client.
+- [display_in_cli](./directives/directive-decorator.md#the-display_in_cli-option) to `@directive`.
+
 ## 3.9.2
 
 ### Changed

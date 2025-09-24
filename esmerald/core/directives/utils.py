@@ -5,8 +5,8 @@ import pkgutil
 import sys
 import typing
 from difflib import get_close_matches
-from functools import lru_cache
 from importlib import import_module
+from pathlib import Path
 from typing import Any, Optional
 
 from esmerald.core.directives.base import BaseDirective
@@ -61,7 +61,7 @@ def load_directive_class(app_name: str, name: str) -> Any:
     return module.Directive()
 
 
-def load_directive_class_by_filename(app_name: str, location: str) -> Any:
+def load_directive_class_by_filename(app_name: str, location: str, skip_exit: bool = False) -> Any:
     """
     Loads the directive by filename.
 
@@ -85,8 +85,9 @@ def load_directive_class_by_filename(app_name: str, location: str) -> Any:
         if callable(obj) and getattr(obj, "__is_custom_directive__", False):
             return obj
 
-    printer.write_error(f"No directive found in {app_name}")
-    sys.exit(1)
+    if not skip_exit:
+        printer.write_error(f"No directive found in {app_name}")
+        sys.exit(1)
 
 
 @functools.lru_cache(maxsize=None)
@@ -108,7 +109,7 @@ def get_application_directives(
 
     for value in command_list:
         directives.append(
-            {value["name"]: "application", "location": value["location"]}  # type: ignore
+            {value["name"]: "application", "location": value["location"], "name": value["name"]}  # type: ignore
         )
     return directives
 
@@ -194,8 +195,71 @@ def fetch_directive(subdirective: Any, location: Optional[str], is_custom: bool 
     return klass
 
 
-@lru_cache
-def get_client() -> Any:
-    from esmerald.core.directives.cli import esmerald_cli
+def fetch_custom_directive_by_location(location: str) -> Any:
+    """
+    Load a directive class from a file path and return it ONLY if it is marked
+    with `__is_custom_directive__`. Otherwise, return None.
+    Parameters:
+        location (str): Absolute or relative path to a Python file (e.g. ".../createsuperuser.py").
+    Returns:
+        Any: The loaded directive class if it has `__is_custom_directive__`, else None.
+    Raises:
+        DirectiveError: If the location does not exist, is not a .py file, or loading fails.
+    """
+    path = Path(location)
 
-    return esmerald_cli
+    if not path.exists():
+        raise DirectiveError(detail=f"Directive location not found: {location}")
+
+    if path.is_dir():
+        raise DirectiveError(detail=f"Expected a .py file, got directory: {location}")
+
+    if path.suffix != ".py":
+        raise DirectiveError(detail=f"Expected a .py file, got: {location}")
+
+    app_name = path.stem
+
+    try:
+        klass = load_directive_class_by_filename(app_name, str(path), skip_exit=True)
+    except TypeError:
+        raise
+    except Exception as exc:  # be specific if you have custom exceptions
+        raise DirectiveError(detail=f"Failed to load directive from {location}: {exc}") from exc
+
+    # Only accept classes explicitly marked as custom directives.
+    if getattr(klass, "__is_custom_directive__", False):
+        return klass
+    return None
+
+
+def get_custom_directives_to_cli(location: str) -> dict:
+    """
+    Scans the given application location for custom CLI directives and adds them to the main Lilya CLI.
+    This function looks for directive definitions in the specified location, attempts to load them,
+    and returns a dictionary mapping directive names to their corresponding command implementations.
+    Parameters:
+        location (str): The root path of the application where custom directives are defined.
+    Returns:
+        dict: A dictionary where keys are directive names and values are the corresponding command objects.
+              If no valid directives are found, an empty dictionary is returned.
+    Raises:
+        DirectiveError: If a directive cannot be loaded due to an error in its definition or location.
+                        These errors are silently ignored in this implementation.
+    """
+    directives = {}
+
+    application_directives = get_application_directives(location)
+
+    for directive in application_directives:
+        name = directive["name"]
+        directive_location = directive["location"]
+
+        directive_location = f"{directive_location}/{name}.py"
+        try:
+            command = fetch_custom_directive_by_location(directive_location)
+
+            if command is not None and command.__display_in_cli__:
+                directives[name] = command
+        except DirectiveError:
+            raise
+    return directives
