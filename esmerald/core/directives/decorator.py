@@ -2,7 +2,11 @@ from collections.abc import Callable
 from typing import Any
 
 
-def directive(func: Callable[..., Any]) -> Callable:
+def directive(
+    func: Callable[..., Any] | None = None,
+    *,
+    display_in_cli: bool = False,
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """
     Marks a function-based Sayer CLI command as a custom Esmerald directive.
     This decorator is used to register user-defined CLI commands that follow the
@@ -11,17 +15,20 @@ def directive(func: Callable[..., Any]) -> Callable:
     from internal class-based directives.
     The command must already be decorated with `@command` from Sayer before applying this.
     Example usage:
-        @directive
+        @directive(display_in_cli=True)
         @command(name="create")
         async def create(name: Annotated[str, Option(help="Your name")]):
             ...
     Returns:
         Callable: The original command object, with a marker and registered in the main CLI.
     """
-    from esmerald.core.directives.cli import esmerald_cli
 
-    func.__is_custom_directive__ = True
-    func.get_help = esmerald_cli.get_help
-    esmerald_cli.add_command(func)
+    def wrapper(f: Callable[..., Any]) -> Callable[..., Any]:
+        f.__is_custom_directive__ = True
+        f.__display_in_cli__ = display_in_cli
+        return f
 
-    return func
+    if func is not None:
+        return wrapper(func)
+
+    return wrapper

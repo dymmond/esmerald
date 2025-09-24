@@ -3,6 +3,7 @@ import os
 import sys
 import typing
 from functools import wraps
+from pathlib import Path
 from typing import Callable, TypeVar
 
 import click
@@ -30,6 +31,7 @@ from esmerald.core.directives.operations.run import run as run  # noqa
 from esmerald.core.directives.operations.runserver import runserver as runserver  # noqa
 from esmerald.core.directives.operations.shell import shell as shell  # noqa
 from esmerald.core.directives.operations.show_urls import show_urls as show_urls  # noqa
+from esmerald.core.directives.utils import get_custom_directives_to_cli
 
 T = TypeVar("T")
 
@@ -149,3 +151,14 @@ esmerald_cli.add_command(create_app)
 esmerald_cli.add_command(create_deployment)
 esmerald_cli.add_command(shell)
 esmerald_cli.add_app("mail", mail)
+
+# Load custom directives if any
+application_directives = get_custom_directives_to_cli(str(Path.cwd()))
+
+# Add application directives to the CLI
+if application_directives:
+    for _, command in application_directives.items():
+        if isinstance(command, Sayer):
+            esmerald_cli.add_app(command._group.name, command)
+        else:
+            esmerald_cli.add_command(command)
