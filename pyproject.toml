@@ -147,17 +147,17 @@ testing = [
 
 docs = [
     "a2wsgi>=1.9.0",
-    "griffe-typingdoc>=0.2.2",
     "httpx>=0.25.0",
     "lilya[standard]>=0.20.7",
-    "mkautodoc>=0.2.0",
-    "mkdocs>=1.6.0",
-    "mkdocs-material>=9.5.25",
+    "griffe-typingdoc>=0.2.2,<1.0",
+    "mkdocs>=1.1.2,<2.0.0",
+    "mkdocs-material>=9.4.4",
     "mdx-include>=1.4.2",
     "mkdocs-macros-plugin>=0.4.0",
     "mkdocs-meta-descriptions-plugin>=2.3.0",
     "mkdocstrings[python]>=0.23.0",
-    "pyyaml>=6.0",
+    "pyyaml>=6.0,<7.0.0",
+    "typing_extensions>=3.10.0",
 ]
 
 [tool.hatch.envs.default]

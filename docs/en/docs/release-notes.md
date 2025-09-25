@@ -11,6 +11,7 @@ hide:
 
 - Support for `@directive` to be display when calling `lilya` client.
 - [display_in_cli](./directives/directive-decorator.md#the-display_in_cli-option) to `@directive`.
+- [Relay](./relay.md) documentation section.
 
 ## 3.9.2
 
