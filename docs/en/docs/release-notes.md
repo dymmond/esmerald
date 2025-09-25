@@ -9,7 +9,7 @@ hide:
 
 ### Added
 
-- Support for `@directive` to be display when calling `lilya` client.
+- Support for `@directive` to be display when calling `esmerald` client.
 - [display_in_cli](./directives/directive-decorator.md#the-display_in_cli-option) to `@directive`.
 - [Relay](./relay.md) documentation section.
 
