@@ -80,7 +80,7 @@ Source = "https://github.com/dymmond/esmerald"
 test = ["httpx>=0.25.0"]
 dev = [
     # includes watchfiles
-    "uvicorn[standard]>=0.29.0",
+    "uvicorn[standard]>=0.37.0",
 ]
 
 standard = [
@@ -95,7 +95,7 @@ standard = [
     # For client testing
     "httpx>=0.25.0,<0.30.0",
     # For static files serving
-    "uvicorn[standard]>=0.29.0",
+    "uvicorn[standard]>=0.37.0",
 ]
 
 jwt = [
