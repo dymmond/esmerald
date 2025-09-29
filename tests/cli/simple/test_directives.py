@@ -2,11 +2,11 @@ import os
 import shutil
 
 import pytest
-from lilya.apps import Lilya
 
+from esmerald import Esmerald
 from tests.cli.utils import run_cmd
 
-app = Lilya(routes=[])
+app = Esmerald(routes=[])
 
 
 FOUND_DIRECTIVES = ["createapp", "createdeployment", "createproject", "runserver", "show_urls"]
@@ -47,7 +47,7 @@ def create_folders():
 
 
 def test_list_directives_no_app(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "lilya directives", is_app=False)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald directives", is_app=False)
     assert ss == 0
 
     for directive in FOUND_DIRECTIVES:
@@ -55,7 +55,7 @@ def test_list_directives_no_app(create_folders):
 
 
 def test_list_directives_with_app(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "lilya directives")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald directives")
     assert ss == 0
 
     for directive in FOUND_DIRECTIVES:
@@ -64,7 +64,7 @@ def test_list_directives_with_app(create_folders):
 
 def test_list_directives_with_flag(create_folders):
     cli_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    run_cmd("tests.cli.main:app", "lilya createproject myproject")
+    run_cmd("tests.cli.main:app", "esmerald createproject myproject")
 
     os.chdir(cli_path)
     os.makedirs("myproject/myproject/apps/myapp/directives/operations/", exist_ok=True)
@@ -77,7 +77,7 @@ def test_list_directives_with_flag(create_folders):
     # switch to the base directory
     os.chdir(os.path.dirname(os.path.dirname(cli_path)))
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "lilya --app tests.cli.main:app directives")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald --app tests.cli.main:app directives")
     assert ss == 0
 
     for directive in FOUND_DIRECTIVES:
