@@ -1,3 +1,4 @@
+import contextlib
 import functools
 import importlib
 import os
@@ -8,6 +9,8 @@ from difflib import get_close_matches
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Optional
+
+from sayer import error, warning
 
 from esmerald.core.directives.base import BaseDirective
 from esmerald.core.directives.exceptions import DirectiveError
@@ -70,7 +73,7 @@ def load_directive_class_by_filename(app_name: str, location: str, skip_exit: bo
     """
     spec = importlib.util.spec_from_file_location(app_name, location)
     if not spec or spec is None:
-        printer.write_error(f"{app_name} not found")
+        error(f"{app_name} not found")
         sys.exit(1)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -86,7 +89,7 @@ def load_directive_class_by_filename(app_name: str, location: str, skip_exit: bo
             return obj
 
     if not skip_exit:
-        printer.write_error(f"No directive found in {app_name}")
+        error(f"No directive found in {app_name}")
         sys.exit(1)
 
 
@@ -135,7 +138,7 @@ def fetch_custom_directive(subdirective: Any, location: Optional[str]) -> Any:
             matches.extend(get_close_matches(subdirective, directive))
 
             if matches and len(directives) == counter:
-                printer.write_error("Did you mean %s?" % matches[0])
+                error("Did you mean %s?" % matches[0])
 
             if len(directives) == counter:
                 return None
@@ -146,7 +149,7 @@ def fetch_custom_directive(subdirective: Any, location: Optional[str]) -> Any:
         matches.extend(get_close_matches(subdirective, directive))
 
         if matches:
-            printer.write_error("Did you mean %s?" % matches[0])
+            error("Did you mean %s?" % matches[0])
             return None
         return None
 
@@ -182,7 +185,7 @@ def fetch_directive(subdirective: Any, location: Optional[str], is_custom: bool 
             matches.extend(get_close_matches(subdirective, directive))
 
             if matches and len(directives) == counter:
-                printer.write_error("Did you mean %s?" % matches[0])
+                error("Did you mean %s?" % matches[0])
 
             if len(directives) == counter:
                 return None
@@ -209,13 +212,16 @@ def fetch_custom_directive_by_location(location: str) -> Any:
     path = Path(location)
 
     if not path.exists():
-        raise DirectiveError(detail=f"Directive location not found: {location}")
+        error(f"Directive location not found: {location}")
+        raise DirectiveError(f"Directive location not found: {location}")
 
     if path.is_dir():
-        raise DirectiveError(detail=f"Expected a .py file, got directory: {location}")
+        error(f"Expected a .py file, got directory: {location}")
+        raise DirectiveError(f"Expected a .py file, got directory: {location}")
 
     if path.suffix != ".py":
-        raise DirectiveError(detail=f"Expected a .py file, got: {location}")
+        error(f"Expected a .py file, got: {location}")
+        raise DirectiveError(f"Expected a .py file, got: {location}")
 
     app_name = path.stem
 
@@ -224,7 +230,9 @@ def fetch_custom_directive_by_location(location: str) -> Any:
     except TypeError:
         raise
     except Exception as exc:  # be specific if you have custom exceptions
-        raise DirectiveError(detail=f"Failed to load directive from {location}: {exc}") from exc
+        message = f"Failed to load directive from {location}: {exc}"
+        warning(message)
+        raise DirectiveError(message) from exc
 
     # Only accept classes explicitly marked as custom directives.
     if getattr(klass, "__is_custom_directive__", False):
@@ -255,11 +263,10 @@ def get_custom_directives_to_cli(location: str) -> dict:
         directive_location = directive["location"]
 
         directive_location = f"{directive_location}/{name}.py"
-        try:
-            command = fetch_custom_directive_by_location(directive_location)
 
+        with contextlib.suppress(DirectiveError):
+            command = fetch_custom_directive_by_location(directive_location)
             if command is not None and command.__display_in_cli__:
                 directives[name] = command
-        except DirectiveError:
-            raise
+                continue
     return directives

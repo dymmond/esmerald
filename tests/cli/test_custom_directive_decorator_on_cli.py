@@ -67,3 +67,4 @@ def test_custom_directive(create_folders):
     (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald")
 
     assert "create-user" in str(o)
+    assert "Custom directive" in str(o)
