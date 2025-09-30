@@ -12,8 +12,12 @@ from sayer import Option, Sayer, command, error, success
 @command
 def sendtest(
     to: Annotated[
-        str,
-        Option(help="Recipient email address. Can be used multiple times.", required=True),
+        list[str],
+        Option(
+            help="Recipient email address. Can be used multiple times.",
+            required=True,
+            multiple=True,
+        ),
     ],
     subject: Annotated[
         str, Option(default="Test email", help="Subject of the email.", show_default=True)
@@ -29,9 +33,9 @@ def sendtest(
 
     Examples:
 
-      esmerald mail sendtest --to user@example.com --subject 'Hello' --text 'Plain message'
+      esmerald mail sendtest --to user@example.com --to foo@bar.com --subject 'Hello' --text 'Plain message'
 
-      esmerald mail sendtest --to user@example.com --subject 'Hello' --html '<p>Hello world</p>'
+      esmerald mail sendtest --to user@example.com --to foo@bar.com --subject 'Hello' --html '<p>Hello world</p>'
     """
 
     async def _send() -> None:
@@ -44,13 +48,15 @@ def sendtest(
         mailer = Mailer(backend=b)
         msg = EmailMessage(
             subject=subject,
-            to=[to],
+            to=to,
             body_text=text,
             body_html=html,
             from_email="noreply@lilya.local",
         )
         await mailer.send(msg)
-        success(f"Test email sent to {to} using {backend} backend.")
+
+        to_list = ", ".join(to)
+        success(f"Test email sent to '{to_list}' using {backend} backend.")
 
     asyncio.run(_send())
 
