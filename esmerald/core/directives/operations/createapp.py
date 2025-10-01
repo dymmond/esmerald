@@ -10,7 +10,7 @@ from esmerald.core.directives.templates import TemplateDirective
 from esmerald.utils.crypto import get_random_secret_key
 
 
-@command(name="createapp")  # type: ignore
+@command(name="createapp")
 def create_app(
     name: Annotated[str, Argument(help="The name of the app.")],
     verbosity: Annotated[int, Option(1, "-v", help="Displays the files generated")],

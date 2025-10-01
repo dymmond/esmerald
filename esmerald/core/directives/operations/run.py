@@ -25,7 +25,7 @@ class Position(int, Enum):
     BACK = 3
 
 
-@command(  # type: ignore
+@command(
     context_settings={
         "ignore_unknown_options": True,
         "allow_extra_args": True,
