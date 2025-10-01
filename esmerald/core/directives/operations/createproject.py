@@ -10,7 +10,7 @@ from esmerald.core.directives.templates import TemplateDirective
 from esmerald.utils.crypto import get_random_secret_key
 
 
-@command(name="createproject")  # type: ignore
+@command(name="createproject")
 def create_project(
     name: Annotated[str, Argument(help="The name of the project to create.")],
     verbosity: Annotated[int, Option(1, "-v", help="Verbosity level for the output.")],
