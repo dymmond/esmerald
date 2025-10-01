@@ -8,7 +8,7 @@ from esmerald.core.directives.exceptions import DirectiveError
 from esmerald.core.directives.templates import TemplateDirective
 
 
-@command(name="createdeployment")  # type: ignore
+@command(name="createdeployment")
 def create_deployment(
     name: Annotated[str, Argument(help="The name of the current project.")],
     verbosity: Annotated[
