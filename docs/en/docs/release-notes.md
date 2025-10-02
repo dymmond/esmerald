@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 3.9.5
+
+### Fixed
+
+- Autodetection of app in cli.
+
 ## 3.9.4
 
 ### Changed
