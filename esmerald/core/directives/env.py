@@ -3,6 +3,7 @@ import sys
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
+from typing import cast
 
 from lilya.conf import _monkay as lilya_monkay
 
@@ -146,7 +147,7 @@ class DirectiveEnv:
         if isinstance(app, Esmerald):
             esmerald = app
         else:
-            esmerald = lilya_monkay.instance
+            esmerald = cast(Esmerald, lilya_monkay.instance)
         return Scaffold(path=path, app=app, esmerald_app=esmerald)
 
     def _get_folders(self, path: Path) -> list[str]:
