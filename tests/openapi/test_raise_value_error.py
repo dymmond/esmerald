@@ -3,8 +3,8 @@ from dataclasses import dataclass
 import pytest
 from pydantic import BaseModel
 
-from esmerald import get
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import get
+from ravyn.openapi.datastructures import OpenAPIResponse
 
 
 class Error(BaseModel):

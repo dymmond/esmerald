@@ -2,7 +2,7 @@
 
 In every application there will be times where sending a payload to the server will be needed.
 
-Esmerald is prepared to handle those with ease and that is thanks to Pydantic.
+Ravyn is prepared to handle those with ease and that is thanks to Pydantic.
 
 There are two **default ways** of doing this, using the [data](#the-data-field) and using the [payload](#the-payload-field)
 but there are also [custom ways](#complex-request-data) of creating the payload.
@@ -112,7 +112,7 @@ But you can also send the address and inside without the mandatory fields:
 
 What about the field validation? What if you need to validate some of the data being sent to the backend?
 
-Since Esmerald uses pydantic, you can take advantage of it.
+Since Ravyn uses pydantic, you can take advantage of it.
 
 === "data"
 
@@ -162,7 +162,7 @@ own.
 
 ## Complex request data
 
-Since the release 3.4+, Esmerald allows you to have multiple payloads declared and allows you to customize the way
+Since the release 3.4+, Ravyn allows you to have multiple payloads declared and allows you to customize the way
 you want to send it.
 
 The [data](#the-data-field) and [payload](#the-payload-field) will always continue to do what they are supposed to do
@@ -209,12 +209,12 @@ would look like now?
 }
 ```
 
-Esmerald automatically will understand where to map the request data and assign them to the proper declaration of
+Ravyn automatically will understand where to map the request data and assign them to the proper declaration of
 the `keys` sent.
 
 ### Non mandatory fields in the payload
 
-The same principle applied to everything in Esmerald is also applied here in the same fashion. You can also make the
+The same principle applied to everything in Ravyn is also applied here in the same fashion. You can also make the
 fields also not mandatory, something like this:
 
 ```python
@@ -235,17 +235,17 @@ As you can see, now the `address` is a non mandatory field and that means you ca
 }
 ```
 
-Esmerald will know and understand what to do. Pretty simple, right?
+Ravyn will know and understand what to do. Pretty simple, right?
 
 ### Using different `Encoders`
 
-Well, Esmerald is also known for being able to mix and match multiple [Encoders](../encoders.md). If you are not familiar
+Well, Ravyn is also known for being able to mix and match multiple [Encoders](../encoders.md). If you are not familiar
 with those, now its a great time to go [read and catch-up with those](../encoders.md).
 
 Now, this is very unlikely to happen where you mix encoders such as `Pydantic` with `Msgspec` or `attrs` but it could
 happen if you want, after all you are in charge of your own destiny!
 
-Since Esmerald understands those, that means you can also have a complex payload using different encoders and it would
+Since Ravyn understands those, that means you can also have a complex payload using different encoders and it would
 still work as it is supposed to.
 
 Let us see the use of two encoders at the same time and how you could do it here.
@@ -262,7 +262,7 @@ Using the example from before, now the `Address` won't be a Pydantic model but a
 {!> ../../../docs_src/extras/request_data/complex_encoders.py !}
 ```
 
-As you can see, nothing really changed besides the type of object, since Esmerald understands the encoder type, it
+As you can see, nothing really changed besides the type of object, since Ravyn understands the encoder type, it
 will automatically parse them to the proper object and run the declared validations but in terms of the way you send
 the request data **remains exactly the same**.
 

@@ -3,15 +3,15 @@
 TemplateConfig is a simple set of configurations that when passed enables the template engine.
 
 !!! info
-    Currently Esmerald supports `Jinja2`.
+    Currently Ravyn supports `Jinja2`.
 
 It is important to understand that you don't need to use the provided `JinjaTemplateEngine`
-from Esmerald within the `TemplateConfig`.
+from Ravyn within the `TemplateConfig`.
 
 You are free to build your own and pass it to the `TemplateConfig`. This way you can design however you see fit.
 
 !!! Tip
-    Esmerald being built on top of Lilya, uses the `JinjaTemplateEngine` from it which means you can read
+    Ravyn being built on top of Lilya, uses the `JinjaTemplateEngine` from it which means you can read
     the [Jinja2Template](https://www.lilya.dev/templates/#jinja2template) from Lilya to understand
     the parameters and how to use them.
 
@@ -40,11 +40,11 @@ but also via settings.
 {!> ../../../docs_src/configurations/template/settings.py!}
 ```
 
-This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+This will make sure you keep the settings clean, separated and without a bloated **Ravyn** instance.
 
 ## `url_for`
 
-Esmerald automatically provides the `url_for` when using the jinja template system, that means
+Ravyn automatically provides the `url_for` when using the jinja template system, that means
 you can do something like this:
 
 ```jinja
@@ -53,7 +53,7 @@ you can do something like this:
 
 ## How to use
 
-Simply return `Template` (of esmerald) not `TemplateResponse` with a `name` parameter pointing to the relative path of the template.
+Simply return `Template` (of ravyn) not `TemplateResponse` with a `name` parameter pointing to the relative path of the template.
 You can pass extra data via setting the `context` parameter to a dictionary containing the extra data.
 
 To select the return type (txt, html) you need to name the files: `foo.html.jinja`.

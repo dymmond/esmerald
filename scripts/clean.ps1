@@ -13,9 +13,9 @@ if (Test-Path 'htmlcov' -PathType Container) {
     Remove-Item -Path 'htmlcov' -Recurse -Force
 }
 
-# Check if 'esmerald.egg-info' directory exists and remove it if it does
-if (Test-Path 'esmerald.egg-info' -PathType Container) {
-    Remove-Item -Path 'esmerald.egg-info' -Recurse -Force
+# Check if 'ravyn.egg-info' directory exists and remove it if it does
+if (Test-Path 'ravyn.egg-info' -PathType Container) {
+    Remove-Item -Path 'ravyn.egg-info' -Recurse -Force
 }
 
 # Check if '.hypothesis' directory exists and remove it if it does

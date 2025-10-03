@@ -1,5 +1,5 @@
-from esmerald import (
-    Esmerald,
+from ravyn import (
+    Ravyn,
     Gateway,
     Request,
     Response,
@@ -45,4 +45,4 @@ routes = [
     WebSocketGateway("/ws", handler=websocket_endpoint),
 ]
 
-app = Esmerald(routes=routes, on_startup=[startup])
+app = Ravyn(routes=routes, on_startup=[startup])

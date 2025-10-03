@@ -1,6 +1,6 @@
 # Sending Files
 
-The `send_file` utility in Esmerald makes it easy to return files from your endpoints,
+The `send_file` utility in Ravyn makes it easy to return files from your endpoints,
 similar to Flask’s `send_file`.
 
 It can return files from the filesystem or from in-memory file-like objects, and supports options
@@ -26,14 +26,16 @@ but for **API endpoints that return a file**, `send_file` is the right tool.
 Returning a text file directly:
 
 ```python
-from esmerald import Esmerald, Gateway, get
-from esmerald.contrib.responses.files import send_file
+from ravyn import Ravyn, Gateway, get
+from ravyn.contrib.responses.files import send_file
+
 
 @get()
 async def get_report():
     return send_file("reports/summary.txt")
 
-app = Esmerald(routes=[
+
+app = Ravyn(routes=[
     Gaetway("/report", handler=get_report)
 ])
 ```
@@ -130,9 +132,9 @@ send_file(
 ### Parameters
 
 * **`filename_or_fp`** – Path to the file on disk (`str` or `Path`) or a file-like object (`IO[bytes]`).
-* **`mimetype`** – Optional MIME type (e.g., `"application/pdf"`). If not provided, Esmerald attempts to infer.
+* **`mimetype`** – Optional MIME type (e.g., `"application/pdf"`). If not provided, Ravyn attempts to infer.
 * **`as_attachment`** – If `True`, adds `Content-Disposition: attachment` to force download.
 * **`attachment_filename`** – Override the filename presented to the user.
 * **`max_age`** – Sets `Cache-Control: public, max-age=<seconds>` for caching.
 
-With `send_file`, Esmerald makes file downloads and streaming as simple and flexible as Flask, but fully async-native.
+With `send_file`, Ravyn makes file downloads and streaming as simple and flexible as Flask, but fully async-native.

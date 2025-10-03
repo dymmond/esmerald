@@ -2,12 +2,12 @@ from typing import Union
 
 from lilya import status
 
-from esmerald import Response
-from esmerald.responses.encoders import ORJSONResponse, UJSONResponse
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.testclient import create_client
-from esmerald.utils.enums import MediaType
+from ravyn import Response
+from ravyn.responses.encoders import ORJSONResponse, UJSONResponse
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.testclient import create_client
+from ravyn.utils.enums import MediaType
 
 
 @get("/one", status_code=status.HTTP_202_ACCEPTED)
@@ -139,7 +139,7 @@ def multiple(name: Union[str, None]) -> Response:
         return Response("Ok")
     if name == "test":
         return Response("Ok", status_code=status.HTTP_401_UNAUTHORIZED)
-    if name == "esmerald":
+    if name == "ravyn":
         return Response("Ok", status_code=status.HTTP_300_MULTIPLE_CHOICES)
     return Response("Ok")
 
@@ -161,7 +161,7 @@ def test_multiple(test_client_factory):
         assert response.text == "Ok"
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-        response = client.get("/multi/esmerald")
+        response = client.get("/multi/ravyn")
 
         assert response.text == "Ok"
         assert response.status_code == status.HTTP_300_MULTIPLE_CHOICES

@@ -1,9 +1,9 @@
 from typing import Optional
 
-from esmerald.utils.concurrency import AsyncExitStack
-from esmerald.core.config import AsyncExitConfig
-from esmerald.core.protocols.middleware import MiddlewareProtocol
-from esmerald.types import ASGIApp, Receive, Scope, Send
+from ravyn.utils.concurrency import AsyncExitStack
+from ravyn.core.config import AsyncExitConfig
+from ravyn.core.protocols.middleware import MiddlewareProtocol
+from ravyn.types import ASGIApp, Receive, Scope, Send
 
 
 class AsyncExitStackMiddleware(MiddlewareProtocol):

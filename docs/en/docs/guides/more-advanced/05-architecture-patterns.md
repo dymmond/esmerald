@@ -1,12 +1,12 @@
 # Architecture Patterns
 
-When building scalable and maintainable Esmerald applications, it's essential to choose the right architecture pattern. This guide explores common architecture styles and how to implement them using Esmerald.
+When building scalable and maintainable Ravyn applications, it's essential to choose the right architecture pattern. This guide explores common architecture styles and how to implement them using Ravyn.
 
 ---
 
 ## Project Structure
 
-Keeping your project organized is crucial. A common structure for medium to large Esmerald applications looks like this:
+Keeping your project organized is crucial. A common structure for medium to large Ravyn applications looks like this:
 
 ```
 app/
@@ -41,14 +41,17 @@ All code is packaged into a single deployable unit.
 - Hard to scale and maintain as the app grows
 
 **Example**:
+
 ```python
-from esmerald import Esmerald, get
+from ravyn import Ravyn, get
+
 
 @get("/")
 def home() -> dict:
     return {"message": "Welcome to the monolith"}
 
-app = Esmerald(routes=[home])
+
+app = Ravyn(routes=[home])
 ```
 
 ---
@@ -75,19 +78,22 @@ app/
 - Encourages separation of concerns
 
 **Example**:
+
 ```python
 # features/users/routes.py
-from esmerald import get
+from ravyn import get
+
 
 @get("/users")
 def list_users() -> dict:
     return ["Alice", "Bob"]
 
+
 # main.py
-from esmerald import Esmerald
+from ravyn import Ravyn
 from features.users.routes import list_users
 
-app = Esmerald(routes=[list_users])
+app = Ravyn(routes=[list_users])
 ```
 
 ---
@@ -112,7 +118,7 @@ Structure your application around domain concepts.
 
 Split functionality into separate deployable services.
 
-**Esmerald's support**:
+**Ravyn's support**:
 - Lightweight
 - Decoupled services via HTTP or gRPC
 - Dynamic routing with versioning
@@ -137,7 +143,7 @@ Deploy independently and communicate via HTTP or messaging queues.
 
 ## What's Next?
 
-You've learned about architecture patterns in Esmerald. Next, we'll explore advanced dependency injection and lifecycle
+You've learned about architecture patterns in Ravyn. Next, we'll explore advanced dependency injection and lifecycle
 management.
 
 👉 Continue to [16-dependency-injection](./06-dependency-injection).

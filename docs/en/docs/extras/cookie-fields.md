@@ -16,11 +16,11 @@ The cookie is nothing more nothing less than pydantic `FieldInfo` with some extr
 that extends the `Param`.
 
 ```python
-from esmerald import Param
+from ravyn import Param
 
 # or
 
-from esmerald.params import Param
+from ravyn.params import Param
 ```
 
 The same result can be achieved by using directly the `Param` field.
@@ -29,7 +29,7 @@ The same result can be achieved by using directly the `Param` field.
 {!> ../../../docs_src/extras/cookies/example2.py !}
 ```
 
-Since the `Param` is the base for the Esmerald parameters, you can use it directly with a key difference.
+Since the `Param` is the base for the Ravyn parameters, you can use it directly with a key difference.
 
 the `Cookie` expects a `value` field whereas the `Param` expects a `cookie` value.
 
@@ -63,11 +63,11 @@ This cookie is a datastructure that contains unique fields to create a `cookie` 
 To import it:
 
 ```python
-from esmerald.core.datastructures import Cookie
+from ravyn.core.datastructures import Cookie
 
 # or
 
-from esmerald.core.datastructures import Cookie as ResponseCookie
+from ravyn.core.datastructures import Cookie as ResponseCookie
 ```
 
 ### Cookie from params
@@ -78,9 +78,9 @@ be used to set and create a new `cookie` like the one from [response cookies](#r
 To import it:
 
 ```python
-from esmerald import Cookie
+from ravyn import Cookie
 
 # or
 
-from esmerald.params import Cookie
+from ravyn.params import Cookie
 ```

@@ -1,11 +1,11 @@
 from typing import Optional
 
-from esmerald import Esmerald, Extension
-from esmerald.types import DictAny
+from ravyn import Ravyn, Extension
+from ravyn.types import DictAny
 
 
 class MyExtension(Extension):
-    def __init__(self, app: Optional["Esmerald"] = None, **kwargs: "DictAny"):
+    def __init__(self, app: Optional["Ravyn"] = None, **kwargs: "DictAny"):
         super().__init__(app, **kwargs)
         self.app = app
         self.kwargs = kwargs

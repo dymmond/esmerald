@@ -1,5 +1,5 @@
-from esmerald import APIView, Esmerald, Gateway, Request, get, post, status
-from esmerald.core.datastructures.encoders import OrJSON
+from ravyn import APIView, Ravyn, Gateway, Request, get, post, status
+from ravyn.core.datastructures.encoders import OrJSON
 
 
 class World(APIView):
@@ -11,4 +11,4 @@ class World(APIView):
     async def mars(self, request: Request, url: str) -> OrJSON: ...
 
 
-app = Esmerald(routes=[Gateway("/world", handler=World)])
+app = Ravyn(routes=[Gateway("/world", handler=World)])

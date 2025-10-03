@@ -2,8 +2,8 @@ from typing import List
 
 from typing_extensions import Annotated
 
-from esmerald import Gateway, JSONResponse, Query, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, JSONResponse, Query, get
+from ravyn.testclient import create_client
 
 
 @get("/list")
@@ -27,8 +27,8 @@ def test_open_api(test_app_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
@@ -115,8 +115,8 @@ def test_open_api_annotated(test_app_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

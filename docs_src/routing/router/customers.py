@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import Gateway, JSONResponse, Router, get, post
+from ravyn import Gateway, JSONResponse, Router, get, post
 
 
 class Address(BaseModel):

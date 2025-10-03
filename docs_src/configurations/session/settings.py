@@ -1,7 +1,7 @@
-from esmerald import EsmeraldSettings, ImproperlyConfigured, SessionConfig
+from ravyn import RavynSettings, ImproperlyConfigured, SessionConfig
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     @property
     def session_config(self) -> SessionConfig:
         """

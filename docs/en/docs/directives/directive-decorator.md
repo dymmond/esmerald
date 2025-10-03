@@ -1,18 +1,18 @@
 # The `@directive` decorator
 
-Having [built-in directives](./directives.md) from Esmerald is great as it gives you a lot of
+Having [built-in directives](./directives.md) from Ravyn is great as it gives you a lot of
 niceties for your project but having **custom directives** is what really powers up your
 application and takes it to another level.
 
 But what if you want to use a modern client to declare directives?
 
-Esmerald uses [Sayer](https://sayer.dymmond.com) under the hood and now this allows to bring the
+Ravyn uses [Sayer](https://sayer.dymmond.com) under the hood and now this allows to bring the
 `@directive` decorator to make your life easier.
 
 {!> ../../../docs_src/_shared/autodiscovery.md !}
 
 !!! Tip
-    As for Esmerald 3.8.3+, both [custom directives](./custom-directives.md) and `@directive`
+    As for Ravyn 3.8.3+, both [custom directives](./custom-directives.md) and `@directive`
     are supported.
 
 ## The `@directive`
@@ -23,7 +23,7 @@ On the contrary of [class based directives](./custom-directives.md), the syntax 
 is simpler when calling.
 
 ```python
-esmerald run <custom-directive> <ARGS>
+ravyn run <custom-directive> <ARGS>
 ```
 
 Quite simple, right?
@@ -33,13 +33,13 @@ Quite simple, right?
 This is even simpler:
 
 ```python
-from esmerald.core.directives.decorator import directive
+from ravyn.core.directives.decorator import directive
 ```
 
 Or
 
 ```python
-from esmerald import directive
+from ravyn import directive
 ```
 
 !!! Danger
@@ -48,7 +48,7 @@ from esmerald import directive
     **Ok**
 
     ```python
-    from esmerald import decorator
+    from ravyn import decorator
     from sayer import command
 
     @directive
@@ -59,7 +59,7 @@ from esmerald import directive
     **Not ok**
 
     ```python
-    from esmerald import decorator
+    from ravyn import decorator
     from sayer import command
 
     @command
@@ -131,13 +131,13 @@ As you can see from the previous example, we have four directives:
 * **db_shell** - Inside `./directives/operations`.
 
 All of them, no matter where you put the directive, are inside a **directives/operations** where
-esmerald always looks at.
+ravyn always looks at.
 
-**This is the same as usual in Esmerald, nothing has changed**.
+**This is the same as usual in Ravyn, nothing has changed**.
 
 ## Help
 
-There are two helps in place for the directives. The one you run the esmerald executor (run) and the
+There are two helps in place for the directives. The one you run the ravyn executor (run) and the
 one for the `directive`.
 
 ### --help
@@ -145,7 +145,7 @@ one for the `directive`.
 This command **is only used for the executor help**, for example:
 
 ```shell
-$ esmerald run --help
+$ ravyn run --help
 ```
 
 ### -h/--h
@@ -153,13 +153,13 @@ $ esmerald run --help
 This flag is used to access the `directive` help and not the `run`.
 
 ```shell
-$ esmerald run mydirective -h
+$ ravyn run mydirective -h
 ```
 
 Or
 
 ```shell
-$ esmerald run mydirective --h
+$ ravyn run mydirective --h
 ```
 
 ### Notes
@@ -219,14 +219,14 @@ Let us use the following structure as example:
     └── urls.py
 ```
 
-This example is simulating a structure of a esmerald project with
+This example is simulating a structure of a ravyn project with
 **two custom directives with the same name**.
 
 The first directive is inside `./directives/operations/` and the second inside
 `./apps/accounts/directives/operations`.
 
-Esmerald directives work on a **First Found First Executed** principle and that means if you have
-two custom directives with the same name, esmerald will
+Ravyn directives work on a **First Found First Executed** principle and that means if you have
+two custom directives with the same name, ravyn will
 **execute the first found directive with that given name**.
 
 In other words, if you want to execute the `createsuperuser` from the `accounts`, the first found
@@ -235,7 +235,7 @@ it instead of the intended from `accounts`.
 
 ## Execution
 
-Esmerald directives use the same events as the one passed in the application.
+Ravyn directives use the same events as the one passed in the application.
 
 For example, if you want to execute database operations and the database connections should be
 established before hand, you can do in two ways:
@@ -266,21 +266,21 @@ in the command line:
 **Using the --app or ESMERALD_DEFAULT_APP**
 
 ```shell
-$ esmerald --app myproject.main:app run createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+$ ravyn --app myproject.main:app run createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
 Or
 
 ```shell
 $ export ESMERALD_DEFAULT_APP=myproject.main:app
-$ esmerald run createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+$ ravyn run createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
 As you can see, the `@directive` acts as the class based directives but in a different syntax.
 
 ## The `display_in_cli` option
 
-You probably read everything about directives in Esmerald by now and that is awesome.
+You probably read everything about directives in Ravyn by now and that is awesome.
 
 Now there is one last thing that would be good for you to know, the `display_in_cli`
 
@@ -290,20 +290,20 @@ Now there is one last thing that would be good for you to know, the `display_in_
 Wouldn't you like to have the option when you create a directive, instead of doing:
 
 ```shell
-esmerald run <DIRECTIVE>
+ravyn run <DIRECTIVE>
 ```
 
 You could do directly:
 
 ```shell
-esmerald <DIRECTIVE
+ravyn <DIRECTIVE
 ```
 
 This is nice, isn't it? Well, now it is possible thanks to the `display_in_cli` parameter
 of the `@directive` decorator.
 
-This also means that your directives are now automatically recognised by Esmerald and display as
-one of the available **Esmerald** commands.
+This also means that your directives are now automatically recognised by Ravyn and display as
+one of the available **Ravyn** commands.
 
 Let us redo the `createsuperuser` to use this method.
 
@@ -314,22 +314,22 @@ Let us redo the `createsuperuser` to use this method.
 As you can see, the `@directive(display_in_cli=True)` is now present. You can now do
 
 ```
-esmerald --help
+ravyn --help
 ```
 
-And your directive should display as if it was a native command of Esmerald. Amazing!
+And your directive should display as if it was a native command of Ravyn. Amazing!
 
 Since this is a [Sayer](https://sayer.dymmond.com) `@command`, this means the way of calling
 your directive is via `create-user`.
 
 ```shell
-esmerald create-user --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+ravyn create-user --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
 You can also do now `--help` on the command.
 
 ```
-esmerald create-user --help
+ravyn create-user --help
 ```
 
-As per normal Esmerald directives.
+As per normal Ravyn directives.

@@ -1,4 +1,4 @@
-from esmerald import JSON, APIView, Esmerald, Gateway, Request, get, post, status
+from ravyn import JSON, APIView, Ravyn, Gateway, Request, get, post, status
 
 
 class World(APIView):
@@ -10,4 +10,4 @@ class World(APIView):
     async def mars(self, request: Request, url: str) -> JSON: ...
 
 
-app = Esmerald(routes=[Gateway("/world", handler=World)])
+app = Ravyn(routes=[Gateway("/world", handler=World)])

@@ -1,7 +1,7 @@
 from typing import List
 
-from esmerald import get
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import get
+from ravyn.openapi.datastructures import OpenAPIResponse
 
 
 @get(

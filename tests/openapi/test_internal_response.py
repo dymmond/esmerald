@@ -1,4 +1,4 @@
-from esmerald.openapi._internal import InternalResponse
+from ravyn.openapi._internal import InternalResponse
 
 
 def test_repr_internal_response():

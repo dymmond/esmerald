@@ -3,24 +3,24 @@ from typing import Type
 import pytest
 from lilya.status import HTTP_400_BAD_REQUEST
 
-from esmerald.applications import ChildEsmerald
-from esmerald.exceptions import (
-    EsmeraldAPIException,
+from ravyn.applications import ChildRavyn
+from ravyn.exceptions import (
     InternalServerError,
     NotAuthorized,
     NotFound,
+    RavynAPIExceptionAPIException,
     ServiceUnavailable,
     ValidationErrorException,
 )
-from esmerald.requests import Request
-from esmerald.responses import Response
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
-from esmerald.types import ExceptionHandlerMap
-from esmerald.utils.enums import MediaType
+from ravyn.requests import Request
+from ravyn.responses import Response
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
+from ravyn.types import ExceptionHandlerMap
+from ravyn.utils.enums import MediaType
 
 
 @pytest.mark.parametrize(
@@ -312,7 +312,7 @@ def test_exception_handling_with_include_exception_handler(
     [
         (ValidationErrorException, "router"),
         (NotAuthorized, "include"),
-        (EsmeraldAPIException, "gateway"),
+        (RavynAPIExceptionAPIException, "gateway"),
         (InternalServerError, "apiview"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
@@ -363,8 +363,8 @@ def test_exception_handling_with_gateway_exception_handler(
                         path="/base",
                         handler=ControllerWithHandler,
                         exception_handlers={
-                            EsmeraldAPIException: create_named_handler(
-                                "gateway", EsmeraldAPIException
+                            RavynAPIExceptionAPIException: create_named_handler(
+                                "gateway", RavynAPIExceptionAPIException
                             ),
                         },
                     )
@@ -389,9 +389,7 @@ def test_exception_handling_with_gateway_exception_handler(
         (NotFound, "handler"),
     ],
 )
-def test_exception_handling_with_child_esmerald(
-    exc_to_raise: Exception, expected_layer: str
-) -> None:
+def test_exception_handling_with_child_ravyn(exc_to_raise: Exception, expected_layer: str) -> None:
     caller = {"name": ""}
 
     def create_named_handler(
@@ -426,12 +424,12 @@ def test_exception_handling_with_child_esmerald(
         def my_handler(self) -> None:
             raise exc_to_raise
 
-    child_esmerald = ChildEsmerald(routes=[Gateway(path="/base", handler=ControllerWithHandler)])
+    child_ravyn = ChildRavyn(routes=[Gateway(path="/base", handler=ControllerWithHandler)])
 
     with create_client(
         routes=[
             Include(
-                routes=[Include(path="/child", app=child_esmerald)],
+                routes=[Include(path="/child", app=child_ravyn)],
                 exception_handlers={NotAuthorized: create_named_handler("include", NotAuthorized)},
             )
         ],

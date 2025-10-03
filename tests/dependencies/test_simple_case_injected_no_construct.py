@@ -5,11 +5,11 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from pydantic import BaseModel
 
-from esmerald import Esmerald, post
-from esmerald.conf import settings
-from esmerald.injector import Inject
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway
+from ravyn import Ravyn, post
+from ravyn.conf import settings
+from ravyn.injector import Inject
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway
 
 # create a local Registry with the data of the settings registry. We register models and don't want to pollute it
 models = edgy.Registry(settings.edgy_database)
@@ -66,7 +66,7 @@ async def rollback_transactions():
 
 @pytest.fixture()
 def app():
-    app = Esmerald(routes=[Gateway(handler=DocumentAPIView)])
+    app = Ravyn(routes=[Gateway(handler=DocumentAPIView)])
     return app
 
 

@@ -1,9 +1,9 @@
 from pydantic import BaseModel, EmailStr
 
-from esmerald import (
+from ravyn import (
     APIView,
-    ChildEsmerald,
-    Esmerald,
+    ChildRavyn,
+    Ravyn,
     Gateway,
     Include,
     Request,
@@ -14,12 +14,12 @@ from esmerald import (
     settings,
     websocket,
 )
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.contrib.auth.edgy.base_user import User
-from esmerald.exceptions import NotAuthorized
-from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
-from esmerald.permissions import IsAdminUser
-from esmerald.security.jwt.token import Token
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.contrib.auth.edgy.base_user import User
+from ravyn.exceptions import NotAuthorized
+from ravyn.middleware.authentication import AuthResult, BaseAuthMiddleware
+from ravyn.permissions import IsAdminUser
+from ravyn.security.jwt.token import Token
 from lilya._internal._connection import Connection
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 from lilya.types import ASGIApp
@@ -94,23 +94,21 @@ class UserApiView(APIView):
         await socket.close()
 
 
-child_esmerald = ChildEsmerald(
-    routes=[Gateway("/home", handler=home), Gateway(handler=UserApiView)]
-)
+child_ravyn = ChildRavyn(routes=[Gateway("/home", handler=home), Gateway(handler=UserApiView)])
 
 jwt_config = JWTConfig(
     signing_key=settings.secret_key,
 )
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",
             routes=[
                 Gateway(handler=me),
                 WebSocketGateway(handler=websocket_endpoint_include),
-                Include("/admin", child_esmerald),
+                Include("/admin", child_ravyn),
             ],
         )
     ],

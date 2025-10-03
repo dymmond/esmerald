@@ -1,27 +1,29 @@
 # Building Your First API
 
-In this guide, we’ll walk you through how to build a basic API using Esmerald. You’ll learn how to define routes,
+In this guide, we’ll walk you through how to build a basic API using Ravyn. You’ll learn how to define routes,
 use path and query parameters, and return structured responses.
 
 ## Prerequisites
 
-- Esmerald installed: `pip install esmerald[standard]`
+- Ravyn installed: `pip install ravyn[standard]`
 - Familiarity with basic Python and HTTP concepts
 
 ---
 
 ## Defining Your First Routes
 
-In Esmerald, routes are created using decorators like `@get`, `@post`, etc., which map to HTTP methods.
+In Ravyn, routes are created using decorators like `@get`, `@post`, etc., which map to HTTP methods.
 
 ```python
-from esmerald import Esmerald, get
+from ravyn import Ravyn, get
+
 
 @get("/")
 def home() -> dict:
     return {"message": "Welcome to your API!"}
 
-app = Esmerald(routes=[home])
+
+app = Ravyn(routes=[home])
 ```
 
 Start the server with:
@@ -38,7 +40,8 @@ Visit `http://127.0.0.1:8000/` to see your message.
 Path parameters let you capture parts of the URL.
 
 ```python
-from esmerald import get
+from ravyn import get
+
 
 @get("/users/{user_id}")
 def get_user(user_id: int) -> dict:
@@ -56,18 +59,19 @@ Path parameters are automatically converted to the specified type (`int` in this
 Query parameters are passed using `?key=value` syntax.
 
 ```python
-from esmerald import get, Query
+from ravyn import get, Query
+
 
 @get("/search")
 def search(term: str = Query(...), limit: int = Query(10)) -> dict:
     return {"term": term, "limit": limit}
 ```
 
-- `http://127.0.0.1:8000/search?term=esmerald&limit=5`
+- `http://127.0.0.1:8000/search?term=ravyn&limit=5`
 
 You’ll get:
 ```json
-{"term": "esmerald", "limit": 5}
+{"term": "ravyn", "limit": 5}
 ```
 
 ---
@@ -78,11 +82,13 @@ To handle JSON body data, just declare a parameter with a type.
 
 ```python
 from pydantic import BaseModel
-from esmerald import post
+from ravyn import post
+
 
 class User(BaseModel):
     name: str
     age: int
+
 
 @post("/users")
 def create_user(user: User) -> dict:
@@ -119,4 +125,4 @@ Now that you know how to build basic routes, let’s move into **request validat
 
 ---
 
-You're on your way to mastering Esmerald APIs! 💚
+You're on your way to mastering Ravyn APIs! 💚

@@ -1,8 +1,8 @@
 # Handling Errors
 
-In this section, you'll learn how to handle errors and exceptions in Esmerald.
+In this section, you'll learn how to handle errors and exceptions in Ravyn.
 
-Esmerald provides robust error-handling capabilities out of the box, and also allows you to define your own.
+Ravyn provides robust error-handling capabilities out of the box, and also allows you to define your own.
 
 ---
 
@@ -11,7 +11,8 @@ Esmerald provides robust error-handling capabilities out of the box, and also al
 Use `HTTPException` to raise an error with a specific status code and optional detail message:
 
 ```python
-from esmerald import get, HTTPException
+from ravyn import get, HTTPException
+
 
 @get("/items/{item_id}")
 def get_item(item_id: int) -> dict:
@@ -32,7 +33,7 @@ This returns a response like:
 
 ## Built-in Error Responses
 
-Esmerald automatically returns helpful responses for:
+Ravyn automatically returns helpful responses for:
 
 - Validation errors (status code `422`)
 - Missing routes (`404`)
@@ -59,15 +60,18 @@ Example: Sending an invalid body to a route expecting a `Pydantic` model returns
 You can define a custom exception handler for your own exception classes:
 
 ```python
-from esmerald import Esmerald, Request, HTTPException, ExceptionHandler
+from ravyn import Ravyn, Request, HTTPException, ExceptionHandler
+
 
 class MyCustomError(Exception):
     pass
 
+
 def my_custom_handler(request: Request, exc: MyCustomError):
     return {"detail": "Something custom went wrong!"}
 
-app = Esmerald(
+
+app = Ravyn(
     routes=[],
     exception_handlers={MyCustomError: my_custom_handler}
 )
@@ -88,7 +92,8 @@ def fail():
 Just set `status_code` when raising `HTTPException`:
 
 ```python
-from esmerald import post, HTTPException
+from ravyn import post, HTTPException
+
 
 @post("/login")
 def login() -> None:
@@ -102,7 +107,8 @@ def login() -> None:
 You can return custom error payloads using a response directly:
 
 ```python
-from esmerald.responses import JSONResponse
+from ravyn.responses import JSONResponse
+
 
 @get("/custom-error")
 def custom_error() -> None:

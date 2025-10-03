@@ -1,8 +1,8 @@
-from esmerald.permissions import DenyAll, IsAuthenticated
-from esmerald.requests import Request
-from esmerald.responses import JSONResponse
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.handlers import delete, get, post
+from ravyn.permissions import DenyAll, IsAuthenticated
+from ravyn.requests import Request
+from ravyn.responses import JSONResponse
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.handlers import delete, get, post
 
 
 class UserAPIView(APIView):

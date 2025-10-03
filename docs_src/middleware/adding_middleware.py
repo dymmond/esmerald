@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
-from esmerald import Esmerald
-from esmerald.core.protocols.middleware import MiddlewareProtocol
-from esmerald.types import ASGIApp, Receive, Scope, Send
+from ravyn import Ravyn
+from ravyn.core.protocols.middleware import MiddlewareProtocol
+from ravyn.types import ASGIApp, Receive, Scope, Send
 
 
 class SampleMiddleware(MiddlewareProtocol):
@@ -35,4 +35,4 @@ class AnotherSample(MiddlewareProtocol):
         await self.app(scope, receive, send)
 
 
-app = Esmerald(routes=[...], middleware=[SampleMiddleware, AnotherSample])
+app = Ravyn(routes=[...], middleware=[SampleMiddleware, AnotherSample])

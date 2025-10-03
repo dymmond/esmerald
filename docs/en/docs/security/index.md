@@ -7,7 +7,7 @@ These topics are often considered complex and challenging to master.
 In many frameworks and systems, managing security and authentication requires significant effort,
 often accounting for 50% or more of the total codebase.
 
-**Esmerald**, however, offers a range of tools that simplify handling security.
+**Ravyn**, however, offers a range of tools that simplify handling security.
 These tools enable you to implement secure systems quickly, efficiently,
 and in compliance with standards—without needing to dive deeply into all the technical specifications of security.
 
@@ -62,7 +62,7 @@ Unlike OpenID Connect, OpenID did not achieve widespread adoption and is rarely 
 Did you know that OpenAPI in the past was called **Swagger**? You probably did and this is we still have the *swagger ui*
 and the constant use of that name.
 
-**Esmerald** provides a native integration with **OpenAPI** as well with its automatic documentation generation.
+**Ravyn** provides a native integration with **OpenAPI** as well with its automatic documentation generation.
 
 Why this? Well, using the OpenAPI specification it can also take advantage of the standard-based tools for security.
 

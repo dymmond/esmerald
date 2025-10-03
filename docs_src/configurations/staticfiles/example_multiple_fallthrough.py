@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from esmerald import Esmerald, StaticFilesConfig
+from ravyn import Ravyn, StaticFilesConfig
 
 static_files_config = StaticFilesConfig(
     path="/static",
@@ -8,4 +8,4 @@ static_files_config = StaticFilesConfig(
     name="static",
 )
 
-app = Esmerald(static_files_config=static_files_config)
+app = Ravyn(static_files_config=static_files_config)

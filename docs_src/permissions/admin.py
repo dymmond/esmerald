@@ -1,5 +1,5 @@
-from esmerald import APIView, Esmerald, Gateway, JSONResponse, Request, get
-from esmerald.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+from ravyn import APIView, Ravyn, Gateway, JSONResponse, Request, get
+from ravyn.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 
 class IsAdmin(IsAdminUser):
@@ -36,7 +36,7 @@ class UserAPIView(APIView):
         return JSONResponse({"message": "ok"})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway("/home", handler=home), Gateway(handler=UserAPIView)],
     permissions=[AllowAny],
 )

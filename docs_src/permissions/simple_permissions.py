@@ -1,5 +1,5 @@
-from esmerald import BasePermission, Request
-from esmerald.types import APIGateHandler
+from ravyn import BasePermission, Request
+from ravyn.types import APIGateHandler
 
 
 class IsProjectAllowed(BasePermission):

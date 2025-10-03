@@ -3,10 +3,10 @@ from typing import Dict, Union
 import pytest
 from pydantic import BaseModel
 
-from esmerald import Gateway, get
-from esmerald.exceptions import OpenAPIException
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.testclient import create_client
+from ravyn import Gateway, get
+from ravyn.exceptions import OpenAPIException
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.testclient import create_client
 
 
 class Item(BaseModel):

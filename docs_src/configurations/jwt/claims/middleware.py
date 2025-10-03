@@ -1,18 +1,18 @@
 from jose import JWSError, JWTError
 
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.middleware import (
-    JWTAuthMiddleware as EsmeraldMiddleware,
+from ravyn.conf import settings
+from ravyn.contrib.auth.edgy.middleware import (
+    JWTAuthMiddleware as RavynAPIExceptionMiddleware,
 )
-from esmerald.exceptions import AuthenticationError, NotAuthorized
-from esmerald.middleware.authentication import AuthResult
-from esmerald.security.jwt.token import Token
+from ravyn.exceptions import AuthenticationError, NotAuthorized
+from ravyn.middleware.authentication import AuthResult
+from ravyn.security.jwt.token import Token
 from lilya._internal._connection import Connection
 from monkay import load
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
-class JWTAuthMiddleware(EsmeraldMiddleware):
+class JWTAuthMiddleware(RavynAPIExceptionMiddleware):
     def get_token(self, request: Connection) -> Token:
         """
         Gets the token from the headers.

@@ -5,9 +5,9 @@ import pytest
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from esmerald import Form, Gateway, post, route
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.testclient import create_client
+from ravyn import Form, Gateway, post, route
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.testclient import create_client
 
 
 @pydantic_dataclass

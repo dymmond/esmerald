@@ -1,13 +1,13 @@
 import pytest
 from lilya import status
 
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
-from esmerald.routing.handlers import delete, get, post, put, route, websocket
-from esmerald.routing.webhooks import whget
-from esmerald.testclient import create_client
-from esmerald.websockets import WebSocket
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
+from ravyn.routing.handlers import delete, get, post, put, route, websocket
+from ravyn.routing.webhooks import whget
+from ravyn.testclient import create_client
+from ravyn.websockets import WebSocket
 
 
 @whget("new-event")
@@ -41,7 +41,7 @@ async def simple_websocket_handler(socket: WebSocket) -> None:
     data = await socket.receive_json()
 
     assert data
-    await socket.send_json({"data": "esmerald"})
+    await socket.send_json({"data": "ravyn"})
     await socket.close()
 
 
@@ -51,7 +51,7 @@ async def simple_websocket_handler_two(socket: WebSocket) -> None:
     data = await socket.receive_json()
 
     assert data
-    await socket.send_json({"data": "esmerald"})
+    await socket.send_json({"data": "ravyn"})
     await socket.close()
 
 
@@ -222,13 +222,13 @@ def test_websocket_handler_gateway_from_router(test_client_factory, arg) -> None
     client = create_client(routes=[arg])
 
     with client.websocket_connect("/") as websocket_client:
-        websocket_client.send_json({"data": "esmerald"})
+        websocket_client.send_json({"data": "ravyn"})
         data = websocket_client.receive_json()
         assert data
 
     client.app.router.add_websocket_route("/ws", handler=simple_websocket_handler_two)
     with client.websocket_connect("/ws/websocket") as websocket_client:
-        websocket_client.send_json({"data": "esmerald"})
+        websocket_client.send_json({"data": "ravyn"})
         data = websocket_client.receive_json()
         assert data
 
@@ -245,13 +245,13 @@ def test_websocket_handler_gateway_from_application(test_client_factory, arg) ->
     client = create_client(routes=[arg])
 
     with client.websocket_connect("/") as websocket_client:
-        websocket_client.send_json({"data": "esmerald"})
+        websocket_client.send_json({"data": "ravyn"})
         data = websocket_client.receive_json()
         assert data
 
     client.app.add_websocket_route("/ws", handler=simple_websocket_handler_two)
     with client.websocket_connect("/ws/websocket") as websocket_client:
-        websocket_client.send_json({"data": "esmerald"})
+        websocket_client.send_json({"data": "ravyn"})
         data = websocket_client.receive_json()
         assert data
 

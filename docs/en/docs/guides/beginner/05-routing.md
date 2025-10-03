@@ -1,15 +1,15 @@
-# Advanced Routing, Handlers, Controllers, and Include in Esmerald
+# Advanced Routing, Handlers, Controllers, and Include in Ravyn
 
-Esmerald offers a highly flexible routing system, allowing you to structure your application in a modular way.
+Ravyn offers a highly flexible routing system, allowing you to structure your application in a modular way.
 This guide covers essential concepts such as **routers**, **routes**, **handlers**, **API views**,
-and especially **Include**, which is one of the most powerful features in Esmerald for modular routing and
+and especially **Include**, which is one of the most powerful features in Ravyn for modular routing and
 reusability.
 
 By combining these components, you can create scalable, organized applications that are easy to maintain.
 
 ---
 
-## 🚪 **Routers in Esmerald**
+## 🚪 **Routers in Ravyn**
 
 A **router** is a mechanism for grouping routes that share common functionality, such as applying middleware or
 settings across related routes. Routers help modularize your application by encapsulating related routes into
@@ -18,17 +18,19 @@ distinct units.
 ### Example: Defining and Using Routers
 
 ```python
-from esmerald import Esmerald, Router, Gateway, JSONResponse, get
+from ravyn import Ravyn, Router, Gateway, JSONResponse, get
 
 # Create a router for user-related endpoints
 user_router = Router()
+
 
 @user_router.get("/profile/{user_id}")
 async def get_user_profile(user_id: int) -> JSONResponse:
     return JSONResponse({"user_id": user_id, "message": "User profile fetched"})
 
+
 # Create an application with the router
-app = Esmerald()
+app = Ravyn()
 app.add_router(user_router)
 ```
 
@@ -39,21 +41,23 @@ app.add_router(user_router)
 
 ---
 
-## 🛤️ **Routes in Esmerald**
+## 🛤️ **Routes in Ravyn**
 
 Routes define the actual HTTP paths in your application. They are the endpoints that users or clients interact with.
-In Esmerald, routes are associated with handler functions that process requests and return responses.
+In Ravyn, routes are associated with handler functions that process requests and return responses.
 
 ### Example: Defining Routes
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, post
+from ravyn import Ravyn, Gateway, JSONResponse, post
+
 
 @post("/create")
 async def create_user() -> JSONResponse:
     return JSONResponse({"message": "User created successfully"})
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+
+app = Ravyn(routes=[Gateway(handler=create_user)])
 ```
 
 ### Explanation:
@@ -68,7 +72,7 @@ by the `create_user` function.
 
 ---
 
-## 🧰 **Handlers in Esmerald**
+## 🧰 **Handlers in Ravyn**
 
 Handlers are functions or classes that process incoming requests. They take in request data
 (like path parameters, body data, cookies, or headers) and return an appropriate response.
@@ -76,13 +80,15 @@ Handlers are functions or classes that process incoming requests. They take in r
 ### Example: Basic Handler Function
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
+
 
 @get("/hello")
 async def hello_world() -> JSONResponse:
     return JSONResponse({"message": "Hello, world!"})
 
-app = Esmerald(routes=[Gateway(handler=hello_world)])
+
+app = Ravyn(routes=[Gateway(handler=hello_world)])
 ```
 
 ### Explanation:
@@ -92,7 +98,7 @@ the route to the handler.
 
 ---
 
-## 📦 **Controllers in Esmerald**
+## 📦 **Controllers in Ravyn**
 
 Controllers or Controllers are class-based views that allow you to group multiple routes under one class.
 This makes it easier to share logic and group related routes, improving the maintainability of your application.
@@ -100,7 +106,8 @@ This makes it easier to share logic and group related routes, improving the main
 ### Example: API View with Multiple Routes
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, post, get, Controller
+from ravyn import Ravyn, Gateway, JSONResponse, post, get, Controller
+
 
 class UserController(Controller):
     @get("/user/{user_id}")
@@ -111,7 +118,8 @@ class UserController(Controller):
     async def create_user(self) -> JSONResponse:
         return JSONResponse({"message": "User created successfully"})
 
-app = Esmerald(routes=[Gateway(handler=UserController)])
+
+app = Ravyn(routes=[Gateway(handler=UserController)])
 ```
 
 ### Explanation:
@@ -120,23 +128,25 @@ app = Esmerald(routes=[Gateway(handler=UserController)])
 
 ---
 
-## 🔄 **Include in Esmerald**
+## 🔄 **Include in Ravyn**
 
-One of the most powerful features of Esmerald is **Include**. This feature allows you to include other routes,
+One of the most powerful features of Ravyn is **Include**. This feature allows you to include other routes,
 routers, API views within your application, include external apps (Django, Flask, FastAPI), effectively allowing for modular routing.
 It helps in breaking down your application into smaller, manageable pieces.
 
 ### Example: Using `Include` to Modularize Routes
 
 ```python
-from esmerald import Esmerald, Router, Gateway, Include, JSONResponse, get
+from ravyn import Ravyn, Router, Gateway, Include, JSONResponse, get
+
 
 @get("/profile/{user_id}")
 async def get_user_profile(user_id: int) -> JSONResponse:
     return JSONResponse({"user_id": user_id, "message": "User profile fetched"})
 
+
 # Include the user
-app = Esmerald(routes=[Include(routes=[Gateway(handler=get_user_profile)])])
+app = Ravyn(routes=[Include(routes=[Gateway(handler=get_user_profile)])])
 ```
 
 ### Explanation:
@@ -153,15 +163,15 @@ Or if you want to include an external app, for example in Flask:
 ```python
 from flask import Flask, escape, request
 
-from esmerald import Esmerald, Gateway, Include, Request, get
-from esmerald.middleware.wsgi import WSGIMiddleware
+from ravyn import Ravyn, Gateway, Include, Request, get
+from ravyn.middleware.wsgi import WSGIMiddleware
 
 flask_app = Flask(__name__)
 
 
 @flask_app.route("/")
 def flask_main():
-    name = request.args.get("name", "Esmerald")
+    name = request.args.get("name", "Ravyn")
     return f"Hello, {escape(name)} from your Flask integrated!"
 
 
@@ -171,7 +181,7 @@ async def home(request: Request) -> dict:
     return {"name": escape(name)}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=home),
         Include("/flask", WSGIMiddleware(flask_app)),
@@ -183,23 +193,26 @@ app = Esmerald(
 
 ## 📂 **Combining Routers, Routes, Handlers, Controllers, and Include**
 
-In Esmerald, you can combine **routers**, **routes**, **handlers** and **Controllers** to create
+In Ravyn, you can combine **routers**, **routes**, **handlers** and **Controllers** to create
 flexible and maintainable applications. You can use **Include** to modularize your application into
 different components, allowing for better code organization.
 
 ### Example: Complex Application Using All Features
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, Router, APIView, post, get, Controller
-from esmerald.datastructures import Webhook
+from ravyn import Ravyn, Gateway, JSONResponse, Router, APIView, post, get, Controller
+from ravyn.datastructures import Webhook
+
 
 @user_router.get("/status")
 async def status() -> JSONResponse:
     return JSONResponse({"status": "OK"})
 
+
 @get("/include-status")
 async def include_status() -> JSONResponse:
     return JSONResponse({"status": "OK"})
+
 
 # Define an API view for users
 class UserController(APIView):
@@ -211,11 +224,12 @@ class UserController(APIView):
     async def create_user(self) -> JSONResponse:
         return JSONResponse({"message": "User created successfully"})
 
+
 # Create app with all components
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include('/internal', routes=[Gateway(handler=include_status)]),  # Include include_status
-        Gateway(handler=UserController),     # Include API View
+        Gateway(handler=UserController),  # Include API View
     ]
 )
 app.add_router(user_router)
@@ -236,7 +250,7 @@ app.add_router(user_router)
 - **Controllers**: Class-based handlers for organizing and sharing logic across related routes.
 - **Include**: Modularize routes, routers, or API views and include them in your main app for better organization and reusability.
 
-Esmerald’s routing system allows for highly flexible and modular web application design. You can group related routes,
+Ravyn’s routing system allows for highly flexible and modular web application design. You can group related routes,
 use class-based views for shared logic, and handle external webhooks with ease.
 
 The `Include` feature is particularly useful for organizing your code and reusing common

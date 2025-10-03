@@ -1,8 +1,8 @@
 # HTTPBearer, APIKeyInHeader & Others
 
-Let's explore the additional security components that Esmerald offers out-of-the-box.
+Let's explore the additional security components that Ravyn offers out-of-the-box.
 
-You don't need to implement them exactly as described here. Instead, you can use the special `Security` object from Esmerald to inject security into each API.
+You don't need to implement them exactly as described here. Instead, you can use the special `Security` object from Ravyn to inject security into each API.
 
 Additionally, there are packages like `esmerald-simple-jwt` that implement Bearer token checks at the middleware level, rather than using the `Security` object. This flexibility allows you to choose the approach that best suits your needs.
 
@@ -210,5 +210,5 @@ OpenID Connect (OIDC) is an identity layer built on top of the OAuth 2.0 protoco
 
 ## Notes
 
-It is important to understand that Esmerald only provides certain tools to help you with your job but you
+It is important to understand that Ravyn only provides certain tools to help you with your job but you
 **can have your own implementation and this is not required, at all, to be used**.

@@ -1,6 +1,6 @@
 # **`JSON`** class
 
-::: esmerald.JSON
+::: ravyn.JSON
     options:
         inherited_members: false
         filters:

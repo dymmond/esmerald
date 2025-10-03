@@ -1,8 +1,8 @@
 from typing import List
 
-from esmerald import Request, get
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.security.api_key import APIKeyInCookie
+from ravyn import Request, get
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.security.api_key import APIKeyInCookie
 
 from .daos import UserDAO
 from .schemas import Error, UserOut

@@ -3,16 +3,16 @@ from typing import Any, Dict, List, Optional
 import pytest
 from lilya.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
 
-from esmerald.applications import Esmerald
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.injector import Factory, Inject
-from esmerald.params import Injects
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
-from esmerald.utils.constants import IS_DEPENDENCY
+from ravyn.applications import Ravyn
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.injector import Factory, Inject
+from ravyn.params import Injects
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
+from ravyn.utils.constants import IS_DEPENDENCY
 from tests.conftest import FakeDAO
 
 
@@ -156,7 +156,7 @@ def test_dependency_not_Injected_and_no_default() -> None:
         """ """
 
     with pytest.raises(ImproperlyConfigured):
-        Esmerald(routes=[Gateway(handler=test)])
+        Ravyn(routes=[Gateway(handler=test)])
 
 
 def test_dependency_Injected_on_APIView() -> None:

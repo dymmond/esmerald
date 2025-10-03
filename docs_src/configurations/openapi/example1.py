@@ -1,5 +1,5 @@
-from esmerald import Esmerald, OpenAPIConfig
-from esmerald.openapi.models import Contact
+from ravyn import Ravyn, OpenAPIConfig
+from ravyn.openapi.models import Contact
 
 openapi_config = OpenAPIConfig(
     title="My Application",
@@ -9,4 +9,4 @@ openapi_config = OpenAPIConfig(
     contact=Contact(name="User", email="email@example.com"),
 )
 
-app = Esmerald(routes=[...], openapi_config=openapi_config)
+app = Ravyn(routes=[...], openapi_config=openapi_config)

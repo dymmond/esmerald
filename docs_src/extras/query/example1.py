@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
 
 fake_users = [{"last_name": "Doe", "email": "john.doe@example.com"}]
 
@@ -8,7 +8,7 @@ async def read_user(skip: int = 1, limit: int = 5) -> JSONResponse:
     return fake_users[skip : skip + limit]
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(read_user),
     ]

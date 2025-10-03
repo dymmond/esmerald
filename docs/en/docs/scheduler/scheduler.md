@@ -2,20 +2,20 @@
 
 Almost every application in one way or another needs some sort of automated scheduler to run automated tasks.
 In that in mind and with the help of the great widely used
-<a href='https://asyncz.dymmond.com' target='_blank'>Asyncz</a>, Esmerald comes with a built-in
+<a href='https://asyncz.dymmond.com' target='_blank'>Asyncz</a>, Ravyn comes with a built-in
 scheduler, saving you tons of headaches and simplifying the process of creating them.
 
 ## Requirements
 
-Esmerald uses `asyncz` for this integration. You can install by running:
+Ravyn uses `asyncz` for this integration. You can install by running:
 
 ```shell
-$ pip install esmerald[schedulers]
+$ pip install ravyn[schedulers]
 ```
 
 ## AsynczConfig
 
-The `AsynczConfig` is the main object that manages the internal scheduler of `Esmerald` with asyncz expecting:
+The `AsynczConfig` is the main object that manages the internal scheduler of `Ravyn` with asyncz expecting:
 
 * `scheduler_class` - An instance of the `Asyncz` schedule type. Passed via `scheduler_class`.
 
@@ -34,41 +34,41 @@ The `AsynczConfig` is the main object that manages the internal scheduler of `Es
 Passed via `scheduler_configurations`.
 * `kwargs` - Any keyword argument that can be passed and injected into the `scheduler_class`.
 
-Since `Esmerald` is an `ASGI` framework, it is already provided a default scheduler class that works alongside with
+Since `Ravyn` is an `ASGI` framework, it is already provided a default scheduler class that works alongside with
 the application, the `AsyncIOScheduler`.
 
 !!! Note
-    This is for representation and explanation purposes as the EsmeraldScheduler cannot be instantiated,
-    instead, expects parameters being sent upon creating an Esmerald application.
+    This is for representation and explanation purposes as the RavynAPIExceptionScheduler cannot be instantiated,
+    instead, expects parameters being sent upon creating an Ravyn application.
 
 ```python hl_lines="4"
-from esmerald import Esmerald
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
-app = Esmerald(scheduler_config=AsynczConfig())
+app = Ravyn(scheduler_config=AsynczConfig())
 ```
 
 You can have your own scheduler config class as well, check the [SchedulerConfig](../configurations/scheduler.md#how-to-use-it)
 for more information.
 
 !!! warning
-    Anything else that does not work with `AsyncIO` is very likely also not to work with Esmerald.
+    Anything else that does not work with `AsyncIO` is very likely also not to work with Ravyn.
 
 ## AsynczConfig and the application
 
-This is the default Esmerald integration with Asyncz and the class can be accessed via:
+This is the default Ravyn integration with Asyncz and the class can be accessed via:
 
 ```python
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 ```
 
-Because this is an Esmerald offer, you can always implement your own version if you don't like the way Esmerald handles
+Because this is an Ravyn offer, you can always implement your own version if you don't like the way Ravyn handles
 the Asyncz default integration and adapt to your own needs. This is thanks to the [SchedulerConfig](../configurations/scheduler.md#how-to-use-it)
 from where AsynczConfig is derived.
 
 ### Enabling the scheduler
 
-In order to make sure it does not always start, Esmerald is expecting a flag `enable_scheduler` to be True. Without
+In order to make sure it does not always start, Ravyn is expecting a flag `enable_scheduler` to be True. Without
 the `enable_scheduler = True`, the scheduler will not start.
 
 The default behaviour is `enable_scheduler = False`.
@@ -79,7 +79,7 @@ The default behaviour is `enable_scheduler = False`.
 
 ### Enabling the scheduler via settings
 
-As mentioned in this documentation, Esmerald is unique with [settings](../application/settings.md) and therefore
+As mentioned in this documentation, Ravyn is unique with [settings](../application/settings.md) and therefore
 the `enable_scheduler` can also be set to `True`/`False` there.
 
 ```python hl_lines="7"
@@ -89,7 +89,7 @@ the `enable_scheduler` can also be set to `True`/`False` there.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -101,7 +101,7 @@ the `enable_scheduler` can also be set to `True`/`False` there.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -117,9 +117,9 @@ the `enable_scheduler` can also be set to `True`/`False` there.
 ## Tasks
 
 Tasks are simple pieces of functionality that contains the logic needed to run on a specific time.
-Esmerald does not enforce any specific file name where the tasks should be, you can place them anywhere you want.
+Ravyn does not enforce any specific file name where the tasks should be, you can place them anywhere you want.
 
-Once the tasks are created, you need to pass that same information to your Esmerald instance.
+Once the tasks are created, you need to pass that same information to your Ravyn instance.
 
 !!! tip
     There are more details about [how to create tasks](./handler.md) in the next section.
@@ -149,7 +149,7 @@ Start the server with the newly created settings.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -161,7 +161,7 @@ Start the server with the newly created settings.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]

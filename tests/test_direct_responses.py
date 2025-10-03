@@ -3,12 +3,12 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Form, Redirect, Request, Template
-from esmerald.core.config.template import TemplateConfig
-from esmerald.responses.base import RedirectResponse
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get, route
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Form, Ravyn, Redirect, Request, Template
+from ravyn.core.config.template import TemplateConfig
+from ravyn.responses.base import RedirectResponse
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get, route
+from ravyn.testclient import RavynTestClient
 
 
 class Model(BaseModel):
@@ -20,14 +20,14 @@ def test_return_response_container(template_dir):
     async def start(request: Request) -> Template:
         return Redirect(path="/home", status_code=301)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=start)],
         template_config=TemplateConfig(
             directory=template_dir,
         ),
         middleware=[],
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
@@ -37,13 +37,13 @@ def test_return_response(template_dir):
     async def start(request: Request) -> Template:
         return RedirectResponse(url="/home", status_code=301)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=start)],
         template_config=TemplateConfig(
             directory=template_dir,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
@@ -55,13 +55,13 @@ def test_return_response_route_form(template_dir):
             assert form.id == 55
         return RedirectResponse(url="/home", status_code=301)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=start)],
         template_config=TemplateConfig(
             directory=template_dir,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
@@ -76,13 +76,13 @@ def test_return_response_route_data(template_dir):
             assert data.id == 55
         return RedirectResponse(url="/home", status_code=301)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=start)],
         template_config=TemplateConfig(
             directory=template_dir,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 

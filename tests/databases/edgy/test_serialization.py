@@ -7,8 +7,8 @@ import edgy
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from esmerald import Esmerald, Gateway, post
-from esmerald.conf import settings
+from ravyn import Gateway, Ravyn, post
+from ravyn.conf import settings
 
 models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
@@ -23,7 +23,7 @@ def get_random_string(length=10):
 class TestUser(edgy.Model):
     """
     Inherits from the abstract user and adds the registry
-    from esmerald settings.
+    from ravyn settings.
     """
 
     name = edgy.CharField(max_length=255, null=False)
@@ -46,8 +46,8 @@ async def create_test_database():
 
 
 @pytest.fixture()
-def app() -> Esmerald:
-    app = Esmerald(routes=[Gateway(handler=user)])
+def app() -> Ravyn:
+    app = Ravyn(routes=[Gateway(handler=user)])
     return app
 
 
@@ -59,7 +59,7 @@ async def async_client(app) -> AsyncGenerator:
 
 @post("/create")
 async def user() -> TestUser:
-    user = await TestUser.query.create(name="Esmerald")
+    user = await TestUser.query.create(name="Ravyn")
     return user
 
 
@@ -70,7 +70,7 @@ async def test_can_create_user_serialized(test_client_factory, async_client):
 
     data = response.json()
 
-    assert data["name"] == "Esmerald"
+    assert data["name"] == "Ravyn"
     assert data["created_at"] is not None
     assert data["updated_at"] is not None
     assert data["user_id"] is not None

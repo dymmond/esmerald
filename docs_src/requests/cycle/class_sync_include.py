@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include
+from ravyn import Ravyn, Gateway, Include
 from lilya.types import Scope, Receive, Send
 
 
@@ -30,7 +30,7 @@ async def home() -> str:
     return "Hello, World!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",

@@ -1,7 +1,7 @@
 from typing import List
 
-from esmerald import get, patch, post, put
-from esmerald.routing.apis.generics import ListAPIView
+from ravyn import get, patch, post, put
+from ravyn.routing.apis.generics import ListAPIView
 
 
 class UserAPI(ListAPIView):

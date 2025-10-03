@@ -9,10 +9,10 @@ JWT расшифровывается как JSON Web Token. Его можно и
 
 ## Зависимости
 
-Esmerald использует `pyjwt` и `passlib` для интеграции с JWT. Вы можете установить их, выполнив:
+Ravyn использует `pyjwt` и `passlib` для интеграции с JWT. Вы можете установить их, выполнив:
 
 ```shell
-$ pip install esmerald[jwt]
+$ pip install ravyn[jwt]
 ```
 
 ## JWTConfig и приложение
@@ -25,7 +25,7 @@ $ pip install esmerald[jwt]
 
 !!! info
     В примере используется [JWTAuthMiddleware](../databases/edgy/middleware.md#jwtauthmiddleware)
-    из Esmerald с Edgy ORM.
+    из Ravyn с Edgy ORM.
 
 ## Параметры
 
@@ -40,14 +40,14 @@ $ pip install esmerald[jwt]
 {!> ../../../docs_src/configurations/jwt/settings.py!}
 ```
 
-Это поможет вам поддерживать настройки в чистоте, без перегруженного экземпляра **Esmerald**.
+Это поможет вам поддерживать настройки в чистоте, без перегруженного экземпляра **Ravyn**.
 
 ## Модель токена
 
-Esmerald предоставляет стандартный объект токена, который позволяет легко генерировать и декодировать токены.
+Ravyn предоставляет стандартный объект токена, который позволяет легко генерировать и декодировать токены.
 
 ```python
-from esmerald.security.jwt.token import Token
+from ravyn.security.jwt.token import Token
 
 token = Token(exp=..., iat=..., sub=...)
 ```
@@ -61,8 +61,8 @@ token = Token(exp=..., iat=..., sub=...)
 [Токен](#token-model) предоставляет стандартные операции для взаимодействия с `pyjwt`.
 
 ```python
-from esmerald.security.jwt.token import Token
-from esmerald.conf import settings
+from ravyn.security.jwt.token import Token
+from ravyn.conf import settings
 
 # Создание модели токена
 token = Token(exp=..., iat=..., sub=...)
@@ -76,8 +76,8 @@ jwt_token = Token.encode(key=settings.secret_key, algorithm="HS256", **claims)
 Функция декодирования также предоставляется.
 
 ```python
-from esmerald.security.jwt.token import Token
-from esmerald.conf import settings
+from ravyn.security.jwt.token import Token
+from ravyn.conf import settings
 
 # Декодирование JWT токена
 jwt_token = Token.decode(token=..., key=settings.secret_key, algorithms=["HS256"])
@@ -88,7 +88,7 @@ jwt_token = Token.decode(token=..., key=settings.secret_key, algorithms=["HS256"
 !!! Note
     Эта функциональность сильно зависит от библиотеки `pyjwt`, но её использование не является обязательным.
     Вы можете использовать любую библиотеку, которая соответствует вашим требованиям.
-    Esmerald просто предлагает примеры и альтернативы.
+    Ravyn просто предлагает примеры и альтернативы.
 
 ### Поля claims
 

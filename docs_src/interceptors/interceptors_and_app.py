@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
 
 from .myapp.interceptors import RequestParamInterceptor
 
@@ -8,7 +8,7 @@ async def home() -> JSONResponse:
     return JSONResponse({"message": "Welcome home"})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=home)],
     interceptors=[RequestParamInterceptor],
 )

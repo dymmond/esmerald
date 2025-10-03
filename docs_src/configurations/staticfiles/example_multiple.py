@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from esmerald import Esmerald, StaticFilesConfig
+from ravyn import Ravyn, StaticFilesConfig
 
 static_files_config = StaticFilesConfig(
     path="/static",
@@ -13,4 +13,4 @@ static_files_node_modules_config = StaticFilesConfig(
     path="/static/node_modules", directory=Path("node_modules"), name="static"
 )
 
-app = Esmerald(static_files_config=[static_files_node_modules_config, static_files_config])
+app = Ravyn(static_files_config=[static_files_node_modules_config, static_files_config])

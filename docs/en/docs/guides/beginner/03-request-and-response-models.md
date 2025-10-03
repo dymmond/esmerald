@@ -1,6 +1,6 @@
 # Request and Response Models
 
-In this section, you'll learn how to validate and structure input and output using Pydantic models in Esmerald.
+In this section, you'll learn how to validate and structure input and output using Pydantic models in Ravyn.
 
 ## Why Use Models?
 
@@ -17,23 +17,25 @@ Define a Pydantic model to validate incoming data:
 
 ```python
 from pydantic import BaseModel
-from esmerald import post
+from ravyn import post
+
 
 class CreateUserRequest(BaseModel):
     name: str
     age: int
+
 
 @post("/users")
 def create_user(data: CreateUserRequest) -> dict:
     return {"message": f"Created user {data.name} who is {data.age} years old"}
 ```
 
-When a POST request is made to `/users`, Esmerald:
+When a POST request is made to `/users`, Ravyn:
 - Automatically parses the JSON
 - Validates it against `CreateUserRequest`
 - Injects the model instance into the handler
 
-Invalid request? Esmerald returns a 422 with helpful details.
+Invalid request? Ravyn returns a 422 with helpful details.
 
 ---
 
@@ -43,18 +45,20 @@ Define a model to **structure** the output:
 
 ```python
 from pydantic import BaseModel
-from esmerald import get
+from ravyn import get
+
 
 class UserResponse(BaseModel):
     id: int
     name: str
+
 
 @get("/users/{user_id}")
 def get_user(user_id: int) -> UserResponse:
     return UserResponse(id=user_id, name=f"User {user_id}")
 ```
 
-- Esmerald converts the returned model into JSON automatically
+- Ravyn converts the returned model into JSON automatically
 
 ---
 
@@ -95,4 +99,4 @@ You've now learned how to:
 - Use response models for output structure
 - Handle nesting and collections
 
-👉 Continue to [the next section](04-handling-errors.md) to learn about custom error handling, exceptions, and status codes in Esmerald.
+👉 Continue to [the next section](04-handling-errors.md) to learn about custom error handling, exceptions, and status codes in Ravyn.

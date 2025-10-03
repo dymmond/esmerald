@@ -1,6 +1,6 @@
 # **`File`** class
 
-::: esmerald.core.datastructures.file.File
+::: ravyn.core.datastructures.file.File
     options:
         inherited_members: false
         filters:

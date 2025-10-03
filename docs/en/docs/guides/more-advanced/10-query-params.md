@@ -1,8 +1,8 @@
 # Query Parameters
 
-Query parameters in Esmerald allow you to pass dynamic values through the URL's query string, enabling flexible
+Query parameters in Ravyn allow you to pass dynamic values through the URL's query string, enabling flexible
 and customizable API endpoints. This advanced guide provides a comprehensive overview of handling query
-parameters in Esmerald, including their declaration, default values, optional parameters,
+parameters in Ravyn, including their declaration, default values, optional parameters,
 and the interplay between query and path parameters.
 
 ## What Are Query Parameters?
@@ -10,20 +10,22 @@ and the interplay between query and path parameters.
 Query parameters are key-value pairs appended to the URL after a `?`, separated by `&`.
 They are commonly used for filtering, pagination, or passing additional data to endpoints.
 
-In Esmerald, these parameters are automatically recognized and injected into your handler functions.
+In Ravyn, these parameters are automatically recognized and injected into your handler functions.
 
 **Example:**
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
 
 fake_users = [{"last_name": "Doe", "email": "john.doe@example.com"}]
 
+
 @get("/users")
 async def read_users(skip: int = 1, limit: int = 5) -> JSONResponse:
-    return JSONResponse(fake_users[skip : skip + limit])
+    return JSONResponse(fake_users[skip: skip + limit])
 
-app = Esmerald(routes=[Gateway(handler=read_users)])
+
+app = Ravyn(routes=[Gateway(handler=read_users)])
 ```
 
 
@@ -31,23 +33,25 @@ app = Esmerald(routes=[Gateway(handler=read_users)])
 
 - The `read_users` function accepts two query parameters: `skip` and `limit`, both with default values.
 - Accessing `http://127.0.0.1/users?skip=1&limit=5` would call `read_users` with `skip=1` and `limit=5`.
-- Esmerald automatically parses these parameters from the URL and passes them to the function.
+- Ravyn automatically parses these parameters from the URL and passes them to the function.
 
 ## Declaring Default and Optional Parameters
 
-In Esmerald, query parameters can have default values, making them optional in requests. You can declare them
+In Ravyn, query parameters can have default values, making them optional in requests. You can declare them
 using standard Python syntax.
 
 **Example:**
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
+
 
 @get("/items")
 async def read_items(category: str = "all", page: int = 1) -> JSONResponse:
     return JSONResponse({"category": category, "page": page})
 
-app = Esmerald(routes=[Gateway(handler=read_items)])
+
+app = Ravyn(routes=[Gateway(handler=read_items)])
 ```
 
 
@@ -63,10 +67,10 @@ To make a query parameter optional without a default value, you can use `Optiona
 
 **Example:**
 
-
 ```python
 from typing import Optional
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
+
 
 @get("/search")
 async def search_items(query: Optional[str] = None) -> JSONResponse:
@@ -78,7 +82,8 @@ async def search_items(query: Optional[str] = None) -> JSONResponse:
         results = {"results": "Default results"}
     return JSONResponse(results)
 
-app = Esmerald(routes=[Gateway(handler=search_items)])
+
+app = Ravyn(routes=[Gateway(handler=search_items)])
 ```
 
 
@@ -90,13 +95,14 @@ app = Esmerald(routes=[Gateway(handler=search_items)])
 
 ## Combining Query and Path Parameters
 
-Esmerald allows the combination of path and query parameters in a single endpoint.
+Ravyn allows the combination of path and query parameters in a single endpoint.
 It's important to ensure that parameter names are unique to avoid conflicts.
 
 **Example:**
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
+
 
 @get("/users/{user_id}")
 async def get_user(user_id: int, detailed: bool = False) -> JSONResponse:
@@ -105,7 +111,8 @@ async def get_user(user_id: int, detailed: bool = False) -> JSONResponse:
         user.update({"email": "john.doe@example.com", "address": "123 Main St"})
     return JSONResponse(user)
 
-app = Esmerald(routes=[Gateway(handler=get_user)])
+
+app = Ravyn(routes=[Gateway(handler=get_user)])
 ```
 
 
@@ -121,18 +128,20 @@ unexpected behavior.
 ## Required Query Parameters
 
 To enforce that a query parameter is required, omit the default value in the function signature.
-Esmerald will raise a validation error if the parameter is missing in the request.
+Ravyn will raise a validation error if the parameter is missing in the request.
 
 **Example:**
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
+
 
 @get("/reports")
 async def generate_report(date: str) -> JSONResponse:
     return JSONResponse({"report_date": date})
 
-app = Esmerald(routes=[Gateway(handler=generate_report)])
+
+app = Ravyn(routes=[Gateway(handler=generate_report)])
 ```
 
 
@@ -143,4 +152,4 @@ app = Esmerald(routes=[Gateway(handler=generate_report)])
 - A request to `/reports` without the `date` parameter will result in a validation error.
 
 By understanding and utilizing query parameters effectively, you can create flexible and robust API endpoints in
-Esmerald that cater to a wide range of client requirements.
+Ravyn that cater to a wide range of client requirements.

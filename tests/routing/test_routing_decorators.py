@@ -2,10 +2,10 @@ import typing
 
 import pytest
 
-from esmerald import Esmerald, Response, Router, WebSocket
-from esmerald.testclient import TestClient
+from ravyn import Ravyn, Response, Router, WebSocket
+from ravyn.testclient import TestClient
 
-app = Esmerald()
+app = Ravyn()
 
 
 @app.get("/")
@@ -118,7 +118,7 @@ async def another_websocket_endpoint(socket: WebSocket) -> None:
     await socket.close()
 
 
-another_app = Esmerald()
+another_app = Ravyn()
 another_app.add_router(router)
 
 

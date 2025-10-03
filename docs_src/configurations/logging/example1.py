@@ -3,7 +3,7 @@ import sys
 from typing import Any
 import loguru
 
-from esmerald import LoggingConfig, Esmerald
+from ravyn import LoggingConfig, Ravyn
 
 
 class LoguruConfig(LoggingConfig):
@@ -25,4 +25,4 @@ class LoguruConfig(LoggingConfig):
 
 logging_config = LoguruConfig(level="INFO")
 
-app = Esmerald(logging_config=logging_config)
+app = Ravyn(logging_config=logging_config)

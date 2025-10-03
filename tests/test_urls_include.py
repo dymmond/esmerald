@@ -1,7 +1,7 @@
 import pytest
 
-from esmerald import Gateway, ImproperlyConfigured, get
-from esmerald.core.urls.base import include
+from ravyn import Gateway, ImproperlyConfigured, get
+from ravyn.core.urls.base import include
 
 
 @get("/home")

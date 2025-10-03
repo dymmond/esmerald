@@ -1,11 +1,11 @@
 # StaticFilesConfig
 
-StaticFilesConfig is simple set of configurations that when passed enables the built-in of Esmerald.
+StaticFilesConfig is simple set of configurations that when passed enables the built-in of Ravyn.
 When a StaticFilesConfig object is passed to an application instance, it will enable the static files serving.
 
 !!! Check
     StaticFiles are considered an `app` and they are pure Lilya app, so using Lilya StaticFiles
-    will also work with Esmerald.
+    will also work with Ravyn.
 
 ## StaticFilesConfig and application
 
@@ -40,7 +40,7 @@ but also via settings.
 {!> ../../../docs_src/configurations/staticfiles/settings.py!}
 ```
 
-This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+This will make sure you keep the settings clean, separated and without a bloated **Ravyn** instance.
 
 ## Multiple directories and multiple pathes (without fallthrough)
 

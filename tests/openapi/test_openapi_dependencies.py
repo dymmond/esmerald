@@ -2,10 +2,10 @@ from typing import Generic, Optional, Type, TypeVar
 
 from pydantic import BaseModel
 
-from esmerald.injector import Inject
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.testclient import create_client
+from ravyn.injector import Inject
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.testclient import create_client
 
 T = TypeVar("T")
 
@@ -50,8 +50,8 @@ def test_generic_model_injection() -> None:
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

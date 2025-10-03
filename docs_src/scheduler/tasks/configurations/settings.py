@@ -1,10 +1,10 @@
 from typing import Dict, Union
 
-from esmerald import Esmerald, EsmeraldSettings
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn, RavynSettings
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     enable_scheduler: bool = True
 
     @property
@@ -26,4 +26,4 @@ class AppSettings(EsmeraldSettings):
         )
 
 
-app = Esmerald()
+app = Ravyn()

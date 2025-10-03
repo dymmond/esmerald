@@ -109,4 +109,4 @@ If the credentials are incorrect, return an `HTTPException` with a status code o
 
 These step by step guides were inspired by **FastAPI** great work of providing simple and yet effective examples for everyone to understand.
 
-Esmerald adopts a different implementation internally but with the same purposes as any other framework to achieve that.
+Ravyn adopts a different implementation internally but with the same purposes as any other framework to achieve that.

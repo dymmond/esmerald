@@ -3,8 +3,8 @@ from typing import Optional
 from loguru import logger
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Extension, Pluggable
-from esmerald.types import DictAny
+from ravyn import Ravyn, Extension, Pluggable
+from ravyn.types import DictAny
 
 
 class PluggableConfig(BaseModel):
@@ -13,7 +13,7 @@ class PluggableConfig(BaseModel):
 
 class MyExtension(Extension):
     def __init__(
-        self, app: Optional["Esmerald"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
+        self, app: Optional["Ravyn"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
     ):
         super().__init__(app, **kwargs)
         self.app = app
@@ -27,7 +27,7 @@ my_config = PluggableConfig(name="my extension")
 pluggable = Pluggable(MyExtension, config=my_config)
 
 # it is also possible to just pass strings instead of pluggables but this way you lose the ability to pass arguments
-app = Esmerald(
+app = Ravyn(
     routes=[],
     extensions={"my-extension": pluggable, "my-other-extension": Pluggable("path.to.extension")},
 )

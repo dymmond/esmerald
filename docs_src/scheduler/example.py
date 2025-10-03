@@ -1,7 +1,7 @@
 from asyncz.executors import AsyncIOExecutor, ThreadPoolExecutor
 from asyncz.stores.mongo import MongoDBStore
-from esmerald import Esmerald
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
 
 def get_scheduler_config() -> AsynczConfig:
@@ -28,4 +28,4 @@ def get_scheduler_config() -> AsynczConfig:
     )
 
 
-app = Esmerald(routes=[...], scheduler_config=get_scheduler_config())
+app = Ravyn(routes=[...], scheduler_config=get_scheduler_config())

@@ -1,7 +1,7 @@
 # Interceptors
 
-Interceptors are special Esmerald objects that implement the `InterceptorProtocol` via
-[EsmeraldInterceptor](#esmeraldinterceptor).
+Interceptors are special Ravyn objects that implement the `InterceptorProtocol` via
+[RavynInterceptor](#ravyninterceptor).
 
 ## What are the interceptors
 
@@ -11,7 +11,7 @@ hitting your final API endpoint.
 These can be extremely useful, for example, to capture some data
 before passing to the API, for logging anything particulary useful or any other useful logic.
 
-<img src="https://res.cloudinary.com/dymmond/image/upload/v1673451429/esmerald/resources/interceptors_tyohjr.png" alt="Interceptors" />
+<img src="https://res.cloudinary.com/dymmond/image/upload/v1673451429/ravyn/resources/interceptors_tyohjr.png" alt="Interceptors" />
 
 ## Overview
 
@@ -26,22 +26,22 @@ techniques. This makes it possible to:
 
 And whatever you might see suitable.
 
-Esmerald **does not implement** two way method execution, meaning, interceptors are used to capture
+Ravyn **does not implement** two way method execution, meaning, interceptors are used to capture
 the request but not the response.
 
-## EsmeraldInterceptor
+## RavynInterceptor
 
 This is the main object that should be used to create your own interceptors. Every class **should**
 derive from this object and implement the `intercept` functionality.
 
 ```python
-from esmerald import EsmeraldInterceptor
+from ravyn import RavynInterceptor
 ```
 
 or
 
 ```python
-from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
+from ravyn.core.interceptors.interceptor import RavynInterceptor
 ```
 
 ### Example
@@ -69,7 +69,7 @@ We will be creating:
 ## Custom interceptor
 
 Is this the only way of creating an interceptor? No but **it is advised** to subclass the
-[EsmeraldInterceptor](#esmeraldinterceptor) as shown above.
+[RavynInterceptor](#ravyninterceptor) as shown above.
 
 Let us see how it would look like the same app with a custom interceptor then.
 
@@ -86,21 +86,21 @@ Let us see how it would look like the same app with a custom interceptor then.
 ```
 
 It is very similar correct? Yes but the main difference here happens within the
-[EsmeraldInterceptor](#esmeraldinterceptor) as this one implements the `InterceptorProtocol` from
-Esmerald and therefore makes it the right way of using it.
+[RavynInterceptor](#ravyninterceptor) as this one implements the `InterceptorProtocol` from
+Ravyn and therefore makes it the right way of using it.
 
 ## Interceptors and levels
 
-Like everything in Esmerald works in [levels](./application/levels.md), the `interceptors` are no
+Like everything in Ravyn works in [levels](./application/levels.md), the `interceptors` are no
 exception to this but has some constraints.
 
-- The interceptors only work on [Esmerald](./application/applications.md),
-[ChildEsmerald](./routing/router.md#child-esmerald-application),
+- The interceptors only work on [Ravyn](./application/applications.md),
+[ChildRavyn](./routing/router.md#child-ravyn-application),
 [Router](./routing/router.md#router),
 [Gateway](./routing/routes.md#gateway),
 [WebsocketGateway](./routing/routes.md#websocketgateway) and [Include](./routing/routes.md#include)
 **and do not work on handlers directly**.
-- When working with Esmerald and ChildEsmerald, the [interceptors work in isolation](#working-in-isolation).
+- When working with Ravyn and ChildRavyn, the [interceptors work in isolation](#working-in-isolation).
 
 ### Examples using levels
 
@@ -138,28 +138,23 @@ All of the levels described here allow to pass `interceptors`.
 
 ## Working in isolation
 
-Every **Esmerald** and **ChildEsmerald** application is considered independent, which means,
-the resources can be "isolated" but Esmerald also allows the share of the resources across parent
+Every **Ravyn** and **ChildRavyn** application is considered independent, which means,
+the resources can be "isolated" but Ravyn also allows the share of the resources across parent
 and children.
 
 For example, using the example from before, adding `RequestParamInterceptor` on the top of
-an Esmerald app and adding the `CookieInterceptor` in the ChildEsmerald will work separately.
+an Ravyn app and adding the `CookieInterceptor` in the ChildRavyn will work separately.
 
 ```python hl_lines="17 22"
 {!> ../../../docs_src/interceptors/child.py !}
 ```
 
-The `RequestParamInterceptor` will work for the routes of the Esmerald and subsequent chilren,
-the ChildEsmerald, which means, you can also achieve the same result by doing this:
+The `RequestParamInterceptor` will work for the routes of the Ravyn and subsequent chilren,
+the ChildRavyn, which means, you can also achieve the same result by doing this:
 
 ```python hl_lines="17"
 {!> ../../../docs_src/interceptors/child_shared.py !}
 ```
-
-!!! Tip
-    Prior to version 1.0.0, sharing resources between Esmerald and ChildEsmerald was not allowed
-    and it needed to be treated as completely isolated application. In the version 1.0.0 you can
-    still isolate them but you can also share resources.
 
 ## Interceptors and the application
 
@@ -172,8 +167,8 @@ parameters when creating the application.
 
 ## Interceptors and settings module
 
-Like everything in Esmerald, the settings also allow to pass the interceptors instead of passing
-directly when creating the Esmerald intance. A cleaner way of doing it.
+Like everything in Ravyn, the settings also allow to pass the interceptors instead of passing
+directly when creating the Ravyn instance. A cleaner way of doing it.
 
 **settings.py**
 
@@ -193,7 +188,7 @@ settings module.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=settings.AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=settings.AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -205,7 +200,7 @@ settings module.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="settings.AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="settings.AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]

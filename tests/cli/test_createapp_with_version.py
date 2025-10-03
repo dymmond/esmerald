@@ -3,10 +3,10 @@ import shutil
 
 import pytest
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 from tests.cli.utils import run_cmd
 
-app = Esmerald(routes=[])
+app = Ravyn(routes=[])
 
 
 @pytest.fixture(scope="module")
@@ -55,34 +55,32 @@ def _run_asserts():
 
 
 def test_create_app_with_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject --with-structure myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject --with-structure myproject")
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp --version v10")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createapp myapp --version v10")
 
     _run_asserts()
 
 
 def test_create_app_without_env_var(create_folders):
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald createproject --with-structure myproject", is_app=False
+        "tests.cli.main:app", "ravyn createproject --with-structure myproject", is_app=False
     )
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald createapp myapp --version v10", is_app=False
-    )
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createapp myapp --version v10", is_app=False)
 
     _run_asserts()
 
 
 def test_create_app_without_env_var_with_app_flag(create_folders):
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald createproject --with-structure myproject", is_app=False
+        "tests.cli.main:app", "ravyn createproject --with-structure myproject", is_app=False
     )
     assert ss == 0
 
@@ -90,7 +88,7 @@ def test_create_app_without_env_var_with_app_flag(create_folders):
 
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald --app tests.cli.main:app createapp myapp --version v10",
+        "ravyn --app tests.cli.main:app createapp myapp --version v10",
         is_app=False,
     )
 

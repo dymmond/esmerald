@@ -1,6 +1,6 @@
 import sys
 
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 
 
 def build_path():
@@ -25,11 +25,11 @@ def get_application():
     """
     # first call build_path
     build_path()
-    # this is optional, for rewiring edgy settings to esmerald settings
+    # this is optional, for rewiring edgy settings to ravyn settings
     disable_edgy_settings_load()  # disable any settings load
     # import edgy now
     from edgy import Instance, monkay
-    from esmerald.conf import settings
+    from ravyn.conf import settings
 
     monkay.settings = lambda: settings.edgy_settings  # rewire
     monkay.evaluate_settings_once(ignore_import_errors=False)  # import manually
@@ -38,7 +38,7 @@ def get_application():
     registry = settings.registry
 
     app = registry.asgi(
-        Esmerald(
+        Ravyn(
             routes=[Include(namespace="my_project.urls")],
         )
     )

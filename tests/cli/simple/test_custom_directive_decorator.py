@@ -56,7 +56,7 @@ async def create_test_database():
 
 
 def generate():
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject --simple")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject myproject --simple")
     assert ss == 0
 
     os.chdir("myproject/myproject/")
@@ -81,8 +81,8 @@ async def test_custom_directive(create_folders):
     )
 
     # Execute custom directive
-    name = "Esmerald"
-    (o, e, ss) = run_cmd("tests.cli.main:app", f"esmerald run createuser -n {name}")
+    name = "Ravyn"
+    (o, e, ss) = run_cmd("tests.cli.main:app", f"ravyn run createuser -n {name}")
 
     users = await User.query.all()
 
@@ -91,5 +91,5 @@ async def test_custom_directive(create_folders):
     user = await User.query.get(first_name=name)
 
     assert user.first_name == name
-    assert user.email == "mail@esmerald.dev"
+    assert user.email == "mail@ravyn.dev"
     assert user.is_superuser is True

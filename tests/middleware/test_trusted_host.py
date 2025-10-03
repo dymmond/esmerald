@@ -1,9 +1,9 @@
 from lilya.middleware import DefineMiddleware
 
-from esmerald import Gateway, Request, get
-from esmerald.applications import Esmerald
-from esmerald.middleware.trustedhost import TrustedHostMiddleware
-from esmerald.responses import PlainText
+from ravyn import Gateway, Request, get
+from ravyn.applications import Ravyn
+from ravyn.middleware.trustedhost import TrustedHostMiddleware
+from ravyn.responses import PlainText
 
 
 def test_trusted_host_middleware_settings(test_client_factory):
@@ -11,7 +11,7 @@ def test_trusted_host_middleware_settings(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("OK", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         allowed_hosts=["testserver", "*.testserver"],
     )
@@ -34,7 +34,7 @@ def test_trusted_host_middleware(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("OK", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.testserver"])
@@ -55,7 +55,7 @@ def test_trusted_host_middleware(test_client_factory):
 
 
 def test_default_allowed_hosts():
-    app = Esmerald()
+    app = Ravyn()
     middleware = TrustedHostMiddleware(app)
     assert middleware.allowed_hosts == {"*"}
 
@@ -65,7 +65,7 @@ def test_www_redirect(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("OK", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com"])],
     )

@@ -2,8 +2,8 @@ from typing import Any
 
 import pytest
 
-from esmerald import Context, Gateway, Request, get
-from esmerald.testclient import create_client
+from ravyn import Context, Gateway, Request, get
+from ravyn.testclient import create_client
 
 pytestmark = pytest.mark.anyio
 

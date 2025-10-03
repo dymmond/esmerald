@@ -1,3 +1,3 @@
 # **`ORJSONResponse`** class
 
-::: esmerald.responses.encoders.ORJSONResponse
+::: ravyn.responses.encoders.ORJSONResponse

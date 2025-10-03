@@ -1,5 +1,5 @@
-from esmerald import get
-from esmerald.routing.apis.generics import ReadAPIView
+from ravyn import get
+from ravyn.routing.apis.generics import ReadAPIView
 
 
 class UserAPI(ReadAPIView):

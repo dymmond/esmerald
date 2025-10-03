@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from edgy import Database, Registry
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 database = Database("postgresql+asyncpg://user:password@host:port/database")
 registry = Registry(database=database)
@@ -20,7 +20,7 @@ async def create_user(data: User) -> None:
     ...
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=create_user)],
     on_startup=[database.__aenter__],
     on_shutdown=[database.__aexit__],

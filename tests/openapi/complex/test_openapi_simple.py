@@ -3,8 +3,8 @@ from typing import Dict
 from msgspec import Struct
 from pydantic import BaseModel
 
-from esmerald import Gateway, Include, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, get
+from ravyn.testclient import create_client
 
 
 class PydanticItem(BaseModel):
@@ -36,8 +36,8 @@ def test_complex_simple(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

@@ -1,5 +1,5 @@
-from esmerald import delete
-from esmerald.routing.apis.generics import DeleteAPIView
+from ravyn import delete
+from ravyn.routing.apis.generics import DeleteAPIView
 
 
 class UserAPI(DeleteAPIView):

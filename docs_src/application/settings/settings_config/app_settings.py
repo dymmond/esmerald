@@ -1,6 +1,6 @@
-from esmerald import EsmeraldSettings
+from ravyn import RavynSettings
 
 
-# Create a ChildEsmeraldSettings object
-class InstanceSettings(EsmeraldSettings):
+# Create a ChildRavynSettings object
+class InstanceSettings(RavynSettings):
     app_name: str = "my instance"

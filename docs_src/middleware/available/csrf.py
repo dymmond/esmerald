@@ -1,6 +1,6 @@
-from esmerald import Esmerald, EsmeraldSettings
-from esmerald.core.config import CSRFConfig
-from esmerald.middleware import CSRFMiddleware
+from ravyn import Ravyn, RavynSettings
+from ravyn.core.config import CSRFConfig
+from ravyn.middleware import CSRFMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
@@ -8,18 +8,18 @@ routes = [...]
 # Option one
 middleware = [LilyaMiddleware(CSRFMiddleware, secret="your-long-unique-secret")]
 
-app = Esmerald(routes=routes, middleware=middleware)
+app = Ravyn(routes=routes, middleware=middleware)
 
 
 # Option two - Activating the built-in middleware using the config.
 csrf_config = CSRFConfig(secret="your-long-unique-secret")
 
-app = Esmerald(routes=routes, csrf_config=csrf_config)
+app = Ravyn(routes=routes, csrf_config=csrf_config)
 
 
 # Option three - Using the settings module
-# Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldSettings):
+# Running the application with your custom settings -> RAVYN_SETTINGS_MODULE
+class AppSettings(RavynSettings):
     @property
     def csrf_config(self) -> CSRFConfig:
         return CSRFConfig(allow_origins=["*"])

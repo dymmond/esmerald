@@ -7,7 +7,7 @@ that its to make sure you don't need to have a new learning curve in terms of un
 
 ## The `username` and `password`
 
-We’re going to use **Esmerald** security utilities to handle the `username` and `password`.
+We’re going to use **Ravyn** security utilities to handle the `username` and `password`.
 
 According to the OAuth2 specification, when using the "password flow" (which we are using), the client/user must send `username` and `password` fields as form data.
 
@@ -42,7 +42,7 @@ These scopes help specify the level of access or permissions the user or client 
 
 ## The operation to get the `username` and `password`
 
-Let us use the Esmerald built-ins to perform this operation.
+Let us use the Ravyn built-ins to perform this operation.
 
 ### OAuth2PasswordRequestForm
 
@@ -53,7 +53,7 @@ First, import `OAuth2PasswordRequestForm`, and use it as a dependency with `Secu
 ```
 
 !!! Note
-    The `Inject` and `Injects()` are what makes Esmerald dependency injection quite unique and layer based.
+    The `Inject` and `Injects()` are what makes Ravyn dependency injection quite unique and layer based.
 
 The `OAuth2PasswordRequestForm` is a class dependency that defines a form body containing the following fields:
 
@@ -71,13 +71,13 @@ The `OAuth2PasswordRequestForm` is a class dependency that defines a form body c
 - An optional `client_secret` (also not needed for our example).
 
 !!! Info
-    The `OAuth2PasswordRequestForm` is not a special class in **Esmerald**, unlike `OAuth2PasswordBearer`.
+    The `OAuth2PasswordRequestForm` is not a special class in **Ravyn**, unlike `OAuth2PasswordBearer`.
 
-    `OAuth2PasswordBearer` informs **Esmerald** that it represents a security scheme, which is why it gets added as such to the OpenAPI schema.
+    `OAuth2PasswordBearer` informs **Ravyn** that it represents a security scheme, which is why it gets added as such to the OpenAPI schema.
 
     In contrast, `OAuth2PasswordRequestForm` is simply a convenience class dependency. You could have written it yourself or declared the `Form` parameters directly.
 
-    Since it's a common use case, **Esmerald** provides this class out of the box to make your work easier.
+    Since it's a common use case, **Ravyn** provides this class out of the box to make your work easier.
 
 ## The form data
 
@@ -159,7 +159,7 @@ In this simplified example, we'll just return the `username` as the token (thoug
 
     This is something you must implement in your code, ensuring the correct use of these JSON keys.
 
-    It's almost the only part you need to manage manually to comply with the specifications. For everything else, **Esmerald** takes care of it for you.
+    It's almost the only part you need to manage manually to comply with the specifications. For everything else, **Ravyn** takes care of it for you.
 
 ## Updating the Dependencies
 

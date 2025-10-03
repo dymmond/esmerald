@@ -1,4 +1,4 @@
-from esmerald import Request, Security, HTTPException, get, Inject, Injects, Esmerald, Gateway
+from ravyn import Request, Security, HTTPException, get, Inject, Injects, Ravyn, Gateway
 from lilya import status
 from typing import cast, Any
 from pydantic import BaseModel
@@ -48,6 +48,6 @@ def read_current_user(current_user: User = Injects()) -> Any:
 
 
 # Start the application
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=read_current_user)],
 )

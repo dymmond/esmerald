@@ -1,9 +1,9 @@
 from lilya.middleware import DefineMiddleware
 from lilya.middleware.security import parse_content_policy
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.middleware.security import SecurityMiddleware
-from esmerald.responses import PlainText
+from ravyn import Gateway, Ravyn, get
+from ravyn.middleware.security import SecurityMiddleware
+from ravyn.responses import PlainText
 
 content_policy_dict = {
     "default-src": "'self'",
@@ -28,7 +28,7 @@ def test_security_policy(test_client_factory):
     def homepage() -> PlainText:
         return PlainText("Ok", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(SecurityMiddleware, content_policy=content_policy_dict)],
     )

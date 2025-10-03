@@ -1,7 +1,7 @@
 from myapp.accounts.models import User
 from edgy.exceptions import ObjectNotFound
 
-from esmerald import Esmerald, Gateway, Inject, Injects, get
+from ravyn import Ravyn, Gateway, Inject, Injects, get
 
 
 async def get_user_model() -> User:
@@ -16,4 +16,4 @@ async def me(user: User = Injects()) -> str:
     return user.email
 
 
-app = Esmerald(routes=[Gateway(handler=me)])
+app = Ravyn(routes=[Gateway(handler=me)])

@@ -4,10 +4,10 @@ from myapp.accounts.models import User
 from pydantic import BaseModel
 from edgy.exceptions import ObjectNotFound, EdgyException
 
-from esmerald import AsyncDAOProtocol, DaoProtocol, Esmerald, Gateway, post
+from ravyn import AsyncDAOProtocol, DaoProtocol, Ravyn, Gateway, post
 
 if TYPE_CHECKING:
-    from esmerald.types import DictAny
+    from ravyn.types import DictAny
 
 
 class UserModel(BaseModel):
@@ -87,7 +87,7 @@ async def create_async_dao(data: UserModel) -> None:
     await user.create(user=data)
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=create),
         Gateway(handler=create_async_dao),

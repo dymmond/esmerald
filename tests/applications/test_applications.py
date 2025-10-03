@@ -7,16 +7,16 @@ from lilya import status
 from lilya.middleware import DefineMiddleware
 from lilya.routing import Host
 
-from esmerald import Request
-from esmerald.applications import Esmerald
-from esmerald.exceptions import HTTPException, ImproperlyConfigured, WebSocketException
-from esmerald.middleware import TrustedHostMiddleware
-from esmerald.responses import JSONResponse, PlainText
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, head, options, route, websocket
-from esmerald.routing.router import Include, Router
-from esmerald.staticfiles import StaticFiles
-from esmerald.websockets import WebSocket
+from ravyn import Request
+from ravyn.applications import Ravyn
+from ravyn.exceptions import HTTPException, ImproperlyConfigured, WebSocketException
+from ravyn.middleware import TrustedHostMiddleware
+from ravyn.responses import JSONResponse, PlainText
+from ravyn.routing.gateways import Gateway, WebSocketGateway
+from ravyn.routing.handlers import get, head, options, route, websocket
+from ravyn.routing.router import Include, Router
+from ravyn.staticfiles import StaticFiles
+from ravyn.websockets import WebSocket
 
 
 async def error_500(request, exc):  # pragma: no cover
@@ -123,7 +123,7 @@ middleware = [
     DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["testserver", "*.example.org"])
 ]
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway("/head", handler=head_func),
         Gateway("/options", handler=head_options),
@@ -253,7 +253,7 @@ def test_app_mount(tmpdir, test_client_factory):
     with open(path, "w") as file:
         file.write("<file content>")
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Include("/static", StaticFiles(directory=tmpdir)),
         ]
@@ -275,7 +275,7 @@ def test_app_debug(test_client_factory):
     async def homepage(request: Request) -> None:
         raise RuntimeError()
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ]
@@ -294,7 +294,7 @@ def test_app_add_route(test_client_factory):
     async def homepage(request: Request) -> PlainText:
         return PlainText("Hello, World!")
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ]
@@ -312,7 +312,7 @@ def test_app_add_route_with_root_path(test_client_factory, path):
     async def homepage(request: Request) -> PlainText:
         return PlainText("Hello, World!")
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ],
@@ -333,7 +333,7 @@ def test_app_add_websocket_route(test_client_factory):
         await socket.send_text("Hello, world!")
         await socket.close()
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             WebSocketGateway("/ws", handler=websocket_endpoint),
         ]
@@ -357,7 +357,7 @@ def test_app_add_event_handler(test_client_factory):
         nonlocal cleanup_complete
         cleanup_complete = True
 
-    app = Esmerald(
+    app = Ravyn(
         on_startup=[run_startup],
         on_shutdown=[run_cleanup],
     )
@@ -382,7 +382,7 @@ def test_app_async_cm_lifespan(test_client_factory):
         yield
         cleanup_complete = True
 
-    app = Esmerald(lifespan=lifespan)
+    app = Ravyn(lifespan=lifespan)
 
     assert not startup_complete
     assert not cleanup_complete
@@ -404,7 +404,7 @@ def test_app_async_gen_lifespan(test_client_factory):
         yield
         cleanup_complete = True
 
-    app = Esmerald(lifespan=lifespan)
+    app = Ravyn(lifespan=lifespan)
 
     assert not startup_complete
     assert not cleanup_complete
@@ -417,5 +417,5 @@ def test_app_async_gen_lifespan(test_client_factory):
 
 def test_raise_improperly_configured_on_websocket_route_function(test_client_factory):
     with pytest.raises(ImproperlyConfigured):
-        app = Esmerald(routes=[])
+        app = Ravyn(routes=[])
         app.websocket_route(path="/")

@@ -1,4 +1,4 @@
-from esmerald.utils.decorators import observable
+from ravyn.utils.decorators import observable
 
 
 @observable(send=["daily_cleanup"])

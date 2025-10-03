@@ -1,10 +1,10 @@
 import pytest
 from pydantic import BaseModel
 
-from esmerald import File, ImproperlyConfigured, Param, ValidationErrorException, get
-from esmerald.core.transformers.model import ParamSetting
-from esmerald.core.transformers.utils import get_request_params, get_signature
-from esmerald.utils.enums import ParamType
+from ravyn import File, ImproperlyConfigured, Param, ValidationErrorException, get
+from ravyn.core.transformers.model import ParamSetting
+from ravyn.core.transformers.utils import get_request_params, get_signature
+from ravyn.utils.enums import ParamType
 
 
 def test_get_signature_improperly_configured():

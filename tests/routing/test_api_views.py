@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Mapping, Sequence, Set
 import pytest
 from pydantic import BaseModel
 
-import esmerald
-from esmerald import (
+import ravyn
+from ravyn import (
     APIView,
     Gateway,
     ImproperlyConfigured,
@@ -15,8 +15,8 @@ from esmerald import (
     post,
     put,
 )
-from esmerald.routing.apis.generics import CreateAPIView, DeleteAPIView, ListAPIView, ReadAPIView
-from esmerald.testclient import create_client
+from ravyn.routing.apis.generics import CreateAPIView, DeleteAPIView, ListAPIView, ReadAPIView
+from ravyn.testclient import create_client
 
 
 class TestModel(BaseModel):
@@ -48,7 +48,7 @@ def test_can_access_apiview(test_client_factory, handler, return_message):
 
 @pytest.mark.parametrize("method", list(SimpleAPIView.http_allowed_methods))
 def test_raises_improperly_configured_on_wrong_method_in_simple_api(test_client_factory, method):
-    handler = getattr(esmerald, method)
+    handler = getattr(ravyn, method)
     with pytest.raises(ImproperlyConfigured):
 
         class MySimpleAPIView(SimpleAPIView):
@@ -79,7 +79,7 @@ def test_create_api_view(test_client_factory, value):
 
 @pytest.mark.parametrize("value", list(ReadAPIView.http_allowed_methods))
 def test_read_api_view(test_client_factory, value):
-    getattr(esmerald, value)
+    getattr(ravyn, value)
 
     class MyReadAPIView(ReadAPIView):
         @get()
@@ -109,7 +109,7 @@ def test_delete_api_view(test_client_factory, value):
 #     + list(DeleteAPIView.http_allowed_methods),
 # )
 # def test_all_api_view(test_client_factory, value):
-#     handler = getattr(esmerald, value)
+#     handler = getattr(ravyn, value)
 
 #     class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
 #         @post()
@@ -172,7 +172,7 @@ def test_all_api_view_custom_error(test_client_factory, value):
     "value", [value for value in SimpleAPIView.http_allowed_methods if value != "get"]
 )
 def test_default_parameters_raise_error_on_wrong_handler(test_client_factory, value):
-    handler = getattr(esmerald, value)
+    handler = getattr(ravyn, value)
 
     with pytest.raises(ImproperlyConfigured) as raised:
 
@@ -242,7 +242,7 @@ def test_raises_improperly_configured_on_non_list_types(test_client_factory, ret
     ],
 )
 def test_list_api_view_works_for_many(test_client_factory, return_type, method):
-    handler = getattr(esmerald, method)
+    handler = getattr(ravyn, method)
 
     class GenericListAPIView(ListAPIView):
         extra_allowed = ["return_list"]

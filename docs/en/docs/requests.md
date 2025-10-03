@@ -1,7 +1,7 @@
 # Request
 
 While browsing the documentation a lot of examples where used using the `Request` object
-from Esmerald.
+from Ravyn.
 
 Well, the `Request` is actually inherited from `Lilya` and some extas were added to tune it
 to the needs of the framework.
@@ -9,7 +9,7 @@ to the needs of the framework.
 Importing is as simple as:
 
 ```python
-from esmerald import Request
+from ravyn import Request
 ```
 
 ## API Reference
@@ -23,8 +23,8 @@ You can also read more about the `request` in the [Official Lilya documentation]
 The `request` is what is used (generally) to get the data from the `path_parameters`, `cookies`, `headers`
 or even the `user` current logged in.
 
-As **Esmerald** uses `Lilya` under the hood, using the `Request` from it, it won't cause any
-damage but you won't be able to access the whole scope of what **Esmerald** can do for you as well
+As **Ravyn** uses `Lilya` under the hood, using the `Request` from it, it won't cause any
+damage but you won't be able to access the whole scope of what **Ravyn** can do for you as well
 as the unique way of handling the `.json()`.
 
 Why this object then? Well, it is in the name, you might want to access the properties of the
@@ -33,7 +33,7 @@ Why this object then? Well, it is in the name, you might want to access the prop
 **Example**
 
 ```python
-from esmerald import Esmerald, Gateway, get, Request
+from ravyn import Ravyn, Gateway, get, Request
 
 
 @get("/users/{id}")
@@ -42,12 +42,12 @@ def read_request(request: Request, id: str):
     return {"host": host, "user_id": id}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=read_request)
     ]
 )
 ```
 
-**Esmerald** automatically will know the *path parameters* of the handler by the way it is
+**Ravyn** automatically will know the *path parameters* of the handler by the way it is
 declared but you can also access them via `request.path_params`.

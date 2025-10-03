@@ -6,10 +6,10 @@ attributes and functions.
 ## How to import
 
 ```python
-from esmerald import Gateway
+from ravyn import Gateway
 ```
 
-::: esmerald.Gateway
+::: ravyn.Gateway
     options:
         members:
             - path

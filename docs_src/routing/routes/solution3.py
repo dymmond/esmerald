@@ -1,7 +1,7 @@
 from flask import Flask, escape, request
 
-from esmerald import Esmerald, Include
-from esmerald.middleware.wsgi import WSGIMiddleware
+from ravyn import Ravyn, Include
+from ravyn.middleware.wsgi import WSGIMiddleware
 
 flask_app = Flask(__name__)
 another_flask_app = Flask(__name__)
@@ -9,11 +9,11 @@ another_flask_app = Flask(__name__)
 
 @flask_app.route("/")
 def flask_main():
-    name = request.args.get("name", "Esmerald")
+    name = request.args.get("name", "Ravyn")
     return f"Hello, {escape(name)} from Flask!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",

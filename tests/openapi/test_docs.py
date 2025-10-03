@@ -1,11 +1,11 @@
-from esmerald import Esmerald, Gateway, get
-from esmerald.openapi.docs import (
+from ravyn import Gateway, Ravyn, get
+from ravyn.openapi.docs import (
     get_redoc_html,
     get_stoplight_html,
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
-from esmerald.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 @get("/")
@@ -13,8 +13,8 @@ async def home() -> None:
     """"""
 
 
-app = Esmerald(routes=[Gateway(handler=home)])
-client = EsmeraldTestClient(app)
+app = Ravyn(routes=[Gateway(handler=home)])
+client = RavynTestClient(app)
 
 
 def test_get_swagger_ui(test_client_factory):
@@ -32,7 +32,7 @@ def test_get_swagger_ui(test_client_factory):
     assert response.status_code == 200
     assert (
         response.body
-        == b'\n    <!DOCTYPE html>\n    <html>\n    <head>\n    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.4/swagger-ui.min.css">\n    <link rel="shortcut icon" href="https://esmerald.dev/statics/images/favicon.ico">\n    <title>Esmerald</title>\n    </head>\n    <body>\n    <div id="swagger-ui">\n    </div>\n    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.4/swagger-ui-bundle.min.js"></script>\n    <!-- `SwaggerUIBundle` is now available on the page -->\n    <script>\n    const ui = SwaggerUIBundle({\n        url: \'/openapi.json\',\n    "dom_id": "#swagger-ui",\n"layout": "BaseLayout",\n"deepLinking": true,\n"showExtensions": true,\n"showCommonExtensions": true,\noauth2RedirectUrl: window.location.origin + \'/docs/oauth2-redirect\',\n    presets: [\n        SwaggerUIBundle.presets.apis,\n        SwaggerUIBundle.SwaggerUIStandalonePreset\n        ],\n    })\n    </script>\n    </body>\n    </html>\n    '
+        == b'\n    <!DOCTYPE html>\n    <html>\n    <head>\n    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.4/swagger-ui.min.css">\n    <link rel="shortcut icon" href="https://ravyn.dev/statics/images/favicon.ico">\n    <title>Ravyn</title>\n    </head>\n    <body>\n    <div id="swagger-ui">\n    </div>\n    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.4/swagger-ui-bundle.min.js"></script>\n    <!-- `SwaggerUIBundle` is now available on the page -->\n    <script>\n    const ui = SwaggerUIBundle({\n        url: \'/openapi.json\',\n    "dom_id": "#swagger-ui",\n"layout": "BaseLayout",\n"deepLinking": true,\n"showExtensions": true,\n"showCommonExtensions": true,\noauth2RedirectUrl: window.location.origin + \'/docs/oauth2-redirect\',\n    presets: [\n        SwaggerUIBundle.presets.apis,\n        SwaggerUIBundle.SwaggerUIStandalonePreset\n        ],\n    })\n    </script>\n    </body>\n    </html>\n    '
     )
 
 
@@ -48,7 +48,7 @@ def test_get_redoc_ui(test_client_factory):
     assert response.status_code == 200
     assert (
         response.body
-        == b'\n    <!DOCTYPE html>\n    <html>\n    <head>\n    <title>Esmerald</title>\n    <!-- needed for adaptive design -->\n    <meta charset="utf-8"/>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n    \n    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">\n    \n    <link rel="shortcut icon" href="https://esmerald.dev/statics/images/favicon.ico">\n    <!--\n    ReDoc doesn\'t change outer page styles\n    -->\n    <style>\n      body {\n        margin: 0;\n        padding: 0;\n      }\n    </style>\n    </head>\n    <body>\n    <noscript>\n        ReDoc requires Javascript to function. Please enable it to browse the documentation.\n    </noscript>\n    <redoc spec-url="/openapi.json"></redoc>\n    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>\n    </body>\n    </html>\n    '
+        == b'\n    <!DOCTYPE html>\n    <html>\n    <head>\n    <title>Ravyn</title>\n    <!-- needed for adaptive design -->\n    <meta charset="utf-8"/>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n    \n    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">\n    \n    <link rel="shortcut icon" href="https://ravyn.dev/statics/images/favicon.ico">\n    <!--\n    ReDoc doesn\'t change outer page styles\n    -->\n    <style>\n      body {\n        margin: 0;\n        padding: 0;\n      }\n    </style>\n    </head>\n    <body>\n    <noscript>\n        ReDoc requires Javascript to function. Please enable it to browse the documentation.\n    </noscript>\n    <redoc spec-url="/openapi.json"></redoc>\n    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>\n    </body>\n    </html>\n    '
     )
 
 
@@ -74,5 +74,5 @@ def test_get_spotlight_ui(test_client_factory):
     assert response.status_code == 200
     assert (
         response.body
-        == b'\n    <!DOCTYPE html>\n    <html>\n        <head>\n            <title>Esmerald</title>\n            <!-- needed for adaptive design -->\n            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n            <link rel="shortcut icon" href="https://esmerald.dev/statics/images/favicon.ico">\n            <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">\n            <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js" crossorigin></script>\n            <style>body { margin: 0; padding: 0 }</style>\n    \n        <body>\n            <noscript>\n                Stoplight requires Javascript to function. Please enable it to browse the documentation.\n            </noscript>\n            <elements-api\n                apiDescriptionUrl="/openapi.json"\n                router="hash"\n                layout="sidebar"\n            />\n        </body>\n    </html>\n    '
+        == b'\n    <!DOCTYPE html>\n    <html>\n        <head>\n            <title>Ravyn</title>\n            <!-- needed for adaptive design -->\n            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n            <link rel="shortcut icon" href="https://ravyn.dev/statics/images/favicon.ico">\n            <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">\n            <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js" crossorigin></script>\n            <style>body { margin: 0; padding: 0 }</style>\n    \n        <body>\n            <noscript>\n                Stoplight requires Javascript to function. Please enable it to browse the documentation.\n            </noscript>\n            <elements-api\n                apiDescriptionUrl="/openapi.json"\n                router="hash"\n                layout="sidebar"\n            />\n        </body>\n    </html>\n    '
     )

@@ -6,10 +6,10 @@ attributes and functions.
 ## How to import
 
 ```python
-from esmerald import Router
+from ravyn import Router
 ```
 
-::: esmerald.Router
+::: ravyn.Router
     options:
         members:
             - path

@@ -3,9 +3,9 @@ import os
 import tempfile
 from typing import Any
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.contrib.responses.files import send_file
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.contrib.responses.files import send_file
+from ravyn.testclient import RavynTestClient
 
 
 def create_temp_file(content: bytes, suffix=".txt"):
@@ -22,8 +22,8 @@ def test_send_file_from_path_as_inline(test_client_factory):
     async def endpoint() -> Any:
         return send_file(tmp_path)
 
-    app = Esmerald(routes=[Gateway("/file", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    app = Ravyn(routes=[Gateway("/file", handler=endpoint)])
+    client = RavynTestClient(app)
 
     response = client.get("/file")
     assert response.status_code == 200
@@ -40,8 +40,8 @@ def test_send_file_from_path_as_attachment(test_client_factory):
     async def endpoint() -> Any:
         return send_file(tmp_path, as_attachment=True)
 
-    app = Esmerald(routes=[Gateway("/download", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    app = Ravyn(routes=[Gateway("/download", handler=endpoint)])
+    client = RavynTestClient(app)
 
     response = client.get("/download")
     assert response.status_code == 200
@@ -58,8 +58,8 @@ def test_send_file_with_custom_filename(test_client_factory):
     async def endpoint() -> Any:
         return send_file(tmp_path, as_attachment=True, attachment_filename="custom.bin")
 
-    app = Esmerald(routes=[Gateway("/custom", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    app = Ravyn(routes=[Gateway("/custom", handler=endpoint)])
+    client = RavynTestClient(app)
 
     response = client.get("/custom")
     assert response.status_code == 200
@@ -75,8 +75,8 @@ def test_send_file_with_file_like_object(test_client_factory):
     async def endpoint() -> Any:
         return send_file(file_like, mimetype="text/plain")
 
-    app = Esmerald(routes=[Gateway("/stream", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    app = Ravyn(routes=[Gateway("/stream", handler=endpoint)])
+    client = RavynTestClient(app)
 
     response = client.get("/stream")
     assert response.status_code == 200
@@ -91,8 +91,8 @@ def test_send_file_with_cache_control(test_client_factory):
     async def endpoint() -> Any:
         return send_file(tmp_path, max_age=3600)
 
-    app = Esmerald(routes=[Gateway("/cache", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    app = Ravyn(routes=[Gateway("/cache", handler=endpoint)])
+    client = RavynTestClient(app)
 
     response = client.get("/cache")
     assert response.status_code == 200

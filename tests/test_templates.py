@@ -2,14 +2,14 @@ import os
 
 import pytest
 
-from esmerald.applications import Esmerald
-from esmerald.core.config.template import TemplateConfig
-from esmerald.core.datastructures import Template
-from esmerald.requests import Request
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.template.jinja import JinjaTemplateEngine
-from esmerald.testclient import EsmeraldTestClient, create_client
+from ravyn.applications import Ravyn
+from ravyn.core.config.template import TemplateConfig
+from ravyn.core.datastructures import Template
+from ravyn.requests import Request
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.template.jinja import JinjaTemplateEngine
+from ravyn.testclient import RavynTestClient, create_client
 
 
 def test_handler_raise_for_no_template_engine_created() -> None:
@@ -40,7 +40,7 @@ def test_templates_starlette(template_dir, test_client_factory, apostrophe):
     async def homepage(request: Request) -> Template:
         return Template(name="index.html", context={"request": request})
 
-    app = Esmerald(
+    app = Ravyn(
         debug=True,
         routes=[Gateway("/", handler=homepage)],
         template_config=TemplateConfig(
@@ -48,7 +48,7 @@ def test_templates_starlette(template_dir, test_client_factory, apostrophe):
             engine=JinjaTemplateEngine,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>".replace(
         "'", apostrophe
@@ -67,14 +67,14 @@ def test_templates_async(template_dir, test_client_factory):
     async def homepage(request: Request) -> Template:
         return Template(name="index.html", context={"request": request, "say_world": say_world})
 
-    app = Esmerald(
+    app = Ravyn(
         debug=True,
         routes=[Gateway("/", handler=homepage)],
         template_config=TemplateConfig(
             directory=template_dir, engine=JinjaTemplateEngine, env_options={"enable_async": True}
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.text == "<html>Hello world</html>"
 
@@ -90,7 +90,7 @@ def test_alternative_template(template_dir, test_client_factory):
             name="indx.html", context={"request": request}, alternative_template="index.html"
         )
 
-    app = Esmerald(
+    app = Ravyn(
         debug=True,
         routes=[Gateway("/", handler=homepage)],
         template_config=TemplateConfig(
@@ -98,6 +98,6 @@ def test_alternative_template(template_dir, test_client_factory):
             engine=JinjaTemplateEngine,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.text == "<html>Hello, <a href='http://testserver/'>world</a></html>"

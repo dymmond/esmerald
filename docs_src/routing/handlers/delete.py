@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include, JSONResponse, delete
+from ravyn import Ravyn, Gateway, Include, JSONResponse, delete
 
 
 @delete(path="/{item_id:int}")
@@ -13,7 +13,7 @@ def another_delete(item_id: int) -> JSONResponse:
     ...
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/delete",

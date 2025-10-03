@@ -1,5 +1,5 @@
-from esmerald import get
-from esmerald.utils.decorators import cache
+from ravyn import get
+from ravyn.utils.decorators import cache
 
 file_cache = FileCache()
 

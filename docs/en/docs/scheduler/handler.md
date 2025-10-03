@@ -1,6 +1,6 @@
 # Handler
 
-Esmerald uses <a href='https://asyncz.dymmond.com' target='_blank'>Asyncz</a> to manage the
+Ravyn uses <a href='https://asyncz.dymmond.com' target='_blank'>Asyncz</a> to manage the
 scheduler internally and therefore their documentation is also up to date.
 
 The handler is the `scheduler` used to decorate a function that you want to process as a task.
@@ -78,7 +78,7 @@ from asyncz.typing import undefined
 
 ## Triggers
 
-Esmerald comes with some pre-defined triggers ready to be used by the application.
+Ravyn comes with some pre-defined triggers ready to be used by the application.
 
 The built-in trigger cover the majority of the needs of all users. However if that is not the case, there is always
 the option to create a
@@ -212,7 +212,7 @@ The trigger is considered to be finished when any of the given triggers has fini
 Using the scheduler also means access to a lot of extra possible configurations that can be added such as `stores`,
 `executors` and any other extra configuration needed.
 
-Esmerald allows to pass those configurations via application instantiation or via [settings](../application/settings.md).
+Ravyn allows to pass those configurations via application instantiation or via [settings](../application/settings.md).
 
 ### Via application instantiation
 
@@ -231,7 +231,7 @@ Start the application with the new settings.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -243,7 +243,7 @@ Start the application with the new settings.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]

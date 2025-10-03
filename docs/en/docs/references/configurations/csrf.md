@@ -2,13 +2,13 @@
 
 Reference for the `CSRFConfig` class object and how to use it.
 
-Read more about [how to use the CSRFConfig](https://esmerald.dev/configurations/csrf/) in your
+Read more about [how to use the CSRFConfig](https://ravyn.dev/configurations/csrf/) in your
 application and leverage the system.
 
 ## How to import
 
 ```python
-from esmerald import CSRFConfig
+from ravyn import CSRFConfig
 ```
 
-::: esmerald.core.config.csrf.CSRFConfig
+::: ravyn.core.config.csrf.CSRFConfig

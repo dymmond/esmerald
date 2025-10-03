@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
-from esmerald import Esmerald, Gateway, Response, post
-from esmerald.core.datastructures import ResponseHeader
+from ravyn import Ravyn, Gateway, Response, post
+from ravyn.core.datastructures import ResponseHeader
 
 
 class User(BaseModel):
@@ -17,4 +17,4 @@ async def create_user(data: User) -> Response:
     ...
 
 
-app = Esmerald(routes=Gateway(handler=create_user))
+app = Ravyn(routes=Gateway(handler=create_user))

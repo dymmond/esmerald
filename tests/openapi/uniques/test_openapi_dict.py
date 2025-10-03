@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from esmerald import Gateway, JSONResponse, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, JSONResponse, get
+from ravyn.testclient import create_client
 
 
 @get("/dict")
@@ -17,8 +17,8 @@ def test_open_api(test_app_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

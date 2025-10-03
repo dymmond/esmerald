@@ -9,18 +9,18 @@ from lilya.routing import Host, NoMatchFound
 from lilya.websockets import WebSocket, WebSocketDisconnect
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from esmerald.applications import Esmerald
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.permissions import AllowAny, DenyAll
-from esmerald.requests import Request
-from esmerald.responses import Response
-from esmerald.responses.encoders import UJSONResponse
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, post, put, route, websocket
-from esmerald.routing.router import Include, Router
-from esmerald.testclient import create_client
-from esmerald.utils.enums import MediaType
+from ravyn.applications import Ravyn
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.permissions import AllowAny, DenyAll
+from ravyn.requests import Request
+from ravyn.responses import Response
+from ravyn.responses.encoders import UJSONResponse
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway, WebSocketGateway
+from ravyn.routing.handlers import get, post, put, route, websocket
+from ravyn.routing.router import Include, Router
+from ravyn.testclient import create_client
+from ravyn.utils.enums import MediaType
 
 
 @get(path="/", permissions=[DenyAll])
@@ -144,7 +144,7 @@ class MyAPIView(APIView):
     path = "test"
 
     @get(path="/")
-    async def esmerald(self) -> UJSONResponse:
+    async def ravyn(self) -> UJSONResponse:
         return UJSONResponse({"myapiview": "fluid"})
 
     @get(path="/name/{name}")
@@ -156,7 +156,7 @@ class AnotherMyAPIView(APIView):
     path = "test"
 
     @get(path="/")
-    async def esmerald(self, param: str) -> UJSONResponse:
+    async def ravyn(self, param: str) -> UJSONResponse:
         return UJSONResponse({"myapiview": param})
 
     @get(path="/name/{name}")
@@ -169,7 +169,7 @@ class TestMyAPIView(APIView):
     path = "fluid/{name}"
 
     @get(path="/")
-    async def esmerald(self, param: str, name: str) -> UJSONResponse:
+    async def ravyn(self, param: str, name: str) -> UJSONResponse:
         return UJSONResponse({"param": param, "name": name})
 
     @get(path="/name/{handler}")
@@ -297,23 +297,23 @@ def test_router(test_client_factory):
         assert response.status_code == 200
         assert response.text == "All users"
 
-        response = client.get("/users/esmerald")
+        response = client.get("/users/ravyn")
         assert response.status_code == 200
-        assert response.text == "User esmerald"
+        assert response.text == "User ravyn"
 
         response = client.get("/users/personal/me")
         assert response.status_code == 200
         assert response.text == "User fixed me"
 
-        response = client.get("/users/esmerald/")
+        response = client.get("/users/ravyn/")
         assert response.status_code == 200
-        assert response.url == "http://testserver/users/esmerald"
-        assert response.text == "User esmerald"
+        assert response.url == "http://testserver/users/ravyn"
+        assert response.text == "User ravyn"
 
-        response = client.put("/users/esmerald:disable")
+        response = client.put("/users/ravyn:disable")
         assert response.status_code == 200
-        assert response.url == "http://testserver/users/esmerald:disable"
-        assert response.text == "User esmerald disabled"
+        assert response.url == "http://testserver/users/ravyn:disable"
+        assert response.text == "User ravyn disabled"
 
         response = client.get("/users/nomatch")
         assert response.status_code == 200
@@ -369,17 +369,17 @@ def test_router_apiview(test_client_factory):
         assert response.status_code == 200
         assert response.json() == {"myapiview": "fluid"}
 
-        response = client.get("/apinest/apinested/api/test/name/esmerald")
+        response = client.get("/apinest/apinested/api/test/name/ravyn")
         assert response.status_code == 200
-        assert response.json() == {"myapiview": "esmerald"}
+        assert response.json() == {"myapiview": "ravyn"}
 
         response = client.get("/apinest/apiparam/api/fluid/test")
         assert response.status_code == 200
         assert response.json() == {"myapiview": "fluid"}
 
-        response = client.get("/apinest/apiparam/api/fluid/test/name/esmerald")
+        response = client.get("/apinest/apiparam/api/fluid/test/name/ravyn")
         assert response.status_code == 200
-        assert response.json() == {"myapiview": "esmerald", "param": "fluid"}
+        assert response.json() == {"myapiview": "ravyn", "param": "fluid"}
 
         response = client.get("/test/my/api/view/here/param/fluid/test")
         assert response.status_code == 200
@@ -473,7 +473,7 @@ def test_url_path_for(test_client_factory):
         app = client.app
 
         assert app.path_for("homepage") == "/"
-        assert app.path_for("user", username="esmerald") == "/users/esmerald"
+        assert app.path_for("user", username="ravyn") == "/users/ravyn"
         assert app.path_for("websocket_endpoint") == "/ws"
 
         with pytest.raises(NoMatchFound, match='No route exists for name "broken" and params "".'):
@@ -484,7 +484,7 @@ def test_url_path_for(test_client_factory):
         ):
             assert app.path_for("broken", key="value", key2="value2")
         with pytest.raises(AssertionError):
-            app.path_for("user", username="fluid/esmerald")
+            app.path_for("user", username="fluid/ravyn")
         with pytest.raises(AssertionError):
             app.path_for("user", username="")
 
@@ -528,7 +528,7 @@ def test_url_for(test_client_factory):
     ],
 )
 def test_include_permissions_exist(permissions, result, test_client_factory):
-    app = Esmerald(routes=routes)
+    app = Ravyn(routes=routes)
     with create_client(
         routes=[Include(path="/admin", app=app, permissions=permissions)]
     ) as client:
@@ -548,7 +548,7 @@ def test_include_permissions_exist(permissions, result, test_client_factory):
     ],
 )
 def test_include_permissions_not_exist(permissions, result, test_client_factory):
-    app = Esmerald(routes=routes)
+    app = Ravyn(routes=routes)
     with create_client(
         routes=[Include(path="/admin", app=app, permissions=permissions)]
     ) as client:
@@ -748,20 +748,20 @@ subdomain_router = Router(
 
 
 def test_subdomain_routing(test_client_factory):
-    client = test_client_factory(subdomain_router, base_url="https://esmerald.example.org/")
+    client = test_client_factory(subdomain_router, base_url="https://ravyn.example.org/")
 
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"subdomain": "esmerald"}
+    assert response.json() == {"subdomain": "ravyn"}
 
 
 def test_subdomain_reverse_urls(test_client_factory):
-    client = test_client_factory(subdomain_router, base_url="https://esmerald.example.org/")
+    client = test_client_factory(subdomain_router, base_url="https://ravyn.example.org/")
     assert (
-        client.app.path_for(
-            "subdomains", subdomain="esmerald", path="/homepage"
-        ).make_absolute_url("https://whatever")
-        == "https://esmerald.example.org/homepage"
+        client.app.path_for("subdomains", subdomain="ravyn", path="/homepage").make_absolute_url(
+            "https://whatever"
+        )
+        == "https://ravyn.example.org/homepage"
     )
 
 
@@ -822,7 +822,7 @@ async def url_ok() -> PlainText:
 
 
 def test_url_for_with_double_mount(test_client_factory):
-    app = Esmerald(routes=double_mount_routes)
+    app = Ravyn(routes=double_mount_routes)
     url = app.path_for("include:static", path="123")
     assert url == "/include/static/123"
 
@@ -905,11 +905,11 @@ def test_lifespan_async(test_client_factory):
 def test_lifespan_state_unsupported(test_client_factory):
     @contextlib.asynccontextmanager
     async def lifespan(app):
-        yield {"test": "esmerald"}
+        yield {"test": "ravyn"}
 
     app = Router(
         lifespan=lifespan,
-        routes=[Include("/", PlainText("hello, esmerald"))],
+        routes=[Include("/", PlainText("hello, ravyn"))],
     )
 
     async def no_state_wrapper(scope, receive, send):
@@ -1012,8 +1012,8 @@ def test_exception_on_mounted_apps(test_app_client_factory):
     def exc(request: Request) -> CustomException:
         raise CustomException("Exc")
 
-    sub_app = Esmerald(routes=[Gateway("/", handler=exc)])
-    app = Esmerald(routes=[Include("/sub", app=sub_app)])
+    sub_app = Ravyn(routes=[Gateway("/", handler=exc)])
+    app = Ravyn(routes=[Include("/sub", app=sub_app)])
 
     client = test_app_client_factory(app)
     response = client.get("/sub/")
@@ -1039,14 +1039,14 @@ def test_response_dataclass(test_app_client_factory):
     def user(data: UserIn) -> UserIn:
         return data
 
-    data = {"name": "test", "email": "esmerald@esmerald.dev"}
-    app = Esmerald(routes=[Gateway(handler=user)])
+    data = {"name": "test", "email": "ravyn@ravyn.dev"}
+    app = Ravyn(routes=[Gateway(handler=user)])
 
     client = test_app_client_factory(app)
     response = client.post("/user", json=data)
 
     assert response.status_code == 200
-    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+    assert response.json() == {"name": "test", "email": "ravyn@ravyn.dev"}
 
 
 def test_response_pydantic_dataclass(test_app_client_factory):
@@ -1054,14 +1054,14 @@ def test_response_pydantic_dataclass(test_app_client_factory):
     def another_user(data: UserOut) -> UserOut:
         return data
 
-    data = {"name": "test", "email": "esmerald@esmerald.dev"}
-    app = Esmerald(routes=[Gateway(handler=another_user)])
+    data = {"name": "test", "email": "ravyn@ravyn.dev"}
+    app = Ravyn(routes=[Gateway(handler=another_user)])
 
     client = test_app_client_factory(app)
     response = client.post("/another-user", json=data)
 
     assert response.status_code == 200
-    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+    assert response.json() == {"name": "test", "email": "ravyn@ravyn.dev"}
 
 
 def test_get_and_post_data(test_app_client_factory):
@@ -1069,8 +1069,8 @@ def test_get_and_post_data(test_app_client_factory):
     def another_user(data: Optional[UserOut]) -> Optional[UserOut]:
         return data
 
-    data = {"name": "test", "email": "esmerald@esmerald.dev"}
-    app = Esmerald(routes=[Gateway(handler=another_user)])
+    data = {"name": "test", "email": "ravyn@ravyn.dev"}
+    app = Ravyn(routes=[Gateway(handler=another_user)])
     client = test_app_client_factory(app)
     response = client.get("/another-user")
     assert response.status_code == 200
@@ -1078,7 +1078,7 @@ def test_get_and_post_data(test_app_client_factory):
     response = client.post("/another-user", json=data)
 
     assert response.status_code == 200
-    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+    assert response.json() == {"name": "test", "email": "ravyn@ravyn.dev"}
 
 
 def test_get_and_post_payload(test_app_client_factory):
@@ -1086,8 +1086,8 @@ def test_get_and_post_payload(test_app_client_factory):
     def another_user(payload: Optional[UserOut]) -> Optional[UserOut]:
         return payload
 
-    data = {"name": "test", "email": "esmerald@esmerald.dev"}
-    app = Esmerald(routes=[Gateway(handler=another_user)])
+    data = {"name": "test", "email": "ravyn@ravyn.dev"}
+    app = Ravyn(routes=[Gateway(handler=another_user)])
 
     client = test_app_client_factory(app)
     response = client.get("/another-user")
@@ -1096,7 +1096,7 @@ def test_get_and_post_payload(test_app_client_factory):
     response = client.post("/another-user", json=data)
 
     assert response.status_code == 200
-    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+    assert response.json() == {"name": "test", "email": "ravyn@ravyn.dev"}
 
 
 def test_get_and_head_data():

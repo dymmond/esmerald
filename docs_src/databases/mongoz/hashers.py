@@ -1,7 +1,7 @@
 from typing import List
 
-from esmerald import EsmeraldSettings
-from esmerald.contrib.auth.hashers import BcryptPasswordHasher
+from ravyn import RavynSettings
+from ravyn.contrib.auth.hashers import BcryptPasswordHasher
 
 
 class CustomHasher(BcryptPasswordHasher):
@@ -12,7 +12,7 @@ class CustomHasher(BcryptPasswordHasher):
     salt_entropy = 3000
 
 
-class MySettings(EsmeraldSettings):
+class MySettings(RavynSettings):
     @property
     def password_hashers(self) -> List[str]:
         return ["myapp.hashers.CustomHasher"]

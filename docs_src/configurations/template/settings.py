@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from esmerald import EsmeraldSettings
-from esmerald.core.config.template import TemplateConfig
-from esmerald.template.jinja import JinjaTemplateEngine
+from ravyn import RavynSettings
+from ravyn.core.config.template import TemplateConfig
+from ravyn.template.jinja import JinjaTemplateEngine
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     @property
     def template_config(self) -> TemplateConfig:
         """
@@ -14,7 +14,7 @@ class CustomSettings(EsmeraldSettings):
         `template_config` or then override the `def template_config()`
         property to change the behavior of the whole template_config.
 
-        Esmerald can also support other engines like mako, Diazo,
+        Ravyn can also support other engines like mako, Diazo,
         Cheetah. Currently natively only supports jinja2 as its
         a standards in the market.
         """

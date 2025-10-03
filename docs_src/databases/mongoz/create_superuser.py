@@ -1,7 +1,7 @@
 from pydantic import EmailStr
 
-from esmerald.conf import settings
-from esmerald.contrib.auth.mongoz.base_user import User as BaseUser
+from ravyn.conf import settings
+from ravyn.contrib.auth.mongoz.base_user import User as BaseUser
 
 registry = settings.registry
 

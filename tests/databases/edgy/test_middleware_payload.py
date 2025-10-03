@@ -11,13 +11,13 @@ from httpx import ASGITransport, AsyncClient
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, Include, JSONResponse, Request, get, post, status
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.base_user import AbstractUser
-from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.security.jwt.token import Token
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, JSONResponse, Ravyn, Request, get, post, status
+from ravyn.conf import settings
+from ravyn.contrib.auth.edgy.base_user import AbstractUser
+from ravyn.contrib.auth.edgy.middleware import JWTAuthMiddleware
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.security.jwt.token import Token
+from ravyn.testclient import create_client
 
 models = Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
@@ -36,7 +36,7 @@ def blocking_function():
 class User(AbstractUser):
     """
     Inherits from the abstract user and adds the registry
-    from esmerald settings.
+    from ravyn settings.
     """
 
     class Meta:
@@ -166,7 +166,7 @@ async def create_user(payload: CreateUser) -> None:
 
 @pytest.fixture()
 def app():
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/login", handler=login),
             Gateway("/create", handler=create_user),

@@ -1,7 +1,7 @@
 from lilya.compat import reverse
 
-from esmerald import Controller, Gateway, Include, get, post
-from esmerald.testclient import create_client
+from ravyn import Controller, Gateway, Include, get, post
+from ravyn.testclient import create_client
 
 
 @get("/hello")
@@ -57,7 +57,7 @@ routes = [
         name="api",
     ),
     Include(
-        "/esmerald",
+        "/ravyn",
         routes=[
             Include(
                 "/api",
@@ -77,7 +77,7 @@ routes = [
                 name="api",
             ),
         ],
-        name="esmerald",
+        name="ravyn",
     ),
 ]
 
@@ -147,20 +147,20 @@ def test_can_reverse_lookup_all_nested(test_client_factory):
     with create_client(routes=routes, enable_openapi=False) as client:
         app = client.app
 
-        assert app.path_for("esmerald:api:v1:hello") == "/esmerald/api/hello"
-        assert app.path_for("esmerald:api:v1:new") == "/esmerald/api/new"
+        assert app.path_for("ravyn:api:v1:hello") == "/ravyn/api/hello"
+        assert app.path_for("ravyn:api:v1:new") == "/ravyn/api/new"
 
-        assert reverse("esmerald:api:v1:hello") == "/esmerald/api/hello"
-        assert reverse("esmerald:api:v1:new") == "/esmerald/api/new"
+        assert reverse("ravyn:api:v1:hello") == "/ravyn/api/hello"
+        assert reverse("ravyn:api:v1:new") == "/ravyn/api/new"
 
-        assert app.path_for("esmerald:api:v1:home:home") == "/esmerald/api/home"
-        assert reverse("esmerald:api:v1:home:home") == "/esmerald/api/home"
+        assert app.path_for("ravyn:api:v1:home:home") == "/ravyn/api/home"
+        assert reverse("ravyn:api:v1:home:home") == "/ravyn/api/home"
 
-        assert app.path_for("esmerald:api:v1:new-home:new-home") == "/esmerald/api/new-home"
-        assert reverse("esmerald:api:v1:new-home:new-home") == "/esmerald/api/new-home"
+        assert app.path_for("ravyn:api:v1:new-home:new-home") == "/ravyn/api/new-home"
+        assert reverse("ravyn:api:v1:new-home:new-home") == "/ravyn/api/new-home"
 
-        assert app.path_for("esmerald:api:v1:test:int") == "/esmerald/api/int"
-        assert reverse("esmerald:api:v1:test:int") == "/esmerald/api/int"
+        assert app.path_for("ravyn:api:v1:test:int") == "/ravyn/api/int"
+        assert reverse("ravyn:api:v1:test:int") == "/ravyn/api/int"
 
-        assert app.path_for("esmerald:api:v1:test2controller:int") == "/esmerald/api/test/int"
-        assert reverse("esmerald:api:v1:test2controller:int") == "/esmerald/api/test/int"
+        assert app.path_for("ravyn:api:v1:test2controller:int") == "/ravyn/api/test/int"
+        assert reverse("ravyn:api:v1:test2controller:int") == "/ravyn/api/test/int"

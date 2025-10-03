@@ -2,8 +2,8 @@ from typing import List, Optional, Union
 
 from typing_extensions import Annotated
 
-from esmerald import Gateway, JSONResponse, Query, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, JSONResponse, Query, get
+from ravyn.testclient import create_client
 
 
 @get("/list")

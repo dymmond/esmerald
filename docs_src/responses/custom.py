@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, Response, get
-from esmerald.core.datastructures import Cookie
+from ravyn import Ravyn, Gateway, Response, get
+from ravyn.core.datastructures import Cookie
 
 
 class Item(BaseModel):
@@ -18,4 +18,4 @@ async def home() -> Response[Item]:
     )
 
 
-app = Esmerald(routes=[Gateway(handler=home)])
+app = Ravyn(routes=[Gateway(handler=home)])

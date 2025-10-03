@@ -1,35 +1,35 @@
-# **`EsmeraldSettings`** class
+# **`RavynSettings`** class
 
-Reference for the `EsmeraldSettings` class object and how to use it.
+Reference for the `RavynSettings` class object and how to use it.
 
-Read more about [how to use the settings](https://esmerald.dev/application/settings/) in your
+Read more about [how to use the settings](https://ravyn.dev/application/settings/) in your
 application and leverage the system.
 
-The settings are used by **any Esmerald application** and used as the defaults for the
-[Esmerald](../esmerald.md) class instance if nothing is provided.
+The settings are used by **any Ravyn application** and used as the defaults for the
+[Ravyn](../ravyn.md) class instance if nothing is provided.
 
 ## How to import
 
 ```python
-from esmerald import settings
+from ravyn import settings
 ```
 
 **Via conf**
 
 ```python
-from esmerald.conf import settings
+from ravyn.conf import settings
 ```
 
 **Via application instance**
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald()
+app = Ravyn()
 app.settings
 ```
 
-::: esmerald.EsmeraldSettings
+::: ravyn.RavynSettings
     options:
         filters:
         - "!^model_config"

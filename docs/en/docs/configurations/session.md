@@ -1,6 +1,6 @@
 # SessionConfig
 
-SessionConfig is simple set of configurations that when passed enables the built-in middleware of Esmerald.
+SessionConfig is simple set of configurations that when passed enables the built-in middleware of Ravyn.
 When a SessionConfig object is passed to an application instance, it will automatically start the `SessionMiddleware`.
 
 !!! Tip
@@ -33,10 +33,10 @@ The SessionConfig can be done directly via [application instantiation](#sessionc
 {!> ../../../docs_src/configurations/session/settings.py!}
 ```
 
-This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+This will make sure you keep the settings clean, separated and without a bloated **Ravyn** instance.
 
-## Esmerald Sessions
+## Ravyn Sessions
 
 If you don't want to use the built-in session configuration and if you fancy a more custom way of handling the sessions
-with Esmerald, there is an official package
-[Esmerald Sessions](https://esmerald-sessions.dymmond.com/) that can help you with that including the middleware.
+with Ravyn, there is an official package
+[Ravyn Sessions](https://ravyn-sessions.dymmond.com/) that can help you with that including the middleware.

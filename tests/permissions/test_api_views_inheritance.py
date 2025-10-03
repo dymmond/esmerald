@@ -1,6 +1,6 @@
-from esmerald import APIView, get
-from esmerald.permissions import AllowAny, DenyAll, IsAuthenticated
-from esmerald.testclient import create_client
+from ravyn import APIView, get
+from ravyn.permissions import AllowAny, DenyAll, IsAuthenticated
+from ravyn.testclient import create_client
 
 
 class MyAPIView(APIView):

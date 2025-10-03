@@ -1,6 +1,6 @@
 # `jsonify`
 
-The `jsonify` helper in Esmerald makes it simple to return JSON responses from your endpoints,
+The `jsonify` helper in Ravyn makes it simple to return JSON responses from your endpoints,
 similar to Flask’s `jsonify`.
 
 It automatically encodes Python objects into JSON, sets the correct `Content-Type`,
@@ -22,14 +22,16 @@ Use `jsonify` when you want to:
 ## Basic Example
 
 ```python
-from esmerald import Esmerald, Gateway, get
-from esmerald.contrib.responses.json import jsonify
+from ravyn import Ravyn, Gateway, get
+from ravyn.contrib.responses.json import jsonify
+
 
 @get()
 async def hello():
     return jsonify(message="Hello, World!", status="ok")
 
-app = Esmerald(routes=[
+
+app = Ravyn(routes=[
     Gateway("/hello", hello)
 ])
 ```
@@ -157,4 +159,4 @@ jsonify(
 * **`cookies`** – Optional dictionary of cookies to set.
 * **`**kwargs`** – Treated as a dict payload if no `*args` provided.
 
-with `jsonify`, Esmerald makes returning JSON **fast, safe, and friendly**, while adding async-native power.
+with `jsonify`, Ravyn makes returning JSON **fast, safe, and friendly**, while adding async-native power.

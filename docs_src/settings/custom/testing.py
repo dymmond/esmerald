@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from esmerald.conf.enums import EnvironmentType
-from esmerald.types import LifeSpanHandler
+from ravyn.conf.enums import EnvironmentType
+from ravyn.types import LifeSpanHandler
 
 from ..configs.settings import AppSettings
 

@@ -1,7 +1,7 @@
 import httpx
 from pydantic.dataclasses import dataclass
 
-from esmerald import Esmerald, Form, Gateway, post
+from ravyn import Ravyn, Form, Gateway, post
 
 
 @dataclass
@@ -19,10 +19,10 @@ async def create(data: User = Form()) -> User:
     return data
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])
 
 # Payload example
-data = {"name": "example", "email": "example@esmerald.dev"}
+data = {"name": "example", "email": "example@ravyn.dev"}
 
 # Send the request
 httpx.post("/create", data=data)

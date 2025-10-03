@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from esmerald import EsmeraldSettings
-from esmerald.conf.enums import EnvironmentType
-from esmerald.middleware.https import HTTPSRedirectMiddleware
-from esmerald.types import Middleware
+from ravyn import RavynSettings
+from ravyn.conf.enums import EnvironmentType
+from ravyn.middleware.https import HTTPSRedirectMiddleware
+from ravyn.types import Middleware
 from lilya.middleware import DefineMiddleware
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     # The default is already production but for this example
     # we set again the variable
     environment: str = EnvironmentType.PRODUCTION

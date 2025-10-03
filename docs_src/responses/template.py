@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, Template, get
-from esmerald.core.datastructures import Cookie, ResponseHeader
+from ravyn import Ravyn, Gateway, Template, get
+from ravyn.core.datastructures import Cookie, ResponseHeader
 
 
 @get(
@@ -18,4 +18,4 @@ def home() -> Template:
     )
 
 
-app = Esmerald(routes=[Gateway(handler=home)])
+app = Ravyn(routes=[Gateway(handler=home)])

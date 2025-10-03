@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Request, Gateway, get
-from esmerald.exceptions import PermissionDenied
+from ravyn import Ravyn, Request, Gateway, get
+from ravyn.exceptions import PermissionDenied
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.responses import Ok
 from lilya.types import ASGIApp, Receive, Scope, Send
@@ -24,7 +24,7 @@ def user(user: str):
     return Ok({"message": f"Welcome {user}"})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=user)],
     permissions=[AllowAccess],
 )

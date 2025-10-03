@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "esmerald"
+name = "ravyn"
 description = "Highly scalable, performant, easy to learn, easy to code and for every application."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -70,11 +70,11 @@ keywords = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dymmond/esmerald"
-Documentation = "https://esmerald.dymmond.com/"
-Changelog = "https://esmerald.dymmond.com/release-notes/"
+Homepage = "https://github.com/dymmond/ravyn"
+Documentation = "https://ravyn.dymmond.com/"
+Changelog = "https://ravyn.dymmond.com/release-notes/"
 Funding = "https://github.com/sponsors/tarsil"
-Source = "https://github.com/dymmond/esmerald"
+Source = "https://github.com/dymmond/ravyn"
 
 [project.optional-dependencies]
 test = ["httpx>=0.25.0"]
@@ -111,7 +111,7 @@ schedulers = [
 
 all = [
     # All optional dependencies
-    "esmerald[standard,test,jwt,schedulers]",
+    "ravyn[standard,test,jwt,schedulers]",
     # For password hashing
     "ipython",
     # For interactive Python shells
@@ -168,7 +168,7 @@ clean_pyc = "find . -type f -name \"*.pyc\" -delete"
 clean_pyi = "find . -type f -name \"*.pyi\" -delete"
 clean_pycache = "find . -type d -name \"*__pycache__*\" -delete"
 build_with_check = "hatch build; twine check dist/*"
-lint = "hatch fmt esmerald tests docs_src {args}; hatch run test:check_types"
+lint = "hatch fmt ravyn tests docs_src {args}; hatch run test:check_types"
 format = "hatch fmt && hatch fmt --check && hatch run test:check_types"
 
 [tool.hatch.envs.docs]
@@ -190,8 +190,8 @@ features = ["all", "testing"]
 # needs docker services running
 test = "hatch test -- {args}"
 test_man = "hatch test -- {args} -s -vv"
-coverage = "hatch test -- --cov=esmerald --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
-check_types = "mypy -p esmerald"
+coverage = "hatch test -- --cov=ravyn --cov=tests --cov-report=term-missing:skip-covered --cov-report=html tests {args}"
+check_types = "mypy -p ravyn"
 
 #[[tool.hatch.envs.hatch-test.matrix]]
 #python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
@@ -203,7 +203,7 @@ template = "test"
 installer = "pip"
 
 [tool.hatch.envs.hatch-test.env-vars]
-ESMERALD_SETTINGS_MODULE = "tests.settings.TestSettings"
+RAVYN_SETTINGS_MODULE = "tests.settings.TestSettings"
 
 [tool.hatch.envs.hatch-static-analysis]
 # disables custom ruff rules, required to align with pre-commit
@@ -211,17 +211,17 @@ config-path = "none"
 dependencies = ["ruff==0.12.2"]
 
 [tool.hatch.version]
-path = "esmerald/__init__.py"
+path = "ravyn/__init__.py"
 
 [project.scripts]
-esmerald = "esmerald.__main__:run_cli"
+ravyn = "ravyn.__main__:run_cli"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
 [tool.isort]
 profile = "black"
-known_third_party = ["esmerald", "pydantic", "msgspec", "lilya"]
+known_third_party = ["ravyn", "pydantic", "msgspec", "lilya"]
 
 [tool.mypy]
 strict = true
@@ -241,7 +241,7 @@ disable_error_code = [
     "misc",
     "union-attr",
 ]
-exclude = "esmerald/conf,esmerald/utils"
+exclude = "ravyn/conf,ravyn/utils"
 warn_unused_ignores = true
 warn_redundant_casts = true
 no_implicit_optional = false
@@ -260,19 +260,19 @@ exclude = ["docs_src/*"]
 [tool.coverage.run]
 parallel = true
 context = '${CONTEXT}'
-source = ["tests", "esmerald"]
+source = ["tests", "ravyn"]
 omit = [
-    "esmerald/__main__.py",
-    "esmerald/conf/__init__.py",
-    "esmerald/middleware/errors.py",
-    "esmerald/permissions/base.py",
-    "esmerald/core/directives/*",
-    "esmerald/core/terminal/*",
-    "esmerald/datastructures/types.py",
-    "esmerald/types.py",
-    "esmerald/contrib/*",
-    "esmerald/openapi/openapi.py",
-    "esmerald/openapi/security/*",
+    "ravyn/__main__.py",
+    "ravyn/conf/__init__.py",
+    "ravyn/middleware/errors.py",
+    "ravyn/permissions/base.py",
+    "ravyn/core/directives/*",
+    "ravyn/core/terminal/*",
+    "ravyn/datastructures/types.py",
+    "ravyn/types.py",
+    "ravyn/contrib/*",
+    "ravyn/openapi/openapi.py",
+    "ravyn/openapi/security/*",
     "tests/databases/edgy/*",
     "tests/utils/functional.py",
     "tests/cli/*",
@@ -297,7 +297,7 @@ module = [
     "pytz",
     "pyjwt.*",
     "bcrypt.*",
-    "esmerald.contrib.auth.edgy.*",
+    "ravyn.contrib.auth.edgy.*",
     "grpc.*",
     "google.*",
 ]
@@ -311,4 +311,4 @@ junit_family = "xunit2"
 
 
 [tool.hatch.build.targets.sdist]
-include = ["/esmerald"]
+include = ["/ravyn"]

@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, JSONResponse, Request, route
+from ravyn import Ravyn, Gateway, JSONResponse, Request, route
 
 
 @route(methods=["GET", "POST"])
@@ -21,7 +21,7 @@ def delete(name: str) -> str:
     return f"Another welcome, {name}!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=my_route),
         Gateway(handler=another_route),

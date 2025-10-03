@@ -1,3 +1,3 @@
 # **`UJSONResponse`** class
 
-::: esmerald.responses.encoders.UJSONResponse
+::: ravyn.responses.encoders.UJSONResponse

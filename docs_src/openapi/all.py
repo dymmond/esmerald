@@ -1,12 +1,12 @@
 from typing import List
 
-from esmerald import Request, get
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
-from esmerald.security.http import HTTPBearer, HTTPBasic, HTTPDigest
-from esmerald.security.oauth2 import OAuth2
-from esmerald.security.open_id import OpenIdConnect
-from esmerald.security.http import HTTPBasic
+from ravyn import Request, get
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
+from ravyn.security.http import HTTPBearer, HTTPBasic, HTTPDigest
+from ravyn.security.oauth2 import OAuth2
+from ravyn.security.open_id import OpenIdConnect
+from ravyn.security.http import HTTPBasic
 
 from .daos import UserDAO
 from .schemas import Error, UserOut

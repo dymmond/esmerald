@@ -1,6 +1,6 @@
-from esmerald import EsmeraldSettings
-from esmerald.core.caches.redis import RedisCache
+from ravyn import RavynSettings
+from ravyn.core.caches.redis import RedisCache
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     cache_backend = RedisCache(redis_url="redis://localhost:6379")

@@ -4,8 +4,8 @@ from typing import Any, List
 
 import pytest
 
-from esmerald import AsyncDAOProtocol
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import AsyncDAOProtocol
+from ravyn.testclient import RavynTestClient
 
 
 class FakeDAO(AsyncDAOProtocol):
@@ -24,7 +24,7 @@ def test_client_factory(anyio_backend_name, anyio_backend_options):
     # https://anyio.readthedocs.io/en/stable/testing.html#specifying-the-backends-to-run-on
 
     return functools.partial(
-        EsmeraldTestClient,
+        RavynTestClient,
         backend=anyio_backend_name,
         backend_options=anyio_backend_options,
     )
@@ -35,7 +35,7 @@ def test_app_client_factory(anyio_backend_name, anyio_backend_options):
     # anyio_backend_name defined by:
     # https://anyio.readthedocs.io/en/stable/testing.html#specifying-the-backends-to-run-on
     return functools.partial(
-        EsmeraldTestClient,
+        RavynTestClient,
         backend=anyio_backend_name,
         backend_options=anyio_backend_options,
     )

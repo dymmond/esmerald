@@ -1,11 +1,11 @@
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
 
 
 @get("/users")
 async def read_user(limit: int) -> JSONResponse: ...
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(read_user),
     ]

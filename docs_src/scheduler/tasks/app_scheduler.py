@@ -1,7 +1,7 @@
-from esmerald import Esmerald
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
-app = Esmerald(
+app = Ravyn(
     routes=[...],
     enable_scheduler=True,
     scheduler_config=AsynczConfig(

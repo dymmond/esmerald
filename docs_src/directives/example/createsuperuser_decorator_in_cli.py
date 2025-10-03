@@ -2,7 +2,7 @@ import sys
 from typing import Annotated
 
 from asyncpg.exceptions import UniqueViolationError
-from esmerald.core.directives.decorator import directive
+from ravyn.core.directives.decorator import directive
 from sayer import command, success, error, Option
 
 from ..main import User

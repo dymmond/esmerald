@@ -1,5 +1,5 @@
-from esmerald.utils.helpers import is_async_callable
-from esmerald.utils.sync import AsyncCallable
+from ravyn.utils.helpers import is_async_callable
+from ravyn.utils.sync import AsyncCallable
 
 
 async def process() -> None:

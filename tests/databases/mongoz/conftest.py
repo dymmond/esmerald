@@ -3,7 +3,7 @@ import typing
 
 import pytest
 
-from esmerald import settings
+from ravyn import settings
 
 client = settings.mongoz_registry
 

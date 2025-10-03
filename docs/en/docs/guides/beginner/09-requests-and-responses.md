@@ -1,20 +1,22 @@
 # Requests and Responses
 
-In this section, you'll learn how to handle input and output data using request and response models in Esmerald.
+In this section, you'll learn how to handle input and output data using request and response models in Ravyn.
 
 ---
 
 ## Using Pydantic Models for Requests
 
-Esmerald uses Pydantic to define and validate incoming request bodies:
+Ravyn uses Pydantic to define and validate incoming request bodies:
 
 ```python
 from pydantic import BaseModel
-from esmerald import post
+from ravyn import post
+
 
 class Item(BaseModel):
     name: str
     price: float
+
 
 @post("/items")
 def create_item(data: Item) -> dict:
@@ -42,7 +44,8 @@ Sending invalid data returns:
 You can use type annotations to declare query and path parameters:
 
 ```python
-from esmerald import get
+from ravyn import get
+
 
 @get("/items/{item_id}")
 def get_item(item_id: int, q: str = "") -> dict:
@@ -72,7 +75,8 @@ def create_item(data: Item) -> ResponseModel:
 You can return your own response:
 
 ```python
-from esmerald.responses import JSONResponse
+from ravyn.responses import JSONResponse
+
 
 @get("/custom")
 def custom() -> JSONResponse:
@@ -86,13 +90,14 @@ def custom() -> JSONResponse:
 You can also extract headers, cookies, and file uploads via parameters:
 
 ```python
-from esmerald import Header, Cookie, UploadFile, post, File
+from ravyn import Header, Cookie, UploadFile, post, File
+
 
 @post("/upload")
 async def upload(
-    file: UploadFile = File(),
-    token: str = Header(value="X-API-TOKEN"),
-    session: str = Cookie(value="session")
+        file: UploadFile = File(),
+        token: str = Header(value="X-API-TOKEN"),
+        session: str = Cookie(value="session")
 ):
     return {"filename": file.filename, "token": token, "session": session}
 ```

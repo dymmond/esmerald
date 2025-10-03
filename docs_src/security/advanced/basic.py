@@ -1,13 +1,13 @@
 from typing import Dict
 
-from esmerald import (
-    Esmerald,
+from ravyn import (
+    Ravyn,
     Gateway,
     Inject,
     Injects,
     get,
 )
-from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
+from ravyn.security.http import HTTPBasic, HTTPBasicCredentials
 
 security = HTTPBasic()
 
@@ -17,7 +17,7 @@ def get_current_user(credentials: HTTPBasicCredentials = Injects()) -> Dict[str,
     return {"username": credentials.username, "password": credentials.password}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=get_current_user),
     ]

@@ -1,15 +1,15 @@
 # Routes
 
-Esmerald has a simple but highly effective routing system capable of handling from simple routes to the most
+Ravyn has a simple but highly effective routing system capable of handling from simple routes to the most
 complex ones.
 
 Using  an enterprise application as example, the routing system surely will not be something simple with
 20 or 40 direct routes, maybe it will have 200 or 300 routes where those are split by responsabilities,
 components and packages and imported also inside complex design systems.
-Esmerald handles with those cases without any kind of issues at all.
+Ravyn handles with those cases without any kind of issues at all.
 
 Lilya routing system alone wasn't enough to serve all the complexities and cases for all sort of
-different APIs and systems, so Esmerald created its own.
+different APIs and systems, so Ravyn created its own.
 
 ## Gateway
 
@@ -61,7 +61,7 @@ All the parameters and defaults are available in the [WebSocketGateway Reference
 
 ## Include
 
-Includes are unique to Esmerald, very similar to the `Include` of Lilya but more powerful and with more control
+Includes are unique to Ravyn, very similar to the `Include` of Lilya but more powerful and with more control
 and feature and allows:
 
 1. Scalability without issues (thanks to Lilya).
@@ -120,7 +120,7 @@ All the parameters and defaults are available in the [Include Reference](../refe
 
 The `Include` can be very helpful mostly when the goal is to avoid a lot of imports and massive list
 of objects to be passed into one single object. This can be particularly useful to make a clean start
-Esmerald object as well.
+Ravyn object as well.
 
 **Example**:
 
@@ -158,7 +158,7 @@ to dependencies.
 ### Application routes
 
 !!! warning
-    Be very careful when using the `Include` directly in the Esmerald(routes[]), importing without a `path` may incur
+    Be very careful when using the `Include` directly in the Ravyn(routes[]), importing without a `path` may incur
     in some routes not being properly mapped.
 
 **Only applied to the application routes**:
@@ -203,7 +203,7 @@ Another Example:
 The path is `/` for both `src.urls` and `accounts.v1.urls` and unique with their prefixes.
 
 !!! Info
-    If you are wondering why `Flask` in the examples then the answer is simple. **Esmerald supports the integration with
+    If you are wondering why `Flask` in the examples then the answer is simple. **Ravyn supports the integration with
     other wsgi frameworks but more details can be [found here](../wsgi.md)**.
 
 !!! Tip
@@ -217,7 +217,7 @@ The path is `/` for both `src.urls` and `accounts.v1.urls` and unique with their
 
 ## Routes priority
 
-The [application routes](#application-routes) in simple terms are simply prioritised. Since **Esmerald** uses
+The [application routes](#application-routes) in simple terms are simply prioritised. Since **Ravyn** uses
 Lilya under the hood that also means that the incoming paths are matched agains each [Gateway](#gateway),
 [WebSocketGateway](#websocketgateway) and [Include](#include) in order.
 
@@ -231,7 +231,7 @@ Example:
 ```
 
 !!! warning
-    The way the routes are assembled is very important and you always need to pay attention. **Esmerald** in a
+    The way the routes are assembled is very important and you always need to pay attention. **Ravyn** in a
     very high level does some sorting on the base routes of the application making sure that the routes where the **only
     path is `/`**, are the last ones being evaluated but this might be updated in the future and it does not
     stop you from following the [routes priority](#routes-priority) in any way from the beginning.
@@ -277,7 +277,7 @@ Gateway('/uploaded/{rest_of_path:path}', handler=uploaded)
 ### Custom transformers
 
 If a need for a different transformer that is not defined or available, you can also create your own. Using the same
-example as Lilya since it works with **Esmerald**.
+example as Lilya since it works with **Ravyn**.
 
 ```python
 {!> ../../../docs_src/routing/routes/converter_example.py !}
@@ -331,7 +331,7 @@ The above example illustrates the various levels where the exception handlers ca
 parent order where the order is:
 
 1. Default application built-in exception handlers.
-2. `EsmeraldException : http_esmerald_handler`.
+2. `RavynAPIExceptionException : http_ravyn_handler`.
 3. `InternalServerError : http_internal_server_error_handler`.
 4. `NotAuthorized: http_not_authorized_handler`.
 

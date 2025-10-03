@@ -1,6 +1,6 @@
 # Middlewares
 
-In this section, you'll learn how to use middleware in Esmerald to modify requests and responses globally.
+In this section, you'll learn how to use middleware in Ravyn to modify requests and responses globally.
 
 ---
 
@@ -16,11 +16,11 @@ Middleware is a function that runs before or after your route handlers. It can:
 
 ## Adding Middleware
 
-To add middleware to your Esmerald application, use the `middleware` argument:
+To add middleware to your Ravyn application, use the `middleware` argument:
 
 ```python
-from esmerald import Esmerald, Request
-from esmerald.core.protocols.middleware import MiddlewareProtocol
+from ravyn import Ravyn, Request
+from ravyn.core.protocols.middleware import MiddlewareProtocol
 from lilya.types import ASGIApp, Scope, Receive, Send
 from lilya.middleware import DefineMiddleware
 
@@ -35,7 +35,7 @@ class LogMiddleware(MiddlewareProtocol):
             await self.app(scope, receive, send)
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[],
     middleware=[DefineMiddleware(LogMiddleware)]
 )
@@ -48,10 +48,10 @@ app = Esmerald(
 ### CORS Middleware
 
 ```python
-from esmerald.middleware.cors import CORSMiddleware
+from ravyn.middleware.cors import CORSMiddleware
 from lilya.middleware import DefineMiddleware
 
-app = Esmerald(
+app = Ravyn(
     routes=[],
     middleware=[
         DefineMiddleware(
@@ -67,9 +67,9 @@ app = Esmerald(
 ### Trusted Hosts
 
 ```python
-from esmerald.middleware.trustedhost import TrustedHostMiddleware
+from ravyn.middleware.trustedhost import TrustedHostMiddleware
 
-app = Esmerald(
+app = Ravyn(
     routes=[],
     middleware=[
         DefineMiddleware(TrustedHostMiddleware, allowed_hosts=["example.com", "localhost"])
@@ -91,7 +91,7 @@ class MyMiddleware:
         print("Middleware in action!")
         return await call_next(request)
 
-app = Esmerald(
+app = Ravyn(
     routes=[],
     middleware=[DefineMiddleware(MyMiddleware)]
 )

@@ -1,4 +1,4 @@
-from esmerald.contrib.schedulers.asyncz.decorator import scheduler
+from ravyn.contrib.schedulers.asyncz.decorator import scheduler
 from asyncz.triggers import IntervalTrigger
 
 

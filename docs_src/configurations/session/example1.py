@@ -1,7 +1,7 @@
-from esmerald import Esmerald, SessionConfig, settings
+from ravyn import Ravyn, SessionConfig, settings
 
 session_config = SessionConfig(
     secret_key=settings.secret_key,
 )
 
-app = Esmerald(session_config=session_config)
+app = Ravyn(session_config=session_config)

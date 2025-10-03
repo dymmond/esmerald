@@ -1,6 +1,6 @@
-from esmerald import Request
-from esmerald.permissions.base import BaseAbstractUserPermission
-from esmerald.types import APIGateHandler
+from ravyn import Request
+from ravyn.permissions.base import BaseAbstractUserPermission
+from ravyn.types import APIGateHandler
 
 
 class IsUserAdmin(BaseAbstractUserPermission):

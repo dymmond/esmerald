@@ -11,8 +11,8 @@ from lilya import status
 from lilya.types import Receive, Scope, Send
 from lilya.websockets import WebSocketDisconnect, WebSocketState
 
-from esmerald.testclient import EsmeraldTestClient
-from esmerald.websockets import WebSocket
+from ravyn.testclient import RavynTestClient
+from ravyn.websockets import WebSocket
 
 
 def test_websocket_url(test_client_factory):
@@ -22,7 +22,7 @@ def test_websocket_url(test_client_factory):
         await websocket.send_json({"url": str(websocket.url)})
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/123?a=abc") as websocket:
         data = websocket.receive_json()
         assert data == {"url": "ws://testserver/123?a=abc"}
@@ -36,7 +36,7 @@ def test_websocket_binary_json(test_client_factory):
         await websocket.send_json(message, mode="binary")
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/123?a=abc") as websocket:
         websocket.send_json({"test": "data"}, mode="binary")
         data = websocket.receive_json(mode="binary")
@@ -51,7 +51,7 @@ def test_websocket_query_params(test_client_factory):
         await websocket.send_json({"params": query_params})
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/?a=abc&b=456") as websocket:
         data = websocket.receive_json()
         assert data == {"params": {"a": "abc", "b": "456"}}
@@ -69,7 +69,7 @@ def test_websocket_headers(test_client_factory):  # pragma: no cover
         await websocket.send_json({"headers": headers})
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         expected_headers = {
             "accept": "*/*",
@@ -91,7 +91,7 @@ def test_websocket_port(test_client_factory):
         await websocket.send_json({"port": websocket.url.port})
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("ws://example.com:123/123?a=abc") as websocket:
         data = websocket.receive_json()
         assert data == {"port": 123}
@@ -105,7 +105,7 @@ def test_websocket_send_and_receive_text(test_client_factory):
         await websocket.send_text("Message was: " + data)
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_text("Hello, world!")
         data = websocket.receive_text()
@@ -120,7 +120,7 @@ def test_websocket_send_and_receive_bytes(test_client_factory):
         await websocket.send_bytes(b"Message was: " + data)
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_bytes(b"Hello, world!")
         data = websocket.receive_bytes()
@@ -135,7 +135,7 @@ def test_websocket_send_and_receive_json(test_client_factory):
         await websocket.send_json({"message": data})
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_json({"hello": "world"})
         data = websocket.receive_json()
@@ -149,7 +149,7 @@ def test_websocket_iter_text(test_client_factory):
         async for data in websocket.iter_text():
             await websocket.send_text("Message was: " + data)
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_text("Hello, world!")
         data = websocket.receive_text()
@@ -163,7 +163,7 @@ def test_websocket_iter_bytes(test_client_factory):
         async for data in websocket.iter_bytes():
             await websocket.send_bytes(b"Message was: " + data)
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_bytes(b"Hello, world!")
         data = websocket.receive_bytes()
@@ -177,7 +177,7 @@ def test_websocket_iter_json(test_client_factory):
         async for data in websocket.iter_json():
             await websocket.send_json({"message": data})
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_json({"hello": "world"})
         data = websocket.receive_json()
@@ -205,7 +205,7 @@ def test_websocket_concurrency_pattern(test_client_factory):
             await writer(websocket)
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.send_json({"hello": "world"})
         data = websocket.receive_json()
@@ -224,7 +224,7 @@ def test_client_close(test_client_factory):
         except WebSocketDisconnect as exc:
             close_code = exc.code
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         websocket.close(code=status.WS_1001_GOING_AWAY)
     assert close_code == status.WS_1001_GOING_AWAY
@@ -236,7 +236,7 @@ def test_application_close(test_client_factory):
         await websocket.accept()
         await websocket.close(status.WS_1001_GOING_AWAY)
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         with pytest.raises(WebSocketDisconnect) as exc:
             websocket.receive_text()
@@ -248,7 +248,7 @@ def test_rejected_connection(test_client_factory):
         websocket = WebSocket(scope, receive=receive, send=send)
         await websocket.close(status.WS_1001_GOING_AWAY)
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(WebSocketDisconnect) as exc:
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -262,7 +262,7 @@ def test_subprotocol(test_client_factory):
         await websocket.accept(subprotocol="wamp")
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/", subprotocols=["soap", "wamp"]) as websocket:
         assert websocket.accepted_subprotocol == "wamp"
 
@@ -273,7 +273,7 @@ def test_additional_headers(test_client_factory):
         await websocket.accept(headers=[(b"additional", b"header")])
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         assert websocket.extra_headers == [(b"additional", b"header")]
 
@@ -284,7 +284,7 @@ def test_no_additional_headers(test_client_factory):
         await websocket.accept()
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         assert websocket.extra_headers == []
 
@@ -293,7 +293,7 @@ def test_websocket_exception(test_client_factory):
     async def app(scope: Scope, receive: Receive, send: Send) -> None:
         raise AssertionError()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(AssertionError):
         with client.websocket_connect("/123?a=abc"):
             pass  # pragma: nocover
@@ -306,7 +306,7 @@ def test_duplicate_close(test_client_factory):
         await websocket.close()
         await websocket.close()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -320,7 +320,7 @@ def test_duplicate_disconnect(test_client_factory):
         assert message["type"] == "websocket.disconnect"
         message = await websocket.receive()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/") as websocket:
             websocket.close()
@@ -366,7 +366,7 @@ def test_websocket_close_reason(test_client_factory) -> None:
         await websocket.accept()
         await websocket.close(code=status.WS_1001_GOING_AWAY, reason="Going Away")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with client.websocket_connect("/") as websocket:
         with pytest.raises(WebSocketDisconnect) as exc:
             websocket.receive_text()
@@ -380,7 +380,7 @@ def test_send_json_invalid_mode(test_client_factory):
         await websocket.accept()
         await websocket.send_json({}, mode="invalid")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -392,7 +392,7 @@ def test_receive_json_invalid_mode(test_client_factory):
         await websocket.accept()
         await websocket.receive_json(mode="invalid")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -403,7 +403,7 @@ def test_receive_text_before_accept(test_client_factory):
         websocket = WebSocket(scope, receive=receive, send=send)
         await websocket.receive_text()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -414,7 +414,7 @@ def test_receive_bytes_before_accept(test_client_factory):
         websocket = WebSocket(scope, receive=receive, send=send)
         await websocket.receive_bytes()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -425,7 +425,7 @@ def test_receive_json_before_accept(test_client_factory):
         websocket = WebSocket(scope, receive=receive, send=send)
         await websocket.receive_json()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -436,7 +436,7 @@ def test_send_before_accept(test_client_factory):
         websocket = WebSocket(scope, receive=receive, send=send)
         await websocket.send({"type": "websocket.send"})
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -448,7 +448,7 @@ def test_send_wrong_message_type(test_client_factory):
         await websocket.send({"type": "websocket.accept"})
         await websocket.send({"type": "websocket.accept"})
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/"):
             pass  # pragma: nocover
@@ -461,7 +461,7 @@ def test_receive_before_accept(test_client_factory):
         websocket.client_state = WebSocketState.CONNECTING
         await websocket.receive()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/") as websocket:
             websocket.send({"type": "websocket.send"})
@@ -473,7 +473,7 @@ def test_receive_wrong_message_type(test_client_factory):
         await websocket.accept()
         await websocket.receive()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with pytest.raises(RuntimeError):
         with client.websocket_connect("/") as websocket:
             websocket.send({"type": "websocket.connect"})

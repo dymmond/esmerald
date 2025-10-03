@@ -1,5 +1,5 @@
-from esmerald import Esmerald
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
 scheduler_config = AsynczConfig(
     configurations={
@@ -17,7 +17,7 @@ scheduler_config = AsynczConfig(
 )
 
 
-app = Esmerald(
+app = Ravyn(
     enable_scheduler=True,
     scheduler_config=scheduler_config,
 )

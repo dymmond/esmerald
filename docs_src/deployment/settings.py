@@ -1,5 +1,5 @@
-from esmerald import EsmeraldSettings
+from ravyn import RavynSettings
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     enable_openapi: bool = False

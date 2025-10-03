@@ -1,15 +1,15 @@
 # Mail
 
-The `esmerald.contrib.mail` module provides a **powerful, async-native email system** built for modern applications.
+The `ravyn.contrib.mail` module provides a **powerful, async-native email system** built for modern applications.
 
 It’s designed to be lightweight yet as powerful as other’s email framework — but without blocking your event loop.
 
-Esmerald leverages the [Lilya mail system](https://www.lilya.dev/contrib/mail/) and applied
+Ravyn leverages the [Lilya mail system](https://www.lilya.dev/contrib/mail/) and applied
 **it's own dependency injection but the rest, you can even see in the Lilya documentation**.
 
 ## What is the Mail System?
 
-The mail system in Esmerald is a **pluggable email sending framework**.
+The mail system in Ravyn is a **pluggable email sending framework**.
 It abstracts common tasks like:
 
 * Composing messages with **text, HTML, attachments, headers**.
@@ -20,9 +20,9 @@ It abstracts common tasks like:
 
 ---
 
-## Why Use Esmerald Mail System?
+## Why Use Ravyn Mail System?
 
-1. **Async-first**: Unlike Django’s sync system, Esmerald integrates natively with asyncio/anyio.
+1. **Async-first**: Unlike Django’s sync system, Ravyn integrates natively with asyncio/anyio.
 2. **Flexible backends**: Choose SMTP, debugging backends, or third-party APIs.
 3. **Production-ready**: Connection pooling, batch sending, lifecycle hooks.
 4. **Customizable**: Write your own backend for any provider.
@@ -53,11 +53,11 @@ MAIL_TEMPLATES = "myapp/templates/emails"
 ### Setup in app
 
 ```python
-from esmerald import Esmerald, Gateway, get
+from ravyn import Ravyn, Gateway, get
 from lilya.contrib.mail.startup import setup_mail
 from configs.development import settings
 
-app = Esmerald()
+app = Ravyn()
 setup_mail(app, backend=settings.MAIL_BACKEND, template_dir=settings.MAIL_TEMPLATES)
 ```
 
@@ -83,17 +83,18 @@ async def signup_handler() -> None:
 ## Sending Templated Emails
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald()
+app = Ravyn()
+
 
 @app.get("/welcome")
 async def send_welcome() -> dict[str, str]:
     mailer = request.app.state.mailer
     await mailer.send_template(
         template_html="welcome.html",
-        context={"name": "John", "product": "Esmerald"},
-        subject="Welcome to Esmerald",
+        context={"name": "John", "product": "Ravyn"},
+        subject="Welcome to Ravyn",
         to=["john@example.com"],
     )
     return {"status": "sent"}
@@ -110,7 +111,7 @@ async def send_welcome() -> dict[str, str]:
 </html>
 ```
 
-If no plain-text template is provided, Esmerald auto-generates one from the HTML.
+If no plain-text template is provided, Ravyn auto-generates one from the HTML.
 
 ---
 
@@ -276,7 +277,7 @@ class MailchimpBackend(BaseMailBackend):
             )
 ```
 
-## A "Real World" Example: Sending emails via Esmerald
+## A "Real World" Example: Sending emails via Ravyn
 
 Email is often needed for user signups, password resets, or notifications.
 With `lilya.contrib.mail`, you can attach a mailer to your app and send messages anywhere.
@@ -288,11 +289,11 @@ With `lilya.contrib.mail`, you can attach a mailer to your app and send messages
 First, set up the mail backend when creating your app:
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 from lilya.contrib.mail import setup_mail
 from lilya.contrib.mail.backends.smtp import SMTPBackend
 
-app = Esmerald()
+app = Ravyn()
 
 # Attach mailer with SMTP backend
 setup_mail(
@@ -333,12 +334,13 @@ Thanks for joining our platform.
 
 ### 3. Send an Email from an Endpoint
 
-With your `app` from Esmerald you can do now this:
+With your `app` from Ravyn you can do now this:
 
 ```python
-from esmerald import Esmerald, JSONResponse, Request
+from ravyn import Ravyn, JSONResponse, Request
 
-app = Esmerald()
+app = Ravyn()
+
 
 @app.post("/signup")
 async def signup(request: Request) -> JSONResponse:
@@ -358,7 +360,7 @@ async def signup(request: Request) -> JSONResponse:
 ```
 
 !!! Note
-    Esmerald also has the `Gateway`, this is just an alternative for example purposes.
+    Ravyn also has the `Gateway`, this is just an alternative for example purposes.
 
 ---
 
@@ -390,7 +392,7 @@ With this setup:
 
 ## Using `Mail` as a Dependency
 
-In addition to accessing `app.state.mailer` directly, Esmerald provides an out-of-the-box dependency
+In addition to accessing `app.state.mailer` directly, Ravyn provides an out-of-the-box dependency
 you can inject into any handler: `Mail`.
 
 This is powered by Lilya’s dependency injection system and resolves to the configured global
@@ -401,11 +403,11 @@ This is powered by Lilya’s dependency injection system and resolves to the con
 ### 1. Configure Mail
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 from lilya.contrib.mail.startup import setup_mail
 from lilya.contrib.mail.backends.smtp import SMTPBackend
 
-app = Esmerald()
+app = Ravyn()
 
 setup_mail(
     app,
@@ -426,18 +428,18 @@ setup_mail(
 ### 2. Inject Mail with `dependencies`
 
 !!! Warning
-    Here is where Esmerald differs from Lilya. Esmerald has its own dependency injection system
+    Here is where Ravyn differs from Lilya. Ravyn has its own dependency injection system
     and already ready to be used as per example.
 
 Make sure **you use Any as type for the `Mailer`** to avoid dependency issues.
 
-The `Mail` in Esmerald is already wrapped in a `Inject` object and ready for use.
+The `Mail` in Ravyn is already wrapped in a `Inject` object and ready for use.
 
 ```python
 from typing import Any
 
-from esmerald import Esmerald, Gateway, Inject, Injects, JSONResponse, get
-from esmerald.contrib.mail.dependencies import Mail
+from ravyn import Ravyn, Gateway, Inject, Injects, JSONResponse, get
+from ravyn.contrib.mail.dependencies import Mail
 
 from lilya.contrib.mail import EmailMessage
 from lilya.routing import Path
@@ -454,7 +456,7 @@ async def send_welcome(mailer: Any = Injects()) -> JSONResponse:
     return JSONResponse({"status": "sent"})
 
 
-app = Esmerald(routes=[
+app = Ravyn(routes=[
     Gateway("/welcome", send_welcome)
 ])
 
@@ -484,9 +486,10 @@ You can easily replace the `Mail` dependency in tests:
 ```python
 from typing import Any
 
-from esmerald import Esmerald, Inject, Injects
-from esmerald.contrib.mail.dependencies import Mail
+from ravyn import Ravyn, Inject, Injects
+from ravyn.contrib.mail.dependencies import Mail
 from lilya.dependencies import Provide
+
 
 class FakeMailer:
     def __init__(self) -> None:
@@ -495,8 +498,10 @@ class FakeMailer:
     async def send(self, message: str) -> None:
         self.sent.append(message)
 
-app = Esmerald()
+
+app = Ravyn()
 fake = FakeMailer()
+
 
 @app.post("/test", dependencies={"mailer": Inject(lambda request: fake)})
 async def test_handler(mailer: Any = Injects()) -> dict[str, bool]:
@@ -515,7 +520,8 @@ Because `Mail` is a normal dependency, you can also use it inside background tas
 ```python
 from typing import Any
 
-from esmerald.background import BackgroundTask
+from ravyn.background import BackgroundTask
+
 
 @app.post("/signup", dependencies={"mailer": Mail})
 async def signup(user: dict, mailer: Mail) -> dict[str, Any]:
@@ -526,6 +532,7 @@ async def signup(user: dict, mailer: Mail) -> dict[str, Any]:
             template_html="welcome.html",
             context={"name": user["name"]},
         )
+
     return {"ok": True, "background": BackgroundTask(send_welcome)}
 ```
 
@@ -552,8 +559,8 @@ async def signup(user: dict, mailer: Mail) -> dict[str, Any]:
 ## Summary
 
 * `EmailMessage`: Describes what to send.
-* `Mailer`: Coordinates sending, templating, batching and comes from `esmerald.contrib.mail.dependencies`.
+* `Mailer`: Coordinates sending, templating, batching and comes from `ravyn.contrib.mail.dependencies`.
 * `BaseMailBackend`: Pluggable backends (SMTP, Console, File, InMemory).
 * **Custom backends**: Easy integration with services like Mailgun, Brevo, Mailchimp, etc.
 
-With these tools, Esmerald's mail system is **powerful**, but async-native, lighter, and more flexible.
+With these tools, Ravyn's mail system is **powerful**, but async-native, lighter, and more flexible.

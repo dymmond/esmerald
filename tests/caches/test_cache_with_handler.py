@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
-from esmerald import Controller, Gateway, post
-from esmerald.testclient import create_client
-from esmerald.utils.decorators import cache
+from ravyn import Controller, Gateway, post
+from ravyn.testclient import create_client
+from ravyn.utils.decorators import cache
 
 
 class Item(BaseModel):

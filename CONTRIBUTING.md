@@ -1,4 +1,4 @@
 # Contributing
 
-Please read the [Contributing](https://esmerald.dymmond.com/contributing/)
+Please read the [Contributing](https://ravyn.dymmond.com/contributing/)
 guidelines in the official documentation.

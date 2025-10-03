@@ -1,7 +1,7 @@
 import argparse
 from typing import Any, Type
 
-from esmerald.core.directives import BaseDirective
+from ravyn.core.directives import BaseDirective
 
 
 class Directive(BaseDirective):

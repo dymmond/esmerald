@@ -3,9 +3,9 @@ from typing import Any
 import pytest
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.routing.router import HTTPHandler
-from esmerald.utils.enums import HttpMethod
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.routing.router import HTTPHandler
+from ravyn.utils.enums import HttpMethod
 
 
 @pytest.mark.parametrize(

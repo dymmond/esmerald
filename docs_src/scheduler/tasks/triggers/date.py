@@ -1,7 +1,7 @@
 from datetime import date
 
 from asyncz.triggers import DateTrigger
-from esmerald.contrib.schedulers.asyncz.decorator import scheduler
+from ravyn.contrib.schedulers.asyncz.decorator import scheduler
 
 
 def print_text(text):

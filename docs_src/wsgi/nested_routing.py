@@ -1,14 +1,14 @@
 from flask import Flask, escape, request
 
-from esmerald import Esmerald, Gateway, Include, Request, get
-from esmerald.middleware.wsgi import WSGIMiddleware
+from ravyn import Ravyn, Gateway, Include, Request, get
+from ravyn.middleware.wsgi import WSGIMiddleware
 
 flask_app = Flask(__name__)
 
 
 @flask_app.route("/")
 def flask_main():
-    name = request.args.get("name", "Esmerald")
+    name = request.args.get("name", "Ravyn")
     return f"Hello, {escape(name)} from your Flask integrated!"
 
 
@@ -18,7 +18,7 @@ async def home(request: Request) -> dict:
     return {"name": escape(name)}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=home),
         Include(

@@ -6,8 +6,8 @@ from typing import Any
 
 from loguru import logger
 
-from esmerald.conf.enums import EnvironmentType
-from esmerald.types import LifeSpanHandler
+from ravyn.conf.enums import EnvironmentType
+from ravyn.types import LifeSpanHandler
 
 from ..configs.settings import AppSettings
 
@@ -46,7 +46,7 @@ class DevelopmentSettings(AppSettings):
     def __init__(self, *args: Any, **kwds: Any):
         super().__init__(*args, **kwds)
         logging_level = logging.DEBUG if self.debug else logging.INFO
-        loggers = ("uvicorn.asgi", "uvicorn.access", "esmerald")
+        loggers = ("uvicorn.asgi", "uvicorn.access", "ravyn")
         logging.getLogger().handlers = [InterceptHandler()]
         for logger_name in loggers:
             logging_logger = logging.getLogger(logger_name)

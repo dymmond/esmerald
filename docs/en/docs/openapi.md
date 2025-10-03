@@ -5,7 +5,7 @@ hide:
 
 # OpenAPI
 
-Esmerald as mentioned across the documentation supports natively the automatic generation of the
+Ravyn as mentioned across the documentation supports natively the automatic generation of the
 API docs in three different ways:
 
 * **Swagger** - Defaults to `/docs/swagger`.
@@ -32,7 +32,7 @@ project.
 
 !!! Note
     We will not be dwelling on the technicalities of the database models but for this example
-    it was used the [Edgy](./databases/edgy/motivation.md) contrib from Esmerald as it speeds
+    it was used the [Edgy](./databases/edgy/motivation.md) contrib from Ravyn as it speeds
     up the development.
 
 The APIs look like this:
@@ -72,7 +72,7 @@ able to see something like this:
 
 #### Stoplight
 
-Esmerald also offers the Stoplight elements documentation. Accessing `/docs/elements` you should
+Ravyn also offers the Stoplight elements documentation. Accessing `/docs/elements` you should
 be able to see something like this:
 
 <img src="https://res.cloudinary.com/dymmond/image/upload/v1696588103/esmerald/openapi/stoplight_hjasoe.png" title="Stoplight" />
@@ -83,10 +83,10 @@ Now this is where the things get interesting. There are cases where the majority
 be behind some sort of authentication and permission system and to access the data of those APIs
 and **test them directly in your docs is a must**.
 
-Esmerald comes with a pre-defined set of utilities that you can simply add you your APIs and enable
+Ravyn comes with a pre-defined set of utilities that you can simply add you your APIs and enable
 the authentication via documentation.
 
-The `security` attribute is what Esmerald looks for when generating the docs for you and there
+The `security` attribute is what Ravyn looks for when generating the docs for you and there
 is where you can pass the definitions needed.
 
 ### Supported authorizations
@@ -103,10 +103,10 @@ dasda
 How to import them:
 
 ```python
-from esmerald.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
-from esmerald.security.http import HTTPBasic, HTTPBearer, HTTPDigest
-from esmerald.security.oauth2 import OAuth2
-from esmerald.security.open_id import OpenIdConnect
+from ravyn.security.api_key import APIKeyInCookie, APIKeyInHeader, APIKeyInQuery
+from ravyn.security.http import HTTPBasic, HTTPBearer, HTTPDigest
+from ravyn.security.oauth2 import OAuth2
+from ravyn.security.open_id import OpenIdConnect
 ```
 
 ### HTTPBase
@@ -115,7 +115,7 @@ Every [supported authorization](#supported-authorizations) has the same `HTTPBas
 if you want to build your own custom object, you can simply inherit from it and develop it.
 
 ```python
-from esmerald.security import HTTPBase
+from ravyn.security import HTTPBase
 ```
 
 #### Parameters
@@ -143,8 +143,8 @@ Let us use the following API as example from before.
 ```python
 from typing import List
 
-from esmerald import Request, get
-from esmerald.core.datastructures import OpenAPIResponse
+from ravyn import Request, get
+from ravyn.core.datastructures import OpenAPIResponse
 
 from .daos import UserDAO
 from .schemas import Error, UserOut
@@ -227,7 +227,7 @@ automatically added in your API calls that declare it by adding the `?X_QUERY_AP
 
 #### OAuth2
 
-Now this is an extremely complex and dedicated flow. Esmerald provides [detailed explanations and examples](./security/index.md)
+Now this is an extremely complex and dedicated flow. Ravyn provides [detailed explanations and examples](./security/index.md)
 in its own security section, including how to use it in the OpenAPI documentation.
 
 #### OpenIdConnect
@@ -275,6 +275,6 @@ Did you notice the `name` specified in each authorization object? Cool, right?.
 
 ## Levels
 
-Like everything in Esmerald, you can specify the security on each [level of the application](./application/levels.md).
+Like everything in Ravyn, you can specify the security on each [level of the application](./application/levels.md).
 Which means, you don't need to repeat yourself if for instance, all APIs of a given [Include](./routing/routes.md#include)
 require a [HTTPBearer](#httpbearer) token or any other.

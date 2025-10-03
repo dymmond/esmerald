@@ -3,7 +3,7 @@ from enum import Enum
 
 from edgy import Registry, fields
 
-from esmerald.contrib.auth.edgy.base_user import User as BaseUser
+from ravyn.contrib.auth.edgy.base_user import User as BaseUser
 
 models = Registry(database="sqlite:///db.sqlite")
 

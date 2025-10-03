@@ -1,6 +1,6 @@
-from esmerald import Esmerald
-from esmerald.core.datastructures import State
+from ravyn import Ravyn
+from ravyn.core.datastructures import State
 
-app = Esmerald()
+app = Ravyn()
 
 app.state = State({"ADMIN_EMAIL": "admin@example.com"})

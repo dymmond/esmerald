@@ -4,15 +4,15 @@ import pytest
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from pydantic import BaseModel
 
-from esmerald.encoders import MsgSpecEncoder, PydanticEncoder
-from esmerald.responses import Response
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import delete, get, patch, post, put, websocket
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
-from esmerald.utils.enums import HttpMethod, MediaType
-from esmerald.websockets import WebSocket
+from ravyn.encoders import MsgSpecEncoder, PydanticEncoder
+from ravyn.responses import Response
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway, WebSocketGateway
+from ravyn.routing.handlers import delete, get, patch, post, put, websocket
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
+from ravyn.utils.enums import HttpMethod, MediaType
+from ravyn.websockets import WebSocket
 from tests.models import Individual, IndividualFactory
 
 encoders = [MsgSpecEncoder, PydanticEncoder]
@@ -489,17 +489,17 @@ def test_api_view_path_parameter():
             return f"Test {name} {param}"
 
     with create_client(routes=[Gateway(handler=MyAPIView)]) as client:
-        response = client.get("/customer/esmerald")
+        response = client.get("/customer/ravyn")
         assert response.status_code == HTTP_200_OK
-        assert response.json() == "esmerald"
+        assert response.json() == "ravyn"
 
-        response = client.get("/customer/esmerald/test")
+        response = client.get("/customer/ravyn/test")
         assert response.status_code == HTTP_200_OK
-        assert response.json() == "Test esmerald"
+        assert response.json() == "Test ravyn"
 
-        response = client.get("/customer/esmerald/test/param")
+        response = client.get("/customer/ravyn/test/param")
         assert response.status_code == HTTP_200_OK
-        assert response.json() == "Test esmerald param"
+        assert response.json() == "Test ravyn param"
 
 
 def test_controller_with_websocket_gateway() -> None:

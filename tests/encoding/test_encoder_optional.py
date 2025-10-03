@@ -2,8 +2,8 @@ from typing import Any, Optional, Union
 
 from pydantic import BaseModel
 
-from esmerald import Gateway, post
-from esmerald.testclient import create_client
+from ravyn import Gateway, post
+from ravyn.testclient import create_client
 
 
 class User(BaseModel):

@@ -1,6 +1,6 @@
 # Background Tasks
 
-In this section, you'll learn how to run background tasks in Esmerald, allowing you to perform non-blocking operations
+In this section, you'll learn how to run background tasks in Ravyn, allowing you to perform non-blocking operations
 after sending a response.
 
 ---
@@ -19,14 +19,16 @@ They're perfect for:
 
 ## Using BackgroundTask
 
-Esmerald provides a simple interface for background execution:
+Ravyn provides a simple interface for background execution:
 
 ```python
-from esmerald import BackgroundTask, get
+from ravyn import BackgroundTask, get
+
 
 async def notify_user(email: str):
     # Imagine this sends an email
     await some_email_function(email)
+
 
 @get("/send-notification", background=BackgroundTask(notify_user, "user@example.com"))
 def send_notification() -> dict:
@@ -42,13 +44,16 @@ def send_notification() -> dict:
 You can queue multiple tasks with `BackgroundTasks`:
 
 ```python
-from esmerald import BackgroundTasks, post
+from ravyn import BackgroundTasks, post
+
 
 async def cleanup(file_path: str):
     await remove_file(file_path)
 
+
 async def log_event(event_id: int):
     await save_log(event_id)
+
 
 @post("/submit", background=BackgroundTasks(
     tasks=[

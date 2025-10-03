@@ -1,5 +1,5 @@
-from esmerald import post
-from esmerald.utils.decorators import observable
+from ravyn import post
+from ravyn.utils.decorators import observable
 
 
 @post("/pay")

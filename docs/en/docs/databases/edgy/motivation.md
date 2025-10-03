@@ -8,12 +8,12 @@ small details.
 
 SQL Alchemy is another one widely used and loved by the majority of the python community.
 
-[Edgy](https://edgy.dymmond.com) is from the same author of Esmerald so is expected to be
+[Edgy](https://edgy.dymmond.com) is from the same author of Ravyn so is expected to be
 supported (not natively) by the framework by providing some out-of-the-box built-in that can simply
 be used
 
 !!! Tip
-    Although Esmerald supports out of the box some integrations with Edgy it does not necessarily mean the framework
+    Although Ravyn supports out of the box some integrations with Edgy it does not necessarily mean the framework
     is only coupled with it. You are entirely free to use a completely different ORM or even ignore this section and
     implement your own Edgy integration.
 
@@ -53,5 +53,5 @@ There are some other database connection shortcuts like:
 
 ## Documentation and more details
 
-Since Esmerald supports Edgy, the best place to understand how to use all the powerful features given by it you can simply
+Since Ravyn supports Edgy, the best place to understand how to use all the powerful features given by it you can simply
 use its [documentation](https://edgy.dymmond.com/) and learn more how to leverage it.

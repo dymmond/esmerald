@@ -2,11 +2,11 @@ from typing import Dict
 
 from lilya.types import ASGIApp, Receive, Scope, Send
 
-from esmerald.core.protocols.middleware import MiddlewareProtocol
-from esmerald.requests import Request
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.testclient import create_client
+from ravyn.core.protocols.middleware import MiddlewareProtocol
+from ravyn.requests import Request
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.testclient import create_client
 
 
 class StateRequestMiddleWare(MiddlewareProtocol):

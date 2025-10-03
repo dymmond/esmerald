@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from esmerald.core.protocols.middleware import MiddlewareProtocol
-from esmerald.types import ASGIApp, Receive, Scope, Send
+from ravyn.core.protocols.middleware import MiddlewareProtocol
+from ravyn.types import ASGIApp, Receive, Scope, Send
 
 
 class SampleMiddleware(MiddlewareProtocol):

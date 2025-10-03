@@ -5,10 +5,10 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from esmerald import Include, get
-from esmerald.core.config import StaticFilesConfig
-from esmerald.core.config.template import TemplateConfig
-from esmerald.testclient import create_client
+from ravyn import Include, get
+from ravyn.core.config import StaticFilesConfig
+from ravyn.core.config.template import TemplateConfig
+from ravyn.testclient import create_client
 
 
 def test_staticfiles(tmpdir: str) -> None:

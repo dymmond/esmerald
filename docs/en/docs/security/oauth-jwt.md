@@ -30,13 +30,13 @@ If someone attempts to modify the token, such as changing the expiration date, t
 ## Installing `PyJWT`
 
 The following examples will be assuming that you don't know about anything although,
-**Esmerald also comes with [JWT integration](../configurations/jwt.md)** and there are details how to leverage it.
+**Ravyn also comes with [JWT integration](../configurations/jwt.md)** and there are details how to leverage it.
 
 You will be required to install some additional libraries when using the following examples but summarizing it, you
 can also achieve the same results by running:
 
 ```shell
-$ pip install esmerald[jwt]
+$ pip install ravyn[jwt]
 ```
 
 !!! Warning
@@ -65,7 +65,7 @@ If your database is compromised, the attacker will only have access to hashed pa
 
 This prevents the thief from directly using the passwords on other systems, which is critical since many users reuse the same password across multiple platforms.
 
-An example of hashing is what Django (and **Esmerald**) offer, the **PBKDF2** (Password-Based Key Derivation Function 1 and 2).
+An example of hashing is what Django (and **Ravyn**) offer, the **PBKDF2** (Password-Based Key Derivation Function 1 and 2).
 
 To help us with this, we will be using `passlib`.
 
@@ -84,8 +84,8 @@ $ pip install passlib[bcrypt]
 !!! Tip
     PassLib allows you to configure it to read passwords hashed by frameworks like Django, Flask security plugins, and others.
 
-    This enables scenarios such as sharing a database between a Django application and a Esmerald application or gradually migrating a Django
-    application to Esmerald.
+    This enables scenarios such as sharing a database between a Django application and a Ravyn application or gradually migrating a Django
+    application to Ravyn.
 
     Users can seamlessly log in from either application, ensuring compatibility and a smooth transition.
 
@@ -240,4 +240,4 @@ By using scopes in JWT, you can enhance security and implement role-based access
 
 These step by step guides were inspired by **FastAPI** great work of providing simple and yet effective examples for everyone to understand.
 
-Esmerald adopts a different implementation internally but with the same purposes as any other framework to achieve that.
+Ravyn adopts a different implementation internally but with the same purposes as any other framework to achieve that.

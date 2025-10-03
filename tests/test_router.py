@@ -3,12 +3,12 @@ from unittest import mock
 import pytest
 from lilya import status
 
-from esmerald import ChildEsmerald
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include, Router
-from esmerald.testclient import create_client
+from ravyn import ChildRavyn
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include, Router
+from ravyn.testclient import create_client
 
 
 @get(status_code=status.HTTP_202_ACCEPTED)
@@ -204,11 +204,11 @@ def test_add_router_with_nested_includes_mid_path(test_client_factory) -> None:
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
 
 
-def test_add_child_esmerald(test_client_factory):
-    child = ChildEsmerald(routes=[Gateway(handler=route_one)])
+def test_add_child_ravyn(test_client_factory):
+    child = ChildRavyn(routes=[Gateway(handler=route_one)])
 
     with create_client(routes=[]) as client:
-        client.app.add_child_esmerald(path="/child", child=child)
+        client.app.add_child_ravyn(path="/child", child=child)
 
         response = client.get("/child")
 
@@ -216,12 +216,12 @@ def test_add_child_esmerald(test_client_factory):
         assert response.json() == {"test": 1}
 
 
-def test_add_child_esmerald_raise_error(test_client_factory):
+def test_add_child_ravyn_raise_error(test_client_factory):
     child = object()
 
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[]) as client:
-            client.app.add_child_esmerald(path="/child", child=child)
+            client.app.add_child_ravyn(path="/child", child=child)
 
 
 def test_add_include(test_client_factory):
@@ -240,7 +240,7 @@ def test_add_include_call_activate_openapi(test_client_factory):
     include = Include(path="/child", routes=[Gateway(handler=route_one)])
 
     with create_client(routes=[]) as client:
-        with mock.patch("esmerald.applications.Esmerald.activate_openapi") as mock_call:
+        with mock.patch("ravyn.applications.Ravyn.activate_openapi") as mock_call:
             client.app.add_include(include)
 
             response = client.get("/child")

@@ -5,10 +5,10 @@ from lilya import status
 from pydantic import BaseModel
 from typing_extensions import Annotated
 
-from esmerald.core.datastructures.msgspec import Struct
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import post
-from esmerald.testclient import create_client
+from ravyn.core.datastructures.msgspec import Struct
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import post
+from ravyn.testclient import create_client
 
 
 class User(Struct):
@@ -33,7 +33,7 @@ def user(payload: BaseUser) -> User:
 
 def test_user_msgspec(test_client_factory):
     with create_client(routes=[Gateway(handler=get_user)]) as client:
-        data = {"name": "Esmerald", "email": "esmerald@esmerald.dev"}
+        data = {"name": "Ravyn", "email": "ravyn@ravyn.dev"}
         response = client.post("/", json=data)
 
         assert response.json() == data
@@ -41,7 +41,7 @@ def test_user_msgspec(test_client_factory):
 
 def test_user_msgspec_raise_validation_error(test_client_factory):
     with create_client(routes=[Gateway(handler=get_user)]) as client:
-        data = {"name": 1, "email": "esmerald@esmerald.dev"}
+        data = {"name": 1, "email": "ravyn@ravyn.dev"}
         response = client.post("/", json=data)
 
         assert response.status_code == 400
@@ -53,7 +53,7 @@ def test_user_msgspec_raise_validation_error(test_client_factory):
 
 def test_user_msgspec_two(test_client_factory):
     with create_client(routes=[Gateway(handler=user)]) as client:
-        data = {"user": {"name": "Esmerald", "email": "esmerald@esmerald.dev"}}
+        data = {"user": {"name": "Ravyn", "email": "ravyn@ravyn.dev"}}
         response = client.post("/", json=data)
         assert response.json() == data
 

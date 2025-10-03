@@ -1,23 +1,23 @@
 # Contributing
 
-Thank you for showing interest in contributing to Esmerald. There are many ways you can help and contribute to the
+Thank you for showing interest in contributing to Ravyn. There are many ways you can help and contribute to the
 project.
 
-* Try Esmerald and [report bugs and issues](https://github.com/dymmond/esmerald/issues/new) you find.
-* [Implement new features](https://github.com/dymmond/esmerald/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-* Help others by [reviewing pull requests](https://github.com/dymmond/esmerald/pulls)
+* Try Ravyn and [report bugs and issues](https://github.com/dymmond/ravyn/issues/new) you find.
+* [Implement new features](https://github.com/dymmond/ravyn/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+* Help others by [reviewing pull requests](https://github.com/dymmond/ravyn/pulls)
 * Help writing documentation
 * Use the discussions and actively participate on them.
-* Become an contributor by helping Esmerald growing and spread the words across small, medium, large or any company
+* Become an contributor by helping Ravyn growing and spread the words across small, medium, large or any company
 size.
 
 ## Reporting possible bugs and issues
 
-It is natural that you might find something that Esmerald should support or even experience some sorte of unexpected
+It is natural that you might find something that Ravyn should support or even experience some sorte of unexpected
 behaviour that needs addressing.
 
 The way we love doing things is very simple, contributions should start out with a
-[discussion](https://github.com/dymmond/esmerald/discussions). The potential bugs shall be raised as "Potential Issue"
+[discussion](https://github.com/dymmond/ravyn/discussions). The potential bugs shall be raised as "Potential Issue"
 in the discussions, the feature requests may be raised as "Ideas".
 
 We can then decide if the discussion needs to be escalated into an "Issue" or not.
@@ -37,15 +37,15 @@ it clear to understand and get the required help.
 
 ## Development
 
-To develop for Esmerald, create a fork of the [Esmerald repository](https://github.com/dymmond/esmerald) on GitHub.
+To develop for Ravyn, create a fork of the [Ravyn repository](https://github.com/dymmond/ravyn) on GitHub.
 
 After, clone your fork with the follow command replacing `YOUR-USERNAME` with your GitHub username:
 
 ```shell
-$ git clone https://github.com/YOUR-USERNAME/esmerald
+$ git clone https://github.com/YOUR-USERNAME/ravyn
 ```
 
-Esmerald also uses [hatch](https://hatch.pypa.io/latest/) for its development, testing and release cycles.
+Ravyn also uses [hatch](https://hatch.pypa.io/latest/) for its development, testing and release cycles.
 
 Please make sure you run:
 
@@ -59,7 +59,7 @@ Not necessary because the dependencies are automatically installed by hatch.
 But if environments should be pre-initialized it can be done with `hatch env`.
 
 ```shell
-$ cd esmerald
+$ cd ravyn
 $ hatch env create
 $ hatch env create test
 $ hatch env create docs
@@ -85,7 +85,7 @@ To run the tests, use:
 $ hatch run test:test
 ```
 
-Because Esmerald uses pytest, any additional arguments will be passed. More info within the
+Because Ravyn uses pytest, any additional arguments will be passed. More info within the
 [pytest documentation](https://docs.pytest.org/en/latest/how-to/usage.html)
 
 For example, to run a single test_script:
@@ -103,7 +103,7 @@ $ hatch run lint
 
 ## Documentation
 
-Improving the documentation is quite easy and it is placed inside the `esmerald/docs` folder.
+Improving the documentation is quite easy and it is placed inside the `ravyn/docs` folder.
 
 To build all the documentation:
 
@@ -171,7 +171,7 @@ Here are the steps to help with translations.
 
 #### Tips and guidelines
 
-* Check the currently <a href="https://github.com/dymmond/esmerald/pulls" class="external-link" target="_blank">existing pull requests</a> for your language. You can filter the pull requests by the ones with the label for your language. For example, for Spanish, the label is <a href="https://github.com/dymmond/esmerald/pulls?q=is%3Aopen+sort%3Aupdated-desc+label%3Alang-es+label%3Aawaiting-review" class="external-link" target="_blank">`lang-es`</a>.
+* Check the currently <a href="https://github.com/dymmond/ravyn/pulls" class="external-link" target="_blank">existing pull requests</a> for your language. You can filter the pull requests by the ones with the label for your language. For example, for Spanish, the label is <a href="https://github.com/dymmond/ravyn/pulls?q=is%3Aopen+sort%3Aupdated-desc+label%3Alang-es+label%3Aawaiting-review" class="external-link" target="_blank">`lang-es`</a>.
 
 * Review those pull requests, requesting changes or approving them. For the languages I don't speak, I'll wait for several others to review the translation before merging.
 
@@ -180,7 +180,7 @@ Here are the steps to help with translations.
 
     Check the docs about <a href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-reviews" class="external-link" target="_blank">adding a pull request review</a> to approve it or request changes.
 
-* Check if there's a <a href="https://github.com/dymmond/esmerald/discussions/categories/translations" class="external-link" target="_blank">GitHub Discussion</a> to coordinate translations for your language. You can subscribe to it, and when there's a new pull request to review, an automatic comment will be added to the discussion.
+* Check if there's a <a href="https://github.com/dymmond/ravyn/discussions/categories/translations" class="external-link" target="_blank">GitHub Discussion</a> to coordinate translations for your language. You can subscribe to it, and when there's a new pull request to review, an automatic comment will be added to the discussion.
 
 * If you translate pages, add a single pull request per page translated. That will make it much easier for others to review it.
 
@@ -312,7 +312,7 @@ Make sure you run the build-all command first.
 Serving at: http://127.0.0.1:8000
 ```
 
-## Building Esmerald
+## Building Ravyn
 
 To build a package locally, run:
 
@@ -333,7 +333,7 @@ It will install the requirements and create a local build in your virtual enviro
 
 ## TaskFile
 
-Esmerald also embraces the [TaskFile](https://taskfile.dev/installation/) instead of the Makefile which is only available, fully, for *NIX users.
+Ravyn also embraces the [TaskFile](https://taskfile.dev/installation/) instead of the Makefile which is only available, fully, for *NIX users.
 
 The reason for also allowing the task file to exist its because we also understand that contributors
 might enjoy it a bit more than using the hatch syntax.
@@ -353,20 +353,20 @@ $ task test_man ARGS=tests/msgspec/
 ```
 
 !!! Warning
-    TaskFile is used by Esmerald but this does not mean that in the future we might decide to stop
+    TaskFile is used by Ravyn but this does not mean that in the future we might decide to stop
     supporting it for a better alternative.
 
 ## Releasing
 
-*This section is for the maintainers of `Esmerald`*.
+*This section is for the maintainers of `Ravyn`*.
 
-### Building the Esmerald for release
+### Building the Ravyn for release
 
 Before releasing a new package into production some considerations need to be taken into account.
 
 * **Changelog**
     * Like many projects, we follow the format from [keepchangelog](https://keepachangelog.com/en/1.0.0/).
-    * [Compare](https://github.com/dymmond/esmerald/compare/) `main` with the release tag and list of the entries
+    * [Compare](https://github.com/dymmond/ravyn/compare/) `main` with the release tag and list of the entries
 that are of interest to the users of the framework.
         * What **must** go in the changelog? added, changed, removed or deprecated features and the bug fixes.
         * What is **should not go** in the changelog? Documentation changes, tests or anything not specified in the
@@ -379,7 +379,7 @@ point above.
 
 #### Releasing
 
-Once the `release` PR is merged, create a new [release](https://github.com/dymmond/esmerald/releases/new)
+Once the `release` PR is merged, create a new [release](https://github.com/dymmond/ravyn/releases/new)
 that includes:
 
 Example:

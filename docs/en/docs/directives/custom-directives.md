@@ -1,6 +1,6 @@
 # Custom Directives
 
-Having [built-in directives](./directives.md) from Esmerald is great as it gives you a lot of
+Having [built-in directives](./directives.md) from Ravyn is great as it gives you a lot of
 niceties for your project but having **custom directives** is what really powers up your
 application and takes it to another level.
 
@@ -19,12 +19,12 @@ Quite simple, right?
 So, what does this have to do with directives? Well, directives follow the same principle but
 applied to your own project. What if you could create your own structured scripts inside your
 project directly? What if you could build dependent or independent pieces of logic that could be
-run using your own Esmerald application resources?
+run using your own Ravyn application resources?
 
 This is what a directive is.
 
 !!! Tip
-    If you are familiar with Django management commands, Esmerald directives follow the same
+    If you are familiar with Django management commands, Ravyn directives follow the same
     principle. There is an [excelent article](https://simpleisbetterthancomplex.com/tutorial/2018/08/27/how-to-create-custom-django-management-commands.html)
     about those if you want to get familiar with.
 
@@ -67,27 +67,27 @@ The syntax is very simple for a custom directive:
 **With the --app parameter**
 
 ```shell
-$ esmerald --app <LOCATION> run --directive <DIRECTIVE-NAME> <OPTIONS>
+$ ravyn --app <LOCATION> run --directive <DIRECTIVE-NAME> <OPTIONS>
 ```
 
 Example:
 
 ```shell
-esmerald --app myproject.main:app run --directive mydirective --name esmerald
+ravyn --app myproject.main:app run --directive mydirective --name ravyn
 ```
 
 **With the ESMERALD_DEFAULT_APP environment variable set**
 
 ```shell
 $ export ESMERALD_DEFAULT_APP=myproject.main:app
-$ esmerald run --directive <DIRECTIVE-NAME> <OPTIONS>
+$ ravyn run --directive <DIRECTIVE-NAME> <OPTIONS>
 ```
 
 Example:
 
 ```shell
 $ export ESMERALD_DEFAULT_APP=myproject.main:app
-$ esmerald run --directive mydirective --name esmerald
+$ ravyn run --directive mydirective --name ravyn
 ```
 
 The `run --directive` is **always** expecting the name of the file of your directive.
@@ -99,7 +99,7 @@ Example:
 
 ```shell
 $ export ESMERALD_DEFAULT_APP=myproject.main:app
-$ esmerald run --directive createsuperuser --email example@esmerald.dev
+$ ravyn run --directive createsuperuser --email example@ravyn.dev
 ```
 
 ### How to create a directive
@@ -108,7 +108,7 @@ To create a directive you **must inherit from the BaseDiretive** class and **mus
 to your object.
 
 ```python
-from esmerald.core.directives import BaseDirective
+from ravyn.core.directives import BaseDirective
 ```
 
 **Create the Directive class**
@@ -120,7 +120,7 @@ from esmerald.core.directives import BaseDirective
 Every single custom directive created **should be called Directive** and **must inherit** from the
 `BaseDiretive` class.
 
-Internally `esmerald` looks for a `Directive` object and verifies if is a subclass of `BaseDirective`.
+Internally `ravyn` looks for a `Directive` object and verifies if is a subclass of `BaseDirective`.
 If one of this conditions fails, it will raise a `DirectiveError`.
 
 ### Where should directives be placed at?
@@ -187,7 +187,7 @@ As you can see from the previous example, we have four directives:
 * **db_shell** - Inside `./directives/operations`.
 
 All of them, no matter where you put the directive, are inside a **directives/operations** where
-esmerald always looks at.
+ravyn always looks at.
 
 ### Directive functions
 
@@ -196,7 +196,7 @@ esmerald always looks at.
 The `Diretive` logic is implemented inside a `handle` function that can be either `sync` or
 `async`.
 
-When calling a `Directive`, `esmerald` will execute the `handle()` and run the all the logic.
+When calling a `Directive`, `ravyn` will execute the `handle()` and run the all the logic.
 
 === "Sync"
 
@@ -210,7 +210,7 @@ When calling a `Directive`, `esmerald` will execute the `handle()` and run the a
     {!> ../../../docs_src/directives/async_handler.py !}
     ```
 
-As you can see, Esmerald Directives also allow `async` and `sync` type of functions. This can be
+As you can see, Ravyn Directives also allow `async` and `sync` type of functions. This can be
 particularly useful for when you need to run specific tasks in async mode, for example.
 
 #### add_arguments()
@@ -225,13 +225,13 @@ are `argparse` related arguments so the syntax should be familiar.
 As you can see, the Directive has five parameters and all of them required.
 
 ```shell
-esmerald --app teste.main:app run --directive mydirective --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+ravyn --app teste.main:app run --directive mydirective --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 
 ```
 
 ## Help
 
-There are two helps in place for the directives. The one you run the esmerald executor (run) and the
+There are two helps in place for the directives. The one you run the ravyn executor (run) and the
 one for the `directive`.
 
 ### --help
@@ -239,7 +239,7 @@ one for the `directive`.
 This command **is only used for the executor help**, for example:
 
 ```shell
-$ esmerald run --help
+$ ravyn run --help
 ```
 
 ### -h
@@ -247,7 +247,7 @@ $ esmerald run --help
 This flag is used to access the `directive` help and not the `run`.
 
 ```shell
-$ esmerald run --directive mydirective -h
+$ ravyn run --directive mydirective -h
 ```
 
 ### Notes
@@ -307,14 +307,14 @@ Let us use the following structure as example:
     └── urls.py
 ```
 
-This example is simulating a structure of an esmerald project with
+This example is simulating a structure of an ravyn project with
 **two custom directives with the same name**.
 
 The first directive is inside `./directives/operations/` and the second inside
 `./apps/accounts/directives/operations`.
 
-Esmerald directives work on a **First Found First Executed** principle and that means if you have
-two custom directives with the same name, esmerald will
+Ravyn directives work on a **First Found First Executed** principle and that means if you have
+two custom directives with the same name, ravyn will
 **execute the first found directive with that given name**.
 
 In other words, if you want to execute the `createsuperuser` from the `accounts`, the first found
@@ -323,7 +323,7 @@ it instead of the intended from `accounts`.
 
 ## Execution
 
-Esmerald directives use the same events as the one passed in the application.
+Ravyn directives use the same events as the one passed in the application.
 
 For example, if you want to execute database operations and the database connections should be
 established before hand, you can do in two ways:
@@ -337,7 +337,7 @@ execute the operations. This way you only need one place to manage the needed ap
 ## A practical example
 
 Let us run an example of a custom directive for your application. Since we keep mentioning the
-`createsuperuser` often, let us then create that same directive and apply to our Esmerald application.
+`createsuperuser` often, let us then create that same directive and apply to our Ravyn application.
 
 For this example we will be using [Edgy][edgy] since it is from the same author and will
 allow us to do a complete end-to-end directive using the async approach.
@@ -346,7 +346,7 @@ This example is very simple in its own design.
 
 For production you should have your models inside a models dedicated place and your `registry`
 and `database` settings somewhere in your `settings` where you can access it anywhere in your code via
-[esmerald settings](../application/settings.md), for example.
+[ravyn settings](../application/settings.md), for example.
 
 P.S.: For the registry and database strategy with [edgy][edgy], it is good to have a read
 the [tips and tricks](https://edgy.dymmond.com/tips-and-tricks/) with edgy.
@@ -355,12 +355,12 @@ The design is up to you.
 
 What we will be creating:
 
-* **myproject/main/main.py** - The entry-point for our Esmerald application
+* **myproject/main/main.py** - The entry-point for our Ravyn application
 * **createsuperuser** - Our directive.
 
 In the end we simply run the directive.
 
-We will be also using the [edgy support from Esmerald models](../databases/edgy/models.md)
+We will be also using the [edgy support from Ravyn models](../databases/edgy/models.md)
 as this will make the example simpler.
 
 ### The application entrypoint
@@ -387,20 +387,20 @@ in the command line:
 **Using the auto discover**
 
 ```shell
-$ esmerald run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+$ ravyn run --directive createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
 **Using the --app or ESMERALD_DEFAULT_APP**
 
 ```shell
-$ esmerald --app myproject.main:app run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+$ ravyn --app myproject.main:app run --directive createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
 Or
 
 ```shell
 $ export ESMERALD_DEFAULT_APP=myproject.main:app
-$ esmerald run --directive createsuperuser --first-name Esmerald --last-name Framework --email example@esmerald.dev --username esmerald --password esmerald
+$ ravyn run --directive createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
 After the command is executed, you should be able to see the superuser created in your database.

@@ -1,7 +1,7 @@
 import pytest
 
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.routing.router import HTTPHandler
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.routing.router import HTTPHandler
 
 
 def test_raise_no_function_validation() -> None:

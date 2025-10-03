@@ -3,9 +3,9 @@ from typing import Any, Dict, Optional, Union
 import pytest
 from pydantic import BaseModel, __version__
 
-from esmerald import Gateway, Inject, Injects, Security, get, post
-from esmerald.security.oauth2 import OAuth2, OAuth2PasswordRequestFormStrict
-from esmerald.testclient import create_client
+from ravyn import Gateway, Inject, Injects, Security, get, post
+from ravyn.security.oauth2 import OAuth2, OAuth2PasswordRequestFormStrict
+from ravyn.testclient import create_client
 
 pydantic_version = ".".join(__version__.split(".")[:2])
 

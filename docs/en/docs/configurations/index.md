@@ -1,6 +1,6 @@
 # Configurations
 
-You can find all the configurations used/available to Esmerald.
+You can find all the configurations used/available to Ravyn.
 
 1. [CORSConfig](./cors.md)
 2. [CSRFConfig](./csrf.md)

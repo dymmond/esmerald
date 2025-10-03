@@ -1,6 +1,6 @@
-# Caching in Esmerald
+# Caching in Ravyn
 
-This guide explains how to implement powerful caching in Esmerald using in-memory and Redis backends.
+This guide explains how to implement powerful caching in Ravyn using in-memory and Redis backends.
 It walks you through setting up cache decorators, backend configurations, and cache invalidation strategies.
 
 ---
@@ -17,9 +17,9 @@ be served faster.
 
 ---
 
-## Caching in Esmerald
+## Caching in Ravyn
 
-Esmerald provides a native `@cache()` decorator that can be applied to any function-based handler to cache its result.
+Ravyn provides a native `@cache()` decorator that can be applied to any function-based handler to cache its result.
 
 The decorator supports multiple backends and time-to-live (TTL) settings.
 
@@ -28,9 +28,10 @@ The decorator supports multiple backends and time-to-live (TTL) settings.
 ## Basic Usage with In-Memory Cache
 
 ```python
-from esmerald.utils.decorators import cache
-from esmerald.responses import JSONResponse
-from esmerald import get
+from ravyn.utils.decorators import cache
+from ravyn.responses import JSONResponse
+from ravyn import get
+
 
 @get("/cached")
 @cache(ttl=60)  # Cache result for 60 seconds
@@ -50,15 +51,15 @@ To use Redis, first install the required library:
 pip install redis
 ```
 
-Then configure Esmerald to use Redis:
+Then configure Ravyn to use Redis:
 
 ```python
-from esmerald.conf import EsmeraldSettings
-from esmerald.core.caches.redis import RedisCache
-from esmerald.core.protocols.cache import CacheBackend
+from ravyn.conf import RavynSettings
+from ravyn.core.caches.redis import RedisCache
+from ravyn.core.protocols.cache import CacheBackend
 
 
-class Settings(EsmeraldSettings):
+class Settings(RavynSettings):
     cache_backend: CacheBackend = RedisCache("redis://localhost:6379")
 ```
 
@@ -71,8 +72,9 @@ Now all `@cache()` calls use Redis automatically.
 You can override the default backend or TTL at the decorator level:
 
 ```python
-from esmerald.core.caches.memory import InMemoryCache
-from esmerald.utils.decorators import cache
+from ravyn.core.caches.memory import InMemoryCache
+from ravyn.utils.decorators import cache
+
 
 @get("/override")
 @cache(ttl=10, backend=InMemoryCache())
@@ -84,7 +86,7 @@ def custom_cache() -> dict:
 
 ## Automatic Cache Key Generation
 
-Esmerald automatically generates cache keys based on the function's name and arguments.
+Ravyn automatically generates cache keys based on the function's name and arguments.
 You can customize this behavior by writing a custom key builder.
 
 ---
@@ -94,7 +96,7 @@ You can customize this behavior by writing a custom key builder.
 You can implement your own cache backend by subclassing `BaseCacheBackend`.
 
 ```python
-from esmerald.core.protocols.cache import CacheBackend
+from ravyn.core.protocols.cache import CacheBackend
 
 
 class CustomCache(CacheBackend):
@@ -121,7 +123,7 @@ class CustomCache(CacheBackend):
 
 ## Summary
 
-✅ Esmerald supports in-memory and Redis caching
+✅ Ravyn supports in-memory and Redis caching
 ✅ Decorator-based usage makes caching declarative
 ✅ Custom backends and TTLs are supported
 ✅ Encoders ensure correct serialization for cached content

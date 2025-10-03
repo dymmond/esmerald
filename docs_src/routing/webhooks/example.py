@@ -2,9 +2,9 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, post
-from esmerald.routing.gateways import WebhookGateway
-from esmerald.routing.webhooks.handlers import whpost
+from ravyn import Ravyn, Gateway, post
+from ravyn.routing.gateways import WebhookGateway
+from ravyn.routing.webhooks.handlers import whpost
 
 
 class Payment(BaseModel):
@@ -21,7 +21,7 @@ async def new_event(data: Payment) -> None: ...
 async def create_payment(data: Payment) -> None: ...
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=create_payment)],
     webhooks=[WebhookGateway(handler=new_event)],
 )

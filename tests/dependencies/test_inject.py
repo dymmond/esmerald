@@ -3,8 +3,8 @@ from typing import Any
 
 import pytest
 
-from esmerald.injector import Factory, Inject
-from esmerald.typing import Void
+from ravyn.injector import Factory, Inject
+from ravyn.typing import Void
 
 
 class Test:

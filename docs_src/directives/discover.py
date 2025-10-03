@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, JSONResponse, Request, get, route
+from ravyn import Ravyn, Gateway, JSONResponse, Request, get, route
 
 
 class Item(BaseModel):
@@ -20,7 +20,7 @@ async def create_or_update_item(data: Item, request: Request, name: str) -> JSON
 
 
 def get_application():
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway(handler=show_name),
             Gateway(path="/item", handler=create_or_update_item),

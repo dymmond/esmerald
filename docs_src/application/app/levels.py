@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include, Request, get
+from ravyn import Ravyn, Gateway, Include, Request, get
 
 
 @get("/me")
@@ -6,4 +6,4 @@ async def me(request: Request) -> str:
     return "Hello, world!"
 
 
-app = Esmerald(routes=[Include("/", routes=[Gateway(handler=me)])])
+app = Ravyn(routes=[Include("/", routes=[Gateway(handler=me)])])

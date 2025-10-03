@@ -4,21 +4,21 @@ from typing import Any, Dict, List
 from lilya.middleware import DefineMiddleware
 from pydantic import BaseModel
 
-from esmerald import (
-    ChildEsmerald,
-    EsmeraldSettings,
+from ravyn import (
+    ChildRavyn,
     Gateway,
     Include,
     JSONResponse,
+    RavynSettings,
     Request,
     get,
     settings,
 )
-from esmerald.core.config import CORSConfig, CSRFConfig
-from esmerald.middleware import RequestSettingsMiddleware
-from esmerald.testclient import create_client
-from esmerald.types import Middleware
-from esmerald.utils.crypto import get_random_secret_key
+from ravyn.core.config import CORSConfig, CSRFConfig
+from ravyn.middleware import RequestSettingsMiddleware
+from ravyn.testclient import create_client
+from ravyn.types import Middleware
+from ravyn.utils.crypto import get_random_secret_key
 
 
 class DummySettings(BaseModel):
@@ -42,7 +42,7 @@ async def _app_settings(request: Request) -> str:
     return request.app.settings.app_name
 
 
-class DisableOpenAPI(EsmeraldSettings):
+class DisableOpenAPI(RavynSettings):
     enable_openapi: bool = True
 
 
@@ -100,7 +100,7 @@ def test_inner_settings_module(test_client_factory):
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_module, EsmeraldSettings)
+        assert isinstance(client.app.settings_module, RavynSettings)
 
 
 class ChildSettings(DisableOpenAPI):
@@ -108,12 +108,12 @@ class ChildSettings(DisableOpenAPI):
     secret_key: str = "child key"
 
 
-def test_child_esmerald_independent_settings(test_client_factory):
+def test_child_ravyn_independent_settings(test_client_factory):
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.model_dump_json(exclude={"cache_backend"})  # pragma: no cover
 
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Gateway(handler=_app_settings)],
         settings_module="tests.app_settings.test_settings_module_string.ChildSettings",
         middleware=[DefineMiddleware(RequestSettingsMiddleware)],
@@ -139,7 +139,7 @@ class ChildSettingCors(DisableOpenAPI):
         return CORSConfig(allow_origins=["www.example.com"])
 
 
-def test_child_esmerald_independent_cors_config(test_client_factory):
+def test_child_ravyn_independent_cors_config(test_client_factory):
     cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
@@ -150,7 +150,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
         )  # pragma: no cover  # pragma: no cover
 
     secret = get_random_secret_key()
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Gateway(handler=_app_settings)],
         settings_module="tests.app_settings.test_settings_module_string.ChildSettingCors",
         middleware=[DefineMiddleware(RequestSettingsMiddleware)],
@@ -173,18 +173,18 @@ class NestedChildSettings(DisableOpenAPI):
     secret_key: str = "nested child key"
 
 
-def test_nested_child_esmerald_independent_settings(test_client_factory):
+def test_nested_child_ravyn_independent_settings(test_client_factory):
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.model_dump_json(exclude={"cache_backend"})  # pragma: no cover
 
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Gateway(handler=_app_settings)],
         settings_module="tests.app_settings.test_settings_module_string.NestedChildSettings",
         middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     )
 
-    nested_child = ChildEsmerald(
+    nested_child = ChildRavyn(
         routes=[Include(app=child)],
         settings_module="tests.app_settings.test_settings_module_string.ChildSettings",
     )

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-from esmerald import Gateway, JSONResponse, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, JSONResponse, get
+from ravyn.testclient import create_client
 
 
 @get("/dict")

@@ -4,7 +4,7 @@ from typing import Any
 
 from attrs import asdict, define, field, has
 
-from esmerald.encoders import Encoder
+from ravyn.encoders import Encoder
 
 
 class AttrsEncoder(Encoder):

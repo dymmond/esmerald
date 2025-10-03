@@ -1,6 +1,6 @@
-from esmerald import (
+from ravyn import (
     APIView,
-    Esmerald,
+    Ravyn,
     Gateway,
     Request,
     Response,
@@ -29,4 +29,4 @@ class World(APIView):
         await socket.close()
 
 
-app = Esmerald(routes=[Gateway("/world", handler=World)])
+app = Ravyn(routes=[Gateway("/world", handler=World)])

@@ -9,10 +9,10 @@ from asyncz.schedulers.types import SchedulerType
 from asyncz.triggers.types import TriggerType
 from asyncz.tasks.base import Task as AsynczTask
 from asyncz.typing import undefined, UndefinedType
-from esmerald.conf import settings
-from esmerald.contrib.schedulers.base import SchedulerConfig
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.utils.module_loading import import_string
+from ravyn.conf import settings
+from ravyn.contrib.schedulers.base import SchedulerConfig
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.utils.module_loading import import_string
 
 
 class AsynczConfig(SchedulerConfig):
@@ -52,7 +52,7 @@ class AsynczConfig(SchedulerConfig):
 
         if not self.tasks:
             warnings.warn(
-                "Esmerald is starting the scheduler, yet there are no tasks declared.",
+                "Ravyn is starting the scheduler, yet there are no tasks declared.",
                 UserWarning,
                 stacklevel=2,
             )
@@ -97,7 +97,7 @@ class AsynczConfig(SchedulerConfig):
         Initiates the scheduler from the given time.
         If no value is provided, it will default to AsyncIOScheduler.
 
-        The value of `scheduler_class` can be overwritten by any esmerald custom settings.
+        The value of `scheduler_class` can be overwritten by any ravyn custom settings.
 
         Args:
             scheduler: The class of the scheduler to be used.

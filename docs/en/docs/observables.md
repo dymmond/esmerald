@@ -12,7 +12,7 @@ Observables can be thought of as a **stream of events**, much like how promises 
 
 ## **2. Benefits of Using Observables**
 
-Using observables in an application, especially within Esmerald, comes with several advantages:
+Using observables in an application, especially within Ravyn, comes with several advantages:
 
 ### ✅ **Decoupling & Maintainability**
 Observables help separate **event producers (emitters)** from **event consumers (listeners)**. This **reduces dependencies** and makes the system **easier to maintain**.
@@ -21,7 +21,7 @@ Observables help separate **event producers (emitters)** from **event consumers 
 By using observables, new features can be **added without modifying existing code**. Developers can subscribe to events dynamically instead of changing core logic.
 
 ### ✅ **Concurrency & Efficiency**
-Using **async-based event dispatching**, Esmerald handles multiple listeners **without blocking execution**. This improves performance in real-time applications.
+Using **async-based event dispatching**, Ravyn handles multiple listeners **without blocking execution**. This improves performance in real-time applications.
 
 ### ✅ **Code Reusability**
 Once an observable event is defined, it can be **reused across multiple parts** of the application, reducing redundant logic.
@@ -41,13 +41,13 @@ For example:
 - **Background Tasks** → Perform long-running operations (e.g., data processing, cleanup).
 - **Logging & Monitoring** → Collect application metrics without affecting request performance.
 
-In **Esmerald**, observables allow for an **efficient and scalable event-driven** approach, making it ideal for high-performance applications.
+In **Ravyn**, observables allow for an **efficient and scalable event-driven** approach, making it ideal for high-performance applications.
 
 ---
 
-## **4. How Observables Are Applied in Esmerald**
+## **4. How Observables Are Applied in Ravyn**
 
-Esmerald provides **built-in support for observables** through the `@observable` decorator and `EventDispatcher`.
+Ravyn provides **built-in support for observables** through the `@observable` decorator and `EventDispatcher`.
 
 ### **🔹 Key Components**
 
@@ -62,7 +62,7 @@ Esmerald provides **built-in support for observables** through the `@observable`
 
 ---
 
-## **5. Real-World Examples Using Esmerald**
+## **5. Real-World Examples Using Ravyn**
 
 ### **Example 1: User Registration with Multiple Side Effects**
 A user registers, and multiple actions occur **without coupling the logic together**.
@@ -131,7 +131,7 @@ When a payment is made, multiple systems react to the event.
 
 ## **Conclusion**
 
-Observables in Esmerald allow developers to build **efficient, scalable, and maintainable** event-driven applications. By leveraging `@observable` and `EventDispatcher`:
+Observables in Ravyn allow developers to build **efficient, scalable, and maintainable** event-driven applications. By leveraging `@observable` and `EventDispatcher`:
 
 ✔️ **Events are decoupled from logic, improving maintainability.**
 ✔️ **Asynchronous execution improves performance.**

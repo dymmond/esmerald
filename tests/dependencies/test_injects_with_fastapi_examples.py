@@ -2,8 +2,8 @@ from typing import Any, AsyncGenerator, Callable, Generator, Optional
 
 import pytest
 
-from esmerald import Esmerald, Gateway, get, params
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get, params
+from ravyn.testclient import RavynTestClient
 
 
 def BaseRequires(
@@ -107,7 +107,7 @@ async def get_asynchronous_method_gen_dependency(
     return value
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=get_callable_dependency),
         Gateway(handler=get_callable_gen_dependency),
@@ -121,7 +121,7 @@ app = Esmerald(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 @pytest.mark.parametrize(

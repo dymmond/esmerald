@@ -1,20 +1,17 @@
 # OpenAPIConfig
 
-OpenAPIConfig is a simple configuration with basic fields for the auto-generated documentation from Esmerald.
-
-Prior to version 2, there were two pieces for the documentation but now it is simplified with a simple
-one.
+OpenAPIConfig is a simple configuration with basic fields for the auto-generated documentation from Ravyn.
 
 !!! Tip
     More information about
     <a href="https://swagger.io/" target='_blank'>OpenAPI</a>.
 
 You can create your own OpenAPIConfig and populate all the variables needed or you can simply
-override the settings attributes and allow Esmerald to handle the configuration on its own. It
+override the settings attributes and allow Ravyn to handle the configuration on its own. It
 is up to you.
 
 !!! Warning
-    When passing OpenAPI attributes via instantiation, `Esmerald(docs_url='/docs/swagger',...)`,
+    When passing OpenAPI attributes via instantiation, `Ravyn(docs_url='/docs/swagger',...)`,
     those will always be used over the settings or custom configuration.
 
 ## OpenAPIConfig and application
@@ -41,7 +38,7 @@ It is very simple actually.
 {!> ../../../docs_src/configurations/openapi/example1.py !}
 ```
 
-This will create your own `OpenAPIConfig` and pass it to the Esmerald application but what about changing the current
+This will create your own `OpenAPIConfig` and pass it to the Ravyn application but what about changing the current
 default `/docs` path?
 
 Let's use an example for clarification.
@@ -58,7 +55,7 @@ From now on the url to access `swagger`, `redoc` and `stoplight` will be:
 
 ## OpenAPIConfig and the application settings
 
-As per normal Esmerald standard of configurations, it is also possible to enable the OpenAPI configurations via
+As per normal Ravyn standard of configurations, it is also possible to enable the OpenAPI configurations via
 settings.
 
 ```python
@@ -70,7 +67,7 @@ Start the server with your custom settings.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -82,7 +79,7 @@ Start the server with your custom settings.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]

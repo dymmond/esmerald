@@ -1,6 +1,6 @@
 # **`OrJSON`** class
 
-::: esmerald.core.datastructures.encoders.OrJSON
+::: ravyn.core.datastructures.encoders.OrJSON
     options:
         inherited_members: false
         filters:

@@ -1,4 +1,4 @@
-from esmerald import APIView, Esmerald, Gateway, get
+from ravyn import APIView, Ravyn, Gateway, get
 
 
 class MyAPIView(APIView):
@@ -17,4 +17,4 @@ class MyAPIView(APIView):
         return f"Test {name}"
 
 
-app = Esmerald(routes=[Gateway(handler=MyAPIView)])
+app = Ravyn(routes=[Gateway(handler=MyAPIView)])

@@ -1,16 +1,16 @@
 # Relay
 
-Since Esmerald is built on top of Lilya, this means that Esmerald can use almost everything Lilya
+Since Ravyn is built on top of Lilya, this means that Ravyn can use almost everything Lilya
 has without too much of a trouble and out-of-the-box.
 
 One of those things is the **Relay**.
 
-A **mountable ASGI relay** for Esmerald that forwards HTTP **and optionally WebSocket** traffic to an upstream service.
+A **mountable ASGI relay** for Ravyn that forwards HTTP **and optionally WebSocket** traffic to an upstream service.
 
 It preserves **methods, headers, cookies, query parameters, and streaming bodies**, while supporting retries,
 timeout handling, header policies, and structured logging.
 
-Typical use case: you have **two Esmerald apps**:
+Typical use case: you have **two Ravyn apps**:
 
 - **App 1** (Authentication) handles login, logout, refresh, etc.
 - **App 2** (Your main API) wants to expose `GET/POST /auth/...` publicly but **forward** to App 1 under the hood.
@@ -31,7 +31,7 @@ With `Relay`, you mount a single catch‑all route on App 2 (e.g., `/auth`) that
 
 ### Before continuing
 
-Esmerald uses `httpx` to create the `Relay` object. This means, to work with it **you must**:
+Ravyn uses `httpx` to create the `Relay` object. This means, to work with it **you must**:
 
 ```shell
 pip install httpx
@@ -41,7 +41,7 @@ pip install httpx
 
 ```python
 # app.py
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 from lilya.contrib.proxy.relay import Relay
 
 proxy = Relay(
@@ -54,8 +54,8 @@ proxy = Relay(
     retry_backoff_factor=0.2,
 )
 
-# The Main Esmerald application
-app = Esmerald(
+# The Main Ravyn application
+app = Ravyn(
     routes=[
         Include("/auth", app=proxy),  # Everything under /auth/** is proxied
     ],
@@ -73,7 +73,7 @@ app = Esmerald(
 ## How it works (request lifecycle)
 
 1. **Mounting**: You `Include("/auth", app=proxy)` to mount the proxy under `/auth`.
-2. **Path & query**: The Esmerald router strips `/auth` and passes the remainder (e.g., `/login`) to the proxy. The proxy **joins** it with `upstream_prefix` and `target_base_url`. The **raw query string** is forwarded unchanged.
+2. **Path & query**: The Ravyn router strips `/auth` and passes the remainder (e.g., `/login`) to the proxy. The proxy **joins** it with `upstream_prefix` and `target_base_url`. The **raw query string** is forwarded unchanged.
 3. **Headers**:
     - **Drops hop‑by‑hop** headers on the inbound hop (e.g., `Connection`, `TE`, `Upgrade`, `Transfer-Encoding`).
     - Adds `X-Forwarded-For`, `X-Forwarded-Proto`, and `X-Forwarded-Host` (the **original** host seen by the proxy).
@@ -154,7 +154,7 @@ You can proxy WS endpoints too:
 
 ```python
 proxy = Relay("http://chat-service.local")
-app = Esmerald(routes=[Include("/ws", app=proxy)])
+app = Ravyn(routes=[Include("/ws", app=proxy)])
 ```
 
 * Incoming `ws://proxy.local/ws/room`: Proxied to `ws://chat-service.local/room`
@@ -253,7 +253,7 @@ proxy = Relay(
     upstream_prefix="/",
     rewrite_set_cookie_domain=lambda _: "",  # drop Domain
 )
-app = Esmerald(
+app = Ravyn(
     routes=[Include("/auth", app=proxy)],
     on_startup=[proxy.startup],
     on_shutdown=[proxy.shutdown],
@@ -269,7 +269,7 @@ billing = Relay(
     "http://billing-service.internal",
     upstream_prefix="/api/v1",
 )
-app = Esmerald(
+app = Ravyn(
     routes=[Include("/billing", app=billing)],
     on_startup=[billing.startup],
     on_shutdown=[billing.shutdown],
@@ -326,7 +326,7 @@ import json
 import httpx
 import pytest
 
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 from lilya.contrib.proxy.relay import Relay
 
 
@@ -418,7 +418,7 @@ def proxy_and_app(upstream_app):
         rewrite_set_cookie_domain=lambda _orig: "",
         transport=upstream_transport,  # in‑memory upstream
     )
-    app = Esmerald(
+    app = Ravyn(
         routes=[Include("/auth", app=proxy)],
         on_startup=[proxy.startup],
         on_shutdown=[proxy.shutdown],

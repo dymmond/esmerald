@@ -1,6 +1,6 @@
 # Handlers
 
-Handlers are part of the core of what makes `Esmerald` and they are needed to build the APIs and the routing
+Handlers are part of the core of what makes `Ravyn` and they are needed to build the APIs and the routing
 of the application.
 
 They provide a set of available parameters like `status_code`, `response_class`, `include_in_schema` and many others.
@@ -25,7 +25,7 @@ and special one for special circumstances.
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.get).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.get).
 
 ### POST
 
@@ -37,7 +37,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.post).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.post).
 
 ### PUT
 
@@ -49,7 +49,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.put).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.put).
 
 ### PATCH
 
@@ -61,7 +61,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.patch).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.patch).
 
 ### DELETE
 
@@ -73,7 +73,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.delete).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.delete).
 
 ### Route
 
@@ -98,7 +98,7 @@ There are also three more **unique** and exotic ones:
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.route).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.route).
 
 ### HEAD
 
@@ -110,7 +110,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.head).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.head).
 
 ### OPTIONS
 
@@ -122,7 +122,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.options).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.options).
 
 ### TRACE
 
@@ -134,7 +134,7 @@ All the parameters and defaults are available in the [Handlers Reference](../ref
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.trace).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.trace).
 
 ## HTTP handler summary
 
@@ -149,7 +149,7 @@ needs usually to be constantly opened.
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API" target="_blank">More on websockets</a>.
 
 !!! warning
-    Due to the nature of websockets, Esmerald does a direct implementation of the WebSocket from Lilya which also
+    Due to the nature of websockets, Ravyn does a direct implementation of the WebSocket from Lilya which also
     means no `sync` functions.
 
 ### WebSocket
@@ -160,7 +160,7 @@ needs usually to be constantly opened.
 
 #### Parameters
 
-All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#esmerald.websocket).
+All the parameters and defaults are available in the [Handlers Reference](../references/routing/handlers.md#ravyn.websocket).
 
 
 ## WebSocket handler summary

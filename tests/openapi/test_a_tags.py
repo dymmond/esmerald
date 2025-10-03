@@ -1,7 +1,7 @@
 from typing import Dict
 
-from esmerald import Esmerald, Gateway, Include, get
-from esmerald.testclient import EsmeraldTestClient, create_client
+from ravyn import Gateway, Include, Ravyn, get
+from ravyn.testclient import RavynTestClient, create_client
 from tests.settings import TestSettings
 
 
@@ -10,7 +10,7 @@ async def bar() -> Dict[str, str]:
     return {"hello": "world"}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=bar)],
     enable_openapi=True,
     tags=["test"],
@@ -18,7 +18,7 @@ app = Esmerald(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_tags_nested(test_client_factory):
@@ -38,8 +38,8 @@ def test_tags_nested(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": app.version,

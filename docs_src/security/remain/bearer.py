@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from esmerald import Inject, Injects, Esmerald, get, Gateway
-from esmerald.security.http import HTTPBearer, HTTPAuthorizationCredentials
+from ravyn import Inject, Injects, Ravyn, get, Gateway
+from ravyn.security.http import HTTPBearer, HTTPAuthorizationCredentials
 
 security = HTTPBearer()
 
@@ -11,7 +11,7 @@ async def get_items(credentials: HTTPAuthorizationCredentials = Injects()) -> Di
     return {"scheme": credentials.scheme, "credentials": credentials.credentials}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=get_items),
     ]

@@ -1,4 +1,4 @@
-from esmerald import Esmerald, File, Gateway, JSONResponse, UploadFile, post
+from ravyn import Ravyn, File, Gateway, JSONResponse, UploadFile, post
 
 
 @post("/upload")
@@ -13,4 +13,4 @@ async def upload_file(
     return JSONResponse({"filename": name, "content": content.decode()})
 
 
-app = Esmerald(routes=[Gateway(handler=upload_file, name="upload-file")])
+app = Ravyn(routes=[Gateway(handler=upload_file, name="upload-file")])

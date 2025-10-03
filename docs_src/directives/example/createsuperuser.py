@@ -5,8 +5,8 @@ from typing import Any, Type
 
 from asyncpg.exceptions import UniqueViolationError
 
-from esmerald.core.directives import BaseDirective
-from esmerald.core.terminal import Print
+from ravyn.core.directives import BaseDirective
+from ravyn.core.terminal import Print
 
 from ..main import User
 

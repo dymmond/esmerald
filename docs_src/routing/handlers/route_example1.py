@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, JSONResponse, Request, route
+from ravyn import Ravyn, Gateway, JSONResponse, Request, route
 
 
 @route(methods=["GET", "POST", "PUT"])
@@ -12,7 +12,7 @@ async def multiple_methods_function(request: Request) -> JSONResponse:
     return JSONResponse({"message": "I'm a POST!"})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         multiple_methods_function,
     ]

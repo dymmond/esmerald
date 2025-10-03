@@ -1,14 +1,14 @@
 # Inject, Factory and Injects
 
-Esmerald dependency injection system is actually pretty simple and can
-be checked in the [official dependency injection section](https://esmerald.dev/dependencies/)
+Ravyn dependency injection system is actually pretty simple and can
+be checked in the [official dependency injection section](https://ravyn.dev/dependencies/)
 for more details.
 
 ```python
-from esmerald import Inject, Injects, Factory, DiderectInjects
+from ravyn import Inject, Injects, Factory, DiderectInjects
 ```
 
-::: esmerald.Inject
+::: ravyn.Inject
     options:
         filters:
         - "!^model_config"
@@ -16,7 +16,7 @@ from esmerald import Inject, Injects, Factory, DiderectInjects
         - "!^__call__"
         - "!^__eq__"
 
-::: esmerald.Injects
+::: ravyn.Injects
     options:
         filters:
         - "!^model_config"
@@ -24,7 +24,7 @@ from esmerald import Inject, Injects, Factory, DiderectInjects
         - "!^__call__"
         - "!^__eq__"
 
-::: esmerald.Factory
+::: ravyn.Factory
     options:
         filters:
         - "!^model_config"

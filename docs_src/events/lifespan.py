@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from pydantic import BaseModel
 from edgy import Database, Registry
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 database = Database("postgresql+asyncpg://user:password@host:port/database")
 registry = Registry(database=database)
@@ -23,13 +23,13 @@ async def create_user(data: User) -> None:
 
 
 @asynccontextmanager
-async def lifespan(app: Esmerald):
+async def lifespan(app: Ravyn):
     # What happens on startup
     async with registry:
         yield
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=create_user)],
     lifespan=lifespan,
 )

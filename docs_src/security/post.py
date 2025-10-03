@@ -1,8 +1,8 @@
 from typing import Dict
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, HTTPException, Inject, Injects, Security, get, post, status
-from esmerald.security.oauth2 import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from ravyn import Ravyn, Gateway, HTTPException, Inject, Injects, Security, get, post, status
+from ravyn.security.oauth2 import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -89,7 +89,7 @@ async def read_users_me(
     return current_user
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=login),
         Gateway(handler=read_users_me),

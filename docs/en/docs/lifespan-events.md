@@ -12,18 +12,18 @@ These cycles cover the **whole** application.
 
 ## Types of events
 
-Currently Esmerald supports **on_startup**, **on_shutdown** and **lifespan**.
+Currently Ravyn supports **on_startup**, **on_shutdown** and **lifespan**.
 
-Esmerald being built on the top of Lilya, it inherited those behaviours, which means, it can be
+Ravyn being built on the top of Lilya, it inherited those behaviours, which means, it can be
 easily assembled to work directly with these events 🤖.
 
-### Esmerald on_startup and on_shutdown
+### Ravyn on_startup and on_shutdown
 
-If you pass an `on_startup` and an `on_shutdown` parameters intead of the `lifespan`, Esmerald
+If you pass an `on_startup` and an `on_shutdown` parameters instead of the `lifespan`, Ravyn
 will **automatically generate the async context manager** for you and pass it to the `lifespan`
 internally for you.
 
-This way Esmerald assures 100% compatibility with Lilya and still maintains the same
+This way Ravyn assures 100% compatibility with Lilya and still maintains the same
 "look and feel" as before.
 
 **You can use on_startup/on_shutdown and lifespan but not both at the same time**.
@@ -34,7 +34,7 @@ This way Esmerald assures 100% compatibility with Lilya and still maintains the 
 ### Functions
 
 To define the functions to be used within the events, you can define a `def` or `async def`
-function. Esmerald will know what to do with those and handle them for you.
+function. Ravyn will know what to do with those and handle them for you.
 
 ## How to use
 
@@ -52,7 +52,7 @@ also do not want to do it for every request, you then want this on an applicatio
 Let us then see how that it would look like using the current available events.
 
 We will be using [Edgy](https://edgy.dymmond.com) as example as it is also supported by
-Esmerald.
+Ravyn.
 
 ### on_startup and on_shutdown
 
@@ -88,13 +88,13 @@ Let us see what does it mean in practical examples by changing the previous one 
 This is quite something to unwrap here. What is actually happening?
 
 So, before you need to explicitly declare the `on_startup` and `on_shutdown` events in the
-corresponding parameters in the Esmerald application but with the `lifespan` you do that in
+corresponding parameters in the Ravyn application but with the `lifespan` you do that in
 **one place only**.
 
 The first part before the `yield` will be executed **before the application starts** and
 the second part after the `yield` will be executed **after the application is finished**.
 
-The `lifespan` function takes an `app: Esmerald` as a parameter because is then injected into
+The `lifespan` function takes an `app: Ravyn` as a parameter because is then injected into
 the application and the framework will know what to do with it.
 
 ### Async context manager
@@ -120,14 +120,14 @@ When a context manager or async context manager is created like the example abov
 that before entering the `with` it will execute the code **before** the `yield` and when exiting
 the code block, it wille excute the code **after** the `yield`.
 
-The lifespan parameter of Esmerald takes an **async context manager** which means we can ass our
+The lifespan parameter of Ravyn takes an **async context manager** which means we can ass our
 new `lifespan` async context manager directly to it.
 
 ## Curiosity about async context managers
 
-This section is out of the scope of the lifespan and events of Esmerald and it is
-**for curiosity only**. Please see the [lifespan](#lifespan) section as in the case of Esmerald,
-the way of **declaring is different** and an `app: Esmerald` parameter is **always required**.
+This section is out of the scope of the lifespan and events of Ravyn and it is
+**for curiosity only**. Please see the [lifespan](#lifespan) section as in the case of Ravyn,
+the way of **declaring is different** and an `app: Ravyn` parameter is **always required**.
 
 ### General approach to async context managers
 
@@ -137,7 +137,7 @@ the key difference that we use `async` before the `with`.
 Let use see an example still using the [Saffier](https://edgy.dymmond.com) ORM.
 
 !!! Warning
-    Again, this is for general purposes, not for the use of the Esmerald lifespan. That example
+    Again, this is for general purposes, not for the use of the Ravyn lifespan. That example
     how to use it is described in the [lifespan](#lifespan) section.
 
 #### Using functions
@@ -178,10 +178,10 @@ This can be very useful if for example you want to add some logging, telemety or
 really.
 
 This also means that you can add behaviour also on every layer of your application, this means,
-`Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` .
+`Ravyn`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` .
 
 There are two cycles, the `before_request` and the `after_request`. All of these available, you guessed,
-on `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` objects.
+on `Ravyn`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` objects.
 
 ### How to use it
 
@@ -265,13 +265,13 @@ Like everything, it is important to understand the order of the calls since ther
 
 Let us imagine we have the following:
 
-1. An Esmerald object with `before_request` and `after_request`.
+1. An Ravyn object with `before_request` and `after_request`.
 2. An Include with `before_request` and `after_request`.
 3. A Gateway/WebSocketGateway with `before_request` and `after_request`.
 4. A handler (get, post, put... websocket...) with `before_request` and `after_request`.
 
 ```shell
-Esmerald:
+Ravyn:
     Include:
         Gateway/WebSocketGateway:
             HTTPHandler/WebSocketHander
@@ -279,7 +279,7 @@ Esmerald:
 
 What is the order of calls? So, first with the `before_request`, it will call:
 
-1. Esmerald
+1. Ravyn
 2. Include
 3. Gateway/WebSocketGateway
 4. Handler
@@ -289,7 +289,7 @@ Then the `after_request` does the reverse, which means:
 1. Handler
 2. Gateway/WebSocketGateway
 3. Include
-4. Esmerald
+4. Ravyn
 
 This makes sense because its the `incoming` and `outgoing` request lifecycle happening or as we
 like to call *the boomerang effect*.

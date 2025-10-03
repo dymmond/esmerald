@@ -1,6 +1,6 @@
 import pytest
 
-from esmerald import (
+from ravyn import (
     APIView,
     Gateway,
     ImproperlyConfigured,
@@ -15,7 +15,7 @@ from esmerald import (
     whroute,
     whtrace,
 )
-from esmerald.testclient import create_client
+from ravyn.testclient import create_client
 
 
 @whpost("new-event")
@@ -38,7 +38,7 @@ class MyView(APIView):
         """"""
 
 
-def test_raise_improperly_configured_for_esmerald_routes(test_client_factory):
+def test_raise_improperly_configured_for_ravyn_routes(test_client_factory):
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[WebhookGateway(handler=new_event)]):
             """"""

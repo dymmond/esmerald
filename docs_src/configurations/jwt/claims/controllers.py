@@ -12,9 +12,9 @@ from accounts.models import User
 from accounts.v1.schemas import LoginIn, UserIn, UserOut
 from pydantic import BaseModel, EmailStr
 
-from esmerald import APIView, JSONResponse, get, post, status
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.openapi.security.http import Bearer
+from ravyn import APIView, JSONResponse, get, post, status
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.openapi.security.http import Bearer
 
 
 class UserIn(BaseModel):

@@ -1,8 +1,8 @@
 import pytest
 from pydantic import BaseModel, model_validator
 
-from esmerald import Gateway, get, post
-from esmerald.exceptions import (
+from ravyn import Gateway, get, post
+from ravyn.exceptions import (
     HTTPException,
     ImproperlyConfigured,
     InternalServerError,
@@ -17,7 +17,7 @@ from esmerald.exceptions import (
     ValidationError,
     ValidationErrorException,
 )
-from esmerald.testclient import create_client
+from ravyn.testclient import create_client
 
 
 @pytest.mark.parametrize(

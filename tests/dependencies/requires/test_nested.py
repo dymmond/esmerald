@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from esmerald import Gateway, Requires, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, Requires, get
+from ravyn.testclient import create_client
 
 
 async def query_params(q: Union[str, None] = None, skip: int = 0, limit: int = 20):

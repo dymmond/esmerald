@@ -1,21 +1,21 @@
 # Security
 
-This section provides a detailed overview of how to implement authentication and authorization in Esmerald using its native security mechanisms.
+This section provides a detailed overview of how to implement authentication and authorization in Ravyn using its native security mechanisms.
 
-Esmerald supports multiple authentication methods out of the box, such as:
+Ravyn supports multiple authentication methods out of the box, such as:
 
 - OAuth2 with JWT tokens
 - HTTP Basic Auth
 - API Key via headers or query parameters
 - OpenID Connect
 
-For full coverage, see the [Esmerald security documentation](https://www.esmerald.dev/security/).
+For full coverage, see the [Ravyn security documentation](https://www.ravyn.dev/security/).
 
 ---
 
 ## Authentication with OAuth2 + JWT
 
-OAuth2 with JWT (JSON Web Tokens) is a common mechanism for securing APIs in Esmerald.
+OAuth2 with JWT (JSON Web Tokens) is a common mechanism for securing APIs in Ravyn.
 
 ### Define a Password Hasher
 
@@ -56,10 +56,11 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 ```python
 from jwt import PyJWTError, decode
-from esmerald import HTTPException, Security
-from esmerald.security.oauth2 import OAuth2PasswordBearer
+from ravyn import HTTPException, Security
+from ravyn.security.oauth2 import OAuth2PasswordBearer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+
 
 async def get_current_user(token: str = Security(oauth2_scheme)) -> User:
     try:
@@ -78,7 +79,8 @@ async def get_current_user(token: str = Security(oauth2_scheme)) -> User:
 ### Securing Routes
 
 ```python
-from esmerald import get, Inject, Injects
+from ravyn import get, Inject, Injects
+
 
 @get("/users/me", dependencies={"current_user": Inject(get_current_user)})
 async def read_users_me(current_user: User = Injects()) -> User:
@@ -90,10 +92,11 @@ async def read_users_me(current_user: User = Injects()) -> User:
 ## HTTP Basic Authentication
 
 ```python
-from esmerald import Security, HTTPException
-from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
+from ravyn import Security, HTTPException
+from ravyn.security.http import HTTPBasic, HTTPBasicCredentials
 
 security = HTTPBasic()
+
 
 async def get_current_user(credentials: HTTPBasicCredentials = Security(security)) -> str:
     correct_username = secrets.compare_digest(credentials.username, "user")
@@ -101,6 +104,7 @@ async def get_current_user(credentials: HTTPBasicCredentials = Security(security
     if not (correct_username and correct_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return credentials.username
+
 
 @get("/profile", dependencies={"username": Inject(get_current_user)})
 async def profile(username: str = Injects()) -> dict:
@@ -124,8 +128,9 @@ These can be applied similarly using the `dependencies` parameter in your handle
 ## Custom Error Messages
 
 ```python
-from esmerald.responses import JSONResponse
-from esmerald import get
+from ravyn.responses import JSONResponse
+from ravyn import get
+
 
 @get("/unauthorized")
 def unauthorized() -> JSONResponse:
@@ -139,7 +144,7 @@ def unauthorized() -> JSONResponse:
 You're now equipped to:
 
 - Authenticate users via JWT and OAuth2
-- Protect routes using Esmerald's `Inject` and `Injects`
+- Protect routes using Ravyn's `Inject` and `Injects`
 - Secure endpoints with Basic Auth, API Keys, and Scopes
 
-👉 Head to [testing](./02-testing) to learn how to test your secure Esmerald APIs.
+👉 Head to [testing](./02-testing) to learn how to test your secure Ravyn APIs.

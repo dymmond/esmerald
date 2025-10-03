@@ -1,3 +1,3 @@
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(routes=[...], enable_scheduler=True)
+app = Ravyn(routes=[...], enable_scheduler=True)

@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from esmerald import Gateway, Requires, get, Esmerald
+from ravyn import Gateway, Requires, get, Ravyn
 
 
 async def query_params(q: str | None = None, skip: int = 0, limit: int = 20):
@@ -21,6 +21,6 @@ async def get_info(info: Dict[str, Any] = Requires(get_user)) -> Any:
     return info
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=get_info)],
 )

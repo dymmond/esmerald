@@ -1,6 +1,6 @@
 from apps.routers.customers import router as customers_router
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald()
+app = Ravyn()
 app.add_router(customers_router)

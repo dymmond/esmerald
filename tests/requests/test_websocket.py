@@ -4,10 +4,10 @@ import pytest
 from lilya.datastructures import Header
 from typing_extensions import Literal
 
-from esmerald.routing.gateways import WebSocketGateway
-from esmerald.routing.handlers import websocket
-from esmerald.testclient import create_client
-from esmerald.websockets import WebSocket
+from ravyn.routing.gateways import WebSocketGateway
+from ravyn.routing.handlers import websocket
+from ravyn.testclient import create_client
+from ravyn.websockets import WebSocket
 
 
 @pytest.mark.parametrize("mode", ["text", "binary"])

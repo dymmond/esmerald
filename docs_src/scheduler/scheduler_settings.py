@@ -1,9 +1,9 @@
-from esmerald import Esmerald, EsmeraldSettings
+from ravyn import Ravyn, RavynSettings
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     # default is False
     enable_scheduler: bool = True
 
 
-app = Esmerald(routes=[...])
+app = Ravyn(routes=[...])

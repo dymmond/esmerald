@@ -9,9 +9,9 @@ This also means that instead of your users sending requests to your APIs, it is 
 
 This process is called **webhook**.
 
-## Esmerald webhooks
+## Ravyn webhooks
 
-Esmerald provides a way of declaring these webhooks in the OpenAPI specification. It is very, very
+Ravyn provides a way of declaring these webhooks in the OpenAPI specification. It is very, very
 similar to the way the [Gateway](routes.md#gateway) is declared but **dedicated to webhooks**.
 
 The process usually is that you define in your code, as normal, what is the message that you will
@@ -25,7 +25,7 @@ application should send those requests.
 The way the logic how to register the URLs for the webhooks and the code to performs the said
 actions is entirely up to you.
 
-## Documenting Esmerald webhooks with OpenAPI
+## Documenting Ravyn webhooks with OpenAPI
 
 As mentioned before, the way of doing it is very similar to the way you declare
 [Gateway](routes.md#gateway) but for this purpose, webhooks have a **special dedicated** object or
@@ -35,9 +35,9 @@ Also, the webhooks **are not *hooked* into the application routing system**, ins
 placed in the `webhooks` list.
 
 ```python hl_lines="3"
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(webhooks=[...])
+app = Ravyn(webhooks=[...])
 ```
 
 ### WebhookGateway
@@ -54,13 +54,13 @@ Like the Gateway, the **WebhookGateway** also expects a [handler](#handlers) but
 You can import them directly:
 
 ```python
-from esmerald import WebhookGateway
+from ravyn import WebhookGateway
 ```
 
 Or you can use the full path.
 
 ```python
-from esmerald.routing.gateways import WebhookGateway
+from ravyn.routing.gateways import WebhookGateway
 ```
 
 #### Parameters
@@ -84,7 +84,7 @@ but **dedicated** only to the **WebhookGateway**. The available handlers are:
 `methods` attribute. E,g.:
 
     ```python
-    from esmerald import whroute
+    from ravyn import whroute
 
     @whroute(methods=["GET", "POST"])
     ...
@@ -100,7 +100,7 @@ The `wh` at the beginning of each handler means **W**eb**H**ook.
 You can import them directly:
 
 ```python
-from esmerald import (
+from ravyn import (
     whdelete,
     whhead,
     whget,
@@ -116,7 +116,7 @@ from esmerald import (
 Or via full path.
 
 ```python
-from esmerald.routing.webhooks.handlers import (
+from ravyn.routing.webhooks.handlers import (
     whdelete,
     whhead,
     whget,
@@ -129,9 +129,9 @@ from esmerald.routing.webhooks.handlers import (
 )
 ```
 
-## An Esmerald application with webhooks
+## An Ravyn application with webhooks
 
-When you create an **Esmerald** application, as mentioned before, there is a `webhooks` attribute
+When you create an **Ravyn** application, as mentioned before, there is a `webhooks` attribute
 that you use to define your application `webhooks`, in a similar way you define the `routes`.
 
 ```python hl_lines="6 21 16 28"
@@ -145,7 +145,7 @@ The webhooks you define **will end up** in the **OpenAPI** schema automatically.
 
 ### Using the APIView to generate webhooks
 
-Since Esmerald supports class based views, that also means you can also use them to generate
+Since Ravyn supports class based views, that also means you can also use them to generate
 webhooks.
 
 ```python

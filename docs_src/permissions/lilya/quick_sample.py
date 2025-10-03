@@ -1,5 +1,5 @@
-from esmerald import Request
-from esmerald.exceptions import PermissionDenied
+from ravyn import Request
+from ravyn.exceptions import PermissionDenied
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.types import ASGIApp, Receive, Scope, Send
 

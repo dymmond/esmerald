@@ -2,14 +2,14 @@ import edgy
 import pytest
 from lilya.types import ASGIApp
 
-from esmerald import Gateway, Include, Request
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.base_user import User as EdgyUser
-from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.routing.apis import APIView
-from esmerald.routing.handlers import get, post, put
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, Request
+from ravyn.conf import settings
+from ravyn.contrib.auth.edgy.base_user import User as EdgyUser
+from ravyn.contrib.auth.edgy.middleware import JWTAuthMiddleware
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.routing.apis import APIView
+from ravyn.routing.handlers import get, post, put
+from ravyn.testclient import create_client
 
 models = edgy.Registry(settings.edgy_database)
 jwt_config = JWTConfig(signing_key="cenas", auth_header_types=["Bearer", "Token"])

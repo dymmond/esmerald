@@ -1,21 +1,19 @@
 # Test Client
 
-Esmerald offers an extension of the Lilya `TestClient` called `EsmeraldTestClient` as well
+Ravyn offers an extension of the Lilya `TestClient` called `RavynTestClient` as well
 as a `create_client` that can be used for context testing.
 
-
 ```python
-from esmerald.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 ```
 
-::: esmerald.testclient.EsmeraldTestClient
-
+::: ravyn.testclient.RavynTestClient
 
 ```python
-from esmerald.testclient import create_client
+from ravyn.testclient import create_client
 ```
 
-You can [learn more](https://esmerald.dev/testclient/#context-manager-create_client) how to
+You can [learn more](https://ravyn.dev/testclient/#context-manager-create_client) how to
 use it in the documentation.
 
-::: esmerald.testclient.create_client
+::: ravyn.testclient.create_client

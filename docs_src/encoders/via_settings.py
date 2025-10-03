@@ -2,11 +2,11 @@ from typing import List, Union
 
 from myapp.encoders import AttrsEncoder
 
-from esmerald import EsmeraldSettings
-from esmerald.encoders import Encoder
+from ravyn import RavynSettings
+from ravyn.encoders import Encoder
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     @property
     def encoders(self) -> Union[List[Encoder], None]:
         return [AttrsEncoder]

@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include, JSONResponse, patch
+from ravyn import Ravyn, Gateway, Include, JSONResponse, patch
 
 
 @patch(path="/partial/{item_id:int}")
@@ -11,7 +11,7 @@ def another_update(item_id: int) -> JSONResponse:
     return JSONResponse({"Success", {item_id}})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/update",

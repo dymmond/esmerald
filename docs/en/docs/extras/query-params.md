@@ -3,7 +3,7 @@
 It is very common to simply want to declare some query parameters in your controllers. Sometimes those are also used
 as filters for a given search or simply extra parameters in general.
 
-## What are query parameters in Esmerald?
+## What are query parameters in Ravyn?
 
 Query parameters are those parameters that are not part of the path parameters and therefore those are automatically
 injected as `query` parameters for you.
@@ -36,7 +36,7 @@ Query parameters are not by design, part of a fixed URL path and that also means
 - They can be `optional`.
 
 In the previous example, the URL had already defaults for `skip` and `limit` and the corresponding typing as per requirement
-of Esmerald but what if we want to make them optional?
+of Ravyn but what if we want to make them optional?
 
 There are different ways of achieving that, using the `Optional` or `Union`.
 
@@ -57,7 +57,7 @@ There are different ways of achieving that, using the `Optional` or `Union`.
     ```
 
 !!! Check
-    Esmerald is intelligent enough to understand what is a `query param` and what is a `path param`.
+    Ravyn is intelligent enough to understand what is a `query param` and what is a `path param`.
 
 Now we can call the URL and ignore the `q` or call it when needed, like this:
 
@@ -75,7 +75,7 @@ http://127.0.0.1/users/1?q=searchValue
 
 ## Query and Path parameters
 
-Since Esmerald is intelligent enough to distinguish path parameters and query parameters automatically, that also means
+Since Ravyn is intelligent enough to distinguish path parameters and query parameters automatically, that also means
 you can have multiple of both combined.
 
 !!! Warning
@@ -126,9 +126,9 @@ Which means, you need to call with the declared parameter, like this, for exampl
 http://127.0.0.1/users?limit=10
 ```
 
-## Extra with Esmerald params
+## Extra with Ravyn params
 
-Because everything in Esmerald just works you can also add restrictions and limits to your query parameters. For example.
+Because everything in Ravyn just works you can also add restrictions and limits to your query parameters. For example.
 you might want to add a limit into the size of a string `q` when searching not to exceed an X value.
 
 ```python

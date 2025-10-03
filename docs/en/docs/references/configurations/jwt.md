@@ -2,13 +2,13 @@
 
 Reference for the `JWTConfig` class object and how to use it.
 
-Read more about [how to use the JWTConfig](https://esmerald.dev/configurations/jwt/) in your
+Read more about [how to use the JWTConfig](https://ravyn.dev/configurations/jwt/) in your
 application and leverage the system.
 
 ## How to import
 
 ```python
-from esmerald import JWTConfig
+from ravyn import JWTConfig
 ```
 
-::: esmerald.core.config.jwt.JWTConfig
+::: ravyn.core.config.jwt.JWTConfig
