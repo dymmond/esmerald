@@ -58,7 +58,7 @@ from ravyn.exceptions import (
 from ravyn.openapi.datastructures import OpenAPIResponse
 from ravyn.openapi.utils import is_status_code_allowed
 from ravyn.params import Form
-from ravyn.permissions.utils import is_esmerald_permission, wrap_permission
+from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.requests import Request
 from ravyn.responses import Response
 from ravyn.routing.apis.base import View
@@ -83,7 +83,7 @@ from ravyn.websockets import WebSocket, WebSocketClose
 
 if TYPE_CHECKING:  # pragma: no cover
     from ravyn.applications import Application, Ravyn
-    from ravyn.core.interceptors.interceptor import EsmeraldInterceptor
+    from ravyn.core.interceptors.interceptor import RavynInterceptor
     from ravyn.openapi.schemas.v3_1_0.security_scheme import SecurityScheme
     from ravyn.permissions.types import Permission
     from ravyn.types import (
@@ -124,7 +124,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
         "root_path",
         "path",
         "_app",
-        "esmerald_lifespan",
+        "ravyn_lifespan",
         "routing",
         "before_request",
         "after_request",
@@ -650,7 +650,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if not is_ravyn_permission(permission)
         ]
 
         super().__init__(
@@ -686,7 +686,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
             self.permissions: Any = {
                 index: wrap_permission(permission)
                 for index, permission in enumerate(permissions)
-                if is_esmerald_permission(permission)
+                if is_ravyn_permission(permission)
             }
         else:
             self.permissions = {}
@@ -748,7 +748,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
             return
 
         for obj in self.interceptors:
-            interceptor: "EsmeraldInterceptor" = obj()
+            interceptor: "RavynInterceptor" = obj()
             if is_async_callable(interceptor.intercept):
                 await interceptor.intercept(scope, receive, send)
             else:
@@ -766,7 +766,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 {
                     index + len(self.permissions): wrap_permission(permission)
                     for index, permission in enumerate(self.parent.permissions)
-                    if is_esmerald_permission(permission)
+                    if is_ravyn_permission(permission)
                 }
             )
 
@@ -2603,7 +2603,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if not is_ravyn_permission(permission)
         ]
 
         super().__init__(
@@ -2668,7 +2668,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             self.permissions: Any = {
                 index: wrap_permission(permission)
                 for index, permission in enumerate(permissions)
-                if is_esmerald_permission(permission)
+                if is_ravyn_permission(permission)
             }
         else:
             self.permissions = {}
@@ -2711,7 +2711,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
             return
 
         for obj in self.interceptors:
-            interceptor: "EsmeraldInterceptor" = obj()
+            interceptor: "RavynInterceptor" = obj()
             if is_async_callable(interceptor.intercept):
                 await interceptor.intercept(scope, receive, send)
             else:
@@ -3152,7 +3152,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if not is_ravyn_permission(permission)
         ]
         super().__init__(
             path=path,
@@ -3185,7 +3185,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             self.permissions: Any = {
                 index: wrap_permission(permission)
                 for index, permission in enumerate(permissions)
-                if is_esmerald_permission(permission)
+                if is_ravyn_permission(permission)
             }
         else:
             self.permissions = {}
@@ -3209,7 +3209,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
             return
 
         for obj in self.interceptors:
-            interceptor: "EsmeraldInterceptor" = obj()
+            interceptor: "RavynInterceptor" = obj()
             if is_async_callable(interceptor.intercept):
                 await interceptor.intercept(scope, receive, send)
             else:
@@ -3782,7 +3782,7 @@ class Include(Dispatcher, LilyaInclude):
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if not is_ravyn_permission(permission)
         ]
 
         super().__init__(
@@ -3815,7 +3815,7 @@ class Include(Dispatcher, LilyaInclude):
             self.permissions: Any = {
                 index: wrap_permission(permission)
                 for index, permission in enumerate(permissions)
-                if is_esmerald_permission(permission)
+                if is_ravyn_permission(permission)
             }
         else:
             self.permissions = {}
@@ -3939,7 +3939,7 @@ class Include(Dispatcher, LilyaInclude):
             return
 
         for obj in self.interceptors:
-            interceptor: "EsmeraldInterceptor" = obj()
+            interceptor: "RavynInterceptor" = obj()
             if is_async_callable(interceptor.intercept):
                 await interceptor.intercept(scope, receive, send)
             else:

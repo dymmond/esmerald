@@ -5,7 +5,7 @@ import pytest
 from ravyn.background import BackgroundTask, BackgroundTasks
 from ravyn.responses import Response
 from ravyn.routing.router import Include
-from ravyn.testclient import EsmeraldTestClient, create_client
+from ravyn.testclient import RavynTestClient, create_client
 
 
 def test_async_task(test_client_factory):
@@ -46,7 +46,7 @@ def test_sync_task(test_client_factory):
         assert TASK_COMPLETE
 
 
-def test_multiple_tasks(test_client_factory: Callable[..., EsmeraldTestClient]):
+def test_multiple_tasks(test_client_factory: Callable[..., RavynTestClient]):
     TASK_COUNTER = 0
 
     def increment(amount):
@@ -68,7 +68,7 @@ def test_multiple_tasks(test_client_factory: Callable[..., EsmeraldTestClient]):
 
 
 def test_multi_tasks_failure_avoids_next_execution(
-    test_client_factory: Callable[..., EsmeraldTestClient],
+    test_client_factory: Callable[..., RavynTestClient],
 ) -> None:
     TASK_COUNTER = 0
 

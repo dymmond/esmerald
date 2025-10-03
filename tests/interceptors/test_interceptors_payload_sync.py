@@ -3,17 +3,17 @@ from loguru import logger
 from pydantic import BaseModel
 
 from ravyn import ChildRavyn, Gateway, Include, JSONResponse, Request, post
-from ravyn.core.interceptors.interceptor import EsmeraldInterceptor
+from ravyn.core.interceptors.interceptor import RavynInterceptor
 from ravyn.exceptions import NotAuthorized
 from ravyn.params import Cookie
 from ravyn.testclient import create_client
 
 
-class ErrorInterceptor(EsmeraldInterceptor):
+class ErrorInterceptor(RavynInterceptor):
     """"""
 
 
-class TestInterceptor(EsmeraldInterceptor):
+class TestInterceptor(RavynInterceptor):
     __test__ = False
 
     def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
@@ -21,7 +21,7 @@ class TestInterceptor(EsmeraldInterceptor):
         request.path_params["name"] = "intercept"
 
 
-class CookieInterceptor(EsmeraldInterceptor):
+class CookieInterceptor(RavynInterceptor):
     def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         request = Request(scope=scope, receive=receive, send=send)
         csrf_token = request.cookies["csrftoken"]
@@ -32,7 +32,7 @@ class CookieInterceptor(EsmeraldInterceptor):
             raise NotAuthorized() from None
 
 
-class LoggingInterceptor(EsmeraldInterceptor):
+class LoggingInterceptor(RavynInterceptor):
     def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         logger.info("Intercepted for logging")
 
@@ -70,8 +70,8 @@ async def error() -> None:
     """"""
 
 
-def test_issubclassing_EsmeraldInterceptor(test_client_factory):
-    assert issubclass(TestInterceptor, EsmeraldInterceptor)
+def test_issubclassing_RavynInterceptor(test_client_factory):
+    assert issubclass(TestInterceptor, RavynInterceptor)
 
 
 def test_interceptor_not_implemented(test_client_factory):
@@ -119,7 +119,7 @@ def test_interceptor_on_nested_include(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald(test_client_factory):
+def test_interceptor_on_child_ravyn(test_client_factory):
     payload = {"name": "test", "sku": "12345"}
 
     child = ChildRavyn(routes=[Gateway(handler=create)], interceptors=[TestInterceptor])
@@ -131,7 +131,7 @@ def test_interceptor_on_child_esmerald(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_gateway(test_client_factory):
+def test_interceptor_on_child_ravyn_gateway(test_client_factory):
     payload = {"name": "test", "sku": "12345"}
 
     child = ChildRavyn(routes=[Gateway(handler=create, interceptors=[TestInterceptor])])
@@ -143,7 +143,7 @@ def test_interceptor_on_child_esmerald_gateway(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_include(test_client_factory):
+def test_interceptor_on_child_ravyn_include(test_client_factory):
     payload = {"name": "test", "sku": "12345"}
 
     child = ChildRavyn(
@@ -157,7 +157,7 @@ def test_interceptor_on_child_esmerald_include(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_nested_include(test_client_factory):
+def test_interceptor_on_child_ravyn_nested_include(test_client_factory):
     payload = {"name": "test", "sku": "12345"}
 
     child = ChildRavyn(

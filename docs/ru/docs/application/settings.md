@@ -138,7 +138,7 @@
 ### Создание settings_module
 
 `settings_module` имеет **абсолютно тот же принцип**, что и
-[RavynSettings](#esmeraldapisettings-and-the-application), это означает, что каждый `settings_module`
+[RavynSettings](#ravynapisettings-and-the-application), это означает, что каждый `settings_module`
 **должен быть унаследован от RavynSettings**, иначе будет выброшено исключение `ImproperlyConfigured`.
 
 Причина этого заключается в том, чтобы сохранить целостность приложения и настроек.
@@ -182,7 +182,7 @@ Ravyn упрощает управление настройками на кажд
 2. Если `settings_module` не предоставляет значение `app_name`, оно будет искать значение в
 `RAVYN_SETTINGS_MODULE`.
 3. Если переменная окружения `RAVYN_SETTINGS_MODULE` вами не указана, то будет использовано значение
-по умолчанию Ravyn. [Узнайте больше об этом здесь](#esmerald-settings-module).
+по умолчанию Ravyn. [Узнайте больше об этом здесь](#ravyn-settings-module).
 
 Таким образом, порядок приоритетов:
 
@@ -256,7 +256,7 @@ Ravyn упрощает управление настройками на кажд
 
 ## Параметры
 
-Параметры, доступные внутри `EsmeraldSettingsмогут быть переопределены любыми пользовательскими настройками.
+Параметры, доступные внутри `RavynAPIExceptionSettingsмогут быть переопределены любыми пользовательскими настройками.
 Подробнее в [справочнике по настройкам](../references/application/settings.md).
 
 !!! Check

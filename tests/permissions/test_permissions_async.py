@@ -94,7 +94,7 @@ def test_permissions_with_websocket_handler() -> None:
         ws.send_json({"data": "123"})
 
 
-def test_permissions_with_child_esmerald() -> None:
+def test_permissions_with_child_ravyn() -> None:
     @route(methods=["GET"], path="/secret", permissions=[LocalPermission])
     async def my_asgi_handler() -> None: ...
 
@@ -117,7 +117,7 @@ def test_permissions_with_child_esmerald() -> None:
         assert response.status_code == HTTP_200_OK
 
 
-def test_permissions_with_child_esmerald_two() -> None:
+def test_permissions_with_child_ravyn_two() -> None:
     @route(methods=["GET"], path="/secret", permissions=[ApplicationPermission])
     async def my_asgi_handler() -> None: ...
 
@@ -140,7 +140,7 @@ def test_permissions_with_child_esmerald_two() -> None:
         assert response.status_code == HTTP_200_OK
 
 
-def test_permissions_with_child_esmerald_three() -> None:
+def test_permissions_with_child_ravyn_three() -> None:
     @route(methods=["GET"], path="/secret")
     async def my_asgi_handler() -> None:
         """ """

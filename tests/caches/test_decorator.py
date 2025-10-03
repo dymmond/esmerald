@@ -8,7 +8,7 @@ from ravyn import Gateway, Ravyn, get
 from ravyn.conf import settings
 from ravyn.core.caches.memory import InMemoryCache
 from ravyn.core.caches.redis import RedisCache
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from ravyn.utils.decorators import cache
 
 
@@ -141,7 +141,7 @@ async def test_cache_backend_failure_redis(caplog):
     assert await unstable_function() == "safe_value"  # Should not crash
 
 
-async def test_esmerald_integration_in_memory(memory_cache):
+async def test_ravyn_integration_in_memory(memory_cache):
     """Ensure the caching decorator works in an Ravyn application with in-memory caching."""
 
     @get("/cached/{value}")
@@ -151,7 +151,7 @@ async def test_esmerald_integration_in_memory(memory_cache):
 
     app = Ravyn(routes=[Gateway(handler=endpoint)])
 
-    with EsmeraldTestClient(app) as client:
+    with RavynTestClient(app) as client:
         response1 = client.get("/cached/10")
         response2 = client.get("/cached/10")
 
@@ -161,7 +161,7 @@ async def test_esmerald_integration_in_memory(memory_cache):
 
         # Compute the exact cache key used
         cache_key = (
-            "tests.caches.test_decorator.test_esmerald_integration_in_memory.cached_endpoint:10"
+            "tests.caches.test_decorator.test_ravyn_integration_in_memory.cached_endpoint:10"
         )
         time.sleep(1)
 
@@ -175,7 +175,7 @@ async def test_esmerald_integration_in_memory(memory_cache):
         assert response3.json() != response1.json()  # Recomputed value
 
 
-async def test_esmerald_integration_default():
+async def test_ravyn_integration_default():
     """Ensure the caching decorator works in an Ravyn application with default caching."""
 
     @get("/cached/{value}")
@@ -185,7 +185,7 @@ async def test_esmerald_integration_default():
 
     app = Ravyn(routes=[Gateway(handler=endpoint)])
 
-    with EsmeraldTestClient(app) as client:
+    with RavynTestClient(app) as client:
         response1 = client.get("/cached/10")
         response2 = client.get("/cached/10")
 
@@ -195,7 +195,7 @@ async def test_esmerald_integration_default():
 
         # Compute the exact cache key used
         cache_key = (
-            "tests.caches.test_decorator.test_esmerald_integration_in_memory.cached_endpoint:10"
+            "tests.caches.test_decorator.test_ravyn_integration_in_memory.cached_endpoint:10"
         )
         time.sleep(1)
 
@@ -209,7 +209,7 @@ async def test_esmerald_integration_default():
         assert response3.json() != response1.json()  # Recomputed value
 
 
-async def test_esmerald_integration_in_redis(redis_cache):
+async def test_ravyn_integration_in_redis(redis_cache):
     """Ensure the caching decorator works in an Ravyn application in redis."""
 
     @get("/cached/{value}")
@@ -219,7 +219,7 @@ async def test_esmerald_integration_in_redis(redis_cache):
 
     app = Ravyn(routes=[Gateway(handler=cached_endpoint)])
 
-    with EsmeraldTestClient(app) as client:
+    with RavynTestClient(app) as client:
         response1 = client.get("/cached/10")
         response2 = client.get("/cached/10")
 

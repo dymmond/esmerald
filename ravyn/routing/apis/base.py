@@ -6,7 +6,7 @@ from lilya.routing import compile_path
 from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
-from ravyn.permissions.utils import is_esmerald_permission, wrap_permission
+from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 
 if TYPE_CHECKING:  # pragma: no cover
     from ravyn.core.interceptors.types import Interceptor
@@ -338,7 +338,7 @@ class View:
         self.__lilya_permissions__ = [
             wrap_permission(permission)
             for permission in self.__base_permissions__ or []
-            if not is_esmerald_permission(permission)
+            if not is_ravyn_permission(permission)
         ]
 
         self.__handle_base_permissions()
@@ -351,7 +351,7 @@ class View:
                 {
                     index: wrap_permission(permission)
                     for index, permission in enumerate(self.__base_permissions__)
-                    if is_esmerald_permission(permission)
+                    if is_ravyn_permission(permission)
                 },
             )
         else:

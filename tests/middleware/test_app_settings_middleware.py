@@ -37,7 +37,7 @@ def test_app_settings_middleware(test_client_factory):
         }
 
 
-def test_app_settings_middleware_nested_with_child_esmerald(test_client_factory):
+def test_app_settings_middleware_nested_with_child_ravyn(test_client_factory):
     with create_client(
         settings_module=NewSettings,
         routes=[
@@ -65,7 +65,7 @@ def test_app_settings_middleware_nested_with_child_esmerald(test_client_factory)
         assert response.json() == {"title": "Nested app title", "debug": True}
 
 
-def test_app_settings_middleware_nested_with_child_esmerald_and_global(test_client_factory):
+def test_app_settings_middleware_nested_with_child_ravyn_and_global(test_client_factory):
     with create_client(
         settings_module=NewSettings,
         routes=[

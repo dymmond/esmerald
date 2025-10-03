@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from ravyn import Gateway, Ravyn, get
 from ravyn.openapi.datastructures import OpenAPIResponse
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -31,7 +31,7 @@ app = Ravyn(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_openapi_schema_tags_pydantic(test_client_factory):

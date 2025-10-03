@@ -1,9 +1,9 @@
-from ravyn.core.directives.cli import esmerald_cli
+from ravyn.core.directives.cli import ravyn_cli
 
 
 def run_cli() -> None:
-    esmerald_cli()
+    ravyn_cli()
 
 
 if __name__ == "__main__":  # pragma: no cover
-    esmerald_cli()
+    ravyn_cli()

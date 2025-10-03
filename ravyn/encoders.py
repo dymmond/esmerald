@@ -85,7 +85,7 @@ class Encoder(EncoderProtocol, Generic[T]):
         raise NotImplementedError("All Ravyn encoders must implement encode() method.")
 
 
-def register_esmerald_encoder(encoder: Encoder | type[Encoder]) -> None:
+def register_ravyn_encoder(encoder: Encoder | type[Encoder]) -> None:
     """
     Register an Ravyn encoder into available Lilya encoders.
 

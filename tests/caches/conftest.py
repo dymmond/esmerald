@@ -9,7 +9,7 @@ from ravyn import Gateway, Ravyn, get
 from ravyn.conf import settings
 from ravyn.core.caches.memory import InMemoryCache
 from ravyn.core.caches.redis import RedisCache
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 try:
@@ -62,7 +62,7 @@ async def redis_settings(redis_cache) -> TestSettings:
 
 
 @pytest.fixture(scope="function")
-def esmerald_app(redis_cache) -> Ravyn:
+def ravyn_app(redis_cache) -> Ravyn:
     """Fixture for an Ravyn app with caching."""
 
     @get("/cache/{key}")
@@ -89,6 +89,6 @@ def esmerald_app(redis_cache) -> Ravyn:
 
 
 @pytest.fixture(scope="function")
-def client(esmerald_app: Ravyn) -> EsmeraldTestClient:
+def client(ravyn_app: Ravyn) -> RavynTestClient:
     """Fixture for an Ravyn test client."""
-    return EsmeraldTestClient(esmerald_app)
+    return RavynTestClient(ravyn_app)

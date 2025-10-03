@@ -5,7 +5,7 @@ development team has its own way of testing it but just in case, it is provided.
 
 ## Requirements
 
-This section requires the esmerald testing suite to be installed. You can do it so by running:
+This section requires the ravyn testing suite to be installed. You can do it so by running:
 
 ```shell
 $ pip install ravyn[test]
@@ -30,7 +30,7 @@ You can use any of the `httpx` standard API like authentication, session cookies
 {!> ../../../docs_src/testclient/example2.py !}
 ```
 
-And like Lilya, the same example to send files with `EsmeraldTestClient`.
+And like Lilya, the same example to send files with `RavynTestClient`.
 
 ```python
 {!> ../../../docs_src/testclient/example3.py !}
@@ -39,16 +39,16 @@ And like Lilya, the same example to send files with `EsmeraldTestClient`.
 `httpx` is a great library created by the same author of `Django Rest Framework`.
 
 !!! Info
-    By default the EsmeraldTestClient raise any exceptions that occur in the application.
+    By default the RavynTestClient raise any exceptions that occur in the application.
     Occasionally you might want to test the content of 500 error responses, rather than allowing client to raise the
-    server exception. In this case you should use `client = EsmeraldTestClient(app, raise_server_exceptions=False)`.
+    server exception. In this case you should use `client = RavynTestClient(app, raise_server_exceptions=False)`.
 
 ## Lifespan events
 
 !!! Note
     Ravyn supports all the lifespan events available and therefore `on_startup`, `on_shutdown` and `lifespan` are
-    also supported by `EsmeraldTestClient` **but** if you need to test these you will need to run `EsmeraldTestClient`
-    as a context manager or otherwise the events will not be triggered when the `EsmeraldTestClient` is instantiated.
+    also supported by `RavynTestClient` **but** if you need to test these you will need to run `RavynTestClient`
+    as a context manager or otherwise the events will not be triggered when the `RavynTestClient` is instantiated.
 
 The framework also brings a ready to use functionality to be used as context manager for your tests.
 

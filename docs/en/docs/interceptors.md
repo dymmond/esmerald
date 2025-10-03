@@ -1,7 +1,7 @@
 # Interceptors
 
 Interceptors are special Ravyn objects that implement the `InterceptorProtocol` via
-[EsmeraldInterceptor](#esmeraldinterceptor).
+[RavynInterceptor](#ravyninterceptor).
 
 ## What are the interceptors
 
@@ -29,19 +29,19 @@ And whatever you might see suitable.
 Ravyn **does not implement** two way method execution, meaning, interceptors are used to capture
 the request but not the response.
 
-## EsmeraldInterceptor
+## RavynInterceptor
 
 This is the main object that should be used to create your own interceptors. Every class **should**
 derive from this object and implement the `intercept` functionality.
 
 ```python
-from ravyn import EsmeraldInterceptor
+from ravyn import RavynInterceptor
 ```
 
 or
 
 ```python
-from ravyn.core.interceptors.interceptor import EsmeraldInterceptor
+from ravyn.core.interceptors.interceptor import RavynInterceptor
 ```
 
 ### Example
@@ -69,7 +69,7 @@ We will be creating:
 ## Custom interceptor
 
 Is this the only way of creating an interceptor? No but **it is advised** to subclass the
-[EsmeraldInterceptor](#esmeraldinterceptor) as shown above.
+[RavynInterceptor](#ravyninterceptor) as shown above.
 
 Let us see how it would look like the same app with a custom interceptor then.
 
@@ -86,7 +86,7 @@ Let us see how it would look like the same app with a custom interceptor then.
 ```
 
 It is very similar correct? Yes but the main difference here happens within the
-[EsmeraldInterceptor](#esmeraldinterceptor) as this one implements the `InterceptorProtocol` from
+[RavynInterceptor](#ravyninterceptor) as this one implements the `InterceptorProtocol` from
 Ravyn and therefore makes it the right way of using it.
 
 ## Interceptors and levels

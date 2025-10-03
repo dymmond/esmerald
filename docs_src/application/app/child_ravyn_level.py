@@ -46,7 +46,7 @@ class UserApiView(APIView):
         await socket.close()
 
 
-child_esmerald = ChildRavyn(routes=[Gateway(handler=UserApiView)])
+child_ravyn = ChildRavyn(routes=[Gateway(handler=UserApiView)])
 
 app = Ravyn(
     routes=[
@@ -55,7 +55,7 @@ app = Ravyn(
             routes=[
                 Gateway(handler=me),
                 WebSocketGateway(handler=websocket_endpoint_include),
-                Include("/child", child_esmerald),
+                Include("/child", child_ravyn),
             ],
         )
     ]

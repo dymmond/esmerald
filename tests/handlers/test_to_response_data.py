@@ -129,7 +129,7 @@ async def test_to_response_async_await_with_post_handler() -> None:
 
 
 @pytest.mark.asyncio()
-async def test_to_response_returning_esmerald_response() -> None:
+async def test_to_response_returning_ravyn_response() -> None:
     @get(path="/test")
     def test_function() -> Response:
         return Response(status_code=HTTP_200_OK, media_type=MediaType.TEXT, content="ok")

@@ -100,7 +100,7 @@ def task_two():  # pragma: no cover
 scheduler_config = AsynczConfig(tasks=scheduler_tasks())
 
 
-def test_esmerald_starts_scheduler():
+def test_ravyn_starts_scheduler():
     app = Ravyn(scheduler_config=scheduler_config)
     assert app.scheduler_config.tasks == scheduler_tasks()
     assert app.scheduler_config.scheduler_class == AsyncIOScheduler
@@ -156,7 +156,7 @@ def scheduler_class(monkeypatch):
     ],
     ids=["ini-style", "yaml-style"],
 )
-def test_esmerald_scheduler_configurations(scheduler_class, global_config):
+def test_ravyn_scheduler_configurations(scheduler_class, global_config):
     scheduler_config = AsynczConfig(
         tasks=scheduler_tasks(), scheduler_class=scheduler_class, configurations=global_config
     )

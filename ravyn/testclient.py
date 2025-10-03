@@ -49,7 +49,7 @@ if TYPE_CHECKING:  # pragma: no cover
     )
 
 
-class EsmeraldTestClient(TestClient):
+class RavynTestClient(TestClient):
     app: Ravyn
 
     def __init__(
@@ -74,8 +74,8 @@ class EsmeraldTestClient(TestClient):
             headers=headers,
         )
 
-    def __enter__(self, *args: Any, **kwargs: dict[str, Any]) -> "EsmeraldTestClient":
-        return cast("EsmeraldTestClient", super().__enter__(*args, **kwargs))
+    def __enter__(self, *args: Any, **kwargs: dict[str, Any]) -> "RavynTestClient":
+        return cast("RavynTestClient", super().__enter__(*args, **kwargs))
 
 
 def create_client(
@@ -139,8 +139,8 @@ def create_client(
     encoders: Optional[Sequence[Encoder]] = None,
     before_request: Union[Sequence[Callable[..., Any]], None] = None,
     after_request: Union[Sequence[Callable[..., Any]], None] = None,
-) -> EsmeraldTestClient:
-    return EsmeraldTestClient(
+) -> RavynTestClient:
+    return RavynTestClient(
         app=Ravyn(
             settings_module=settings_module,
             debug=debug,

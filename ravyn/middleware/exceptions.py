@@ -69,7 +69,7 @@ class ResponseContent(BaseModel):
     status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-class EsmeraldAPIExceptionMiddleware:  # pragma: no cover
+class RavynAPIExceptionAPIExceptionMiddleware:  # pragma: no cover
     def __init__(
         self,
         app: "ASGIApp",

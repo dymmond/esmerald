@@ -5,7 +5,7 @@ from ravyn.openapi.docs import (
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 @get("/")
@@ -14,7 +14,7 @@ async def home() -> None:
 
 
 app = Ravyn(routes=[Gateway(handler=home)])
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_get_swagger_ui(test_client_factory):

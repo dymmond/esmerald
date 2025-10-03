@@ -131,7 +131,7 @@ to use it without understanding the ramifications, mostly if you have handlers r
 object type that needs the encoder to be available before assembling the routing system.
 
 ```python
-from ravyn.encoders import register_esmerald_encoder
+from ravyn.encoders import register_ravyn_encoder
 ```
 
 #### Via Settings

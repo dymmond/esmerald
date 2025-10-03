@@ -1,8 +1,8 @@
 from ravyn import Ravyn, Gateway, JSONResponse, Request, get
-from ravyn.exceptions import EsmeraldAPIException, InternalServerError, NotAuthorized
+from ravyn.exceptions import RavynAPIExceptionAPIException, InternalServerError, NotAuthorized
 
 
-async def http_esmerald_handler(_: Request, exc: EsmeraldAPIException) -> JSONResponse:
+async def http_ravyn_handler(_: Request, exc: RavynAPIExceptionAPIException) -> JSONResponse:
     return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
@@ -26,5 +26,5 @@ app = Ravyn(
             exception_handlers={InternalServerError: http_internal_server_error_handler},
         )
     ],
-    exception_handlers={EsmeraldAPIException: http_esmerald_handler},
+    exception_handlers={RavynAPIExceptionAPIException: http_ravyn_handler},
 )

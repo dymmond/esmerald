@@ -1,6 +1,6 @@
 # **`WebSocket`** class
 
-Importing the `WebSocket` from `esmerald` is as simple as:
+Importing the `WebSocket` from `ravyn` is as simple as:
 
 ```python
 from ravyn import WebSocket

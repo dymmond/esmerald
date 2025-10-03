@@ -4,7 +4,7 @@ import pytest
 
 from ravyn import Gateway, Ravyn, get
 from ravyn.contrib.responses.json import jsonify
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 def test_jsonify_with_kwargs(test_client_factory):
@@ -13,7 +13,7 @@ def test_jsonify_with_kwargs(test_client_factory):
         return jsonify(message="Hello", status="ok")
 
     app = Ravyn(routes=[Gateway("/json", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/json")
     assert response.status_code == 200
@@ -27,7 +27,7 @@ def test_jsonify_with_single_arg_list(test_client_factory):
         return jsonify([1, 2, 3])
 
     app = Ravyn(routes=[Gateway("/list", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/list")
     assert response.status_code == 200
@@ -40,7 +40,7 @@ def test_jsonify_with_multiple_args(test_client_factory):
         return jsonify(1, 2, 3)
 
     app = Ravyn(routes=[Gateway("/multi", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/multi")
     assert response.status_code == 200
@@ -53,7 +53,7 @@ def test_jsonify_with_custom_status_code(test_client_factory):
         return jsonify(message="created")
 
     app = Ravyn(routes=[Gateway("/created", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/created")
     assert response.status_code == 201
@@ -66,7 +66,7 @@ def test_jsonify_with_headers(test_client_factory):
         return jsonify(message="Hello", headers={"X-Custom": "value"})
 
     app = Ravyn(routes=[Gateway("/headers", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/headers")
     assert response.status_code == 200
@@ -80,7 +80,7 @@ def test_jsonify_with_cookies(test_client_factory):
         return jsonify(message="Hello", cookies={"session": "abc123"})
 
     app = Ravyn(routes=[Gateway("/cookies", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/cookies")
     assert response.status_code == 200
@@ -96,7 +96,7 @@ def test_jsonify_raises_on_args_and_kwargs(test_client_factory):
             return jsonify({"a": 1}, b=2)
 
     app = Ravyn(routes=[Gateway("/error", handler=endpoint)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     # since exception is raised inside endpoint, Ravyn will return 500
     response = client.get("/error")

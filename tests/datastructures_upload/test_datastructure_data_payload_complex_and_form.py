@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from ravyn import Form, Gateway, Ravyn, Request, post
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 def create_dummy_file(size_in_bytes: int, filename: str = "dummy.txt"):
@@ -24,7 +24,7 @@ def test_upload_file_is_closed_using_complexity(tmp_path: Path):
         }
 
     app = Ravyn(routes=[Gateway(handler=create_upload_file)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     data = {"name": "Test"}
     response = client.post(
         "/uploadfile",

@@ -25,7 +25,7 @@ def second_flask_main():
     return f"Hello, {escape(name)} from Flask!"
 
 
-sub_esmerald = Ravyn(
+sub_ravyn = Ravyn(
     routes=[
         Gateway(handler=home),
         Include("/flask", WSGIMiddleware(flask_app)),
@@ -33,6 +33,6 @@ sub_esmerald = Ravyn(
     ]
 )
 
-routes = [Include("/sub-ravyn", app=sub_esmerald)]
+routes = [Include("/sub-ravyn", app=sub_ravyn)]
 
 app = Ravyn(routes=routes)

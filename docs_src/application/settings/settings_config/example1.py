@@ -1,4 +1,4 @@
-from ravyn import ChildRavyn, Ravyn, EsmeraldSettingsnclude
+from ravyn import ChildRavyn, Ravyn, RavynAPIExceptionSettingsnclude
 
 
 # Create a ChildRavynSettings object

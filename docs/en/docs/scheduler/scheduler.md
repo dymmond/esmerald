@@ -38,7 +38,7 @@ Since `Ravyn` is an `ASGI` framework, it is already provided a default scheduler
 the application, the `AsyncIOScheduler`.
 
 !!! Note
-    This is for representation and explanation purposes as the EsmeraldScheduler cannot be instantiated,
+    This is for representation and explanation purposes as the RavynAPIExceptionScheduler cannot be instantiated,
     instead, expects parameters being sent upon creating an Ravyn application.
 
 ```python hl_lines="4"

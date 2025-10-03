@@ -37,7 +37,7 @@ Ravyn работает на основе Lilya и поэтому включае�
 С помощью cURL:
 
 ```shell
-$ curl -X GET http://localhost:8000/user/esmerald
+$ curl -X GET http://localhost:8000/user/ravyn
 ```
 
 С помощью Insomnia:

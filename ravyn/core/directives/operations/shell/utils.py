@@ -40,14 +40,14 @@ defaults.update(
 def welcome_message(app: Any) -> None:
     """Displays the welcome message for the user"""
     now = datetime.datetime.now().strftime("%b %d %Y, %H:%M:%S")
-    esmerald_info_date = f"Ravyn {ravyn.__version__} (interactive shell, {now})"
+    ravyn_info_date = f"Ravyn {ravyn.__version__} (interactive shell, {now})"
     info = "Interactive shell that imports the application defaults."
 
     application_text = printer.message(f"{app.app_name}, version: ", colour=OutputColour.CYAN3)
     application_name = printer.message(app.version, colour=OutputColour.GREEN3)
     application = f"{application_text}{application_name}"
 
-    printer.write_plain(esmerald_info_date, colour=OutputColour.CYAN3)
+    printer.write_plain(ravyn_info_date, colour=OutputColour.CYAN3)
     printer.write_plain(info, colour=OutputColour.CYAN3)
     printer.write_plain(application)
 

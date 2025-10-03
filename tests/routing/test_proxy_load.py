@@ -13,7 +13,7 @@ def user(user: str) -> Response:
     return Response(f"Hello, {user}")
 
 
-child_esmerald = ChildRavyn(
+child_ravyn = ChildRavyn(
     routes=[Gateway("/home", handler=home)],
 )
 
@@ -22,7 +22,7 @@ def test_can_load_from_proxy(test_client_factory):
     with create_client(
         routes=[
             Gateway("/{user}", handler=user),
-            Include("/child", app="tests.routing.test_proxy_load.child_esmerald"),
+            Include("/child", app="tests.routing.test_proxy_load.child_ravyn"),
         ]
     ) as client:
         response = client.get("/child/home")

@@ -25,7 +25,7 @@ def second_flask_main():
     return f"Hello, {escape(name)} from Flask!"
 
 
-child_esmerald = ChildRavyn(
+child_ravyn = ChildRavyn(
     routes=[
         Gateway(handler=home),
         Include("/flask", WSGIMiddleware(flask_app)),
@@ -33,6 +33,6 @@ child_esmerald = ChildRavyn(
     ]
 )
 
-routes = [Include("/child-ravyn", app=child_esmerald)]
+routes = [Include("/child-ravyn", app=child_ravyn)]
 
 app = Ravyn(routes=routes)

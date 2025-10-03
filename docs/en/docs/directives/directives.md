@@ -23,7 +23,7 @@ Currently there are two built-in directives.
 * [createproject](#create-project) - Used to generate a scaffold for a project.
 * [createapp](#create-app) - Used to generate a scaffold for an application.
 * [createdeployment](#create-deployment) - Used to generate files for a deployment with docker, nginx, supervisor and gunicorn.
-* [show_urls](#show-urls) - Shows the information about the your esmerald application.
+* [show_urls](#show-urls) - Shows the information about the your ravyn application.
 * [shell](./shell.md) - Starts the python interactive shell for your Ravyn application.
 
 ### Help
@@ -43,7 +43,7 @@ $ ravyn runserver --help
 This is the most simple directive to run and lists all the available directives from Ravyn
 and with a flag `--app` shows also the available directives in your project.
 
-**Only esmerald directives**
+**Only ravyn directives**
 
 ```shell
 $ ravyn directives
@@ -344,13 +344,13 @@ You can also access the application OpenAPI documentation and validate what was 
 
 ### Auto generated test files
 
-The test files generated are using the EsmeraldTestClient, so make sure you run:
+The test files generated are using the RavynTestClient, so make sure you run:
 
 ```shell
 $ pip install ravyn[test]
 ```
 
-Or you can skip this step if you don't want to use the EsmeraldTestClient at all.
+Or you can skip this step if you don't want to use the RavynTestClient at all.
 
 ### Create deployment
 
@@ -587,13 +587,13 @@ Running with [RAVYN_SETTINGS_MODULE][settings_module] would be:
 === "MacOS & Linux"
 
     ```shell
-    $ RAVYN_SETTINGS_MODULE=src.configs.development.settings.DevelopmentAppSettings esmerald runserver
+    $ RAVYN_SETTINGS_MODULE=src.configs.development.settings.DevelopmentAppSettings ravyn runserver
     ```
 
 === "Windows"
 
     ```shell
-    $env:RAVYN_SETTINGS_MODULE="src.configs.development.settings.DevelopmentAppSettings"; esmerald runserver
+    $env:RAVYN_SETTINGS_MODULE="src.configs.development.settings.DevelopmentAppSettings"; ravyn runserver
     ```
 
 **Run with testing settings**
@@ -607,13 +607,13 @@ Running with [RAVYN_SETTINGS_MODULE][settings_module] would be:
 === "MacOS & Linux"
 
     ```shell
-    $ RAVYN_SETTINGS_MODULE=src.configs.testing.settings.TestingAppSettings esmerald runserver
+    $ RAVYN_SETTINGS_MODULE=src.configs.testing.settings.TestingAppSettings ravyn runserver
     ```
 
 === "Windows"
 
     ```shell
-    $env:RAVYN_SETTINGS_MODULE="src.configs.testing.settings.TestingAppSettings"; esmerald runserver
+    $env:RAVYN_SETTINGS_MODULE="src.configs.testing.settings.TestingAppSettings"; ravyn runserver
     ```
 
 **Run with production settings**
@@ -627,13 +627,13 @@ Running with [RAVYN_SETTINGS_MODULE][settings_module] would be:
 === "MacOS & Linux"
 
     ```shell
-    $ RAVYN_SETTINGS_MODULE=src.configs.settings.AppSettings esmerald runserver
+    $ RAVYN_SETTINGS_MODULE=src.configs.settings.AppSettings ravyn runserver
     ```
 
 === "Windows"
 
     ```shell
-    $env:RAVYN_SETTINGS_MODULE="src.configs.settings.AppSettings"; esmerald runserver
+    $env:RAVYN_SETTINGS_MODULE="src.configs.settings.AppSettings"; ravyn runserver
     ```
 
-[settings_module]: ../application/settings.md#esmerald-settings-module
+[settings_module]: ../application/settings.md#ravyn-settings-module

@@ -165,7 +165,7 @@ injection.
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
 
-### add_child_esmerald()
+### add_child_ravyn()
 
 ```python
 {!> ../../../docs_src/routing/router/add_child_ravyn.py!}

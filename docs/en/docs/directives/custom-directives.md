@@ -120,7 +120,7 @@ from ravyn.core.directives import BaseDirective
 Every single custom directive created **should be called Directive** and **must inherit** from the
 `BaseDiretive` class.
 
-Internally `esmerald` looks for a `Directive` object and verifies if is a subclass of `BaseDirective`.
+Internally `ravyn` looks for a `Directive` object and verifies if is a subclass of `BaseDirective`.
 If one of this conditions fails, it will raise a `DirectiveError`.
 
 ### Where should directives be placed at?
@@ -187,7 +187,7 @@ As you can see from the previous example, we have four directives:
 * **db_shell** - Inside `./directives/operations`.
 
 All of them, no matter where you put the directive, are inside a **directives/operations** where
-esmerald always looks at.
+ravyn always looks at.
 
 ### Directive functions
 
@@ -196,7 +196,7 @@ esmerald always looks at.
 The `Diretive` logic is implemented inside a `handle` function that can be either `sync` or
 `async`.
 
-When calling a `Directive`, `esmerald` will execute the `handle()` and run the all the logic.
+When calling a `Directive`, `ravyn` will execute the `handle()` and run the all the logic.
 
 === "Sync"
 
@@ -231,7 +231,7 @@ ravyn --app teste.main:app run --directive mydirective --first-name Ravyn --last
 
 ## Help
 
-There are two helps in place for the directives. The one you run the esmerald executor (run) and the
+There are two helps in place for the directives. The one you run the ravyn executor (run) and the
 one for the `directive`.
 
 ### --help
@@ -307,14 +307,14 @@ Let us use the following structure as example:
     └── urls.py
 ```
 
-This example is simulating a structure of an esmerald project with
+This example is simulating a structure of an ravyn project with
 **two custom directives with the same name**.
 
 The first directive is inside `./directives/operations/` and the second inside
 `./apps/accounts/directives/operations`.
 
 Ravyn directives work on a **First Found First Executed** principle and that means if you have
-two custom directives with the same name, esmerald will
+two custom directives with the same name, ravyn will
 **execute the first found directive with that given name**.
 
 In other words, if you want to execute the `createsuperuser` from the `accounts`, the first found
@@ -346,7 +346,7 @@ This example is very simple in its own design.
 
 For production you should have your models inside a models dedicated place and your `registry`
 and `database` settings somewhere in your `settings` where you can access it anywhere in your code via
-[esmerald settings](../application/settings.md), for example.
+[ravyn settings](../application/settings.md), for example.
 
 P.S.: For the registry and database strategy with [edgy][edgy], it is good to have a read
 the [tips and tricks](https://edgy.dymmond.com/tips-and-tricks/) with edgy.

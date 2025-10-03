@@ -6,7 +6,7 @@ from typing_extensions import get_args, get_origin
 
 from ravyn.core.datastructures import File, Redirect, Stream, Template
 from ravyn.openapi._internal import InternalResponse
-from ravyn.responses import Response as EsmeraldResponse
+from ravyn.responses import Response as RavynAPIExceptionResponse
 from ravyn.utils.enums import MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -46,7 +46,7 @@ def create_internal_response(
             internal_response.media_type = (
                 handler.content_media_type or handler.media_type or MediaType.HTML
             )
-        elif get_origin(signature.return_annotation) is EsmeraldResponse:
+        elif get_origin(signature.return_annotation) is RavynAPIExceptionResponse:
             internal_response.return_annotation = get_args(signature.return_annotation)[0] or Any
             internal_response.media_type = handler.content_media_type
         else:

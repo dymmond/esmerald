@@ -42,10 +42,10 @@ class ErrorDetail(str):
         return hash(str(self))
 
 
-class EsmeraldAPIException(LilyaException): ...
+class RavynAPIExceptionAPIException(LilyaException): ...
 
 
-class HTTPException(LilyaHTTPException, EsmeraldAPIException):
+class HTTPException(LilyaHTTPException, RavynAPIExceptionAPIException):
     """
     Base of all `Ravyn` execeptions.
 
@@ -134,7 +134,7 @@ class ServiceUnavailable(HTTPException):
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
 
-class MissingDependency(EsmeraldAPIException, ImportError): ...
+class MissingDependency(RavynAPIExceptionAPIException, ImportError): ...
 
 
 class OpenAPIException(ImproperlyConfigured): ...

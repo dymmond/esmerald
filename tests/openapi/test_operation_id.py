@@ -1,7 +1,7 @@
 from typing import Optional
 
 from ravyn import Gateway, Ravyn, get
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 @get()
@@ -16,7 +16,7 @@ app = Ravyn(
     ],
     enable_openapi=True,
 )
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_openapi_schema_operation_ids_when_same_handler_is_used(test_client_factory):

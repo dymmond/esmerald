@@ -204,11 +204,11 @@ def test_add_router_with_nested_includes_mid_path(test_client_factory) -> None:
         assert response.status_code == status.HTTP_206_PARTIAL_CONTENT
 
 
-def test_add_child_esmerald(test_client_factory):
+def test_add_child_ravyn(test_client_factory):
     child = ChildRavyn(routes=[Gateway(handler=route_one)])
 
     with create_client(routes=[]) as client:
-        client.app.add_child_esmerald(path="/child", child=child)
+        client.app.add_child_ravyn(path="/child", child=child)
 
         response = client.get("/child")
 
@@ -216,12 +216,12 @@ def test_add_child_esmerald(test_client_factory):
         assert response.json() == {"test": 1}
 
 
-def test_add_child_esmerald_raise_error(test_client_factory):
+def test_add_child_ravyn_raise_error(test_client_factory):
     child = object()
 
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[]) as client:
-            client.app.add_child_esmerald(path="/child", child=child)
+            client.app.add_child_ravyn(path="/child", child=child)
 
 
 def test_add_include(test_client_factory):

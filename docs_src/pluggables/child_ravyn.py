@@ -25,7 +25,7 @@ class ChildRavynPluggable(Extension):
         logger.info("Adding the ChildRavyn via pluggable...")
 
         child = ChildRavyn(routes=[Gateway(handler=home, name="child-ravyn-home")])
-        self.app.add_child_esmerald(path="/pluggable", child=child)
+        self.app.add_child_ravyn(path="/pluggable", child=child)
 
         logger.success("Added the ChildRavyn via pluggable.")
 

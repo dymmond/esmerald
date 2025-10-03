@@ -44,10 +44,10 @@ Check out the [Ravyn documentation 📚](https://ravyn.dev)
 
 ## History Behind Ravyn
 
-Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
+Why is this happening? Is RavynAPIException going away? **No, absolutely not. RavynAPIException remains and will remain as is and will keep growing**
 as it has its own use cases.
 
-The reason for the rebranding its because the ecosystem has grown a lot and Esmerald was the first tool being created.
+The reason for the rebranding its because the ecosystem has grown a lot and RavynAPIException was the first tool being created.
 Since then it was released as version 3+.
 
 This happened because of internal dependencies, and we already removed all of them but goes a bit off compared to the rest

@@ -19,7 +19,7 @@ from ravyn import Ravyn
             - add_route
             - add_websocket_route
             - add_include
-            - add_child_esmerald
+            - add_child_ravyn
             - add_router
             - add_extension
             - register_encoder

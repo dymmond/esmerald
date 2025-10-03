@@ -45,7 +45,7 @@ def permission_denied(request: "Request", message: Optional[str] = None) -> None
     raise PermissionDenied(detail=message, status_code=403)
 
 
-def is_esmerald_permission(permission: Union["BasePermission", Any]) -> bool:
+def is_ravyn_permission(permission: Union["BasePermission", Any]) -> bool:
     """
     Checks if the given permission is an instance or subclass of BasePermission.
 
@@ -88,7 +88,7 @@ def wrap_permission(
         # If its an instance of AsyncCallable, then return it as a BasePermission.
         return cast("BasePermission", permission)
 
-    if is_esmerald_permission(permission):
+    if is_ravyn_permission(permission):
         return cast("BasePermission", AsyncCallable(permission))
 
     # If its an instance of a DefinePermission, then return it.

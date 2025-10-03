@@ -63,7 +63,7 @@ Let's use:
 * The requirements file
 
     ```txt
-    esmerald
+    ravyn
     uvicorn
     nginx
     supervisor
@@ -111,7 +111,7 @@ It looks complex and big but let's translate what this configuration is actually
 
 1. Creates the initial configurations for the `supervisor` and `supervisord`.
 2. Declares instructions how to start the [nginx](#nginx).
-3. Declares the instrutions how to start the `uvicorn` and the esmerald application.
+3. Declares the instructions how to start the `uvicorn` and the ravyn application.
 
 ### Dockefile
 

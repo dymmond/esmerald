@@ -20,7 +20,7 @@ are provided.
 So, what does this mean?
 
 This means if **you do not provide an --app or a ESMERALD_DEFAULT_APP**, Ravyn will try to find the
-esmerald application for you automatically.
+ravyn application for you automatically.
 
 Let us see a practical example of what does this mean.
 

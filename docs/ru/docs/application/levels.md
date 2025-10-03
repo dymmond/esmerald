@@ -23,7 +23,7 @@
 ## С использованием ChildRavyn:
 
 ```python hl_lines="49 58"
-{!> ../../../docs_src/application/app/child_esmerald_level.py !}
+{!> ../../../docs_src/application/app/child_ravyn_level.py !}
 ```
 
 **Уровни**:

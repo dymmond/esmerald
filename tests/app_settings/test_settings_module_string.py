@@ -108,7 +108,7 @@ class ChildSettings(DisableOpenAPI):
     secret_key: str = "child key"
 
 
-def test_child_esmerald_independent_settings(test_client_factory):
+def test_child_ravyn_independent_settings(test_client_factory):
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.model_dump_json(exclude={"cache_backend"})  # pragma: no cover
@@ -139,7 +139,7 @@ class ChildSettingCors(DisableOpenAPI):
         return CORSConfig(allow_origins=["www.example.com"])
 
 
-def test_child_esmerald_independent_cors_config(test_client_factory):
+def test_child_ravyn_independent_cors_config(test_client_factory):
     cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
@@ -173,7 +173,7 @@ class NestedChildSettings(DisableOpenAPI):
     secret_key: str = "nested child key"
 
 
-def test_nested_child_esmerald_independent_settings(test_client_factory):
+def test_nested_child_ravyn_independent_settings(test_client_factory):
     @get("/app-settings")
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.model_dump_json(exclude={"cache_backend"})  # pragma: no cover

@@ -12,7 +12,7 @@ from ravyn import (
     Request,
     get,
 )
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from ravyn.types import DictAny
 
 
@@ -42,15 +42,15 @@ class ChildRavynPluggable(Extension):
         logger.info("Adding the ChildRavyn via pluggable...")
 
         child = ChildRavyn(routes=[Gateway(handler=home, name="child-ravyn-home")])
-        self.app.add_child_esmerald(path="/pluggable", child=child)
+        self.app.add_child_ravyn(path="/pluggable", child=child)
 
         logger.success("Added the ChildRavyn via pluggable.")
 
 
-def test_can_add_child_esmerald_via_pluggable():
+def test_can_add_child_ravyn_via_pluggable():
     app = Ravyn(routes=[], extensions={"child-ravyn": Pluggable(ChildRavynPluggable)})
 
-    client = EsmeraldTestClient(app=app)
+    client = RavynTestClient(app=app)
 
     response = client.get("/pluggable")
 

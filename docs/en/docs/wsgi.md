@@ -5,7 +5,7 @@ added to the simplicity of Ravyn you can integrate any wsgi framework (Flask, Dj
 
 Yes, that's right, you can now smoothly move to Ravyn without rewriting your old applications from the scratch,
 actually, you can reuse them directly within Ravyn, even another Ravyn running inside another Ravyn,
-an *Esmeraldception*.
+an *RavynAPIExceptionception*.
 
 ## WSGIMiddleware
 
@@ -63,7 +63,7 @@ If you run the endpoint handled by Flask:
 * `/flask` - From nested routing.
 * `/internal/flask` and `/external/second/flask` - From complex routing.
 * `/flask` and `/second/flask` - From multiple flask apps.
-* `/esmerald/flask` and `/esmerald/second/flask` - From inside another Ravyn
+* `/ravyn/flask` and `/ravyn/second/flask` - From inside another Ravyn
 
 You will see the response:
 
@@ -73,11 +73,11 @@ Hello, Ravyn from Flask!
 
 Accessing any `Ravyn` endpoint:
 
-* `/home/esmerald` - From simple routing.
-* `/home/esmerald` - From complex routing.
-* `/home/esmerald` - From nested routing.
-* `/home/esmerald` - From multiple flask apps.
-* `/esmerald/home/esmerald` - From inside another Ravyn
+* `/home/ravyn` - From simple routing.
+* `/home/ravyn` - From complex routing.
+* `/home/ravyn` - From nested routing.
+* `/home/ravyn` - From multiple flask apps.
+* `/ravyn/home/ravyn` - From inside another Ravyn
 
 ```json
 {

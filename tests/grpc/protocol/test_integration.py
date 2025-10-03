@@ -6,7 +6,7 @@ import grpc
 import pytest
 from grpc import aio
 
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from tests.grpc.protocol import greeter_pb2, greeter_pb2_grpc
 
 # Import the Ravyn app and gRPC gateway from service.py
@@ -20,18 +20,18 @@ from tests.grpc.protocol.service import (
 # HTTP Integration Tests
 # -------------------------------
 @pytest.fixture
-def http_client() -> EsmeraldTestClient:
-    return EsmeraldTestClient(app)
+def http_client() -> RavynTestClient:
+    return RavynTestClient(app)
 
 
-def test_http_sayhello(http_client: EsmeraldTestClient) -> None:
+def test_http_sayhello(http_client: RavynTestClient) -> None:
     # Call the HTTP endpoint that triggers GreeterService.SayHello
     response = http_client.post("/grpc/greeterservice/sayhello", json={"name": "World"})
     assert response.status_code == 200
     assert response.json() == {"message": "Hello, World!"}
 
 
-def test_http_sayhello_error(http_client: EsmeraldTestClient) -> None:
+def test_http_sayhello_error(http_client: RavynTestClient) -> None:
     response = http_client.post("/grpc/greeterservice/sayhello", json={"name": "error"})
     # Our HTTP gateway maps a gRPC error to an HTTP 400.
     assert response.status_code == 400

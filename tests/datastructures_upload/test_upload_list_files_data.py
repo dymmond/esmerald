@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from ravyn import Gateway, Ravyn, UploadFile, post, status
 from ravyn.params import File
-from ravyn.testclient import EsmeraldTestClient, create_client
+from ravyn.testclient import RavynTestClient, create_client
 
 
 class MultipleFile(BaseModel):
@@ -40,14 +40,14 @@ app = Ravyn(
         Gateway(handler=upload_list_multiple_file),
     ]
 )
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_post_upload_file(test_client_factory, tmp_path):
     path = tmp_path / "test.txt"
     path.write_bytes(b"<file content>")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with path.open("rb") as file:
         response = client.post("/upload", files={"file": file})
 
@@ -59,7 +59,7 @@ def test_post_upload_list_multiple_file(test_client_factory, tmp_path):
     path = tmp_path / "test.txt"
     path.write_bytes(b"<file content>")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with path.open("rb") as file:
         response = client.post("/upload-multiple", files={"file": file, "file2": file})
 

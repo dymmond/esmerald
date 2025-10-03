@@ -5,9 +5,9 @@ from lilya.types import Receive, Scope, Send
 from ravyn.core.protocols.interceptor import InterceptorProtocol
 
 
-class EsmeraldInterceptor(ABC, InterceptorProtocol):
+class RavynInterceptor(ABC, InterceptorProtocol):
     """
-    `EsmeraldInterceptor` base class. The object that **must** be subclassed
+    `RavynInterceptor` base class. The object that **must** be subclassed
     when implementing interceptors in ravyn.
 
     This is also an abstract class and the `intercept` **must** be implemented
@@ -22,7 +22,7 @@ class EsmeraldInterceptor(ABC, InterceptorProtocol):
     from lilya.types import Receive, Scope, Send
 
 
-    class LoggingInterceptor(EsmeraldInterceptor):
+    class LoggingInterceptor(RavynInterceptor):
         async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
             # Log a message here
             logger.info("This is my interceptor being called before reaching the handler.")
@@ -48,7 +48,7 @@ class EsmeraldInterceptor(ABC, InterceptorProtocol):
         from lilya.types import Receive, Scope, Send
 
 
-        class LoggingInterceptor(EsmeraldInterceptor):
+        class LoggingInterceptor(RavynInterceptor):
             async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
                 # Log a message here
                 logger.info("This is my interceptor being called before reaching the handler.")

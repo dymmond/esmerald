@@ -49,7 +49,7 @@ class Response(ORJSONTransformMixin, LilyaResponse, Generic[T]):
     Default `Response` object from Ravyn where it can be as the
     return annotation of a [handler](https://ravyn.dev/routing/handlers/).
 
-    Esmerakd automatically will understand what time of response is going to be
+    Ravyn automatically will understand what time of response is going to be
     used and parse all the details automatically.
 
     **Example**

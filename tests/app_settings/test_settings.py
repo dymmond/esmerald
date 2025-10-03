@@ -169,7 +169,7 @@ def test_inner_settings_module_as_instance(test_client_factory):
         assert isinstance(client.app.settings_module, RavynSettings)
 
 
-def test_child_esmerald_independent_settings(test_client_factory):
+def test_child_ravyn_independent_settings(test_client_factory):
     class ChildSettings(DisableOpenAPI):
         app_name: str = "child app"
         secret_key: str = "child key"
@@ -195,7 +195,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
         assert client.app.app_name == settings.app_name
 
 
-def test_child_esmerald_independent_cors_config(test_client_factory):
+def test_child_ravyn_independent_cors_config(test_client_factory):
     cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
@@ -230,7 +230,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
         assert client.app.csrf_config.secret == settings.secret_key
 
 
-def test_nested_child_esmerald_independent_settings(test_client_factory):
+def test_nested_child_ravyn_independent_settings(test_client_factory):
     class NestedChildSettings(DisableOpenAPI):
         app_name: str = "nested child app"
         secret_key: str = "nested child key"

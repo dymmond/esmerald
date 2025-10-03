@@ -1225,7 +1225,7 @@ class RavynSettings(CacheBackendSettings):
     def interceptors(self) -> list[Interceptor]:
         """
         A `list` of global interceptors from objects inheriting from
-        `ravyn.interceptors.interceptor.EsmeraldInterceptor`.
+        `ravyn.interceptors.interceptor.RavynInterceptor`.
 
         Read more about how to implement the [Interceptors](https://ravyn.dev/interceptors/) in Ravyn and to leverage them.
 
@@ -1244,10 +1244,10 @@ class RavynSettings(CacheBackendSettings):
         from loguru import logger
         from lilya.types import Receive, Scope, Send
 
-        from ravyn import Ravyn, EsmeraldInterceptor, RavynSettings
+        from ravyn import Ravyn, RavynInterceptor, RavynSettings
 
 
-        class LoggingInterceptor(EsmeraldInterceptor):
+        class LoggingInterceptor(RavynInterceptor):
             async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
                 # Log a message here
                 logger.info("This is my interceptor being called before reaching the handler.")
@@ -1473,7 +1473,7 @@ class RavynSettings(CacheBackendSettings):
     def extensions(self) -> dict[str, Union["Extension", "Pluggable", type["Extension"]]]:
         """
         A `list` of global extensions from objects inheriting from
-        `ravyn.interceptors.interceptor.EsmeraldInterceptor`.
+        `ravyn.interceptors.interceptor.RavynInterceptor`.
 
         Read more about how to implement the [Plugables](https://ravyn.dev/pluggables/) in Ravyn and to leverage them.
 

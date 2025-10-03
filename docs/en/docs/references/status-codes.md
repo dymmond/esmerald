@@ -1,6 +1,6 @@
 # Status Codes
 
-You can import the `status` module from `esmerald`:
+You can import the `status` module from `ravyn`:
 
 ```python
 from ravyn import status

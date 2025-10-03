@@ -1,4 +1,4 @@
-$VERSION_FILE = "esmerald\__init__.py"
+$VERSION_FILE = "ravyn\__init__.py"
 
 $PREFIX = ""
 

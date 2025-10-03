@@ -331,7 +331,7 @@ The above example illustrates the various levels where the exception handlers ca
 parent order where the order is:
 
 1. Default application built-in exception handlers.
-2. `EsmeraldException : http_esmerald_handler`.
+2. `RavynAPIExceptionException : http_ravyn_handler`.
 3. `InternalServerError : http_internal_server_error_handler`.
 4. `NotAuthorized: http_not_authorized_handler`.
 

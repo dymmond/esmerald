@@ -9,7 +9,7 @@ from lilya.websockets import WebSocketDisconnect
 from ravyn.applications import ChildRavyn
 from ravyn.exceptions import NotAuthorized, PermissionDenied
 from ravyn.permissions import AllowAny, BasePermission, DenyAll
-from ravyn.permissions.utils import is_esmerald_permission
+from ravyn.permissions.utils import is_ravyn_permission
 from ravyn.requests import Request
 from ravyn.routing.gateways import Gateway, WebSocketGateway
 from ravyn.routing.handlers import get, route, websocket
@@ -98,7 +98,7 @@ def test_permissions_with_websocket_handler() -> None:
         ws.send_json({"data": "123"})
 
 
-def test_permissions_with_child_esmerald() -> None:
+def test_permissions_with_child_ravyn() -> None:
     @route(methods=["GET"], path="/secret", permissions=[LocalPermission])
     async def my_asgi_handler() -> None: ...
 
@@ -121,7 +121,7 @@ def test_permissions_with_child_esmerald() -> None:
         assert response.status_code == HTTP_200_OK
 
 
-def test_permissions_with_child_esmerald_two() -> None:
+def test_permissions_with_child_ravyn_two() -> None:
     @route(methods=["GET"], path="/secret", permissions=[ApplicationPermission])
     async def my_asgi_handler() -> None: ...
 
@@ -144,7 +144,7 @@ def test_permissions_with_child_esmerald_two() -> None:
         assert response.status_code == HTTP_200_OK
 
 
-def test_permissions_with_child_esmerald_three() -> None:
+def test_permissions_with_child_ravyn_three() -> None:
     @route(methods=["GET"], path="/secret")
     async def my_asgi_handler() -> None:
         """ """
@@ -181,8 +181,8 @@ class DummyTrue(BasePermission): ...
         (DummyPermission, False),
     ],
 )
-def test_is_esmerald_permission(permission, result) -> None:
-    assert is_esmerald_permission(permission) == result
+def test_is_ravyn_permission(permission, result) -> None:
+    assert is_ravyn_permission(permission) == result
 
 
 # Testing for lilya permissions

@@ -34,7 +34,7 @@ def isolate_global_settings():
         yield
 
 
-def test_child_nested_esmerald_disabled_openapi():
+def test_child_nested_ravyn_disabled_openapi():
     with create_client(
         routes=[
             Gateway(handler=read_people),
@@ -106,7 +106,7 @@ def test_child_nested_esmerald_disabled_openapi():
         }
 
 
-def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
+def test_child_nested_ravyn_not_included_in_schema(test_client_factory):
     with create_client(
         routes=[
             Include(
@@ -177,7 +177,7 @@ def test_child_nested_esmerald_not_included_in_schema(test_client_factory):
         }
 
 
-def test_access_nested_child_esmerald_openapi_only(test_client_factory):
+def test_access_nested_child_ravyn_openapi_only(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=read_people),
@@ -252,7 +252,7 @@ def test_access_nested_child_esmerald_openapi_only(test_client_factory):
         }
 
 
-def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_parent(
+def test_access_nested_child_ravyn_openapi_only_with_disable_openapi_on_parent(
     test_client_factory,
 ):
     with create_client(
@@ -331,7 +331,7 @@ def test_access_nested_child_esmerald_openapi_only_with_disable_openapi_on_paren
         }
 
 
-def test_access_nested_child_esmerald_openapi_only_with_disable_include_openapi_openapi_on_parent(
+def test_access_nested_child_ravyn_openapi_only_with_disable_include_openapi_openapi_on_parent(
     test_client_factory,
 ):
     with create_client(

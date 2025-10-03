@@ -3,7 +3,7 @@ from typing import Any, AsyncGenerator, Callable, Generator, Optional
 import pytest
 
 from ravyn import Gateway, Ravyn, get, params
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 def BaseRequires(
@@ -121,7 +121,7 @@ app = Ravyn(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 @pytest.mark.parametrize(

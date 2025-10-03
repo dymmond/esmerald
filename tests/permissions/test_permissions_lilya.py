@@ -11,7 +11,7 @@ from ravyn.routing.handlers import get
 from ravyn.testclient import create_client
 
 
-class EsmeraldPermission(BasePermission):
+class RavynAPIExceptionPermission(BasePermission):
     def has_permission(self, request, apiview):
         if not request.headers.get("allow_all"):
             return False
@@ -41,12 +41,12 @@ class LilyaPermDeny(PermissionProtocol):
         raise PermissionDenied()
 
 
-def test_mix_permissions_with_native_esmerald() -> None:
+def test_mix_permissions_with_native_ravyn() -> None:
     @get(path="/secret", permissions=[LilyaDeny])
     def my_http_route_handler() -> None: ...
 
     with create_client(
-        routes=[Gateway(handler=my_http_route_handler, permissions=[EsmeraldPermission])],
+        routes=[Gateway(handler=my_http_route_handler, permissions=[RavynAPIExceptionPermission])],
     ) as client:
         response = client.get("/secret")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -59,7 +59,7 @@ def test_mix_permissions_with_native_esmerald() -> None:
 
 
 def test_two_permissions_mixed_same_level() -> None:
-    @get(path="/secret", permissions=[EsmeraldPermission, LilyaDeny])
+    @get(path="/secret", permissions=[RavynAPIExceptionPermission, LilyaDeny])
     def my_http_route_handler() -> None: ...
 
     with create_client(
@@ -84,7 +84,7 @@ def test_include() -> None:
         routes=[
             Include(routes=[Gateway(handler=my_http_route_handler)], permissions=[LilyaDeny]),
         ],
-        permissions=[EsmeraldPermission],
+        permissions=[RavynAPIExceptionPermission],
     ) as client:
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED

@@ -13,10 +13,10 @@ async def home_child() -> JSONResponse:
     return JSONResponse({"message": "Welcome home, child"})
 
 
-child_esmerald = ChildRavyn(
+child_ravyn = ChildRavyn(
     routes=[Gateway(handler=home_child, interceptors=[CookieInterceptor, RequestParamInterceptor])]
 )
 
 app = Ravyn(
-    routes=[Include("/child", app=child_esmerald), Gateway(handler=home)],
+    routes=[Include("/child", app=child_ravyn), Gateway(handler=home)],
 )

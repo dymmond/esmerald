@@ -124,9 +124,9 @@ def runserver(
 
         server_environment: str = ""
         if os.environ.get("RAVYN_SETTINGS_MODULE"):
-            from ravyn.conf import settings as esmerald_settings
+            from ravyn.conf import settings as ravyn_settings
 
-            server_environment = f"{esmerald_settings.environment} "
+            server_environment = f"{ravyn_settings.environment} "
 
         if not server_environment:
             server_environment = "development"
@@ -176,10 +176,10 @@ def runserver(
                 tag="settings",
             )
         else:
-            from ravyn.conf import settings as esmerald_settings
+            from ravyn.conf import settings as ravyn_settings
 
             toolkit.print(
-                f"Using default settings module: [bold][green]{esmerald_settings.__class__.__module__}.Settings[/green][/bold]",
+                f"Using default settings module: [bold][green]{ravyn_settings.__class__.__module__}.Settings[/green][/bold]",
                 tag="settings",
             )
 
@@ -189,8 +189,8 @@ def runserver(
         )
         toolkit.print_line()
 
-        if debug and env.esmerald_app:
-            env.esmerald_app.debug = debug
+        if debug and env.ravyn_app:
+            env.ravyn_app.debug = debug
 
         uvicorn.run(
             # in case of no reload and workers, we might end up initializing twice when

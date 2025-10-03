@@ -42,7 +42,7 @@ from ravyn.encoders import (
     Encoder,
     MsgSpecEncoder,
     PydanticEncoder,
-    register_esmerald_encoder,
+    register_ravyn_encoder,
 )
 from ravyn.exception_handlers import (
     improperly_configured_exception_handler,
@@ -54,14 +54,14 @@ from ravyn.middleware.asyncexitstack import AsyncExitStackMiddleware
 from ravyn.middleware.cors import CORSMiddleware
 from ravyn.middleware.csrf import CSRFMiddleware
 from ravyn.middleware.exceptions import (
-    EsmeraldAPIExceptionMiddleware,
     ExceptionMiddleware,
+    RavynAPIExceptionAPIExceptionMiddleware,
 )
 from ravyn.middleware.trustedhost import TrustedHostMiddleware
 from ravyn.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
 from ravyn.openapi.schemas.v3_1_0.open_api import OpenAPI
 from ravyn.permissions.types import Permission
-from ravyn.permissions.utils import is_esmerald_permission, wrap_permission
+from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.pluggables import Extension, ExtensionDict, Pluggable
 from ravyn.routing import gateways
 from ravyn.routing.apis import base
@@ -590,7 +590,7 @@ class Application(BaseLilya):
             Doc(
                 """
                 A `list` of global interceptors from objects inheriting from
-                `ravyn.interceptors.interceptor.EsmeraldInterceptor`.
+                `ravyn.interceptors.interceptor.RavynInterceptor`.
 
                 Read more about how to implement the [Interceptors](https://ravyn.dev/interceptors/) in Ravyn and to leverage them.
 
@@ -604,10 +604,10 @@ class Application(BaseLilya):
                 from lilya.types import Receive, Scope, Send
 
                 from ravyn import Ravyn
-                from ravyn import EsmeraldInterceptor
+                from ravyn import RavynInterceptor
 
 
-                class LoggingInterceptor(EsmeraldInterceptor):
+                class LoggingInterceptor(RavynInterceptor):
                     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
                         # Log a message here
                         logger.info("This is my interceptor being called before reaching the handler.")
@@ -1455,7 +1455,7 @@ class Application(BaseLilya):
             Doc(
                 """
                 A `list` of global extensions from objects inheriting from
-                `ravyn.interceptors.interceptor.EsmeraldInterceptor`.
+                `ravyn.interceptors.interceptor.RavynInterceptor`.
 
                 Read more about how to implement the [Plugables](https://ravyn.dev/pluggables/) in Ravyn and to leverage them.
 
@@ -1504,7 +1504,7 @@ class Application(BaseLilya):
                 THIS PARAMETER IS DEPRECATED USE extensions INSTEAD
 
                 A `list` of global extensions from objects inheriting from
-                `ravyn.interceptors.interceptor.EsmeraldInterceptor`.
+                `ravyn.interceptors.interceptor.RavynInterceptor`.
 
                 Read more about how to implement the [Plugables](https://ravyn.dev/pluggables/) in Ravyn and to leverage them.
 
@@ -1735,14 +1735,14 @@ class Application(BaseLilya):
             wrap_permission(permission)
             for permission in self.load_settings_value("permissions", self.__base_permissions__)
             or []
-            if not is_esmerald_permission(permission)
+            if not is_ravyn_permission(permission)
         ]
 
         self.permissions: Sequence[Permission] = [
             permission
             for permission in self.load_settings_value("permissions", self.__base_permissions__)
             or []
-            if is_esmerald_permission(permission)
+            if is_ravyn_permission(permission)
         ]
 
         self.before_request_callbacks = (
@@ -2407,7 +2407,7 @@ class Application(BaseLilya):
 
         self.activate_openapi()
 
-    def add_child_esmerald(
+    def add_child_ravyn(
         self,
         path: str,
         child: Annotated[
@@ -2446,7 +2446,7 @@ class Application(BaseLilya):
         child = ChildRavyn(routes=[Gateway(handler=hello)])
 
         app = Ravyn()
-        app.add_child_esmerald(path"/child", child=child)
+        app.add_child_ravyn(path"/child", child=child)
         ```
         """
         if not isinstance(child, ChildRavyn):
@@ -2678,7 +2678,7 @@ class Application(BaseLilya):
         middleware = (
             [
                 DefineMiddleware(
-                    EsmeraldAPIExceptionMiddleware,
+                    RavynAPIExceptionAPIExceptionMiddleware,
                     exception_handlers=exception_handlers,
                     error_handler=error_handler,
                     debug=debug,
@@ -2819,7 +2819,7 @@ class Application(BaseLilya):
         """
         Registers a Encoder into the list of predefined encoders of the system.
         """
-        register_esmerald_encoder(encoder)
+        register_ravyn_encoder(encoder)
 
 
 class Ravyn(RoutingMethodsMixin, Application):

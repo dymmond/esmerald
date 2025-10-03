@@ -41,7 +41,7 @@ How to run custom directives: `ravyn --app <APP-LOCATION> run -n <DIRECTIVE NAME
 
 """
 
-esmerald_cli = Sayer(
+ravyn_cli = Sayer(
     help=help_text,
     add_version_option=True,
     version=__version__,
@@ -49,8 +49,8 @@ esmerald_cli = Sayer(
 )
 
 
-@esmerald_cli.callback(invoke_without_command=True)
-def esmerald_callback(
+@ravyn_cli.callback(invoke_without_command=True)
+def ravyn_callback(
     ctx: click.Context,
     app: typing.Annotated[
         str,
@@ -69,15 +69,15 @@ def esmerald_callback(
 ) -> None: ...
 
 
-esmerald_cli.add_command(directives)
-esmerald_cli.add_command(show_urls)
-esmerald_cli.add_command(runserver)
-esmerald_cli.add_command(run)
-esmerald_cli.add_command(create_project)
-esmerald_cli.add_command(create_app)
-esmerald_cli.add_command(create_deployment)
-esmerald_cli.add_command(shell)
-esmerald_cli.add_app("mail", mail)
+ravyn_cli.add_command(directives)
+ravyn_cli.add_command(show_urls)
+ravyn_cli.add_command(runserver)
+ravyn_cli.add_command(run)
+ravyn_cli.add_command(create_project)
+ravyn_cli.add_command(create_app)
+ravyn_cli.add_command(create_deployment)
+ravyn_cli.add_command(shell)
+ravyn_cli.add_app("mail", mail)
 
 # Load custom directives if any
 application_directives = get_custom_directives_to_cli(str(Path.cwd()))
@@ -86,6 +86,6 @@ application_directives = get_custom_directives_to_cli(str(Path.cwd()))
 if application_directives:
     for _, command in application_directives.items():
         if isinstance(command, Sayer):
-            esmerald_cli.add_custom_command(command, command._group.name)
+            ravyn_cli.add_custom_command(command, command._group.name)
         else:
-            esmerald_cli.add_custom_command(command)
+            ravyn_cli.add_custom_command(command)

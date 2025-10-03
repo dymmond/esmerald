@@ -8,7 +8,7 @@ from lilya.contrib.mail.startup import setup_mail
 
 from ravyn import Gateway, Inject, Injects, Ravyn, get, post
 from ravyn.contrib.mail.dependencies import Mail
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 pytestmark = pytest.mark.asyncio
 
@@ -30,7 +30,7 @@ async def test_mail_dependency_injection(tmp_path, test_client_factory):
 
     setup_mail(app, backend=backend, template_dir=str(tmp_path))
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     # Call endpoint
     response = client.post("/send")
@@ -61,7 +61,7 @@ async def test_mail_dependency_reuses_same_instance(tmp_path):
 
     setup_mail(app, backend=backend, template_dir=str(tmp_path))
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     # Call twice
     client.get("/ping")
@@ -103,7 +103,7 @@ async def test_mail_dependency_override(tmp_path):
 
     setup_mail(app, backend=backend, template_dir=str(tmp_path))
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.post("/send")
 
     assert response.status_code == 201
@@ -124,7 +124,7 @@ async def test_mail_dependency_misconfigured_state(tmp_path):
     # Deliberately attach wrong object
     app.state.mailer = object()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/bad")
 

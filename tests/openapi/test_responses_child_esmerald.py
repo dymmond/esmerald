@@ -26,7 +26,7 @@ async def read_item() -> JSON:
     """ """
 
 
-def test_add_child_esmerald_to_openapi(test_client_factory):
+def test_add_child_ravyn_to_openapi(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=read_people),
@@ -106,7 +106,7 @@ def test_add_child_esmerald_to_openapi(test_client_factory):
         }
 
 
-def test_child_esmerald_disabled_openapi(test_client_factory):
+def test_child_ravyn_disabled_openapi(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=read_people),
@@ -168,7 +168,7 @@ def test_child_esmerald_disabled_openapi(test_client_factory):
         }
 
 
-def test_child_esmerald_not_included_in_schema(test_client_factory):
+def test_child_ravyn_not_included_in_schema(test_client_factory):
     with create_client(
         routes=[
             Include(

@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ravyn import Ravyn, get
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -22,7 +22,7 @@ app = Ravyn(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_application(test_client_factory):

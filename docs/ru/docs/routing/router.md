@@ -74,7 +74,7 @@ Router является главным объектом, который связ
 Давайте используем тот же пример, что и в [пользовательских маршрутизаторах](#custom-router) с маршрутами и правилами, специфичными для клиентов.
 
 ```python hl_lines="28-40" title="/application/apps/routers/customers.py"
-{!> ../../../docs_src/routing/router/childesmerald/customers.py!}
+{!> ../../../docs_src/routing/router/childravyn/customers.py!}
 ```
 
 Поскольку `ChildRavyn` является представлением класса [Ravyn](../application/applications.md),
@@ -86,13 +86,13 @@ Router является главным объектом, который связ
 **Теперь в основном приложении:**
 
 ```python hl_lines="5" title="/application/app.py"
-{!> ../../../docs_src/routing/router/childesmerald/app.py!}
+{!> ../../../docs_src/routing/router/childravyn/app.py!}
 ```
 
 **Добавление вложенных приложений**
 
 ```python hl_lines="9 13-14" title="/application/app.py"
-{!> ../../../docs_src/routing/router/childesmerald/nested.py!}
+{!> ../../../docs_src/routing/router/childravyn/nested.py!}
 ```
 
 Приведенный выше пример показывает, что вы даже можете добавить то же самое приложение внутри вложенных includes,
@@ -154,7 +154,7 @@ Router является главным объектом, который связ
 * **exception_handlers** - Словарь [типов исключений](../exceptions.md) (или пользовательских исключений) и функций-обработчиков на верхнем уровне приложения.
 Вызываемые обработчики исключений должны иметь вид `handler(request, exc) -> response` и могут быть как синхронными, так и асинхронными функциями.
 
-### add_child_esmerald
+### add_child_ravyn
 
 ```python
 {!> ../../../docs_src/routing/router/add_child_ravyn.py!}

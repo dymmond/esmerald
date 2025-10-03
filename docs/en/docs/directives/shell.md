@@ -92,8 +92,8 @@ Sometimes you want to use your application settings as well while loading the sh
     ```shell
     $ export RAVYN_SETTINGS_MODULE=MyCustomSettings
     $ export ESMERALD_DEFAULT_APP=--app myproject.main:app
-    $ esmerald shell # default
-    $ esmerald shell --kernel ptpython # start with ptpython
+    $ ravyn shell # default
+    $ ravyn shell --kernel ptpython # start with ptpython
     ```
 
 === "Windows"
@@ -101,8 +101,8 @@ Sometimes you want to use your application settings as well while loading the sh
     ```shell
     $ $env:RAVYN_SETTINGS_MODULE=="MyCustomSettings"
     $ $env:ESMERALD_DEFAULT_APP=--app myproject.main:app
-    $ esmerald shell # default
-    $ esmerald shell --kernel ptpython # start with ptpython
+    $ ravyn shell # default
+    $ ravyn shell --kernel ptpython # start with ptpython
     ```
 
 ### How does it look like

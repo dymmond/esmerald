@@ -60,10 +60,10 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 ## History Behind Ravyn
 
-Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
+Why is this happening? Is RavynAPIException going away? **No, absolutely not. RavynAPIException remains and will remain as is and will keep growing**
 as it has its own use cases.
 
-The reason for the rebranding its because the ecosystem has grown a lot and Esmerald was the first tool being created.
+The reason for the rebranding its because the ecosystem has grown a lot and RavynAPIException was the first tool being created.
 Since then it was released as version 3+.
 
 This happened because of internal dependencies, and we already removed all of them but goes a bit off compared to the rest
@@ -142,13 +142,13 @@ ravyn createproject <YOUR-PROJECT-NAME> --simple
 This will generate a scaffold for your project with some pre-defined files in a simple fashion with a simple ready to
 go Ravyn application.
 
-This will also generate a file for the tests using the EsmeraldTestClient, so make sure you run:
+This will also generate a file for the tests using the RavynTestClient, so make sure you run:
 
 ```shell
 $ pip install ravyn[test]
 ```
 
-Or you can skip this step if you don't want to use the EsmeraldTestClient.
+Or you can skip this step if you don't want to use the RavynTestClient.
 
 You can find [more information](./directives/directives.md) about this directive and how to use it with a detailed
 example.

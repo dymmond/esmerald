@@ -2,7 +2,7 @@ from jose import JWSError, JWTError
 
 from ravyn.conf import settings
 from ravyn.contrib.auth.edgy.middleware import (
-    JWTAuthMiddleware as EsmeraldMiddleware,
+    JWTAuthMiddleware as RavynAPIExceptionMiddleware,
 )
 from ravyn.exceptions import AuthenticationError, NotAuthorized
 from ravyn.middleware.authentication import AuthResult
@@ -12,7 +12,7 @@ from monkay import load
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 
-class JWTAuthMiddleware(EsmeraldMiddleware):
+class JWTAuthMiddleware(RavynAPIExceptionMiddleware):
     def get_token(self, request: Connection) -> Token:
         """
         Gets the token from the headers.

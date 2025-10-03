@@ -53,7 +53,7 @@ you can do something like this:
 
 ## How to use
 
-Simply return `Template` (of esmerald) not `TemplateResponse` with a `name` parameter pointing to the relative path of the template.
+Simply return `Template` (of ravyn) not `TemplateResponse` with a `name` parameter pointing to the relative path of the template.
 You can pass extra data via setting the `context` parameter to a dictionary containing the extra data.
 
 To select the return type (txt, html) you need to name the files: `foo.html.jinja`.

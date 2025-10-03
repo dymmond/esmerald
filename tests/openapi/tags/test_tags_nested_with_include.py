@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ravyn import Gateway, Include, Ravyn, get
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -18,7 +18,7 @@ app = Ravyn(
 
 
 def test_openapi_schema_tags_include(test_client_factory):
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/openapi.json")
 

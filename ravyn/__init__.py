@@ -24,7 +24,7 @@ if TYPE_CHECKING:
         StaticFilesConfig,
     )
     from .core.directives.decorator import directive
-    from .core.interceptors.interceptor import EsmeraldInterceptor
+    from .core.interceptors.interceptor import RavynInterceptor
     from .core.protocols import AsyncDAOProtocol, DaoProtocol, MiddlewareProtocol
     from .exceptions import (
         HTTPException,
@@ -91,7 +91,7 @@ __all__ = [
     "Ravyn",
     "RavynAPISettings",
     "RavynSettings",
-    "EsmeraldInterceptor",
+    "RavynInterceptor",
     "Extension",
     "File",
     "Form",
@@ -187,7 +187,7 @@ _monkay: Monkay = Monkay(
         "SessionConfig": ".core.config.SessionConfig",
         "StaticFilesConfig": ".core.config.StaticFilesConfig",
         "LoggingConfig": ".core.config.LoggingConfig",
-        "EsmeraldInterceptor": ".core.interceptors.interceptor.EsmeraldInterceptor",
+        "RavynInterceptor": ".core.interceptors.interceptor.RavynInterceptor",
         "HTTPException": ".exceptions.HTTPException",
         "ImproperlyConfigured": ".exceptions.ImproperlyConfigured",
         "MethodNotAllowed": ".exceptions.MethodNotAllowed",

@@ -5,7 +5,7 @@ import pytest
 from pydantic import BaseModel
 
 from ravyn import Gateway, Ravyn, get
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 class State(BaseModel):
@@ -34,7 +34,7 @@ def test_app_lifespan_state(state: State) -> None:
     assert state.app_startup is False
     assert state.app_shutdown is False
 
-    with EsmeraldTestClient(app) as client:
+    with RavynTestClient(app) as client:
         assert state.app_startup is True
         assert state.app_shutdown is False
         response = client.get("/")

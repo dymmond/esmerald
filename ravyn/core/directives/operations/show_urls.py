@@ -66,10 +66,10 @@ def show_urls(env: DirectiveEnv) -> None:
             "ESMERALD_DEFAULT_APP environment variable."
         )
         sys.exit(1)
-    if getattr(env, "esmerald_app", None) is None:
+    if getattr(env, "ravyn_app", None) is None:
         error("Not an ravyn app.")
         sys.exit(1)
-    app = env.esmerald_app
+    app = env.ravyn_app
     table = Table(title=app.app_name)
     table = get_routes_table(app, table)
     echo(table)

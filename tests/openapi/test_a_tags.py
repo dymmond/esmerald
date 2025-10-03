@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ravyn import Gateway, Include, Ravyn, get
-from ravyn.testclient import EsmeraldTestClient, create_client
+from ravyn.testclient import RavynTestClient, create_client
 from tests.settings import TestSettings
 
 
@@ -18,7 +18,7 @@ app = Ravyn(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_tags_nested(test_client_factory):

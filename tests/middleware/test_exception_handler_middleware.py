@@ -5,7 +5,7 @@ from lilya.exceptions import HTTPException as LilyaException
 from lilya.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from ravyn.exceptions import HTTPException
-from ravyn.middleware.exceptions import EsmeraldAPIExceptionMiddleware
+from ravyn.middleware.exceptions import RavynAPIExceptionAPIExceptionMiddleware
 from ravyn.requests import Request
 
 
@@ -13,7 +13,7 @@ async def dummy_app(scope: Any, receive: Any, send: Any) -> None:
     """ """
 
 
-middleware = EsmeraldAPIExceptionMiddleware(dummy_app, False, {})
+middleware = RavynAPIExceptionAPIExceptionMiddleware(dummy_app, False, {})
 
 
 def test_default_handle_http_exception_handling_extra_object() -> None:
@@ -42,7 +42,7 @@ def test_default_handle_http_exception_handling_extra_none() -> None:
     }
 
 
-def test_default_handle_esmerald_http_exception_handling() -> None:
+def test_default_handle_ravyn_http_exception_handling() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
         HTTPException(detail="ravyn exception"),
@@ -54,7 +54,7 @@ def test_default_handle_esmerald_http_exception_handling() -> None:
     }
 
 
-def test_default_handle_esmerald_http_exception_extra_list() -> None:
+def test_default_handle_ravyn_http_exception_extra_list() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
         HTTPException(detail="ravyn exception", extra=["extra-1", "extra-2"]),

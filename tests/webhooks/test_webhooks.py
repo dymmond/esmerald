@@ -38,7 +38,7 @@ class MyView(APIView):
         """"""
 
 
-def test_raise_improperly_configured_for_esmerald_routes(test_client_factory):
+def test_raise_improperly_configured_for_ravyn_routes(test_client_factory):
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[WebhookGateway(handler=new_event)]):
             """"""

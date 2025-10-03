@@ -8,7 +8,7 @@ from ravyn.core.config.template import TemplateConfig
 from ravyn.responses.base import RedirectResponse
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get, route
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 class Model(BaseModel):
@@ -27,7 +27,7 @@ def test_return_response_container(template_dir):
         ),
         middleware=[],
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
@@ -43,7 +43,7 @@ def test_return_response(template_dir):
             directory=template_dir,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
@@ -61,7 +61,7 @@ def test_return_response_route_form(template_dir):
             directory=template_dir,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 
@@ -82,7 +82,7 @@ def test_return_response_route_data(template_dir):
             directory=template_dir,
         ),
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 301
 

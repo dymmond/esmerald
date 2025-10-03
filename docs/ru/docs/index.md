@@ -31,7 +31,7 @@ hide:
 
 **Документация**: [https://ravyn.dev](https://www.ravyn.dev) 📚
 
-**Исходный код**: [https://github.com/dymmond/esmerald](https://github.com/dymmond/esmerald)
+**Исходный код**: [https://github.com/dymmond/ravyn](https://github.com/dymmond/ravyn)
 
 ---
 Ravyn — это современный, мощный, гибкий и высокопроизводительный веб-фреймворк, созданный для построения
@@ -121,13 +121,13 @@ ravyn createproject <YOUR-PROJECT-NAME> --simple
 
 Это создаст каркас проекта с некоторыми предопределенными файлами для простого запуска приложения Ravyn.
 
-Также будет создан файл для тестов с использованием EsmeraldTestClient, так что выполните:
+Также будет создан файл для тестов с использованием RavynTestClient, так что выполните:
 
 ```shell
 $ pip install ravyn[test]
 ```
 
-Эту часть можно пропустить, если не хотите использовать EsmeraldTestClient.
+Эту часть можно пропустить, если не хотите использовать RavynTestClient.
 
 Подробная [информация](./directives/directives.md) об этой директиве и примерах ее использования.
 
@@ -224,17 +224,17 @@ from ravyn import Ravyn, Gateway, JSONResponse, Request, get
 app = Ravyn()
 
 
-@app.get("/esmerald")
+@app.get("/ravyn")
 def welcome() -> JSONResponse:
     return JSONResponse({"message": "Welcome to Ravyn"})
 
 
-@app.get("/esmerald/{user}")
+@app.get("/ravyn/{user}")
 def user(user: str) -> JSONResponse:
     return JSONResponse({"message": f"Welcome to Ravyn, {user}"})
 
 
-@app.get("/esmerald/in-request/{user}")
+@app.get("/ravyn/in-request/{user}")
 def user_in_request(request: Request) -> JSONResponse:
     user = request.path_params["user"]
     return JSONResponse({"message": f"Welcome to Ravyn, {user}"})
@@ -291,7 +291,7 @@ app = Ravyn(app_name='My App', title='My title')
 
 То же самое, что и классический подход.
 
-Давайте поговорим о [модуле настроек Ravyn](#esmerald-settings-module).
+Давайте поговорим о [модуле настроек Ravyn](#ravyn-settings-module).
 
 ### Модуль настроек Ravyn
 
@@ -350,7 +350,7 @@ Lilya предлагает классы `Path` для простых назна�
 === "In a nutshell"
 
     ```python title='src/app.py'
-    from esmerald import Ravyn, Gateway, JSONResponse, Request, Websocket, WebSocketGateway, get, status
+    from ravyn import Ravyn, Gateway, JSONResponse, Request, Websocket, WebSocketGateway, get, status
 
 
     @get(status_code=status.HTTP_200_OK)

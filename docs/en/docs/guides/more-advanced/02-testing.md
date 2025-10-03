@@ -1,18 +1,18 @@
 # Testing Ravyn Applications
 
 Testing is essential to ensure your Ravyn application behaves as expected.
-Ravyn provides powerful testing capabilities out of the box using `EsmeraldTestClient`, which is compatible with
+Ravyn provides powerful testing capabilities out of the box using `RavynTestClient`, which is compatible with
 pytest and async workflows.
 
 ---
 
-## Using `EsmeraldTestClient`
+## Using `RavynTestClient`
 
-The `EsmeraldTestClient` allows you to interact with your application as if it were running, without needing to start a real server.
+The `RavynTestClient` allows you to interact with your application as if it were running, without needing to start a real server.
 
 ```python
 from ravyn import Ravyn, get
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 @get("/ping")
@@ -21,7 +21,7 @@ def ping() -> dict:
 
 
 app = Ravyn(routes=[ping])
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_ping():
@@ -41,7 +41,7 @@ import pytest
 
 @pytest.fixture
 def client():
-    return EsmeraldTestClient(app)
+    return RavynTestClient(app)
 
 
 def test_ping(client):
@@ -69,7 +69,7 @@ async def get_me(user: dict[str, str] = Injects()) -> dict:
 
 
 def test_authenticated():
-    client = EsmeraldTestClient(Ravyn(routes=[get_me]))
+    client = RavynTestClient(Ravyn(routes=[get_me]))
     response = client.get("/me")
     assert response.status_code == 200
     assert response.json() == {"username": "admin"}
@@ -91,7 +91,7 @@ def fail() -> None:
 
 
 def test_custom_error():
-    client = EsmeraldTestClient(Ravyn(routes=[fail]))
+    client = RavynTestClient(Ravyn(routes=[fail]))
     response = client.get("/fail")
     assert response.status_code == 418
     assert response.json()["detail"] == "I'm a teapot"
@@ -116,7 +116,7 @@ app = Ravyn(routes=[], on_startup=[on_startup], on_shutdown=[on_shutdown])
 
 
 def test_lifespan():
-    with EsmeraldTestClient(app):
+    with RavynTestClient(app):
         assert called["startup"] is True
     assert called["shutdown"] is True
 ```

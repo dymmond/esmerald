@@ -99,11 +99,11 @@ async def run(
     # Shutting down after
     lifespan = (
         generate_lifespan_events(
-            env.esmerald_app.on_startup,
-            env.esmerald_app.on_shutdown,
-            env.esmerald_app.lifespan,
+            env.ravyn_app.on_startup,
+            env.ravyn_app.on_shutdown,
+            env.ravyn_app.lifespan,
         )
-        if env.esmerald_app
+        if env.ravyn_app
         else generate_lifespan_events()
     )
     await execute_lifespan(env.app, lifespan, directive, program_name, position)

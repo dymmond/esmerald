@@ -36,7 +36,7 @@ In other words, the path param can be captured using the Request.path_params, bu
 Via cURL:
 
 ```shell
-$ curl -X GET http://localhost:8000/user/esmerald
+$ curl -X GET http://localhost:8000/user/ravyn
 ```
 
 Via Insomnia:

@@ -186,7 +186,7 @@ inside the `settings_module`.
 2. If `settings_module` does not provide an `app_name` value, it will look for the value in the
 `RAVYN_SETTINGS_MODULE`.
 3. If no `RAVYN_SETTINGS_MODULE` environment variable is provided by you, then it will default
-to the Ravyn defaults. [Read more about this here](#esmerald-settings-module).
+to the Ravyn defaults. [Read more about this here](#ravyn-settings-module).
 
 So the order of priority:
 

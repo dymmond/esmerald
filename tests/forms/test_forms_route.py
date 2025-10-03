@@ -8,7 +8,7 @@ from ravyn import Form, Ravyn, Request
 from ravyn.exceptions import ImproperlyConfigured
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import route
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 
 
 class Model(BaseModel):
@@ -26,7 +26,7 @@ def test_get_and_post():
         debug=True,
         routes=[Gateway("/", handler=start)],
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.status_code == 200
 
@@ -43,7 +43,7 @@ def test_get_and_post_optional():
         debug=True,
         routes=[Gateway("/", handler=start)],
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.status_code == 200
 

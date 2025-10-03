@@ -12,9 +12,9 @@ from ravyn.core.config import LoggingConfig
 
 # Simulate a clean logger for each test
 def reset_global_logger():
-    from ravyn import logging as esmerald_logging
+    from ravyn import logging as ravyn_logging
 
-    esmerald_logging.logger.bind_logger(None)
+    ravyn_logging.logger.bind_logger(None)
 
 
 @pytest.fixture(autouse=True)

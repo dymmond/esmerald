@@ -48,7 +48,7 @@ To distribute traffic evenly across multiple app instances:
 ### Nginx Example
 
 ```nginx
-upstream esmerald_cluster {
+upstream ravyn_cluster {
     server 127.0.0.1:8000;
     server 127.0.0.1:8001;
     server 127.0.0.1:8002;
@@ -57,7 +57,7 @@ upstream esmerald_cluster {
 server {
     listen 80;
     location / {
-        proxy_pass http://esmerald_cluster;
+        proxy_pass http://ravyn_cluster;
     }
 }
 ```

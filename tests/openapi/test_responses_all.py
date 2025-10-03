@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ravyn import Gateway, Ravyn, Router, get
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -23,7 +23,7 @@ app = Ravyn(
 )
 app.add_router(router=router)
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_path_operation():
@@ -68,7 +68,7 @@ another_app = Ravyn(title="Ravyn", enable_openapi=True, settings_module=TestSett
 another_router = Router(routes=[Gateway(path="/people", handler=read_people)])
 another_app.add_router(router=another_router)
 
-another_client = EsmeraldTestClient(another_app)
+another_client = RavynTestClient(another_app)
 
 
 def test_openapi_schema_default():

@@ -20,7 +20,7 @@ async def home(request: Request) -> dict:
     return {"name": name}
 
 
-def test_serve_flask_via_esmerald(test_client_factory):
+def test_serve_flask_via_ravyn(test_client_factory):
     routes = [
         Gateway(handler=home),
         Include("/flask", WSGIMiddleware(flask_app)),
@@ -108,7 +108,7 @@ def second_flask_main():
     return f"Hello, {escape(name)} from Flask!"
 
 
-def test_serve_more_than_one_flask_app_via_esmerald(test_client_factory):
+def test_serve_more_than_one_flask_app_via_ravyn(test_client_factory):
     routes = [
         Gateway(handler=home),
         Include("/flask", WSGIMiddleware(flask_app)),
@@ -129,7 +129,7 @@ def test_serve_more_than_one_flask_app_via_esmerald(test_client_factory):
         assert response.text == "Hello, Ravyn from Flask!"
 
 
-def test_serve_more_than_one_flask_app_via_esmerald_two(test_client_factory):
+def test_serve_more_than_one_flask_app_via_ravyn_two(test_client_factory):
     routes = [
         Gateway(handler=home),
         Include("/flask", WSGIMiddleware(flask_app)),
@@ -257,8 +257,8 @@ def test_serve_routes_inder_main_path_with_different_names(test_client_factory):
         assert response.text == "Hello, Ravyn from Flask!"
 
 
-def test_serve_under_another_esmerald_app(test_client_factory):
-    esmerald_app = Ravyn(
+def test_serve_under_another_ravyn_app(test_client_factory):
+    ravyn_app = Ravyn(
         routes=[
             Gateway(handler=home),
             Include("/flask", WSGIMiddleware(flask_app)),
@@ -267,7 +267,7 @@ def test_serve_under_another_esmerald_app(test_client_factory):
     )
 
     routes = [
-        Include("/ravyn", esmerald_app),
+        Include("/ravyn", ravyn_app),
     ]
 
     with create_client(routes=routes) as client:
@@ -284,8 +284,8 @@ def test_serve_under_another_esmerald_app(test_client_factory):
         assert response.text == "Hello, Ravyn from Flask!"
 
 
-def test_serve_under_another_esmerald_app_two(test_client_factory):
-    esmerald_app = Ravyn(
+def test_serve_under_another_ravyn_app_two(test_client_factory):
+    ravyn_app = Ravyn(
         routes=[
             Gateway(handler=home),
             Include("/flask", WSGIMiddleware(flask_app)),
@@ -295,7 +295,7 @@ def test_serve_under_another_esmerald_app_two(test_client_factory):
 
     routes = [
         Gateway(handler=home),
-        Include("/ravyn", esmerald_app),
+        Include("/ravyn", ravyn_app),
         Gateway("/test", handler=home),
     ]
 

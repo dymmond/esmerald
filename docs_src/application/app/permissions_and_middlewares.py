@@ -94,7 +94,7 @@ class UserApiView(APIView):
         await socket.close()
 
 
-child_esmerald = ChildRavyn(routes=[Gateway("/home", handler=home), Gateway(handler=UserApiView)])
+child_ravyn = ChildRavyn(routes=[Gateway("/home", handler=home), Gateway(handler=UserApiView)])
 
 jwt_config = JWTConfig(
     signing_key=settings.secret_key,
@@ -108,7 +108,7 @@ app = Ravyn(
             routes=[
                 Gateway(handler=me),
                 WebSocketGateway(handler=websocket_endpoint_include),
-                Include("/admin", child_esmerald),
+                Include("/admin", child_ravyn),
             ],
         )
     ],

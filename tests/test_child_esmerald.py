@@ -32,12 +32,12 @@ def route_five() -> dict:
     return {"test": 5}
 
 
-def test_add_child_esmerald_app(test_client_factory) -> None:
+def test_add_child_ravyn_app(test_client_factory) -> None:
     """
     Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildRavyn(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -45,7 +45,7 @@ def test_add_child_esmerald_app(test_client_factory) -> None:
     )
 
     with create_client(
-        routes=[Gateway(handler=route_one), Include("/child", app=child_esmerald)]
+        routes=[Gateway(handler=route_one), Include("/child", app=child_ravyn)]
     ) as client:
         response = client.get("/")
         assert response.json() == {"test": 1}
@@ -62,12 +62,12 @@ def test_add_child_esmerald_app(test_client_factory) -> None:
         assert response.status_code == status.HTTP_200_OK
 
 
-def test_add_child_esmerald_app_within_include(test_client_factory) -> None:
+def test_add_child_ravyn_app_within_include(test_client_factory) -> None:
     """
     Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildRavyn(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -77,7 +77,7 @@ def test_add_child_esmerald_app_within_include(test_client_factory) -> None:
     with create_client(
         routes=[
             Gateway(handler=route_one),
-            Include(routes=[Include("/child", app=child_esmerald)]),
+            Include(routes=[Include("/child", app=child_ravyn)]),
         ]
     ) as client:
         response = client.get("/")
@@ -95,12 +95,12 @@ def test_add_child_esmerald_app_within_include(test_client_factory) -> None:
         assert response.status_code == status.HTTP_200_OK
 
 
-def test_add_child_esmerald_app_within_nested_include_two(test_client_factory) -> None:
+def test_add_child_ravyn_app_within_nested_include_two(test_client_factory) -> None:
     """
     Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildRavyn(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -117,7 +117,7 @@ def test_add_child_esmerald_app_within_nested_include_two(test_client_factory) -
     with create_client(
         routes=[
             Gateway(handler=route_one),
-            Include(routes=[Include("/child", app=child_esmerald)]),
+            Include(routes=[Include("/child", app=child_ravyn)]),
             Include(
                 "/children",
                 routes=[
@@ -168,12 +168,12 @@ def test_add_child_esmerald_app_within_nested_include_two(test_client_factory) -
         assert response.status_code == status.HTTP_200_OK
 
 
-def test_add_child_esmerald_app_within_nested_include(test_client_factory):
+def test_add_child_ravyn_app_within_nested_include(test_client_factory):
     """
     Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildRavyn(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -190,7 +190,7 @@ def test_add_child_esmerald_app_within_nested_include(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=route_one),
-            Include(routes=[Include("/child", app=child_esmerald)]),
+            Include(routes=[Include("/child", app=child_ravyn)]),
             Include(
                 "/children",
                 routes=[
@@ -241,14 +241,14 @@ def test_add_child_esmerald_app_within_nested_include(test_client_factory):
         assert response.status_code == status.HTTP_200_OK
 
 
-def test_add_children_esmerald_app_within_same_nested_include(
+def test_add_children_ravyn_app_within_same_nested_include(
     test_client_factory,
 ) -> None:
     """
     Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildRavyn(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -262,12 +262,12 @@ def test_add_children_esmerald_app_within_same_nested_include(
         ]
     )
 
-    third_child = child_esmerald
+    third_child = child_ravyn
 
     with create_client(
         routes=[
             Gateway(handler=route_one),
-            Include(routes=[Include("/child", app=child_esmerald)]),
+            Include(routes=[Include("/child", app=child_ravyn)]),
             Include(
                 "/children",
                 routes=[
@@ -340,14 +340,14 @@ def test_add_children_esmerald_app_within_same_nested_include(
         assert response.status_code == status.HTTP_200_OK
 
 
-def test_add_children_esmerald_app_within_same_nested_include_simpler(
+def test_add_children_ravyn_app_within_same_nested_include_simpler(
     test_client_factory,
 ) -> None:
     """
     Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildRavyn(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -361,18 +361,18 @@ def test_add_children_esmerald_app_within_same_nested_include_simpler(
         ]
     )
 
-    third_child = child_esmerald
+    third_child = child_ravyn
 
     with create_client(
         routes=[
             Gateway(handler=route_one),
-            Include(routes=[Include("/child", app=child_esmerald)]),
+            Include(routes=[Include("/child", app=child_ravyn)]),
             Include(
                 "/apps",
                 routes=[
                     Include("/clients", second_child),
                     Include("/customers", third_child),
-                    Include("/isolated", child_esmerald),
+                    Include("/isolated", child_ravyn),
                 ],
             ),
         ]

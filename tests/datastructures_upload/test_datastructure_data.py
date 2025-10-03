@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from ravyn import Body, Gateway, Ravyn, UploadFile, post
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from ravyn.utils.enums import EncodingType
 
 
@@ -20,7 +20,7 @@ def test_upload_file_is_closed(tmp_path: Path):
         return {"filename": data.filename}
 
     app = Ravyn(routes=[Gateway(handler=create_upload_file)])
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with path.open("rb") as file:
         response = client.post("/uploadfile", files={"file": file})
     assert response.status_code == 201, response.text

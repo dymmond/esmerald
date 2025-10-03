@@ -1,9 +1,9 @@
 from typing import Any
 
-from ravyn.exceptions import EsmeraldAPIException
+from ravyn.exceptions import RavynAPIExceptionAPIException
 
 
-class DirectiveError(EsmeraldAPIException):
+class DirectiveError(RavynAPIExceptionAPIException):
     """
     Exception indicating a problem while executing a directive.
     """

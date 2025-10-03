@@ -9,7 +9,7 @@ from lilya.routing import Path as LilyaPath, WebSocketPath as LilyaWebSocketPath
 from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
-from ravyn.permissions.utils import is_esmerald_permission, is_lilya_permission, wrap_permission
+from ravyn.permissions.utils import is_lilya_permission, is_ravyn_permission, wrap_permission
 from ravyn.routing.apis.base import View
 from ravyn.routing.core.base import Dispatcher
 from ravyn.utils.helpers import clean_string
@@ -443,7 +443,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
             self.permissions: Any = {
                 index: wrap_permission(permission)
                 for index, permission in enumerate(permissions)
-                if is_esmerald_permission(permission)
+                if is_ravyn_permission(permission)
             }
 
             if not self.handler.permissions:
@@ -759,7 +759,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             self.permissions: Any = {
                 index: wrap_permission(permission)
                 for index, permission in enumerate(permissions)
-                if is_esmerald_permission(permission)
+                if is_ravyn_permission(permission)
             }
 
             if not self.handler.permissions:

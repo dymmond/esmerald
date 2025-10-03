@@ -102,7 +102,7 @@ from ravyn.utils.decorators import cache
 #### **Using Redis as a Backend**
 
 ```python
-{!> ../../../docs_src/caching/esmerald_decorator.py !}
+{!> ../../../docs_src/caching/ravyn_decorator.py !}
 ```
 ✅ **The response is stored in Redis and remains available for 30 seconds.**
 

@@ -9,7 +9,7 @@ async def home() -> str:
 child = ChildRavyn(routes=[Gateway(handler=home, name="my-apiview")])
 
 app = Ravyn()
-app.add_child_esmerald(
+app.add_child_ravyn(
     path="/child",
     child=child,
     name=...,

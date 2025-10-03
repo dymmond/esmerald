@@ -6,7 +6,7 @@ for the middleware protocol. Let's be honest, it is not that we can reinvent the
 of the box.
 
 There are two ways of designing the middleware for Ravyn. [Lilya middleware](#lilya-middleware) and
-[Ravyn protocols](#esmerald-protocols) as both work quite well together.
+[Ravyn protocols](#ravyn-protocols) as both work quite well together.
 
 ## Lilya middleware
 
@@ -129,7 +129,7 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
 === "From the application instance"
 
     ```python
-    from esmerald import Ravyn
+    from ravyn import Ravyn
     from .middleware.jwt import JWTAuthMiddleware
 
 
@@ -141,7 +141,7 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
     ```python
     from typing import List
 
-    from esmerald import RavynSettings
+    from ravyn import RavynSettings
     from ravyn.types import Middleware
     from .middleware.jwt import JWTAuthMiddleware
 
@@ -348,12 +348,12 @@ A middleware class for reading/generating request IDs and attaching them to appl
 #### <a href="https://github.com/steinnes/timing-asgi">TimingMiddleware</a>
 
 ASGI middleware to record and emit timing metrics (to something like statsd).
-This integration works using [EsmeraldTimming](https://github.com/dymmond/esmerald-timing).
+This integration works using [RavynAPIExceptionTimming](https://github.com/dymmond/ravyn-timing).
 
 
 ## Important points
 
-1. Ravyn supports [Lilya middleware](#lilya-middleware), [MiddlewareProtocol](#esmerald-protocols).
+1. Ravyn supports [Lilya middleware](#lilya-middleware), [MiddlewareProtocol](#ravyn-protocols).
 2. A MiddlewareProtocol is simply an interface that enforces `__init__` and `async __call__` to be implemented.
 3. `app` is required parameter from any class inheriting from the `MiddlewareProtocol`.
 4. <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Pure ASGI Middleware</a>

@@ -116,7 +116,7 @@ The rest, it is still as clean as always was in Ravyn.
 Now, the cool part is when we send a payload to the API, something like this:
 
 ```shell
-data = {"name": "Ravyn", "email": "esmerald@ravyn.dev"}
+data = {"name": "Ravyn", "email": "ravyn@ravyn.dev"}
 ```
 
 When this payload is sent, the **validations are done automatically by the `msgspec` library**
@@ -233,7 +233,7 @@ What if you want to create `OpenAPIResponse` objects? Well, there are also three
 
 1. [As single object](#as-a-single-object).
 2. [As a list](#as-a-list).
-3. [Mixing with Pydantic](#mixing-with-pydantic) (the [nuance](#the-nuances-of-esmerald)).
+3. [Mixing with Pydantic](#mixing-with-pydantic) (the [nuance](#the-nuances-of-ravyn)).
 
 ### As a single object
 

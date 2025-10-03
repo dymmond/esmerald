@@ -30,7 +30,7 @@ class Scaffold:
 
     path: str
     app: ASGIApp
-    esmerald_app: Ravyn | ChildRavyn | None = None
+    ravyn_app: Ravyn | ChildRavyn | None = None
     app_location: Path | None = None
     discovery_file: str | None = None
 
@@ -52,7 +52,7 @@ class DirectiveEnv:
 
     path: str | None = None
     app: ASGIApp | None = None
-    esmerald_app: Ravyn | ChildRavyn | None = None
+    ravyn_app: Ravyn | ChildRavyn | None = None
     command_path: str | None = None
     module_info: ModuleInfo | None = None
 
@@ -84,7 +84,7 @@ class DirectiveEnv:
         return DirectiveEnv(
             path=_app.path,
             app=_app.app,
-            esmerald_app=_app.esmerald_app,
+            ravyn_app=_app.ravyn_app,
             command_path=command_path,
             module_info=self.get_module_data_from_path(
                 _app.app_location, _app.path, _app.discovery_file
@@ -148,7 +148,7 @@ class DirectiveEnv:
             ravyn = app
         else:
             ravyn = cast(Ravyn, lilya_monkay.instance)
-        return Scaffold(path=path, app=app, esmerald_app=ravyn)
+        return Scaffold(path=path, app=app, ravyn_app=ravyn)
 
     def _get_folders(self, path: Path) -> list[str]:
         """
@@ -177,20 +177,20 @@ class DirectiveEnv:
                     app_path = f"{dotted_path}:{attr}"
                     return Scaffold(
                         app=value,
-                        esmerald_app=value,
+                        ravyn_app=value,
                         path=app_path,
                         app_location=path,
                         discovery_file=discovery_file,
                     )
 
             # Is registered
-            if isinstance((esmerald_instance := lilya_monkay.instance), Ravyn):
+            if isinstance((ravyn_instance := lilya_monkay.instance), Ravyn):
                 for attr in DISCOVERY_ATTRS:
                     if (value := getattr(module, attr, None)) is not None:
                         app_path = f"{dotted_path}:{attr}"
                         return Scaffold(
                             app=value,
-                            esmerald_app=esmerald_instance,
+                            ravyn_app=ravyn_instance,
                             path=app_path,
                             app_location=path,
                             discovery_file=discovery_file,
@@ -204,15 +204,15 @@ class DirectiveEnv:
                     if isinstance(app_candidate, Ravyn):
                         return Scaffold(
                             app=app_candidate,
-                            esmerald_app=app_candidate,
+                            ravyn_app=app_candidate,
                             path=app_path,
                             app_location=path,
                             discovery_file=discovery_file,
                         )
-                    if isinstance((esmerald_instance := lilya_monkay.instance), Ravyn):
+                    if isinstance((ravyn_instance := lilya_monkay.instance), Ravyn):
                         return Scaffold(
                             app=app_candidate,
-                            esmerald_app=esmerald_instance,
+                            ravyn_app=ravyn_instance,
                             path=app_path,
                             app_location=path,
                             discovery_file=discovery_file,

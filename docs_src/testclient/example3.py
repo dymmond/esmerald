@@ -1,4 +1,4 @@
-from ravyn.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from lilya.responses import HTMLResponse
 
 
@@ -8,7 +8,7 @@ async def app(scope, receive, send):
     await response(scope, receive, send)
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 # Send a single file
 with open("example.txt", "rb") as f:
