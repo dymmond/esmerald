@@ -2,7 +2,7 @@ from typing import Union
 
 import msgspec
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 
 class User(msgspec.Struct):
@@ -18,4 +18,4 @@ def create(data: User) -> User:
     return data
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])

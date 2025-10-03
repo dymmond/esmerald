@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import grpc
 
-from esmerald import Esmerald
-from esmerald.contrib.grpc.gateway import GrpcGateway
-from esmerald.contrib.grpc.register import register_grpc_http_routes
+from ravyn import Ravyn
+from ravyn.contrib.grpc.gateway import GrpcGateway
+from ravyn.contrib.grpc.register import register_grpc_http_routes
 
 # Import generated classes
 from tests.grpc.protocol import greeter_pb2, greeter_pb2_grpc
@@ -45,7 +45,7 @@ class GreeterService(greeter_pb2_grpc.GreeterServicer):
 # Here we wrap our GreeterService in a GrpcGateway. This will expose HTTP endpoints
 # that internally call the gRPC service.
 grpc_gateway = GrpcGateway(path="/grpc", services=[GreeterService])
-app = Esmerald(
+app = Ravyn(
     routes=[],
     on_startup=[grpc_gateway.startup],
     on_shutdown=[grpc_gateway.shutdown],

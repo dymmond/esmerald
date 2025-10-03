@@ -2,10 +2,10 @@ from typing import Callable
 
 import pytest
 
-from esmerald.background import BackgroundTask, BackgroundTasks
-from esmerald.responses import Response
-from esmerald.routing.router import Include
-from esmerald.testclient import EsmeraldTestClient, create_client
+from ravyn.background import BackgroundTask, BackgroundTasks
+from ravyn.responses import Response
+from ravyn.routing.router import Include
+from ravyn.testclient import EsmeraldTestClient, create_client
 
 
 def test_async_task(test_client_factory):

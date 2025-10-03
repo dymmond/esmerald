@@ -2,9 +2,9 @@ from typing import Any
 
 import pytest
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.contrib.responses.json import jsonify
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.contrib.responses.json import jsonify
+from ravyn.testclient import EsmeraldTestClient
 
 
 def test_jsonify_with_kwargs(test_client_factory):
@@ -12,7 +12,7 @@ def test_jsonify_with_kwargs(test_client_factory):
     async def endpoint() -> Any:
         return jsonify(message="Hello", status="ok")
 
-    app = Esmerald(routes=[Gateway("/json", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/json", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
     response = client.get("/json")
@@ -26,7 +26,7 @@ def test_jsonify_with_single_arg_list(test_client_factory):
     async def endpoint() -> Any:
         return jsonify([1, 2, 3])
 
-    app = Esmerald(routes=[Gateway("/list", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/list", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
     response = client.get("/list")
@@ -39,7 +39,7 @@ def test_jsonify_with_multiple_args(test_client_factory):
     async def endpoint() -> Any:
         return jsonify(1, 2, 3)
 
-    app = Esmerald(routes=[Gateway("/multi", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/multi", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
     response = client.get("/multi")
@@ -52,7 +52,7 @@ def test_jsonify_with_custom_status_code(test_client_factory):
     async def endpoint() -> Any:
         return jsonify(message="created")
 
-    app = Esmerald(routes=[Gateway("/created", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/created", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
     response = client.get("/created")
@@ -65,7 +65,7 @@ def test_jsonify_with_headers(test_client_factory):
     async def endpoint() -> Any:
         return jsonify(message="Hello", headers={"X-Custom": "value"})
 
-    app = Esmerald(routes=[Gateway("/headers", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/headers", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
     response = client.get("/headers")
@@ -79,7 +79,7 @@ def test_jsonify_with_cookies(test_client_factory):
     async def endpoint() -> Any:
         return jsonify(message="Hello", cookies={"session": "abc123"})
 
-    app = Esmerald(routes=[Gateway("/cookies", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/cookies", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
     response = client.get("/cookies")
@@ -95,9 +95,9 @@ def test_jsonify_raises_on_args_and_kwargs(test_client_factory):
         with pytest.raises(TypeError):
             return jsonify({"a": 1}, b=2)
 
-    app = Esmerald(routes=[Gateway("/error", handler=endpoint)])
+    app = Ravyn(routes=[Gateway("/error", handler=endpoint)])
     client = EsmeraldTestClient(app)
 
-    # since exception is raised inside endpoint, Esmerald will return 500
+    # since exception is raised inside endpoint, Ravyn will return 500
     response = client.get("/error")
     assert response.status_code == 500

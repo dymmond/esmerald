@@ -1,7 +1,7 @@
 from typing import Dict, List
 
-from esmerald import Body, Esmerald, Gateway, UploadFile, post
-from esmerald.utils.enums import EncodingType
+from ravyn import Body, Ravyn, Gateway, UploadFile, post
+from ravyn.utils.enums import EncodingType
 
 
 @post("/upload")
@@ -19,4 +19,4 @@ async def upload_file(
     return contents
 
 
-app = Esmerald(routes=[Gateway(handler=upload_file, name="upload-file")])
+app = Ravyn(routes=[Gateway(handler=upload_file, name="upload-file")])

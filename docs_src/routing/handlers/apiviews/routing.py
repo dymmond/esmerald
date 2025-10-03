@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway
+from ravyn import Ravyn, Gateway
 
 from .controllers import UserAPIView
 
-app = Esmerald(routes=[Gateway(handler=UserAPIView)])
+app = Ravyn(routes=[Gateway(handler=UserAPIView)])

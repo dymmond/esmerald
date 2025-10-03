@@ -1,6 +1,6 @@
 # **`Stream`** class
 
-::: esmerald.core.datastructures.stream.Stream
+::: ravyn.core.datastructures.stream.Stream
     options:
         inherited_members: false
         filters:

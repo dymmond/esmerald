@@ -1,11 +1,11 @@
 # Directives
 
 What are these directives? In simple terms, those are special `command-line` scripts that run special
-pieces of code for **Esmerald**.
+pieces of code for **Ravyn**.
 
 {!> ../../../docs_src/_shared/autodiscovery.md !}
 
-## Built-in Esmerald directives
+## Built-in Ravyn directives
 
 Starting a project can be troublesome for some people mostly because there questions about the structure of the files
 and folders and how to maintain the consistency.
@@ -13,7 +13,7 @@ and folders and how to maintain the consistency.
 A lot of people cannot be bothered with running cookiecutters and go straight to their own design.
 
 !!! Check
-    **Esmerald is in no way, shape or form opinionated about the application structure** of any application but it
+    **Ravyn is in no way, shape or form opinionated about the application structure** of any application but it
     provides some suggested options but it does not mean it should always be in that way. It simply serves as an
     option.
 
@@ -24,7 +24,7 @@ Currently there are two built-in directives.
 * [createapp](#create-app) - Used to generate a scaffold for an application.
 * [createdeployment](#create-deployment) - Used to generate files for a deployment with docker, nginx, supervisor and gunicorn.
 * [show_urls](#show-urls) - Shows the information about the your esmerald application.
-* [shell](./shell.md) - Starts the python interactive shell for your Esmerald application.
+* [shell](./shell.md) - Starts the python interactive shell for your Ravyn application.
 
 ### Help
 
@@ -33,38 +33,38 @@ To the help of any directive, run `--help` in front of each one.
 Example:
 
 ```shell
-$ esmerald runserver --help
+$ ravyn runserver --help
 ```
 
-## Available Esmerald Directives
+## Available Ravyn Directives
 
 ### List Available Directives
 
-This is the most simple directive to run and lists all the available directives from Esmerald
+This is the most simple directive to run and lists all the available directives from Ravyn
 and with a flag `--app` shows also the available directives in your project.
 
 **Only esmerald directives**
 
 ```shell
-$ esmerald directives
+$ ravyn directives
 ```
 
 **All the directives including your project**
 
 ```shell
-$ esmerald --app myproject.main:app directives
+$ ravyn --app myproject.main:app directives
 ```
 
 Or
 
 ```shell
 $ export ESMERALD_DEFAULT_APP=myproject.main:app
-$ esmerald directives
+$ ravyn directives
 ```
 
 ### Create project
 
-This is a simple directive that generates a folder structure with some files for your Esmerald project.
+This is a simple directive that generates a folder structure with some files for your Ravyn project.
 
 #### Parameters
 
@@ -88,7 +88,7 @@ already assembled.
     need to implement yourself like running the `edgy init` command to create the migrations folder as per Edgy documentation.
 
 * **--location** - A location where the project should be created.
-  
+
   <sup>Default: `.`</sup>
 
 * **-v/--verbosity** - `1` for none and `2` displays all generated files.
@@ -96,7 +96,7 @@ already assembled.
     <sup>Default: `1`</sup>
 
 ```shell
-$ esmerald createproject <YOUR-PROJECT-NAME>
+$ ravyn createproject <YOUR-PROJECT-NAME>
 ```
 
 The directive will generate a tree of files and folders with some pre-populated files ready to be used.
@@ -104,7 +104,7 @@ The directive will generate a tree of files and folders with some pre-populated 
 **Example**:
 
 ```shell
-$ esmerald createproject myproject
+$ ravyn createproject myproject
 ```
 
 You should have a folder called `myproject` with a similar structure to this:
@@ -159,12 +159,12 @@ used to add extra configurations as needed.
 
 #### Apps
 
-##### What is an app in the Esmerald context?
+##### What is an app in the Ravyn context?
 
 An app is another way of saying that is a python module that contains your code and logic for the application.
 
 As mentioned before, this is merely suggestive and in no way, shape or form consitutes as the unique way of
-building Esmerald applications.
+building Ravyn applications.
 
 The `apps` is a way that can be used to **isolate** your apis from the rest of the structure. This folder is already
 added to the python path via `main.py`.
@@ -179,7 +179,7 @@ Do you also provide any other directive that suggests how to design an app, just
 
 ### Create app
 
-This is another directive that allows you to generate a scaffold for a possible app to be used within Esmerald.
+This is another directive that allows you to generate a scaffold for a possible app to be used within Ravyn.
 
 #### Parameters
 
@@ -198,15 +198,15 @@ by a sample base controller, service, repository and dtos.
     <sup>Default: `False`</sup>
 
 ```shell
-$ esmerald createapp <YOUR-APP-NAME>
+$ ravyn createapp <YOUR-APP-NAME>
 ```
 
 * **--version** - The version of the app to be created.
-  
+
   <sup>Default: `v1`</sup>
 
 * **--location** - A location where the project should be created.
-  
+
   <sup>Default: `.`</sup>
 
 **Example**:
@@ -215,7 +215,7 @@ Using our previous example of [create project](#create-project), let's use the a
 
 ```shell
 $ cd myproject/apps/
-$ esmerald createapp accounts
+$ ravyn createapp accounts
 ```
 
 You should have a folder called `accounts` with a similar structure to this:
@@ -300,13 +300,13 @@ What this command is actually doing is:
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=myproject.configs.development.settings.DevelopmentAppSettings python -m myproject.serve
+    RAVYN_SETTINGS_MODULE=myproject.configs.development.settings.DevelopmentAppSettings python -m myproject.serve
     ```
 
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="myproject.configs.development.settings.DevelopmentAppSettings"; python -m myproject.serve
+    $env:RAVYN_SETTINGS_MODULE="myproject.configs.development.settings.DevelopmentAppSettings"; python -m myproject.serve
     ```
 
 If you want another [settings](../application/settings.md#custom-settings) you can simply update the command to
@@ -347,7 +347,7 @@ You can also access the application OpenAPI documentation and validate what was 
 The test files generated are using the EsmeraldTestClient, so make sure you run:
 
 ```shell
-$ pip install esmerald[test]
+$ pip install ravyn[test]
 ```
 
 Or you can skip this step if you don't want to use the EsmeraldTestClient at all.
@@ -382,7 +382,7 @@ the necessary flags and the other one in isolation.
 The default run and syntax is as follow:
 
 ```shell
-$ esmerald createdeployment <YOUR-PROJECT-NAME>
+$ ravyn createdeployment <YOUR-PROJECT-NAME>
 ```
 
 **Example**:
@@ -391,7 +391,7 @@ Using our previous example of [create project](#create-project), let's use the a
 
 ```shell
 $ cd myproject/
-$ esmerald createdeployment myproject
+$ ravyn createdeployment myproject
 ```
 
 You should have a folder called `deployment` with a similar structure to this:
@@ -411,7 +411,7 @@ that will also reflect in the files.
 Let us use `myproject` as an example and call the folder `deploy` instead of `deployment`.
 
 ```shell
-$ esmerald createdeployment myproject --deployment-folder-name deploy
+$ ravyn createdeployment myproject --deployment-folder-name deploy
 ```
 
 Once the directive runs, You should have a folder called `deploy` with a similar structure to this:
@@ -444,7 +444,7 @@ This should trigger the whole process of your `Dockerfile` and install everythin
 
 ### Show URLs
 
-This is another built-in Esmerald application and it simply to show the information about the
+This is another built-in Ravyn application and it simply to show the information about the
 URLs of your application via command line.
 
 This command can be run like this:
@@ -452,13 +452,13 @@ This command can be run like this:
 **Using the --app parameter**
 
 ```shell
-$ esmerald --app myproject.main:app show_urls
+$ ravyn --app myproject.main:app show_urls
 ```
 
 **Using the ESMERALD_DEFAULT_APP environment variable already exported**:
 
 ```shell
-$ esmerald myproject.main:app show_urls
+$ ravyn myproject.main:app show_urls
 ```
 
 ### Runserver
@@ -506,7 +506,7 @@ This directive helps you starting your local development in a simple way, very s
     <sup>Default: `True`</sup>
 
 * **--settings** - Start the server with specific settings. This is an alternative to
-[ESMERALD_SETTINGS_MODULE][settings_module] way of starting.
+[RAVYN_SETTINGS_MODULE][settings_module] way of starting.
 
     <sup>Default: `None`</sup>
 
@@ -523,7 +523,7 @@ some of the options to see how it would look like.
 ###### Run on a different port
 
 ```shell
-$ esmerald runserver -p 8001
+$ ravyn runserver -p 8001
 ```
 
 ###### Run on a different host
@@ -531,18 +531,18 @@ $ esmerald runserver -p 8001
 Although it will still be localhost, we just run againt the IP directly.
 
 ```shell
-$ esmerald runserver --host 127.0.0.1
+$ ravyn runserver --host 127.0.0.1
 ```
 
 ###### Run with a different lifespan
 
 ```shell
-$ esmerald runserver --lifespan auto
+$ ravyn runserver --lifespan auto
 ```
 
 ###### Run with different settings
 
-As mentioned before, this is an alternative to the [ESMERALD_SETTINGS_MODULE][settings_module]
+As mentioned before, this is an alternative to the [RAVYN_SETTINGS_MODULE][settings_module]
 approach and **it should only be used for development purposes**.
 
 Use one or the other.
@@ -579,61 +579,61 @@ As you can see, we have three different types of settings:
 **Run with development settings**
 
 ```shell
-$ esmerald runserver --settings src.configs.development.settings.DevelopmentAppSettings
+$ ravyn runserver --settings src.configs.development.settings.DevelopmentAppSettings
 ```
 
-Running with [ESMERALD_SETTINGS_MODULE][settings_module] would be:
+Running with [RAVYN_SETTINGS_MODULE][settings_module] would be:
 
 === "MacOS & Linux"
 
     ```shell
-    $ ESMERALD_SETTINGS_MODULE=src.configs.development.settings.DevelopmentAppSettings esmerald runserver
+    $ RAVYN_SETTINGS_MODULE=src.configs.development.settings.DevelopmentAppSettings esmerald runserver
     ```
 
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="src.configs.development.settings.DevelopmentAppSettings"; esmerald runserver
+    $env:RAVYN_SETTINGS_MODULE="src.configs.development.settings.DevelopmentAppSettings"; esmerald runserver
     ```
 
 **Run with testing settings**
 
 ```shell
-$ esmerald runserver --settings src.configs.testing.settings.TestingAppSettings
+$ ravyn runserver --settings src.configs.testing.settings.TestingAppSettings
 ```
 
-Running with [ESMERALD_SETTINGS_MODULE][settings_module] would be:
+Running with [RAVYN_SETTINGS_MODULE][settings_module] would be:
 
 === "MacOS & Linux"
 
     ```shell
-    $ ESMERALD_SETTINGS_MODULE=src.configs.testing.settings.TestingAppSettings esmerald runserver
+    $ RAVYN_SETTINGS_MODULE=src.configs.testing.settings.TestingAppSettings esmerald runserver
     ```
 
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="src.configs.testing.settings.TestingAppSettings"; esmerald runserver
+    $env:RAVYN_SETTINGS_MODULE="src.configs.testing.settings.TestingAppSettings"; esmerald runserver
     ```
 
 **Run with production settings**
 
 ```shell
-$ esmerald runserver --settings src.configs.settings.AppSettings
+$ ravyn runserver --settings src.configs.settings.AppSettings
 ```
 
-Running with [ESMERALD_SETTINGS_MODULE][settings_module] would be:
+Running with [RAVYN_SETTINGS_MODULE][settings_module] would be:
 
 === "MacOS & Linux"
 
     ```shell
-    $ ESMERALD_SETTINGS_MODULE=src.configs.settings.AppSettings esmerald runserver
+    $ RAVYN_SETTINGS_MODULE=src.configs.settings.AppSettings esmerald runserver
     ```
 
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="src.configs.settings.AppSettings"; esmerald runserver
+    $env:RAVYN_SETTINGS_MODULE="src.configs.settings.AppSettings"; esmerald runserver
     ```
 
 [settings_module]: ../application/settings.md#esmerald-settings-module

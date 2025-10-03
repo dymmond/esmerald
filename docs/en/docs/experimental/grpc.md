@@ -1,9 +1,9 @@
-# gRPC Integration in Esmerald (Experimental)
+# gRPC Integration in Ravyn (Experimental)
 
 !!! Warning
     **⚠️ Experimental Feature**
 
-    The gRPC integration in Esmerald is currently experimental and subject to change.
+    The gRPC integration in Ravyn is currently experimental and subject to change.
     While it is stable enough for real use-cases, APIs may evolve based on community feedback.
 
 ---
@@ -37,9 +37,9 @@ Avoid gRPC when:
 - You need to expose APIs directly to web browsers (gRPC is not well-supported in browsers without additional setup).
 - You prefer human-readable JSON APIs.
 
-## gRPC and Esmerald
+## gRPC and Ravyn
 
-Esmerald supports gRPC integration via the `GrpcGateway`, allowing services to:
+Ravyn supports gRPC integration via the `GrpcGateway`, allowing services to:
 
 - Run as gRPC servers using `grpc.aio`.
 - Optionally expose HTTP endpoints that call into gRPC service methods.
@@ -70,7 +70,7 @@ GrpcGateway(
 - `is_secure`: Enables TLS if set to `True`.
 - `server_credentials`: Credentials required for TLS if `is_secure=True`.
 
-## How to Use GrpcGateway with Esmerald
+## How to Use GrpcGateway with Ravyn
 
 ### Step 1: Define the gRPC Protobuf File
 
@@ -101,7 +101,7 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. greeter.proto
 To implement the gRPC service, create a class that inherits from `GreeterServicer` and implements the methods defined in
 the protobuf file.
 
-Esmerald will also use the `__add_to_server__` method to register the service with the gRPC server.
+Ravyn will also use the `__add_to_server__` method to register the service with the gRPC server.
 
 ```python
 from greeter_pb2 import HelloReply
@@ -127,7 +127,7 @@ class GreeterService(GreeterServicer):
 To create a gRPC gateway, instantiate `GrpcGateway` with the desired parameters:
 
 ```python
-from esmerald.contrib.grpc import GrpcGateway
+from ravyn.contrib.grpc import GrpcGateway
 
 grpc_gateway = GrpcGateway(
     path="/grpc",
@@ -138,13 +138,13 @@ grpc_gateway = GrpcGateway(
 
 ### Step 4: Register HTTP Routes
 
-To register the gRPC service with Esmerald, use the `register_grpc_http_routes` function:
+To register the gRPC service with Ravyn, use the `register_grpc_http_routes` function:
 
 ```python
-from esmerald import Esmerald
-from esmerald.contrib.grpc.register import register_grpc_http_routes
+from ravyn import Ravyn
+from ravyn.contrib.grpc.register import register_grpc_http_routes
 
-app = Esmerald()
+app = Ravyn()
 
 register_grpc_http_routes(app, [grpc_gateway])
 ```
@@ -232,7 +232,7 @@ register_grpc_http_routes(app, [gateway], base_path="/api")
 
 ## Summary
 
-With the experimental `GrpcGateway`, Esmerald provides a powerful way to combine gRPC and HTTP APIs using a shared codebase and contract. This allows developers to:
+With the experimental `GrpcGateway`, Ravyn provides a powerful way to combine gRPC and HTTP APIs using a shared codebase and contract. This allows developers to:
 
 - Serve both gRPC and HTTP clients.
 - Build robust microservice interfaces.
@@ -240,4 +240,4 @@ With the experimental `GrpcGateway`, Esmerald provides a powerful way to combine
 
 As this feature evolves, expect improvements in type safety, streaming support, and tooling integration.
 
-Want more? Let us know what features or improvements you'd like to see for gRPC support in Esmerald!
+Want more? Let us know what features or improvements you'd like to see for gRPC support in Ravyn!

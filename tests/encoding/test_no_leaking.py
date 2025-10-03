@@ -1,6 +1,6 @@
 from lilya._internal._encoders import DEFAULT_ENCODER_TYPES
 
-from esmerald.encoders import LILYA_ENCODER_TYPES
+from ravyn.encoders import LILYA_ENCODER_TYPES
 
 
 def test_working_no_overwrite():

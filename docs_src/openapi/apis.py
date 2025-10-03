@@ -1,7 +1,7 @@
 from typing import List
 
-from esmerald import Request, delete, get, post, put
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import Request, delete, get, post, put
+from ravyn.openapi.datastructures import OpenAPIResponse
 
 from .daos import UserDAO
 from .schemas import Error, UserIn, UserOut

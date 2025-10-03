@@ -1,7 +1,7 @@
-from esmerald import CSRFConfig, EsmeraldSettings, ImproperlyConfigured
+from ravyn import CSRFConfig, RavynSettings, ImproperlyConfigured
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     @property
     def csrf_config(self) -> CSRFConfig:
         """

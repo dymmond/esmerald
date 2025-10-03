@@ -3,8 +3,8 @@ from enum import Enum
 
 from edgy import fields
 
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.base_user import User as BaseUser
+from ravyn.conf import settings
+from ravyn.contrib.auth.edgy.base_user import User as BaseUser
 
 models = settings.registry
 

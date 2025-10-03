@@ -1,9 +1,9 @@
-from esmerald.applications import Esmerald
-from esmerald.requests import Request
-from esmerald.responses import Response
-from esmerald.routing.handlers import get, websocket
-from esmerald.routing.router import Gateway, WebSocketGateway
-from esmerald.websockets import Websocket
+from ravyn.applications import Ravyn
+from ravyn.requests import Request
+from ravyn.responses import Response
+from ravyn.routing.handlers import get, websocket
+from ravyn.routing.router import Gateway, WebSocketGateway
+from ravyn.websockets import WebSocket
 
 
 @get()
@@ -24,7 +24,7 @@ def user(request: Request) -> Response:
 
 
 @websocket()
-async def websocket_endpoint(socket: Websocket) -> None:
+async def websocket_endpoint(socket: WebSocket) -> None:
     await socket.accept()
     await socket.send_text("Hello, websocket!")
     await socket.close()
@@ -41,4 +41,4 @@ routes = [
     WebSocketGateway("/ws", handler=websocket_endpoint),
 ]
 
-app = Esmerald(routes=routes, on_startup=[startup])
+app = Ravyn(routes=routes, on_startup=[startup])

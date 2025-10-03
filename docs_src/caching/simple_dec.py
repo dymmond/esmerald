@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, get
-from esmerald.utils.decorators import cache
+from ravyn import Ravyn, Gateway, get
+from ravyn.utils.decorators import cache
 
 
 @get("/expensive/{value}")
@@ -8,4 +8,4 @@ async def expensive_operation(value: int) -> dict:
     return {"result": value * 2}
 
 
-app = Esmerald(routes=[Gateway(handler=expensive_operation)])
+app = Ravyn(routes=[Gateway(handler=expensive_operation)])

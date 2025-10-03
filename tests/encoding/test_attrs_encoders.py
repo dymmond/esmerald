@@ -3,13 +3,13 @@ from typing import Any
 import pytest
 from attrs import asdict, define, field, has
 
-from esmerald import Gateway, post
-from esmerald.encoders import (
+from ravyn import Gateway, post
+from ravyn.encoders import (
     LILYA_ENCODER_TYPES,
     Encoder,
     register_esmerald_encoder,
 )
-from esmerald.testclient import create_client
+from ravyn.testclient import create_client
 
 
 class AttrsEncoder(Encoder):

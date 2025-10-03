@@ -1,8 +1,8 @@
 from myapp.models import User
 
-from esmerald import Esmerald, settings
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
+from ravyn import Ravyn, settings
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 jwt_config = JWTConfig(
@@ -11,4 +11,4 @@ jwt_config = JWTConfig(
 
 auth_middleware = LilyaMiddleware(JWTAuthMiddleware, config=jwt_config, user_model=User)
 
-app = Esmerald(middleware=[auth_middleware])
+app = Ravyn(middleware=[auth_middleware])

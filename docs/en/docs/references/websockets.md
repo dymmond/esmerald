@@ -3,11 +3,11 @@
 Importing the `WebSocket` from `esmerald` is as simple as:
 
 ```python
-from esmerald import WebSocket
+from ravyn import WebSocket
 ```
 
-::: esmerald.WebSocket
+::: ravyn.WebSocket
 
-::: esmerald.WebSocketDisconnect
+::: ravyn.WebSocketDisconnect
 
-::: esmerald.WebSocketState
+::: ravyn.WebSocketState

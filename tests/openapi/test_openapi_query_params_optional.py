@@ -2,9 +2,9 @@ from typing import Dict, Optional
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.testclient import EsmeraldTestClient
 from tests.settings import TestSettings
 
 
@@ -22,12 +22,12 @@ async def bar(name: Optional[str]) -> Dict[str, str]:
     return {"hello": "world"}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=bar)],
     enable_openapi=True,
     tags=["test"],
     settings_module=TestSettings,
-    contact={"name": "esmerald", "email": "esmerald@esmeral.dev"},
+    contact={"name": "ravyn", "email": "ravyn@esmeral.dev"},
 )
 
 
@@ -42,10 +42,10 @@ def test_openapi_query_params_optional(test_client_factory):
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
-            "title": "Esmerald",
-            "summary": "Esmerald application",
+            "title": "Ravyn",
+            "summary": "Ravyn application",
             "description": "Highly scalable, performant, easy to learn and for every application.",
-            "contact": {"name": "esmerald", "email": "esmerald@esmeral.dev"},
+            "contact": {"name": "ravyn", "email": "ravyn@esmeral.dev"},
             "version": client.app.version,
         },
         "servers": [{"url": "/"}],

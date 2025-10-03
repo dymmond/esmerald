@@ -9,7 +9,7 @@ You can declare the path parameters (you can think of them as variables) using t
 ```
 
 As you can see, the `user_id` declared in the path was also passed and provided in the function `user`. This is how
-you must declare path parameters in Esmerald.
+you must declare path parameters in Ravyn.
 
 You can now access the URL:
 
@@ -19,7 +19,7 @@ http://127.0.0.1/users/1
 
 ## Declaration of the parameters
 
-**Esmerald** being developed on top of [Lilya][lilya] also means that it allows **two** different syntaxes for the declaration
+**Ravyn** being developed on top of [Lilya][lilya] also means that it allows **two** different syntaxes for the declaration
 of the parameters.
 
 === "Default"
@@ -34,12 +34,12 @@ of the parameters.
     {!> ../../../docs_src/extras/path/example_gt.py !}
     ```
 
-Esmerald allows the use of `{}` and `<>` syntaxes. Both work in an `equal` way and the reasoning for that is only to
+Ravyn allows the use of `{}` and `<>` syntaxes. Both work in an `equal` way and the reasoning for that is only to
 allow the users to choose their own preference.
 
 ## Default parameters
 
-When declaring a controller with path parameters, if no type is specified in the `string` declaration, Esmerald will assume
+When declaring a controller with path parameters, if no type is specified in the `string` declaration, Ravyn will assume
 it will be of type `string`.
 
 ```python
@@ -60,19 +60,19 @@ will have the right type for you to test.
 
 ## Custom typing and transformers
 
-What if you need to create a custom typing that is not natively supported by Esmerald? Well, Esmerald has your back with
+What if you need to create a custom typing that is not natively supported by Ravyn? Well, Ravyn has your back with
 the [transformers](../routing/routes.md#custom-transformers).
 
-This will make sure you have your own transformer for your own unique typing and Esmerald can understand it.
+This will make sure you have your own transformer for your own unique typing and Ravyn can understand it.
 
-Since Esmerald is built on top of [Lilya][lilya], that means it also supports natively the same types.
+Since Ravyn is built on top of [Lilya][lilya], that means it also supports natively the same types.
 
 You can [check here for more details](../routing/routes.md#path-parameters).
 
 ## Enums
 
-Esmerald also supports `Enum` types as typing. Yes, that's right, natively Esmerald handles Enums for you. This will
-trigger automatic validations of Esmerald in case a wrong value is provided.
+Ravyn also supports `Enum` types as typing. Yes, that's right, natively Ravyn handles Enums for you. This will
+trigger automatic validations of Ravyn in case a wrong value is provided.
 
 ```python
 {!> ../../../docs_src/extras/path/enum.py !}

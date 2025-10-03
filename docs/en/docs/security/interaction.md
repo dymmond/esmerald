@@ -1,6 +1,6 @@
 # Interaction & Next Steps
 
-In the [previous chapter](./introduction.md), the security system—based on **Esmerald's** dependency injection system was providing the `path operation function` with a `token` as a `str`.
+In the [previous chapter](./introduction.md), the security system—based on **Ravyn's** dependency injection system was providing the `path operation function` with a `token` as a `str`.
 
 This token was extracted from the `Authorization` header of the incoming request. The security system automatically handled this, so the function didn't need to worry about how the token was retrieved. The function simply received the token as a string, which it could then use for further processing, such as verifying the token's validity or checking user permissions.
 
@@ -14,7 +14,7 @@ Let’s enhance it by returning the current user instead.
 
 ## Create a user model
 
-By creating a `user` model you can use `Pydantic`, msgspec or whatever you want since Esmerald supports the [encoders](../encoders.md)
+By creating a `user` model you can use `Pydantic`, msgspec or whatever you want since Ravyn supports the [encoders](../encoders.md)
 making it versatile enough for your needs.
 
 For ths example, let us use the native Pydantic support.
@@ -43,10 +43,10 @@ Just like we did before in the *path operation* itself, our new `get_current_use
 
     In other words, when a sub-dependency is a `oauth2_scheme` type of thing or any security related, **you must** use the `Security` object.
 
-    This special object once its declared, **Esmerald** will know what to do with it and make sure it can be executed
+    This special object once its declared, **Ravyn** will know what to do with it and make sure it can be executed
     properly.
 
-    Esmerald dependency system is extremely powerful and extremely versatile and therefore some special objects dedicated
+    Ravyn dependency system is extremely powerful and extremely versatile and therefore some special objects dedicated
     to this security approach were added to make our lives simples.
 
 ## Get the user
@@ -61,7 +61,7 @@ The `get_current_user` dependency will use a (fake) utility function we created.
 
 Now, we can use the `Inject` and `Injects` with our `get_current_user` dependency in the *path operation*. This is part
 of the special Esmerlad dependency inject system that is also multi layered. You can read again about the
-[dependency injection with Esmerald](../dependencies.md).
+[dependency injection with Ravyn](../dependencies.md).
 
 ```python hl_lines="27"
 {!> ../../../docs_src/security/enhance.py !}
@@ -80,7 +80,7 @@ For example:
 - Prefer a `str` or a `dict`? Or perhaps a database class model instance directly? It all works seamlessly.
 - If you have bots, robots, or other systems logging in instead of users, and they only need an access token, that's fine too.
 
-You can use any model, class, or database structure that fits your application's needs. **Esmerald**'s dependency injection system makes it easy and flexible for all cases.
+You can use any model, class, or database structure that fits your application's needs. **Ravyn**'s dependency injection system makes it easy and flexible for all cases.
 
 ## Code size so far
 
@@ -90,7 +90,7 @@ Here’s the key takeaway:
 
 The security and dependency injection setup is written **once**.
 
-You can make it as complex as you need, but it only needs to be defined in one place. The beauty of **Esmerald** is its flexibility—whether simple or complex, you only write this logic once.
+You can make it as complex as you need, but it only needs to be defined in one place. The beauty of **Ravyn** is its flexibility—whether simple or complex, you only write this logic once.
 
 And once it's set up, you can reuse it across **thousands of endpoints** (*path operations*).
 
@@ -102,7 +102,7 @@ Even with thousands of *path operations*, many of them can be as simple as just 
 {!> ../../../docs_src/security/enhance.py !}
 ```
 
-Remember that Esmerald has a flexible dependency injection system and the lines can be cut by a lot avoiding repetition.
+Remember that Ravyn has a flexible dependency injection system and the lines can be cut by a lot avoiding repetition.
 
 You can now access the current user directly in your *path operation function*.
 

@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, get
-from esmerald.conf import settings
+from ravyn import Ravyn, Gateway, get
+from ravyn.conf import settings
 
 
 @get()
@@ -7,4 +7,4 @@ async def app_name() -> dict:
     return {"app_name": settings.app_name}
 
 
-app = Esmerald(routes=[Gateway(handler=app_name)])
+app = Ravyn(routes=[Gateway(handler=app_name)])

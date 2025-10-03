@@ -65,27 +65,27 @@ With caching, applications handle more users efficiently without overwhelming th
 
 ---
 
-## **3. What is Caching in Esmerald?**
+## **3. What is Caching in Ravyn?**
 
-Esmerald provides a built-in caching system to speed up responses, reduce redundant processing, and optimize performance.
+Ravyn provides a built-in caching system to speed up responses, reduce redundant processing, and optimize performance.
 It supports multiple backends, including:
 
 2. **In-Memory Caching** (default)
 2. **Redis Caching**
 3. **Custom Backends**
 
-Esmerald’s caching system integrates seamlessly with request handlers using the `@cache` decorator.
+Ravyn’s caching system integrates seamlessly with request handlers using the `@cache` decorator.
 
 ---
 
-## **4. How to Use Caching in Esmerald**
+## **4. How to Use Caching in Ravyn**
 
 ### **4.1 Using the `@cache` Decorator**
 
 The `@cache` decorator allows caching responses for a defined `ttl` (time-to-live) and a chosen backend.
 
 ```python
-from esmerald.utils.decorators import cache
+from ravyn.utils.decorators import cache
 ```
 
 #### **Basic Example**
@@ -108,11 +108,11 @@ from esmerald.utils.decorators import cache
 
 ---
 
-## **5. Customizing Caching in Esmerald**
+## **5. Customizing Caching in Ravyn**
 
-### **5.1 Using Esmerald Settings to Set a Default Cache Backend**
+### **5.1 Using Ravyn Settings to Set a Default Cache Backend**
 
-Instead of specifying the backend every time, we can configure a global cache backend using `EsmeraldSettings`.
+Instead of specifying the backend every time, we can configure a global cache backend using `RavynSettings`.
 
 #### **Example: Setting Redis as the Default Backend**
 
@@ -132,7 +132,7 @@ Instead of specifying the backend every time, we can configure a global cache ba
 
 ## **6. Building Custom Caching Backends**
 
-You can extend Esmerald’s caching system by creating your own backend.
+You can extend Ravyn’s caching system by creating your own backend.
 
 ### **6.1 Custom File-Based Cache Backend**
 
@@ -141,7 +141,7 @@ To create a custom backend, you need to implement the `CacheBackend` interface.
 That can be imported from:
 
 ```python
-from esmerald.core.protocols.cache import CacheBackend
+from ravyn.core.protocols.cache import CacheBackend
 ```
 
 ### Example
@@ -152,9 +152,9 @@ from esmerald.core.protocols.cache import CacheBackend
 
 ✅ **This custom backend caches data in files instead of memory or Redis.**
 
-### **6.2 Using the Custom Backend in Esmerald**
+### **6.2 Using the Custom Backend in Ravyn**
 
-Now you can use the custom backend in your Esmerald application.
+Now you can use the custom backend in your Ravyn application.
 
 ```python
 {!> ../../../docs_src/caching/usage.py !}
@@ -166,7 +166,7 @@ Now you can use the custom backend in your Esmerald application.
 
 ## Recap
 
-* Esmerald provides an easy-to-use caching system with multiple backends.
+* Ravyn provides an easy-to-use caching system with multiple backends.
 * You can use the `@cache` decorator to cache responses.
-* You can set a global cache backend via `EsmeraldSettings`.
+* You can set a global cache backend via `RavynSettings`.
 * You can create custom caching backends to store data in different ways.

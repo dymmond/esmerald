@@ -2,13 +2,13 @@ from lilya import status
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.types import Receive, Scope, Send
 
-from esmerald import Include
-from esmerald.exceptions import NotAuthorized, PermissionDenied
-from esmerald.permissions import BasePermission
-from esmerald.requests import Request
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.testclient import create_client
+from ravyn import Include
+from ravyn.exceptions import NotAuthorized, PermissionDenied
+from ravyn.permissions import BasePermission
+from ravyn.requests import Request
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.testclient import create_client
 
 
 class EsmeraldPermission(BasePermission):

@@ -3,7 +3,7 @@
 This section is a complement to [exceptions](./exceptions.md) and more focused on the exception handler themselves.
 
 Exception handlers are, as the name suggests, the handlers in case an exception of type X occurs in any
-[level of an Esmerald application](./application/levels.md).
+[level of an Ravyn application](./application/levels.md).
 
 ## Exception handlers and the application levels
 
@@ -34,7 +34,7 @@ The same is applied also to [dependencies](./dependencies.md).
 
 ### Custom exception handlers
 
-We all know that Esmerald handles really well the exceptions by design but sometimes we might also
+We all know that Ravyn handles really well the exceptions by design but sometimes we might also
 want to throw an error while doing some code logic that is not directly related with a `data` of
 an handler.
 
@@ -46,13 +46,13 @@ For example.
 
 This example is a not usual at all but it serves to show where an exception is raised.
 
-Esmerald offers **one** out of the box **custom exception handlers**:
+Ravyn offers **one** out of the box **custom exception handlers**:
 
 * **value_error_handler** - When you want the `ValueError` exception to be automatically parsed
 into a JSON.
 
 ```python
-from esmerald.exception_handlers import value_error_handler
+from ravyn.exception_handlers import value_error_handler
 ```
 
 How it would look like the previous example using this custom exception handler?

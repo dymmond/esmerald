@@ -1,7 +1,7 @@
-# Esmerald
+# Ravyn
 
 <p align="center">
-  <a href="https://esmerald.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1673619342/esmerald/img/logo-gr_z1ot8o.png" alt='Esmerald'></a>
+  <a href="https://ravyn.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1759490296/ravyn/img/logo_pb3fis.png" alt='Ravyn'></a>
 </p>
 
 <p align="center">
@@ -9,38 +9,51 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/dymmond/esmerald/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" target="_blank">
-    <img src="https://github.com/dymmond/esmerald/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" alt="Test Suite">
+<a href="https://github.com/dymmond/ravyn/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" target="_blank">
+    <img src="https://github.com/dymmond/ravyn/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" alt="Test Suite">
 </a>
 
-<a href="https://pypi.org/project/esmerald" target="_blank">
-    <img src="https://img.shields.io/pypi/v/esmerald?color=%2334D058&label=pypi%20package" alt="Package version">
+<a href="https://pypi.org/project/ravyn" target="_blank">
+    <img src="https://img.shields.io/pypi/v/ravyn?color=%2334D058&label=pypi%20package" alt="Package version">
 </a>
 
-<a href="https://pypi.org/project/esmerald" target="_blank">
-    <img src="https://img.shields.io/pypi/pyversions/esmerald.svg?color=%2334D058" alt="Supported Python versions">
+<a href="https://pypi.org/project/ravyn" target="_blank">
+    <img src="https://img.shields.io/pypi/pyversions/ravyn.svg?color=%2334D058" alt="Supported Python versions">
 </a>
 </p>
 
 ---
 
-**Documentation**: [https://esmerald.dev](https://www.esmerald.dev) 📚
+**Documentation**: [https://ravyn.dev](https://www.ravyn.dev) 📚
 
-**Source Code**: [https://github.com/dymmond/esmerald](https://github.com/dymmond/esmerald)
+**Source Code**: [https://github.com/dymmond/ravyn](https://github.com/dymmond/ravyn)
 
 **The official supported version is always the latest released**.
 
 ---
 
-Esmerald is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
+Ravyn is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
 but also full scalable applications from the smallest to enterprise level.
 
-Esmerald is designed to build with Python 3.10+ and based on standard python type hints. Initially
+Ravyn is designed to build with Python 3.10+ and based on standard python type hints. Initially
 built on the top of [Starlette](https://github.com/encode/starlette) and later on moved to [Lilya](https://lilya.dev) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
-Check out the [Esmerald documentation 📚](https://esmerald.dev)
+Check out the [Ravyn documentation 📚](https://ravyn.dev)
 
 **The official supported version is always the latest released**.
+
+## History Behind Ravyn
+
+Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
+as it has its own use cases.
+
+The reason for the rebranding its because the ecosystem has grown a lot and Esmerald was the first tool being created.
+Since then it was released as version 3+.
+
+This happened because of internal dependencies, and we already removed all of them but goes a bit off compared to the rest
+of the ecosystem.
+
+This is the reason for Ravyn to come into existence and to keep everything aligned with the future projects coming out.
 
 ## Motivation
 
@@ -48,9 +61,9 @@ There are great frameworks out there like FastAPI, Flama, Flask, Django... All o
 of the current day-to-day problems of 99% of the applications but leaving the 1% that is usually around structure
 and design/business without to much to do.
 
-Esmerald got the inspiration from those great frameworks out there and was built with all the known amazing
+Ravyn got the inspiration from those great frameworks out there and was built with all the known amazing
 features but with business in mind as well. Starlite, for example, at the very beginning, gave the inspiration for the transformers and for the Signature models,
-something very useful that helped Esmerald integerating with pydantic.
+something very useful that helped Ravyn integerating with pydantic.
 FastAPI gave the inspiration for API designing, Django for the permissions, Flask for the simplicity, NestJS for the
 controllers and the list goes on.
 
@@ -60,7 +73,7 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 * Python 3.10+
 
-Esmerald wouldn't be possible without two pillars:
+Ravyn wouldn't be possible without two pillars:
 
 * <a href="https://www.lilya.dev/" class="external-link" target="_blank">Lilya</a>
 * <a href="https://pydantic-docs.helpmanual.io/" class="external-link" target="_blank">Pydantic</a>
@@ -68,13 +81,13 @@ Esmerald wouldn't be possible without two pillars:
 ## Installation
 
 ```shell
-$ pip install esmerald
+$ pip install ravyn
 ```
 
-**If you want the esmerald client and all the niceties**
+**If you want the ravyn client and all the niceties**
 
 ```shell
-$ pip install esmerald[standard]
+$ pip install ravyn[standard]
 ```
 
 An ASGI server is also needed to run in production, we recommend [Uvicorn](https://www.uvicorn.org) but it is entirely
@@ -85,67 +98,67 @@ $ pip install uvicorn
 
 ```
 
-If you want install esmerald with specifics:
+If you want install ravyn with specifics:
 
 **Support for the internal scheduler**:
 
 ```shell
-$ pip install esmerald[schedulers]
+$ pip install ravyn[schedulers]
 ```
 
-**Support for the jwt used internally by Esmerald**:
+**Support for the jwt used internally by Ravyn**:
 
 ```shell
-$ pip install esmerald[jwt]
+$ pip install ravyn[jwt]
 ```
 
-**If you want to use the esmerald testing client**:
+**If you want to use the ravyn testing client**:
 
 ```shell
-$ pip install esmerald[test]
+$ pip install ravyn[test]
 ```
 
-**If you want to use the esmerald shell**:
+**If you want to use the ravyn shell**:
 
-More [details](https://esmerald.dev/directives/shell) about this topic [in the docs](https://esmerald.dev/directives/shell)
+More [details](https://ravyn.dev/directives/shell) about this topic [in the docs](https://ravyn.dev/directives/shell)
 
 ```shell
-$ pip install esmerald[ipython] # default shell
-$ pip install esmerald[ptpython] # ptpython shell
+$ pip install ravyn[ipython] # default shell
+$ pip install ravyn[ptpython] # ptpython shell
 ```
 
 ### Start a project using directives
 
 !!! Warning
-    This is for more advanced users that are already comfortable with Esmerald (or Python in general)
+    This is for more advanced users that are already comfortable with Ravyn (or Python in general)
     or feel like it is not a problem using these directives. If you do not feel comfortable yet to use this,
-    please continue reading the documentation and learning more about Esmerald.
+    please continue reading the documentation and learning more about Ravyn.
 
-If you wish to start an Esmerald project with a simple suggested structure.
+If you wish to start an Ravyn project with a simple suggested structure.
 
 ```shell
-esmerald createproject <YOUR-PROJECT-NAME> --simple
+ravyn createproject <YOUR-PROJECT-NAME> --simple
 ```
 
 This will generate a scaffold for your project with some pre-defined files in a simple fashion with a simple ready to
-go Esmerald application.
+go Ravyn application.
 
-This will also generate a file for the tests using the EsmeraldTestClient, so make sure you run:
+This will also generate a file for the tests using the ravynTestClient, so make sure you run:
 
 ```shell
-$ pip install esmerald[test]
+$ pip install ravyn[test]
 ```
 
-Or you can skip this step if you don't want to use the EsmeraldTestClient.
+Or you can skip this step if you don't want to use the ravynTestClient.
 
-You can find [more information](https://esmerald.dev/management/directives) about this directive and how to
+You can find [more information](https://ravyn.dev/management/directives) about this directive and how to
 use it.
 
 ## Key Features
 
 * **Fluid and Fast**: Thanks to Starlette and Pydantic/msgspec.
 * **Fast to develop**: Thanks to the simplicity of design, the development times can be reduced exponentially.
-* **Intuitive**: If you are used to the other frameworks, Esmerald is a no brainer to develop.
+* **Intuitive**: If you are used to the other frameworks, Ravyn is a no brainer to develop.
 * **Easy**: Developed with design in mind and easy learning.
 * **Short**: With the OOP available natively there is no need for code duplication. SOLID.
 * **Ready**: Get your application up and running with production-ready code.
@@ -156,7 +169,7 @@ use it.
 * **Permissions**: Apply specific rules and permissions on each API.
 * **Interceptors**: Intercept requests and add logic before reaching the endpoint.
 * **Observables** - Support for observables allowing to create reactive programming within your application
-* **Extensions**: Create plugins for Esmerald and hook them into any application and/or
+* **Extensions**: Create plugins for Ravyn and hook them into any application and/or
 distribute them.
 * **DAO and AsyncDAO**: Avoid database calls directly from the APIs. Use business objects instead.
 * **ORM Support**: Native support for [Edgy][edgy_orm].
@@ -174,48 +187,47 @@ And a lot more...
 
 ## Relation to Starlette and other frameworks
 
-Esmerald uses Starlette under the hood. The reason behind this decison comes with the fact that performance is there
+Ravyn uses Starlette under the hood. The reason behind this decison comes with the fact that performance is there
 and no issues with routing.
 
 Once the application is up, all the routes are mounted and therefore the url paths are defined.
-Esmerald encourages standard practices and design in mind which means that any application, big or small,
-custom or enterprise, fits within Esmerald ecosystem without scalability issues.
+Ravyn encourages standard practices and design in mind which means that any application, big or small,
+custom or enterprise, fits within Ravyn ecosystem without scalability issues.
 
 ## Quickstart
 
-To quickly start with Esmerald, you can just do this. Using `uvicorn` as example.
+To quickly start with Ravyn, you can just do this. Using `uvicorn` as example.
 
 ```python
 #!/usr/bin/env python
 import uvicorn
 
-from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+from ravyn import Ravyn, Gateway, JSONResponse, Request, get
 
 
 @get()
 def welcome() -> JSONResponse:
-    return JSONResponse({"message": "Welcome to Esmerald"})
+    return JSONResponse({"message": "Welcome to Ravyn"})
 
 
 @get()
 def user(user: str) -> JSONResponse:
-    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+    return JSONResponse({"message": f"Welcome to Ravyn, {user}"})
 
 
 @get()
 def user_in_request(request: Request) -> JSONResponse:
     user = request.path_params["user"]
-    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+    return JSONResponse({"message": f"Welcome to Ravyn, {user}"})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
-        Gateway("/esmerald", handler=welcome),
-        Gateway("/esmerald/{user}", handler=user),
-        Gateway("/esmerald/in-request/{user}", handler=user_in_request),
+        Gateway("/ravyn", handler=welcome),
+        Gateway("/ravyn/{user}", handler=user),
+        Gateway("/ravyn/in-request/{user}", handler=user_in_request),
     ]
 )
-
 
 if __name__ == "__main__":
     uvicorn.run(app, port=8000)
@@ -223,34 +235,33 @@ if __name__ == "__main__":
 
 Then you can access the endpoints.
 
-### Using Esmerald as a decorator
+### Using Ravyn as a decorator
 
-To quickly start with Esmerald you can also use it as decorator, you can just do this. Using `uvicorn` as example.
+To quickly start with Ravyn you can also use it as decorator, you can just do this. Using `uvicorn` as example.
 
 ```python
 #!/usr/bin/env python
 import uvicorn
 
-from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+from ravyn import Ravyn, Gateway, JSONResponse, Request, get
+
+app = Ravyn()
 
 
-app = Esmerald()
-
-
-@app.get("/esmerald")
+@app.get("/ravyn")
 def welcome() -> JSONResponse:
-    return JSONResponse({"message": "Welcome to Esmerald"})
+    return JSONResponse({"message": "Welcome to Ravyn"})
 
 
-@app.get("/esmerald/{user}")
+@app.get("/ravyn/{user}")
 def user(user: str) -> JSONResponse:
-    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+    return JSONResponse({"message": f"Welcome to Ravyn, {user}"})
 
 
-@app.get("/esmerald/in-request/{user}")
+@app.get("/ravyn/in-request/{user}")
 def user_in_request(request: Request) -> JSONResponse:
     user = request.path_params["user"]
-    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
+    return JSONResponse({"message": f"Welcome to Ravyn, {user}"})
 
 
 if __name__ == "__main__":
@@ -262,10 +273,10 @@ if __name__ == "__main__":
 Like every other framework, when starting an application, a lot of [settings](./application/settings.md) can/need to be
 passed to the main object and this can be very dauting and ugly to maintain and see.
 
-Esmerald comes with the
+Ravyn comes with the
 [settings](./application/settings.md) in mind. A set of defaults that can be overridden by your very own settings
 module but not limited to it, as you can still use the classic approach of passing everything into a
-Esmerald instance directly when instantiating.
+Ravyn instance directly when instantiating.
 
 **Example of classic approach**:
 
@@ -279,15 +290,15 @@ app = ExampleObject(setting_one=..., setting_two=..., setting_three=...)
 
 ```
 
-Inspired by the great [Django](https://www.djangoproject.com/) and using pydantic, Esmerald has a default object
+Inspired by the great [Django](https://www.djangoproject.com/) and using pydantic, Ravyn has a default object
 ready to be used out-of-the-box.
 
-**Esmerald**:
+**Ravyn**:
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald()
+app = Ravyn()
 
 ```
 
@@ -295,66 +306,68 @@ And that's it! All the default settings are loaded! This is simple of course but
 inside the object as well? Yes!
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(app_name='My App', title='My title')
+app = Ravyn(app_name='My App', title='My title')
 
 ```
 
 Same as the classics.
 
-So how does Esmerald know about the default settings? Enters [Esmerald settings module](#esmerald-settings-module).
+So how does Ravyn know about the default settings? Enters [Ravyn settings module](#ravyn-settings-module).
 
-### Esmerald Settings Module
+### Ravyn Settings Module
 
-This is the way Esmerald defaults the values. When starting an application, the system looks for a
-`ESMERALD_SETTINGS_MODULE` environment variable. If no variable is supplied then the system will default to
-`EsmeraldSettings` settings and start.
+This is the way Ravyn defaults the values. When starting an application, the system looks for a
+`RAVYN_SETTINGS_MODULE` environment variable. If no variable is supplied then the system will default to
+`RavynSettings` settings and start.
 
 ### Custom Settings
 
-Separation of settings by enviromment is a must have these days and starting with default of Esmerald will not be
+Separation of settings by enviromment is a must have these days and starting with default of Ravyn will not be
 enough for any application.
 
-The settings are pydantic standard settings and therefore compatible with Esmerald.
+The settings are pydantic standard settings and therefore compatible with Ravyn.
 The system brings some defaults that can be used out-of-the-box but it's not mandatory to be used.
 The environment defaults to **production**.
 
 ```python
 
-from esmerald import EsmeraldSettings
-from esmerald.conf.enums import EnvironmentType
+from ravyn import RavynSettings
+from ravyn.conf.enums import EnvironmentType
 
-class Development(EsmeraldSettings):
+
+class Development(RavynSettings):
     app_name: str = 'My app in dev'
     environment: str = EnvironmentType.DEVELOPMENT
 
 ```
 
-**Load the settings into your Esmerald application**:
+**Load the settings into your Ravyn application**:
 
-Assuming your Esmerald app is inside an `src/app.py`.
+Assuming your Ravyn app is inside an `src/app.py`.
 
 ```console
 
-ESMERALD_SETTINGS_MODULE='myapp.settings.Development' python -m src.app.py
+RAVYN_SETTINGS_MODULE='myapp.settings.Development' python -m src.app.py
 
 ```
 
 ## Gateway, WebSocketGateway and Include
 
 Starlette offers the Route classes for simple path assignments but this is also very limiting if something more
-complex in mind. Esmerald extends that functionality and adds some `flair` and levels up by having the
+complex in mind. Ravyn extends that functionality and adds some `flair` and levels up by having the
 Gateway, WebSocketGateway and Include.
 
-Those are special objects that allow all the magic of Esmerald to happen.
+Those are special objects that allow all the magic of Ravyn to happen.
 
 For a classic, direct, one file single approach.
 
 **In a nutshell**:
 
 ```python title='src/app.py'
-from esmerald import Esmerald, get, status, Request, ORJSONResponse, Gateway, WebSocketGateway, Websocket
+from ravyn import Ravyn, get, status, Request, ORJSONResponse, Gateway, WebSocketGateway, Websocket
+
 
 @get(status_code=status.HTTP_200_OK)
 async def home() -> ORJSONResponse:
@@ -369,6 +382,7 @@ async def another(request: Request) -> dict:
         "detail": "Another world!"
     }
 
+
 @websocket(path="/{path_param:str}")
 async def world_socket(socket: Websocket) -> None:
     await socket.accept()
@@ -378,7 +392,7 @@ async def world_socket(socket: Websocket) -> None:
     await socket.close()
 
 
-app = Esmerald(routes=[
+app = Ravyn(routes=[
     Gateway(handler=home),
     Gateway(handler=another),
     WebSocketGateway(handler=world_socket),
@@ -388,12 +402,12 @@ app = Esmerald(routes=[
 
 ## Design in mind
 
-Good design is always encouraged and Esmerald allows complex routing on any level.
+Good design is always encouraged and Ravyn allows complex routing on any level.
 
 ### The handlers (views)
 
 ```python title="myapp/accounts/controllers.py"
-from esmerald import get, post, put, status, websocket, APIView, Request, JSONResponse, Response, WebSocket
+from ravyn import get, post, put, status, websocket, APIView, Request, JSONResponse, Response, WebSocket
 from pydantic import BaseModel
 
 
@@ -405,7 +419,7 @@ class Product(BaseModel):
 
 @put('/product/{product_id}')
 def update_product(product_id: int, data: Product) -> dict:
-    return {"product_id": product_id, "product_name": product.name }
+    return {"product_id": product_id, "product_name": product.name}
 
 
 @get(status_code=status.HTTP_200_OK)
@@ -457,7 +471,7 @@ If a `path` is not provided, defaults to `/`.
 ### The gateways (urls)
 
 ```python title="myapp/accounts/urls.py"
-from esmerald import Gateway, WebSocketGateway
+from ravyn import Gateway, WebSocketGateway
 from .controllers import home, another, world_socket, World
 
 route_patterns = [
@@ -486,7 +500,7 @@ The pattern only works if the imports are done via `namespace` and not via `rout
 **Importing using namespace**:
 
 ```python title='myapp/urls.py'
-from esmerald import Include
+from ravyn import Include
 
 route_patterns = [
     Include(namespace='myapp.accounts.urls')
@@ -497,7 +511,7 @@ route_patterns = [
 **Importing using routes**:
 
 ```python title='src/myapp/urls.py'
-from esmerald import Include
+from ravyn import Include
 from myapp.accounts import urls
 
 route_patterns = [
@@ -511,7 +525,7 @@ If a `path` is not provided, defaults to `/`.
 #### Using a different pattern
 
 ```python title="src/myapp/accounts/urls.py"
-from esmerald import Gateway, WebSocketGateway
+from ravyn import Gateway, WebSocketGateway
 from .controllers import home, another, world_socket, World
 
 my_urls = [
@@ -527,7 +541,7 @@ my_urls = [
 **Importing using namespace**:
 
 ```python title='src/myapp/urls.py'
-from esmerald import Include
+from ravyn import Include
 
 route_patterns = [
     Include(namespace='myapp.accounts.urls', pattern='my_urls')
@@ -535,15 +549,15 @@ route_patterns = [
 
 ```
 
-## Include and Esmerald
+## Include and Ravyn
 
 The `Include` can be very helpful mostly when the goal is to avoid a lot of imports and massive list
-of objects to be passed into one single object. This can be particulary useful to make a Esmerald instance.
+of objects to be passed into one single object. This can be particulary useful to make a Ravyn instance.
 
 **Example**:
 
 ```python title='src/urls.py'
-from esmerald import Include
+from ravyn import Include
 
 route_patterns = [
     Include(namespace='myapp.accounts.urls', pattern='my_urls')
@@ -552,9 +566,9 @@ route_patterns = [
 ```
 
 ```python title='src/app.py'
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 
-app = Esmerald(routes=[Include('src.urls')])
+app = Ravyn(routes=[Include('src.urls')])
 
 ```
 
@@ -579,7 +593,7 @@ INFO:     Application startup complete.
 **Using uvicorn**:
 
 ```shell
-ESMERALD_SETTINGS_MODULE=myapp.AppSettings uvicorn src:app --reload
+RAVYN_SETTINGS_MODULE=myapp.AppSettings uvicorn src:app --reload
 
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [28720]
@@ -590,10 +604,10 @@ INFO:     Application startup complete.
 
 ## OpenAPI documentation
 
-Esmerald also comes with OpenAPI docs integrated. For those used to that, this is roughly the same and to make it
-happen, there were inspirations that helped Esmerald getting there fast.
+Ravyn also comes with OpenAPI docs integrated. For those used to that, this is roughly the same and to make it
+happen, there were inspirations that helped Ravyn getting there fast.
 
-Esmerald starts automatically the OpenAPI documentation by injecting the OpenAPIConfig default from
+Ravyn starts automatically the OpenAPI documentation by injecting the OpenAPIConfig default from
 the settings and makes Swagger, ReDoc an Stoplight elements available to you out of the box.
 
 To access the OpenAPI, simply start your local development and access:
@@ -602,20 +616,20 @@ To access the OpenAPI, simply start your local development and access:
 * **Redoc** - `/docs/redoc`.
 * **Stoplight Elements** - `/docs/elements`.
 
-There are more details about [how to configure the OpenAPIConfig](https://esmerald.dev/configurations/openapi/config)
+There are more details about [how to configure the OpenAPIConfig](https://ravyn.dev/configurations/openapi/config)
 within the documentation.
 
-There is also a good explanation on how to use the [OpenAPIResponse](https://esmerald.dev/responses#openapi-responses)
+There is also a good explanation on how to use the [OpenAPIResponse](https://ravyn.dev/responses#openapi-responses)
 as well.
 
 ## Notes
 
-This is just a very high-level demonstration of how to start quickly and what Esmerald can do.
-There are plenty more things you can do with Esmerald. Enjoy! 😊
+This is just a very high-level demonstration of how to start quickly and what Ravyn can do.
+There are plenty more things you can do with Ravyn. Enjoy! 😊
 
 ## Sponsors
 
-Currently there are no sponsors of Esmerald but you can financially help and support the author though
+Currently there are no sponsors of Ravyn but you can financially help and support the author though
 [GitHub sponsors](https://github.com/sponsors/tarsil) and become a **Special one** or a **Legend**.
 
 ### Powered by
@@ -626,5 +640,5 @@ Worth mentioning who is helping us.
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
-[edgy_orm]: https://esmerald.dev/databases/edgy/motivation
-[mongoz_odm]: https://esmerald.dev/databases/mongoz/motivation
+[edgy_orm]: https://ravyn.dev/databases/edgy/motivation
+[mongoz_odm]: https://ravyn.dev/databases/mongoz/motivation

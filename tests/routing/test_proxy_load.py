@@ -1,6 +1,6 @@
-from esmerald import ChildEsmerald, Gateway, Include, Response, get
-from esmerald.testclient import create_client
-from esmerald.utils.enums import MediaType
+from ravyn import ChildRavyn, Gateway, Include, Response, get
+from ravyn.testclient import create_client
+from ravyn.utils.enums import MediaType
 
 
 @get()
@@ -13,7 +13,7 @@ def user(user: str) -> Response:
     return Response(f"Hello, {user}")
 
 
-child_esmerald = ChildEsmerald(
+child_esmerald = ChildRavyn(
     routes=[Gateway("/home", handler=home)],
 )
 
@@ -30,7 +30,7 @@ def test_can_load_from_proxy(test_client_factory):
         assert response.status_code == 200
         assert response.text == '"Hello, from proxy"'
 
-        response = client.get("/esmerald")
+        response = client.get("/ravyn")
 
         assert response.status_code == 200
-        assert response.text == "Hello, esmerald"
+        assert response.text == "Hello, ravyn"

@@ -1,5 +1,5 @@
-from esmerald import APIView, Esmerald, Gateway, Request, get
-from esmerald.permissions import AllowAny, BasePermission, DenyAll
+from ravyn import APIView, Ravyn, Gateway, Request, get
+from ravyn.permissions import AllowAny, BasePermission, DenyAll
 
 
 class IsAdmin(BasePermission):
@@ -26,7 +26,7 @@ async def deny() -> dict:
     return {"page": "tis payload will never be reached"}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=homepage),
         Gateway(handler=admin),

@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 import httpx
 
-from esmerald import Esmerald, Form, Gateway, post
+from ravyn import Ravyn, Form, Gateway, post
 
 
 @post("/create")
@@ -14,10 +14,10 @@ async def create(data: Dict[str, str] = Form()) -> Dict[str, str]:
     return data
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])
 
 # Payload example
-data = {"name": "example", "email": "example@esmerald.dev"}
+data = {"name": "example", "email": "example@ravyn.dev"}
 
 # Send the request
 httpx.post("/create", data=data)

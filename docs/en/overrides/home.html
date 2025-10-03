@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Esmerald | Elegant, Modular and Pluggable</title>
+    <title>Ravyn | Elegant, Modular and Pluggable</title>
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Raleway:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
     <link rel="stylesheet" href="assets/css/bs-theme-overrides.css">
-    <link rel="stylesheet" href="assets/css/esmerald.css">
+    <link rel="stylesheet" href="assets/css/ravyn.css">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
 </head>
@@ -20,7 +20,7 @@
         id="mainNav">
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="/"><img class="img-fluid"
                     src="https://res.cloudinary.com/dymmond/image/upload/v1671718394/esmerald/img/logo-green_acw9nk.png"
-                    width="25px"><span class="ms-2 text-primary">Esmerald</span></a><button data-bs-toggle="collapse"
+                    width="25px"><span class="ms-2 text-primary">Ravyn</span></a><button data-bs-toggle="collapse"
                 class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle
                     navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse d-xl-flex" id="navcol-1">
@@ -75,7 +75,7 @@
                         <pre
                             class="theme-atom-one-dark shadow-3xl text-sm relative overflow-hidden max-w-full tab-size h-full">
 <code class="language-python">
-from esmerald import Esmerald, Gateway, get
+from esmerald import Ravyn, Gateway, get
 
 
 @get('/')
@@ -83,7 +83,7 @@ async def hello() -> str:
   return "Hello, World!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=hello)
     ]
@@ -217,7 +217,7 @@ app = Esmerald(
                                     <h5 class="fw-bold mb-0"><a rel="me" href="./wsgi"
                                             class="text-primary">Extensibility</a></h5>
                                 </div>
-                                <p class="text-muted my-3">Extend your old applications directly into Esmerald.</p>
+                                <p class="text-muted my-3">Extend your old applications directly into Ravyn.</p>
                             </div>
                         </div>
                     </div>
@@ -267,7 +267,7 @@ app = Esmerald(
             <div class="row mb-5">
                 <div class="col-md-8 col-xl-6 text-center mx-auto">
                     <h2 class="display-6 fw-bold mb-4"><span class="underline">Do you want to join?</span></h2>
-                    <p class="text-muted">Esmerald is open source, <strong>free and always will be</strong>. We look for
+                    <p class="text-muted">Ravyn is open source, <strong>free and always will be</strong>. We look for
                         enthusiastic developers who want to contribute and help growing the ecosystem.</p>
                 </div>
             </div>
@@ -302,7 +302,7 @@ app = Esmerald(
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
     <script src="assets/js/startup-modern.js"></script>
-    <script src="assets/js/esmerald.js"></script>
+    <script src="assets/js/ravyn.js"></script>
 
     <script>
         function getDocYear() {

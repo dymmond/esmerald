@@ -3,9 +3,9 @@ from typing import Dict, Union
 import pytest
 from pydantic import BaseModel
 
-from esmerald import JSON, Gateway, Include, get
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.testclient import create_client
+from ravyn import JSON, Gateway, Include, get
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
 
@@ -41,8 +41,8 @@ def test_add_include_to_openapi(test_client_factory, route):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
@@ -114,8 +114,8 @@ def test_include_no_include_in_schema(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

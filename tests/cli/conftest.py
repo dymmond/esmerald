@@ -4,7 +4,7 @@ from typing import Generator
 import pytest
 from sayer.testing import SayerTestClient
 
-from esmerald.core.directives.cli import esmerald_cli
+from ravyn.core.directives.cli import esmerald_cli
 
 
 @pytest.fixture(scope="module")

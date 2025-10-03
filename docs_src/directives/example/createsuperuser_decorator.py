@@ -4,7 +4,7 @@ from typing import Annotated
 
 from sayer import Option, command, success
 
-from esmerald.core.directives.decorator import directive
+from ravyn.core.directives.decorator import directive
 from tests.cli.simple.test_custom_directive import User
 
 

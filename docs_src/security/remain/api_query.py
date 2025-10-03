@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from esmerald import Inject, Injects, Esmerald, get, Gateway
-from esmerald.security.api_key import APIKeyInQuery
+from ravyn import Inject, Injects, Ravyn, get, Gateway
+from ravyn.security.api_key import APIKeyInQuery
 
 security = APIKeyInQuery(name="api_key")
 
@@ -11,7 +11,7 @@ async def get_items(api_key: str = Injects()) -> Dict[str, Any]:
     return {"api_key": api_key}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=get_items),
     ]

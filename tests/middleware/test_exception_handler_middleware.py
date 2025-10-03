@@ -4,9 +4,9 @@ from typing import Any
 from lilya.exceptions import HTTPException as LilyaException
 from lilya.status import HTTP_500_INTERNAL_SERVER_ERROR
 
-from esmerald.exceptions import HTTPException
-from esmerald.middleware.exceptions import EsmeraldAPIExceptionMiddleware
-from esmerald.requests import Request
+from ravyn.exceptions import HTTPException
+from ravyn.middleware.exceptions import EsmeraldAPIExceptionMiddleware
+from ravyn.requests import Request
 
 
 async def dummy_app(scope: Any, receive: Any, send: Any) -> None:
@@ -19,12 +19,12 @@ middleware = EsmeraldAPIExceptionMiddleware(dummy_app, False, {})
 def test_default_handle_http_exception_handling_extra_object() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
-        HTTPException(detail="esmerald exception", extra={"test": "fluid"}),
+        HTTPException(detail="ravyn exception", extra={"test": "fluid"}),
     )
 
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {
-        "detail": "esmerald exception",
+        "detail": "ravyn exception",
         "extra": {"test": "fluid"},
         "status_code": 500,
     }
@@ -33,11 +33,11 @@ def test_default_handle_http_exception_handling_extra_object() -> None:
 def test_default_handle_http_exception_handling_extra_none() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
-        HTTPException(detail="esmerald exception"),
+        HTTPException(detail="ravyn exception"),
     )
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {
-        "detail": "esmerald exception",
+        "detail": "ravyn exception",
         "status_code": 500,
     }
 
@@ -45,11 +45,11 @@ def test_default_handle_http_exception_handling_extra_none() -> None:
 def test_default_handle_esmerald_http_exception_handling() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
-        HTTPException(detail="esmerald exception"),
+        HTTPException(detail="ravyn exception"),
     )
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {
-        "detail": "esmerald exception",
+        "detail": "ravyn exception",
         "status_code": 500,
     }
 
@@ -57,11 +57,11 @@ def test_default_handle_esmerald_http_exception_handling() -> None:
 def test_default_handle_esmerald_http_exception_extra_list() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
-        HTTPException(detail="esmerald exception", extra=["extra-1", "extra-2"]),
+        HTTPException(detail="ravyn exception", extra=["extra-1", "extra-2"]),
     )
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {
-        "detail": "esmerald exception",
+        "detail": "ravyn exception",
         "extra": ["extra-1", "extra-2"],
         "status_code": 500,
     }
@@ -70,11 +70,11 @@ def test_default_handle_esmerald_http_exception_extra_list() -> None:
 def test_default_handle_starlette_http_exception_handling() -> None:
     response = middleware.default_http_exception_handler(
         Request(scope={"type": "http", "method": "GET"}),  # type: ignore
-        LilyaException(detail="esmerald exception", status_code=HTTP_500_INTERNAL_SERVER_ERROR),
+        LilyaException(detail="ravyn exception", status_code=HTTP_500_INTERNAL_SERVER_ERROR),
     )
     assert response.status_code == HTTP_500_INTERNAL_SERVER_ERROR
     assert json.loads(response.body) == {
-        "detail": "esmerald exception",
+        "detail": "ravyn exception",
         "status_code": 500,
     }
 

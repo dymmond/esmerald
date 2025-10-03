@@ -4,8 +4,8 @@ from typing import AsyncGenerator, Dict
 import pytest
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.testclient import EsmeraldTestClient
 
 
 class State(BaseModel):
@@ -20,7 +20,7 @@ def state() -> State:
 
 def test_app_lifespan_state(state: State) -> None:
     @asynccontextmanager
-    async def lifespan(app: Esmerald) -> AsyncGenerator[None, None]:
+    async def lifespan(app: Ravyn) -> AsyncGenerator[None, None]:
         state.app_startup = True
         yield
         state.app_shutdown = True
@@ -29,7 +29,7 @@ def test_app_lifespan_state(state: State) -> None:
     def main() -> Dict[str, str]:
         return {"message": "Hello World"}
 
-    app = Esmerald(routes=[Gateway(handler=main)], lifespan=lifespan)
+    app = Ravyn(routes=[Gateway(handler=main)], lifespan=lifespan)
 
     assert state.app_startup is False
     assert state.app_shutdown is False

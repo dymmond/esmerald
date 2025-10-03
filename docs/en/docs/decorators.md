@@ -5,7 +5,7 @@
 Decorators in Python are a powerful feature that allows you to modify the behavior of functions or classes.
 They are commonly used to extend functionality without modifying the actual implementation.
 
-In Esmerald, decorators play a crucial role in defining various aspects of an application, such as security,
+In Ravyn, decorators play a crucial role in defining various aspects of an application, such as security,
 caching, and request handling.
 
 ## Benefits of Using Decorators
@@ -17,17 +17,17 @@ caching, and request handling.
 
 ## The `@controller` Decorator
 
-The `@controller` decorator in Esmerald transforms a class into a Controller, allowing it to manage and structure
+The `@controller` decorator in Ravyn transforms a class into a Controller, allowing it to manage and structure
 routes efficiently.
 
-This decorator enhances class-based views and provides a clean, structured way to define routes in Esmerald applications.
+This decorator enhances class-based views and provides a clean, structured way to define routes in Ravyn applications.
 
 This also provides an alternative to subclassing the [Controller](./routing/apiview.md#apiview) class directly.
 
 ### Benefits of `@controller`
 
 - **Organizes Routes**: Allows grouping related route handlers inside a class.
-- **Inherits Controller Behavior**: Automatically extends Esmerald’s `Controller` class.
+- **Inherits Controller Behavior**: Automatically extends Ravyn’s `Controller` class.
 - **Encapsulation**: Keeps route-related logic within a single class.
 - **Enhances Maintainability**: Improves the readability and scalability of route management.
 
@@ -64,6 +64,6 @@ The `@controller` decorator takes optional keyword arguments to configure the co
 4. `response_headers`: Adds custom response headers to the API response.
 5. The controller encapsulates all user-related logic, keeping the structure organized.
 
-By using the `@controller` decorator, Esmerald applications become more modular, maintainable, and scalable.
+By using the `@controller` decorator, Ravyn applications become more modular, maintainable, and scalable.
 
-The decorator streamlines route definitions while leveraging built-in Esmerald capabilities.
+The decorator streamlines route definitions while leveraging built-in Ravyn capabilities.

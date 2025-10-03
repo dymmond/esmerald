@@ -1,11 +1,11 @@
-from esmerald import Esmerald, Gateway, Include, get
+from ravyn import Ravyn, Gateway, Include, get
 
 
 @get()
 async def me() -> None: ...
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from esmerald import Body, Esmerald, Gateway, post
+from ravyn import Body, Ravyn, Gateway, post
 
 
 class User(BaseModel):
@@ -18,4 +18,4 @@ async def create_user(
     """
 
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+app = Ravyn(routes=[Gateway(handler=create_user)])

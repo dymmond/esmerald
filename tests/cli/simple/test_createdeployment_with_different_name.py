@@ -3,10 +3,10 @@ import shutil
 
 import pytest
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 from tests.cli.utils import run_cmd
 
-app = Esmerald(routes=[])
+app = Ravyn(routes=[])
 
 
 @pytest.fixture(scope="module")
@@ -52,14 +52,14 @@ def _run_asserts():
 
 
 def test_create_app_with_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject --simple")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject myproject --simple")
     assert ss == 0
 
     os.chdir("myproject")
 
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald createdeployment myproject --deployment-folder-name deploy",
+        "ravyn createdeployment myproject --deployment-folder-name deploy",
     )
 
     _run_asserts()
@@ -67,7 +67,7 @@ def test_create_app_with_env_var(create_folders):
 
 def test_create_app_without_env_var(create_folders):
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald createproject myproject --simple", is_app=False
+        "tests.cli.main:app", "ravyn createproject myproject --simple", is_app=False
     )
     assert ss == 0
 
@@ -75,7 +75,7 @@ def test_create_app_without_env_var(create_folders):
 
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald createdeployment myproject --deployment-folder-name deploy ",
+        "ravyn createdeployment myproject --deployment-folder-name deploy ",
         is_app=False,
     )
 
@@ -85,7 +85,7 @@ def test_create_app_without_env_var(create_folders):
 def test_create_app_without_env_var_with_app_flag(create_folders):
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald createproject myproject --deployment-folder-name deploy --simple",
+        "ravyn createproject myproject --deployment-folder-name deploy --simple",
         is_app=False,
     )
     assert ss == 0
@@ -94,7 +94,7 @@ def test_create_app_without_env_var_with_app_flag(create_folders):
 
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald --app tests.cli.main:app createdeployment myproject --deployment-folder-name deploy",
+        "ravyn --app tests.cli.main:app createdeployment myproject --deployment-folder-name deploy",
         is_app=False,
     )
 

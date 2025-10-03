@@ -1,7 +1,7 @@
 from flask import Flask, make_response
 
-from esmerald import Esmerald, Include
-from esmerald.middleware.wsgi import WSGIMiddleware
+from ravyn import Ravyn, Include
+from ravyn.middleware.wsgi import WSGIMiddleware
 
 flask = Flask(__name__)
 
@@ -11,7 +11,7 @@ def home():
     return make_response({"message": "Serving via flask"})
 
 
-# Add the flask app into Esmerald to be served by Esmerald.
+# Add the flask app into Ravyn to be served by Ravyn.
 routes = [Include("/external", app=WSGIMiddleware(flask))]
 
-app = Esmerald(routes=routes)
+app = Ravyn(routes=routes)

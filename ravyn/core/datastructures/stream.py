@@ -1,0 +1,58 @@
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    AsyncIterable,
+    AsyncIterator,
+    Callable,
+    Generator,
+    Iterable,
+    Iterator,
+    Type,
+    Union,
+)
+
+from lilya.responses import StreamingResponse  # noqa
+from typing_extensions import Annotated, Doc
+
+from ravyn.core.datastructures.base import ResponseContainer  # noqa
+from ravyn.utils.enums import MediaType
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ravyn.applications import Ravyn
+
+
+class Stream(ResponseContainer[StreamingResponse]):
+    iterator: Annotated[
+        Union[
+            Iterator[Union[str, bytes]],
+            AsyncIterator[Union[str, bytes]],
+            AsyncGenerator[Union[str, bytes], Any],
+            Callable[[], AsyncGenerator[Union[str, bytes], Any]],
+            Callable[[], Generator[Union[str, bytes], Any, Any]],
+        ],
+        Doc(
+            """
+            Any iterable function.
+            """
+        ),
+    ]
+
+    def to_response(
+        self,
+        headers: dict[str, Any],
+        media_type: Union["MediaType", str],
+        status_code: int,
+        app: Type["Ravyn"],
+    ) -> StreamingResponse:  # pragma: no cover
+        return StreamingResponse(
+            background=self.background,
+            content=(
+                self.iterator
+                if isinstance(self.iterator, (Iterable, AsyncIterable))
+                else self.iterator()
+            ),
+            headers=headers,
+            media_type=media_type,
+            status_code=status_code,
+        )

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, JSONResponse, post
+from ravyn import Ravyn, Gateway, JSONResponse, post
 
 
 class DataIn(BaseModel):
@@ -15,4 +15,4 @@ async def create(data: DataIn) -> JSONResponse:
         raise ValueError("The ID must be less than 20.")
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])

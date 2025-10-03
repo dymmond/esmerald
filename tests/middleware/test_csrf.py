@@ -4,12 +4,12 @@ import pytest
 from lilya import status
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED
 
-from esmerald.core.config import CSRFConfig
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import delete, get, patch, post, put, websocket
-from esmerald.testclient import create_client
-from esmerald.utils.crypto import get_random_secret_key
-from esmerald.websockets import WebSocket
+from ravyn.core.config import CSRFConfig
+from ravyn.routing.gateways import Gateway, WebSocketGateway
+from ravyn.routing.handlers import delete, get, patch, post, put, websocket
+from ravyn.testclient import create_client
+from ravyn.utils.crypto import get_random_secret_key
+from ravyn.websockets import WebSocket
 
 
 @get(path="/")

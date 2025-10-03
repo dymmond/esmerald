@@ -4,11 +4,11 @@ from typing import Optional, Union
 import pytest
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Form, Request
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import route
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Form, Ravyn, Request
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import route
+from ravyn.testclient import EsmeraldTestClient
 
 
 class Model(BaseModel):
@@ -22,7 +22,7 @@ def test_get_and_post():
             assert form.id == "733"
         return b"hello world"
 
-    app = Esmerald(
+    app = Ravyn(
         debug=True,
         routes=[Gateway("/", handler=start)],
     )
@@ -39,7 +39,7 @@ def test_get_and_post_optional():
     async def start(request: Request, form: Optional[Model] = Form()) -> bytes:
         return b"hello world"
 
-    app = Esmerald(
+    app = Ravyn(
         debug=True,
         routes=[Gateway("/", handler=start)],
     )

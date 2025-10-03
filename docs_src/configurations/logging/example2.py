@@ -4,7 +4,7 @@ from typing import Any
 
 import loguru
 
-from esmerald import LoggingConfig
+from ravyn import LoggingConfig
 
 
 class CustomLoggingConfig(LoggingConfig):

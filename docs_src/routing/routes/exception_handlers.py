@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, JSONResponse, Request, get
-from esmerald.exceptions import EsmeraldAPIException, InternalServerError, NotAuthorized
+from ravyn import Ravyn, Gateway, JSONResponse, Request, get
+from ravyn.exceptions import EsmeraldAPIException, InternalServerError, NotAuthorized
 
 
 async def http_esmerald_handler(_: Request, exc: EsmeraldAPIException) -> JSONResponse:
@@ -19,7 +19,7 @@ async def homepage() -> dict:
     return {"page": "ok"}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(
             handler=homepage,

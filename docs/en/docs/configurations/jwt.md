@@ -9,10 +9,10 @@ JWT extends for JSON Web Token and it can be used with any middleware at your de
 
 ## Requirements
 
-Esmerald uses `pyjwt` and `passlib` for this JWT integration. You can install by running:
+Ravyn uses `pyjwt` and `passlib` for this JWT integration. You can install by running:
 
 ```shell
-$ pip install esmerald[jwt]
+$ pip install ravyn[jwt]
 ```
 
 ## JWTConfig and application
@@ -25,7 +25,7 @@ To use the JWTConfig with a middleware.
 
 !!! info
     The example uses a supported [JWTAuthMiddleware](../databases/edgy/middleware.md#jwtauthmiddleware)
-    from Esmerald with Edgy ORM.
+    from Ravyn with Edgy ORM.
 
 ## Parameters
 
@@ -39,14 +39,14 @@ The JWTConfig can be done directly via [application instantiation](#jwtconfig-an
 {!> ../../../docs_src/configurations/jwt/settings.py!}
 ```
 
-This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+This will make sure you keep the settings clean, separated and without a bloated **Ravyn** instance.
 
 ## Token model
 
-Esmerald offers a pretty standard Token object that allows you to generate and decode tokens at ease.
+Ravyn offers a pretty standard Token object that allows you to generate and decode tokens at ease.
 
 ```python
-from esmerald.security.jwt.token import Token
+from ravyn.security.jwt.token import Token
 
 token = Token(exp=..., iat=..., sub=...)
 ```
@@ -60,8 +60,8 @@ comfortable with.
 The [token](#token-model) offers simple and standard operations to interact with `pyjwt`.
 
 ```python
-from esmerald.security.jwt.token import Token
-from esmerald.conf import settings
+from ravyn.security.jwt.token import Token
+from ravyn.conf import settings
 
 # Create the token model
 token = Token(exp=..., iat=..., sub=...)
@@ -75,8 +75,8 @@ jwt_token = Token.encode(key=settings.secret_key, algorithm="HS256", **claims)
 The same decoding functionality is also provided.
 
 ```python
-from esmerald.security.jwt.token import Token
-from esmerald.conf import settings
+from ravyn.security.jwt.token import Token
+from ravyn.conf import settings
 
 # Decodes the JWT token
 jwt_token = Token.decode(token=..., key=settings.secret_key, algorithms=["HS256"])
@@ -86,7 +86,7 @@ The `Token.decode` returns a [Token](#token-model) object.
 
 !!! Note
     This functionality relies heavily on `pyjwt` but it is not mandatory to use it in any way.
-    You are free to use any library that suits your unique needs. Esmerald only offers some examples and alternatives.
+    You are free to use any library that suits your unique needs. Ravyn only offers some examples and alternatives.
 
 ### The claims
 

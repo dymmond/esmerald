@@ -1,5 +1,5 @@
-from esmerald import EsmeraldInterceptor
-from esmerald.requests import Request
+from ravyn import EsmeraldInterceptor
+from ravyn.requests import Request
 from lilya.types import Receive, Scope, Send
 
 

@@ -1,16 +1,16 @@
 # Middleware
 
-Esmerald includes several middleware classes unique to the application but also allowing some other ways of designing
-them by using [protocols](../protocols.md). Inspired by other great frameworks, Esmerald has a similar approach
+Ravyn includes several middleware classes unique to the application but also allowing some other ways of designing
+them by using [protocols](../protocols.md). Inspired by other great frameworks, Ravyn has a similar approach
 for the middleware protocol. Let's be honest, it is not that we can reinvent the wheel on something already working out
 of the box.
 
-There are two ways of designing the middleware for Esmerald. [Lilya middleware](#lilya-middleware) and
-[Esmerald protocols](#esmerald-protocols) as both work quite well together.
+There are two ways of designing the middleware for Ravyn. [Lilya middleware](#lilya-middleware) and
+[Ravyn protocols](#esmerald-protocols) as both work quite well together.
 
 ## Lilya middleware
 
-The Lilya middleware is the classic already available way of declaring the middleware within an **Esmerald**
+The Lilya middleware is the classic already available way of declaring the middleware within an **Ravyn**
 application.
 
 !!! Tip
@@ -26,12 +26,12 @@ configurations passed into the application instance. Have a look at [CORSConfig]
 [CSRFConfig](../configurations/csrf.md), [SessionConfig](../configurations/session.md) to understand how to use them
 and automatically enable the built-in middlewares.
 
-## Esmerald protocols
+## Ravyn protocols
 
-Esmerald protocols are not too different from the [Lilya middleware](#lilya-middleware). In fact,
+Ravyn protocols are not too different from the [Lilya middleware](#lilya-middleware). In fact,
 the name itself happens only because of the use of the
 <a href="https://peps.python.org/pep-0544/" target="_blank">python protocols</a>
-which forces a certain structure to happen and since **Esmerald** likes configurations as much as possible,
+which forces a certain structure to happen and since **Ravyn** likes configurations as much as possible,
 using a protocol helps enforcing that and allows a better design.
 
 ```python
@@ -43,10 +43,10 @@ using a protocol helps enforcing that and allows a better design.
 For those coming from a more enforced typed language like Java or C#, a protocol is the python equivalent to an
 interface.
 
-The `MiddlewareProtocol` is simply an interface to build middlewares for **Esmerald** by enforcing the implementation of
+The `MiddlewareProtocol` is simply an interface to build middlewares for **Ravyn** by enforcing the implementation of
 the `__init__` and the `async def __call__`.
 
-In the case of Esmerald configurations, a `config` parameter is declared and passed
+In the case of Ravyn configurations, a `config` parameter is declared and passed
 in the `__init__` but this is not enforced on a protocol level but on a subclass level, the middleware itself.
 
 Enforcing this protocol also aligns with writing
@@ -84,7 +84,7 @@ To add middlewares to the application is very simple.
 ### Quick note
 
 !!! Info
-    The middleware is not limited to `Esmerald`, `ChildEsmerald`, `Include` and `Gateway`. They also work with
+    The middleware is not limited to `Ravyn`, `ChildRavyn`, `Include` and `Gateway`. They also work with
     `WebSocketGateway` and inside every [get](./../routing/handlers.md#get),
     [post](./../routing/handlers.md#post), [put](./../routing/handlers.md#put),
     [patch](./../routing/handlers.md#patch), [delete](./../routing/handlers.md#delete)
@@ -93,14 +93,14 @@ To add middlewares to the application is very simple.
 
 ## <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Writing ASGI middlewares</a>
 
-**Esmerald** since follows the ASGI practices and uses Lilya underneath a good way of understand what can be
+**Ravyn** since follows the ASGI practices and uses Lilya underneath a good way of understand what can be
 done with middleware and how to write some of them, Lilya also goes through with a lot of
 <a href='https://www.lilya.dev/middleware/#writing-pure-asgi-middleware' target='_blank'>detail</a>.
 
 ## BaseAuthMiddleware
 
 This is a very special middleware and it is the core for every authentication middleware that is used within
-an **Esmerald** application.
+an **Ravyn** application.
 
 `BaseAuthMiddleware` is also a protocol that simply enforces the implementation of the `authenticate` method and
 assigning the result object into a `AuthResult` and make it available on every request.
@@ -115,25 +115,25 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
 {!> ../../../docs_src/middleware/auth_middleware_example.py !}
 ```
 
-1. Import the `BaseAuthMiddleware` and `AuthResult` from `esmerald.middleware.authentication`.
+1. Import the `BaseAuthMiddleware` and `AuthResult` from `ravyn.middleware.authentication`.
 2. Import `JWTConfig` to pass some specific and unique JWT configations into the middleware.
 3. Implement the `authenticate` and assign the `user` result to the `AuthResult`.
 
 !!! Info
-    We use [Edgy](./../databases/edgy/motivation.md) for this example because Esmerald supports S
-    and contains functionalities linked with that support (like the User table) but **Esmerald**
+    We use [Edgy](./../databases/edgy/motivation.md) for this example because Ravyn supports S
+    and contains functionalities linked with that support (like the User table) but **Ravyn**
     **is not dependent of ANY specific ORM** which means that you are free to use whatever you prefer.
 
-#### Import the middleware into an Esmerald application
+#### Import the middleware into an Ravyn application
 
 === "From the application instance"
 
     ```python
-    from esmerald import Esmerald
+    from esmerald import Ravyn
     from .middleware.jwt import JWTAuthMiddleware
 
 
-    app = Esmerald(routes=[...], middleware=[JWTAuthMiddleware])
+    app = Ravyn(routes=[...], middleware=[JWTAuthMiddleware])
     ```
 
 === "From the settings"
@@ -141,12 +141,12 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
     ```python
     from typing import List
 
-    from esmerald import EsmeraldSettings
-    from esmerald.types import Middleware
+    from esmerald import RavynSettings
+    from ravyn.types import Middleware
     from .middleware.jwt import JWTAuthMiddleware
 
 
-    class AppSettings(EsmeraldSettings):
+    class AppSettings(RavynSettings):
 
         @property
         def middleware(self) -> List["Middleware"]:
@@ -154,8 +154,8 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
                 JWTAuthMiddleware
             ]
 
-    # load the settings via ESMERALD_SETTINGS_MODULE=src.configs.live.AppSettings
-    app = Esmerald(routes=[...])
+    # load the settings via RAVYN_SETTINGS_MODULE=src.configs.live.AppSettings
+    app = Ravyn(routes=[...])
     ```
 
 !!! Tip
@@ -164,9 +164,9 @@ Check out the [API Reference for BasseAuthMiddleware](../references/middleware/b
 
 ## Middleware and the settings
 
-One of the advantages of Esmerald is leveraging the settings to make the codebase tidy, clean and easy to maintain.
+One of the advantages of Ravyn is leveraging the settings to make the codebase tidy, clean and easy to maintain.
 As mentioned in the [settings](../application/settings.md) document, the middleware is one of the properties available
-to use to start an Esmerald application.
+to use to start an Ravyn application.
 
 ```python title='src/configs/live.py'
 {!> ../../../docs_src/middleware/settings.py !}
@@ -177,7 +177,7 @@ to use to start an Esmerald application.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=configs.live.AppSettings uvicorn src:app
+    RAVYN_SETTINGS_MODULE=configs.live.AppSettings uvicorn src:app
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -189,7 +189,7 @@ to use to start an Esmerald application.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="configs.live.AppSettings"; uvicorn src:app
+    $env:RAVYN_SETTINGS_MODULE="configs.live.AppSettings"; uvicorn src:app
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -199,7 +199,7 @@ to use to start an Esmerald application.
     ```
 
 !!! attention
-    If `ESMERALD_SETTINGS_MODULE` is not specified as the module to be loaded, **Esmerald** will load the default settings
+    If `RAVYN_SETTINGS_MODULE` is not specified as the module to be loaded, **Ravyn** will load the default settings
     but your middleware will not be initialized.
 
 ### Important
@@ -207,7 +207,7 @@ to use to start an Esmerald application.
 If you need to specify parameters in your middleware then you will need to wrap it in a
 `lilya.middleware.DefineMiddleware` object to do it so. See `GZipMiddleware` [example](#middleware-and-the-settings).
 
-If no parameters are needed, then you can simply pass the middleware class directly and Esmerald will take care of
+If no parameters are needed, then you can simply pass the middleware class directly and Ravyn will take care of
 the rest.
 
 ## Available middlewares
@@ -223,12 +223,12 @@ There are some available middlewares that are also available from Lilya.
 for production or production like environments.
 * `RequestSettingsMiddleware` - The middleware that exposes the application settings in the request.
 * `SessionMiddleware` - Same middleware as the one from Lilya.
-* `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Esmerald. A [great example](../wsgi.md)
+* `WSGIMiddleware` - Allows to connect WSGI applications and run them inside Ravyn. A [great example](../wsgi.md)
 how to use it is available.
 
 ### CSRFMiddleware
 
-The default parameters used by the CSRFMiddleware implementation are restrictive by default and Esmerald allows some
+The default parameters used by the CSRFMiddleware implementation are restrictive by default and Ravyn allows some
 ways of using this middleware depending of the taste.
 
 ```python
@@ -237,7 +237,7 @@ ways of using this middleware depending of the taste.
 
 ### CORSMiddleware
 
-The default parameters used by the CORSMiddleware implementation are restrictive by default and Esmerald allows some
+The default parameters used by the CORSMiddleware implementation are restrictive by default and Ravyn allows some
 ways of using this middleware depending of the taste.
 
 ```python
@@ -246,17 +246,17 @@ ways of using this middleware depending of the taste.
 
 ### RequestSettingsMiddleware
 
-Exposes your Esmerald application settings in the request. This can be particulary useful to access
+Exposes your Ravyn application settings in the request. This can be particulary useful to access
 the main settings module in any part of the application,
-inclusively [ChildEsmerald](../routing/router.md#child-esmerald-application).
+inclusively [ChildRavyn](../routing/router.md#child-ravyn-application).
 
 This middleware has `settings` as optional parameter.
 **If none is provided it will default to the internal settings**.
 
 RequestSettingsMiddleware adds two types of settings to the request, the `global_settings` where is
-the global Esmerald settings and the `app_settings` which corresponds to the
+the global Ravyn settings and the `app_settings` which corresponds to the
 [settings_module](../application/settings.md#the-settings_module), if any,
-passed to the Esmerald or ChildEsmerald instance.
+passed to the Ravyn or ChildRavyn instance.
 
 ```python hl_lines="6 8"
 {!> ../../../docs_src/middleware/available/request_settings_middleware.py !}
@@ -331,7 +331,7 @@ You can build your own middlewares as explained above but also reuse middlewares
 The middlewares are 100% compatible.
 
 Although some of the middlewares might mention Lilya or other ASGI framework, they are 100%
-compatible with Esmerald as well.
+compatible with Ravyn as well.
 
 #### <a href="https://github.com/abersheeran/asgi-ratelimit">RateLimitMiddleware</a>
 
@@ -342,8 +342,8 @@ A ASGI Middleware to rate limit and highly customizable.
 A middleware class for reading/generating request IDs and attaching them to application logs.
 
 !!! Tip
-    For Esmerald apps, just substitute FastAPI with Esmerald in the examples given or implement
-    in the way Esmerald shows in this document.
+    For Ravyn apps, just substitute FastAPI with Ravyn in the examples given or implement
+    in the way Ravyn shows in this document.
 
 #### <a href="https://github.com/steinnes/timing-asgi">TimingMiddleware</a>
 
@@ -353,7 +353,7 @@ This integration works using [EsmeraldTimming](https://github.com/dymmond/esmera
 
 ## Important points
 
-1. Esmerald supports [Lilya middleware](#lilya-middleware), [MiddlewareProtocol](#esmerald-protocols).
+1. Ravyn supports [Lilya middleware](#lilya-middleware), [MiddlewareProtocol](#esmerald-protocols).
 2. A MiddlewareProtocol is simply an interface that enforces `__init__` and `async __call__` to be implemented.
 3. `app` is required parameter from any class inheriting from the `MiddlewareProtocol`.
 4. <a href='https://www.lilya.dev/middleware/#pure-asgi-middleware' target='_blank'>Pure ASGI Middleware</a>

@@ -1,7 +1,7 @@
 from accounts.models import User
 from pydantic import BaseModel
 
-from esmerald import post
+from ravyn import post
 
 
 class UserIn(BaseModel):

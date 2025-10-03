@@ -6,10 +6,10 @@ import grpc
 import pytest
 from grpc import aio
 
-from esmerald.testclient import EsmeraldTestClient
+from ravyn.testclient import EsmeraldTestClient
 from tests.grpc.protocol import greeter_pb2, greeter_pb2_grpc
 
-# Import the Esmerald app and gRPC gateway from service.py
+# Import the Ravyn app and gRPC gateway from service.py
 from tests.grpc.protocol.service import (
     GreeterService,
     app,

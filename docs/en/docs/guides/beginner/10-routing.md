@@ -1,6 +1,6 @@
 # A bit more about Routing
 
-In this section, you’ll learn how to structure and organize your API with routes and routers in Esmerald.
+In this section, you’ll learn how to structure and organize your API with routes and routers in Ravyn.
 
 ---
 
@@ -9,7 +9,8 @@ In this section, you’ll learn how to structure and organize your API with rout
 A route maps a URL path and HTTP method to a Python function:
 
 ```python
-from esmerald import get
+from ravyn import get
+
 
 @get("/hello")
 def say_hello():
@@ -35,13 +36,15 @@ def read_item(item_id: int):
 Group related routes into a `Router`:
 
 ```python
-from esmerald import Router
+from ravyn import Router
 
 user_router = Router()
+
 
 @user_router.get("/users")
 def list_users():
     return ["user1", "user2"]
+
 
 @user_router.post("/users")
 def create_user():
@@ -51,9 +54,9 @@ def create_user():
 Include the router in your app:
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(routes=[user_router])
+app = Ravyn(routes=[user_router])
 ```
 
 ---
@@ -65,7 +68,7 @@ You can nest routers with prefixes:
 ```python
 api_router = Router(path="/api")
 
-app = Esmerald(routes=[...])
+app = Ravyn(routes=[...])
 app.add_router(user_router)
 ```
 

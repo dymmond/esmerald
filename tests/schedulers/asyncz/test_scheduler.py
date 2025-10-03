@@ -13,10 +13,10 @@ from asyncz.triggers import IntervalTrigger
 from asyncz.triggers.base import BaseTrigger
 from loguru import logger
 
-from esmerald import Esmerald
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
-from esmerald.contrib.schedulers.asyncz.decorator import scheduler
-from esmerald.exceptions import ImproperlyConfigured
+from ravyn import Ravyn
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn.contrib.schedulers.asyncz.decorator import scheduler
+from ravyn.exceptions import ImproperlyConfigured
 
 
 class DummyScheduler(BaseScheduler):  # pragma: no cover
@@ -101,7 +101,7 @@ scheduler_config = AsynczConfig(tasks=scheduler_tasks())
 
 
 def test_esmerald_starts_scheduler():
-    app = Esmerald(scheduler_config=scheduler_config)
+    app = Ravyn(scheduler_config=scheduler_config)
     assert app.scheduler_config.tasks == scheduler_tasks()
     assert app.scheduler_config.scheduler_class == AsyncIOScheduler
 
@@ -160,7 +160,7 @@ def test_esmerald_scheduler_configurations(scheduler_class, global_config):
     scheduler_config = AsynczConfig(
         tasks=scheduler_tasks(), scheduler_class=scheduler_class, configurations=global_config
     )
-    app = Esmerald(
+    app = Ravyn(
         scheduler_config=scheduler_config,
         enable_scheduler=True,
     )
@@ -187,7 +187,7 @@ def test_esmerald_scheduler_configurations(scheduler_class, global_config):
 
 def test_raise_exception_on_tasks_key(scheduler_class):
     """
-    Raises Esmerald ImproperlyConfigured if task passed has not a format Dict[str, str]
+    Raises Ravyn ImproperlyConfigured if task passed has not a format Dict[str, str]
     """
     tasks = {
         1: "tests.schedulers.asyncz.test_scheduler",
@@ -196,7 +196,7 @@ def test_raise_exception_on_tasks_key(scheduler_class):
 
     with pytest.raises(ImproperlyConfigured):
         scheduler_config = AsynczConfig(scheduler_class=scheduler_class, tasks=tasks)
-        Esmerald(
+        Ravyn(
             scheduler_config=scheduler_config,
             enable_scheduler=True,
         )
@@ -204,7 +204,7 @@ def test_raise_exception_on_tasks_key(scheduler_class):
 
 def test_raise_exception_on_tasks_value(scheduler_class):
     """
-    Raises Esmerald ImproperlyConfigured if task passed has not a format Dict[str, str]
+    Raises Ravyn ImproperlyConfigured if task passed has not a format Dict[str, str]
     """
     tasks = {
         "task_one": 1,
@@ -213,7 +213,7 @@ def test_raise_exception_on_tasks_value(scheduler_class):
 
     with pytest.raises(ImproperlyConfigured):
         scheduler_config = AsynczConfig(scheduler_class=scheduler_class, tasks=tasks)
-        Esmerald(
+        Ravyn(
             scheduler_config=scheduler_config,
             enable_scheduler=True,
         )

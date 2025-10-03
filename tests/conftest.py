@@ -4,8 +4,8 @@ from typing import Any, List
 
 import pytest
 
-from esmerald import AsyncDAOProtocol
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import AsyncDAOProtocol
+from ravyn.testclient import EsmeraldTestClient
 
 
 class FakeDAO(AsyncDAOProtocol):

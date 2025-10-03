@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, get
-from esmerald.core.datastructures import File
+from ravyn import Ravyn, Gateway, get
+from ravyn.core.datastructures import File
 
 
 @get(
@@ -12,4 +12,4 @@ def download() -> File:
     )
 
 
-app = Esmerald(routes=[Gateway(handler=download)])
+app = Ravyn(routes=[Gateway(handler=download)])

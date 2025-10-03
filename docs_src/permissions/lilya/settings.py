@@ -1,5 +1,5 @@
-from esmerald import EsmeraldSettings, Request
-from esmerald.exceptions import PermissionDenied
+from ravyn import RavynSettings, Request
+from ravyn.exceptions import PermissionDenied
 from lilya.permissions import DefinePermission
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.types import ASGIApp, Receive, Scope, Send
@@ -19,7 +19,7 @@ class AllowAccess(PermissionProtocol):
         raise PermissionDenied()
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     @property
     def permissions(self) -> list[DefinePermission]:
         """

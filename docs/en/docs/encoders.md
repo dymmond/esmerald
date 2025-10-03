@@ -1,14 +1,14 @@
 # Encoders
 
-Esmerald being built on top of Lilya, brings another level of flexibility, the **encoders**.
+Ravyn being built on top of Lilya, brings another level of flexibility, the **encoders**.
 
 Pretty much like Lilya, an Encoder is what allows a specific type of object to be understood,
-encoded and serialized by Esmerald without breaking the application.
+encoded and serialized by Ravyn without breaking the application.
 
-An example of default existing encoders in Esmerald would be the support for **Pydantic** and **MsgSpec**.
+An example of default existing encoders in Ravyn would be the support for **Pydantic** and **MsgSpec**.
 
 !!! Warning
-    The encoders came to Esmerald after the version **3.1.2**. If you are using a version prior
+    The encoders came to Ravyn after the version **3.1.2**. If you are using a version prior
     to that, this won't be available.
 
 ## Benefits of encoders
@@ -16,15 +16,15 @@ An example of default existing encoders in Esmerald would be the support for **P
 The greatest benefit of supporting the encoders is that you don't need to rely on a specific framework
 to support a specific library for you to use.
 
-With Esmerald `Encoder` you can design it yourself and simply add it to Esmerald to be used making it
+With Ravyn `Encoder` you can design it yourself and simply add it to Ravyn to be used making it
 **future proof** and extremely dynamic.
 
 ## How to use it
 
-To take advantage of the Encoders **you must subclass the Encoder from Esmerald and implement three mandatory functions**.
+To take advantage of the Encoders **you must subclass the Encoder from Ravyn and implement three mandatory functions**.
 
 ```python
-from esmerald.encoders import Encoder
+from ravyn.encoders import Encoder
 ```
 
 When subclassing the `Encoder`, the mandatory functions are:
@@ -33,10 +33,10 @@ When subclassing the `Encoder`, the mandatory functions are:
 * [`serialize()`](#serialize)
 * [`encode()`](#encode)
 
-Esmerald extends the native functionality of Lilya regarding the encoders and adds some extra flavours to it.
+Ravyn extends the native functionality of Lilya regarding the encoders and adds some extra flavours to it.
 
-The reasoning behind it its because Esmerald internally manages signatures and data validations that are
-unique to Esmerald.
+The reasoning behind it its because Ravyn internally manages signatures and data validations that are
+unique to Ravyn.
 
 ### is_type
 
@@ -45,22 +45,22 @@ if the object of type X is an instance or a subclass of that same type.
 
 !!! Danger
     Here is where it is different from Lilya. With Lilya you can use the `__type__` as well but
-    **not in Esmerald. In Esmerald you must implement the `is_type` function.
+    **not in Ravyn. In Ravyn you must implement the `is_type` function.
 
 #### Example
 
-This is what currently Esmerald is doing for Pydantic and MsgSpec.
+This is what currently Ravyn is doing for Pydantic and MsgSpec.
 
 ```python
 {!> ../../../docs_src/encoders/is_type.py !}
 ```
 
 As you can see, this is how we check and verify if an object of type `BaseModel` and `Struct` are
-properly validated by Esmerald.
+properly validated by Ravyn.
 
 ### serialize
 
-This function is what tells Esmerald how to serialize the given object type into a JSON readable
+This function is what tells Ravyn how to serialize the given object type into a JSON readable
 format.
 
 Quite simple and intuitive.
@@ -86,16 +86,16 @@ For example, a dictionary into Pydantic models or MsgSpec Structs.
 
 ### The flexibility
 
-As you can see, there are many ways of you building your encoders. Esmerald internally already brings
+As you can see, there are many ways of you building your encoders. Ravyn internally already brings
 two of them out of the box but you are free to build your own [custom encoder](#custom-encoders) and
 apply your own logic and validations.
 
-You have 100% the power and control over any validator you would love to have in your Esmerald application.
+You have 100% the power and control over any validator you would love to have in your Ravyn application.
 
 ### Custom Encoders
 
 Well, this is where it becomes interesting. What if you actually want to build an Encoder that is not
-currently supported by Esmerald natively, for example, the library `attrs`?
+currently supported by Ravyn natively, for example, the library `attrs`?
 
 It is in fact very simple as well, following the previous steps and explanations, it would look
 like this:
@@ -118,7 +118,7 @@ Now imagine what you can do with any other library at your choice.
 
 ### Register the Encoder
 
-Well, building the encoders is good fun but it does nothing to Esmerald unless you make it aware those
+Well, building the encoders is good fun but it does nothing to Ravyn unless you make it aware those
 in fact exist and should be used.
 
 There are different ways of registering the encoders.
@@ -126,17 +126,17 @@ There are different ways of registering the encoders.
 * Via [settings](#via-settings)
 * Via [instance](#via-instance)
 
-Esmerald also provides a function to register anywhere in your application but **it is not recommended**
+Ravyn also provides a function to register anywhere in your application but **it is not recommended**
 to use it without understanding the ramifications, mostly if you have handlers relying on a given
 object type that needs the encoder to be available before assembling the routing system.
 
 ```python
-from esmerald.encoders import register_esmerald_encoder
+from ravyn.encoders import register_esmerald_encoder
 ```
 
 #### Via Settings
 
-Like everything in Esmerald, you can use the settings for basically everything in your application.
+Like everything in Ravyn, you can use the settings for basically everything in your application.
 
 Let us use the example of the [custom encoder](#custom-encoders) `AttrsEncoder`.
 
@@ -146,7 +146,7 @@ Let us use the example of the [custom encoder](#custom-encoders) `AttrsEncoder`.
 
 #### Via Instance
 
-Classic approach and also available in any Esmerald or ChildEsmerald instance.
+Classic approach and also available in any Ravyn or ChildRavyn instance.
 
 ```python
 {!> ../../../docs_src/encoders/via_instance.py !}
@@ -154,7 +154,7 @@ Classic approach and also available in any Esmerald or ChildEsmerald instance.
 
 #### Adding an encoder via app instance function
 
-This is also available in any Esmerald and ChildEsmerald application. If you would like to add
+This is also available in any Ravyn and ChildRavyn application. If you would like to add
 an encoder after instantiation you can do it but again, **it is not recommended**
 to use it without understanding the ramifications, mostly if you have handlers relying on a given
 object type that needs the encoder to be available before assembling the routing system.
@@ -165,7 +165,7 @@ object type that needs the encoder to be available before assembling the routing
 
 ### Notes
 
-Having this level of flexibility is great in any application and Esmerald makes it easy for you but
+Having this level of flexibility is great in any application and Ravyn makes it easy for you but
 it is also important to understand that this level of control also comes with risks, meaning, when
 you build an encoder, make sure you test all the cases possible and more importantly, you implement
 **all the functions** mentioned above or else your application will break.

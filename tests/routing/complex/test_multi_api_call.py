@@ -3,8 +3,8 @@ from typing import Dict, Union
 from msgspec import Struct
 from pydantic import BaseModel
 
-from esmerald import Gateway, Include, post
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, post
+from ravyn.testclient import create_client
 
 
 class PydanticItem(BaseModel):

@@ -1,6 +1,6 @@
 from loguru import logger
 
-from esmerald import Extension
+from ravyn import Extension
 
 
 class MyExtension2(Extension):

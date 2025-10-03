@@ -1,6 +1,6 @@
 # CORSConfig
 
-CORS extends for Cross-Origin Resource Sharing and it is one of the built-in middlewares of Esmerald.
+CORS extends for Cross-Origin Resource Sharing and it is one of the built-in middlewares of Ravyn.
 When a CORSConfig object is passed to an application instance, it will automatically start the `CORSMiddleware`.
 
 !!! Tip
@@ -37,4 +37,4 @@ The CORSConfig can be done directly via [application instantiation](#corsconfig-
 {!> ../../../docs_src/configurations/cors/settings.py!}
 ```
 
-This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+This will make sure you keep the settings clean, separated and without a bloated **Ravyn** instance.

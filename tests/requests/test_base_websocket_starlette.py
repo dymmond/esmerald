@@ -11,8 +11,8 @@ from lilya import status
 from lilya.types import Receive, Scope, Send
 from lilya.websockets import WebSocketDisconnect, WebSocketState
 
-from esmerald.testclient import EsmeraldTestClient
-from esmerald.websockets import WebSocket
+from ravyn.testclient import EsmeraldTestClient
+from ravyn.websockets import WebSocket
 
 
 def test_websocket_url(test_client_factory):

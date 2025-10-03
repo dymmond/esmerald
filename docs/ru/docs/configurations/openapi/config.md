@@ -1,6 +1,6 @@
 # OpenAPIConfig
 
-`OpenAPIConfig` — это простая конфигурация с основными полями для автогенерируемой документации в Esmerald.
+`OpenAPIConfig` — это простая конфигурация с основными полями для автогенерируемой документации в Ravyn.
 
 До версии 2 для документации требовались две отдельные настройки, но теперь они объединены в одну,
 упрощенную конфигурацию.
@@ -14,7 +14,7 @@
 Выбор за вами.
 
 !!! Warning
-    При передаче атрибутов OpenAPI через создание экземпляра, например, `Esmerald(docs_url='/docs/swagger',...)`,
+    При передаче атрибутов OpenAPI через создание экземпляра, например, `Ravyn(docs_url='/docs/swagger',...)`,
     эти параметры всегда будут использоваться вместо настроек или пользовательской конфигурации.
 
 ## OpenAPIConfig и приложение
@@ -41,7 +41,7 @@
 {!> ../../../docs_src/configurations/openapi/example1.py !}
 ```
 
-Это создаст ваш собственный `OpenAPIConfig` и передаст его приложению Esmerald, но как насчет
+Это создаст ваш собственный `OpenAPIConfig` и передаст его приложению Ravyn, но как насчет
 изменения текущего пути по умолчанию `/docs`?
 
 Давайте рассмотрим пример.
@@ -58,7 +58,7 @@
 
 ## OpenAPIConfig и настройки приложения
 
-В соответствии со стандартом конфигурации Esmerald, также можно включить конфигурацию OpenAPI через настройки.
+В соответствии со стандартом конфигурации Ravyn, также можно включить конфигурацию OpenAPI через настройки.
 
 ```python
 {!> ../../../docs_src/configurations/openapi/settings.py !}
@@ -69,7 +69,7 @@
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -81,7 +81,7 @@
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]

@@ -1,6 +1,6 @@
 # Protocols
 
-These are unique to `Esmerald` and are used to help having some structure in your application.
+These are unique to `Ravyn` and are used to help having some structure in your application.
 
 Protocols are the equivalent of *interfaces* in other languages and very helpful when it comes to establish some
 sort of *contracts* among systems communicating with each other.
@@ -9,7 +9,7 @@ sort of *contracts* among systems communicating with each other.
     More information and examples about Protocols and how to use them, we recommend this
     [very simple yet great article](https://andrewbrookins.com/technology/building-implicit-interfaces-in-python-with-protocol-classes/).
 
-## Esmerald protocols
+## Ravyn protocols
 
 In this documentation, the protocols were mentioned when talking [middleware](./middleware/middleware.md) and the whole
 reason behind it but there are two more protocols that we classify as [business oriented](#business-oriented).
@@ -23,7 +23,7 @@ A lot of companies nowadays use frameworks or microframeworks to build APIs quic
 The problem we have identified is that usually these frameworks don't have a business scope in mind and that
 does not mean it is not possible, because of course it is!
 
-When `Esmerald` means business oriented protocols is in fact referring to the separation between the data logic,
+When `Ravyn` means business oriented protocols is in fact referring to the separation between the data logic,
 where the database models and connections are and the **business objects** where as the name suggests, manages the
 business logic of an application.
 
@@ -61,12 +61,12 @@ DAO extends for Data Access Object and it is used to separate the low level data
 from the high level business services.
 
 ```python
-from esmerald import DaoProtocol, AsyncDAOProtocol
+from ravyn import DaoProtocol, AsyncDAOProtocol
 ```
 
 The DAO is nothing too special alone but it is used to grant good pratices of separation of responsabilities.
 
-Esmerald `DAO`/`AsyncDAO` comes with five operations that must be implemented when subclassing.
+Ravyn `DAO`/`AsyncDAO` comes with five operations that must be implemented when subclassing.
 
 * `get`
 * `get_all`
@@ -98,7 +98,7 @@ DAO/AsyncDAO are your friends.
 
 ## InterceptorProtocol
 
-This is a special protocol used to implement [interceptors](./interceptors.md) for Esmerald. Check the
+This is a special protocol used to implement [interceptors](./interceptors.md) for Ravyn. Check the
 [document](./interceptors.md) for more details about how to use it.
 
 ## Notes

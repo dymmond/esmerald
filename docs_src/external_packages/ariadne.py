@@ -1,7 +1,7 @@
 from ariadne import QueryType, make_executable_schema
 from ariadne.asgi import GraphQL
 
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 
 type_defs = """
     type Query {
@@ -20,4 +20,4 @@ def resolve_hello(*_):
 # Create executable schema instance
 schema = make_executable_schema(type_defs, query)
 
-app = Esmerald(debug=True, routes=[Include("/graphql", GraphQL(schema, debug=True))])
+app = Ravyn(debug=True, routes=[Include("/graphql", GraphQL(schema, debug=True))])

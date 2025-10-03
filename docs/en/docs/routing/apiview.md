@@ -1,6 +1,6 @@
 # APIView
 
-This is a special object from **Esmerald** and aims to implement the so needed class based views for those who love
+This is a special object from **Ravyn** and aims to implement the so needed class based views for those who love
 object oriented programming. Inspired by such great frameworks (Python, Go, JS), APIView was created to simplify
 the life of those who like OOP.
 
@@ -10,7 +10,7 @@ the life of those who like OOP.
 {!> ../../../docs_src/routing/handlers/apiviews/apiview.py !}
 ```
 
-The APIView uses the Esmerald [handlers](./handlers.md) to create the "view" itself but also acts as the `parent`
+The APIView uses the Ravyn [handlers](./handlers.md) to create the "view" itself but also acts as the `parent`
 of those same routes and therefore all the available parameters such as [permissions](../permissions/index.md),
 [middlewares](../middleware/middleware.md), [exception handlers](../exception-handlers.md),
 [dependencies](../dependencies.md) and almost every other parameter available in the handlers are also available
@@ -24,7 +24,7 @@ All the parameters and defaults are available in the [View Reference](../referen
 
 The routing is the same as declaring the routing for the handler with a simple particularity that you don't
 need to declare handler by handler. Since everything is inside an [APIView](#apiview)
-objects the handlers will be automatically routed by **Esmerald** with the joint [path](#apiview-path) given to class.
+objects the handlers will be automatically routed by **Ravyn** with the joint [path](#apiview-path) given to class.
 
 ```python title='controllers.py'
 {!> ../../../docs_src/routing/handlers/apiviews/apiview.py !}
@@ -72,11 +72,11 @@ to the other.
 
 ## Generics
 
-Esmerald also offers some generics when it comes to build APIs. For example, the [APIView](#apiview)
+Ravyn also offers some generics when it comes to build APIs. For example, the [APIView](#apiview)
 allows the creation of apis where the function name can be whatever you desire like `create_users`,
 `get_items`, `update_profile`, etc...
 
-**Generics in Esmerald are more restrict**.
+**Generics in Ravyn are more restrict**.
 
 So what does that mean? Means **you can only perform operations where the function name coincides with the http verb**.
 For example, `get`, `put`, `post` etc...
@@ -126,7 +126,7 @@ available http verbs without any restriction.
 This is how you can import.
 
 ```python
-from esmerald import SimpleAPIView
+from ravyn import SimpleAPIView
 ```
 
 #### Example
@@ -142,7 +142,7 @@ Allows the `GET` verb to be used.
 This is how you can import.
 
 ```python
-from esmerald.routing.apis.generics import ReadAPIView
+from ravyn.routing.apis.generics import ReadAPIView
 ```
 
 #### Example
@@ -158,7 +158,7 @@ Allows the `POST`, `PUT`, `PATCH` verbs to be used.
 This is how you can import.
 
 ```python
-from esmerald.routing.apis.generics import CreateAPIView
+from ravyn.routing.apis.generics import CreateAPIView
 ```
 
 #### Example
@@ -174,7 +174,7 @@ Allows the `DELETE` verb to be used.
 This is how you can import.
 
 ```python
-from esmerald.routing.apis.generics import DeleteAPIView
+from ravyn.routing.apis.generics import DeleteAPIView
 ```
 
 #### Example
@@ -205,7 +205,7 @@ Allows all the verbs be used.
 This is how you can import.
 
 ```python
-from esmerald.routing.apis.generics import ListAPIView
+from ravyn.routing.apis.generics import ListAPIView
 ```
 
 #### Example

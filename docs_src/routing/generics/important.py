@@ -1,5 +1,5 @@
-from esmerald import post
-from esmerald.routing.apis.generics import CreateAPIView
+from ravyn import post
+from ravyn.routing.apis.generics import CreateAPIView
 
 
 class UserAPI(CreateAPIView):

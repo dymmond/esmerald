@@ -1,9 +1,9 @@
 from lilya.middleware import DefineMiddleware
 
-from esmerald import CORSConfig, Gateway, Request, get, route
-from esmerald.applications import Esmerald
-from esmerald.middleware.cors import CORSMiddleware
-from esmerald.responses import PlainText
+from ravyn import CORSConfig, Gateway, Request, get, route
+from ravyn.applications import Ravyn
+from ravyn.middleware.cors import CORSMiddleware
+from ravyn.responses import PlainText
 
 
 def test_cors_allow_all(test_client_factory):
@@ -11,7 +11,7 @@ def test_cors_allow_all(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -71,7 +71,7 @@ def test_cors_allow_all_except_credentials(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -125,7 +125,7 @@ def test_cors_allow_specific_origin_with_config(test_client_factory):
         allow_origins=["https://example.org"],
         allow_headers=["X-Example", "Content-Type"],
     )
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors_config)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=cors_config)
 
     client = test_client_factory(app)
 
@@ -164,7 +164,7 @@ def test_cors_allow_specific_origin(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -212,7 +212,7 @@ def test_cors_disallowed_preflight(test_client_factory):
     def homepage(request: Request) -> None:
         pass  # pragma: no cover
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -254,7 +254,7 @@ def test_cors_disallowed_preflight_with_config(test_client_factory):
         allow_origins=["https://example.org"],
         allow_headers=["X-Example"],
     )
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors_config)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=cors_config)
 
     client = test_client_factory(app)
 
@@ -285,7 +285,7 @@ def test_preflight_allows_request_origin_if_origins_wildcard_and_credentials_all
     def homepage(request: Request) -> None:
         return  # pragma: no cover
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -326,7 +326,7 @@ def test_preflight_allows_request_origin_if_origins_wildcard_and_credentials_all
         allow_methods=["POST"],
         allow_credentials=True,
     )
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors_config)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=cors_config)
 
     client = test_client_factory(app)
 
@@ -350,7 +350,7 @@ def test_cors_preflight_allow_all_methods(test_client_factory):
     def homepage(request: Request) -> None:
         pass  # pragma: no cover
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])],
     )
@@ -374,7 +374,7 @@ def test_cors_preflight_allow_all_methods_config(test_client_factory):
         pass  # pragma: no cover
 
     config = CORSConfig(allow_origins=["*"])
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=config)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=config)
 
     client = test_client_factory(app)
 
@@ -394,7 +394,7 @@ def test_cors_allow_all_methods(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway(
                 "/",
@@ -421,7 +421,7 @@ def test_cors_allow_origin_regex(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -492,7 +492,7 @@ def test_cors_allow_origin_regex_fullmatch(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[
             DefineMiddleware(
@@ -526,7 +526,7 @@ def test_cors_credentialed_requests_return_specific_origin(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"])],
     )
@@ -547,7 +547,7 @@ def test_cors_credentialed_requests_return_specific_origin_config(test_client_fa
         return PlainText("Homepage", status_code=200)
 
     cors = CORSConfig(allow_origins=["*"])
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=cors)
     client = test_client_factory(app)
 
     # Test credentialed request
@@ -564,7 +564,7 @@ def test_cors_vary_header_defaults_to_origin(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["https://example.org"])],
     )
@@ -584,7 +584,7 @@ def test_cors_vary_header_defaults_to_origin_config(test_client_factory):
         return PlainText("Homepage", status_code=200)
 
     cors = CORSConfig(allow_origins=["https://example.org"])
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=cors)
 
     headers = {"Origin": "https://example.org"}
 
@@ -600,7 +600,7 @@ def test_cors_vary_header_is_not_set_for_non_credentialed_request(test_client_fa
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"])],
     )
@@ -619,7 +619,7 @@ def test_cors_vary_header_is_not_set_for_non_credentialed_request_config(
         return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     cors = CORSConfig(allow_origins=["*"])
-    app = Esmerald(routes=[Gateway("/", handler=homepage)], cors_config=cors)
+    app = Ravyn(routes=[Gateway("/", handler=homepage)], cors_config=cors)
     client = test_client_factory(app)
 
     response = client.get("/", headers={"Origin": "https://someplace.org"})
@@ -632,7 +632,7 @@ def test_cors_vary_header_is_properly_set_for_credentialed_request(test_client_f
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(CORSMiddleware, allow_origins=["*"])],
     )
@@ -650,7 +650,7 @@ def test_cors_vary_header_is_properly_set_when_allow_origins_is_not_wildcard(
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ],
@@ -671,7 +671,7 @@ def test_cors_vary_header_is_properly_set_when_allow_origins_is_not_wildcard_con
         return PlainText("Homepage", status_code=200, headers={"Vary": "Accept-Encoding"})
 
     cors = CORSConfig(allow_origins=["https://example.org"])
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ],
@@ -691,7 +691,7 @@ def test_cors_allowed_origin_does_not_leak_between_credentialed_requests(
     def homepage(request: Request) -> PlainText:
         return PlainText("Homepage", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ],
@@ -731,7 +731,7 @@ def test_cors_allowed_origin_does_not_leak_between_credentialed_requests_config(
         allow_headers=["*"],
         allow_methods=["*"],
     )
-    app = Esmerald(
+    app = Ravyn(
         routes=[
             Gateway("/", handler=homepage),
         ],

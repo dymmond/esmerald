@@ -1,6 +1,6 @@
 # CORSConfig
 
-CORS означает Cross-Origin Resource Sharing и является одним из встроенных middleware в Esmerald.
+CORS означает Cross-Origin Resource Sharing и является одним из встроенных middleware в Ravyn.
 Когда объект `CORSConfig` передается экземпляру приложения, автоматически запускается `CORSMiddleware`.
 
 !!! Tip
@@ -38,4 +38,4 @@ CORS означает Cross-Origin Resource Sharing и является одни
 {!> ../../../docs_src/configurations/cors/settings.py!}
 ```
 
-Это поможет вам поддерживать настройки в чистоте, без перегруженного экземпляра **Esmerald**.
+Это поможет вам поддерживать настройки в чистоте, без перегруженного экземпляра **Ravyn**.

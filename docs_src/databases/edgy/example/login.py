@@ -4,9 +4,9 @@ from accounts.models import User
 from edgy.exceptions import DoesNotFound
 from pydantic import BaseModel
 
-from esmerald import JSONResponse, post, status
-from esmerald.conf import settings
-from esmerald.security.jwt.token import Token
+from ravyn import JSONResponse, post, status
+from ravyn.conf import settings
+from ravyn.security.jwt.token import Token
 
 
 class LoginIn(BaseModel):

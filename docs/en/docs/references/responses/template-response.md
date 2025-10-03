@@ -1,3 +1,3 @@
 # **`TemplateResponse`** class
 
-::: esmerald.TemplateResponse
+::: ravyn.TemplateResponse

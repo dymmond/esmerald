@@ -1,6 +1,6 @@
 # Test Client
 
-Esmerald comes with a test client for your application tests. It is not mandatory use it as every application and
+Ravyn comes with a test client for your application tests. It is not mandatory use it as every application and
 development team has its own way of testing it but just in case, it is provided.
 
 ## Requirements
@@ -8,7 +8,7 @@ development team has its own way of testing it but just in case, it is provided.
 This section requires the esmerald testing suite to be installed. You can do it so by running:
 
 ```shell
-$ pip install esmerald[test]
+$ pip install ravyn[test]
 ```
 
 ## API Reference
@@ -21,7 +21,7 @@ Check the [API Reference for the test client](./references/test-client.md) to un
 {!> ../../../docs_src/testclient/example1.py !}
 ```
 
-The test client is very similar to its original as it extends it and adds extra unique and specifics for `Esmerald`
+The test client is very similar to its original as it extends it and adds extra unique and specifics for `Ravyn`
 and therefore the same examples and use cases will work.
 
 You can use any of the `httpx` standard API like authentication, session cookies and file uploads.
@@ -46,7 +46,7 @@ And like Lilya, the same example to send files with `EsmeraldTestClient`.
 ## Lifespan events
 
 !!! Note
-    Esmerald supports all the lifespan events available and therefore `on_startup`, `on_shutdown` and `lifespan` are
+    Ravyn supports all the lifespan events available and therefore `on_startup`, `on_shutdown` and `lifespan` are
     also supported by `EsmeraldTestClient` **but** if you need to test these you will need to run `EsmeraldTestClient`
     as a context manager or otherwise the events will not be triggered when the `EsmeraldTestClient` is instantiated.
 
@@ -76,7 +76,7 @@ The `override_settings` acts as a normal function decorator or as a context mana
 The settings you can override are the ones declared in the [settings](./application/settings.md).
 
 ```python
-from esmerald.testclient import override_settings
+from ravyn.testclient import override_settings
 ```
 
 Let us see an example.
@@ -84,10 +84,10 @@ Let us see an example.
 ```python
 from lilya.middleware import DefineMiddleware
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.middleware.clickjacking import XFrameOptionsMiddleware
-from esmerald.responses import PlainText
-from esmerald.testclient import override_settings
+from ravyn import Ravyn, Gateway, get
+from ravyn.middleware.clickjacking import XFrameOptionsMiddleware
+from ravyn.responses import PlainText
+from ravyn.testclient import override_settings
 
 
 @override_settings(x_frame_options="SAMEORIGIN")
@@ -96,7 +96,7 @@ def test_xframe_options_same_origin_responses(test_client_factory):
     def homepage() -> PlainText:
         return PlainText("Ok", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(XFrameOptionsMiddleware)],
     )
@@ -113,10 +113,10 @@ Or as context manager.
 ```python
 from lilya.middleware import DefineMiddleware
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.middleware.clickjacking import XFrameOptionsMiddleware
-from esmerald.responses import PlainText
-from esmerald.testclient import override_settings
+from ravyn import Ravyn, Gateway, get
+from ravyn.middleware.clickjacking import XFrameOptionsMiddleware
+from ravyn.responses import PlainText
+from ravyn.testclient import override_settings
 
 
 def test_xframe_options_same_origin_responses(test_client_factory):

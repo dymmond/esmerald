@@ -1,6 +1,6 @@
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(
+app = Ravyn(
     routes=[...],
     docs_url="/another-url/swagger",
     redoc_url="/another-url/redoc",

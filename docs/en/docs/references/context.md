@@ -3,7 +3,7 @@
 Importing the `Context` from `esmerald` is as simple as:
 
 ```python
-from esmerald import Context
+from ravyn import Context
 ```
 
-::: esmerald.Context
+::: ravyn.Context

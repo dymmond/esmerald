@@ -28,20 +28,20 @@ Using docker you still need to think about infrastructure and resources for your
 fact that you need to install the same binaries in every single environment since it will be managed by a
 **container**.
 
-Imagine a container as a zip file. You simply put together all that is needed for your Esmerald to work in one place
+Imagine a container as a zip file. You simply put together all that is needed for your Ravyn to work in one place
 and "zip it" which in this case, you will "dockerize it". Which means in every single environment the binaries will
 be **exactly the same** and not reliant on humans reducing the complexity.
 
-## Esmerald and docker example
+## Ravyn and docker example
 
-Let's assume we want to deploy a simple **Esmerald** application using docker. Assuming that external resources
+Let's assume we want to deploy a simple **Ravyn** application using docker. Assuming that external resources
 are already handled and managed by you.
 
 Let's use:
 
 * [Nginx configuration](#nginx) - Web server.
 * Supervisor - Process manager.
-* Esmerald dockerized application.
+* Ravyn dockerized application.
 
 **Assumptions**:
 
@@ -207,7 +207,7 @@ It was given an example of how to build some files similar to the ones needed fo
 
 ## OpenAPI docs
 
-Esmerald provides the [OpenAPI](../configurations/openapi/config.md) documentation ready to be used and always active
+Ravyn provides the [OpenAPI](../configurations/openapi/config.md) documentation ready to be used and always active
 and you can acess via:
 
 * [http://127.0.0.1/swagger](http://127.0.0.1/docs/swagger)

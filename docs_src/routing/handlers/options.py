@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, JSONResponse, Request, options
+from ravyn import Ravyn, Gateway, JSONResponse, Request, options
 
 
 @options()
@@ -16,7 +16,7 @@ def another_read(name: str) -> str:
     return f"Another welcome, {name}!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=example),
         another,

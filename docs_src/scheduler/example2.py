@@ -3,12 +3,12 @@ from functools import lru_cache
 
 from asyncz.executors import AsyncIOExecutor, ThreadPoolExecutor
 from asyncz.stores.mongo import MongoDBStore
-from esmerald import Esmerald
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
 
 @asynccontextmanager
-async def lifespan(app: Esmerald):
+async def lifespan(app: Ravyn):
     # What happens on startup
     await get_scheduler_config().start()
     yield
@@ -41,7 +41,7 @@ def get_scheduler_config() -> AsynczConfig:
     )
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[...],
     lifespan=lifespan,
     scheduler_config=get_scheduler_config(),

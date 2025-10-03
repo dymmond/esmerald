@@ -1,4 +1,4 @@
-from esmerald import CORSConfig, Esmerald
+from ravyn import CORSConfig, Ravyn
 
 cors_config = CORSConfig(
     allow_origins=["https://www.example.com", "https://foobar.org"],
@@ -6,4 +6,4 @@ cors_config = CORSConfig(
     allow_credentials=True,
 )
 
-app = Esmerald(cors_config=cors_config)
+app = Ravyn(cors_config=cors_config)

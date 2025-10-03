@@ -1,8 +1,8 @@
 from myapp.encoders import AttrsEncoder
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(
+app = Ravyn(
     routes=[...],
     encoders=[AttrsEncoder],
 )

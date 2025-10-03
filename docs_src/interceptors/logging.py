@@ -1,6 +1,6 @@
 from loguru import logger
 
-from esmerald import EsmeraldInterceptor
+from ravyn import EsmeraldInterceptor
 from lilya.types import Receive, Scope, Send
 
 

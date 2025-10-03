@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.asyncio
 def xtest_esmerald_memory_cache(client) -> None:
-    """Test cache operations in Esmerald routes with MemoryCache."""
+    """Test cache operations in Ravyn routes with MemoryCache."""
     key, value = "api_test_key", "hello_esmerald"
 
     response = client.get(f"/set-cache/{key}/{value}")
@@ -25,7 +25,7 @@ def xtest_esmerald_memory_cache(client) -> None:
 
 @pytest.mark.asyncio
 async def xtest_esmerald_redis_cache(client, redis_settings) -> None:
-    """Test cache operations in Esmerald routes with RedisCache."""
+    """Test cache operations in Ravyn routes with RedisCache."""
     client.app.settings_module = redis_settings
     key, value = "redis_api_key", "cached_value"
 

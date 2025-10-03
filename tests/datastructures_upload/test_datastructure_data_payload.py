@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import Any, Dict, List
 
-from esmerald import Body, Esmerald, Gateway, UploadFile, post
-from esmerald.testclient import EsmeraldTestClient
-from esmerald.utils.enums import EncodingType
+from ravyn import Body, Gateway, Ravyn, UploadFile, post
+from ravyn.testclient import EsmeraldTestClient
+from ravyn.utils.enums import EncodingType
 
 
 def test_upload_file_is_closed(tmp_path: Path):
@@ -19,7 +19,7 @@ def test_upload_file_is_closed(tmp_path: Path):
         testing_file_store.append(file)
         return {"filename": payload.filename}
 
-    app = Esmerald(routes=[Gateway(handler=create_upload_file)])
+    app = Ravyn(routes=[Gateway(handler=create_upload_file)])
     client = EsmeraldTestClient(app)
     with path.open("rb") as file:
         response = client.post("/uploadfile", files={"file": file})

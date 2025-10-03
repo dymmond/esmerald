@@ -1,6 +1,6 @@
-# How to Use Path Parameters in Esmerald (Advanced Guide)
+# How to Use Path Parameters in Ravyn (Advanced Guide)
 
-Path parameters in Esmerald allow dynamic values to be captured directly from the URL path,
+Path parameters in Ravyn allow dynamic values to be captured directly from the URL path,
 enabling highly flexible and descriptive routing. This guide is for advanced users who want full
 control and understanding of how path parameters work, including usage with custom types, enums, and transformers.
 
@@ -12,14 +12,17 @@ Path parameters are dynamic segments in your route’s path, defined using eithe
 or angle brackets `<>`. These values are passed to your controller/handler as arguments.
 
 ### ✅ Basic Example
+
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
+
 
 @get("/users/{user_id}")
 async def read_user(user_id: str) -> JSONResponse:
     return JSONResponse({"user_id": user_id})
 
-app = Esmerald(routes=[Gateway(handler=read_user)])
+
+app = Ravyn(routes=[Gateway(handler=read_user)])
 ```
 
 - The route `/users/{user_id}` declares `user_id` as a path parameter.
@@ -30,7 +33,7 @@ app = Esmerald(routes=[Gateway(handler=read_user)])
 
 ## 🔁 Syntax Variations: `{}` vs `<>`
 
-Esmerald supports two syntaxes:
+Ravyn supports two syntaxes:
 
 ```python
 @get("/items/{item_id}")
@@ -43,7 +46,7 @@ Both styles are functionally equivalent and can be used based on your preference
 
 ## 🔠 Parameter Typing and Conversion
 
-Esmerald supports inline typing of parameters, ensuring automatic type conversion and validation.
+Ravyn supports inline typing of parameters, ensuring automatic type conversion and validation.
 
 ### Example: Integer Parameter
 ```python
@@ -76,7 +79,7 @@ async def get_file(filepath: str):
 
 ## 🧱 Creating Custom Transformers
 
-Esmerald supports registering custom path transformers for complex scenarios.
+Ravyn supports registering custom path transformers for complex scenarios.
 
 ### Custom DateTime Transformer
 ```python
@@ -136,6 +139,6 @@ async def get_user_by_type(user_type: UserType):
 
 ---
 
-This guide gives you full control over how to implement and validate path parameters in Esmerald.
+This guide gives you full control over how to implement and validate path parameters in Ravyn.
 Whether you're building a large-scale API or finely tuned microservices, mastering path parameters will help you
 write clean, reliable, and user-friendly endpoints.

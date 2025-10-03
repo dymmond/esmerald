@@ -1,15 +1,15 @@
 # Deployment
 
-This section covers how to deploy your Esmerald application in a production-ready environment.
+This section covers how to deploy your Ravyn application in a production-ready environment.
 
-Esmerald apps are ASGI applications, which means they can be served using any ASGI-compatible server like `uvicorn`,
+Ravyn apps are ASGI applications, which means they can be served using any ASGI-compatible server like `uvicorn`,
 `hypercorn`, or `daphne`.
 
 ---
 
 ## Using Uvicorn
 
-One way to run Esmerald in production is with `uvicorn`, an ASGI server:
+One way to run Ravyn in production is with `uvicorn`, an ASGI server:
 
 ### Install:
 
@@ -51,7 +51,7 @@ This setup provides better process management, logging, and signal handling in p
 
 ## Docker Deployment
 
-Here's a simple Dockerfile for Esmerald:
+Here's a simple Dockerfile for Ravyn:
 
 ```Dockerfile
 FROM python:3.13-slim
@@ -67,15 +67,15 @@ CMD ["uvicorn", "myapp:app", "--host", "0.0.0.0", "--port", "8000"]
 Then build and run:
 
 ```bash
-docker build -t my-esmerald-app .
-docker run -p 8000:8000 my-esmerald-app
+docker build -t my-ravyn-app .
+docker run -p 8000:8000 my-ravyn-app
 ```
 
 ---
 
 ## Behind a Reverse Proxy (e.g. Nginx)
 
-In production, it’s common to put Esmerald behind a reverse proxy like Nginx:
+In production, it’s common to put Ravyn behind a reverse proxy like Nginx:
 
 ### Example Nginx config:
 
@@ -100,7 +100,7 @@ Use SSL termination with Certbot + Let's Encrypt for HTTPS.
 
 ## Environment Variables
 
-Use environment variables and `.env` files to manage secrets, database connections, etc. Esmerald supports loading
+Use environment variables and `.env` files to manage secrets, database connections, etc. Ravyn supports loading
 `.env` via Pydantic or your custom configuration setup.
 
 ---

@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Websocket, WebSocketGateway, websocket
+from ravyn import Ravyn, Websocket, WebSocketGateway, websocket
 
 
 @websocket(path="/{path_param:str}")
@@ -10,7 +10,7 @@ async def world_socket(socket: Websocket) -> None:
     await socket.close()
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         WebSocketGateway(handler=world_socket),
     ]

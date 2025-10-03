@@ -1,10 +1,10 @@
 import pytest
 
-from esmerald import Gateway, Include, Request, WebSocket, WebSocketGateway, get, websocket
-from esmerald.utils.enums import MediaType
-from esmerald.permissions import AllowAny, DenyAll
-from esmerald.responses import JSONResponse
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, Request, WebSocket, WebSocketGateway, get, websocket
+from ravyn.utils.enums import MediaType
+from ravyn.permissions import AllowAny, DenyAll
+from ravyn.responses import JSONResponse
+from ravyn.testclient import create_client
 from lilya.responses import Response
 
 

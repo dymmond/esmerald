@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from esmerald import EsmeraldSettings
-from esmerald.core.config.template import TemplateConfig
+from ravyn import RavynSettings
+from ravyn.core.config.template import TemplateConfig
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     @property
     def template_config(self) -> TemplateConfig:
         return TemplateConfig(

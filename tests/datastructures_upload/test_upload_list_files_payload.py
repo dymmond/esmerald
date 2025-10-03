@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Union
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, UploadFile, post, status
-from esmerald.params import File
-from esmerald.testclient import EsmeraldTestClient, create_client
+from ravyn import Gateway, Ravyn, UploadFile, post, status
+from ravyn.params import File
+from ravyn.testclient import EsmeraldTestClient, create_client
 
 
 class MultipleFile(BaseModel):
@@ -34,7 +34,7 @@ async def upload_list_multiple_file(
     return {"names": names, "total": total}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=upload_file),
         Gateway(handler=upload_list_multiple_file),
@@ -81,8 +81,8 @@ def test_openapi_schema(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

@@ -7,12 +7,12 @@ import structlog
 from lilya.logging import setup_logging
 from loguru import logger as loguru_logger
 
-from esmerald.core.config import LoggingConfig
+from ravyn.core.config import LoggingConfig
 
 
 # Simulate a clean logger for each test
 def reset_global_logger():
-    from esmerald import logging as esmerald_logging
+    from ravyn import logging as esmerald_logging
 
     esmerald_logging.logger.bind_logger(None)
 
@@ -81,7 +81,7 @@ class CustomStructlogLoggingConfig(LoggingConfig):
 def test_loguru_logger_setup():
     sink = []
     setup_logging(CustomLoguruLoggingConfig(sink_list=sink))
-    from esmerald.logging import logger
+    from ravyn.logging import logger
 
     logger.debug("Debug message from Loguru")
     logger.info("Info message from Loguru")
@@ -94,7 +94,7 @@ def test_structlog_logger_capture():
     sink = []
     setup_logging(CustomStructlogLoggingConfig(sink_list=sink))
 
-    from esmerald.logging import logger
+    from ravyn.logging import logger
 
     logger.info("Info message from Structlog")
     logger.error("Error message from Structlog")
@@ -112,7 +112,7 @@ def test_invalid_logging_config():
 def test_standard_logging_fallback(monkeypatch):
     setup_logging()
 
-    from esmerald.logging import logger
+    from ravyn.logging import logger
 
     assert hasattr(logger, "info")
     assert hasattr(logger, "debug")

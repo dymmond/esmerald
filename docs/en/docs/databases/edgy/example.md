@@ -1,13 +1,13 @@
 # Example
 
-Since [Edgy](https://edgy.dymmond.com) if from the same author of Esmerald, it gives some
+Since [Edgy](https://edgy.dymmond.com) if from the same author of Ravyn, it gives some
 extra motivation for its use and therefore an example in how to use the
-[JWTAuthMiddleware](./middleware.md), even if in a very simplistic way, within your Esmerald application.
+[JWTAuthMiddleware](./middleware.md), even if in a very simplistic way, within your Ravyn application.
 
 
 Let us build a simple integration and application where we will be creating:
 
-- [Create user model](#create-user-model) by using the provided default from Esmerald.
+- [Create user model](#create-user-model) by using the provided default from Ravyn.
 - [Create user API](#create-user-api) to create a user in the system.
 - [Login API](#login-api) to authenticate the user.
 - [Home API](#home-api) to authenticate the user and return the logged-in user email.
@@ -29,7 +29,7 @@ is inside your global [settings](../../application/settings.md).
 ## Create user model
 
 First, we need to create a model that will be storing the users in the system. We will be
-defaulting to the one model provided by Esmerald out-of-the-box.
+defaulting to the one model provided by Ravyn out-of-the-box.
 
 ```python title="accounts/models.py"
 {!> ../../../docs_src/databases/edgy/example/create_model.py !}
@@ -85,20 +85,20 @@ The API is pretty much simple and clean.
 
 ## Assemble the APIs
 
-Now it the time where we assemble everything in one place and create our Esmerald application.
+Now it the time where we assemble everything in one place and create our Ravyn application.
 
 ```python title="app.py"
 {!> ../../../docs_src/databases/edgy/example/assemble.py !}
 ```
 
 Did you notice the import of the `JWTAuthMiddleware` is inside the
-[Include](../../routing/routes.md#include) and not in the main Esmerald instance?
+[Include](../../routing/routes.md#include) and not in the main Ravyn instance?
 
 **It is intentional!** Each include handles its own middlewares and to create a user and login
 you **don't want to be logged-in** and for that reason, the `JWTAuthMiddleware` is only for those
 endpoints that **require authentication**.
 
-Now this assembling is actually very clean, right? Yes and the reason for that is because Esmerald
+Now this assembling is actually very clean, right? Yes and the reason for that is because Ravyn
 itself promotes clean design.
 
 We have imported all the APIs directly in the `app.py` but this **is not mandatory**. You can
@@ -110,10 +110,10 @@ even more.
 All of these APIs are great to start with but an application using JWT usually needs something
 that allows to refresh the existing token. That process can be done in many different ways.
 
-Esmerald provides an example how to [refresh the token](../../configurations/jwt.md#the-claims) with
+Ravyn provides an example how to [refresh the token](../../configurations/jwt.md#the-claims) with
 details that can serve and help you with your process.
 
-The example contains ways of taking advantage of the existing tools provided by Esmerald as well
+The example contains ways of taking advantage of the existing tools provided by Ravyn as well
 as assumptions how to structure it.
 
 Check out [how to implement a refresh token](../../configurations/jwt.md#the-claims).
@@ -138,13 +138,13 @@ For this will be using `httpx` but you are free to use whatever client you prefe
 
 Did you notice the `Authorization` in the `headers`? Well that is because the default `api_key_header`
 from the [JWTConfig](../../configurations/jwt.md#parameters) is called `Authorization` and the
-contrib middleware from Esmerald to provide integration with Edgy uses it to validate if is passed
+contrib middleware from Ravyn to provide integration with Edgy uses it to validate if is passed
 in the header or not.
 
-Like everything in Esmerald, that is also configurable. If you change the `header` to something else
+Like everything in Ravyn, that is also configurable. If you change the `header` to something else
 in that config, it will automatically reflect across the contib middlewares.
 
 ## Conclusions
 
 This is just a simple example how you could use Edgy with the provided `JWTAuthMiddleware`
-from **Esmerald** and build a quick, yet robust, login system and access protected APIs.
+from **Ravyn** and build a quick, yet robust, login system and access protected APIs.

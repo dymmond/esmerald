@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, MiddlewareProtocol, get
-from esmerald.types import ASGIApp
+from ravyn import Ravyn, Gateway, MiddlewareProtocol, get
+from ravyn.types import ASGIApp
 
 
 class RequestLoggingMiddlewareProtocol(MiddlewareProtocol):
@@ -18,4 +18,4 @@ async def homepage() -> dict:
     return {"page": "ok"}
 
 
-app = Esmerald(routes=[Gateway(handler=homepage, middleware=[ExampleMiddleware])])
+app = Ravyn(routes=[Gateway(handler=homepage, middleware=[ExampleMiddleware])])

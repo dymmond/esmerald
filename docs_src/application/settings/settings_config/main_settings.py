@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING, List
 
-from esmerald import EsmeraldSettings
-from esmerald.middleware import RequestSettingsMiddleware
+from ravyn import RavynSettings
+from ravyn.middleware import RequestSettingsMiddleware
 
 if TYPE_CHECKING:
-    from esmerald.types import Middleware
+    from ravyn.types import Middleware
 
 
-# Create a ChildEsmeraldSettings object
-class AppSettings(EsmeraldSettings):
+# Create a ChildRavynSettings object
+class AppSettings(RavynSettings):
     app_name: str = "my application"
     secret_key: str = "main secret key"
 

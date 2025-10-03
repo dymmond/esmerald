@@ -2,16 +2,16 @@
 
 Reference for the `TemplateConfig` class object and how to use it.
 
-Read more about [how to use the TemplateConfig](https://esmerald.dev/configurations/template/) in your
+Read more about [how to use the TemplateConfig](https://ravyn.dev/configurations/template/) in your
 application and leverage the system.
 
 ## How to import
 
 ```python
-from esmerald import TemplateConfig
+from ravyn import TemplateConfig
 ```
 
-::: esmerald.core.config.template.TemplateConfig
+::: ravyn.core.config.template.TemplateConfig
     options:
         filters:
         - "!^model_config"

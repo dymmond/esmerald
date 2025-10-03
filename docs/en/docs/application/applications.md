@@ -1,9 +1,9 @@
 # Applications
 
-Esmerald runs Lilya under the hood and therefore includes an application class **Esmerald** that ties
+Ravyn runs Lilya under the hood and therefore includes an application class **Ravyn** that ties
 of its functionality.
 
-## The Esmerald class
+## The Ravyn class
 
 === "In a nutshell"
 
@@ -76,7 +76,7 @@ or [Include](../routing/routes.md#include)
 requests (HTTP and Websockets).
 * **permissions** - A list of [permissions](../permissions/index.md) to serve the application incoming
 requests (HTTP and Websockets).
-* **middleware** - A list of middleware to run for every request. A Esmerald application will always include the
+* **middleware** - A list of middleware to run for every request. A Ravyn application will always include the
 middlewares from the configurations passed (CSRF, CORS, JWT...) and the custom user middleware. The middlewares
 can be subclasses of the [MiddlewareProtocol](../protocols.md).
 or <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a> as they are both converted
@@ -120,7 +120,7 @@ Use one or the other, not both.
 ## Application settings
 
 Settings are another way of controlling the parameters passed to the
-[Esmerald object when instantiating](#instantiating-the-application). Check out the [settings](./settings.md) for
+[Ravyn object when instantiating](#instantiating-the-application). Check out the [settings](./settings.md) for
 more details and how to use it to power up your application.
 
 To access the application settings there are different ways:

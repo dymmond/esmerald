@@ -2,7 +2,7 @@
 
 Uploading files from your application is something extremely common.
 
-Esmerald handles this by using the `UploadFile` datastructure object, serving as interface. To make
+Ravyn handles this by using the `UploadFile` datastructure object, serving as interface. To make
 this work you will need to type your uploads accordingly.
 
 ## UploadFile
@@ -10,13 +10,13 @@ this work you will need to type your uploads accordingly.
 To access the `UploadFile` datastructrure.
 
 ```python
-from esmerald.core.datastructures import UploadFile
+from ravyn.core.datastructures import UploadFile
 ```
 
 or
 
 ```python
-from esmerald import UploadFile
+from ravyn import UploadFile
 ```
 
 ## Content Types
@@ -26,10 +26,10 @@ The [body](./body-fields.md) parameter plays a great role when it comes to use t
 
 The `media_type` allows to pass different encoding types for your uploads.
 
-Esmerald `EncodingType` can be accessed via:
+Ravyn `EncodingType` can be accessed via:
 
 ```python
-from esmerald.utils.enums import EncodingType
+from ravyn.utils.enums import EncodingType
 ```
 
 The current available `content-types` available in the `EncodingType` are:
@@ -39,12 +39,6 @@ The current available `content-types` available in the `EncodingType` are:
 * **application/json**
 
 These types are the ones that shall be passed to `Body(media_type=...)`.
-
-!!! Version notice
-    From the version `0.8+`, Esmerald supports separate types to handle forms and file uploads
-    independently but they will **always** derive from the `Body` parameter, which means, it is
-    optional to use `File` and `Form` as the same result can be achieved by using
-    `Body(media_type=...)`.
 
 ## Single file upload
 
@@ -112,11 +106,11 @@ be used to set and create a new `file` like the one from *File in datastructures
 To import it:
 
 ```python
-from esmerald.core.datastructures import File  # datastructure
+from ravyn.core.datastructures import File  # datastructure
 
 # or
 
-from esmerald.params import File  # param
+from ravyn.params import File  # param
 ```
 
 ## API Reference

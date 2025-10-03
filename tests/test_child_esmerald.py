@@ -1,10 +1,10 @@
 from lilya import status
 
-from esmerald.applications import ChildEsmerald
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
+from ravyn.applications import ChildRavyn
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
 
 
 @get(status_code=status.HTTP_202_ACCEPTED)
@@ -34,10 +34,10 @@ def route_five() -> dict:
 
 def test_add_child_esmerald_app(test_client_factory) -> None:
     """
-    Adds a ChildEsmerald application to the main app.
+    Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildEsmerald(
+    child_esmerald = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -64,10 +64,10 @@ def test_add_child_esmerald_app(test_client_factory) -> None:
 
 def test_add_child_esmerald_app_within_include(test_client_factory) -> None:
     """
-    Adds a ChildEsmerald application to the main app.
+    Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildEsmerald(
+    child_esmerald = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
@@ -97,17 +97,17 @@ def test_add_child_esmerald_app_within_include(test_client_factory) -> None:
 
 def test_add_child_esmerald_app_within_nested_include_two(test_client_factory) -> None:
     """
-    Adds a ChildEsmerald application to the main app.
+    Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildEsmerald(
+    child_esmerald = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
         ]
     )
 
-    second_child = ChildEsmerald(
+    second_child = ChildRavyn(
         routes=[
             Gateway(path="/four", handler=route_four),
             Gateway(path="/five", handler=route_five),
@@ -170,17 +170,17 @@ def test_add_child_esmerald_app_within_nested_include_two(test_client_factory) -
 
 def test_add_child_esmerald_app_within_nested_include(test_client_factory):
     """
-    Adds a ChildEsmerald application to the main app.
+    Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildEsmerald(
+    child_esmerald = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
         ]
     )
 
-    second_child = ChildEsmerald(
+    second_child = ChildRavyn(
         routes=[
             Gateway(path="/four", handler=route_four),
             Gateway(path="/five", handler=route_five),
@@ -245,17 +245,17 @@ def test_add_children_esmerald_app_within_same_nested_include(
     test_client_factory,
 ) -> None:
     """
-    Adds a ChildEsmerald application to the main app.
+    Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildEsmerald(
+    child_esmerald = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
         ]
     )
 
-    second_child = ChildEsmerald(
+    second_child = ChildRavyn(
         routes=[
             Gateway(path="/four", handler=route_four),
             Gateway(path="/five", handler=route_five),
@@ -344,17 +344,17 @@ def test_add_children_esmerald_app_within_same_nested_include_simpler(
     test_client_factory,
 ) -> None:
     """
-    Adds a ChildEsmerald application to the main app.
+    Adds a ChildRavyn application to the main app.
     """
 
-    child_esmerald = ChildEsmerald(
+    child_esmerald = ChildRavyn(
         routes=[
             Gateway(path="/second", handler=route_two),
             Gateway(path="/third", handler=route_three),
         ]
     )
 
-    second_child = ChildEsmerald(
+    second_child = ChildRavyn(
         routes=[
             Gateway(path="/four", handler=route_four),
             Gateway(path="/five", handler=route_five),

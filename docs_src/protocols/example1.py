@@ -2,7 +2,7 @@ from myapp.accounts import User
 from pydantic import BaseModel
 from edgy.exceptions import ObjectNotFound, SaffierException
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 
 class UserModel(BaseModel):
@@ -21,4 +21,4 @@ async def create(data: UserModel) -> None:
         ...
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])

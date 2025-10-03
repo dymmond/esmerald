@@ -2,16 +2,16 @@
 
 Reference for the `SessionConfig` class object and how to use it.
 
-Read more about [how to use the SessionConfig](https://esmerald.dev/configurations/session/) in your
+Read more about [how to use the SessionConfig](https://ravyn.dev/configurations/session/) in your
 application and leverage the system.
 
 ## How to import
 
 ```python
-from esmerald import SessionConfig
+from ravyn import SessionConfig
 ```
 
-::: esmerald.core.config.session.SessionConfig
+::: ravyn.core.config.session.SessionConfig
     options:
         members:
             - secret_key

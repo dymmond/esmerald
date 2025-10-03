@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from esmerald import APIView, Esmerald, WebSocket, get, websocket
-from esmerald.routing.gateways import Gateway
+from ravyn import APIView, Ravyn, WebSocket, get, websocket
+from ravyn.routing.gateways import Gateway
 
 
 class Item(BaseModel):
@@ -22,4 +22,4 @@ class MyAPIView(APIView):
         await socket.close()
 
 
-app = Esmerald(routes=[Gateway(handler=MyAPIView)])
+app = Ravyn(routes=[Gateway(handler=MyAPIView)])

@@ -1,8 +1,8 @@
 from typing import Any, Optional
 
-from esmerald import Inject, Injects, get
-from esmerald.security.http import HTTPAuthorizationCredentials, HTTPDigest
-from esmerald.testclient import create_client
+from ravyn import Inject, Injects, get
+from ravyn.security.http import HTTPAuthorizationCredentials, HTTPDigest
+from ravyn.testclient import create_client
 
 security = HTTPDigest(auto_error=False)
 
@@ -45,8 +45,8 @@ def test_openapi_schema():
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

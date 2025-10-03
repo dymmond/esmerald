@@ -1,17 +1,17 @@
 # Middlewares
 
-All the `Esmerald` native middlewares.
+All the `Ravyn` native middlewares.
 
-::: esmerald.middleware.CORSMiddleware
+::: ravyn.middleware.CORSMiddleware
 
-::: esmerald.middleware.RequestSettingsMiddleware
+::: ravyn.middleware.RequestSettingsMiddleware
 
-::: esmerald.middleware.sessions.SessionMiddleware
+::: ravyn.middleware.sessions.SessionMiddleware
 
-::: esmerald.middleware.HTTPSRedirectMiddleware
+::: ravyn.middleware.HTTPSRedirectMiddleware
 
-::: esmerald.middleware.TrustedHostMiddleware
+::: ravyn.middleware.TrustedHostMiddleware
 
-::: esmerald.middleware.GZipMiddleware
+::: ravyn.middleware.GZipMiddleware
 
-::: esmerald.middleware.wsgi.WSGIMiddleware
+::: ravyn.middleware.wsgi.WSGIMiddleware

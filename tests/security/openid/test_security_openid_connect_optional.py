@@ -2,9 +2,9 @@ from typing import Any, Optional
 
 from pydantic import BaseModel
 
-from esmerald import Gateway, Inject, Injects, Security, get
-from esmerald.security.open_id import OpenIdConnect
-from esmerald.testclient import create_client
+from ravyn import Gateway, Inject, Injects, Security, get
+from ravyn.security.open_id import OpenIdConnect
+from ravyn.testclient import create_client
 
 oid = OpenIdConnect(openIdConnectUrl="/openid", auto_error=False)
 
@@ -76,8 +76,8 @@ def test_openapi_schema():
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

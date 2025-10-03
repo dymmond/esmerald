@@ -18,17 +18,17 @@ from lilya.responses import (
 from lilya.status import HTTP_200_OK, HTTP_308_PERMANENT_REDIRECT
 from pydantic import ValidationError
 
-from esmerald.background import BackgroundTask
-from esmerald.core.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
-from esmerald.core.transformers.signature import SignatureFactory
-from esmerald.requests import Request
-from esmerald.responses import Response, TemplateResponse
-from esmerald.responses.encoders import UJSONResponse
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get, post, route
-from esmerald.routing.router import HTTPHandler
-from esmerald.testclient import create_client
-from esmerald.utils.enums import HttpMethod, MediaType
+from ravyn.background import BackgroundTask
+from ravyn.core.datastructures import Cookie, File, Redirect, ResponseHeader, Stream, Template
+from ravyn.core.transformers.signature import SignatureFactory
+from ravyn.requests import Request
+from ravyn.responses import Response, TemplateResponse
+from ravyn.responses.encoders import UJSONResponse
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get, post, route
+from ravyn.routing.router import HTTPHandler
+from ravyn.testclient import create_client
+from ravyn.utils.enums import HttpMethod, MediaType
 from tests.models import Individual, IndividualFactory
 
 

@@ -1,6 +1,6 @@
 from typing import Any
 
-from esmerald import Gateway, Inject, Injects, JSONResponse, Requires, get, Esmerald
+from ravyn import Gateway, Inject, Injects, JSONResponse, Requires, get, Ravyn
 
 
 async def get_user():
@@ -19,7 +19,7 @@ async def get_items(current_user: Any = Injects()) -> JSONResponse:
     return JSONResponse({"message": "Hello", "user": current_user})
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=get_items),
     ]

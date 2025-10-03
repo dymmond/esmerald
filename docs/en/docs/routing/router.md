@@ -1,24 +1,24 @@
 # Router
 
-The Router is the main object that links the whole Esmerald to the [Gateway](./routes.md#gateway),
+The Router is the main object that links the whole Ravyn to the [Gateway](./routes.md#gateway),
 [WebSocketGateway](./routes.md#websocketgateway) and [handlers](./handlers.md).
 
 ## Router class
 
-The router class is composed by many attributes that are, by default, populated within the application. However, Esmerald
-also allows to add extra [custom routers](#custom-router), or alternatively, you can add a [ChildEsmerald](#child-esmerald-application) app.
+The router class is composed by many attributes that are, by default, populated within the application. However, Ravyn
+also allows to add extra [custom routers](#custom-router), or alternatively, you can add a [ChildRavyn](#child-ravyn-application) app.
 
 ```python
 {!> ../../../docs_src/routing/router/router_class.py!}
 ```
 
-The main `Router` class is instantiated within the `Esmerald` application with the given routes and the application
+The main `Router` class is instantiated within the `Ravyn` application with the given routes and the application
 starts.
 
 !!! Info
     When adding another router to the application, [custom routers](#custom-router) and
-    [ChildEsmerald](#child-esmerald-application) are available as a way of doing it. One is more limited than
-    the other, in this case, custom routers are more limited than `ChildEsmerald`.
+    [ChildRavyn](#child-ravyn-application) are available as a way of doing it. One is more limited than
+    the other, in this case, custom routers are more limited than `ChildRavyn`.
 
 ### Parameters
 
@@ -26,13 +26,13 @@ All the parameters and defaults are available in the [Router Reference](../refer
 
 !!! Warning
     The `response_class`, `response_cookies`, `response_headers`, `tags` and `include_in_schema` are not used
-    when [add_route](#add_route) is used, only when using [ChildEsmerald](#child-esmerald-application) app.
+    when [add_route](#add_route) is used, only when using [ChildRavyn](#child-ravyn-application) app.
 
 ## Custom Router
 
 Let's assume there are specific **customer** submodules inside a `customers` dedicated file.
 There are three ways of separating the routes within the application, using [Include](./routes.md#include),
-a [ChildEsmerald](#child-esmerald-application) or by creating another router. Let's focus on the latter.
+a [ChildRavyn](#child-ravyn-application) or by creating another router. Let's focus on the latter.
 
 ```python hl_lines="28-35" title="/application/apps/routers/customers.py"
 {!> ../../../docs_src/routing/router/customers.py!}
@@ -47,16 +47,16 @@ Now you need to add the new custom router into the main application.
 {!> ../../../docs_src/routing/router/app.py!}
 ```
 
-This simple and your router is added to the main **Esmerald** application.
+This simple and your router is added to the main **Ravyn** application.
 
-## Child Esmerald Application
+## Child Ravyn Application
 
-What is this? We call it `ChildEsmerald` but in fact is simply Esmerald but under a different name mostly for
+What is this? We call it `ChildRavyn` but in fact is simply Ravyn but under a different name mostly for
 visualisation purposes and for the sake of organisation.
 
 !!! Check
-    Using `ChildEsmerald` or `Esmerald` is exactly the same thing, it is only if you prefer to create a
-    `sub application` and you prefer to use a different class instead of `Esmerald` to make it more organised.
+    Using `ChildRavyn` or `Ravyn` is exactly the same thing, it is only if you prefer to create a
+    `sub application` and you prefer to use a different class instead of `Ravyn` to make it more organised.
 
 When organising routes, using the `Router` class itself can be a bit limiting because there are certain attributes
 that when used within an instance or a `Router` to be passed to [add_route](#add_route) they will not be picked up.
@@ -76,25 +76,25 @@ This is not a limitation or a bug, in fact it is intentional as we want to prese
 Let's use the same example used in the [custom routers](#custom-router) with the customers specific routes and rules.
 
 ```python hl_lines="28-40" title="/application/apps/routers/customers.py"
-{!> ../../../docs_src/routing/router/childesmerald/customers.py!}
+{!> ../../../docs_src/routing/router/childravyn/customers.py!}
 ```
 
-Since the `ChildEsmerald` is a representation of an [Esmerald](../application/applications.md) class, we can pass
+Since the `ChildRavyn` is a representation of an [Ravyn](../application/applications.md) class, we can pass
 the otherwise limited parameters in the [custom router](#custom-router) and all the parameters available to
-[Esmerald](../application/applications.md).
+[Ravyn](../application/applications.md).
 
-You can add as many `ChildEsmerald` as you desire, there are no limits.
+You can add as many `ChildRavyn` as you desire, there are no limits.
 
 **Now in the main application**:
 
 ```python hl_lines="5" title="/application/app.py"
-{!> ../../../docs_src/routing/router/childesmerald/app.py!}
+{!> ../../../docs_src/routing/router/childravyn/app.py!}
 ```
 
 **Adding nested applications**
 
 ```python hl_lines="9 13-14" title="/application/app.py"
-{!> ../../../docs_src/routing/router/childesmerald/nested.py!}
+{!> ../../../docs_src/routing/router/childravyn/nested.py!}
 ```
 
 The example above shows that you could even add the same application within nested includes, and for each
@@ -103,15 +103,15 @@ include, you can add specific unique [permissions](../permissions/index.md), [mi
 instance of the `Include`. The options are endless.
 
 !!! Note
-    In terms of organisation, `ChildEsmerald` has a clean approach to the isolation of responsabilities and allows
+    In terms of organisation, `ChildRavyn` has a clean approach to the isolation of responsabilities and allows
     treating every individual module separately and simply adding it in to the main application
     in the form of [Include](./routes.md#include).
 
 !!! Tip
-    Treat the `ChildEsmerald` as an independent `Esmerald` instance.
+    Treat the `ChildRavyn` as an independent `Ravyn` instance.
 
 !!! Check
-    When adding a `ChildEsmerald` or `Esmerald` application, don't forget to add the unique path to the base
+    When adding a `ChildRavyn` or `Ravyn` application, don't forget to add the unique path to the base
     `Include`, this way you can assure the routes are found properly.
 
 ## Utils
@@ -168,13 +168,13 @@ functions on an application top level. Exception handler callables should be of 
 ### add_child_esmerald()
 
 ```python
-{!> ../../../docs_src/routing/router/add_child_esmerald.py!}
+{!> ../../../docs_src/routing/router/add_child_ravyn.py!}
 ```
 
 #### Parameters
 
-* **path** - The path for the child esmerald.
-* **child** - The [ChildEsmerald](#child-esmerald-application) instance.
+* **path** - The path for the child ravyn.
+* **child** - The [ChildRavyn](#child-ravyn-application) instance.
 * **name** - Name of the route.
 * [Websocket handler](./handlers.md#websocket-handler) - A websocket handler.
 * **permissions** - A list of [permissions](../permissions/index.md) to serve the application incoming
@@ -189,5 +189,5 @@ injection.
 * **exception_handlers** - A dictionary of [exception types](../exceptions.md) (or custom exceptions) and the handler
 functions on an application top level. Exception handler callables should be of the form of
 `handler(request, exc) -> response` and may be be either standard functions, or async functions.
-* **include_in_schema** - Boolean if this ChildEsmerald should be included in the OpenAPI Schema.
-* **deprecated** - Boolean if this ChildEsmerald should be marked as deprecated.
+* **include_in_schema** - Boolean if this ChildRavyn should be included in the OpenAPI Schema.
+* **deprecated** - Boolean if this ChildRavyn should be marked as deprecated.

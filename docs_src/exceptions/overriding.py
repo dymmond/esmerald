@@ -1,6 +1,6 @@
 from pydantic.error_wrappers import ValidationError
 
-from esmerald import (
+from ravyn import (
     HTTPException,
     ImproperlyConfigured,
     JSONResponse,
@@ -8,8 +8,8 @@ from esmerald import (
     Response,
     ValidationErrorException,
 )
-from esmerald.applications import Esmerald
-from esmerald.utils.enums import MediaType
+from ravyn.applications import Ravyn
+from ravyn.utils.enums import MediaType
 from lilya import status
 from lilya.exceptions import HTTPException as LilyaHTTPException
 from lilya.responses import Response as LilyaResponse
@@ -55,7 +55,7 @@ async def validation_error_exception_handler(
         )
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[...],
     exception_handlers={
         ImproperlyConfigured: improperly_configured_exception_handler,

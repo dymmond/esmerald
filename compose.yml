@@ -6,7 +6,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "esmerald"
+      POSTGRES_DB: "ravyn"
     expose:
       - "5432"
     command: >-

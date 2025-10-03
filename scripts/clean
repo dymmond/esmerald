@@ -12,8 +12,8 @@ fi
 if [ -d 'htmlcov' ] ; then
     rm -r htmlcov
 fi
-if [ -d 'esmerald.egg-info' ] ; then
-    rm -r esmerald.egg-info
+if [ -d 'ravyn.egg-info' ] ; then
+    rm -r ravyn.egg-info
 fi
 if [ -d '.hypothesis' ] ; then
     rm -r .hypothesis

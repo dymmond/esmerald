@@ -1,6 +1,6 @@
-from esmerald import get
-from esmerald.core.caches.redis import RedisCache
-from esmerald.utils.decorators import cache
+from ravyn import get
+from ravyn.core.caches.redis import RedisCache
+from ravyn.utils.decorators import cache
 
 redis_cache = RedisCache(redis_url="redis://localhost:6379")
 

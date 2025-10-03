@@ -1,4 +1,4 @@
-from esmerald import ChildEsmerald, Esmerald, Gateway, Include, JSONResponse, get
+from ravyn import ChildRavyn, Ravyn, Gateway, Include, JSONResponse, get
 
 from .myapp.interceptors import CookieInterceptor, RequestParamInterceptor
 
@@ -13,10 +13,10 @@ async def home_child() -> JSONResponse:
     return JSONResponse({"message": "Welcome home, child"})
 
 
-child_esmerald = ChildEsmerald(
+child_esmerald = ChildRavyn(
     routes=[Gateway(handler=home_child, interceptors=[CookieInterceptor, RequestParamInterceptor])]
 )
 
-app = Esmerald(
+app = Ravyn(
     routes=[Include("/child", app=child_esmerald), Gateway(handler=home)],
 )

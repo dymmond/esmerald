@@ -1,11 +1,11 @@
 import pytest
 
-from esmerald.applications import Esmerald
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.injector import Inject
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include
+from ravyn.applications import Ravyn
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.injector import Inject
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include
 
 
 def first_method(query_param: int) -> int:  # pragma: no cover
@@ -29,7 +29,7 @@ def test_dependency_validation() -> None:
         """ """
 
     with pytest.raises(ImproperlyConfigured):
-        Esmerald(
+        Ravyn(
             routes=[Gateway(path="/", handler=test_function)],
             dependencies={
                 "third": first_method,
@@ -48,7 +48,7 @@ def test_dependency_validation_with_include() -> None:
         """ """
 
     with pytest.raises(ImproperlyConfigured):
-        Esmerald(
+        Ravyn(
             routes=[Include(path="/", routes=[Gateway(path="/", handler=test_function)])],
             dependencies={
                 "third": Inject(first_method),
@@ -67,7 +67,7 @@ def test_dependency_validation_with_nested_include_mixed() -> None:
         """ """
 
     with pytest.raises(ImproperlyConfigured):
-        Esmerald(
+        Ravyn(
             routes=[
                 Include(
                     path="/",
@@ -91,7 +91,7 @@ def test_dependency_validation_with_two_nested_include() -> None:
         """ """
 
     with pytest.raises(ImproperlyConfigured):
-        Esmerald(
+        Ravyn(
             routes=[
                 Include(
                     path="/",
@@ -125,7 +125,7 @@ def test_dependency_validation_with_three_nested_include() -> None:
         """ """
 
     with pytest.raises(ImproperlyConfigured):
-        Esmerald(
+        Ravyn(
             routes=[
                 Include(
                     path="/",

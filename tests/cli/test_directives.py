@@ -3,10 +3,10 @@ import shutil
 
 import pytest
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 from tests.cli.utils import run_cmd
 
-app = Esmerald(routes=[])
+app = Ravyn(routes=[])
 
 
 FOUND_DIRECTIVES = ["createapp", "createproject", "runserver", "show_urls"]
@@ -45,7 +45,7 @@ def create_folders():
 
 
 def test_list_directives_no_app(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald directives", is_app=False)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn directives", is_app=False)
     assert ss == 0
 
     for directive in FOUND_DIRECTIVES:
@@ -53,7 +53,7 @@ def test_list_directives_no_app(create_folders):
 
 
 def test_list_directives_with_app(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald directives")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn directives")
     assert ss == 0
 
     for directive in FOUND_DIRECTIVES:
@@ -62,11 +62,11 @@ def test_list_directives_with_app(create_folders):
 
 def test_list_directives_with_flag(create_folders):
     original_path = os.getcwd()
-    run_cmd("tests.cli.main:app", "esmerald createproject myproject")
+    run_cmd("tests.cli.main:app", "ravyn createproject myproject")
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createapp myapp")
 
     os.chdir(original_path)
 
@@ -75,7 +75,7 @@ def test_list_directives_with_flag(create_folders):
         "myproject/myproject/apps/myapp/directives/operations/createsuperuser.py",
     )
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald --app tests.cli.main:app directives")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn --app tests.cli.main:app directives")
     assert ss == 0
 
     for directive in FOUND_DIRECTIVES:

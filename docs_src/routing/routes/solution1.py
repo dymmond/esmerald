@@ -1,6 +1,6 @@
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(namespace="src.urls", name="root"),
         Include(path="/api/v1", namespace="accounts.v1.urls", name="accounts"),

@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
 
-from esmerald import Esmerald, EsmeraldSettings
-from esmerald.contrib.schedulers.asyncz.config import AsynczConfig
+from ravyn import Ravyn, RavynSettings
+from ravyn.contrib.schedulers.asyncz.config import AsynczConfig
 
 if TYPE_CHECKING:
-    from esmerald.types import SchedulerType
+    from ravyn.types import SchedulerType
 
 
-# Create a ChildEsmeraldSettings object
-class EsmeraldSettings(EsmeraldSettings):
+# Create a ChildRavynSettings object
+class RavynSettings(RavynSettings):
     app_name: str = "my application"
     secret_key: str = "a child secret"
 
@@ -17,5 +17,5 @@ class EsmeraldSettings(EsmeraldSettings):
         return AsynczConfig()
 
 
-# Create an Esmerald application
-app = Esmerald(routes=..., settings_module=EsmeraldSettings)
+# Create an Ravyn application
+app = Ravyn(routes=..., settings_module=RavynSettings)

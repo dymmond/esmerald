@@ -4,12 +4,12 @@ import random
 import time
 from typing import Any
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.conf import settings
-from esmerald.core.caches.memory import InMemoryCache
-from esmerald.core.caches.redis import RedisCache
-from esmerald.testclient import EsmeraldTestClient
-from esmerald.utils.decorators import cache
+from ravyn import Gateway, Ravyn, get
+from ravyn.conf import settings
+from ravyn.core.caches.memory import InMemoryCache
+from ravyn.core.caches.redis import RedisCache
+from ravyn.testclient import EsmeraldTestClient
+from ravyn.utils.decorators import cache
 
 
 def test_basic_caching_memory(memory_cache) -> None:
@@ -142,14 +142,14 @@ async def test_cache_backend_failure_redis(caplog):
 
 
 async def test_esmerald_integration_in_memory(memory_cache):
-    """Ensure the caching decorator works in an Esmerald application with in-memory caching."""
+    """Ensure the caching decorator works in an Ravyn application with in-memory caching."""
 
     @get("/cached/{value}")
     @cache(backend=memory_cache, ttl=1)
     async def endpoint(value: int) -> dict:
         return {"value": value * 2, "random": random.randint(1, 1000)}
 
-    app = Esmerald(routes=[Gateway(handler=endpoint)])
+    app = Ravyn(routes=[Gateway(handler=endpoint)])
 
     with EsmeraldTestClient(app) as client:
         response1 = client.get("/cached/10")
@@ -176,14 +176,14 @@ async def test_esmerald_integration_in_memory(memory_cache):
 
 
 async def test_esmerald_integration_default():
-    """Ensure the caching decorator works in an Esmerald application with default caching."""
+    """Ensure the caching decorator works in an Ravyn application with default caching."""
 
     @get("/cached/{value}")
     @cache(ttl=1)
     async def endpoint(value: int) -> dict:
         return {"value": value * 2, "random": random.randint(1, 1000)}
 
-    app = Esmerald(routes=[Gateway(handler=endpoint)])
+    app = Ravyn(routes=[Gateway(handler=endpoint)])
 
     with EsmeraldTestClient(app) as client:
         response1 = client.get("/cached/10")
@@ -210,14 +210,14 @@ async def test_esmerald_integration_default():
 
 
 async def test_esmerald_integration_in_redis(redis_cache):
-    """Ensure the caching decorator works in an Esmerald application in redis."""
+    """Ensure the caching decorator works in an Ravyn application in redis."""
 
     @get("/cached/{value}")
     @cache(backend=redis_cache, ttl=1)
     async def cached_endpoint(value: int) -> dict:
         return {"value": value * 2, "random": random.randint(1, 1000)}
 
-    app = Esmerald(routes=[Gateway(handler=cached_endpoint)])
+    app = Ravyn(routes=[Gateway(handler=cached_endpoint)])
 
     with EsmeraldTestClient(app) as client:
         response1 = client.get("/cached/10")

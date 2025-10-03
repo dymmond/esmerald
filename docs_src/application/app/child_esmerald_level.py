@@ -1,9 +1,9 @@
 from pydantic import BaseModel, EmailStr
 
-from esmerald import (
+from ravyn import (
     APIView,
-    ChildEsmerald,
-    Esmerald,
+    ChildRavyn,
+    Ravyn,
     Gateway,
     Include,
     Request,
@@ -46,9 +46,9 @@ class UserApiView(APIView):
         await socket.close()
 
 
-child_esmerald = ChildEsmerald(routes=[Gateway(handler=UserApiView)])
+child_esmerald = ChildRavyn(routes=[Gateway(handler=UserApiView)])
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",

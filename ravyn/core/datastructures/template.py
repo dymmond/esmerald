@@ -1,0 +1,103 @@
+from typing import TYPE_CHECKING, Any, Optional, Type, Union
+
+from typing_extensions import Annotated, Doc
+
+from ravyn.core.datastructures.base import ResponseContainer  # noqa
+from ravyn.exceptions import TemplateNotFound  # noqa
+from ravyn.responses import TemplateResponse  # noqa
+from ravyn.utils.enums import MediaType
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ravyn.applications import Ravyn
+
+
+class Template(ResponseContainer[TemplateResponse]):
+    """
+    Template allows to pass the original template name and an alternative in case of exception
+    not found.
+    """
+
+    name: Annotated[
+        str,
+        Doc(
+            """
+            The template name in the format of a *path*.
+
+            Example: `templates/base/index.html`
+            """
+        ),
+    ]
+    context: Annotated[
+        Optional[dict[str, Any]],
+        Doc(
+            """
+            Any context that should be sent to the templates to be rendered.
+
+            **Example**
+
+            ```python
+            from ravyn import Ravyn, Gateway, Template, get
+            from ravyn.datastructures import Cookie, ResponseHeader
+
+
+            @get(
+                path="/home",
+                response_headers={"local-header": ResponseHeader(value="my-header")},
+                response_cookies=[
+                    Cookie(key="redirect-cookie", value="redirect-cookie"),
+                    Cookie(key="general-cookie", value="general-cookie"),
+                ],
+            )
+            def home() -> Template:
+                return Template(
+                    name="my-tem",
+                    context={"user": "me"},
+                    alternative_template=...,
+                )
+
+            ```
+            """
+        ),
+    ] = {}
+    alternative_template: Annotated[
+        Optional[str],
+        Doc(
+            """
+            An alternative template name if the `name` is not found.
+            This should also be in the format of a *path*.
+
+            Example: `templates/base/alternative_index.html`
+            """
+        ),
+    ] = None
+
+    def to_response(
+        self,
+        headers: dict[str, Any],
+        media_type: Union["MediaType", str],
+        status_code: int,
+        app: Type["Ravyn"],
+    ) -> "TemplateResponse":
+        from ravyn.exceptions import ImproperlyConfigured
+        from ravyn.responses import TemplateResponse
+
+        if not app.template_engine:
+            raise ImproperlyConfigured("Template engine is not configured")
+
+        data: dict[str, Any] = {
+            "background": self.background,
+            "context": self.context,
+            "headers": headers,
+            "status_code": status_code,
+            "template_engine": app.template_engine,
+            "media_type": media_type,
+        }
+        try:
+            return TemplateResponse(template_name=self.name, **data)
+        except TemplateNotFound as e:  # pragma: no cover
+            if self.alternative_template:
+                try:
+                    return TemplateResponse(template_name=self.alternative_template, **data)
+                except TemplateNotFound as ex:  # pragma: no cover
+                    raise ex
+            raise e

@@ -3,10 +3,10 @@ import logging
 from loguru import logger
 
 from asyncz.triggers import IntervalTrigger
-from esmerald.contrib.schedulers.asyncz.decorator import scheduler
+from ravyn.contrib.schedulers.asyncz.decorator import scheduler
 
 logging.basicConfig()
-logging.getLogger("esmerald").setLevel(logging.DEBUG)
+logging.getLogger("ravyn").setLevel(logging.DEBUG)
 
 
 @scheduler(name="collect_data", trigger=IntervalTrigger(hours=12), max_instances=3)

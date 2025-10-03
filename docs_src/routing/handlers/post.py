@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 
 class Item(BaseModel):
@@ -19,7 +19,7 @@ def another(name: str) -> str:
     return f"Another welcome, {name}!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=create),
         Gateway(path="/last/{name:str}", handler=another),

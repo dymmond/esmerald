@@ -1,23 +1,23 @@
 # Router
 
-Router является главным объектом, который связывает Esmerald с [Gateway](./routes.md#gateway), [WebSocketGateway](./routes.md#websocketgateway)
+Router является главным объектом, который связывает Ravyn с [Gateway](./routes.md#gateway), [WebSocketGateway](./routes.md#websocketgateway)
 и [handlers](./handlers.md).
 
 ## Класс Router
 
-Класс Router состоит из множества атрибутов, которые по умолчанию заполняются в приложении. Однако Esmerald также позволяет
-добавить дополнительные [пользовательские маршрутизаторы](#custom-router) или добавить приложение [ChildEsmerald](#child-esmerald-application).
+Класс Router состоит из множества атрибутов, которые по умолчанию заполняются в приложении. Однако Ravyn также позволяет
+добавить дополнительные [пользовательские маршрутизаторы](#custom-router) или добавить приложение [ChildRavyn](#child-ravyn-application).
 
 ```python
 {!> ../../../docs_src/routing/router/router_class.py!}
 ```
 
-Основной класс `Router` создается в приложении `Esmerald` с заданными маршрутами и приложение запускается.
+Основной класс `Router` создается в приложении `Ravyn` с заданными маршрутами и приложение запускается.
 
 !!! Info
     При добавлении другого маршрутизатора в приложение доступны два варианта: [пользовательские маршрутизаторы](#custom-router)
-    и [ChildEsmerald](#child-esmerald-application). В данном случае пользовательские маршрутизаторы
-    более ограничены, чем `ChildEsmerald`.
+    и [ChildRavyn](#child-ravyn-application). В данном случае пользовательские маршрутизаторы
+    более ограничены, чем `ChildRavyn`.
 
 ### Параметры
 
@@ -25,13 +25,13 @@ Router является главным объектом, который связ
 
 !!! Warning
     `response_class`, `response_cookies`, `response_headers`, `tags` и `include_in_schema` не используются в
-    [add_route](#add_route), только при использовании [ChildEsmerald](#child-esmerald-application).
+    [add_route](#add_route), только при использовании [ChildRavyn](#child-ravyn-application).
 
 ## Пользовательский маршрутизатор
 
 Предположим, что существуют определенные подмодули **customer** в файле `customers`, посвященном клиентам.
 Существует три способа разделения маршрутов в приложении: с использованием [Include](./routes.md#include),
-[ChildEsmerald](#child-esmerald-application) или созданием другого маршрутизатора. Давайте сосредоточимся на последнем варианте.
+[ChildRavyn](#child-ravyn-application) или созданием другого маршрутизатора. Давайте сосредоточимся на последнем варианте.
 
 ```python hl_lines="28-35" title="/application/apps/routers/customers.py"
 {!> ../../../docs_src/routing/router/customers.py!}
@@ -46,15 +46,15 @@ Router является главным объектом, который связ
 {!> ../../../docs_src/routing/router/app.py!}
 ```
 
-Ваш маршрутизатор добавлен в основное приложение **Esmerald**.
+Ваш маршрутизатор добавлен в основное приложение **Ravyn**.
 
-## Child Esmerald Application
+## Child Ravyn Application
 
-Что это такое? Мы называем его `ChildEsmerald`, но на самом деле это просто Esmerald, но под другим именем, в основном для удобства организации.
+Что это такое? Мы называем его `ChildRavyn`, но на самом деле это просто Ravyn, но под другим именем, в основном для удобства организации.
 
 !!! Check
-    Использование `ChildEsmerald` или `Esmerald` абсолютно одно и тоже, если вы хотите создать `sub application`
-    и предпочитаете использовать другой класс вместо `Esmerald` для более удобной организации.
+    Использование `ChildRavyn` или `Ravyn` абсолютно одно и тоже, если вы хотите создать `sub application`
+    и предпочитаете использовать другой класс вместо `Ravyn` для более удобной организации.
 
 При организации маршрутов использование самого класса `Router` может быть немного ограничивающим, поскольку существуют определенные атрибуты,
 которые при использовании в экземпляре или `Router` для передачи в [add_route](#add_route) не будут учтены.
@@ -77,11 +77,11 @@ Router является главным объектом, который связ
 {!> ../../../docs_src/routing/router/childesmerald/customers.py!}
 ```
 
-Поскольку `ChildEsmerald` является представлением класса [Esmerald](../application/applications.md),
+Поскольку `ChildRavyn` является представлением класса [Ravyn](../application/applications.md),
 мы можем передать ранее ограниченные параметры в [пользовательском маршрутизаторе](#custom-router) и все параметры,
-доступные для [Esmerald](../application/applications.md).
+доступные для [Ravyn](../application/applications.md).
 
-Вы можете добавить столько `ChildEsmerald`, сколько захотите, ограничений нет.
+Вы можете добавить столько `ChildRavyn`, сколько захотите, ограничений нет.
 
 **Теперь в основном приложении:**
 
@@ -101,15 +101,15 @@ Router является главным объектом, который связ
 Вариантов бесконечно много.
 
 !!! Note
-    С точки зрения организации, `ChildEsmerald` имеет чистый подход к изоляции обязанностей и позволяет
+    С точки зрения организации, `ChildRavyn` имеет чистый подход к изоляции обязанностей и позволяет
     рассматривать каждый модуль отдельно и просто добавлять его в основное приложение
     в форме [Include](./routes.md#include).
 
 !!! Tip
-    Рассматривайте `ChildEsmerald` как независимый экземпляр `Esmerald`.
+    Рассматривайте `ChildRavyn` как независимый экземпляр `Ravyn`.
 
 !!! Check
-    При добавлении приложения `ChildEsmerald` или `Esmerald` не забудьте добавить уникальный путь в базовый `Include`,
+    При добавлении приложения `ChildRavyn` или `Ravyn` не забудьте добавить уникальный путь в базовый `Include`,
     таким образом вы можете быть уверены, что маршруты будут найдены правильно.
 
 ## Утилиты
@@ -157,13 +157,13 @@ Router является главным объектом, который связ
 ### add_child_esmerald
 
 ```python
-{!> ../../../docs_src/routing/router/add_child_esmerald.py!}
+{!> ../../../docs_src/routing/router/add_child_ravyn.py!}
 ```
 
 #### Параметры
 
-* **path** - Путь для ChildEsmerald.
-* **child** - Экземпляр [ChildEsmerald](#child-esmerald-application).
+* **path** - Путь для ChildRavyn.
+* **child** - Экземпляр [ChildRavyn](#child-ravyn-application).
 * **name** - Название маршрута.
 * [Websocket handler](./handlers.md#websocket-handler) - Websocket обработчик.
 * **permissions** - Список [permissions](../permissions/index.md) для обслуживания входящих запросов приложения (HTTP и WebSockets).
@@ -174,5 +174,5 @@ Router является главным объектом, который связ
 * **dependencies** - Словарь строк и экземпляров [Inject](../dependencies.md), позволяющих внедрить зависимости на уровне приложения.
 * **exception_handlers** - Словарь [типов исключений](../exceptions.md) (или пользовательских исключений) и функций-обработчиков на верхнем уровне приложения.
 Вызываемые обработчики исключений должны иметь вид `handler(request, exc) -> response` и могут быть как синхронными, так и асинхронными функциями.
-* **include_in_schema** - Флаг, указывающий, следует ли включать ChildEsmerald в схему OpenAPI.
-* **deprecated** - Флаг, указывающий, следует ли пометить ChildEsmerald как устаревший.
+* **include_in_schema** - Флаг, указывающий, следует ли включать ChildRavyn в схему OpenAPI.
+* **deprecated** - Флаг, указывающий, следует ли пометить ChildRavyn как устаревший.

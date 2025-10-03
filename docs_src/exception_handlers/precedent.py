@@ -1,7 +1,7 @@
 from pydantic.error_wrappers import ValidationError
 
-from esmerald import (
-    Esmerald,
+from ravyn import (
+    Ravyn,
     Gateway,
     Include,
     JSONResponse,
@@ -49,7 +49,7 @@ async def me(request: Request) -> str:
     return "Hello, world!"
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",

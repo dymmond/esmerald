@@ -1,5 +1,5 @@
-from esmerald import delete, get, patch, post, put
-from esmerald.routing.apis.generics import CreateAPIView, DeleteAPIView, ReadAPIView
+from ravyn import delete, get, patch, post, put
+from ravyn.routing.apis.generics import CreateAPIView, DeleteAPIView, ReadAPIView
 
 
 class UserAPI(CreateAPIView, DeleteAPIView, ReadAPIView):

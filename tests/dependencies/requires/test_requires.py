@@ -3,9 +3,9 @@ from typing import Any, Dict, List, Optional, Union
 import anyio
 import pytest
 
-from esmerald import Gateway, Inject, Injects, JSONResponse, Requires, get
-from esmerald.testclient import create_client
-from esmerald.utils.dependencies import async_resolve_dependencies, resolve_dependencies
+from ravyn import Gateway, Inject, Injects, JSONResponse, Requires, get
+from ravyn.testclient import create_client
+from ravyn.utils.dependencies import async_resolve_dependencies, resolve_dependencies
 
 
 def get_user():
@@ -131,8 +131,8 @@ def test_openapi(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

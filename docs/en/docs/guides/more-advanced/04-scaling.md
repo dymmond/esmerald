@@ -1,6 +1,6 @@
 # Scaling
 
-Once your Esmerald application is in production, you may need to scale it for performance, reliability,
+Once your Ravyn application is in production, you may need to scale it for performance, reliability,
 and high availability.
 
 This guide outlines strategies for both vertical and horizontal scaling, load balancing, and caching.
@@ -31,7 +31,7 @@ With Docker Compose:
 
 ```yaml
 services:
-  esmerald:
+  ravyn:
     build: .
     ports:
       - "8000:8000"
@@ -74,20 +74,20 @@ Example `deployment.yaml`:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: esmerald-deployment
+  name: ravyn-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: esmerald
+      app: ravyn
   template:
     metadata:
       labels:
-        app: esmerald
+        app: ravyn
     spec:
       containers:
-        - name: esmerald
-          image: my-esmerald-app:latest
+        - name: ravyn
+          image: my-ravyn-app:latest
           ports:
             - containerPort: 8000
 ```
@@ -101,20 +101,22 @@ Use built-in or external caching to reduce database load and speed up requests:
 - Memory: `InMemoryCache`
 - Redis: `RedisCache`
 
-Configure via `EsmeraldSettings`:
+Configure via `RavynSettings`:
 
 ```python
-from esmerald.conf import EsmeraldSettings
-from esmerald.core.caches.redis import RedisCache
+from ravyn.conf import RavynSettings
+from ravyn.core.caches.redis import RedisCache
 
-class Settings(EsmeraldSettings):
+
+class Settings(RavynSettings):
     cache_backend = RedisCache(url="redis://localhost:6379")
 ```
 
 Use the `@cache` decorator:
 
 ```python
-from esmerald import get, cache
+from ravyn import get, cache
+
 
 @get("/slow")
 @cache(ttl=60)
@@ -130,7 +132,8 @@ async def slow_view() -> dict:
 Expose a simple `/health` route:
 
 ```python
-from esmerald import get
+from ravyn import get
+
 
 @get("/health")
 def health() -> dict:
@@ -141,7 +144,7 @@ def health() -> dict:
 
 ## Observability
 
-Esmerald comes with a more detailed [observability](../../observables.md) section that goes into
+Ravyn comes with a more detailed [observability](../../observables.md) section that goes into
 more specific details.
 
 Use logging, monitoring, and tracing tools:

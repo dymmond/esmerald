@@ -1,28 +1,28 @@
-# Upload Files in Esmerald: Advanced Guide
+# Upload Files in Ravyn: Advanced Guide
 
-Uploading files is a common functionality in web applications, and Esmerald makes this process simple using the `UploadFile` class. This guide will walk you through how to upload files, both single and multiple, and leverage Esmerald’s powerful features.
+Uploading files is a common functionality in web applications, and Ravyn makes this process simple using the `UploadFile` class. This guide will walk you through how to upload files, both single and multiple, and leverage Ravyn’s powerful features.
 
 ## 📂 Accessing `UploadFile`
 
 To use the `UploadFile` class, you can import it as follows:
 
 ```python
-from esmerald.core.datastructures import UploadFile
+from ravyn.core.datastructures import UploadFile
 ```
 
 Alternatively:
 
 ```python
-from esmerald import UploadFile
+from ravyn import UploadFile
 ```
 
-This class provides an interface for handling file uploads in Esmerald.
+This class provides an interface for handling file uploads in Ravyn.
 
 ---
 
 ## 🌐 Supported Content Types for File Uploads
 
-Esmerald supports different content types for file uploads, which can be specified via the `media_type` parameter in the `Body` decorator.
+Ravyn supports different content types for file uploads, which can be specified via the `media_type` parameter in the `Body` decorator.
 
 Available content types are:
 
@@ -33,10 +33,10 @@ Available content types are:
 You can access the `EncodingType` enum to use these content types:
 
 ```python
-from esmerald.utils.enums import EncodingType
+from ravyn.utils.enums import EncodingType
 ```
 
-From Esmerald version `0.8+`, you can handle file uploads using `Body` with `media_type`, or use `File` and `Form` directly for form and file uploads.
+From Ravyn version `0.8+`, you can handle file uploads using `Body` with `media_type`, or use `File` and `Form` directly for form and file uploads.
 
 ---
 
@@ -47,8 +47,9 @@ To upload a single file, use the `UploadFile` class. Here's an example of how to
 ### Example: Single File Upload
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, UploadFile, Body, post
-from esmerald.utils.enums import EncodingType
+from ravyn import Ravyn, Gateway, JSONResponse, UploadFile, Body, post
+from ravyn.utils.enums import EncodingType
+
 
 @post("/upload")
 async def upload_file(data: UploadFile = Body(media_type=EncodingType.MULTI_PART)) -> JSONResponse:
@@ -59,7 +60,8 @@ async def upload_file(data: UploadFile = Body(media_type=EncodingType.MULTI_PART
     filename = data.filename
     return JSONResponse({"filename": filename, "content": content.decode()})
 
-app = Esmerald(routes=[Gateway(handler=upload_file, name="upload-file")])
+
+app = Ravyn(routes=[Gateway(handler=upload_file, name="upload-file")])
 ```
 
 ### Explanation:
@@ -72,13 +74,14 @@ app = Esmerald(routes=[Gateway(handler=upload_file, name="upload-file")])
 
 ## 🗃 Multiple File Uploads
 
-Esmerald allows you to upload multiple files in one request by accepting a list of `UploadFile` objects.
+Ravyn allows you to upload multiple files in one request by accepting a list of `UploadFile` objects.
 
 ### Example: Multiple File Upload
 
 ```python
 from typing import List
-from esmerald import Esmerald, Gateway, JSONResponse, UploadFile, File, post
+from ravyn import Ravyn, Gateway, JSONResponse, UploadFile, File, post
+
 
 @post("/upload")
 async def upload_files(data: List[UploadFile] = File()) -> JSONResponse:
@@ -91,7 +94,8 @@ async def upload_files(data: List[UploadFile] = File()) -> JSONResponse:
         file_details.append({"filename": file.filename, "content": content.decode()})
     return JSONResponse({"files": file_details})
 
-app = Esmerald(routes=[Gateway(handler=upload_files, name="upload-files")])
+
+app = Ravyn(routes=[Gateway(handler=upload_files, name="upload-files")])
 ```
 
 ### Explanation:
@@ -109,7 +113,8 @@ You can also use `File` directly, which inherits from `Body`, to handle file upl
 ### Example: Single File Upload with `File`
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, UploadFile, File, post
+from ravyn import Ravyn, Gateway, JSONResponse, UploadFile, File, post
+
 
 @post("/upload")
 async def upload_file(data: UploadFile = File()) -> JSONResponse:
@@ -120,14 +125,16 @@ async def upload_file(data: UploadFile = File()) -> JSONResponse:
     filename = data.filename
     return JSONResponse({"filename": filename, "content": content.decode()})
 
-app = Esmerald(routes=[Gateway(handler=upload_file, name="upload-file")])
+
+app = Ravyn(routes=[Gateway(handler=upload_file, name="upload-file")])
 ```
 
 ### Example: Multiple File Upload with `File`
 
 ```python
 from typing import List
-from esmerald import Esmerald, Gateway, JSONResponse, UploadFile, File, post
+from ravyn import Ravyn, Gateway, JSONResponse, UploadFile, File, post
+
 
 @post("/upload")
 async def upload_files(data: List[UploadFile] = File()) -> JSONResponse:
@@ -140,7 +147,8 @@ async def upload_files(data: List[UploadFile] = File()) -> JSONResponse:
         file_details.append({"filename": file.filename, "content": content.decode()})
     return JSONResponse({"files": file_details})
 
-app = Esmerald(routes=[Gateway(handler=upload_files, name="upload-files")])
+
+app = Ravyn(routes=[Gateway(handler=upload_files, name="upload-files")])
 ```
 
 ### Explanation:
@@ -157,7 +165,8 @@ You can limit the number of files uploaded or the file size using `max_length` a
 ### Example: Limit Uploads to Three Files
 
 ```python
-from esmerald import Esmerald, Gateway, JSONResponse, UploadFile, File, post
+from ravyn import Ravyn, Gateway, JSONResponse, UploadFile, File, post
+
 
 @post("/upload")
 async def upload_files(data: List[UploadFile] = File(..., max_length=3)) -> JSONResponse:
@@ -170,7 +179,8 @@ async def upload_files(data: List[UploadFile] = File(..., max_length=3)) -> JSON
         file_details.append({"filename": file.filename, "content": content.decode()})
     return JSONResponse({"files": file_details})
 
-app = Esmerald(routes=[Gateway(handler=upload_files, name="upload-files")])
+
+app = Ravyn(routes=[Gateway(handler=upload_files, name="upload-files")])
 ```
 
 In this case, attempting to upload more than three files will raise a `ValidationErrorException`.
@@ -182,13 +192,13 @@ In this case, attempting to upload more than three files will raise a `Validatio
 You can also use the `File` parameter from the `params` module. This differs from `UploadFile`, which is used in the data structure.
 
 ```python
-from esmerald.core.datastructures import File  # data structure
+from ravyn.core.datastructures import File  # data structure
 ```
 
 or
 
 ```python
-from esmerald.params import File  # parameter
+from ravyn.params import File  # parameter
 ```
 
 This distinction allows you to handle files with different configurations based on your needs.
@@ -197,12 +207,12 @@ This distinction allows you to handle files with different configurations based 
 
 ## 📄 API Reference
 
-For more detailed information on `UploadFile` and its methods, check the [Esmerald API Reference](../../references/uploadfile.md).
+For more detailed information on `UploadFile` and its methods, check the [Ravyn API Reference](../../references/uploadfile.md).
 
 ---
 
 ## 📌 Conclusion
 
-Esmerald makes handling file uploads seamless and flexible, whether you need to upload single or multiple files,
+Ravyn makes handling file uploads seamless and flexible, whether you need to upload single or multiple files,
 apply limits, or use different encoders. By using the `UploadFile` and `File` parameters, you can efficiently
-manage file uploads in your applications while leveraging Esmerald’s validation and features.
+manage file uploads in your applications while leveraging Ravyn’s validation and features.

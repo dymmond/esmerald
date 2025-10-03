@@ -1,6 +1,6 @@
 import pytest
 
-from esmerald import (
+from ravyn import (
     APIView,
     Gateway,
     ImproperlyConfigured,
@@ -15,7 +15,7 @@ from esmerald import (
     whroute,
     whtrace,
 )
-from esmerald.testclient import create_client
+from ravyn.testclient import create_client
 
 
 @whpost("new-event")

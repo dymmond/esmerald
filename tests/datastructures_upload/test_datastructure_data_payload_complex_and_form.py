@@ -2,8 +2,8 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any, Dict
 
-from esmerald import Esmerald, Form, Gateway, Request, post
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Form, Gateway, Ravyn, Request, post
+from ravyn.testclient import EsmeraldTestClient
 
 
 def create_dummy_file(size_in_bytes: int, filename: str = "dummy.txt"):
@@ -23,7 +23,7 @@ def test_upload_file_is_closed_using_complexity(tmp_path: Path):
             "size": data.get("file").size,
         }
 
-    app = Esmerald(routes=[Gateway(handler=create_upload_file)])
+    app = Ravyn(routes=[Gateway(handler=create_upload_file)])
     client = EsmeraldTestClient(app)
     data = {"name": "Test"}
     response = client.post(

@@ -1,9 +1,9 @@
 # Handlers
 
-This is the reference for the [`Handlers`](https://esmerald.dev/routing/handlers/) that contains all the parameters,
+This is the reference for the [`Handlers`](https://ravyn.dev/routing/handlers/) that contains all the parameters,
 attributes and functions.
 
-::: esmerald.get
+::: ravyn.get
     options:
         members:
             - path
@@ -28,7 +28,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.post
+::: ravyn.post
     options:
         members:
             - path
@@ -53,7 +53,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.put
+::: ravyn.put
     options:
         members:
             - path
@@ -78,7 +78,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.patch
+::: ravyn.patch
     options:
         members:
             - path
@@ -103,7 +103,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.delete
+::: ravyn.delete
     options:
         members:
             - path
@@ -128,7 +128,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.route
+::: ravyn.route
     options:
         members:
             - path
@@ -153,7 +153,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.head
+::: ravyn.head
     options:
         members:
             - path
@@ -178,7 +178,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.options
+::: ravyn.options
     options:
         members:
             - path
@@ -203,7 +203,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.trace
+::: ravyn.trace
     options:
         members:
             - path
@@ -228,7 +228,7 @@ attributes and functions.
             - response_description
             - responses
 
-::: esmerald.websocket
+::: ravyn.websocket
     options:
         members:
             - path

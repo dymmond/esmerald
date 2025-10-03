@@ -1,6 +1,6 @@
 from enum import Enum
 
-from esmerald import Esmerald, Gateway, JSONResponse, get
+from ravyn import Ravyn, Gateway, JSONResponse, get
 
 
 class UserEnum(Enum):
@@ -12,7 +12,7 @@ class UserEnum(Enum):
 async def read_user(user_type: UserEnum) -> JSONResponse: ...
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(read_user),
     ]

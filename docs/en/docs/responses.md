@@ -2,19 +2,19 @@
 
 Like every application, there are many different responses that can be used for different use cases and scenarios.
 
-Esmerald having `Lilya` under the hood also means that all available responses from it simply just work.
+Ravyn having `Lilya` under the hood also means that all available responses from it simply just work.
 
-You simply just need to decide which type of response your function will have and let `Esmerald` take care of the rest.
+You simply just need to decide which type of response your function will have and let `Ravyn` take care of the rest.
 
 !!! Tip
 
-    Esmerald automatically understands if you are typing/returning a **dataclass**,
+    Ravyn automatically understands if you are typing/returning a **dataclass**,
     a **Pydantic dataclass** or a **Pydantic model** and converts
     them automatically into a [JSON response](#jsonresponse).
 
-## Esmerald responses and the application
+## Ravyn responses and the application
 
-The available responses from `Esmerald` are:
+The available responses from `Ravyn` are:
 
 * `Response`
 * `JSON`
@@ -53,7 +53,7 @@ The special mode has an exception for strings, so you can return in handlers a s
 {!> ../../../docs_src/responses/custom.py !}
 ```
 
-Esmerald supports good design, structure and practices but does not force you to follow specific rules of anything
+Ravyn supports good design, structure and practices but does not force you to follow specific rules of anything
 unless you want to.
 
 #### API Reference
@@ -75,7 +75,7 @@ Check out the [API Reference for JSON](./references/responses/json.md) for more 
 
 ### JSONResponse (Lilya)
 
-You can always use directly the `JSONResponse` from Lilya without using the Esmerald wrapper.
+You can always use directly the `JSONResponse` from Lilya without using the Ravyn wrapper.
 
 ```python
 from lilya.responses import JSONResponse as JSONResponse
@@ -106,16 +106,16 @@ Check out the [API Reference for OrJSON](./references/responses/orjson.md) for m
 
 ### ORJSONResponse
 
-You can always use directly the `ORJSONResponse` from Esmerald without using the wrapper.
+You can always use directly the `ORJSONResponse` from Ravyn without using the wrapper.
 
 ```python
-from esmerald.responses.encoders import ORJSONResponse
+from ravyn.responses.encoders import ORJSONResponse
 ```
 
 or alternatively (we alias JSONResponse to ORJSONResponse because it is faster)
 
 ```python
-from esmerald.responses import JSONResponse
+from ravyn.responses import JSONResponse
 ```
 
 #### API Reference
@@ -143,10 +143,10 @@ Check out the [API Reference for UJSON](./references/responses/ujson.md) for mor
 
 ### UJSONResponse
 
-You can always use directly the `UJSONResponse` from Esmerald without using the wrapper.
+You can always use directly the `UJSONResponse` from Ravyn without using the wrapper.
 
 ```python
-from esmerald.responses.encoders import UJSONResponse
+from ravyn.responses.encoders import UJSONResponse
 ```
 
 #### API Reference
@@ -228,7 +228,7 @@ The wrappers, like Lilya, also accept the classic parameters such as `headers` a
 You need to be mindful when it comes to return a specific status code when using
 [JSON](#json), [ORJSON](#orjson) and [UJSON](#ujson) wrappers.
 
-Esmerald allows you to pass the status codes via [handler](./routing/handlers.md) and directly via
+Ravyn allows you to pass the status codes via [handler](./routing/handlers.md) and directly via
 return of that same response but the if the handler has a `status_code` declared, the returned
 `status_code` **takes precedence**.
 
@@ -271,8 +271,8 @@ You can add one or multiple different responses into your specification.
 ```python
 from typing import Union
 
-from esmerald import post
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import post
+from ravyn.openapi.datastructures import OpenAPIResponse
 from pydantic import BaseModel
 
 
@@ -300,8 +300,8 @@ example, the `@post` defaults to 201 but you might want to add a different respo
 ```python hl_lines="13"
 from typing import Union
 
-from esmerald import post
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import post
+from ravyn.openapi.datastructures import OpenAPIResponse
 from pydantic import BaseModel
 
 
@@ -321,8 +321,8 @@ other.
 ```python hl_lines="19-20"
 from typing import Union
 
-from esmerald import post
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import post
+from ravyn.openapi.datastructures import OpenAPIResponse
 from pydantic import BaseModel
 
 
@@ -337,10 +337,10 @@ class Error(BaseModel):
 
 
 @post(path='/create', summary="Creates an item", responses={
-        201: OpenAPIResponse(model=ItemOut, description=...),
-        401: OpenAPIResponse(model=Error, description=...),
-    }
-)
+    201: OpenAPIResponse(model=ItemOut, description=...),
+    401: OpenAPIResponse(model=Error, description=...),
+}
+      )
 async def create() -> Union[None, ItemOut]:
     ...
 ```
@@ -352,12 +352,11 @@ returned objects?
 
 Let us imagine we want to return a list of an item in one endpoint and a list of users in another.
 
-
 ```python hl_lines="19 26"
 from typing import Union
 
-from esmerald import post
-from esmerald.openapi.datastructures import OpenAPIResponse
+from ravyn import post
+from ravyn.openapi.datastructures import OpenAPIResponse
 from pydantic import BaseModel, EmailStr
 
 
@@ -372,16 +371,17 @@ class UserOut(BaseModel):
 
 
 @get(path='/items', summary="Get all the items", responses={
-        201: OpenAPIResponse(model=[ItemOut], description=...),
-    }
-)
+    201: OpenAPIResponse(model=[ItemOut], description=...),
+}
+     )
 async def get_items() -> Union[None, ItemOut]:
     ...
 
+
 @get(path='/users', summary="Get all the users", responses={
-        201: OpenAPIResponse(model=[UserOut], description=...),
-    }
-)
+    201: OpenAPIResponse(model=[UserOut], description=...),
+}
+     )
 async def get_items() -> Union[None, UserOut]:
     ...
 ```
@@ -412,7 +412,7 @@ unique and you might want to return directly a `string`, a `dict`, an `integer`,
 ```
 ### Example
 
-Below we have a few examples of possible responses recognised by Esmerald automatically.
+Below we have a few examples of possible responses recognised by Ravyn automatically.
 
 **Pydantic model**
 

@@ -3,8 +3,8 @@ from typing import Type
 import pytest
 from lilya.status import HTTP_400_BAD_REQUEST
 
-from esmerald.applications import ChildEsmerald
-from esmerald.exceptions import (
+from ravyn.applications import ChildRavyn
+from ravyn.exceptions import (
     EsmeraldAPIException,
     InternalServerError,
     NotAuthorized,
@@ -12,15 +12,15 @@ from esmerald.exceptions import (
     ServiceUnavailable,
     ValidationErrorException,
 )
-from esmerald.requests import Request
-from esmerald.responses import Response
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
-from esmerald.types import ExceptionHandlerMap
-from esmerald.utils.enums import MediaType
+from ravyn.requests import Request
+from ravyn.responses import Response
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
+from ravyn.types import ExceptionHandlerMap
+from ravyn.utils.enums import MediaType
 
 
 @pytest.mark.parametrize(
@@ -426,7 +426,7 @@ def test_exception_handling_with_child_esmerald(
         def my_handler(self) -> None:
             raise exc_to_raise
 
-    child_esmerald = ChildEsmerald(routes=[Gateway(path="/base", handler=ControllerWithHandler)])
+    child_esmerald = ChildRavyn(routes=[Gateway(path="/base", handler=ControllerWithHandler)])
 
     with create_client(
         routes=[

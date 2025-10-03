@@ -3,7 +3,7 @@
 Sometimes you might want to pass extra information into your handler and possibly customize the OpenAPI
 documentation for the request body schema or how to control its validation.
 
-The simplest way is by importing the `Body` object from Esmerald.
+The simplest way is by importing the `Body` object from Ravyn.
 
 ```python hl_lines="13"
 {!> ../../../docs_src/extras/body/body_object.py !}

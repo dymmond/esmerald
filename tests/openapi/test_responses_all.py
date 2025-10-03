@@ -1,7 +1,7 @@
 from typing import Dict
 
-from esmerald import Esmerald, Gateway, Router, get
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, Router, get
+from ravyn.testclient import EsmeraldTestClient
 from tests.settings import TestSettings
 
 
@@ -13,7 +13,7 @@ def read_people() -> Dict[str, str]:
 router = Router(routes=[Gateway(path="/people", handler=read_people)])
 
 
-app = Esmerald(
+app = Ravyn(
     enable_openapi=True,
     version="2.0.0",
     title="Custom title",
@@ -64,7 +64,7 @@ def test_openapi_schema():
     }
 
 
-another_app = Esmerald(title="Esmerald", enable_openapi=True, settings_module=TestSettings)
+another_app = Ravyn(title="Ravyn", enable_openapi=True, settings_module=TestSettings)
 another_router = Router(routes=[Gateway(path="/people", handler=read_people)])
 another_app.add_router(router=another_router)
 
@@ -78,8 +78,8 @@ def test_openapi_schema_default():
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
-            "title": "Esmerald",
-            "summary": "Esmerald application",
+            "title": "Ravyn",
+            "summary": "Ravyn application",
             "description": "Highly scalable, performant, easy to learn and for every application.",
             "contact": {"name": "admin", "email": "admin@myapp.com"},
             "version": another_app.version,

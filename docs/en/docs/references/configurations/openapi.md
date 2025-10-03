@@ -2,16 +2,16 @@
 
 Reference for the `OpenAPIConfig` class object and how to use it.
 
-Read more about [how to use the OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/) in your
+Read more about [how to use the OpenAPIConfig](https://ravyn.dev/configurations/openapi/config/) in your
 application and leverage the system.
 
 ## How to import
 
 ```python
-from esmerald import OpenAPIConfig
+from ravyn import OpenAPIConfig
 ```
 
-::: esmerald.core.config.openapi.OpenAPIConfig
+::: ravyn.core.config.openapi.OpenAPIConfig
     options:
         filters:
         - "!^openapi"

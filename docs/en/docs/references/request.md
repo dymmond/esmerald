@@ -3,7 +3,7 @@
 Importing the `Request` from `esmerald` is as simple as:
 
 ```python
-from esmerald import Request
+from ravyn import Request
 ```
 
-::: esmerald.Request
+::: ravyn.Request

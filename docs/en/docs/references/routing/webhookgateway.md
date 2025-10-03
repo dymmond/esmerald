@@ -6,10 +6,10 @@ attributes and functions.
 ## How to import
 
 ```python
-from esmerald import WebhookGateway
+from ravyn import WebhookGateway
 ```
 
-::: esmerald.WebhookGateway
+::: ravyn.WebhookGateway
     options:
         members:
             - handler

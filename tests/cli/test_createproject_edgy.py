@@ -3,10 +3,10 @@ import shutil
 
 import pytest
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 from tests.cli.utils import run_cmd
 
-app = Esmerald(routes=[])
+app = Ravyn(routes=[])
 
 
 @pytest.fixture(scope="module")
@@ -42,7 +42,7 @@ def create_folders():
 
 
 def test_create_project(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject --edgy")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject myproject --edgy")
     assert ss == 0
 
     with open("myproject/.gitignore") as f:
@@ -75,7 +75,7 @@ def _run_asserts():
 
 
 def test_create_project_files_with_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject -e")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject myproject -e")
     assert ss == 0
 
     _run_asserts()
@@ -83,7 +83,7 @@ def test_create_project_files_with_env_var(create_folders):
 
 def test_create_project_files_without_env_var(create_folders):
     (o, e, ss) = run_cmd(
-        "tests.cli.main:app", "esmerald createproject myproject --edgy", is_app=False
+        "tests.cli.main:app", "ravyn createproject myproject --edgy", is_app=False
     )
     assert ss == 0
 
@@ -93,7 +93,7 @@ def test_create_project_files_without_env_var(create_folders):
 def test_create_project_files_without_env_var_and_with_app_flag(create_folders):
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald --app tests.cli.main:app createproject myproject -e",
+        "ravyn --app tests.cli.main:app createproject myproject -e",
         is_app=False,
     )
     assert ss == 0

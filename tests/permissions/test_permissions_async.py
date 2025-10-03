@@ -4,17 +4,17 @@ import pytest
 from lilya.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from lilya.websockets import WebSocketDisconnect
 
-from esmerald.applications import ChildEsmerald
-from esmerald.permissions import AllowAny, BasePermission, DenyAll
-from esmerald.requests import Request
-from esmerald.routing.gateways import Gateway, WebSocketGateway
-from esmerald.routing.handlers import get, route, websocket
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
-from esmerald.websockets import WebSocket
+from ravyn.applications import ChildRavyn
+from ravyn.permissions import AllowAny, BasePermission, DenyAll
+from ravyn.requests import Request
+from ravyn.routing.gateways import Gateway, WebSocketGateway
+from ravyn.routing.handlers import get, route, websocket
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
+from ravyn.websockets import WebSocket
 
 if TYPE_CHECKING:
-    from esmerald.types import APIGateHandler  # pragma: no cover
+    from ravyn.types import APIGateHandler  # pragma: no cover
 
 
 class LocalPermission(BasePermission):
@@ -98,7 +98,7 @@ def test_permissions_with_child_esmerald() -> None:
     @route(methods=["GET"], path="/secret", permissions=[LocalPermission])
     async def my_asgi_handler() -> None: ...
 
-    child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)])
+    child = ChildRavyn(routes=[Gateway(handler=my_asgi_handler)])
 
     with create_client(permissions=[ApplicationPermission], routes=[Include(app=child)]) as client:
         response = client.get("/secret")
@@ -121,7 +121,7 @@ def test_permissions_with_child_esmerald_two() -> None:
     @route(methods=["GET"], path="/secret", permissions=[ApplicationPermission])
     async def my_asgi_handler() -> None: ...
 
-    child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)])
+    child = ChildRavyn(routes=[Gateway(handler=my_asgi_handler)])
 
     with create_client(permissions=[LocalPermission], routes=[Include(app=child)]) as client:
         response = client.get("/secret")
@@ -145,7 +145,7 @@ def test_permissions_with_child_esmerald_three() -> None:
     async def my_asgi_handler() -> None:
         """ """
 
-    child = ChildEsmerald(routes=[Gateway(handler=my_asgi_handler)], permissions=[AllowAny])
+    child = ChildRavyn(routes=[Gateway(handler=my_asgi_handler)], permissions=[AllowAny])
 
     with create_client(permissions=[DenyAll], routes=[Include(app=child)]) as client:
         response = client.get("/secret")

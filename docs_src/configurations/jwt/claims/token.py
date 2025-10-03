@@ -1,6 +1,6 @@
 from typing import Union
 
-from esmerald.security.jwt.token import Token as EsmeraldToken
+from ravyn.security.jwt.token import Token as EsmeraldToken
 
 
 class Token(EsmeraldToken):
