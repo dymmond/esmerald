@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Request, Gateway, Include
-from esmerald.exceptions import PermissionDenied
+from ravyn import Ravyn, Request, Gateway, Include
+from ravyn.exceptions import PermissionDenied
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.types import ASGIApp, Receive, Scope, Send
 
@@ -43,7 +43,7 @@ async def user(user: str):
 
 
 # Via Path
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway("/", handler=home),
         Gateway(
@@ -57,7 +57,7 @@ app = Esmerald(
 
 
 # Via Include
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             "/",

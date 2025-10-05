@@ -1,6 +1,6 @@
-from esmerald import get, post
-from esmerald.core.datastructures import ResponseHeader
-from esmerald.utils.decorators import controller
+from ravyn import get, post
+from ravyn.core.datastructures import ResponseHeader
+from ravyn.utils.decorators import controller
 
 
 @controller(path="/users")

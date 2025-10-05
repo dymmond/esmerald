@@ -1,11 +1,11 @@
-from esmerald import EsmeraldSettings, OpenAPIConfig
+from ravyn import RavynSettings, OpenAPIConfig
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     @property
     def openapi_config(self) -> OpenAPIConfig:
         """
-        Override the default openapi_config from Esmerald.
+        Override the default openapi_config from Ravyn.
         """
         return OpenAPIConfig(
             title=self.title,

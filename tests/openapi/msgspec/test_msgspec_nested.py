@@ -1,7 +1,7 @@
-from esmerald.core.datastructures.msgspec import Struct
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import post
-from esmerald.testclient import create_client
+from ravyn.core.datastructures.msgspec import Struct
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import post
+from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
 
@@ -25,8 +25,8 @@ def test_user_msgspec_openapi(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

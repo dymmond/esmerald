@@ -2,12 +2,12 @@ from typing import Optional
 
 from loguru import logger
 
-from esmerald import Esmerald, Extension, Gateway, JSONResponse, Request, get
-from esmerald.types import DictAny
+from ravyn import Ravyn, Extension, Gateway, JSONResponse, Request, get
+from ravyn.types import DictAny
 
 
 class MyExtension(Extension):
-    def __init__(self, app: Optional["Esmerald"] = None, **kwargs: "DictAny"):
+    def __init__(self, app: Optional["Ravyn"] = None, **kwargs: "DictAny"):
         super().__init__(app, **kwargs)
         self.app = app
         self.kwargs = kwargs
@@ -33,5 +33,5 @@ async def home(request: Request) -> JSONResponse:
     return JSONResponse({"extensions": extensions})
 
 
-app = Esmerald(routes=[Gateway(handler=home)])
+app = Ravyn(routes=[Gateway(handler=home)])
 app.add_extension("my-extension", MyExtension)

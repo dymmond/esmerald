@@ -1,6 +1,6 @@
 # JWT
 
-As part of the support, Esmerald developed an authentication middleware using pyjwt allowing JWT integration
+As part of the support, Ravyn developed an authentication middleware using pyjwt allowing JWT integration
 with the current [supported models](./models.md#user).
 
 ## JWTAuthMiddleware
@@ -9,18 +9,18 @@ This simple but effective middleware extends the [BaseAuthMiddleware](../../midd
 and enables the authentication via JWT.
 
 ```python
-from esmerald.contrib.auth.edgy.middleware import JWTAuthMiddleware
+from ravyn.contrib.auth.edgy.middleware import JWTAuthMiddleware
 ```
 
 ### Parameters
 
-* `app` - Any ASGI app instance. E.g.: Esmerald instance.
+* `app` - Any ASGI app instance. E.g.: Ravyn instance.
 * `config` - An instance of [JWTConfig](../../configurations/jwt.md) object.
 * `user` - The user class (not instance!) being used by the application.
 
 ## How to use it
 
-There are different ways of calling this middleware in any Esmerald application.
+There are different ways of calling this middleware in any Ravyn application.
 
 ### Via settings
 

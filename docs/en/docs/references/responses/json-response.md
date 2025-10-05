@@ -1,3 +1,3 @@
 # **`JSONResponse`** class
 
-::: esmerald.JSONResponse
+::: ravyn.JSONResponse

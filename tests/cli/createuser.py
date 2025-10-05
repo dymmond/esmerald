@@ -6,7 +6,7 @@ from typing import Annotated
 
 from sayer import Option, command, success
 
-from esmerald import directive
+from ravyn import directive
 from tests.cli.simple.test_custom_directive import User
 
 
@@ -26,9 +26,9 @@ async def create(
     """
     user = await User.query.create_superuser(
         first_name=name,
-        last_name="esmerald",
+        last_name="ravyn",
         username=get_random_string(10),
-        email="mail@esmerald.dev",
+        email="mail@ravyn.dev",
         password=get_random_string(8),
     )
     success(f"Superuser {user.email} created successfully.")

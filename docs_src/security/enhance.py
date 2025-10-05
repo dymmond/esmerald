@@ -1,5 +1,5 @@
-from esmerald import Inject, Injects, get, Security
-from esmerald.security.oauth2 import OAuth2PasswordBearer
+from ravyn import Inject, Injects, get, Security
+from ravyn.security.oauth2 import OAuth2PasswordBearer
 from pydantic import BaseModel
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

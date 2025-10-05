@@ -1,7 +1,7 @@
 from typing import Dict
 
-from esmerald import Esmerald, get
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Ravyn, get
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -10,7 +10,7 @@ async def bar() -> Dict[str, str]:
     return {"hello": "world"}
 
 
-app = Esmerald(
+app = Ravyn(
     contact={
         "name": "API Support",
         "url": "https://www.example.com",
@@ -22,7 +22,7 @@ app = Esmerald(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_application(test_client_factory):
@@ -37,8 +37,8 @@ def test_openapi_schema(test_client_factory):
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
-            "title": "Esmerald",
-            "summary": "Esmerald application",
+            "title": "Ravyn",
+            "summary": "Ravyn application",
             "description": "Highly scalable, performant, easy to learn and for every application.",
             "contact": {
                 "name": "API Support",

@@ -6,11 +6,11 @@ And you have a frontend in another domain or in a different path of the same dom
 
 And you want to have a way for the frontend to authenticate with the backend, using a username and password.
 
-We can use OAuth2 to build that with **Esmerald**.
+We can use OAuth2 to build that with **Ravyn**.
 
 But let's save you the time of reading the full long specification just to find those little pieces of information you need.
 
-Let's use the tools provided by **Esmerald** to handle security.
+Let's use the tools provided by **Ravyn** to handle security.
 
 ## Let us dig in
 
@@ -68,7 +68,7 @@ The `password` "flow" is one of the methods (or "flows") defined in OAuth2 for m
 
 OAuth2 was originally designed to separate the backend or API from the server responsible for user authentication.
 
-However, in this scenario, the same Esmerald application will handle both the API and the authentication process.
+However, in this scenario, the same Ravyn application will handle both the API and the authentication process.
 
 Let’s examine it from this simplified perspective:
 
@@ -99,9 +99,9 @@ Here’s how the password "flow" works step by step:
      Authorization: Bearer foobar
      ```
 
-## **Esmerald** `OAuth2PasswordBearer`
+## **Ravyn** `OAuth2PasswordBearer`
 
-**Esmerald** offers various tools, at different levels of abstraction, to implement security features.
+**Ravyn** offers various tools, at different levels of abstraction, to implement security features.
 
 In this example, we’ll use **OAuth2** with the **Password** flow, utilizing a **Bearer** token. To do this, we’ll use the `OAuth2PasswordBearer` class.
 
@@ -109,7 +109,7 @@ In this example, we’ll use **OAuth2** with the **Password** flow, utilizing a 
 
     A "bearer" token isn’t the only option for authentication. However, it’s the most suitable for our use case and often the best choice for most scenarios.
 
-    Unless you’re an OAuth2 expert and know of another option that better fits your needs, **Esmerald** gives you the flexibility to implement other options as well.
+    Unless you’re an OAuth2 expert and know of another option that better fits your needs, **Ravyn** gives you the flexibility to implement other options as well.
 
     When creating an instance of the `OAuth2PasswordBearer` class, we provide the `tokenUrl` parameter. This specifies the URL that the frontend (running in the user's browser) will use to send the `username` and `password` in order to obtain the token.
 
@@ -146,7 +146,7 @@ So, it can be used with `Inject()` and `Injects()`.
 
 ### Use it
 
-Now you can pass that `oauth2_scheme` in a dependency with `Inject` and `Injects` natively from Esmerald.
+Now you can pass that `oauth2_scheme` in a dependency with `Inject` and `Injects` natively from Ravyn.
 
 ```python hl_lines="9-10"
 {!> ../../../docs_src/security/app.py !}
@@ -156,20 +156,20 @@ The `security` in the handler is what allows the OpenAPI specification to unders
 
 This dependency will provide a `str` that gets assigned to the `token` parameter of the *path operation function*.
 
-**Esmerald** will automatically recognize this dependency and use it to define a "security scheme" in the OpenAPI schema. This also makes the security scheme visible in the automatic API documentation, helping both developers and users understand how authentication works for the API.
+**Ravyn** will automatically recognize this dependency and use it to define a "security scheme" in the OpenAPI schema. This also makes the security scheme visible in the automatic API documentation, helping both developers and users understand how authentication works for the API.
 
 !!! info
-    **Esmerald** knows it can use the `OAuth2PasswordBearer` class (declared as a dependency) to define the security scheme in OpenAPI because `OAuth2PasswordBearer` inherits from `esmerald.security.oauth2.OAuth2`, which, in turn, inherits from `esmerald.security.base.SecurityBase`.
+    **Ravyn** knows it can use the `OAuth2PasswordBearer` class (declared as a dependency) to define the security scheme in OpenAPI because `OAuth2PasswordBearer` inherits from `ravyn.security.oauth2.OAuth2`, which, in turn, inherits from `ravyn.security.base.SecurityBase`.
 
-    All security utilities that integrate with OpenAPI and the automatic API documentation inherit from `SecurityBase`. This inheritance structure allows **Esmerald** to automatically recognize and integrate these security features into the OpenAPI schema, ensuring they are properly displayed in the API docs.
+    All security utilities that integrate with OpenAPI and the automatic API documentation inherit from `SecurityBase`. This inheritance structure allows **Ravyn** to automatically recognize and integrate these security features into the OpenAPI schema, ensuring they are properly displayed in the API docs.
 
 ## What does it do
 
-**Esmerald** will automatically look for the `Authorization` header in the request, check if it contains a value starting with `Bearer ` followed by a token, and return that token as a `str`.
+**Ravyn** will automatically look for the `Authorization` header in the request, check if it contains a value starting with `Bearer ` followed by a token, and return that token as a `str`.
 
-If it doesn't find an `Authorization` header or if the value doesn't contain a valid `Bearer` token, **Esmerald** will immediately respond with a `401 Unauthorized` error.
+If it doesn't find an `Authorization` header or if the value doesn't contain a valid `Bearer` token, **Ravyn** will immediately respond with a `401 Unauthorized` error.
 
-You don't need to manually check for the token or handle the error yourself, **Esmerald** ensures that if your function is executed, the `token` parameter will always contain a valid `str`.
+You don't need to manually check for the token or handle the error yourself, **Ravyn** ensures that if your function is executed, the `token` parameter will always contain a valid `str`.
 
 You can even test this behavior in the interactive documentation to see how it works in action.
 

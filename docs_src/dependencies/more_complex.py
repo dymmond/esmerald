@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Include, Inject, get
+from ravyn import Ravyn, Gateway, Include, Inject, get
 
 
 def first_dependency() -> int:
@@ -14,7 +14,7 @@ async def me(is_valid: bool) -> bool:
     return is_valid
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             routes=[Gateway(handler=me)],

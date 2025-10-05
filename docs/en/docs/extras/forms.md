@@ -1,6 +1,6 @@
 # The Form
 
-This is a special way of sending a form directly using Esmerald. The `Form` like the
+This is a special way of sending a form directly using Ravyn. The `Form` like the
 [File](./upload-files.md), inherits from the [Body](./body-fields.md) and applies the special
 `media_type` as `application/x-www-form-urlencoded`.
 
@@ -9,7 +9,7 @@ declaring `Body(media_type="application/x-www-form-urlencoded")`.
 
 The Form is a simple and cleaner shortcut for it.
 
-The simplest way is by importing the `Form` object from Esmerald.
+The simplest way is by importing the `Form` object from Ravyn.
 
 ```python hl_lines="7"
 {!> ../../../docs_src/extras/form/form_object.py !}
@@ -18,7 +18,7 @@ The simplest way is by importing the `Form` object from Esmerald.
 You can also import via:
 
 ```python
-from esmerald.params import Form
+from ravyn.params import Form
 ```
 
 As [explained here](./request-data.md#request-data), the handler is expecting a `data` field declared and from there
@@ -62,7 +62,7 @@ is how you actually type it. In this example, we declared a `User` dataclass wit
 ### Pydantic dataclass
 
 A Pydantic dataclass is the same as a normal python dataclass in the end but with some internal
-extras from Pydantic but for Esmerald, it is the same.
+extras from Pydantic but for Ravyn, it is the same.
 
 ```python hl_lines="14 25 28"
 {!> ../../../docs_src/extras/form/pydantic_dc.py !}
@@ -86,7 +86,7 @@ When you use json requests only the portion which matches the field-name is pass
 
 ## Notes
 
-As you could see from the examples, it is very simple and direct to use the `Form` in Esmerald and
+As you could see from the examples, it is very simple and direct to use the `Form` in Ravyn and
 the returns are simply clean.
 
 ### Important

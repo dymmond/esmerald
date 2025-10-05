@@ -1,6 +1,6 @@
 from typing import Union
 
-from esmerald import Esmerald, Gateway, get
+from ravyn import Ravyn, Gateway, get
 
 
 @get("/")
@@ -13,7 +13,7 @@ def read_user(user_id: int, q: Union[str, None] = None):
     return {"item_id": user_id, "q": q}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=home),
         Gateway(handler=read_user),

@@ -1,7 +1,7 @@
 from typing import List
 
-from esmerald import Esmerald, EsmeraldSettings
-from esmerald.middleware import TrustedHostMiddleware
+from ravyn import Ravyn, RavynSettings
+from ravyn.middleware import TrustedHostMiddleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
@@ -11,16 +11,16 @@ middleware = [
     LilyaMiddleware(TrustedHostMiddleware, allowed_hosts=["www.example.com", "*.example.com"])
 ]
 
-app = Esmerald(routes=routes, middleware=middleware)
+app = Ravyn(routes=routes, middleware=middleware)
 
 
 # Option two - Activating the built-in middleware using the config.
 allowed_hosts = ["www.example.com", "*.example.com"]
 
-app = Esmerald(routes=routes, allowed_hosts=allowed_hosts)
+app = Ravyn(routes=routes, allowed_hosts=allowed_hosts)
 
 
 # Option three - Using the settings module
-# Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldSettings):
+# Running the application with your custom settings -> RAVYN_SETTINGS_MODULE
+class AppSettings(RavynSettings):
     allowed_hosts: List[str] = ["www.example.com", "*.example.com"]

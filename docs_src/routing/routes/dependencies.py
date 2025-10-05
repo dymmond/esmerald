@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, get
+from ravyn import Ravyn, Gateway, get
 
 
 def first_dependency() -> bool:
@@ -18,7 +18,7 @@ async def homepage(first: bool, second: str, third: dict) -> dict:
     return {"page": "ok"}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=homepage, dependencies={"second": second_dependency})],
     dependencies={"first": first_dependency},
 )

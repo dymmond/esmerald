@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import (
+from ravyn import (
     APIView,
     JSONResponse,
     Request,

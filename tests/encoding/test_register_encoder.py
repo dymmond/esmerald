@@ -3,9 +3,9 @@ from typing import Any
 import pytest
 from attrs import asdict, define, field, has
 
-from esmerald import Esmerald, Gateway, post
-from esmerald.encoders import ENCODER_TYPES, LILYA_ENCODER_TYPES, Encoder
-from esmerald.testclient import EsmeraldTestClient, create_client
+from ravyn import Gateway, Ravyn, post
+from ravyn.encoders import ENCODER_TYPES, LILYA_ENCODER_TYPES, Encoder
+from ravyn.testclient import RavynTestClient, create_client
 
 
 class AttrsEncoder(Encoder):
@@ -45,8 +45,8 @@ def test_can_parse_attrs():
         assert type(LILYA_ENCODER_TYPES.get()[0]) is AttrsEncoder
         return data
 
-    app = Esmerald(routes=[Gateway(handler=create)], encoders=[AttrsEncoder])
-    client = EsmeraldTestClient(app)
+    app = Ravyn(routes=[Gateway(handler=create)], encoders=[AttrsEncoder])
+    client = RavynTestClient(app)
 
     response = client.post("/create", json={"name": "test", "age": 2, "email": "test@foobar.com"})
     assert response.status_code == 201

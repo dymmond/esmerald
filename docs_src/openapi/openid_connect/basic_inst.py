@@ -1,8 +1,8 @@
 from typing import List
 
-from esmerald import Request, get
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.security.open_id import OpenIdConnect
+from ravyn import Request, get
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.security.open_id import OpenIdConnect
 
 from .daos import UserDAO
 from .schemas import Error, UserOut

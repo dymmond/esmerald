@@ -9,29 +9,26 @@ One great framework, Django, has the settings in place but because of the legacy
 20 years of development of the framework, those became a bit bloated and hard to maintain.
 
 Inspired by Django and by the experience of 99% of the developed applications using some sort of settings
-(by environment, by user...), Esmerald comes equipped to handle exactly with that natively and using
+(by environment, by user...), Ravyn comes equipped to handle exactly with that natively and using
 [Pydantic](https://pydantic-docs.helpmanual.io/visual_studio_code/#basesettings-and-ignoring-pylancepyright-errors)
 to leverage those.
 
-!!! Note
-    From the version 0.8.X, Esmerald allows settings on [levels](./levels.md) making it 100% modular.
-
 ## The way of the settings
 
-There are two ways of using the settings object within an Esmerald application.
+There are two ways of using the settings object within an Ravyn application.
 
-* Using the **ESMERALD_SETTINGS_MODULE**
+* Using the **RAVYN_SETTINGS_MODULE**
 * Using the **[settings_module](#the-settings_module)**
 
 Each one of them has particular use cases but they also work together in perfect harmony.
 
-## EsmeraldSettings and the application
+## RavynSettings and the application
 
-When starting a Esmerald instance, if no parameters are provided, it will automatically load the defaults from the
-system settings object, the `EsmeraldSettings`.
+When starting a Ravyn instance, if no parameters are provided, it will automatically load the defaults from the
+system settings object, the `RavynSettings`.
 
 !!! Warning
-    In the past `EsmeraldSettings` was called `EsmeraldAPISettings` and that name will remain for now for backwards compatibility.
+    In the past `RavynSettings` was called `RavynAPISettings` and that name will remain for now for backwards compatibility.
 
     It is advised to simply use the new naming convention to avoid disruption in the future. The only change was the name.
 
@@ -49,11 +46,11 @@ system settings object, the `EsmeraldSettings`.
 
 ## Custom settings
 
-Using the defaults from `EsmeraldSettings` generally will not do too much for majority of the applications.
+Using the defaults from `RavynSettings` generally will not do too much for majority of the applications.
 
 For that reason custom settings are needed.
 
-**All the custom settings should be inherited from the `EsmeraldSettings`**.
+**All the custom settings should be inherited from the `RavynSettings`**.
 
 Let's assume we have three environments for one application: `production`, `testing`, `development` and a base settings
 file that contains common settings across the three environments.
@@ -84,17 +81,17 @@ file that contains common settings across the three environments.
 
 What just happened?
 
-1. Created an `AppSettings` inherited from the `EsmeraldSettings` with common cross environment properties.
+1. Created an `AppSettings` inherited from the `RavynSettings` with common cross environment properties.
 2. Created one settings file per environment and inherited from the base `AppSettings`.
 3. Imported specific database settings per environment and added the events `on_startup` and `on_shutdown` specific
 to each.
 
 
-## Esmerald Settings Module
+## Ravyn Settings Module
 
-Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment variable to execute any custom settings. If nothing is provided, then it will execute the application defaults.
+Ravyn by default is looking for a `RAVYN_SETTINGS_MODULE` environment variable to execute any custom settings. If nothing is provided, then it will execute the application defaults.
 
-=== "Without ESMERALD_SETTINGS_MODULE"
+=== "Without RAVYN_SETTINGS_MODULE"
 
     ```shell
     uvicorn src:app --reload
@@ -106,10 +103,10 @@ Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment vari
     INFO:     Application startup complete.
     ```
 
-=== "With ESMERALD_SETTINGS_MODULE MacOS & Linux"
+=== "With RAVYN_SETTINGS_MODULE MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=src.configs.production.ProductionSettings uvicorn src:app
+    RAVYN_SETTINGS_MODULE=src.configs.production.ProductionSettings uvicorn src:app
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -118,10 +115,10 @@ Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment vari
     INFO:     Application startup complete.
     ```
 
-=== "With ESMERALD_SETTINGS_MODULE Windows"
+=== "With RAVYN_SETTINGS_MODULE Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="src.configs.production.ProductionSettings"; uvicorn src:app
+    $env:RAVYN_SETTINGS_MODULE="src.configs.production.ProductionSettings"; uvicorn src:app
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -130,22 +127,22 @@ Esmerald by default is looking for a `ESMERALD_SETTINGS_MODULE` environment vari
     INFO:     Application startup complete.
     ```
 
-It is very simple, `ESMERALD_SETTINGS_MODULE` looks for the custom settings class created for the application
+It is very simple, `RAVYN_SETTINGS_MODULE` looks for the custom settings class created for the application
 and loads it in lazy mode.
 
 ## The settings_module
 
-This is a great tool to make your Esmerald applications 100% independent and modular. There are cases
-where you simply want to plug an existing Esmerald application into another and that same Esmerald application
+This is a great tool to make your Ravyn applications 100% independent and modular. There are cases
+where you simply want to plug an existing Ravyn application into another and that same Ravyn application
 already has unique settings and defaults.
 
-The `settings_module` is a parameter available in every single `Esmerald` instance as well as `ChildEsmerald`.
+The `settings_module` is a parameter available in every single `Ravyn` instance as well as `ChildRavyn`.
 
 ### Creating a settings_module
 
 The configurations have **literally the same concept**
-as the [EsmeraldSettings](#esmeralsettings-and-the-application), which means that every single
-`settings_module` **must be derived from the EsmeraldSettings** or an `ImproperlyConfigured` exception
+as the [RavynSettings](#esmeralsettings-and-the-application), which means that every single
+`settings_module` **must be derived from the RavynSettings** or an `ImproperlyConfigured` exception
 is thrown.
 
 The reason why the above is to keep the integrity of the application and settings.
@@ -154,20 +151,20 @@ The reason why the above is to keep the integrity of the application and setting
 {!> ../../../docs_src/application/settings/settings_config/example2.py !}
 ```
 
-Is this simple, literally, Esmerald simplifies the way you can manipulate settings on each level
+Is this simple, literally, Ravyn simplifies the way you can manipulate settings on each level
 and keeping the intregrity at the same time.
 
 Check out the [order of priority](#order-of-priority) to understand a bit more.
 
 ## Order of priority
 
-There is an order or priority in which Esmerald reads your settings.
+There is an order or priority in which Ravyn reads your settings.
 
-If a `settings_module` is passed into an Esmerald instance, that same object takes priority above
+If a `settings_module` is passed into an Ravyn instance, that same object takes priority above
 anything else. Let us imagine the following:
 
-* An Esmerald application with normal settings.
-* A ChildEsmerald with a specific set of configurations unique to it.
+* An Ravyn application with normal settings.
+* A ChildRavyn with a specific set of configurations unique to it.
 
 ```python hl_lines="11"
 {!> ../../../docs_src/application/settings/settings_config/example1.py !}
@@ -177,40 +174,40 @@ anything else. Let us imagine the following:
 
 In the example above we:
 
-1. Created a settings object derived from the main `EsmeraldSettings` and
+1. Created a settings object derived from the main `RavynSettings` and
 passed some defaults.
-1. Passed the `ChildEsmeraldSettings` into the `ChildEsmerald` instance.
-2. Passed the `ChildEsmerald` into the `Esmerald` application.
+1. Passed the `ChildRavynSettings` into the `ChildRavyn` instance.
+2. Passed the `ChildRavyn` into the `Ravyn` application.
 
 So, how does the priority take place here using the `settings_module`?
 
 1. If no parameter value (upon instantiation), for example `app_name`, is provided, it will check for that same value
 inside the `settings_module`.
 2. If `settings_module` does not provide an `app_name` value, it will look for the value in the
-`ESMERALD_SETTINGS_MODULE`.
-3. If no `ESMERALD_SETTINGS_MODULE` environment variable is provided by you, then it will default
-to the Esmerald defaults. [Read more about this here](#esmerald-settings-module).
+`RAVYN_SETTINGS_MODULE`.
+3. If no `RAVYN_SETTINGS_MODULE` environment variable is provided by you, then it will default
+to the Ravyn defaults. [Read more about this here](#ravyn-settings-module).
 
 So the order of priority:
 
 1. Parameter instance value takes priority above `settings_module`.
-2. `settings_module` takes priority above `ESMERALD_SETTINGS_MODULE`.
-3. `ESMERALD_SETTINGS_MODULE` is the last being checked.
+2. `settings_module` takes priority above `RAVYN_SETTINGS_MODULE`.
+3. `RAVYN_SETTINGS_MODULE` is the last being checked.
 
-## Settings config and Esmerald settings module
+## Settings config and Ravyn settings module
 
 The beauty of this modular approach is the fact that makes it possible to use **both** approaches at
 the same time ([order of priority](#order-of-priority)).
 
 Let us use an example where:
 
-1. We create a main Esmerald settings object to be used by the `ESMERALD_SETTINGS_MODULE`.
-2. We create a `settings_module` to be used by the Esmerald instance.
+1. We create a main Ravyn settings object to be used by the `RAVYN_SETTINGS_MODULE`.
+2. We create a `settings_module` to be used by the Ravyn instance.
 3. We start the application using both.
 
 Let us also assume you have all the settings inside a `src/configs` directory.
 
-**Create a configuration to be used by the ESMERALD_SETTINGS_MODULE**
+**Create a configuration to be used by the RAVYN_SETTINGS_MODULE**
 
 ```python title="src/configs/main_settings.py"
 {!> ../../../docs_src/application/settings/settings_config/main_settings.py !}
@@ -222,7 +219,7 @@ Let us also assume you have all the settings inside a `src/configs` directory.
 {!> ../../../docs_src/application/settings/settings_config/app_settings.py !}
 ```
 
-**Create an Esmerald instance**
+**Create an Ravyn instance**
 
 ```python title="src/app.py" hl_lines="14"
 {!> ../../../docs_src/application/settings/settings_config/app.py !}
@@ -234,7 +231,7 @@ via instantiation. The AppSettings from the main_settings.py is used to call fro
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=src.configs.main_settings.AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -246,7 +243,7 @@ via instantiation. The AppSettings from the main_settings.py is used to call fro
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="src.configs.main_settings.AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="src.configs.main_settings.AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -255,15 +252,15 @@ via instantiation. The AppSettings from the main_settings.py is used to call fro
     INFO:     Application startup complete.
     ```
 
-Great! Now not only we have used the `settings_module` and `ESMERALD_SETTINGS_MODULE` but we used
+Great! Now not only we have used the `settings_module` and `RAVYN_SETTINGS_MODULE` but we used
 them at the same time!
 
 Check out the [order of priority](#order-of-priority) to understand which value takes precedence
-and how Esmerald reads them out.
+and how Ravyn reads them out.
 
 ## Parameters
 
-The parameters available inside `EsmeraldSettings` can be overridden by any custom settings
+The parameters available inside `RavynSettings` can be overridden by any custom settings
 and those are available in the [settings reference](../references/application/settings.md).
 
 !!! Check
@@ -311,14 +308,14 @@ When you instantiate an application **or you pass parameters directly or you use
 Passing parameters in the object will always override the values from the default settings.
 
 ```python
-from esmerald import EsmeraldSettings
-from esmerald.conf.enums import EnvironmentType
-from esmerald.middleware.https import HTTPSRedirectMiddleware
-from esmerald.types import Middleware
+from ravyn import RavynSettings
+from ravyn.conf.enums import EnvironmentType
+from ravyn.middleware.https import HTTPSRedirectMiddleware
+from ravyn.types import Middleware
 from lilya.middleware import DefineMiddleware
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     debug: bool = False
 
     @property
@@ -336,9 +333,9 @@ Starting the application with the above settings will make sure that has an init
 set with values, **but** what happens if you use the settings + parameters on instantiation?
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(debug=True, middleware=[])
+app = Ravyn(debug=True, middleware=[])
 ```
 
 The application will:
@@ -347,7 +344,7 @@ The application will:
 2. Will start without custom middlewares it the `HTTPSRedirectMiddleware` it was overridden by `[]`.
 
 Although it was set in the settings to start with `HTTPSRedirectMiddleware` and debug as `False`, once you pass different
-values in the moment of instantiating an `Esmerald` object, those will become the values to be used.
+values in the moment of instantiating an `Ravyn` object, those will become the values to be used.
 
 **Declaring parameters in the instance will always precede the values from your settings**.
 
@@ -355,7 +352,7 @@ The reason why you should be using settings is because it will make your codebas
 to maintain.
 
 !!! Check
-    When you pass the parameters via instantiation of an Esmerald object and not via parameters, when accessing the
+    When you pass the parameters via instantiation of an Ravyn object and not via parameters, when accessing the
     values via `request.app.settings`, the values **won't be in the settings** as those were passed via application
     instantiation and not via settings object. The way to access those values is, for example, `request.app.app_name`
     directly.

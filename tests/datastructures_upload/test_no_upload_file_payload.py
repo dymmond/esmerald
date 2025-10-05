@@ -1,8 +1,8 @@
 from typing import Dict, Union
 
-from esmerald import Gateway, UploadFile, post, status
-from esmerald.params import File
-from esmerald.testclient import create_client
+from ravyn import Gateway, UploadFile, post, status
+from ravyn.params import File
+from ravyn.testclient import create_client
 
 
 @post("/files", status_code=status.HTTP_200_OK)

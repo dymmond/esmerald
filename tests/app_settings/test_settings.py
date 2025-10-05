@@ -5,24 +5,24 @@ import pytest
 from lilya.middleware import DefineMiddleware
 from pydantic import BaseModel
 
-from esmerald import (
-    ChildEsmerald,
-    Esmerald,
-    EsmeraldSettings,
+from ravyn import (
+    ChildRavyn,
     Gateway,
     Include,
     JSONResponse,
+    Ravyn,
+    RavynSettings,
     Request,
     get,
     settings,
 )
-from esmerald.conf import monkay
-from esmerald.core.config import CORSConfig, CSRFConfig
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.middleware import RequestSettingsMiddleware
-from esmerald.testclient import create_client
-from esmerald.types import Middleware
-from esmerald.utils.crypto import get_random_secret_key
+from ravyn.conf import monkay
+from ravyn.core.config import CORSConfig, CSRFConfig
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.middleware import RequestSettingsMiddleware
+from ravyn.testclient import create_client
+from ravyn.types import Middleware
+from ravyn.utils.crypto import get_random_secret_key
 
 
 def test_main_settings():
@@ -83,7 +83,7 @@ async def _app_settings(request: Request) -> str:
     return request.app.settings.app_name
 
 
-class DisableOpenAPI(EsmeraldSettings):
+class DisableOpenAPI(RavynSettings):
     enable_openapi: bool = True
 
 
@@ -139,7 +139,7 @@ def test_inner_settings_module(test_client_factory):
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_module, EsmeraldSettings)
+        assert isinstance(client.app.settings_module, RavynSettings)
 
 
 def test_inner_settings_module_as_instance(test_client_factory):
@@ -166,10 +166,10 @@ def test_inner_settings_module_as_instance(test_client_factory):
         assert client.app.app_name == "new app"
         assert settings.app_name == "test_client"
         assert "RequestSettingsMiddleware" == response.json()["middleware"][0]
-        assert isinstance(client.app.settings_module, EsmeraldSettings)
+        assert isinstance(client.app.settings_module, RavynSettings)
 
 
-def test_child_esmerald_independent_settings(test_client_factory):
+def test_child_ravyn_independent_settings(test_client_factory):
     class ChildSettings(DisableOpenAPI):
         app_name: str = "child app"
         secret_key: str = "child key"
@@ -178,7 +178,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.model_dump_json(exclude={"cache_backend"})
 
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Gateway(handler=_app_settings)],
         settings_module=ChildSettings,
         middleware=[DefineMiddleware(RequestSettingsMiddleware)],
@@ -195,7 +195,7 @@ def test_child_esmerald_independent_settings(test_client_factory):
         assert client.app.app_name == settings.app_name
 
 
-def test_child_esmerald_independent_cors_config(test_client_factory):
+def test_child_ravyn_independent_cors_config(test_client_factory):
     cors_config = CORSConfig(allow_origins=["*"])
     csrf_config = CSRFConfig(secret=settings.secret_key)
 
@@ -212,7 +212,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
         return request.app_settings.model_dump_json(exclude={"cache_backend"})  # pragma: no cover
 
     secret = get_random_secret_key()
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Gateway(handler=_app_settings)],
         settings_module=ChildSettings,
         middleware=[DefineMiddleware(RequestSettingsMiddleware)],
@@ -230,7 +230,7 @@ def test_child_esmerald_independent_cors_config(test_client_factory):
         assert client.app.csrf_config.secret == settings.secret_key
 
 
-def test_nested_child_esmerald_independent_settings(test_client_factory):
+def test_nested_child_ravyn_independent_settings(test_client_factory):
     class NestedChildSettings(DisableOpenAPI):
         app_name: str = "nested child app"
         secret_key: str = "nested child key"
@@ -243,13 +243,13 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
     async def _app_settings(request: Request) -> Dict[Any, Any]:
         return request.app_settings.model_dump_json(exclude={"cache_backend"})
 
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Gateway(handler=_app_settings)],
         settings_module=NestedChildSettings,
         middleware=[DefineMiddleware(RequestSettingsMiddleware)],
     )
 
-    nested_child = ChildEsmerald(routes=[Include(app=child)], settings_module=ChildSettings)
+    nested_child = ChildRavyn(routes=[Include(app=child)], settings_module=ChildSettings)
 
     with create_client(
         routes=[Include("/child", app=nested_child)],
@@ -270,16 +270,16 @@ def test_nested_child_esmerald_independent_settings(test_client_factory):
         assert client.app.app_name == settings.app_name
 
 
-@pytest.mark.parametrize("settings_module", [Esmerald, ChildEsmerald, DummySettings, DummyObject])
+@pytest.mark.parametrize("settings_module", [Ravyn, ChildRavyn, DummySettings, DummyObject])
 def test_raises_exception_on_wrong_settings(settings_module, test_client_factory):
-    """If a settings_module is thrown but not type EsmeraldSettings"""
+    """If a settings_module is thrown but not type RavynSettings"""
     with pytest.raises(ImproperlyConfigured):
         with create_client(routes=[], settings_module=settings_module):
             """ """
 
 
 def test_basic_settings(test_client_factory):
-    app = Esmerald(
+    app = Ravyn(
         debug=False,
         enable_scheduler=False,
         include_in_schema=False,
@@ -295,7 +295,7 @@ def test_basic_settings(test_client_factory):
 
 
 def test_default_settings():
-    app = Esmerald(
+    app = Ravyn(
         debug=False,
         enable_scheduler=False,
         include_in_schema=False,

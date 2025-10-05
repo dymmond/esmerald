@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from esmerald import Inject, Injects, Esmerald, get, Gateway
-from esmerald.security.open_id import OpenIdConnect
+from ravyn import Inject, Injects, Ravyn, get, Gateway
+from ravyn.security.open_id import OpenIdConnect
 
 security = OpenIdConnect(openIdConnectUrl="/openid", description="OpenIdConnect security scheme")
 
@@ -11,7 +11,7 @@ async def get_items(auth: str = Injects()) -> Dict[str, Any]:
     return {"auth": auth}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=get_items),
     ]

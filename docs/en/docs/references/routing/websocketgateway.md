@@ -6,10 +6,10 @@ attributes and functions.
 ## How to import
 
 ```python
-from esmerald import WebSocketGateway
+from ravyn import WebSocketGateway
 ```
 
-::: esmerald.WebSocketGateway
+::: ravyn.WebSocketGateway
     options:
         members:
             - path

@@ -1,9 +1,9 @@
 from lilya.middleware import DefineMiddleware
 
-from esmerald import Gateway, Request, get
-from esmerald.applications import Esmerald
-from esmerald.middleware.https import HTTPSRedirectMiddleware
-from esmerald.responses import PlainText
+from ravyn import Gateway, Request, get
+from ravyn.applications import Ravyn
+from ravyn.middleware.https import HTTPSRedirectMiddleware
+from ravyn.responses import PlainText
 
 
 def test_https_redirect_middleware(test_client_factory):
@@ -11,7 +11,7 @@ def test_https_redirect_middleware(test_client_factory):
     def homepage(request: Request) -> PlainText:
         return PlainText("OK", status_code=200)
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway("/", handler=homepage)],
         middleware=[DefineMiddleware(HTTPSRedirectMiddleware)],
     )

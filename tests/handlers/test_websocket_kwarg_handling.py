@@ -1,8 +1,8 @@
-from esmerald.params import Header
-from esmerald.routing.gateways import WebSocketGateway
-from esmerald.routing.handlers import websocket
-from esmerald.testclient import create_client
-from esmerald.websockets import WebSocket
+from ravyn.params import Header
+from ravyn.routing.gateways import WebSocketGateway
+from ravyn.routing.handlers import websocket
+from ravyn.testclient import create_client
+from ravyn.websockets import WebSocket
 
 
 def test_handle_websocket_params_parsing() -> None:
@@ -28,7 +28,7 @@ def test_handle_websocket_params_parsing() -> None:
         data = await socket.receive_json()
 
         assert data
-        await socket.send_json({"data": "esmerald"})
+        await socket.send_json({"data": "ravyn"})
         await socket.close()
 
     client = create_client(routes=[WebSocketGateway(path="/", handler=websocket_handler)])
@@ -36,6 +36,6 @@ def test_handle_websocket_params_parsing() -> None:
     with client.websocket_connect(
         "/1?qp=1", headers={"some-header": "abc"}, cookies={"cookie": "yum"}
     ) as ws:
-        ws.send_json({"data": "esmerald"})
+        ws.send_json({"data": "ravyn"})
         data = ws.receive_json()
         assert data

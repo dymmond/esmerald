@@ -16,11 +16,11 @@ The header is nothing more nothing less than pydantic `FieldInfo` with some extr
 that extends the `Param`.
 
 ```python
-from esmerald import Param
+from ravyn import Param
 
 # or
 
-from esmerald.params import Param
+from ravyn.params import Param
 ```
 
 The same result can be achieved by using directly the `Param` field.
@@ -29,7 +29,7 @@ The same result can be achieved by using directly the `Param` field.
 {!> ../../../docs_src/extras/headers/example2.py !}
 ```
 
-Since the `Param` is the base for the Esmerald parameters, you can use it directly with a key difference.
+Since the `Param` is the base for the Ravyn parameters, you can use it directly with a key difference.
 
 the `Header` expects a `value` field whereas the `Param` expects a `header` value.
 

@@ -1,22 +1,23 @@
 # Permissions
 
-Esmerald provides two different ways of declaring permissions: the Esmerald native system and the one provided by Lilya.
+Ravyn provides two different ways of declaring permissions: the Ravyn native system and the one provided by Lilya.
 
-## Esmerald Native System
+## Ravyn Native System
 
-The Esmerald native system allows you to define permissions directly within your application. Here is an example:
+The Ravyn native system allows you to define permissions directly within your application. Here is an example:
 
 ```python
-from esmerald.permissions import Permission
+from ravyn.permissions import Permission
+
 
 class ViewDashboardPermission(Permission):
-    def has_permission(self, request, view): # or async has_permission
+    def has_permission(self, request, view):  # or async has_permission
         return request.user.is_authenticated and request.user.has_role('admin')
 ```
 
 ## Lilya Permissions
 
-Lilya is the core of Esmerald that can be integrated to manage permissions. Here is an example of how to use Lilya with Esmerald:
+Lilya is the core of Ravyn that can be integrated to manage permissions. Here is an example of how to use Lilya with Ravyn:
 
 ```python
 from typing import Any
@@ -24,7 +25,7 @@ from typing import Any
 from lilya.protocols.permissions import PermissionProtocol
 from lilya.types import ASGIApp
 
-from esmerald.exceptions import NotAuthorized
+from ravyn.exceptions import NotAuthorized
 
 
 class EditProfilePermission(PermissionProtocol):

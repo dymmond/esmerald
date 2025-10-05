@@ -6,7 +6,7 @@ import msgspec
 from msgspec import Struct
 from pydantic import BaseModel
 
-from esmerald.encoders import Encoder
+from ravyn.encoders import Encoder
 from lilya._utils import is_class_and_subclass
 
 

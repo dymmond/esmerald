@@ -1,6 +1,6 @@
-from esmerald import get, post
-from esmerald.testclient import create_client
-from esmerald.utils.decorators import controller
+from ravyn import get, post
+from ravyn.testclient import create_client
+from ravyn.utils.decorators import controller
 
 
 @controller(path="/items", tags=["controller", "decorator"])
@@ -33,8 +33,8 @@ def test_openapi_schema(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

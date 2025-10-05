@@ -1,7 +1,7 @@
-from esmerald import Esmerald
-from esmerald.conf import settings
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
+from ravyn import Ravyn
+from ravyn.conf import settings
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.contrib.auth.mongoz.middleware import JWTAuthMiddleware
 from monkay import load
 from lilya.types import ASGIApp
 
@@ -17,4 +17,4 @@ class AppAuthMiddleware(JWTAuthMiddleware):
         super().__init__(app, config=self.jwt_config, user_model=load("myapp.models.User"))
 
 
-app = Esmerald(middleware=[AppAuthMiddleware])
+app = Ravyn(middleware=[AppAuthMiddleware])

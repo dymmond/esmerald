@@ -3,7 +3,7 @@ from typing import Dict
 
 from pydantic import BaseModel
 
-from esmerald import BackgroundTasks, Request, Response, post
+from ravyn import BackgroundTasks, Request, Response, post
 
 
 class UserIn(BaseModel):

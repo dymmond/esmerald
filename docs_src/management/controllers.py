@@ -1,4 +1,4 @@
-from esmerald import JSONResponse, get
+from ravyn import JSONResponse, get
 
 
 @get()

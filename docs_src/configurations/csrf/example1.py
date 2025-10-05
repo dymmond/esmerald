@@ -1,8 +1,8 @@
-from esmerald import CSRFConfig, Esmerald, settings
+from ravyn import CSRFConfig, Ravyn, settings
 
 csrf_config = CSRFConfig(
     secret=settings.secret_key,
     cookie_name="csrftoken",
 )
 
-app = Esmerald(csrf_config=csrf_config)
+app = Ravyn(csrf_config=csrf_config)

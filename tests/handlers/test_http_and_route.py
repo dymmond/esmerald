@@ -3,11 +3,11 @@ from typing import Any
 import pytest
 from lilya.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from esmerald import Include, route, status
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.routing.gateways import Gateway
-from esmerald.testclient import create_client
-from esmerald.utils.enums import HttpMethod
+from ravyn import Include, route, status
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.routing.gateways import Gateway
+from ravyn.testclient import create_client
+from ravyn.utils.enums import HttpMethod
 
 
 @pytest.mark.parametrize(
@@ -83,9 +83,9 @@ def test_handler_route(test_client_factory):
         assert response.status_code == status.HTTP_202_ACCEPTED
         assert response.json() == "alone"
 
-        response = client.get("/try/esmerald/alone")
+        response = client.get("/try/ravyn/alone")
         assert response.status_code == status.HTTP_202_ACCEPTED
-        assert response.json() == "esmerald"
+        assert response.json() == "ravyn"
 
 
 def test_handler_route_two(test_client_factory):

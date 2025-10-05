@@ -2,8 +2,8 @@ from typing import Dict
 
 from pydantic import BaseModel, EmailStr
 
-from esmerald import Gateway, Include, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, get
+from ravyn.testclient import create_client
 
 
 class Base(BaseModel):
@@ -39,8 +39,8 @@ def test_inheritance(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

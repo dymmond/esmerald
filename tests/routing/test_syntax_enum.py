@@ -2,8 +2,8 @@ from enum import Enum
 
 from pydantic import __version__
 
-from esmerald import Gateway, JSONResponse, get
-from esmerald.testclient import create_client
+from ravyn import Gateway, JSONResponse, get
+from ravyn.testclient import create_client
 
 pydantic_version = ".".join(__version__.split(".")[:2])
 

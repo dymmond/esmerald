@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from esmerald import HTTPException, JSONResponse, Request, post
+from ravyn import HTTPException, JSONResponse, Request, post
 from lilya import status
 
 

@@ -1,6 +1,6 @@
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald()
+app = Ravyn()
 
 app.add_route(
     handler=...,

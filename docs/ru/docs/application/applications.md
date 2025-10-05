@@ -1,9 +1,9 @@
 # Приложения
 
-Esmerald работает на основе Lilya и поэтому включает в себя класс приложения **Esmerald**,
+Ravyn работает на основе Lilya и поэтому включает в себя класс приложения **Ravyn**,
 который объединяет всю функциональность.
 
-## Класс Esmerald
+## Класс Ravyn
 
 === "In a nutshell"
 
@@ -37,7 +37,7 @@ Esmerald работает на основе Lilya и поэтому включа
 С помощью cURL:
 
 ```shell
-$ curl -X GET http://localhost:8000/user/esmerald
+$ curl -X GET http://localhost:8000/user/ravyn
 ```
 
 С помощью Insomnia:
@@ -72,7 +72,7 @@ $ curl -X GET http://localhost:8000/user/esmerald
 * **routes** - Список маршрутов для обслуживания входящих HTTP и WebSocket запросов. Список [Gateway](../routing/routes.md#gateway), [WebSocketGateway](../routing/routes.md#websocketgateway) или [Include](../routing/routes.md#include).
 * **interceptors** - Список [interceptors](../interceptors.md) для обслуживания входящих запросов приложения (HTTP и WebSocket).
 * **permissions** - Список [permissions](../permissions/index.md) для обслуживания входящих запросов приложения (HTTP и WebSocket).
-* **middleware** - Список middleware, которые будут выполняться для каждого запроса. Приложение Esmerald всегда будет включать middleware из переданных конфигураций (CSRF, CORS, JWT...) и пользовательских middleware. Middleware может быть подклассом [MiddlewareProtocol](../protocols.md) или <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a>. Узнайте больше о [протоколах Python](https://peps.python.org/pep-0544/).
+* **middleware** - Список middleware, которые будут выполняться для каждого запроса. Приложение Ravyn всегда будет включать middleware из переданных конфигураций (CSRF, CORS, JWT...) и пользовательских middleware. Middleware может быть подклассом [MiddlewareProtocol](../protocols.md) или <a href='https://www.lilya.dev/middleware/' target='_blank'>Lilya Middleware</a>. Узнайте больше о [протоколах Python](https://peps.python.org/pep-0544/).
 * **dependencies** - Словарь строк и экземпляров [Inject](.././dependencies.md), позволяющий внедрение зависимостей на уровне приложения.
 * **exception_handlers** - Словарь типов [исключений](../exceptions.md) (или пользовательских исключений) и функций-обработчиков на верхнем уровне приложения. Обработчики исключений должны быть в форме `handler(request, exc) -> response` и могут быть как синхронными, так и асинхронными функциями.
 * **csrf_config** - Если установлен [CSRFConfig](../configurations/csrf.md), это включит middleware CSRF.
@@ -100,7 +100,7 @@ $ curl -X GET http://localhost:8000/user/esmerald
 ## Настройки приложения
 
 Настройки - это еще один способ управления параметрами, переданными объекту
-[Esmerald при создании](#instantiating-the-application). Ознакомьтесь с [настройками](./settings.md)
+[Ravyn при создании](#instantiating-the-application). Ознакомьтесь с [настройками](./settings.md)
 для получения дополнительных сведений о том, как использовать их для улучшения вашего приложения.
 
 Для доступа к настройкам приложения существует несколько способов:

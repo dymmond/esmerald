@@ -1,6 +1,6 @@
 import pytest
 
-from esmerald import Gateway, ImproperlyConfigured, Include, WebhookGateway, get, whget
+from ravyn import Gateway, ImproperlyConfigured, Include, WebhookGateway, get, whget
 
 
 @get()

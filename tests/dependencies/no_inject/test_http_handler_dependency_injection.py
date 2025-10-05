@@ -3,13 +3,13 @@ from typing import Any, Dict
 
 from lilya.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from esmerald.applications import ChildEsmerald
-from esmerald.requests import Request
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.routing.router import Include
-from esmerald.testclient import create_client
+from ravyn.applications import ChildRavyn
+from ravyn.requests import Request
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.routing.router import Include
+from ravyn.testclient import create_client
 
 
 def router_first_dependency() -> bool:
@@ -188,7 +188,7 @@ def test_dependency_isolation_with_nested_include() -> None:
         assert response.status_code == HTTP_400_BAD_REQUEST
 
 
-def test_dependency_isolation_with_child_esmerald() -> None:
+def test_dependency_isolation_with_child_ravyn() -> None:
     class SecondController(APIView):
         path = "/second"
 
@@ -196,13 +196,13 @@ def test_dependency_isolation_with_child_esmerald() -> None:
         def test_method(self, first: dict) -> None:
             """ """
 
-    child_esmerald = ChildEsmerald(
+    child_ravyn = ChildRavyn(
         routes=[
             Gateway(path="/", handler=FirstController),
             Gateway(path="/", handler=SecondController),
         ]
     )
 
-    with create_client(routes=[Include(app=child_esmerald)]) as client:
+    with create_client(routes=[Include(app=child_ravyn)]) as client:
         response = client.get("/second")
         assert response.status_code == HTTP_400_BAD_REQUEST

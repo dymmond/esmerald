@@ -1,7 +1,7 @@
 from typing import Union
 
-from esmerald.security.jwt.token import Token as EsmeraldToken
+from ravyn.security.jwt.token import Token as RavynAPIExceptionToken
 
 
-class Token(EsmeraldToken):
+class Token(RavynAPIExceptionToken):
     token_type: Union[str, None] = None

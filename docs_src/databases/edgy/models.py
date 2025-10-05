@@ -3,7 +3,7 @@ from enum import Enum
 
 from edgy import Database, Registry, fields
 
-from esmerald.contrib.auth.edgy.base_user import User as BaseUser
+from ravyn.contrib.auth.edgy.base_user import User as BaseUser
 
 database = Database("<YOUR-SQL-QUERY_STRING")
 models = Registry(database=database)

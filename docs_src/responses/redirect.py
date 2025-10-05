@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, Redirect, get
+from ravyn import Ravyn, Gateway, Redirect, get
 
 
 @get("/another-home")
@@ -13,4 +13,4 @@ def home() -> Redirect:
     return Redirect(path="/another-home")
 
 
-app = Esmerald(routes=[Gateway(handler=home), Gateway(handler=another_home)])
+app = Ravyn(routes=[Gateway(handler=home), Gateway(handler=another_home)])

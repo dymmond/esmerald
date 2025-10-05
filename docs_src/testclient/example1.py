@@ -1,4 +1,4 @@
-from esmerald.testclient import EsmeraldTestClient
+from ravyn.testclient import RavynTestClient
 from lilya.responses import HTMLResponse
 
 
@@ -9,6 +9,6 @@ async def app(scope, receive, send):
 
 
 def test_application():
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.status_code == 200

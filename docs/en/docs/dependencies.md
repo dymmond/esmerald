@@ -3,7 +3,7 @@
 Dependencies are a piece of great functionality now common in a lot of the frameworks out there and allows the concept
 of dependency injection to take place.
 
-Esmerald uses the `Inject` object to manage those dependencies in every
+Ravyn uses the `Inject` object to manage those dependencies in every
 [application level](./application/levels.md)
 
 ## Dependencies and the application levels
@@ -51,9 +51,9 @@ The same is applied also to [exception handlers](./exception-handlers.md).
 
 ## Use without `Inject`
 
-From the version 3.6.8+, Esmerald allows you to use the callable directly without using the `Inject` object.
+Ravyn allows you to use the callable directly without using the `Inject` object.
 
-What does this mean? Well, internally Esmerald checks if its an Inject object and if not, it will automatically
+What does this mean? Well, internally Ravyn checks if its an Inject object and if not, it will automatically
 create an `Inject` object for you. This means that you can use the callable directly without using the `Inject` object.
 
 ```python
@@ -67,12 +67,12 @@ This is also applied to the `Factory` (below) or to any callable that you want t
 
 ## The usage of the `Factory`
 
-The `Factory` class serves as a **dependency provider** for Esmerald's dependency injection system.
+The `Factory` class serves as a **dependency provider** for Ravyn's dependency injection system.
 It allows developers to register a class or function as a dependency that will be instantiated or invoked whenever needed.
 Instead of manually creating instances across multiple parts of an application, `Factory` ensures a
 **centralized and automated way** to manage dependencies.
 
-This is particularly useful in frameworks like Esmerald, where dependency injection plays a key role in managing
+This is particularly useful in frameworks like Ravyn, where dependency injection plays a key role in managing
 resources, services, and business logic components efficiently.
 
 One of the **primary benefits** of using `Factory` is that it supports **both direct callables and string-based imports**,
@@ -109,7 +109,7 @@ Let us see the `urls.py` and understand from where we got the `user_dao`:
 In the previous example we use lambdas to create a callable from DAO instances and we refactor it
 to use the `Factory` object instead. It is cleaner and more pleasant to work with.
 
-The cleaner version of lambdas using Esmerald it is called `Factory`.
+The cleaner version of lambdas using Ravyn it is called `Factory`.
 
 !!! Note
     You can see the Python lambdas as the equivalent of the anonymous functions in JavaScript.
@@ -117,14 +117,14 @@ The cleaner version of lambdas using Esmerald it is called `Factory`.
 
 
 !!! Tip
-    Learn more about Esmerald [DAOs](./protocols.md) and how to take advantage of those.
+    Learn more about Ravyn [DAOs](./protocols.md) and how to take advantage of those.
 
 
 The Factory is a clean wrapper around any callable (classes usually are callables as well, even without instantiating the object itself).
 
 !!! Tip
     No need to explicitly instantiate the class, just pass the class definition to the `Factory`
-    and Esmerald takes care of the rest for you.
+    and Ravyn takes care of the rest for you.
 
 ### Factory using `args`
 
@@ -148,7 +148,7 @@ This represents the usage of the explicit `args` and `kwargs` to pass.
 
 ### Importing using strings
 
-Like everything is Esmerald, there are different ways of achieving the same results and the `Factory`
+Like everything is Ravyn, there are different ways of achieving the same results and the `Factory`
 is no exception.
 
 In the previous examples we were passing the `UserDAO`, `ArticleDAO` and `PostDAO` classes directly
@@ -157,7 +157,7 @@ into the `Factory` object and that also means that **you will need to import the
 What can happen with this process? Majority of the times nothing **but** you can also have the classic
 `partially imported ...` annoying error, right?
 
-Well, the good news is that Esmerald got you covered, as usual.
+Well, the good news is that Ravyn got you covered, as usual.
 
 The `Factory` **also allows import via string** without the need of importing directly the object
 to the place where it is needed.
@@ -179,33 +179,29 @@ Now, this is a beauty is it not? This way, the codebase is cleaner and without a
 objects from the top.
 
 !!! Tip
-    Both cases work well within Esmerald, this is simply an alternative in case the complexity of
+    Both cases work well within Ravyn, this is simply an alternative in case the complexity of
     the codebase increases and you would like to tidy it up a bit more.
 
 In conclusion, if your views/routes expect dependencies, you can define them in the upper level as described
-and Esmerald will make sure that they will be automatically injected.
+and Ravyn will make sure that they will be automatically injected.
 
 ## `Requires` and `Security`
 
-From the version 3.6.3+, Esmerald allows also to use what we call a "simpler" dependency injection. This dependency
-injection system does not aim replace the current sytem but aims to provide another way of using some dependencies
-in a simpler fashion.
-
-The `Security` object is used, as the name suggests, to implement the out of the box [security provided by Esmerald](./security/index.md)
+The `Security` object is used, as the name suggests, to implement the out of the box [security provided by Ravyn](./security/index.md)
 and in that section, that is explained how to apply whereas te `Requires` implements a more high level dependency system.
 
-You can import directly from `esmerald`:
+You can import directly from `ravyn`:
 
 **Requires**
 
 ```python
-from esmerald import Requires
+from ravyn import Requires
 ```
 
 **Security**
 
 ```python
-from esmerald import Security
+from ravyn import Security
 ```
 
 !!! Warning
@@ -233,7 +229,7 @@ but a pure Python class. You can apply to any other complex example and having a
 
 ### Requires within the application layers
 
-Now this is where things start to get interesting. Esmerald operates in layers and **almost** everything works like that.
+Now this is where things start to get interesting. Ravyn operates in layers and **almost** everything works like that.
 
 What if you want to use the requires to operate on a layer level? Can you do it? **Yes**.
 
@@ -248,7 +244,7 @@ It works as we normally declare dependencies, for example, a [Factory](#more-rea
 You can mix `Security()` and `Requires()` without any issues as both subclass the same base but there are nuances compared to
 the direct application of the `Security` without using the `Requires` object.
 
-For more details how to directly use the Security without using the Requires, please check the [security provided by Esmerald](./security/index.md)
+For more details how to directly use the Security without using the Requires, please check the [security provided by Ravyn](./security/index.md)
 section where it goes in into detail how to use it.
 
 ```python
@@ -256,7 +252,7 @@ from lilya.middleware.request_context import RequestContextMiddleware
 from lilya.middleware import DefineMiddleware
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[...],
     middleware=[
         middleware=[DefineMiddleware(RequestContextMiddleware)],
@@ -277,7 +273,7 @@ Now, how can we make this simple example work? Like this:
 This example is an short adaptation of [security using jwt](./security/oauth-jwt.md) where we update the dependency
 to add a `Requires` that also depends on a `Security`.
 
-The `Security()` object is used **only** when you want to apply the niceties of [Esmerald security](./security/index.md)
+The `Security()` object is used **only** when you want to apply the niceties of [Ravyn security](./security/index.md)
 in your application.
 
 It is also a wrapper that does some magic for you by adding some extras automatically. The `Security` object expects you
@@ -300,7 +296,7 @@ to make sure we reflect that.
 
 ## Recap
 
-There many ways of implementing the dependency injection in Esmerald:
+There many ways of implementing the dependency injection in Ravyn:
 
 * Using the layers with `Inject` and `Injects()` respectively.
 * Using the `Factory()` within and `Inject()` and `Injects()`.

@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
-from esmerald import Esmerald, Gateway, Include, get
-from esmerald.core.protocols.middleware import MiddlewareProtocol
-from esmerald.types import ASGIApp, Receive, Scope, Send
+from ravyn import Ravyn, Gateway, Include, get
+from ravyn.core.protocols.middleware import MiddlewareProtocol
+from ravyn.types import ASGIApp, Receive, Scope, Send
 
 
 class SampleMiddleware(MiddlewareProtocol):
@@ -49,7 +49,7 @@ async def home() -> str:
 
 # Via Gateway
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=get, middleware=[AnotherSample])],
     middleware=[SampleMiddleware],
 )
@@ -57,7 +57,7 @@ app = Esmerald(
 
 # Via Include
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Include(
             routes=[Gateway(handler=get, middleware=[SampleMiddleware])],

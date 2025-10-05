@@ -2,18 +2,18 @@ from lilya.types import Receive, Scope, Send
 from loguru import logger
 from pydantic import BaseModel
 
-from esmerald import ChildEsmerald, Gateway, Include, JSONResponse, Request, post
-from esmerald.core.interceptors.interceptor import EsmeraldInterceptor
-from esmerald.exceptions import NotAuthorized
-from esmerald.params import Cookie
-from esmerald.testclient import create_client
+from ravyn import ChildRavyn, Gateway, Include, JSONResponse, Request, post
+from ravyn.core.interceptors.interceptor import RavynInterceptor
+from ravyn.exceptions import NotAuthorized
+from ravyn.params import Cookie
+from ravyn.testclient import create_client
 
 
-class ErrorInterceptor(EsmeraldInterceptor):
+class ErrorInterceptor(RavynInterceptor):
     """"""
 
 
-class TestInterceptor(EsmeraldInterceptor):
+class TestInterceptor(RavynInterceptor):
     __test__ = False
 
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
@@ -21,7 +21,7 @@ class TestInterceptor(EsmeraldInterceptor):
         request.scope.setdefault("path_params", {})["name"] = "intercept"
 
 
-class CookieInterceptor(EsmeraldInterceptor):
+class CookieInterceptor(RavynInterceptor):
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         request = Request(scope=scope, receive=receive, send=send)
         csrf_token = request.cookies["csrftoken"]
@@ -32,7 +32,7 @@ class CookieInterceptor(EsmeraldInterceptor):
             raise NotAuthorized() from None
 
 
-class LoggingInterceptor(EsmeraldInterceptor):
+class LoggingInterceptor(RavynInterceptor):
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         logger.info("Intercepted for logging")
 
@@ -70,8 +70,8 @@ async def error() -> None:
     """"""
 
 
-def test_issubclassing_EsmeraldInterceptor(test_client_factory):
-    assert issubclass(TestInterceptor, EsmeraldInterceptor)
+def test_issubclassing_RavynInterceptor(test_client_factory):
+    assert issubclass(TestInterceptor, RavynInterceptor)
 
 
 def test_interceptor_not_implemented(test_client_factory):
@@ -119,10 +119,10 @@ def test_interceptor_on_nested_include(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald(test_client_factory):
+def test_interceptor_on_child_ravyn(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
-    child = ChildEsmerald(routes=[Gateway(handler=create)], interceptors=[TestInterceptor])
+    child = ChildRavyn(routes=[Gateway(handler=create)], interceptors=[TestInterceptor])
 
     with create_client(routes=[Include("/child", app=child)]) as client:
         response = client.post("/child/create/test", json=data)
@@ -131,10 +131,10 @@ def test_interceptor_on_child_esmerald(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_gateway(test_client_factory):
+def test_interceptor_on_child_ravyn_gateway(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
-    child = ChildEsmerald(routes=[Gateway(handler=create, interceptors=[TestInterceptor])])
+    child = ChildRavyn(routes=[Gateway(handler=create, interceptors=[TestInterceptor])])
 
     with create_client(routes=[Include("/child", app=child)]) as client:
         response = client.post("/child/create/test", json=data)
@@ -143,10 +143,10 @@ def test_interceptor_on_child_esmerald_gateway(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_include(test_client_factory):
+def test_interceptor_on_child_ravyn_include(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[Include(routes=[Gateway(handler=create)], interceptors=[TestInterceptor])]
     )
 
@@ -157,10 +157,10 @@ def test_interceptor_on_child_esmerald_include(test_client_factory):
         assert response.json() == {"name": "intercept"}
 
 
-def test_interceptor_on_child_esmerald_nested_include(test_client_factory):
+def test_interceptor_on_child_ravyn_nested_include(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
-    child = ChildEsmerald(
+    child = ChildRavyn(
         routes=[
             Include(
                 routes=[Include(routes=[Gateway(handler=create)], interceptors=[TestInterceptor])]
@@ -223,7 +223,7 @@ def test_multiple_interceptors_change_two(test_client_factory):
 def test_interceptor_is_cross_child_and_application(test_client_factory):
     data = {"name": "test", "sku": "12345"}
 
-    child = ChildEsmerald(routes=[Include(routes=[Include(routes=[Gateway(handler=create)])])])
+    child = ChildRavyn(routes=[Include(routes=[Include(routes=[Gateway(handler=create)])])])
 
     with create_client(
         routes=[Include("/child", app=child)], interceptors=[TestInterceptor]

@@ -2,10 +2,10 @@ from typing import Dict
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, post
-from esmerald.core.datastructures.msgspec import Struct
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, post
+from ravyn.core.datastructures.msgspec import Struct
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -31,16 +31,16 @@ async def foo() -> Dict[str, str]:
     return {"hello": "world"}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=foo)],
     enable_openapi=True,
     tags=["test"],
     settings_module=TestSettings,
-    contact={"name": "esmerald", "email": "esmerald@esmeral.dev"},
+    contact={"name": "ravyn", "email": "ravyn@esmeral.dev"},
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_openapi_schema_tags_pydantic(test_client_factory):
@@ -51,10 +51,10 @@ def test_openapi_schema_tags_pydantic(test_client_factory):
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
-            "title": "Esmerald",
-            "summary": "Esmerald application",
+            "title": "Ravyn",
+            "summary": "Ravyn application",
             "description": "Highly scalable, performant, easy to learn and for every application.",
-            "contact": {"name": "esmerald", "email": "esmerald@esmeral.dev"},
+            "contact": {"name": "ravyn", "email": "ravyn@esmeral.dev"},
             "version": app.version,
         },
         "servers": [{"url": "/"}],

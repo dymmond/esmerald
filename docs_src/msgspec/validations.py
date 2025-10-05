@@ -3,8 +3,8 @@ from typing import Union
 import msgspec
 from typing_extensions import Annotated
 
-from esmerald import Esmerald, Gateway, post
-from esmerald.core.datastructures.msgspec import Struct
+from ravyn import Ravyn, Gateway, post
+from ravyn.core.datastructures.msgspec import Struct
 
 Name = Annotated[str, msgspec.Meta(min_length=5)]
 Email = Annotated[str, msgspec.Meta(min_length=5, max_length=100, pattern="[^@]+@[^@]+\\.[^@]+")]
@@ -23,4 +23,4 @@ def create(data: User) -> User:
     return data
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])

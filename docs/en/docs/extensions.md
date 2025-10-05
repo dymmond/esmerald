@@ -1,11 +1,11 @@
 # Extensions
 
-What are extensions in an Esmerald context? A separate and individual piece of software that
-can be hooked into **any** Esmerald application and perform specific actions individually without
+What are extensions in an Ravyn context? A separate and individual piece of software that
+can be hooked into **any** Ravyn application and perform specific actions individually without
 breaking the ecosystem.
 
 A feature that got a lof of inspirations from the great frameworks out there but simplified for
-the Esmerald ecosystem.
+the Ravyn ecosystem.
 
 Take Django as example. There are hundreds, if not thousands, of plugins for Django and usually,
 not always, the way of using them is by adding that same pluggin into the `INSTALLED_APPS` and
@@ -13,12 +13,12 @@ go from there.
 
 Flask on the other hand has a pattern of having those plugin objects with an `init_app` function.
 
-Well, what if we could have the best of both? [Esmerald](./application/applications.md) as you
+Well, what if we could have the best of both? [Ravyn](./application/applications.md) as you
 are aware is extremely flexible and dynamic in design and therefore having an `INSTALLED_APPS`
 wouldn't make too much sense right?
 
 Also, how could we create this pattern, like Flask, to have an `init_app` and allow the application
-to do the rest for you? Well, Esmerald now does that via its internal protocols and interfaces.
+to do the rest for you? Well, Ravyn now does that via its internal protocols and interfaces.
 
 !!! Note
     Extensions only exist on an [application level](./application/levels.md#application-levels).
@@ -29,7 +29,7 @@ This object is one of a kind and does **a lot of magic** for you when creating a
 your application or even for distribution.
 
 A **Pluggable** is an object that receives an [Extension](#extension) class with parameters
-and hooks them into your Esmerald application and executes the [extend](#extend) method when
+and hooks them into your Ravyn application and executes the [extend](#extend) method when
 starting the system.
 
 ```python hl_lines="27 29"
@@ -42,15 +42,15 @@ More details about this in [hooking a pluggable into the application](#hooking-p
 
 ## Extension
 
-This is the main class that should be extended when creating a pluggable for Esmerald.
+This is the main class that should be extended when creating a pluggable for Ravyn.
 
 This object internally uses the protocols to make sure you follow the patterns needed to hook
-a pluggable via `pluggables` parameter when instantiating an esmerald application.
+a pluggable via `pluggables` parameter when instantiating an ravyn application.
 
 When subclassing this object **you must implement** the [extend](#extend) function. This function is what
-Esmerald looks for when looking up for pluggables for your application and executes the logic.
+Ravyn looks for when looking up for pluggables for your application and executes the logic.
 
-Think of the `extend` as the `init_app` of Flask but enforced as a pattern for Esmerald.
+Think of the `extend` as the `init_app` of Flask but enforced as a pattern for Ravyn.
 
 ```python hl_lines="7 13"
 {!> ../../../docs_src/pluggables/extension.py !}
@@ -59,7 +59,7 @@ Think of the `extend` as the `init_app` of Flask but enforced as a pattern for E
 ### extend()
 
 The **mandatory** function that **must be implemented** when creating an extension to be plugged
-via [Pluggable](#pluggable) into Esmerald.
+via [Pluggable](#pluggable) into Ravyn.
 
 It is the entry-point for your extension.
 
@@ -68,19 +68,19 @@ as well as there are many ways of creating and [hooking a pluggable]
 
 ## Hooking pluggables and extensions
 
-As mentioned before, there are different ways of hooking a pluggable into your Esmerald application.
+As mentioned before, there are different ways of hooking a pluggable into your Ravyn application.
 
 ### The automated and default way
 
-When using the default and automated way, Esmerald expects the pluggable to be passed into a dict
-`extensions` upon instantiation of an Esmerald application with `key-pair` value entries and where
+When using the default and automated way, Ravyn expects the pluggable to be passed into a dict
+`extensions` upon instantiation of an Ravyn application with `key-pair` value entries and where
 the `key` is the name for your pluggable and the `value` is an instance [Pluggable](#pluggable)
 holding your [Extension](#extension) object.
 
-When added in this way, Esmerald internally **hooks** your pluggable into the application and
+When added in this way, Ravyn internally **hooks** your pluggable into the application and
 starts it by calling the [extend](#extend) with the provided parameters, automatically.
 
-The `app` parameter is automatically injected by Esmerald and does not need to be passed as
+The `app` parameter is automatically injected by Ravyn and does not need to be passed as
 parameter if needed
 
 ```python hl_lines="27 29"
@@ -99,7 +99,7 @@ It will fail if the extension doesn't exist, so only call it in extend.
 
 ### The manual and independent way
 
-Sometimes you simply don't want to start the pluggable inside an Esmerald instance automatically
+Sometimes you simply don't want to start the pluggable inside an Ravyn instance automatically
 and you simply want to start by yourself and on your own, very much in the way Flask does with
 the `init_app`.
 
@@ -134,34 +134,34 @@ Yes, it must only implement the ExtensionProtocol.
 
 ## Important notes
 
-As you can see, **extensions** in Esmerald can be a powerful tool that isolates common
-functionality from the main Esmerald application and can be used to leverage the creation of plugins
+As you can see, **extensions** in Ravyn can be a powerful tool that isolates common
+functionality from the main Ravyn application and can be used to leverage the creation of plugins
 to be used across your applications and/or to create opensource packages for any need.
 
-## ChildEsmerald and pluggables
+## ChildRavyn and pluggables
 
-An [Extension](#extension) **is not the same** as a [ChildEsmerald](./routing/router.md#child-esmerald-application).
+An [Extension](#extension) **is not the same** as a [ChildRavyn](./routing/router.md#child-ravyn-application).
 
 These are two completely independent pieces of functionality with completely different purposes, be
 careful when considering one and the other.
 
-Can a [ChildEsmerald](./routing/router.md#child-esmerald-application) be added as a pluggable?
+Can a [ChildRavyn](./routing/router.md#child-ravyn-application) be added as a pluggable?
 Of course.
 
 You can do whatever you want with a pluggable, that is the beauty of this system.
 
-Let us see how it would look like if you had a pluggable where the goal was to add a **ChildEsmerald**
+Let us see how it would look like if you had a pluggable where the goal was to add a **ChildRavyn**
 into the current applications being plugged.
 
 ```python hl_lines="33"
-{!> ../../../docs_src/pluggables/child_esmerald.py !}
+{!> ../../../docs_src/pluggables/child_ravyn.py !}
 ```
 
-Crazy dynamic, isn't it? So clean and so simple that you can do whatever you desire with Esmerald.
+Crazy dynamic, isn't it? So clean and so simple that you can do whatever you desire with Ravyn.
 
 ## Pluggables and the application settings
 
-Like almost everything in Esmerald, you can also add the [Pluggables](#pluggable) via
+Like almost everything in Ravyn, you can also add the [Pluggables](#pluggable) via
 [settings](./application/settings.md) instead of adding when you instantiate the application.
 
 ```python hl_lines="29-31"
@@ -173,7 +173,7 @@ And simply start the application.
 === "MacOS & Linux"
 
     ```shell
-    ESMERALD_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
+    RAVYN_SETTINGS_MODULE=AppSettings uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]
@@ -185,7 +185,7 @@ And simply start the application.
 === "Windows"
 
     ```shell
-    $env:ESMERALD_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
+    $env:RAVYN_SETTINGS_MODULE="AppSettings"; uvicorn src:app --reload
 
     INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
     INFO:     Started reloader process [28720]

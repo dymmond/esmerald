@@ -5,13 +5,13 @@ import pytest
 from lilya.responses import JSONResponse
 from pydantic import ValidationError
 
-from esmerald.core.config import SessionConfig
-from esmerald.core.datastructures import Secret
-from esmerald.requests import Request
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get, post
-from esmerald.testclient import create_client
-from esmerald.utils.crypto import get_random_secret_key
+from ravyn.core.config import SessionConfig
+from ravyn.core.datastructures import Secret
+from ravyn.requests import Request
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get, post
+from ravyn.testclient import create_client
+from ravyn.utils.crypto import get_random_secret_key
 
 
 @pytest.mark.parametrize(

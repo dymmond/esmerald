@@ -3,7 +3,7 @@ from typing import Any
 import edgy
 import pytest
 
-from esmerald.conf import settings
+from ravyn.conf import settings
 
 models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio

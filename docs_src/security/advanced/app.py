@@ -6,8 +6,8 @@ from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from pydantic import BaseModel, ValidationError
 
-from esmerald import (
-    Esmerald,
+from ravyn import (
+    Ravyn,
     Gateway,
     HTTPException,
     Inject,
@@ -17,9 +17,9 @@ from esmerald import (
     post,
     status,
 )
-from esmerald.security.scopes import Scopes
-from esmerald.params import Form
-from esmerald.security.oauth2 import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from ravyn.security.scopes import Scopes
+from ravyn.params import Form
+from ravyn.security.oauth2 import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 
 SECRET_KEY = "adec4de83525abdd446b258d0df8a3cc151ee65e95ae8b8ccf51b643df71afcf"
@@ -170,7 +170,7 @@ async def get_user_items(current_user: User = Injects()) -> List[Dict[str, str]]
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=login),
         Gateway(handler=me),

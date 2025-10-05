@@ -2,10 +2,10 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Form, Request
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import route
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Form, Ravyn, Request
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import route
+from ravyn.testclient import RavynTestClient
 
 
 class Model(BaseModel):
@@ -17,10 +17,10 @@ def test_get_and_post():
     async def start(request: Request, data: Optional[Model] = Form()) -> bytes:
         return b"hello world"
 
-    app = Esmerald(
+    app = Ravyn(
         debug=True,
         routes=[Gateway("/", handler=start)],
     )
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.get("/")
     assert response.status_code == 200

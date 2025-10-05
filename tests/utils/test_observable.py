@@ -4,9 +4,9 @@ import anyio
 import pytest
 from loguru import logger
 
-from esmerald import get, post
-from esmerald.testclient import create_client
-from esmerald.utils.decorators import observable
+from ravyn import get, post
+from ravyn.testclient import create_client
+from ravyn.utils.decorators import observable
 
 # Global counters to track event triggers
 TOTAL_SEND = 0

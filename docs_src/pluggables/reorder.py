@@ -3,8 +3,8 @@ from typing import Optional
 from loguru import logger
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Extension
-from esmerald.types import DictAny
+from ravyn import Ravyn, Extension
+from ravyn.types import DictAny
 
 
 class MyExtension1(Extension):
@@ -18,4 +18,4 @@ class MyExtension2(Extension):
         logger.success(f"Extension 2")
 
 
-app = Esmerald(routes=[], extensions={"extension1": MyExtension1, "extension2": MyExtension2})
+app = Ravyn(routes=[], extensions={"extension1": MyExtension1, "extension2": MyExtension2})

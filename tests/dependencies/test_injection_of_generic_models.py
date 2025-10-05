@@ -3,10 +3,10 @@ from typing import Generic, Optional, Type, TypeVar
 from lilya.status import HTTP_200_OK
 from pydantic import BaseModel
 
-from esmerald.injector import Inject
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import get
-from esmerald.testclient import create_client
+from ravyn.injector import Inject
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import get
+from ravyn.testclient import create_client
 
 T = TypeVar("T")
 

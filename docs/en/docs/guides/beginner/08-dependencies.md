@@ -1,6 +1,6 @@
 # Dependencies
 
-In this section, you'll learn how to use dependency injection with Esmerald.
+In this section, you'll learn how to use dependency injection with Ravyn.
 
 Dependencies are reusable logic that can be injected into routes, services, and anywhere else in your application.
 
@@ -11,10 +11,12 @@ Dependencies are reusable logic that can be injected into routes, services, and 
 Use `Inject` to register a dependency and `Injects` to consume it:
 
 ```python
-from esmerald import get, Inject, Injects
+from ravyn import get, Inject, Injects
+
 
 def get_token():
     return "super-secret-token"
+
 
 @get("/secure", dependencies={"token": Inject(get_token)})
 def secure(token: str = Injects()) -> dict:
@@ -41,7 +43,7 @@ def user(auth: AuthService = Injects()) -> Any:
 
 ## Dependency Lifetimes
 
-Dependencies in Esmerald are singletons by default.
+Dependencies in Ravyn are singletons by default.
 If you want a **new instance per request**, you can pass `use_cache=False`:
 
 ```python

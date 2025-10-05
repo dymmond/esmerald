@@ -1,7 +1,7 @@
 from typing import Generator
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.core.datastructures import Stream
+from ravyn import Ravyn, Gateway, get
+from ravyn.core.datastructures import Stream
 
 
 def my_generator() -> Generator[str, None, None]:
@@ -20,4 +20,4 @@ def stream() -> Stream:
     )
 
 
-app = Esmerald(routes=[Gateway(handler=stream)])
+app = Ravyn(routes=[Gateway(handler=stream)])

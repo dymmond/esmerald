@@ -1,7 +1,7 @@
 import pytest
 
-from esmerald.conf import settings
-from esmerald.testclient import override_settings
+from ravyn.conf import settings
+from ravyn.testclient import override_settings
 
 
 @override_settings(environment="test_func")

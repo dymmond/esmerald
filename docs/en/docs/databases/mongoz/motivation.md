@@ -15,16 +15,16 @@ and used by thousands of people and organisations, **MongoDB**.
 Without going into details, **Mongoz** offers a seemless integration with MongoDB with an extremely
 familiar interface to interact with.
 
-[Mongoz](https://mongoz.tarsild.io) is from the same autor of Esmerald so is expected to be
+[Mongoz](https://mongoz.tarsild.io) is from the same autor of Ravyn so is expected to be
 supported (not natively) by the framework by providing some out-of-the-box built-in that can simply
 be used
 
 !!! Tip
-    Although Esmerald supports out of the box some integrations with Mongoz it does not necessarily mean the framework
+    Although Ravyn supports out of the box some integrations with Mongoz it does not necessarily mean the framework
     is only coupled with it. You are entirely free to use a completely different ODM or even ignore this section and
     implement your own Mongoz integration.
 
-As mentioned before, **Mongoz** is framework agnostic and Esmerald does not care if you use Mongoz
+As mentioned before, **Mongoz** is framework agnostic and Ravyn does not care if you use Mongoz
 or anything else. **You are free to choose your own ODM**.
 
 ## Motivation
@@ -39,7 +39,7 @@ or anything else. **You are free to choose your own ODM**.
 
 ## How to use
 
-To use Mongoz with Esmerald you should install some requirements first.
+To use Mongoz with Ravyn you should install some requirements first.
 
 ```shell
 $ pip install mongoz
@@ -47,5 +47,5 @@ $ pip install mongoz
 
 ## Documentation and more details
 
-Since Esmerald supports Mongoz, the best place to understand how to use all the powerful features given by it you can simply
+Since Ravyn supports Mongoz, the best place to understand how to use all the powerful features given by it you can simply
 use its [documentation](https://mongoz.tarsild.io/) and learn more how to leverage it.

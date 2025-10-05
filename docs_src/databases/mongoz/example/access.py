@@ -1,7 +1,7 @@
 import httpx
 
 # The password is automatically encrypted when using the
-# User model provided by Esmerald
+# User model provided by Ravyn
 user_data = {
     "first_name": "John",
     "last_name": "Doe",

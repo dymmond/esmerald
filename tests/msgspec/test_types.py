@@ -2,9 +2,9 @@ from typing import Dict, List
 
 import msgspec
 
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import post
-from esmerald.testclient import create_client
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import post
+from ravyn.testclient import create_client
 
 
 class Address(msgspec.Struct):

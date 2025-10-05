@@ -6,9 +6,9 @@ from lilya.contrib.mail.backends.inmemory import InMemoryBackend
 from lilya.contrib.mail.mailer import Mailer
 from lilya.contrib.mail.startup import setup_mail
 
-from esmerald import Esmerald, Gateway, Inject, Injects, get, post
-from esmerald.contrib.mail.dependencies import Mail
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Inject, Injects, Ravyn, get, post
+from ravyn.contrib.mail.dependencies import Mail
+from ravyn.testclient import RavynTestClient
 
 pytestmark = pytest.mark.asyncio
 
@@ -24,13 +24,13 @@ async def test_mail_dependency_injection(tmp_path, test_client_factory):
         await mailer.send(msg)
         return {"ok": True}
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway(handler=send_email)],
     )
 
     setup_mail(app, backend=backend, template_dir=str(tmp_path))
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     # Call endpoint
     response = client.post("/send")
@@ -55,13 +55,13 @@ async def test_mail_dependency_reuses_same_instance(tmp_path):
         calls.append(mailer)
         return {"ok": True}
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway(handler=ping)],
     )
 
     setup_mail(app, backend=backend, template_dir=str(tmp_path))
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     # Call twice
     client.get("/ping")
@@ -97,13 +97,13 @@ async def test_mail_dependency_override(tmp_path):
         await mailer.send(msg)
         return {"ok": True}
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway(handler=send_email)],
     )
 
     setup_mail(app, backend=backend, template_dir=str(tmp_path))
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     response = client.post("/send")
 
     assert response.status_code == 201
@@ -118,13 +118,13 @@ async def test_mail_dependency_misconfigured_state(tmp_path):
     async def bad(mailer: Any = Injects()) -> dict[str, bool]:
         return {"ok": True}
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[Gateway(handler=bad)],
     )
     # Deliberately attach wrong object
     app.state.mailer = object()
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
 
     response = client.get("/bad")
 

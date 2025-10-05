@@ -1,6 +1,6 @@
 # **`OpenAPIResponse`** class
 
-::: esmerald.openapi.datastructures.OpenAPIResponse
+::: ravyn.openapi.datastructures.OpenAPIResponse
     options:
         inherited_members: false
         filters:

@@ -9,13 +9,13 @@ from edgy.testclient import DatabaseTestClient as EdgyDatabaseTestClient
 from lilya.middleware.global_context import GlobalContextMiddleware
 from pydantic import ConfigDict
 
-from esmerald.conf.global_settings import EsmeraldSettings
-from esmerald.core.config.jwt import JWTConfig
+from ravyn.conf.global_settings import RavynSettings
+from ravyn.core.config.jwt import JWTConfig
 
 TEST_DATABASE_URL = os.environ.get("DATABASE_URI", "mongodb://root:mongoadmin@localhost:27017")
 
 
-class TestSettings(EsmeraldSettings):
+class TestSettings(RavynSettings):
     __test__ = False
     app_name: str = "test_client"
     debug: bool = False
@@ -27,7 +27,7 @@ class TestSettings(EsmeraldSettings):
 
     @cached_property
     def registry(self) -> Tuple[Database, Registry]:
-        database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/esmerald")
+        database = Database("postgresql+asyncpg://postgres:postgres@localhost:5432/ravyn")
         return database, Registry(database=database)
 
     @property

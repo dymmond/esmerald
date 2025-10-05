@@ -1,14 +1,14 @@
-from esmerald import ChildEsmerald, Esmerald, EsmeraldSettingsnclude
+from ravyn import ChildRavyn, Ravyn, RavynAPIExceptionSettingsnclude
 
 
-# Create a ChildEsmeraldSettings object
-class ChildEsmeraldSettings(EsmeraldSettings):
+# Create a ChildRavynSettings object
+class ChildRavynSettings(RavynSettings):
     app_name: str = "child app"
     secret_key: str = "a child secret"
 
 
-# Create a ChildEsmerald application
-child_app = ChildEsmerald(routes=[...], settings_module=ChildEsmeraldSettings)
+# Create a ChildRavyn application
+child_app = ChildRavyn(routes=[...], settings_module=ChildRavynSettings)
 
-# Create an Esmerald application
-app = Esmerald(routes=[Include("/child", app=child_app)])
+# Create an Ravyn application
+app = Ravyn(routes=[Include("/child", app=child_app)])

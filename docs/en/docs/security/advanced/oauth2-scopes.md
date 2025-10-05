@@ -1,10 +1,10 @@
 # OAuth2 Scopes
 
-Esmerald supports OAuth2 scopes, offering a detailed permission system that adheres to the OAuth2 standard. This feature integrates seamlessly into your OpenAPI application and its API documentation.
+Ravyn supports OAuth2 scopes, offering a detailed permission system that adheres to the OAuth2 standard. This feature integrates seamlessly into your OpenAPI application and its API documentation.
 
 OAuth2 scopes are widely used by major providers such as Facebook, Google, GitHub, Microsoft, and Twitter. Whenever an application allows you to "log in with" these platforms, it leverages OAuth2 with scopes to define specific permissions.
 
-In this guide, we’ll explore how to manage authentication and authorization using OAuth2 scopes in Esmerald.
+In this guide, we’ll explore how to manage authentication and authorization using OAuth2 scopes in Ravyn.
 
 !!! Warning
 
@@ -74,14 +74,14 @@ These scopes will be included in the JWT token returned.
 
 ## Declare Scopes in Path Operations and Dependencies
 
-To require the `items` scope for the `/users/me/items/` path operation, use `Security` from `Esmerald`. This works similarly to `Inject`, but includes a `scopes` parameter.
+To require the `items` scope for the `/users/me/items/` path operation, use `Security` from `Ravyn`. This works similarly to `Inject`, but includes a `scopes` parameter.
 
 Pass the `get_current_user` dependency function to `Security`, along with the required scopes (in this case, `items`).
 
 !!! Info
 
     You don't need to declare scopes in multiple locations.
-    This example shows how **Esmerald** manages scopes defined at different levels.
+    This example shows how **Ravyn** manages scopes defined at different levels.
 
 ```python hl_lines="97 155 159"
 {!> ../../../docs_src/security/advanced/app.py !}
@@ -93,7 +93,7 @@ Update the `get_current_user` dependency to use the previously created OAuth2 sc
 
 Since this function does not require scopes itself, use `Inject` with `oauth2_scheme`.
 
-Declare a `SecurityScopes` parameter, imported from `esmerald.security.scopes`.
+Declare a `SecurityScopes` parameter, imported from `ravyn.security.scopes`.
 
 ```python hl_lines="20 97"
 {!> ../../../docs_src/security/advanced/app.py !}
@@ -157,10 +157,10 @@ The implicit flow is commonly used, while the authorization code flow is more se
 
 !!! Note
     Authentication providers might use different names for their flows, but they all adhere to the OAuth2 standard.
-    **Esmerald** provides utilities for all OAuth2 authentication flows in `esmerald.security.oauth2`.
+    **Ravyn** provides utilities for all OAuth2 authentication flows in `ravyn.security.oauth2`.
 
 ## Notes
 
 These step by step guides were inspired by **FastAPI** great work of providing simple and yet effective examples for everyone to understand.
 
-Esmerald adopts a different implementation internally but with the same purposes as any other framework to achieve that.
+Ravyn adopts a different implementation internally but with the same purposes as any other framework to achieve that.

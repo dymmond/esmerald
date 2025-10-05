@@ -4,12 +4,12 @@ from typing import Any, Dict
 import pytest
 from lilya.websockets import WebSocketDisconnect
 
-from esmerald.injector import Inject
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import WebSocketGateway
-from esmerald.routing.handlers import websocket
-from esmerald.testclient import create_client
-from esmerald.websockets import WebSocket
+from ravyn.injector import Inject
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import WebSocketGateway
+from ravyn.routing.handlers import websocket
+from ravyn.testclient import create_client
+from ravyn.websockets import WebSocket
 
 
 def router_first_dependency() -> bool:  # pragma: no cover

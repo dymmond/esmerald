@@ -4,7 +4,7 @@ from typing import Generator
 import pytest
 from sayer.testing import SayerTestClient
 
-from esmerald.core.directives.cli import esmerald_cli
+from ravyn.core.directives.cli import ravyn_cli
 
 
 @pytest.fixture(scope="module")
@@ -22,4 +22,4 @@ def event_loop() -> Generator:
 @pytest.fixture
 def client():
     """Fixture to provide a test client for the Lilya CLI."""
-    return SayerTestClient(esmerald_cli)
+    return SayerTestClient(ravyn_cli)

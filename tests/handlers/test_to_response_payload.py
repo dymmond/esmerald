@@ -2,9 +2,9 @@ from json import loads
 
 import pytest
 
-from esmerald.core.transformers.signature import SignatureFactory
-from esmerald.routing.handlers import post, route
-from esmerald.utils.enums import HttpMethod
+from ravyn.core.transformers.signature import SignatureFactory
+from ravyn.routing.handlers import post, route
+from ravyn.utils.enums import HttpMethod
 from tests.models import Individual, IndividualFactory
 
 

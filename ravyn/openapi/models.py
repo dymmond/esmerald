@@ -1,0 +1,116 @@
+from typing import Any, Optional, Union
+
+from pydantic import BaseModel, ConfigDict, Field
+from typing_extensions import Literal
+
+from ravyn.openapi.enums import APIKeyIn, SecuritySchemeType
+from ravyn.openapi.schemas.v3_1_0.contact import Contact as Contact
+from ravyn.openapi.schemas.v3_1_0.discriminator import Discriminator as Discriminator
+from ravyn.openapi.schemas.v3_1_0.encoding import Encoding as Encoding
+from ravyn.openapi.schemas.v3_1_0.example import Example as Example
+from ravyn.openapi.schemas.v3_1_0.external_documentation import (
+    ExternalDocumentation as ExternalDocumentation,
+)
+from ravyn.openapi.schemas.v3_1_0.header import Header as Header
+from ravyn.openapi.schemas.v3_1_0.info import Info as Info
+from ravyn.openapi.schemas.v3_1_0.license import License as License
+from ravyn.openapi.schemas.v3_1_0.link import Link as Link
+from ravyn.openapi.schemas.v3_1_0.media_type import MediaType as MediaType
+from ravyn.openapi.schemas.v3_1_0.oauth_flow import OAuthFlow as OpenOAuthFlow
+from ravyn.openapi.schemas.v3_1_0.oauth_flows import OAuthFlows as OAuthFlows
+from ravyn.openapi.schemas.v3_1_0.operation import Operation as Operation
+from ravyn.openapi.schemas.v3_1_0.parameter import Parameter as Parameter
+from ravyn.openapi.schemas.v3_1_0.path_item import PathItem as PathItem
+from ravyn.openapi.schemas.v3_1_0.paths import Paths as Paths
+from ravyn.openapi.schemas.v3_1_0.reference import Reference as Reference
+from ravyn.openapi.schemas.v3_1_0.request_body import RequestBody as RequestBody
+from ravyn.openapi.schemas.v3_1_0.response import Response as Response
+from ravyn.openapi.schemas.v3_1_0.schema import Schema as Schema
+from ravyn.openapi.schemas.v3_1_0.security_requirement import (
+    SecurityRequirement as SecurityRequirement,
+)
+from ravyn.openapi.schemas.v3_1_0.security_scheme import SecurityScheme as SecurityScheme
+from ravyn.openapi.schemas.v3_1_0.server import Server as Server
+from ravyn.openapi.schemas.v3_1_0.server_variable import ServerVariable as ServerVariable
+from ravyn.openapi.schemas.v3_1_0.tag import Tag as Tag
+from ravyn.openapi.schemas.v3_1_0.xml import XML as XML
+
+
+class APIKey(SecurityScheme):
+    type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
+        default=SecuritySchemeType.apiKey.value,
+        alias="type",
+    )
+    param_in: APIKeyIn = Field(alias="in")
+    name: str
+
+
+class HTTPBase(SecurityScheme):
+    type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
+        default=SecuritySchemeType.http.value,
+        alias="type",
+    )
+    scheme: str
+
+
+class HTTPBearer(HTTPBase):
+    scheme: Literal["bearer"] = "bearer"
+    bearerFormat: Optional[str] = None
+
+
+class OAuthFlow(OpenOAuthFlow):
+    scopes: dict[str, str] = {}
+
+
+class OAuth2(SecurityScheme):
+    type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
+        default=SecuritySchemeType.oauth2.value, alias="type"
+    )
+    flows: OAuthFlows
+
+
+class OpenIdConnect(SecurityScheme):
+    type: Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"] = Field(
+        default=SecuritySchemeType.openIdConnect.value, alias="type"
+    )
+    openIdConnectUrl: str
+
+
+class SecurityBase(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    type: SecuritySchemeType = Field(alias="type")
+    description: Optional[str] = None
+    scheme_name: Optional[str] = None
+
+
+SecuritySchemeUnion = Union[APIKey, HTTPBase, OAuth2, OpenIdConnect, HTTPBearer]
+
+
+class Components(BaseModel):
+    schemas: Optional[dict[str, Union[Schema, Reference]]] = None
+    responses: Optional[dict[str, Union[Response, Reference]]] = None
+    parameters: Optional[dict[str, Union[Parameter, Reference]]] = None
+    examples: Optional[dict[str, Union[Example, Reference]]] = None
+    requestBodies: Optional[dict[str, Union[RequestBody, Reference]]] = None
+    headers: Optional[dict[str, Union[Header, Reference]]] = None
+    securitySchemes: Optional[dict[str, Union[SecurityScheme, Reference, dict[str, Any]]]] = None
+    links: Optional[dict[str, Union[Link, Reference]]] = None
+    callbacks: Optional[dict[str, Union[dict[str, PathItem], Reference, Any]]] = None
+    pathItems: Optional[dict[str, Union[PathItem, Reference]]] = None
+
+    model_config = ConfigDict(extra="allow")
+
+
+class OpenAPI(BaseModel):
+    openapi: str
+    info: Info
+    jsonSchemaDialect: Optional[str] = None
+    servers: Optional[list[dict[str, Union[str, Any]]]] = None
+    paths: Optional[dict[str, Union[PathItem, Any]]] = None
+    webhooks: Optional[dict[str, Union[PathItem, Reference]]] = None
+    components: Optional[Components] = None
+    security: Optional[list[dict[str, list[str]]]] = None
+    tags: Optional[list[str]] = None
+    externalDocs: Optional[ExternalDocumentation] = None
+    model_config = ConfigDict(extra="allow")

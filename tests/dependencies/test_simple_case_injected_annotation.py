@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, List
 
-from esmerald import post
-from esmerald.injector import Inject
-from esmerald.routing.apis.views import APIView
-from esmerald.routing.gateways import Gateway
-from esmerald.testclient import create_client
+from ravyn import post
+from ravyn.injector import Inject
+from ravyn.routing.apis.views import APIView
+from ravyn.routing.gateways import Gateway
+from ravyn.testclient import create_client
 from tests.dependencies.samples import DocumentService
 
 if TYPE_CHECKING:

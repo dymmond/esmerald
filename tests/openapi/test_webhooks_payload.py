@@ -2,8 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from esmerald import WebhookGateway, whpost
-from esmerald.testclient import create_client
+from ravyn import WebhookGateway, whpost
+from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
 

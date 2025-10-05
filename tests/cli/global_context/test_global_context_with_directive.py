@@ -41,12 +41,12 @@ def create_folders():
 
 
 def generate():
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject myproject")
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createapp myapp")
 
 
 async def test_custom_directive(create_folders):
@@ -64,6 +64,6 @@ async def test_custom_directive(create_folders):
     )
 
     # Execute custom directive
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald run global_g")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn run global_g")
 
-    assert "Context successfully set to Esmerald from global" in str(o)
+    assert "Context successfully set to Ravyn from global" in str(o)

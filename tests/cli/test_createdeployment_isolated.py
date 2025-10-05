@@ -3,10 +3,10 @@ import shutil
 
 import pytest
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 from tests.cli.utils import run_cmd
 
-app = Esmerald(routes=[])
+app = Ravyn(routes=[])
 
 
 @pytest.fixture(scope="module")
@@ -50,14 +50,14 @@ def _run_asserts():
 
 
 def test_create_app_with_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createdeployment myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createdeployment myproject")
     assert ss == 0
 
     _run_asserts()
 
 
 def test_create_app_without_env_var(create_folders):
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createdeployment myproject", is_app=False)
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createdeployment myproject", is_app=False)
     assert ss == 0
 
     _run_asserts()
@@ -66,7 +66,7 @@ def test_create_app_without_env_var(create_folders):
 def test_create_app_without_env_var_with_app_flag(create_folders):
     (o, e, ss) = run_cmd(
         "tests.cli.main:app",
-        "esmerald --app tests.cli.main:app createdeployment myproject",
+        "ravyn --app tests.cli.main:app createdeployment myproject",
         is_app=False,
     )
     assert ss == 0

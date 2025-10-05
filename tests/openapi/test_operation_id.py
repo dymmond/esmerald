@@ -1,7 +1,7 @@
 from typing import Optional
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.testclient import RavynTestClient
 
 
 @get()
@@ -9,14 +9,14 @@ async def home(id: Optional[str]) -> None:
     """"""
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway("/home", handler=home),
         Gateway("/home/{id}", handler=home),
     ],
     enable_openapi=True,
 )
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_openapi_schema_operation_ids_when_same_handler_is_used(test_client_factory):
@@ -27,8 +27,8 @@ def test_openapi_schema_operation_ids_when_same_handler_is_used(test_client_fact
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
-            "title": "Esmerald",
-            "summary": "Esmerald application",
+            "title": "Ravyn",
+            "summary": "Ravyn application",
             "description": "Highly scalable, performant, easy to learn and for every application.",
             "contact": {"name": "admin", "email": "admin@myapp.com"},
             "version": client.app.version,

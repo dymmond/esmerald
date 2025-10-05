@@ -1,7 +1,7 @@
 import pytest
 
-from esmerald import status
-from esmerald.openapi.utils import is_status_code_allowed
+from ravyn import status
+from ravyn.openapi.utils import is_status_code_allowed
 
 status_codes_allowed = [
     getattr(status, value)

@@ -1,5 +1,5 @@
-from esmerald import Esmerald, Gateway, Inject, get
-from esmerald.injector import Factory
+from ravyn import Ravyn, Gateway, Inject, get
+from ravyn.injector import Factory
 
 
 class UserDAO:
@@ -24,4 +24,4 @@ async def user_service(user_dao: UserDAO):
     return user_dao
 
 
-app = Esmerald(routes=[Gateway(handler=user_service)])
+app = Ravyn(routes=[Gateway(handler=user_service)])

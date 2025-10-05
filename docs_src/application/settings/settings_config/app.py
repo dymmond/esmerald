@@ -1,4 +1,4 @@
-from esmerald import Esmerald, Gateway, JSONResponse, Request, get
+from ravyn import Ravyn, Gateway, JSONResponse, Request, get
 
 from .configs.app_settings import InstanceSettings
 
@@ -7,4 +7,4 @@ from .configs.app_settings import InstanceSettings
 async def home(request: Request) -> JSONResponse: ...
 
 
-app = Esmerald(routes=[Gateway(handler=home)], settings_module=InstanceSettings)
+app = Ravyn(routes=[Gateway(handler=home)], settings_module=InstanceSettings)

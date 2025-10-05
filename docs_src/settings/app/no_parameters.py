@@ -1,4 +1,4 @@
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-# Loads application default values from EsmeraldSettings
-app = Esmerald()
+# Loads application default values from RavynSettings
+app = Ravyn()

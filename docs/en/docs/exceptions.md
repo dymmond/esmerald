@@ -1,14 +1,14 @@
 # Exceptions
 
-Esmerald comes with some built-in exceptions but also allows you to install
+Ravyn comes with some built-in exceptions but also allows you to install
 [custom exception handlers](./exception-handlers.md) to deal with how you return responses when exceptions happen.
 
 ## HTTPException
 
-The `HTTPException` object serves as base that can be used for any handled exception from Esmerald.
+The `HTTPException` object serves as base that can be used for any handled exception from Ravyn.
 
 ```python
-from esmerald.exceptions import HTTPException
+from ravyn.exceptions import HTTPException
 ```
 
 ### ImproperlyConfigured
@@ -17,7 +17,7 @@ The name might be familiar for some of the developers out there and it is intent
 Inherits from the base [HTTPException](#httpexception) and it is raised when a misconfiguration occurs.
 
 ```python
-from esmerald.exceptions import ImproperlyConfigured
+from ravyn.exceptions import ImproperlyConfigured
 ```
 
 Status code: 500
@@ -27,7 +27,7 @@ Status code: 500
 Exception raised when an a resources that depends of an authenticated user does not exist.
 
 ```python
-from esmerald.exceptions import NotAuthenticated
+from ravyn.exceptions import NotAuthenticated
 ```
 
 Status code: 401
@@ -38,18 +38,18 @@ Exception raised when a [permission](./permissions/index.md) fails. It can be us
 permissions context and it should be raised any time the access to a resource should be blocked.
 
 ```python
-from esmerald.exceptions import PermissionDenied
+from ravyn.exceptions import PermissionDenied
 ```
 
 Status code: 403
 
 ### ValidationErrorException
 
-`ValidationErrorException` is part of the Esmerald default `exception_handlers` by design and it is part of its core when
+`ValidationErrorException` is part of the Ravyn default `exception_handlers` by design and it is part of its core when
 a validation, for example, from pydantic models, occurs.
 
 ```python
-from esmerald.exceptions import ValidationErrorException
+from ravyn.exceptions import ValidationErrorException
 ```
 
 Status code: 400
@@ -60,7 +60,7 @@ Exception raised when an authentication fails. It is very useful for any authent
 encouraged to be applied in any custom middleware handling with similar processes.
 
 ```python
-from esmerald.exceptions import NotAuthorized
+from ravyn.exceptions import NotAuthorized
 ```
 
 Status code: 401
@@ -70,7 +70,7 @@ Status code: 401
 Classic and self explanatory exception. Useful when a resource is not found or a simple 404 needs to be raised.
 
 ```python
-from esmerald.exceptions import NotFound
+from ravyn.exceptions import NotFound
 ```
 
 Status code: 404
@@ -81,7 +81,7 @@ Very useful exception to be used, as already is, to raise exceptions when an HTT
 Gateway.
 
 ```python
-from esmerald.exceptions import MethodNotAllowed
+from ravyn.exceptions import MethodNotAllowed
 ```
 
 Status code: 405
@@ -91,7 +91,7 @@ Status code: 405
 Used internally for internal server error and it raises a descriptive message in the browser if `debug=True`.
 
 ```python
-from esmerald.exceptions import InternalServerError
+from ravyn.exceptions import InternalServerError
 ```
 
 Status code: 500
@@ -101,7 +101,7 @@ Status code: 500
 It should be used to be raised when a resource is not available.
 
 ```python
-from esmerald.exceptions import ServiceUnavailable
+from ravyn.exceptions import ServiceUnavailable
 ```
 
 Status code: 503
@@ -109,11 +109,11 @@ Status code: 503
 
 ### ValidatorError
 
-This is a special exception that can be applied to anything in Esmerald. This allows to not only throw a normal
+This is a special exception that can be applied to anything in Ravyn. This allows to not only throw a normal
 exception but filter it out the "noise" that can be caused by using an external library and provide a simple response.
 
 ```python
-from esmerald.exceptions import ValidationError
+from ravyn.exceptions import ValidationError
 ```
 
 Status code: 400
@@ -124,8 +124,8 @@ Imagine you are using a library such as Pydantic (to simplify the example) and y
 that does not rely on a `ValueError` but you also want to provide some details.
 
 ```python
-from esmerald import Esmerald, post
-from esmerald.exceptions import ValidationError
+from ravyn import Ravyn, post
+from ravyn.exceptions import ValidationError
 
 from pydantic import BaseModel, model_validator
 
@@ -159,18 +159,18 @@ You can use the `ValidationError` in different way. As a `list`, `tuple`, `str` 
 default `status_code`.
 
 ```python
-from esmerald.exceptions import ValidationError
+from ravyn.exceptions import ValidationError
 
-ValidationError("An error") # as string
-ValidationError({"field": "an error" }) # as dict
-ValidationError(["An error", "another error"]) # as list
-ValidationError(("An error", "another error")) # as tuple
-ValidationError("Not Authorized", status_code=401) # override the status_code
+ValidationError("An error")  # as string
+ValidationError({"field": "an error"})  # as dict
+ValidationError(["An error", "another error"])  # as list
+ValidationError(("An error", "another error"))  # as tuple
+ValidationError("Not Authorized", status_code=401)  # override the status_code
 ```
 
 ## Custom exceptions
 
-Every application has different needs, errors, operations and everything else. Although the default Esmerald exceptions
+Every application has different needs, errors, operations and everything else. Although the default Ravyn exceptions
 work for generic and internal processing you might face an issue when it comes to handle some specifc, more narrow and
 unique to your application type of exception. This is very simple and also very possible.
 
@@ -179,12 +179,12 @@ unique to your application type of exception. This is very simple and also very 
 ```
 
 The example above of course is forced to be like that for illustration purposes to raise the custom exception as the
-default if no `Optional` fields were declared would be handled by Esmerald `ValidationErrorException` exception
+default if no `Optional` fields were declared would be handled by Ravyn `ValidationErrorException` exception
 handler but this serves as an example how to do your own.
 
-## Overriding the current Esmerald exception handlers
+## Overriding the current Ravyn exception handlers
 
-Currently by default, every Esmerald application starts with `ImproperlyConfigured` and `ValidationErrorException`
+Currently by default, every Ravyn application starts with `ImproperlyConfigured` and `ValidationErrorException`
 to make sure everything is covered accordingly but this does not necessarily mean that this can't be changed.
 
 ```python hl_lines="18 42 61-62"

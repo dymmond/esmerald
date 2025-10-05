@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 
 class User(BaseModel):
@@ -12,4 +12,4 @@ class User(BaseModel):
 def create(data: User) -> User: ...
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])

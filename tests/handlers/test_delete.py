@@ -1,6 +1,6 @@
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import delete
-from esmerald.testclient import create_client
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import delete
+from ravyn.testclient import create_client
 
 
 def test_handler_return_none_and_204_status_response_empty() -> None:

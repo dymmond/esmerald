@@ -2,11 +2,11 @@ from typing import Union
 
 from pydantic import BaseModel
 
-from esmerald import Gateway, Header, Param, Response, post
-from esmerald.core.datastructures import ResponseHeader
-from esmerald.responses.encoders import ORJSONResponse
-from esmerald.testclient import create_client
-from esmerald.utils.enums import MediaType
+from ravyn import Gateway, Header, Param, Response, post
+from ravyn.core.datastructures import ResponseHeader
+from ravyn.responses.encoders import ORJSONResponse
+from ravyn.testclient import create_client
+from ravyn.utils.enums import MediaType
 
 
 class User(BaseModel):
@@ -23,7 +23,7 @@ async def create_user(
 
 
 def test_headers_field(test_client_factory):
-    user = {"name": "Esmerald", "email": "test@esmerald.com"}
+    user = {"name": "Ravyn", "email": "test@ravyn.com"}
     with create_client(routes=[Gateway(handler=create_user)]) as client:
         response = client.post("/create", json=user, headers={"X-API-TOKEN": "my-token"})
 
@@ -32,7 +32,7 @@ def test_headers_field(test_client_factory):
 
 
 def test_headers_missing_field(test_client_factory):
-    user = {"name": "Esmerald", "email": "test@esmerald.com"}
+    user = {"name": "Ravyn", "email": "test@ravyn.com"}
     with create_client(routes=[Gateway(handler=create_user)]) as client:
         response = client.post("/create", json=user, headers={"X-API-TOKE": "my-token"})
 
@@ -73,7 +73,7 @@ async def create_user_with_param(
 
 
 def test_headers_param_field(test_client_factory):
-    user = {"name": "Esmerald", "email": "test@esmerald.com"}
+    user = {"name": "Ravyn", "email": "test@ravyn.com"}
     with create_client(routes=[Gateway(handler=create_user_with_param)]) as client:
         response = client.post("/create", json=user, headers={"X-API-TOKEN": "my-token"})
 
@@ -82,7 +82,7 @@ def test_headers_param_field(test_client_factory):
 
 
 def test_param_header_missing_field(test_client_factory):
-    user = {"name": "Esmerald", "email": "test@esmerald.com"}
+    user = {"name": "Ravyn", "email": "test@ravyn.com"}
     with create_client(routes=[Gateway(handler=create_user_with_param)]) as client:
         response = client.post("/create", json=user, headers={"X-API-TOKE": "my-token"})
 

@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Union
 
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Gateway, UploadFile, post, status
-from esmerald.params import File
-from esmerald.testclient import EsmeraldTestClient, create_client
+from ravyn import Gateway, Ravyn, UploadFile, post, status
+from ravyn.params import File
+from ravyn.testclient import RavynTestClient, create_client
 
 
 class MultipleFile(BaseModel):
@@ -34,20 +34,20 @@ async def upload_list_multiple_file(
     return {"names": names, "total": total}
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[
         Gateway(handler=upload_file),
         Gateway(handler=upload_list_multiple_file),
     ]
 )
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_post_upload_file(test_client_factory, tmp_path):
     path = tmp_path / "test.txt"
     path.write_bytes(b"<file content>")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with path.open("rb") as file:
         response = client.post("/upload", files={"file": file})
 
@@ -59,7 +59,7 @@ def test_post_upload_list_multiple_file(test_client_factory, tmp_path):
     path = tmp_path / "test.txt"
     path.write_bytes(b"<file content>")
 
-    client = EsmeraldTestClient(app)
+    client = RavynTestClient(app)
     with path.open("rb") as file:
         response = client.post("/upload-multiple", files={"file": file, "file2": file})
 
@@ -81,8 +81,8 @@ def test_openapi_schema(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

@@ -6,13 +6,13 @@ from edgy.exceptions import ObjectNotFound
 from jwt.exceptions import PyJWTError
 from lilya.types import ASGIApp
 
-from esmerald import APIView, Gateway, HTTPException, Request, Response, get, settings, status
-from esmerald.contrib.auth.edgy.base_user import AbstractUser
-from esmerald.exceptions import NotAuthorized
-from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
-from esmerald.requests import Connection
-from esmerald.security.jwt.token import Token
-from esmerald.testclient import create_client
+from ravyn import APIView, Gateway, HTTPException, Request, Response, get, settings, status
+from ravyn.contrib.auth.edgy.base_user import AbstractUser
+from ravyn.exceptions import NotAuthorized
+from ravyn.middleware.authentication import AuthResult, BaseAuthMiddleware
+from ravyn.requests import Connection
+from ravyn.security.jwt.token import Token
+from ravyn.testclient import create_client
 
 models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
@@ -21,7 +21,7 @@ pytestmark = pytest.mark.anyio
 class User(AbstractUser):
     """
     Inherits from the abstract user and adds the registry
-    from esmerald settings.
+    from ravyn settings.
     """
 
     is_confirm: bool = edgy.BooleanField(default=False)

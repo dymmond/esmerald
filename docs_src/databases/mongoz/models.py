@@ -4,7 +4,7 @@ from enum import Enum
 import mongoz
 from mongoz import Registry
 
-from esmerald.contrib.auth.mongoz.base_user import User as BaseUser
+from ravyn.contrib.auth.mongoz.base_user import User as BaseUser
 
 database = "mongodb://localhost:27017"
 registry = Registry(database)

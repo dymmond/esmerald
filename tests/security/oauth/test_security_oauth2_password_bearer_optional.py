@@ -1,8 +1,8 @@
 from typing import Any, Dict, Optional
 
-from esmerald import Gateway, Inject, Injects, get
-from esmerald.security.oauth2 import OAuth2PasswordBearer
-from esmerald.testclient import create_client
+from ravyn import Gateway, Inject, Injects, get
+from ravyn.security.oauth2 import OAuth2PasswordBearer
+from ravyn.testclient import create_client
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token", auto_error=False)
 
@@ -60,8 +60,8 @@ def test_openapi_schema():
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

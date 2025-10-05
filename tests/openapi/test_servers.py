@@ -1,7 +1,7 @@
 from typing import Dict
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 
@@ -10,14 +10,14 @@ async def bar() -> Dict[str, str]:
     return {"hello": "world"}
 
 
-app = Esmerald(
+app = Ravyn(
     servers=[
         {"url": "/", "description": "Default server"},
         {
-            "url": "http://staging.esmerald.dev",
-            "description": "Staging of Esmerald",
+            "url": "http://staging.ravyn.dev",
+            "description": "Staging of Ravyn",
         },
-        {"url": "https://esmerald.dev"},
+        {"url": "https://ravyn.dev"},
     ],
     routes=[Gateway(handler=bar)],
     enable_openapi=True,
@@ -25,7 +25,7 @@ app = Esmerald(
 )
 
 
-client = EsmeraldTestClient(app)
+client = RavynTestClient(app)
 
 
 def test_application(test_client_factory):
@@ -40,8 +40,8 @@ def test_openapi_schema(test_client_factory):
     assert response.json() == {
         "openapi": "3.1.0",
         "info": {
-            "title": "Esmerald",
-            "summary": "Esmerald application",
+            "title": "Ravyn",
+            "summary": "Ravyn application",
             "description": "Highly scalable, performant, easy to learn and for every application.",
             "contact": {"name": "admin", "email": "admin@myapp.com"},
             "version": app.version,
@@ -49,10 +49,10 @@ def test_openapi_schema(test_client_factory):
         "servers": [
             {"url": "/", "description": "Default server"},
             {
-                "url": "http://staging.esmerald.dev",
-                "description": "Staging of Esmerald",
+                "url": "http://staging.ravyn.dev",
+                "description": "Staging of Ravyn",
             },
-            {"url": "https://esmerald.dev"},
+            {"url": "https://ravyn.dev"},
         ],
         "paths": {
             "/bar": {

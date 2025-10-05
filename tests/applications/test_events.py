@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from esmerald import Esmerald
+from ravyn import Ravyn
 
 
 def test_app_add_event_handler(test_client_factory):
@@ -15,7 +15,7 @@ def test_app_add_event_handler(test_client_factory):
         nonlocal cleanup_complete
         cleanup_complete = True
 
-    app = Esmerald(
+    app = Ravyn(
         on_startup=[run_startup],
         on_shutdown=[run_cleanup],
     )
@@ -41,7 +41,7 @@ def test_app_add_event_handler_with_func(test_client_factory):
         nonlocal cleanup_complete
         cleanup_complete = True
 
-    app = Esmerald()
+    app = Ravyn()
     app.add_event_handler("startup", run_startup)
     app.add_event_handler("shutdown", run_cleanup)
 
@@ -58,7 +58,7 @@ def test_app_add_event_handler_as_decorator(test_client_factory):
     startup_complete = False
     cleanup_complete = False
 
-    app = Esmerald()
+    app = Ravyn()
 
     @app.on_event("startup")
     def run_startup():
@@ -90,7 +90,7 @@ def test_app_async_cm_lifespan(test_client_factory):
         yield
         cleanup_complete = True
 
-    app = Esmerald(lifespan=lifespan)
+    app = Ravyn(lifespan=lifespan)
 
     assert not startup_complete
     assert not cleanup_complete
@@ -112,7 +112,7 @@ def test_app_async_gen_lifespan(test_client_factory):
         yield
         cleanup_complete = True
 
-    app = Esmerald(lifespan=lifespan)
+    app = Ravyn(lifespan=lifespan)
 
     assert not startup_complete
     assert not cleanup_complete

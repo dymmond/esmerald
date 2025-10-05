@@ -4,9 +4,9 @@ from flask import Flask, request
 from markupsafe import escape
 from pydantic import BaseModel
 
-from esmerald import Gateway, Include, get
-from esmerald.middleware.wsgi import WSGIMiddleware
-from esmerald.testclient import create_client
+from ravyn import Gateway, Include, get
+from ravyn.middleware.wsgi import WSGIMiddleware
+from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
 flask_app = Flask(__name__)
@@ -14,7 +14,7 @@ flask_app = Flask(__name__)
 
 @flask_app.route("/")
 def flask_main():  # pragma: no cover
-    name = request.args.get("name", "Esmerald")
+    name = request.args.get("name", "Ravyn")
     return f"Hello, {escape(name)} from Flask!"
 
 
@@ -40,8 +40,8 @@ def test_external_app_not_include_in_schema(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

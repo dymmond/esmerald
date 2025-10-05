@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-VERSION_FILE="esmerald/__init__.py"
+VERSION_FILE="ravyn/__init__.py"
 
 if [ "$VIRTUAL_ENV" != '' ]; then
     export PREFIX="$VIRTUAL_ENV/bin/"

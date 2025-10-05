@@ -1,9 +1,9 @@
 from base64 import b64encode
 from typing import Any
 
-from esmerald import Gateway, Inject, Injects, get
-from esmerald.security.http import HTTPBasic, HTTPBasicCredentials
-from esmerald.testclient import create_client
+from ravyn import Gateway, Inject, Injects, get
+from ravyn.security.http import HTTPBasic, HTTPBasicCredentials
+from ravyn.testclient import create_client
 
 security = HTTPBasic(realm="simple")
 
@@ -75,8 +75,8 @@ def test_openapi_schema():
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

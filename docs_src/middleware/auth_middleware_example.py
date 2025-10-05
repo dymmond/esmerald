@@ -1,8 +1,8 @@
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.contrib.auth.edgy.base_user import User
-from esmerald.exceptions import NotAuthorized
-from esmerald.middleware.authentication import AuthResult, BaseAuthMiddleware
-from esmerald.security.jwt.token import Token
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.contrib.auth.edgy.base_user import User
+from ravyn.exceptions import NotAuthorized
+from ravyn.middleware.authentication import AuthResult, BaseAuthMiddleware
+from ravyn.security.jwt.token import Token
 from lilya._internal._connection import Connection
 from lilya.types import ASGIApp
 from edgy.exceptions import ObjectNotFound

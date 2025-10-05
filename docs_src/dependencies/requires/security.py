@@ -4,8 +4,8 @@ from lilya.middleware import DefineMiddleware
 from lilya.middleware.request_context import RequestContextMiddleware
 from pydantic import BaseModel
 
-from esmerald import Gateway, Requires, Security, get, Esmerald
-from esmerald.security.api_key import APIKeyInCookie
+from ravyn import Gateway, Requires, Security, get, Ravyn
+from ravyn.security.api_key import APIKeyInCookie
 
 api_key = APIKeyInCookie(name="key")
 
@@ -24,7 +24,7 @@ def read_current_user(current_user: User = Requires(get_current_user)) -> Any:
     return current_user
 
 
-app = Esmerald(
+app = Ravyn(
     routes=[Gateway(handler=read_current_user)],
     middleware=[DefineMiddleware(RequestContextMiddleware)],
 )

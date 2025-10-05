@@ -5,11 +5,11 @@ from typing import Any
 import pytest
 import pytest_asyncio
 
-from esmerald import Esmerald, Gateway, get
-from esmerald.conf import settings
-from esmerald.core.caches.memory import InMemoryCache
-from esmerald.core.caches.redis import RedisCache
-from esmerald.testclient import EsmeraldTestClient
+from ravyn import Gateway, Ravyn, get
+from ravyn.conf import settings
+from ravyn.core.caches.memory import InMemoryCache
+from ravyn.core.caches.redis import RedisCache
+from ravyn.testclient import RavynTestClient
 from tests.settings import TestSettings
 
 try:
@@ -62,8 +62,8 @@ async def redis_settings(redis_cache) -> TestSettings:
 
 
 @pytest.fixture(scope="function")
-def esmerald_app(redis_cache) -> Esmerald:
-    """Fixture for an Esmerald app with caching."""
+def ravyn_app(redis_cache) -> Ravyn:
+    """Fixture for an Ravyn app with caching."""
 
     @get("/cache/{key}")
     async def get_cache_value(key: str) -> Any:
@@ -79,7 +79,7 @@ def esmerald_app(redis_cache) -> Esmerald:
         await settings.cache_backend.delete(key)
         return "Deleted"
 
-    return Esmerald(
+    return Ravyn(
         routes=[
             Gateway(handler=get_cache_value),
             Gateway(handler=set_cache_value),
@@ -89,6 +89,6 @@ def esmerald_app(redis_cache) -> Esmerald:
 
 
 @pytest.fixture(scope="function")
-def client(esmerald_app: Esmerald) -> EsmeraldTestClient:
-    """Fixture for an Esmerald test client."""
-    return EsmeraldTestClient(esmerald_app)
+def client(ravyn_app: Ravyn) -> RavynTestClient:
+    """Fixture for an Ravyn test client."""
+    return RavynTestClient(ravyn_app)

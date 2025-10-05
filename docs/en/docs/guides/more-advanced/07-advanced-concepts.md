@@ -1,6 +1,6 @@
-# Advanced Concepts in Esmerald
+# Advanced Concepts in Ravyn
 
-This section provides a deep technical dive into advanced features of Esmerald. These go beyond simple route handling
+This section provides a deep technical dive into advanced features of Ravyn. These go beyond simple route handling
 and API development, showcasing core extensibility mechanisms built into the framework.
 
 This guide is intended for developers building scalable, maintainable, and extensible systems.
@@ -9,7 +9,7 @@ This guide is intended for developers building scalable, maintainable, and exten
 
 ## Permissions
 
-Permissions in Esmerald allow fine-grained control over who can access certain routes.
+Permissions in Ravyn allow fine-grained control over who can access certain routes.
 Permissions are declared using `BasePermission` and can be globally or locally applied.
 
 ### Why use Permissions?
@@ -18,18 +18,22 @@ Permissions are declared using `BasePermission` and can be globally or locally a
 - Reuse authorization logic across multiple routes or gateways
 
 ### Creating a Permission Class
+
 ```python
-from esmerald.permissions import BasePermission
-from esmerald import Request
+from ravyn.permissions import BasePermission
+from ravyn import Request
+
 
 class IsAdmin(BasePermission):
-    def has_permission(self, request: Request) -> bool: # or async def has_permission(...)
+    def has_permission(self, request: Request) -> bool:  # or async def has_permission(...)
         return request.headers.get("X-ADMIN") == "true"
 ```
 
 ### Applying Permissions to a Route
+
 ```python
-from esmerald import get, HTTPException
+from ravyn import get, HTTPException
+
 
 @get("/admin", permissions=[IsAdmin])
 def admin_dashboard() -> dict:
@@ -42,7 +46,7 @@ If `IsAdmin` fails, a `403 Forbidden` is returned.
 
 ## Observables
 
-Observables provide an event-driven model in Esmerald to emit and listen for events between components.
+Observables provide an event-driven model in Ravyn to emit and listen for events between components.
 
 ### Why Observables?
 - Decouple business logic
@@ -50,8 +54,10 @@ Observables provide an event-driven model in Esmerald to emit and listen for eve
 - Improve maintainability by externalizing side effects
 
 ### Declaring an Observable
+
 ```python
-from esmerald import observable
+from ravyn import observable
+
 
 @observable(sender=["user_created"])
 def handle_user_created(payload: dict) -> None: ...
@@ -62,11 +68,12 @@ def handle_user_created(payload: dict) -> None: ...
 When declaring the `sender` automatically will trigger the event for those `listening` to act.
 
 ```python
-from esmerald import observable
+from ravyn import observable
+
 
 @observable(listen=["user_created"])
 def handle_user_created() -> None:
-    # do something here
+# do something here
 ```
 ---
 
@@ -79,14 +86,15 @@ Interceptors allow manipulation of request/response flow before or after they ar
 - Avoid bloated middlewares or tightly-coupled decorators
 
 ### Creating an Interceptor
+
 ```python
 from loguru import logger
 
-from esmerald import EsmeraldInterceptor
+from ravyn import RavynInterceptor
 from lilya.types import Receive, Scope, Send
 
 
-class LoggingInterceptor(EsmeraldInterceptor):
+class LoggingInterceptor(RavynInterceptor):
     async def intercept(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
         # Log a message here
         logger.info("This is my interceptor being called before reaching the handler.")
@@ -95,9 +103,9 @@ class LoggingInterceptor(EsmeraldInterceptor):
 ### Applying an Interceptor
 
 ```python
-from esmerald import Esmerald
+from ravyn import Ravyn
 
-app = Esmerald(
+app = Ravyn(
     routes=[],
     interceptors=[LoggingInterceptor]
 )
@@ -107,7 +115,7 @@ app = Esmerald(
 
 ## Decorators
 
-Esmerald supports decorators to extend or modify the behavior of route handlers.
+Ravyn supports decorators to extend or modify the behavior of route handlers.
 
 ### Common Use Cases
 - Caching
@@ -142,7 +150,7 @@ def ping() -> dict:
 
 ## Encoders
 
-In Esmerald, encoders enable the framework to understand, encode, and serialize custom objects seamlessly. This flexibility
+In Ravyn, encoders enable the framework to understand, encode, and serialize custom objects seamlessly. This flexibility
 allows developers to integrate various data types without being constrained to specific serialization libraries.
 
 ### Benefits of Encoders
@@ -152,14 +160,17 @@ allows developers to integrate various data types without being constrained to s
 * **Future-Proofing**: Ensure compatibility with various libraries and frameworks by defining custom serialization logic.
 
 ### Example: Encoding a Custom Type
+
 ```python
 from typing import Any
-from esmerald.encoders import Encoder
+from ravyn.encoders import Encoder
+
 
 class Money:
     def __init__(self, amount: float, currency: str):
         self.amount = amount
         self.currency = currency
+
 
 class MoneyEncoder(Encoder):
     def is_type(self, value: any) -> bool:
@@ -177,10 +188,11 @@ class MoneyEncoder(Encoder):
 * **encode**: Brings the data passed and creates a Money object.
 
 ### Register the Encoder
-```python
-from esmerald import Esmerald
 
-app = Esmerald(
+```python
+from ravyn import Ravyn
+
+app = Ravyn(
     routes=[],
     encoders=[MoneyEncoder]
 )
@@ -200,8 +212,10 @@ Extensions allow you to add new functionality or integrate third-party systems i
 - Third-party APIs (Stripe, Twilio)
 
 ### Creating an Extension
+
 ```python
-from esmerald import Extension
+from ravyn import Extension
+
 
 class MyDBExtension(Extension):
     def extend(self, app):
@@ -209,10 +223,11 @@ class MyDBExtension(Extension):
 ```
 
 ### Loading an Extension
-```python
-from esmerald import Esmerald, Pluggable
 
-app = Esmerald(
+```python
+from ravyn import Ravyn, Pluggable
+
+app = Ravyn(
     routes=[],
     extensions={'my-extension': Pluggable(MyDBExtension)}
 )
@@ -235,6 +250,6 @@ This document covered:
 ✅ Encoders for custom serialization
 ✅ Extensions for third-party integrations
 
-These features together form a powerful advanced toolkit to build modular and maintainable Esmerald applications.
+These features together form a powerful advanced toolkit to build modular and maintainable Ravyn applications.
 
-👉 Ready to supercharge your app with high-performance caching? Continue to [caching](./08-caching) to learn about Esmerald’s caching system with memory and Redis support.
+👉 Ready to supercharge your app with high-performance caching? Continue to [caching](./08-caching) to learn about Ravyn’s caching system with memory and Redis support.

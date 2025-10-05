@@ -1,9 +1,9 @@
 import pytest
 
-from esmerald import Gateway, get, status
-from esmerald.core.datastructures import JSON
-from esmerald.core.datastructures.encoders import ORJSON, UJSON
-from esmerald.testclient import create_client
+from ravyn import Gateway, get, status
+from ravyn.core.datastructures import JSON
+from ravyn.core.datastructures.encoders import ORJSON, UJSON
+from ravyn.testclient import create_client
 
 
 @pytest.mark.parametrize("response", [JSON, ORJSON, UJSON])

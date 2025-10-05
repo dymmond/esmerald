@@ -1,0 +1,3 @@
+ravyn>={{ ravyn_version }}
+gunicorn
+uvicorn

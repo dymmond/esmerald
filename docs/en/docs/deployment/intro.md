@@ -1,6 +1,6 @@
 # Introduction
 
-Deploying an **Esmerald** application is relatively easy.
+Deploying an **Ravyn** application is relatively easy.
 
 ## What is a deployment
 
@@ -24,7 +24,7 @@ your needs.
 The goal is not to tall you what to do but to give you a simple example in the case you would like to use, for example,
 [docker](./docker.md) and the reason why it is very simple. **Every case is unique**.
 
-## Esmerald
+## Ravyn
 
 We decided that we did not want to interfere with the way the people do deployments neither suggest that there is only
 one way of doing it but we thought that would be very useful to have at least one example just to help out a bit and
@@ -52,11 +52,11 @@ There are many ways of doing this but in the documentation of Pydantic (even a f
 `parse_env` and handle the parsing there.
 
 ```python
-from esmerald import EsmeraldSettings
+from ravyn import RavynSettings
 from pydantic import Field
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     allowed_hosts: List[str] = Field(..., env='ALLOWED_HOSTS')
 
     class Config:

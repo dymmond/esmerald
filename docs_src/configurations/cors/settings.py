@@ -1,7 +1,7 @@
-from esmerald import CORSConfig, EsmeraldSettings
+from ravyn import CORSConfig, RavynSettings
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     @property
     def cors_config(self) -> CORSConfig:
         """

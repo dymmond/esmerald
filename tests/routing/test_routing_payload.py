@@ -3,10 +3,10 @@ from dataclasses import dataclass
 import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from esmerald import ImproperlyConfigured
-from esmerald.applications import Esmerald
-from esmerald.routing.gateways import Gateway
-from esmerald.routing.handlers import post
+from ravyn import ImproperlyConfigured
+from ravyn.applications import Ravyn
+from ravyn.routing.gateways import Gateway
+from ravyn.routing.handlers import post
 
 
 @dataclass
@@ -26,14 +26,14 @@ def test_response_dataclass(test_app_client_factory):
     def user(payload: UserIn) -> UserIn:
         return data
 
-    data = {"name": "test", "email": "esmerald@esmerald.dev"}
-    app = Esmerald(routes=[Gateway(handler=user)])
+    data = {"name": "test", "email": "ravyn@ravyn.dev"}
+    app = Ravyn(routes=[Gateway(handler=user)])
 
     client = test_app_client_factory(app)
     response = client.post("/user", json=data)
 
     assert response.status_code == 200
-    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+    assert response.json() == {"name": "test", "email": "ravyn@ravyn.dev"}
 
 
 def test_response_pydantic_dataclass(test_app_client_factory):
@@ -41,14 +41,14 @@ def test_response_pydantic_dataclass(test_app_client_factory):
     def another_user(payload: UserOut) -> UserOut:
         return payload
 
-    payload = {"name": "test", "email": "esmerald@esmerald.dev"}
-    app = Esmerald(routes=[Gateway(handler=another_user)])
+    payload = {"name": "test", "email": "ravyn@ravyn.dev"}
+    app = Ravyn(routes=[Gateway(handler=another_user)])
 
     client = test_app_client_factory(app)
     response = client.post("/another-user", json=payload)
 
     assert response.status_code == 200
-    assert response.json() == {"name": "test", "email": "esmerald@esmerald.dev"}
+    assert response.json() == {"name": "test", "email": "ravyn@ravyn.dev"}
 
 
 def test_raises_improperly_configured(test_app_client_factory):
@@ -57,6 +57,6 @@ def test_raises_improperly_configured(test_app_client_factory):
         return payload
 
     with pytest.raises(ImproperlyConfigured) as raised:
-        Esmerald(routes=[Gateway(handler=another_user)])
+        Ravyn(routes=[Gateway(handler=another_user)])
 
     assert raised.value.args[0] == "500: Only 'data' or 'payload' must be provided but not both."

@@ -1,3 +1,3 @@
-from esmerald import Esmerald, Include
+from ravyn import Ravyn, Include
 
-app = Esmerald(routes=[Include(namespace="src.urls")])
+app = Ravyn(routes=[Include(namespace="src.urls")])

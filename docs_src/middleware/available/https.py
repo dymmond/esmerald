@@ -1,8 +1,8 @@
 from typing import List
 
-from esmerald import Esmerald, EsmeraldSettings
-from esmerald.middleware import HTTPSRedirectMiddleware
-from esmerald.types import Middleware
+from ravyn import Ravyn, RavynSettings
+from ravyn.middleware import HTTPSRedirectMiddleware
+from ravyn.types import Middleware
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 routes = [...]
@@ -10,14 +10,14 @@ routes = [...]
 # Option one
 middleware = [LilyaMiddleware(HTTPSRedirectMiddleware)]
 
-app = Esmerald(routes=routes, middleware=middleware)
+app = Ravyn(routes=routes, middleware=middleware)
 
 
 # Option two - Using the settings module
-# Running the application with your custom settings -> ESMERALD_SETTINGS_MODULE
-class AppSettings(EsmeraldSettings):
+# Running the application with your custom settings -> RAVYN_SETTINGS_MODULE
+class AppSettings(RavynSettings):
     @property
     def middleware(self) -> List["Middleware"]:
         # There is no need to wrap in a LilyaMiddleware here.
-        # Esmerald automatically will do it once the application is up and running.
+        # Ravyn automatically will do it once the application is up and running.
         return [HTTPSRedirectMiddleware]

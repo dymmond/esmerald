@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic import BaseModel, EmailStr, Field
 
-from esmerald import Esmerald, Gateway, post
+from ravyn import Ravyn, Gateway, post
 
 
 class User(BaseModel):
@@ -20,4 +20,4 @@ async def create_user(payload: User) -> None:
     """
 
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+app = Ravyn(routes=[Gateway(handler=create_user)])

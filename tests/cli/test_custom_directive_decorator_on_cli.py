@@ -41,12 +41,12 @@ def create_folders():
 
 
 def generate():
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createproject myproject")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createproject myproject")
     assert ss == 0
 
     os.chdir("myproject/myproject/apps")
 
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald createapp myapp")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn createapp myapp")
 
 
 def test_custom_directive(create_folders):
@@ -64,7 +64,7 @@ def test_custom_directive(create_folders):
     )
 
     # Execute custom directive
-    (o, e, ss) = run_cmd("tests.cli.main:app", "esmerald")
+    (o, e, ss) = run_cmd("tests.cli.main:app", "ravyn")
 
     assert "create-user" in str(o)
     assert "Custom directive" in str(o)

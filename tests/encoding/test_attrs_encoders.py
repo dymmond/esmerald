@@ -3,13 +3,13 @@ from typing import Any
 import pytest
 from attrs import asdict, define, field, has
 
-from esmerald import Gateway, post
-from esmerald.encoders import (
+from ravyn import Gateway, post
+from ravyn.encoders import (
     LILYA_ENCODER_TYPES,
     Encoder,
-    register_esmerald_encoder,
+    register_ravyn_encoder,
 )
-from esmerald.testclient import create_client
+from ravyn.testclient import create_client
 
 
 class AttrsEncoder(Encoder):
@@ -27,7 +27,7 @@ class AttrsEncoder(Encoder):
 def additional_encoders():
     token = LILYA_ENCODER_TYPES.set(LILYA_ENCODER_TYPES.get().copy())
     try:
-        register_esmerald_encoder(AttrsEncoder)
+        register_ravyn_encoder(AttrsEncoder)
         yield
     finally:
         LILYA_ENCODER_TYPES.reset(token)

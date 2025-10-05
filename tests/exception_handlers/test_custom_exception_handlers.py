@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ValidationError, field_validator
 
-from esmerald import JSON, Gateway, post, put
-from esmerald.exception_handlers import pydantic_validation_error_handler, value_error_handler
-from esmerald.testclient import create_client
+from ravyn import JSON, Gateway, post, put
+from ravyn.exception_handlers import pydantic_validation_error_handler, value_error_handler
+from ravyn.testclient import create_client
 
 
 class DataIn(BaseModel):  # pragma: no cover
@@ -31,7 +31,7 @@ async def raised() -> JSON:
 
 @put("/update")
 async def update() -> DataIn:  # pragma: no cover
-    DataIn(name="Esmerald", email="test@esmerald.dev")
+    DataIn(name="Ravyn", email="test@ravyn.dev")
 
 
 def test_pydantic_validation_error_handler_return_422(test_client_factory):

@@ -1,9 +1,9 @@
 from mongoz import Registry
 
-from esmerald.conf.global_settings import EsmeraldSettings
+from ravyn.conf.global_settings import RavynSettings
 
 
-class AppSettings(EsmeraldSettings):
+class AppSettings(RavynSettings):
     @property
     def registry(self) -> Registry:
         database = "<YOUR-SQL-QUERY-STRING"

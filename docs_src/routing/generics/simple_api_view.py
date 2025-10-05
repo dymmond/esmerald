@@ -1,4 +1,4 @@
-from esmerald import SimpleAPIView, delete, get, patch, post, put
+from ravyn import SimpleAPIView, delete, get, patch, post, put
 
 
 class UserAPI(SimpleAPIView):

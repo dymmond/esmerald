@@ -2,9 +2,9 @@ from typing import Dict, Union
 
 from pydantic import BaseModel
 
-from esmerald import JSON, ChildEsmerald, Gateway, Include, get
-from esmerald.openapi.datastructures import OpenAPIResponse
-from esmerald.testclient import create_client
+from ravyn import JSON, ChildRavyn, Gateway, Include, get
+from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
 
@@ -26,13 +26,13 @@ async def read_item() -> JSON:
     """ """
 
 
-def test_add_child_esmerald_to_openapi(test_client_factory):
+def test_add_child_ravyn_to_openapi(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=read_people),
             Include(
                 "/child",
-                app=ChildEsmerald(
+                app=ChildRavyn(
                     routes=[Gateway(handler=read_item)],
                     enable_openapi=True,
                     include_in_schema=True,
@@ -47,8 +47,8 @@ def test_add_child_esmerald_to_openapi(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
@@ -106,13 +106,13 @@ def test_add_child_esmerald_to_openapi(test_client_factory):
         }
 
 
-def test_child_esmerald_disabled_openapi(test_client_factory):
+def test_child_ravyn_disabled_openapi(test_client_factory):
     with create_client(
         routes=[
             Gateway(handler=read_people),
             Include(
                 "/child",
-                app=ChildEsmerald(
+                app=ChildRavyn(
                     routes=[Gateway(handler=read_item)],
                     enable_openapi=False,
                     include_in_schema=True,
@@ -127,8 +127,8 @@ def test_child_esmerald_disabled_openapi(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,
@@ -168,12 +168,12 @@ def test_child_esmerald_disabled_openapi(test_client_factory):
         }
 
 
-def test_child_esmerald_not_included_in_schema(test_client_factory):
+def test_child_ravyn_not_included_in_schema(test_client_factory):
     with create_client(
         routes=[
             Include(
                 "/child",
-                app=ChildEsmerald(
+                app=ChildRavyn(
                     routes=[Gateway(handler=read_item)],
                     enable_openapi=True,
                     include_in_schema=False,
@@ -189,8 +189,8 @@ def test_child_esmerald_not_included_in_schema(test_client_factory):
         assert response.json() == {
             "openapi": "3.1.0",
             "info": {
-                "title": "Esmerald",
-                "summary": "Esmerald application",
+                "title": "Ravyn",
+                "summary": "Ravyn application",
                 "description": "Highly scalable, performant, easy to learn and for every application.",
                 "contact": {"name": "admin", "email": "admin@myapp.com"},
                 "version": client.app.version,

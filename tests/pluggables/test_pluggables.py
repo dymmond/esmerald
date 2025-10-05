@@ -4,16 +4,16 @@ import pytest
 from loguru import logger
 from pydantic import BaseModel
 
-from esmerald import Esmerald, Extension, Pluggable
-from esmerald.exceptions import ImproperlyConfigured
-from esmerald.types import DictAny
+from ravyn import Extension, Pluggable, Ravyn
+from ravyn.exceptions import ImproperlyConfigured
+from ravyn.types import DictAny
 
 
 class MyNewPluggable: ...
 
 
 class PluggableNoPlug(Extension):  # pragma: no cover
-    def __init__(self, app: "Esmerald"):
+    def __init__(self, app: "Ravyn"):
         super().__init__(app)
         self.app = app
 
@@ -21,7 +21,7 @@ class PluggableNoPlug(Extension):  # pragma: no cover
 def test_raises_improperly_configured_for_subclass(test_client_factory):
     with pytest.warns(DeprecationWarning):
         with pytest.raises(ImproperlyConfigured) as raised:
-            Esmerald(routes=[], pluggables={"test": MyNewPluggable})
+            Ravyn(routes=[], pluggables={"test": MyNewPluggable})
 
     assert raised.value.detail == (
         "An extension must subclass from Extension, implement the ExtensionProtocol "
@@ -32,7 +32,7 @@ def test_raises_improperly_configured_for_subclass(test_client_factory):
 def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory):
     with pytest.warns(DeprecationWarning):
         with pytest.raises(ImproperlyConfigured) as raised:
-            Esmerald(routes=[], pluggables={1: MyNewPluggable})
+            Ravyn(routes=[], pluggables={1: MyNewPluggable})
 
     assert raised.value.detail == "Extension names should be in string format."
 
@@ -40,7 +40,7 @@ def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory)
 def test_raises_error_for_missing_extend(test_client_factory):
     with pytest.warns(DeprecationWarning):
         with pytest.raises(Exception):  # noqa
-            Esmerald(
+            Ravyn(
                 routes=[],
                 pluggables={"test": Pluggable(PluggableNoPlug)},
             )
@@ -51,7 +51,7 @@ class Config(BaseModel):
 
 
 class MyExtension(Extension):
-    def __init__(self, app: "Esmerald", config: Config):
+    def __init__(self, app: "Ravyn", config: Config):
         super().__init__(app)
         self.config = config
 
@@ -61,7 +61,7 @@ class MyExtension(Extension):
 
 def test_generates_pluggable():
     with pytest.warns(DeprecationWarning):
-        app = Esmerald(
+        app = Ravyn(
             routes=[],
             pluggables={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))},
         )
@@ -72,7 +72,7 @@ def test_generates_pluggable():
 
 def test_generates_many_pluggables():
     class LoggingExtension(Extension):
-        def __init__(self, app: "Esmerald", name):
+        def __init__(self, app: "Ravyn", name):
             super().__init__(app)
             self.app = app
             self.name = name
@@ -81,7 +81,7 @@ def test_generates_many_pluggables():
             logger.info(f"Started logging extension with name {name}")
 
     class DatabaseExtension(Extension):
-        def __init__(self, app: "Esmerald", database):
+        def __init__(self, app: "Ravyn", database):
             super().__init__(app)
             self.app = app
             self.database = database
@@ -89,7 +89,7 @@ def test_generates_many_pluggables():
         def extend(self, database) -> None:
             logger.info(f"Started extension with database {database}")
 
-    app = Esmerald(
+    app = Ravyn(
         routes=[],
         extensions={
             "test": Pluggable(MyExtension, config=Config(name="my pluggable")),
@@ -103,7 +103,7 @@ def test_generates_many_pluggables():
 
 def test_add_pluggable(test_client_factory):
     class CustomExtension(Extension):
-        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+        def __init__(self, app: Optional["Ravyn"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
             self.app = app
 
@@ -112,7 +112,7 @@ def test_add_pluggable(test_client_factory):
 
             self.app.add_extension("manual", self)
 
-    app = Esmerald(routes=[])
+    app = Ravyn(routes=[])
     config = Config(name="manual")
     extension = CustomExtension(app=app)
     extension.extend(config=config)
@@ -123,7 +123,7 @@ def test_add_pluggable(test_client_factory):
 
 def test_add_standalone_extension(test_client_factory):
     class CustomExtension:
-        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+        def __init__(self, app: Optional["Ravyn"] = None, **kwargs: DictAny):
             self.app = app
             self.kwargs = kwargs
 
@@ -132,7 +132,7 @@ def test_add_standalone_extension(test_client_factory):
 
             self.app.add_extension("manual", self)
 
-    app = Esmerald(routes=[])
+    app = Ravyn(routes=[])
     config = Config(name="manual")
     extension = CustomExtension(app=app)
     extension.extend(config=config)
@@ -143,14 +143,14 @@ def test_add_standalone_extension(test_client_factory):
 
 def test_add_pluggable_manual(test_client_factory):
     class CustomExtension(Extension):
-        def __init__(self, app: Optional["Esmerald"] = None, **kwargs: DictAny):
+        def __init__(self, app: Optional["Ravyn"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
             self.app = app
 
         def extend(self, config) -> None:
             logger.success(f"Started standalone plugging with the name: {config.name}")
 
-    app = Esmerald(routes=[])
+    app = Ravyn(routes=[])
     config = Config(name="manual")
     with pytest.warns(DeprecationWarning):
         app.add_pluggable("manual", Pluggable(CustomExtension, config=config))

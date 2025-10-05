@@ -6,9 +6,9 @@ from edgy.exceptions import ObjectNotFound
 from jose import JWSError, JWTError
 from pydantic import BaseModel
 
-from esmerald.conf import settings
-from esmerald.exceptions import AuthenticationError, NotAuthorized
-from esmerald.security.jwt.token import Token
+from ravyn.conf import settings
+from ravyn.exceptions import AuthenticationError, NotAuthorized
+from ravyn.security.jwt.token import Token
 
 
 class AccessToken(BaseModel):

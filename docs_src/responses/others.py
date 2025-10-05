@@ -1,6 +1,6 @@
 from pydantic import EmailStr
 
-from esmerald import Esmerald, Gateway, Request, get, post
+from ravyn import Ravyn, Gateway, Request, get, post
 
 
 @get(path="/me")
@@ -13,4 +13,4 @@ async def create(request: Request) -> str:
     return "OK"
 
 
-app = Esmerald(routes=[Gateway(handler=home), Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=home), Gateway(handler=create)])

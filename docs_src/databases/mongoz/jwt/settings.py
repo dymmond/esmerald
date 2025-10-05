@@ -1,16 +1,16 @@
 from typing import TYPE_CHECKING, List
 
-from esmerald import EsmeraldSettings
-from esmerald.core.config.jwt import JWTConfig
-from esmerald.contrib.auth.mongoz.middleware import JWTAuthMiddleware
+from ravyn import RavynSettings
+from ravyn.core.config.jwt import JWTConfig
+from ravyn.contrib.auth.mongoz.middleware import JWTAuthMiddleware
 from monkay import load
 from lilya.middleware import DefineMiddleware as LilyaMiddleware
 
 if TYPE_CHECKING:
-    from esmerald.types import Middleware
+    from ravyn.types import Middleware
 
 
-class CustomSettings(EsmeraldSettings):
+class CustomSettings(RavynSettings):
     @property
     def jwt_config(self) -> JWTConfig:
         """

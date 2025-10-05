@@ -3,8 +3,8 @@ import random
 import string
 from typing import Any, Type
 
-from esmerald.core.directives import BaseDirective
-from esmerald.core.terminal import Print
+from ravyn.core.directives import BaseDirective
+from ravyn.core.terminal import Print
 from tests.cli.user import User
 
 printer = Print()
@@ -29,9 +29,9 @@ class Directive(BaseDirective):
 
         user = await User.query.create_superuser(
             first_name=name,
-            last_name="esmerald",
+            last_name="ravyn",
             username=self.get_random_string(10),
-            email="mail@esmerald.dev",
+            email="mail@ravyn.dev",
             password=self.get_random_string(8),
         )
 

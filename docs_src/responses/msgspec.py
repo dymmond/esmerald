@@ -1,7 +1,7 @@
 from typing import Union
 
-from esmerald import Esmerald, Gateway, post
-from esmerald.core.datastructures.msgspec import Struct
+from ravyn import Ravyn, Gateway, post
+from ravyn.core.datastructures.msgspec import Struct
 
 
 class User(Struct):
@@ -17,4 +17,4 @@ def create(data: User) -> User:
     return data
 
 
-app = Esmerald(routes=[Gateway(handler=create)])
+app = Ravyn(routes=[Gateway(handler=create)])

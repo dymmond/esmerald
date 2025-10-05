@@ -1,20 +1,22 @@
-# Handling Body Fields in Esmerald
+# Handling Body Fields in Ravyn
 
-In Esmerald, body fields are used to parse and validate incoming request bodies. The `Body` class in Esmerald allows you to define structured data within the body of a request. This guide will cover how to handle and validate body fields using Esmerald.
+In Ravyn, body fields are used to parse and validate incoming request bodies. The `Body` class in Ravyn allows you to define structured data within the body of a request. This guide will cover how to handle and validate body fields using Ravyn.
 
 ## 📂 Using the `Body` Class
 
-The `Body` class in Esmerald is used to define fields in the body of an HTTP request. These fields can be validated and documented using Pydantic models. You can also specify the media type of the body content, such as `application/json`, `application/x-www-form-urlencoded`, or `multipart/form-data`.
+The `Body` class in Ravyn is used to define fields in the body of an HTTP request. These fields can be validated and documented using Pydantic models. You can also specify the media type of the body content, such as `application/json`, `application/x-www-form-urlencoded`, or `multipart/form-data`.
 
 ### Example: Simple Body Field
 
 ```python
 from pydantic import BaseModel
-from esmerald import Esmerald, Gateway, JSONResponse, post, Body
+from ravyn import Ravyn, Gateway, JSONResponse, post, Body
+
 
 class User(BaseModel):
     name: str
     email: str
+
 
 @post("/create")
 async def create_user(data: User = Body(...)) -> JSONResponse:
@@ -23,7 +25,8 @@ async def create_user(data: User = Body(...)) -> JSONResponse:
     """
     return JSONResponse({"message": "User created", "user": data.model_dump()})
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+
+app = Ravyn(routes=[Gateway(handler=create_user)])
 ```
 
 ### Explanation:
@@ -35,36 +38,39 @@ app = Esmerald(routes=[Gateway(handler=create_user)])
 
 ## 🌐 Setting the `media_type` for Body Fields
 
-Esmerald allows you to define the `media_type` for body fields, specifying the format of the data being sent.
+Ravyn allows you to define the `media_type` for body fields, specifying the format of the data being sent.
 
 ### Available Media Types:
 - `application/json` (default)
 - `application/x-www-form-urlencoded`
 - `multipart/form-data`
 
-You can define the `media_type` when using the `Body` decorator to specify how Esmerald should parse the incoming request body.
+You can define the `media_type` when using the `Body` decorator to specify how Ravyn should parse the incoming request body.
 
 ### Example: Body with `media_type`
 
 ```python
 from pydantic import BaseModel
-from esmerald import Esmerald, Gateway, JSONResponse, post, Body
-from esmerald.utils.enums import EncodingType
+from ravyn import Ravyn, Gateway, JSONResponse, post, Body
+from ravyn.utils.enums import EncodingType
+
 
 class User(BaseModel):
     name: str
     email: str
 
+
 @post("/create")
 async def create_user(
-    data: User = Body(..., media_type=EncodingType.URL_ENCODED)
+        data: User = Body(..., media_type=EncodingType.URL_ENCODED)
 ) -> JSONResponse:
     """
     Creates a user with the body sent as x-www-form-urlencoded.
     """
     return JSONResponse({"message": "User created", "user": data.model_dump()})
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+
+app = Ravyn(routes=[Gateway(handler=create_user)])
 ```
 
 ### Explanation:
@@ -75,23 +81,26 @@ app = Esmerald(routes=[Gateway(handler=create_user)])
 
 ## 🧩 Using `Body` with Pydantic Models
 
-Esmerald leverages Pydantic for automatic data validation and serialization. You can define more complex data structures using Pydantic models and use them as body fields.
+Ravyn leverages Pydantic for automatic data validation and serialization. You can define more complex data structures using Pydantic models and use them as body fields.
 
 ### Example: Using `Body` with Nested Pydantic Models
 
 ```python
 from pydantic import BaseModel
-from esmerald import Esmerald, Gateway, JSONResponse, post, Body
+from ravyn import Ravyn, Gateway, JSONResponse, post, Body
+
 
 class Address(BaseModel):
     street: str
     city: str
     country: str
 
+
 class User(BaseModel):
     name: str
     email: str
     address: Address
+
 
 @post("/create")
 async def create_user(data: User = Body(...)) -> JSONResponse:
@@ -100,7 +109,8 @@ async def create_user(data: User = Body(...)) -> JSONResponse:
     """
     return JSONResponse({"message": "User created", "user": data.model_dump()})
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+
+app = Ravyn(routes=[Gateway(handler=create_user)])
 ```
 
 ### Explanation:
@@ -111,18 +121,20 @@ app = Esmerald(routes=[Gateway(handler=create_user)])
 
 ## 📝 Optional and Default Fields in `Body`
 
-In Esmerald, body fields can be optional or have default values. You can use Python's typing and Pydantic features to define whether a field is required or optional.
+In Ravyn, body fields can be optional or have default values. You can use Python's typing and Pydantic features to define whether a field is required or optional.
 
 ### Example: Optional Fields in Body
 
 ```python
 from typing import Optional
 from pydantic import BaseModel
-from esmerald import Esmerald, Gateway, JSONResponse, post, Body
+from ravyn import Ravyn, Gateway, JSONResponse, post, Body
+
 
 class User(BaseModel):
     name: str
     email: Optional[str] = None  # Optional field
+
 
 @post("/create")
 async def create_user(data: User = Body(...)) -> JSONResponse:
@@ -131,7 +143,8 @@ async def create_user(data: User = Body(...)) -> JSONResponse:
     """
     return JSONResponse({"message": "User created", "user": data.model_dump()})
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+
+app = Ravyn(routes=[Gateway(handler=create_user)])
 ```
 
 ### Explanation:
@@ -148,11 +161,13 @@ You can apply advanced validation to body fields using Pydantic's `Field` class,
 
 ```python
 from pydantic import BaseModel, Field
-from esmerald import Esmerald, Gateway, JSONResponse, post, Body
+from ravyn import Ravyn, Gateway, JSONResponse, post, Body
+
 
 class User(BaseModel):
     name: str = Field(..., min_length=3)  # Ensures the name has at least 3 characters
     email: str = Field(..., regex=r"^[\w\.-]+@[\w\.-]+\.\w{2,3}$")  # Email validation
+
 
 @post("/create")
 async def create_user(data: User = Body(...)) -> JSONResponse:
@@ -161,7 +176,8 @@ async def create_user(data: User = Body(...)) -> JSONResponse:
     """
     return JSONResponse({"message": "User created", "user": data.model_dump()})
 
-app = Esmerald(routes=[Gateway(handler=create_user)])
+
+app = Ravyn(routes=[Gateway(handler=create_user)])
 ```
 
 ### Explanation:
@@ -173,7 +189,7 @@ app = Esmerald(routes=[Gateway(handler=create_user)])
 
 ## 📂 Summary
 
-- **`Body`** allows you to handle and validate request bodies in Esmerald, using Pydantic models or simple Python data structures.
+- **`Body`** allows you to handle and validate request bodies in Ravyn, using Pydantic models or simple Python data structures.
 - You can customize the body content using `media_type`, choosing between `application/json`, `application/x-www-form-urlencoded`, and `multipart/form-data`.
-- Esmerald makes it easy to handle complex, nested models and apply custom validations using Pydantic’s powerful features.
+- Ravyn makes it easy to handle complex, nested models and apply custom validations using Pydantic’s powerful features.
 - **Optional** fields and **default values** allow you to create flexible API endpoints that can handle a variety of input scenarios.

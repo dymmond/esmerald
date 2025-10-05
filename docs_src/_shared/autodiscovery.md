@@ -1,6 +1,6 @@
 ## Important
 
-Before reading this section, you should get familiar with the ways Esmerald handles the discovery
+Before reading this section, you should get familiar with the ways Ravyn handles the discovery
 of the applications.
 
 The following examples and explanations will be using the

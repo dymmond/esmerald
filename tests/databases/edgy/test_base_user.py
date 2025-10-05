@@ -5,8 +5,8 @@ from uuid import uuid4
 import edgy
 import pytest
 
-from esmerald.conf import settings
-from esmerald.contrib.auth.edgy.base_user import AbstractUser
+from ravyn.conf import settings
+from ravyn.contrib.auth.edgy.base_user import AbstractUser
 
 models = edgy.Registry(settings.edgy_database)
 pytestmark = pytest.mark.anyio
@@ -21,7 +21,7 @@ def get_random_string(length=10):
 class User(AbstractUser):
     """
     Inherits from the abstract user and adds the registry
-    from esmerald settings.
+    from ravyn settings.
     """
 
     class Meta:
@@ -50,7 +50,7 @@ async def test_create_user():
     user = await User.query.create_user(
         first_name="Test",
         last_name="a test",
-        email="esmerald@test.com",
+        email="ravyn@test.com",
         username="user",
         password=get_random_string(),
     )

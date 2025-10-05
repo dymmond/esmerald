@@ -1,6 +1,6 @@
 # CSRFConfig
 
-CSRF extends for Cross-Site Request Forgery and it is one of the built-in middlewares of Esmerald.
+CSRF extends for Cross-Site Request Forgery and it is one of the built-in middlewares of Ravyn.
 When a CSRFConfig object is passed to an application instance, it will automatically start the `CSRFMiddleware`.
 
 !!! Tip
@@ -33,4 +33,4 @@ The CSRFConfig can be done directly via [application instantiation](#csrfconfig-
 {!> ../../../docs_src/configurations/csrf/settings.py!}
 ```
 
-This will make sure you keep the settings clean, separated and without a bloated **Esmerald** instance.
+This will make sure you keep the settings clean, separated and without a bloated **Ravyn** instance.
