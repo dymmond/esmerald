@@ -29,7 +29,7 @@ the async web framework that builds on the strengths of **RavynAPIException** wh
 
 This is not mandatory **at all** but if you want to start using Ravyn right away, you can simply do:
 
-- Replace all `ravyn` imports with `ravyn`.
+- Replace all `esmerald` imports with `ravyn`.
 - No breaking changes in core APIs — projects built on Ravyn should run with minimal adjustments.
 
 Again, **Ravyn** is a fork of RavynAPIException with the same concepts, same everything.
@@ -49,6 +49,7 @@ starting a new set of versions from the 0.1.0.
 ### Fixed
 
 - Autodetection of app in cli.
+- Generic lifespan support in `run` directive.
 
 ## 3.9.4
 

@@ -7,10 +7,10 @@ from enum import Enum
 from typing import Annotated, Any, TypeVar
 
 import click
-from lilya._internal._events import generate_lifespan_events  # noqa
 from lilya.cli.base import BaseDirective
 from lilya.context import G, g_context
-from lilya.types import ASGIApp, Lifespan
+from lilya.types import ASGIApp
+from monkay.asgi import Lifespan
 from sayer import Argument, Option, command, error
 
 from ravyn.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
@@ -97,16 +97,7 @@ async def run(
 
     ## Check if application is up and execute any event
     # Shutting down after
-    lifespan = (
-        generate_lifespan_events(
-            env.ravyn_app.on_startup,
-            env.ravyn_app.on_shutdown,
-            env.ravyn_app.lifespan,
-        )
-        if env.ravyn_app
-        else generate_lifespan_events()
-    )
-    await execute_lifespan(env.app, lifespan, directive, program_name, position)
+    await execute_lifespan(env.app, directive, program_name, position)
 
 
 def get_position() -> int:
@@ -144,7 +135,6 @@ async def reset_global_context(token: Any) -> None:
 
 async def execute_lifespan(
     app: ASGIApp | None,
-    lifespan: Lifespan,
     directive: Any,
     program_name: str,
     position: int,
@@ -152,7 +142,7 @@ async def execute_lifespan(
     """
     Executes the lifespan events and the directive.
     """
-    async with lifespan(app):
+    async with Lifespan(app):
         token = await set_global_context()
 
         if isinstance(directive, BaseDirective):
