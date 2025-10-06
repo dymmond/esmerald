@@ -30,7 +30,7 @@
 
 **The official supported version is always the latest released**.
 
-**If you came to look for Esmerald, you are in the right place. Esmerald was rabranded to Ravyn**.
+**If you came to look for Esmerald, you are in the right place. Esmerald was rebranded to Ravyn**.
 
 ---
 
