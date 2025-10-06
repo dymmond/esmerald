@@ -6,23 +6,23 @@ hide:
 # Ravyn
 
 <p align="center">
-  <a href="https://ravyn.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1673619342/esmerald/img/logo-gr_z1ot8o.png" alt='Ravyn'></a>
+  <a href="https://ravyn.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1759490296/ravyn/img/logo_pb3fis.png" alt='Ravyn'></a>
 </p>
 
 <p align="center">
-    <em>🚀 Масштабируемость, производительность, легкость в изучении и написании кода, подходит для любого приложения. 🚀</em>
+    <em>🚀 Performance, type safety, and elegance. A next-generation async Python framework for APIs, microservices, and web applications. 🚀</em>
 </p>
 
 <p align="center">
-<a href="https://github.com/dymmond/esmerald/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" target="_blank">
-    <img src="https://github.com/dymmond/esmerald/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" alt="Test Suite">
+<a href="https://github.com/dymmond/ravyn/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" target="_blank">
+    <img src="https://github.com/dymmond/ravyn/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" alt="Test Suite">
 </a>
 
-<a href="https://pypi.org/project/esmerald" target="_blank">
-    <img src="https://img.shields.io/pypi/v/esmerald?color=%2334D058&label=pypi%20package" alt="Package version">
+<a href="https://pypi.org/project/ravyn" target="_blank">
+    <img src="https://img.shields.io/pypi/v/ravyn?color=%2334D058&label=pypi%20package" alt="Package version">
 </a>
 
-<a href="https://pypi.org/project/esmerald" target="_blank">
+<a href="https://pypi.org/project/ravyn" target="_blank">
     <img src="https://img.shields.io/pypi/pyversions/ravyn.svg?color=%2334D058" alt="Supported Python versions">
 </a>
 </p>

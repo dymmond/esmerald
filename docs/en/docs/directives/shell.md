@@ -114,7 +114,7 @@ It looks like this:
 
 <img src="https://res.cloudinary.com/dymmond/image/upload/v1689763288/esmerald/shell/shell_q0fdyi.png" alt='Shell Example'>
 
-Of course the `ESMERALD-VERSION`, `YOUR-APPLICATION-TITLE` and `YOUR-APPLICATION-VERSION`
+Of course the `RAVYN-VERSION`, `YOUR-APPLICATION-TITLE` and `YOUR-APPLICATION-VERSION`
 are replaced automatically by the version you are using.
 
 Pretty cool, right? Then it is a normal python shell where you can import whatever you want and

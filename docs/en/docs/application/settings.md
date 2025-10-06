@@ -141,7 +141,7 @@ The `settings_module` is a parameter available in every single `Ravyn` instance 
 ### Creating a settings_module
 
 The configurations have **literally the same concept**
-as the [RavynSettings](#esmeralsettings-and-the-application), which means that every single
+as the [RavynSettings](#ravynsettings-and-the-application), which means that every single
 `settings_module` **must be derived from the RavynSettings** or an `ImproperlyConfigured` exception
 is thrown.
 
