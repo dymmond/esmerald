@@ -16,6 +16,8 @@ of the ecosystem.
 
 This is the reason for Ravyn to come into existence and to keep everything aligned with the future projects coming out.
 
+Please check the [migration guide](./migration.md) for more details about how to migrate from Esmerald to Ravyn.
+
 ## 0.1.0
 
 We are proud to announce the **first official release of Ravyn (0.1.0)** —
@@ -580,7 +582,7 @@ system.
 
 ### Changed
 
-- [Permissions section](./permissions/esmerald.md) moved and renamed to Esmerald Permissions.
+- [Permissions section](./permissions/ravyn.md) moved and renamed to Esmerald Permissions.
 
 ### Fixed
 

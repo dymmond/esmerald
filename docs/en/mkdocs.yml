@@ -1,6 +1,6 @@
 site_name: Ravyn
 site_url: https://ravyn.dev
-site_description: 🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀
+site_description: 🚀 Performance, type safety, and elegance. A next-generation async Python framework for APIs, microservices, and web applications. 🚀
 theme:
   name: material
   custom_dir: ../en/overrides
@@ -277,6 +277,8 @@ nav:
   - sponsorship.md
   - ravyn-people.md
   - contributing.md
+- Migration:
+    - migration.md
 - release-notes.md
 extra_css:
 - statics/css/custom.css
