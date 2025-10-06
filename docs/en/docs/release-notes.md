@@ -34,7 +34,9 @@ This is not mandatory **at all** but if you want to start using Ravyn right away
 - Replace all `esmerald` imports with `ravyn`.
 - No breaking changes in core APIs — projects built on Ravyn should run with minimal adjustments.
 
-Again, **Ravyn** is a fork of Esmerald with the same concepts, same everything.
+Please check the [migration guide](./migration.md) for more details about how to migrate from Esmerald to Ravyn.
+
+Again, **Ravyn** is a rebrand of Esmerald with the same concepts, same everything.
 
 ---
 
