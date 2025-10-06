@@ -30,7 +30,7 @@
 
 **The official supported version is always the latest released**.
 
-**If you came to look for Esmerald, you are in the right place. Esmerald was rebranded to Ravyn**.
+**If you came looking for Esmerald, you are in the right place. Esmerald was rebranded to Ravyn**.
 
 ---
 
@@ -41,8 +41,6 @@ Ravyn is designed to build with Python 3.10+ and based on standard python type h
 built on the top of [Starlette](https://github.com/encode/starlette) and later on moved to [Lilya](https://lilya.dev) and [Pydantic](https://github.com/samuelcolvin/pydantic)/[msgspec](https://jcristharif.com/msgspec/).
 
 Check out the [Ravyn documentation 📚](https://ravyn.dev)
-
-**The official supported version is always the latest released**.
 
 ## History Behind Ravyn
 

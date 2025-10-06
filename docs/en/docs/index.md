@@ -33,6 +33,9 @@ hide:
 
 **Source Code**: [https://github.com/dymmond/ravyn](https://github.com/dymmond/ravyn)
 
+**The official supported version is always the latest released**.
+
+**If you came looking for Esmerald, you are in the right place. Esmerald was rebranded to Ravyn**.
 ---
 
 Ravyn is a modern, powerful, flexible, high performant web framework designed to build not only APIs
