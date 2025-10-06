@@ -9,7 +9,7 @@ from rich.table import Table
 from sayer import command, echo, error
 
 from ravyn import Gateway, Router
-from ravyn.core.directives.constants import ESMERALD_DISCOVER_APP
+from ravyn.core.directives.constants import RAVYN_DISCOVER_APP
 from ravyn.core.directives.env import DirectiveEnv
 from ravyn.core.terminal import OutputColour
 from ravyn.routing.apis.base import View
@@ -60,10 +60,10 @@ def show_urls(env: DirectiveEnv) -> None:
 
     Example: `ravyn show_urls`
     """
-    if os.getenv(ESMERALD_DISCOVER_APP) is None and getattr(env, "app", None) is None:
+    if os.getenv(RAVYN_DISCOVER_APP) is None and getattr(env, "app", None) is None:
         error(
             "You cannot specify a custom directive without specifying the --app or setting "
-            "ESMERALD_DEFAULT_APP environment variable."
+            "RAVYN_DEFAULT_APP environment variable."
         )
         sys.exit(1)
     if getattr(env, "ravyn_app", None) is None:

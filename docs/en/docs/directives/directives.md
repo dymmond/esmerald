@@ -58,7 +58,7 @@ $ ravyn --app myproject.main:app directives
 Or
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 $ ravyn directives
 ```
 
@@ -455,7 +455,7 @@ This command can be run like this:
 $ ravyn --app myproject.main:app show_urls
 ```
 
-**Using the ESMERALD_DEFAULT_APP environment variable already exported**:
+**Using the RAVYN_DEFAULT_APP environment variable already exported**:
 
 ```shell
 $ ravyn myproject.main:app show_urls

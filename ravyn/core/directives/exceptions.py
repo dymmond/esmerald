@@ -1,9 +1,9 @@
 from typing import Any
 
-from ravyn.exceptions import RavynAPIExceptionAPIException
+from ravyn.exceptions import RavynAPIException
 
 
-class DirectiveError(RavynAPIExceptionAPIException):
+class DirectiveError(RavynAPIException):
     """
     Exception indicating a problem while executing a directive.
     """

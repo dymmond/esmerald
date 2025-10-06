@@ -345,12 +345,6 @@ A middleware class for reading/generating request IDs and attaching them to appl
     For Ravyn apps, just substitute FastAPI with Ravyn in the examples given or implement
     in the way Ravyn shows in this document.
 
-#### <a href="https://github.com/steinnes/timing-asgi">TimingMiddleware</a>
-
-ASGI middleware to record and emit timing metrics (to something like statsd).
-This integration works using [RavynAPIExceptionTimming](https://github.com/dymmond/ravyn-timing).
-
-
 ## Important points
 
 1. Ravyn supports [Lilya middleware](#lilya-middleware), [MiddlewareProtocol](#ravyn-protocols).

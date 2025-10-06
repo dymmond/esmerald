@@ -5,7 +5,7 @@ added to the simplicity of Ravyn you can integrate any wsgi framework (Flask, Dj
 
 Yes, that's right, you can now smoothly move to Ravyn without rewriting your old applications from the scratch,
 actually, you can reuse them directly within Ravyn, even another Ravyn running inside another Ravyn,
-an *RavynAPIExceptionception*.
+an *RavynAPIException*.
 
 ## WSGIMiddleware
 

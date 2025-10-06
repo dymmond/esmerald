@@ -263,7 +263,7 @@ Let's do the `createsuperuser` now using the `@directive`.
 And this should be it. We now have a `createsuperuser` and an application and now we can run
 in the command line:
 
-**Using the --app or ESMERALD_DEFAULT_APP**
+**Using the --app or RAVYN_DEFAULT_APP**
 
 ```shell
 $ ravyn --app myproject.main:app run createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
@@ -272,7 +272,7 @@ $ ravyn --app myproject.main:app run createsuperuser --first-name Ravyn --last-n
 Or
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 $ ravyn run createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 

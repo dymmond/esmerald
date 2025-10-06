@@ -12,7 +12,7 @@ from ravyn.core.directives.constants import (
     DISCOVERY_ATTRS,
     DISCOVERY_FILES,
     DISCOVERY_FUNCTIONS,
-    ESMERALD_DISCOVER_APP,
+    RAVYN_DISCOVER_APP,
 )
 from ravyn.core.terminal import Print
 from ravyn.types import ASGIApp
@@ -78,7 +78,7 @@ class DirectiveEnv:
         except ImportError:
             ...
 
-        _path = os.getenv(ESMERALD_DISCOVER_APP) if not path else path
+        _path = os.getenv(RAVYN_DISCOVER_APP) if not path else path
         _app = self.find_app(path=_path, cwd=cwd)
 
         return DirectiveEnv(
@@ -138,7 +138,7 @@ class DirectiveEnv:
     def import_app_from_string(cls, path: str | None = None) -> Scaffold:
         if path is None:
             raise OSError(
-                "Path cannot be None. Set env `ESMERALD_DEFAULT_APP` or use `--app` instead."
+                "Path cannot be None. Set env `RAVYN_DEFAULT_APP` or use `--app` instead."
             )
         module_str_path, app_name = path.split(":")
         module = import_module(module_str_path)
