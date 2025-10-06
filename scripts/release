@@ -16,10 +16,11 @@ if [ ! -z "$GITHUB_ACTIONS" ]; then
 
   VERSION=`grep __version__ ${VERSION_FILE} | grep -o '[0-9][^"]*'`
 
-  if [ "refs/tags/${VERSION}" != "${GITHUB_REF}" ] ; then
+  if [ "${GITHUB_REF}" != "refs/tags/${VERSION}" ] && [ "${GITHUB_REF}" != "refs/tags/v${VERSION}" ]; then
     echo "GitHub Ref '${GITHUB_REF}' did not match package version '${VERSION}'"
     exit 1
   fi
+
 fi
 
 set -x
