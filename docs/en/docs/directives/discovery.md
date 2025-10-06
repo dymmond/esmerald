@@ -15,11 +15,11 @@ Although not having that same level, Ravyn does a similar job by having "a guess
 it should be and throws an error if not found or if no [environment variables or --app](#environment-variables)
 are provided.
 
-**The application discovery works as an alternative to providing the `--app` or a `ESMERALD_DEFAULT_APP` environment variable**.
+**The application discovery works as an alternative to providing the `--app` or a `RAVYN_DEFAULT_APP` environment variable**.
 
 So, what does this mean?
 
-This means if **you do not provide an --app or a ESMERALD_DEFAULT_APP**, Ravyn will try to find the
+This means if **you do not provide an --app or a RAVYN_DEFAULT_APP**, Ravyn will try to find the
 ravyn application for you automatically.
 
 Let us see a practical example of what does this mean.
@@ -58,7 +58,7 @@ contains the `Ravyn` application object.
 
 ### How does it work?
 
-When no `--app` or no `ESMERALD_DEFAULT_APP` environment variable is provided, Ravyn will
+When no `--app` or no `RAVYN_DEFAULT_APP` environment variable is provided, Ravyn will
 **automatically look for**:
 
 * The current directory where the directive is being called contains a file called:
@@ -94,7 +94,7 @@ This is the way that Ravyn can `auto discover` your application.
 When using some of the custom directives or built-in directives with this method, Ravyn
 **expects at least one environment variable to be present**.
 
-* **ESMERALD_DEFAULT_APP** - The Ravyn application to run the directives against.
+* **RAVYN_DEFAULT_APP** - The Ravyn application to run the directives against.
 
 The reason for this is because every Ravyn application might differ in structure and design.
 Ravyn not being opinionated in the way you should assemble, the application needs to know,
@@ -106,7 +106,7 @@ very likely to be done using environment variables.
 So to save time you can simply do:
 
 ```
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 ```
 
 Or whatever location you have.
@@ -169,7 +169,7 @@ This is a simple example with two endpoints, you can do as you desire with the p
 add and with any desired structure.
 
 What will be doing now is run the following directives using the [auto discovery](#auto-discovery)
-and the [--app or ESMERALD_DEFAULT_APP](#environment-variables):
+and the [--app or RAVYN_DEFAULT_APP](#environment-variables):
 
 * **directives** - Lists all the available directives of the project.
 * **runserver** - Starts the development server.
@@ -189,13 +189,13 @@ We will be also executing the directives inside `myproject`.
 $ ravyn directives
 ```
 
-Yes! Simply this and because the `--app` or a `ESMERALD_DEFAULT_APP` was provided, it triggered the
+Yes! Simply this and because the `--app` or a `RAVYN_DEFAULT_APP` was provided, it triggered the
 auto discovery of the Ravyn application.
 
 Because the application is inside `src/main.py` it will be automatically discovered by Ravyn as
 it followed the [discovery pattern](#how-does-it-work).
 
-##### Using the --app or ESMERALD_DISCOVERY_APP
+##### Using the --app or RAVYN_DEFAULT_APP
 
 This is the other way to tell Ravyn where to find your application. Since the application is
 inside the `src/main.py` we need to provide the proper location is a `<module>:<app>` format.
@@ -208,14 +208,14 @@ With the `--app` flag.
 $ ravyn --app src.main:app directives
 ```
 
-###### ESMERALD_DEFAULT_APP
+###### RAVYN_DEFAULT_APP
 
-With the `ESMERALD_DEFAULT_APP`.
+With the `RAVYN_DEFAULT_APP`.
 
 Export the env var first:
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=src.main:app
+$ export RAVYN_DEFAULT_APP=src.main:app
 ```
 
 And then run:
@@ -241,10 +241,10 @@ It is time to run this directive.
 $ ravyn runserver
 ```
 
-Again, same principle as before because the `--app` or a `ESMERALD_DEFAULT_APP` was provided,
+Again, same principle as before because the `--app` or a `RAVYN_DEFAULT_APP` was provided,
 it triggered the auto discovery of the Ravyn application.
 
-##### Using the --app or ESMERALD_DISCOVERY_APP
+##### Using the --app or RAVYN_DEFAULT_APP
 
 ###### --app
 
@@ -254,14 +254,14 @@ With the `--app` flag.
 $ ravyn --app src.main:app runserver
 ```
 
-###### ESMERALD_DEFAULT_APP
+###### RAVYN_DEFAULT_APP
 
-With the `ESMERALD_DEFAULT_APP`.
+With the `RAVYN_DEFAULT_APP`.
 
 Export the env var first:
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=src.main:app
+$ export RAVYN_DEFAULT_APP=src.main:app
 ```
 
 And then run:

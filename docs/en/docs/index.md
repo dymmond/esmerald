@@ -60,7 +60,7 @@ For a job to be done properly, usually it is never done alone and there is alway
 
 ## History Behind Ravyn
 
-Why is this happening? Is RavynAPIException going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
+Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
 as it has its own use cases.
 
 The reason for the rebranding its because the ecosystem has grown a lot and Esmerald was the first tool being created.

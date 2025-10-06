@@ -13,7 +13,7 @@ from lilya.types import ASGIApp
 from monkay.asgi import Lifespan
 from sayer import Argument, Option, command, error
 
-from ravyn.core.directives.constants import APP_PARAMETER, ESMERALD_DISCOVER_APP
+from ravyn.core.directives.constants import APP_PARAMETER, RAVYN_DISCOVER_APP
 from ravyn.core.directives.env import DirectiveEnv
 from ravyn.core.directives.utils import fetch_directive
 
@@ -76,7 +76,7 @@ async def run(
     if name is not None and getattr(env, "app", None) is None:
         error(
             "You cannot specify a custom directive without specifying the --app or setting "
-            "ESMERALD_DEFAULT_APP environment variable."
+            "RAVYN_DEFAULT_APP environment variable."
         )
         sys.exit(1)
 
@@ -105,9 +105,9 @@ def get_position() -> int:
     Gets the position of the arguments to read and pass them
     onto the directive.
     """
-    if os.getenv(ESMERALD_DISCOVER_APP) is None and APP_PARAMETER in sys.argv:
+    if os.getenv(RAVYN_DISCOVER_APP) is None and APP_PARAMETER in sys.argv:
         return Position.DEFAULT
-    elif os.getenv(ESMERALD_DISCOVER_APP) is not None and APP_PARAMETER in sys.argv:
+    elif os.getenv(RAVYN_DISCOVER_APP) is not None and APP_PARAMETER in sys.argv:
         return Position.DEFAULT
     return Position.BACK
 

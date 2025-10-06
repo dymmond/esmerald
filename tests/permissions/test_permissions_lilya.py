@@ -11,7 +11,7 @@ from ravyn.routing.handlers import get
 from ravyn.testclient import create_client
 
 
-class RavynAPIExceptionPermission(BasePermission):
+class RavynPermission(BasePermission):
     def has_permission(self, request, apiview):
         if not request.headers.get("allow_all"):
             return False
@@ -46,7 +46,7 @@ def test_mix_permissions_with_native_ravyn() -> None:
     def my_http_route_handler() -> None: ...
 
     with create_client(
-        routes=[Gateway(handler=my_http_route_handler, permissions=[RavynAPIExceptionPermission])],
+        routes=[Gateway(handler=my_http_route_handler, permissions=[RavynPermission])],
     ) as client:
         response = client.get("/secret")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -59,7 +59,7 @@ def test_mix_permissions_with_native_ravyn() -> None:
 
 
 def test_two_permissions_mixed_same_level() -> None:
-    @get(path="/secret", permissions=[RavynAPIExceptionPermission, LilyaDeny])
+    @get(path="/secret", permissions=[RavynPermission, LilyaDeny])
     def my_http_route_handler() -> None: ...
 
     with create_client(
@@ -84,7 +84,7 @@ def test_include() -> None:
         routes=[
             Include(routes=[Gateway(handler=my_http_route_handler)], permissions=[LilyaDeny]),
         ],
-        permissions=[RavynAPIExceptionPermission],
+        permissions=[RavynPermission],
     ) as client:
         response = client.get("/secret", headers={"Authorization": "yes", "allow_all": "true"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED

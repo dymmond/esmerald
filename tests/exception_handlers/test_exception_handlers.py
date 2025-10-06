@@ -8,7 +8,7 @@ from ravyn.exceptions import (
     InternalServerError,
     NotAuthorized,
     NotFound,
-    RavynAPIExceptionAPIException,
+    RavynAPIException,
     ServiceUnavailable,
     ValidationErrorException,
 )
@@ -312,7 +312,7 @@ def test_exception_handling_with_include_exception_handler(
     [
         (ValidationErrorException, "router"),
         (NotAuthorized, "include"),
-        (RavynAPIExceptionAPIException, "gateway"),
+        (RavynAPIException, "gateway"),
         (InternalServerError, "apiview"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
@@ -363,9 +363,7 @@ def test_exception_handling_with_gateway_exception_handler(
                         path="/base",
                         handler=ControllerWithHandler,
                         exception_handlers={
-                            RavynAPIExceptionAPIException: create_named_handler(
-                                "gateway", RavynAPIExceptionAPIException
-                            ),
+                            RavynAPIException: create_named_handler("gateway", RavynAPIException),
                         },
                     )
                 ],

@@ -1,7 +1,7 @@
 from typing import Union
 
-from ravyn.security.jwt.token import Token as RavynAPIExceptionToken
+from ravyn.security.jwt.token import Token as RavynToken
 
 
-class Token(RavynAPIExceptionToken):
+class Token(RavynToken):
     token_type: Union[str, None] = None

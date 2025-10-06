@@ -88,7 +88,7 @@ def runserver(
     """Starts the Ravyn development server.
 
     The --app can be passed in the form of <module>.<submodule>:<app> or be set
-    as environment variable ESMERALD_DEFAULT_APP.
+    as environment variable RAVYN_DEFAULT_APP.
 
     Alternatively, if none is passed, Ravyn will perform the application discovery.
 
@@ -108,7 +108,7 @@ def runserver(
         if getattr(env, "app", None) is None:
             error(
                 "You cannot specify a custom directive without specifying the --app or setting "
-                "ESMERALD_DEFAULT_APP environment variable."
+                "RAVYN_DEFAULT_APP environment variable."
             )
             sys.exit(1)
 

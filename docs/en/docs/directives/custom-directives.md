@@ -76,17 +76,17 @@ Example:
 ravyn --app myproject.main:app run --directive mydirective --name ravyn
 ```
 
-**With the ESMERALD_DEFAULT_APP environment variable set**
+**With the RAVYN_DEFAULT_APP environment variable set**
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 $ ravyn run --directive <DIRECTIVE-NAME> <OPTIONS>
 ```
 
 Example:
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 $ ravyn run --directive mydirective --name ravyn
 ```
 
@@ -98,7 +98,7 @@ parameter will be `run --directive createsuperuser`.
 Example:
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 $ ravyn run --directive createsuperuser --email example@ravyn.dev
 ```
 
@@ -390,7 +390,7 @@ in the command line:
 $ ravyn run --directive createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 
-**Using the --app or ESMERALD_DEFAULT_APP**
+**Using the --app or RAVYN_DEFAULT_APP**
 
 ```shell
 $ ravyn --app myproject.main:app run --directive createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
@@ -399,7 +399,7 @@ $ ravyn --app myproject.main:app run --directive createsuperuser --first-name Ra
 Or
 
 ```shell
-$ export ESMERALD_DEFAULT_APP=myproject.main:app
+$ export RAVYN_DEFAULT_APP=myproject.main:app
 $ ravyn run --directive createsuperuser --first-name Ravyn --last-name Framework --email example@ravyn.dev --username ravyn --password ravyn
 ```
 

@@ -55,7 +55,7 @@ from ravyn.middleware.cors import CORSMiddleware
 from ravyn.middleware.csrf import CSRFMiddleware
 from ravyn.middleware.exceptions import (
     ExceptionMiddleware,
-    RavynAPIExceptionAPIExceptionMiddleware,
+    RavynAPIException,
 )
 from ravyn.middleware.trustedhost import TrustedHostMiddleware
 from ravyn.openapi.schemas.v3_1_0 import Contact, License, SecurityScheme
@@ -2678,7 +2678,7 @@ class Application(BaseLilya):
         middleware = (
             [
                 DefineMiddleware(
-                    RavynAPIExceptionAPIExceptionMiddleware,
+                    RavynAPIException,
                     exception_handlers=exception_handlers,
                     error_handler=error_handler,
                     debug=debug,
