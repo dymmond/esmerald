@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <em>🚀 Highly scalable, performant, easy to learn, easy to code and for every application. 🚀</em>
+    <em>🚀 Performance, type safety, and elegance. A next-generation async Python framework for APIs, microservices, and web applications. 🚀</em>
 </p>
 
 <p align="center">

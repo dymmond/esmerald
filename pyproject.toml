@@ -4,7 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ravyn"
-description = "Highly scalable, performant, easy to learn, easy to code and for every application."
+description = "Ravyn combines performance, type safety, and elegance. A next-generation async Python framework for APIs, microservices, and web applications."
+long_description = """
+Ravyn is a next-generation async Python web framework built on ASGI, designed for high performance,
+scalability, and clean architecture. It offers modern features such as dependency injection,
+AOP-style interceptors, background tasks, WebSockets, GraphQL, OpenAPI support, and more. All with
+a focus on developer experience and type safety.
+
+If you love modern frameworks, you'll feel right at home, but faster, cleaner, and built for the future.
+"""
 readme = "README.md"
 requires-python = ">=3.10"
 dynamic = ['version']
@@ -43,32 +51,98 @@ dependencies = [
     "monkay>=0.5.0"
 ]
 keywords = [
-    "api",
-    "rest",
-    "http",
-    "asgi",
-    "pydantic",
-    "starlette",
-    "lilya",
-    "framework",
-    "websocket",
-    "openapi",
-    "ml",
-    "machine learning",
+    # Core web framework
     "python",
-    "security",
-    "web",
-    "rest",
-    "openapi",
-    "web-framework",
-    "swagger",
     "python3",
     "asyncio",
+    "asgi",
+    "web",
+    "web-framework",
+    "api",
+    "rest",
+    "rest-api",
+    "http",
+    "openapi",
+    "swagger",
     "redoc",
     "openapi3",
-    "python-types",
+    "websocket",
+    "graphql",
+    "json",
+    "cors",
+    "csrf",
+    "dependency-injection",
+    "routing",
+    "controllers",
+    "validation",
+    "serialization",
+    "pydantic",
+    "data-validation",
+
+    # Performance & async
+    "high-performance",
+    "concurrency",
+    "async",
+    "async-framework",
+    "non-blocking",
+    "event-driven",
     "uvicorn",
+    "hypercorn",
+    "anyio",
+
+    # Framework integrations
+    "starlette",
+    "lilya",
+    "esmerald",
+    "fastapi",
+    "aiohttp",
+    "flask",
+    "django",
+    "quart",
+
+    # Architecture & features
+    "openapi-schema",
+    "typed-api",
+    "type-hints",
+    "python-types",
+    "autodoc",
+    "auto-documentation",
+    "request-handling",
+    "response-models",
+    "middlewares",
+    "interceptors",
+    "aop",
+    "exception-handling",
+    "background-tasks",
+    "caching",
+    "observables",
+    "sse",
+    "streaming",
+    "graphql-support",
+
+    # Use cases
+    "backend",
+    "api-server",
+    "microservices",
+    "machine-learning",
+    "ml",
+    "ai",
+    "security",
+    "authentication",
+    "oauth2",
+    "jwt",
+    "api-key",
+    "websocket-server",
+    "cloud-native",
+    "modern-python",
+    "developer-friendly",
+
+    # Branding
+    "ravyn",
+    "ravyn-framework",
+    "dymmond",
 ]
+
 
 [project.urls]
 Homepage = "https://github.com/dymmond/ravyn"
