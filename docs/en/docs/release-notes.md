@@ -5,10 +5,10 @@ hide:
 
 # Release Notes
 
-Why is this happening? Is RavynAPIException going away? **No, absolutely not. RavynAPIException remains and will remain as is and will keep growing**
+Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
 as it has its own use cases **but under a new name, Ravyn**.
 
-The reason for the rebranding its because the ecosystem has grown a lot and RavynAPIException was the first tool being created.
+The reason for the rebranding its because the ecosystem has grown a lot and Esmerald was the first tool being created.
 Since then it was released as version 3+.
 
 This happened because of internal dependencies, and we already removed all of them but goes a bit off compared to the rest
@@ -19,20 +19,20 @@ This is the reason for Ravyn to come into existence and to keep everything align
 ## 0.1.0
 
 We are proud to announce the **first official release of Ravyn (0.1.0)** —
-the async web framework that builds on the strengths of **RavynAPIException** while embracing a new identity and future roadmap.
+the async web framework that builds on the strengths of **Esmerald** while embracing a new identity and future roadmap.
 
 ## Highlights
 
-- **New Identity:** RavynAPIException has been forked to **Ravyn**. All imports, documentation, and branding now reflect this change.
+- **New Identity:** Esmerald has been renamed to **Ravyn**. All imports, documentation, and branding now reflect this change.
 
-## Migration from RavynAPIException
+## Migration from Esmerald
 
 This is not mandatory **at all** but if you want to start using Ravyn right away, you can simply do:
 
 - Replace all `esmerald` imports with `ravyn`.
 - No breaking changes in core APIs — projects built on Ravyn should run with minimal adjustments.
 
-Again, **Ravyn** is a fork of RavynAPIException with the same concepts, same everything.
+Again, **Ravyn** is a fork of Esmerald with the same concepts, same everything.
 
 ---
 
@@ -40,7 +40,7 @@ Again, **Ravyn** is a fork of RavynAPIException with the same concepts, same eve
 
 ---
 
-These are the releases done under the old RavynAPIException name and as you can
+These are the releases done under the old Esmerald name and as you can
 now see, we **have rebranded to Ravyn** to align with the ecosystem plans
 starting a new set of versions from the 0.1.0.
 
@@ -73,7 +73,7 @@ an exception.
 ### Changed
 
 - Allow minimum Lilya to be 0.20.5
-- RavynAPIException cli now loses the `name` argument. This is now handled directly by the newest Sayer that
+- Esmerald cli now loses the `name` argument. This is now handled directly by the newest Sayer that
 was internal refactored for the `@callback`.
 
 ## 3.9.1
@@ -120,7 +120,7 @@ These backends are shared with [Lilya](https://lilya.dev) as they are internally
 
 ### Fixed
 
-- Properly detect wrapped RavynAPIException instances.
+- Properly detect wrapped Esmerald instances.
 - Fix double initialization of app in runserver.
 - Fix crash in runserver when no autodiscovery.
 
@@ -141,7 +141,7 @@ These backends are shared with [Lilya](https://lilya.dev) as they are internally
 
 ### Changed
 
-- To make RavynAPIException lighter and simpler, the some minimal changes for the `SessionMiddleware` import were added.
+- To make Esmerald lighter and simpler, the some minimal changes for the `SessionMiddleware` import were added.
 
 **Before**
 
@@ -156,13 +156,13 @@ from esmerald.middleware.sessions import SessionMiddleware
 ```
 
 !!! Warning
-    RavynAPIException `SessionMiddleware` relies on `itsdangerous` Python package. You can install it by yourself or you can install
-    the `esmerald[standard]` package that brings all of the niceties of RavynAPIException.
+    Esmerald `SessionMiddleware` relies on `itsdangerous` Python package. You can install it by yourself or you can install
+    the `esmerald[standard]` package that brings all of the niceties of Esmerald.
 
-In theory you don't need to worry ever about this as RavynAPIException injects this for you when using the `session_config` but if you
+In theory you don't need to worry ever about this as Esmerald injects this for you when using the `session_config` but if you
 are importing directly, the previous change needs to happen.
 
-- To make RavynAPIException cleaner in the installation we have now separated the installation. The [RavynAPIException native client](./directives/index.md)
+- To make Esmerald cleaner in the installation we have now separated the installation. The [Esmerald native client](./directives/index.md)
 requires some additional packages and not everyone requires this or even desires but for those already using, the change is simple.
 
 #### Before
@@ -177,7 +177,7 @@ $ pip install esmerald
 $ pip install esmerald[standard]
 ```
 
-This brings the current behaviour of RavynAPIException prior to version 3.8.11 and nothing changes at all.
+This brings the current behaviour of Esmerald prior to version 3.8.11 and nothing changes at all.
 **This is important if you are using the `Form` or `request.form()` as this comes with the `standard` packaging.
 
 ## 3.8.10
@@ -227,7 +227,7 @@ allows to use the interceptor in any level independently.
 ### Fixed
 
 - The way the permissions was being manipulated, although working 100% as they should, it was not respecting the ASGI life cycle.
-- ake RavynAPIException permissions similar to ASGI Lilya in the internal life cycle.
+- ake Esmerald permissions similar to ASGI Lilya in the internal life cycle.
 
 ## 3.8.5
 
@@ -244,7 +244,7 @@ allows to use the interceptor in any level independently.
 
 ### Added
 
-- `path` to runserver allowing the user to customise the path location of an RavynAPIException app.
+- `path` to runserver allowing the user to customise the path location of an Esmerald app.
 - `refreshUrl` to OAuth2PasswordBearer.
 - Missing `json_schema_extra` into the parameters.
 
@@ -267,24 +267,24 @@ long as it still follows the directive lookup for files.
 
 ### Fixed
 
-- `RavynAPIExceptionAPISettings` was not properly declared for backwards compatibility.
+- `EsmeraldAPISettings` was not properly declared for backwards compatibility.
 - Migration to Sayer missed the `run` directive argument required as False.
-- Fix a regression on `RavynAPIExceptionAPISettings` when importing from `esmerald`.
+- Fix a regression on `EsmeraldAPISettings` when importing from `esmerald`.
 - Broken documentation references.
 
 ## 3.8.2
 
 ### Added
 
-- Missing `logging_level` in the RavynAPIExceptionAPISettings.
-- New naming convention for `RavynAPIExceptionAPISettings` to be now called `RavynAPIExceptionSettings`. The old `RavynAPIExceptionAPISettings` will remain
+- Missing `logging_level` in the EsmeraldAPISettings.
+- New naming convention for `EsmeraldAPISettings` to be now called `EsmeraldSettings`. The old `EsmeraldAPISettings` will remain
 as is for backwards compatibility but it will eventually be removed in the future.
 
 ### Changed
 
 - Upgraded the internal requirements and Lilya.
 - Revamped `runserver` to be modern and more informative.
-- Updated the documentation for the `RavynAPIExceptionSettings`.
+- Updated the documentation for the `EsmeraldSettings`.
 
 ## 3.8.1
 
@@ -300,13 +300,13 @@ as is for backwards compatibility but it will eventually be removed in the futur
 
 ## 3.8.0
 
-Due to advanced changes in the internals of RavynAPIException, this release is a major one and it will be under the version `3.8`
+Due to advanced changes in the internals of Esmerald, this release is a major one and it will be under the version `3.8`
 and it will follow Lilya's integration which means, we will be dropping the support for Python 3.9 and focus solely on 3.10+
 for syntaxes and tooling.
 
 ### Added
 
-- Integration with the newest client, [Sayer](https://sayer.dymmond.com). This brings a whole new experience to the RavynAPIException
+- Integration with the newest client, [Sayer](https://sayer.dymmond.com). This brings a whole new experience to the Esmerald
 cli and allows to have a more interactive experience with the framework.
 
 ### Changed
@@ -346,7 +346,7 @@ cli and allows to have a more interactive experience with the framework.
 
 - `esmerald createproject <PROJECT-NAME> --edgy` Now generates the settings also plugged with `DatabaseSettings` automatically.
 - Bump internal Lilya version to 0.13.0 minimum.
-- `esmerald.logging` is now delegated to the thread-safe version of `lilya.logging`. Nothing changes in the RavynAPIException
+- `esmerald.logging` is now delegated to the thread-safe version of `lilya.logging`. Nothing changes in the Esmerald
 interface.
 
 ## 3.7.5
@@ -354,7 +354,7 @@ interface.
 ### Added
 
 - New [LoggingConfig](./configurations/logging.md) for the logging configuration. This now allows you to setup
-your own logging system and plug it with anything you want and then use the global logger from RavynAPIException to log your
+your own logging system and plug it with anything you want and then use the global logger from Esmerald to log your
 messages by simply using:
 
 ```python
@@ -362,7 +362,7 @@ from esmerald.logging import logger
 
 logger.info("My message in my logger.")
 ```
-- `StandardLogging` as the new default logging system of RavynAPIException, removing the dependency of `loguru` and make this one
+- `StandardLogging` as the new default logging system of Esmerald, removing the dependency of `loguru` and make this one
 optional.
 
 !!! Warning
@@ -372,7 +372,7 @@ optional.
 
 ### Changed
 
-- As part the continuous effort to make RavynAPIException cleaner, the `esmerald.protocols` now lives inside `esmerald.core.protocols`.
+- As part the continuous effort to make Esmerald cleaner, the `esmerald.protocols` now lives inside `esmerald.core.protocols`.
 The only thing that needs changing **its just that small import**. The rest remains the same.
 
 ### Fixed
@@ -397,9 +397,9 @@ The only thing that needs changing **its just that small import**. The rest rema
 
 - Bump Lilya version.
 - Update settings loading module with [Monkay](https://monkay.dymmond.com).
-- Change base of RavynAPIException to BaseLilya.
+- Change base of Esmerald to BaseLilya.
 - `whead` renamed to `whhead` for naming consistency.
-- Monkay lazy loading now its at the `__init__` of RavynAPIException.
+- Monkay lazy loading now its at the `__init__` of Esmerald.
 
 ### Deprecated
 
@@ -413,7 +413,7 @@ and for that reason, it makes no longer sense of keeping the support where Saffi
 ### Breaking Change
 
 - This is not 100% sure but since passlib stopped maintenance a long time ago, since python 3.13 some other issues will
-arise and therefore the decision to move away from it to bcrypt. Unfortunately this means that the `password` hashing will not be compatible with the previous versions of RavynAPIException and
+arise and therefore the decision to move away from it to bcrypt. Unfortunately this means that the `password` hashing will not be compatible with the previous versions of Esmerald and
 we know this might not be ideal but this is the best way to move forward due to security constraints.
 
 ## 3.7.2
@@ -435,14 +435,14 @@ it was to keep the consistency in the codebase. Previously it was just an alias.
 ## 3.7.1
 
 !!! Warning
-    This release introduces some import changes as part of the ongoing internal restructure of RavynAPIException.
+    This release introduces some import changes as part of the ongoing internal restructure of Esmerald.
     This will be done in different phases during different releasing but you can already see the **Changed**
     section to understand where the new imports must be done. Very likely that you won't need to do this but
     those serve as a reference.
 
 ### Added
 
-- When using `Requires` and a callable is not passed, RavynAPIException will generate a lambda callable automatically.
+- When using `Requires` and a callable is not passed, Esmerald will generate a lambda callable automatically.
 - New [experimental](./experimental/index.md) documentation section with the new features that are being tested.
 - New [gRPC](./experimental/grpc.md) documentation section with the new gRPC functionality.
 - New `wrap_middleware` from `esmerald.utils.middleware`. This serves as alternative when setting up a middleware
@@ -453,7 +453,7 @@ which **also allows** the fully module naming to be passed.
     ```
 
 - New [Learning and Examples](./guides/index.md) section. This section will be growing in time and will help newcomers
-to understand a bit more about RavynAPIException.
+to understand a bit more about Esmerald.
 
 #### Experimental
 
@@ -482,7 +482,7 @@ This is now part of the phase migration of modules to make them more consistent 
 
 - Decorator `controller`. This decorator allows to, as the name suggests, create a controller from
 a normal python objects. This is a simple way of creating a controller without the need of subclassing the `Controller` class.
-- [Decorators](./decorators.md) documentation section with the available RavynAPIException decorators.
+- [Decorators](./decorators.md) documentation section with the available Esmerald decorators.
 - Support for [**native** caching](./caching.md) with support for custom backends.
 - [Observables](./observables.md) documentation section. This is a new feature that allows to create
 observables that can be used to create a more reactive programming style.
@@ -505,13 +505,13 @@ class ItemHandler:
         return {"message": "Item created", "data": data}
 ```
 
-The rest remains as per normal usage of RavynAPIException.
+The rest remains as per normal usage of Esmerald.
 
 ## 3.6.8
 
 ### Added
 
-- RavynAPIException now allows the import of Lilya EnvironLoader directly using it directly via:
+- Esmerald now allows the import of Lilya EnvironLoader directly using it directly via:
 
     ```python
     from esmerald.utils.environments import EnvironmentLoader
@@ -543,7 +543,7 @@ The rest remains as per normal usage of RavynAPIException.
 
 - `before_request` and `after_request` WebSocketGateway handler added.
 - `before_request` and `after_request` added as default to the settings. This was not required
-as the settings loading system of RavynAPIException defaults values but this should be added to the settings
+as the settings loading system of Esmerald defaults values but this should be added to the settings
 for consistency reasons of the framework.
 
 ### Changed
@@ -558,7 +558,7 @@ for consistency reasons of the framework.
 
 ### Added
 
-- `RavynAPIException`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` now support `before_request` and `after_request`
+- `Esmerald`, `Include`, `Host`, `Gateway`, `HTTPHandler` and `Router` now support `before_request` and `after_request`
 life cycles. This can be particularly useful to those who want to perform actions before and after
 a request is performed. E.g.: Telemetry.
 - Missing before and after request in the handler helpers.
@@ -566,21 +566,21 @@ a request is performed. E.g.: Telemetry.
 
 ### Fixed
 
-- Internal permission checking for Lilya and RavynAPIException was not extended to `View` base of Controllers.
+- Internal permission checking for Lilya and Esmerald was not extended to `View` base of Controllers.
 - Inheritance extending previous permissions on Controllers.
 
 ## 3.6.5
 
 ### Added
 
-- RavynAPIException now **also** supports **Pure ASGI Permissions**. That means you can pass the same
-style of permissions as the ones used in Lilya as alternative to the native RavynAPIException permission
+- Esmerald now **also** supports **Pure ASGI Permissions**. That means you can pass the same
+style of permissions as the ones used in Lilya as alternative to the native Esmerald permission
 system.
 - New [Lilya permissions](./permissions/lilya.md) documentation section.
 
 ### Changed
 
-- [Permissions section](./permissions/esmerald.md) moved and renamed to RavynAPIException Permissions.
+- [Permissions section](./permissions/esmerald.md) moved and renamed to Esmerald Permissions.
 
 ### Fixed
 
@@ -602,7 +602,7 @@ system.
 
 - Internal pattern for OAuth2 form password.
 - Fixed internal typings of passthrough in Response and TemplateResponse.
-- RavynAPIException permissions on Include were being overriten by Lilya too early.
+- Esmerald permissions on Include were being overriten by Lilya too early.
 
 ## 3.6.3
 
@@ -637,7 +637,7 @@ accessible via `from esmerald import Controller`.
 
 - Cleanup Response.
 - Move `transform` method to lilya but provide speedup in a mixin.
-- RavynAPIException `Response` behaves like `make_response` in lilya with a plain `Response`.
+- Esmerald `Response` behaves like `make_response` in lilya with a plain `Response`.
 - Special handle None (nothing is returned) in `Response`. It shouldn't map to `null` so not all handlers have to return a value.
 
 ### Fixed
@@ -667,8 +667,8 @@ accessible via `from esmerald import Controller`.
 
 ### Added
 
-- New [Security](./security/index.md) section with all the explanations how to use the internals of RavynAPIException.
-- Added new `Security` object used for security dependencies using RavynAPIException `esmerald.security` package.
+- New [Security](./security/index.md) section with all the explanations how to use the internals of Esmerald.
+- Added new `Security` object used for security dependencies using Esmerald `esmerald.security` package.
 
 ### Changed
 
@@ -702,7 +702,7 @@ accessible via `from esmerald import Controller`.
 
 ### Changed
 
-- RavynAPIException is now under the License BSD-3. This aims to protect the maintainers and contributors and
+- Esmerald is now under the License BSD-3. This aims to protect the maintainers and contributors and
 the license will be now the final.
 - Pluggables can now receive plain Extensions and Extension classes.
 - Rename of Pluggables to Extensions:
@@ -797,7 +797,7 @@ As per some examples of the documentation:
 ```python
 from pydantic import BaseModel, EmailStr
 
-from esmerald import RavynAPIException, Gateway, post
+from esmerald import Esmerald, Gateway, post
 
 
 class User(BaseModel):
@@ -818,7 +818,7 @@ async def create_user(user: User, address: Address) -> None:
     """
 
 
-app = RavynAPIException(routes=[Gateway(handler=create_user)])
+app = Esmerald(routes=[Gateway(handler=create_user)])
 ```
 
 You can expect to send a payload like this:
@@ -901,7 +901,7 @@ This was missed from the release [3.3.4](#334) and it was supposed to be include
 
 ### Added
 
-- Native types for RavynAPIException transformer models/
+- Native types for Esmerald transformer models/
 - Hashing list internally for the signature allowing lists to be declared for OpenAPI representation.
 
 ### Changed
@@ -920,7 +920,7 @@ to the declared type.
 
 - Documentation for `Extra, Advanced && Useful` is now renamed `Advanced & Useful` and its located in the `Features`
 section.
-- Removed unused internal functions for validations now used by RavynAPIException encoders.
+- Removed unused internal functions for validations now used by Esmerald encoders.
 
 ### Fixed
 
@@ -939,7 +939,7 @@ documentation.
 ### Added
 
 - [ValidationError](./exceptions.md#validatorerror) for custom independent raising exceptions within
-any RavynAPIException application
+any Esmerald application
 
 ### Fixed
 
@@ -967,9 +967,9 @@ for those specific types
 
 ### Added
 
-- RavynAPIException is ow using `python-slugify` instead of `awesome-slugify` for internals.
-- OpenAPI Schemas Pydantic is now fully integrated with RavynAPIException OpenAPI.
-- RavynAPIException now supports `app` as decorator prodiving another way of declaring the routing.
+- Esmerald is ow using `python-slugify` instead of `awesome-slugify` for internals.
+- OpenAPI Schemas Pydantic is now fully integrated with Esmerald OpenAPI.
+- Esmerald now supports `app` as decorator prodiving another way of declaring the routing.
 
 #### Example
 
@@ -977,26 +977,26 @@ for those specific types
 #!/usr/bin/env python
 import uvicorn
 
-from esmerald import RavynAPIException, Gateway, JSONResponse, Request, get
+from esmerald import Esmerald, Gateway, JSONResponse, Request, get
 
 
-app = RavynAPIException()
+app = Esmerald()
 
 
 @app.get("/esmerald")
 def welcome() -> JSONResponse:
-    return JSONResponse({"message": "Welcome to RavynAPIException"})
+    return JSONResponse({"message": "Welcome to Esmerald"})
 
 
 @app.get("/esmerald/{user}")
 def user(user: str) -> JSONResponse:
-    return JSONResponse({"message": f"Welcome to RavynAPIException, {user}"})
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
 
 
 @app.get("/esmerald/in-request/{user}")
 def user_in_request(request: Request) -> JSONResponse:
     user = request.path_params["user"]
-    return JSONResponse({"message": f"Welcome to RavynAPIException, {user}"})
+    return JSONResponse({"message": f"Welcome to Esmerald, {user}"})
 
 
 if __name__ == "__main__":
@@ -1025,7 +1025,7 @@ This was missed from version [3.2.6](#326).
 
 - `XFrameOptionsMiddleware` to handle with options headers.
 - `SecurityMiddleware` adding various security headers to the request/response lifecycle.
-- `override_settings` as new decorator that allows to override the RavynAPIException settings in any given test.
+- `override_settings` as new decorator that allows to override the Esmerald settings in any given test.
 - New `--simple` flag for `createproject` directive generating simple structured projects.
 - Integration with new `rapidoc` as another alternative to display the OpenAPI docs.
 
@@ -1045,19 +1045,19 @@ This was missed from version [3.2.6](#326).
 ### Added
 
 !!! danger
-	This new version deprecates an old style declaring the scheduler for RavynAPIException.
+	This new version deprecates an old style declaring the scheduler for Esmerald.
 	There is a new [SchedulerConfig](./configurations/scheduler.md).
 
-- New [SchedulerConfig](./configurations/scheduler.md) interface for RavynAPIException schedulers and
+- New [SchedulerConfig](./configurations/scheduler.md) interface for Esmerald schedulers and
 custom schedulers.
 - New [AsynczConfig]() that implements the configuration for Asyncz scheduler.
-- New `scheduler_config` parameter to RavynAPIException and RavynAPIExceptionAPISettings.
+- New `scheduler_config` parameter to Esmerald and EsmeraldAPISettings.
 
 ### Changed
 
 - Deprecate `scheduler_class`, `scheduler_configurations` and `scheduler_tasks`
 in favour of the new [SchedulerConfig](./configurations/scheduler.md) approach.
-- Deprecate the use of the `RavynAPIExceptionScheduler`.
+- Deprecate the use of the `EsmeraldScheduler`.
 
 #### Breaking changes
 
@@ -1089,7 +1089,7 @@ There is an [example](https://github.com/dymmond/scheduler-example) how to simpl
 
 ### Changed
 
-- `RavynAPIExceptionScheduler` integration with Asyncz is not assembled before the configuration of the routing,
+- `EsmeraldScheduler` integration with Asyncz is not assembled before the configuration of the routing,
 allowing multiple events to be triggered without overriding.
 
 ## 3.2.2
@@ -1116,9 +1116,9 @@ These changes were missed from the version 3.2.1
 ### Added
 
 - `settings_module` also supports import as string.
-- New `encoders` to RavynAPIException settings and instance parameters.
-- New `register_encoder` encoder in any RavynAPIException and ChildRavynAPIException instances.
-- New `encoders` to RavynAPIException responses. This allows to use any Response as ASGI application.
+- New `encoders` to Esmerald settings and instance parameters.
+- New `register_encoder` encoder in any Esmerald and ChildEsmerald instances.
+- New `encoders` to Esmerald responses. This allows to use any Response as ASGI application.
 with unique custom encoders.
 - [Encoders](./encoders.md) documentation.
 
@@ -1127,7 +1127,7 @@ with unique custom encoders.
 - Internal refactor of the `classmethods` of the `TransformerModel`. The class methods
 are now normal python functions.
 - Unifying the transformers in the signature model.
-- Rename `RavynAPIExceptionSignature` to `SignatureModel`.
+- Rename `EsmeraldSignature` to `SignatureModel`.
 
 ## 3.1.5
 
@@ -1135,7 +1135,7 @@ are now normal python functions.
 
 This change was supposed to be shipped in the version [3.1.4](#314) but it missed the release.
 
-- Printing the stack trace when an RavynAPIException application is in `debug=True` providing a deeper
+- Printing the stack trace when an Esmerald application is in `debug=True` providing a deeper
 level of understanding the source of the errors.
 
 ## 3.1.4
@@ -1180,7 +1180,7 @@ level of understanding the source of the errors.
 
 ### Added
 
-- `settings_module` when passed in the instance of RavynAPIException will take precedence
+- `settings_module` when passed in the instance of Esmerald will take precedence
 over the global settings, removing the need of using constantly the `ESMERALD_SETTINGS_MODULE`.
 - `ApplicationSettingsMiddleware` as internal that handles with the `settings_module` provided and maps
 the context of the settings.
@@ -1188,7 +1188,7 @@ the context of the settings.
 ### Example of the way the settings are evaluated
 
 ```python
-from esmerald import RavynAPIException, RavynAPIExceptionAPISettings, Gateway, Include, JSONResponse, get, settings
+from esmerald import Esmerald, EsmeraldAPISettings, Gateway, Include, JSONResponse, get, settings
 
 
 @get()
@@ -1196,21 +1196,21 @@ async def home() -> JSONResponse:
     return JSONResponse({"title": settings.title})
 
 
-class NewSettings(RavynAPIExceptionAPISettings):
+class NewSettings(EsmeraldAPISettings):
     title: str = "Main app"
 
 
-class NestedAppSettings(RavynAPIExceptionAPISettings):
+class NestedAppSettings(EsmeraldAPISettings):
     title: str = "Nested app"
 
 
-app = RavynAPIException(
+app = Esmerald(
     settings_module=NewSettings,
     routes=[
         Gateway("/home", handler=home),
         Include(
             "/child",
-            app=RavynAPIException(
+            app=Esmerald(
                 settings_module=NestedAppSettings,
                 routes=[
                     Gateway("/home", handler=home),
@@ -1227,7 +1227,7 @@ corresponding value of the `title` according to the settings of the app that is 
 ### Changed
 
 - `createapp` directive `views.py` file generated renamed to `controllers.py`.
-- Make the `RavynAPIExceptionAPISettings` hashable.
+- Make the `EsmeraldAPISettings` hashable.
 - Remove `settings_config` in favor of the `settings_module`.
 - Bump Lilya version to 0.3.3.
 
@@ -1239,7 +1239,7 @@ corresponding value of the `title` according to the settings of the app that is 
 
 ### Changed
 
-- Moved from beta v3 version to the official v3 of RavynAPIException fully supporting [Lilya](https://lilya.dev).
+- Moved from beta v3 version to the official v3 of Esmerald fully supporting [Lilya](https://lilya.dev).
 
 ## 3.0.0-beta2
 
@@ -1254,7 +1254,7 @@ corresponding value of the `title` according to the settings of the app that is 
 ## 3.0.0-beta1
 
 !!! Warning
-	This is a major release and it will be under the the version `3` of RavynAPIException.
+	This is a major release and it will be under the the version `3` of Esmerald.
 	You should not be affected but in case you are, please report any issues
 	so we can correct it.
 
@@ -1343,12 +1343,12 @@ calls to async ASGI applications.
 ### Added
 
 - New [createdeployment](./directives/directives.md#create-deployment) directive allowing
-the generation of deployment scaffolds for any RavynAPIException project.
+the generation of deployment scaffolds for any Esmerald project.
 
 ### Changed
 
 - Added `requirements` to the `createproject` directive generating the minimum requirements
-for an RavynAPIException project.
+for an Esmerald project.
 
 ### Fixed
 
@@ -1405,7 +1405,7 @@ to make the process more intuitive and easy to implement. [#199](https://github.
 - Support for [msgspec](./msgspec.md) natively allowing to have more than just Pydantic.
 
 !!! Note
-    RavynAPIException is not fully tight with Pydantic which means it's more flexible and extendible and allows more versatility.
+    Esmerald is not fully tight with Pydantic which means it's more flexible and extendible and allows more versatility.
 
 ### Fixed
 
@@ -1434,13 +1434,13 @@ one to be used.
 
 !!! Warning
 	This is a breaking change. The functionality itself still works as it is supposed to but from now on
-	instead of passing via RavynAPIException instance, you need to pass the variables via [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/).
+	instead of passing via Esmerald instance, you need to pass the variables via [OpenAPIConfig](https://esmerald.dev/configurations/openapi/config/).
 	object instead.
 
 ### Added
 
 - Annotated for documentation generators.
-- Add new documentation structure for RavynAPIException base.
+- Add new documentation structure for Esmerald base.
 - Add [API Reference](http://esmerald.dev/references/) . [#196](https://github.com/dymmond/esmerald/pull/196)
 
 ### Fixed
@@ -1454,7 +1454,7 @@ the tags are appended to the final handler. This allows inheriting from existing
 ### Changed
 
 - Updated `OpenAPIConfig` documentation.
-- Deprecate `v1`. RavynAPIException prior to version 2.0 is no longer supported.
+- Deprecate `v1`. Esmerald prior to version 2.0 is no longer supported.
 
 ### Added
 
@@ -1481,8 +1481,8 @@ the tags are appended to the final handler. This allows inheriting from existing
 ### Added
 
 - New Factory added for dependency injection allowing to pass any time via Factory instantiation. [PR #163](https://github.com/dymmond/esmerald/pull/163) by [@ShahriyarR](https://github.com/ShahriyarR).
-- Support for [Mongoz](https://mongoz.tarsild.io) showcasing how to integrate RavynAPIException with an ODM (MongoDB).
-- Documentation about how to use RavynAPIException contrib with [Mongoz](./databases/mongoz/motivation.md).
+- Support for [Mongoz](https://mongoz.tarsild.io) showcasing how to integrate Esmerald with an ODM (MongoDB).
+- Documentation about how to use Esmerald contrib with [Mongoz](./databases/mongoz/motivation.md).
 
 ### Fixed
 
@@ -1530,7 +1530,7 @@ docs.
 
 - Custom exception handlers, `from esmerald.exception_handlers import value_error_handler`.
 - New native exception handler for pydantic v2 Validation errors in general.
-- Dataclasses (normal and Pydantic dataclases) are now supported as RavynAPIException Responses.
+- Dataclasses (normal and Pydantic dataclases) are now supported as Esmerald Responses.
 - Support for [OpenAPI Webhooks](./routing/webhooks.md).
 - Improved [Responses](./responses.md) documentation with examples using Pydantic BaseModel and dataclasses.
 - OpenAPI Spotlight Elements documentation. When starting the application, accesing the default `/docs/elements`.
@@ -1549,12 +1549,12 @@ docs.
     the pull requests. It is not a bug fix but instead is a simple new
     [directive](./directives/shell.md) that can be useful for those who like using the command-line.
 
-    It is important to understand that this support **won't be available on releases** of RavynAPIException
+    It is important to understand that this support **won't be available on releases** of Esmerald
     1.X.
 
 ### Added
 
-- [Interactive shell](./directives/shell.md) support directive for any RavynAPIException application.
+- [Interactive shell](./directives/shell.md) support directive for any Esmerald application.
 
 ## 2.0.2
 
@@ -1588,25 +1588,25 @@ lists as definition. [More details](https://esmerald.dev/responses/#lists).
 ## 2.0.0
 
 !!! Warning
-	When upgrading RavynAPIException to version 2, this also means the use of Pydantic 2.0 at its core as well as corresponsing technologies
+	When upgrading Esmerald to version 2, this also means the use of Pydantic 2.0 at its core as well as corresponsing technologies
 	already updated to version 2 of Pydantic (Saffier, Asyncz...).
-	If you still wish to continue to use Pydantic 1 with RavynAPIException, it is recommended to use RavynAPIException prior to version 2.0 which it will
+	If you still wish to continue to use Pydantic 1 with Esmerald, it is recommended to use Esmerald prior to version 2.0 which it will
 	be maintained for a shor period but we **strongly recommend to always use the latest version**.
 
 ### Changed
 
-- **Major update of the core of RavynAPIException from Pydantic v1 to Pydantic v2.**
+- **Major update of the core of Esmerald from Pydantic v1 to Pydantic v2.**
 - `ResponseSpecification` renamed to `OpenAPIResponse`, `from esmerald.openapi.datastructures import OpenAPIResponse`.
 - Changed deprecated functions such as `validator` and `root_validator` to `field_validator` and `model_validator`.
 - Transformers no longer support custom fields. Pydantic natively handles that.
-- RavynAPIExceptionSignature updated for the new version of the FieldInfo.
+- EsmeraldSignature updated for the new version of the FieldInfo.
 - `params` reflect the new Pydantic FieldInfo.
 - Deprecated OpenAPIView in favour of the new OpenAPI documentation generator.
 - Changed OpenAPI config to reflect the new generation of OpenAPI documentation.
 - Internal data field is now returning Body type parameter making it easier to integrate with Pydantic 2.0.
 - General codebase cleanup.
 - Removed old OpenAPI document generator in favour to the newest, fastest, simplest and more effective approach in v2.
-- Remove the support of pydantic 1.0. RavynAPIException 2+ will only support pydantic 2+.
+- Remove the support of pydantic 1.0. Esmerald 2+ will only support pydantic 2+.
 
 ### Added
 
@@ -1701,7 +1701,7 @@ as before. Simplification via command line [#86](https://github.com/dymmond/esme
 - Updated support for Starlette 0.26.1
 - Updated support for Lifespan [./lifespan.md] events
 - Requests url_for parsing the URL type to return string on parsing [#69](https://github.com/dymmond/esmerald/pull/69).
-- RavynAPIException official documentation also available on https://esmerald.dev [#70](https://github.com/dymmond/esmerald/pull/70).
+- Esmerald official documentation also available on https://esmerald.dev [#70](https://github.com/dymmond/esmerald/pull/70).
 - Updated Github CI to deploy also to https://esmerald.dev [#73](https://github.com/dymmond/esmerald/pull/73)
 
 ### Added
@@ -1710,22 +1710,22 @@ as before. Simplification via command line [#86](https://github.com/dymmond/esme
 - Added new internal implementation of on_event and add_event_handler functions. [#74](https://github.com/dymmond/esmerald/pull/74).
 - Missing documentation about the background tasks [#71](https://github.com/dymmond/esmerald/pull/71)
 - Documentation for lifespan events [#72](https://github.com/dymmond/esmerald/pull/72)
-- Added condition to allow cached_properties from the RavynAPIExceptionAPISettings and in the settings without raising an Exception.
+- Added condition to allow cached_properties from the EsmeraldAPISettings and in the settings without raising an Exception.
 - New handlers. OPTIONS, HEAD and TRACE. Check out the  [handlers](./routing/handlers.md) for more details.
 
 ### Fixed
 
-- New Starlette Lifespan [#75](https://github.com/dymmond/esmerald/pull/75). This is now also available to be done in the same way Starlette does. Internally RavynAPIException also implements the on_startup and on_shutdown but that is an unique implementation. This implementation follows the same pattern as the official [Starlette Bridge](https://starlette-bridge.tarsild.io/)
+- New Starlette Lifespan [#75](https://github.com/dymmond/esmerald/pull/75). This is now also available to be done in the same way Starlette does. Internally Esmerald also implements the on_startup and on_shutdown but that is an unique implementation. This implementation follows the same pattern as the official [Starlette Bridge](https://starlette-bridge.tarsild.io/)
 
 ## 1.0.0
 
 ### Changed
 
-- ChildRavynAPIException now supports the parent which means it can share middlewares and interceptors
+- ChildEsmerald now supports the parent which means it can share middlewares and interceptors
 across main application and children.
 
     !!! Note
-        Prior to version 1.0.0, sharing resources between RavynAPIException and ChildRavynAPIException was not allowed
+        Prior to version 1.0.0, sharing resources between Esmerald and ChildEsmerald was not allowed
         and it needed to be treated as completely isolated application. In the version 1.0.0 you can
         still isolate them but you can also share resources.
 
@@ -1734,12 +1734,12 @@ across main application and children.
 
 ### Added
 
--  RavynAPIException Pluggables [#60](https://github.com/dymmond/esmerald/pull/60).
+-  Esmerald Pluggables [#60](https://github.com/dymmond/esmerald/pull/60).
 
 	This is the feature for the esmerald ecosystem that allows you to create plugins and extensions for any application
 	as well as distribute them as installable packages.
 
-- New [add_child_ravyn](./routing/router.md#add_child_ravyn) allowing adding via function, ChildRavynAPIException [#61](https://github.com/dymmond/esmerald/pull/61).
+- New [add_child_ravyn](./routing/router.md#add_child_ravyn) allowing adding via function, ChildEsmerald [#61](https://github.com/dymmond/esmerald/pull/61).
 
 	Add child esmeralds via functions once the application is created and dynamically.
 
@@ -1750,7 +1750,7 @@ across main application and children.
 
 - Brand new support for [Saffier](https://saffier.tarsild.io). A brand new ORM running
 on the top of SQLAlchemy in an async fashion.
-- New `base_user` and `middleware` support for Saffier with RavynAPIException.
+- New `base_user` and `middleware` support for Saffier with Esmerald.
 - New docs regarding the [Saffier](https://esmerald.dev/databases/saffier/motivation/) integration.
 Those include also an example how to use it.
 
@@ -1840,7 +1840,7 @@ If you already had template configurations, jwt, schedulers or all the features 
 
 ### Added
 
-- `add_apiview` to the RavynAPIException class.
+- `add_apiview` to the Esmerald class.
 - [JSON](./responses.md#json), [OrJSON](./responses.md#orjson) and [UJSON](./responses.md#ujson) responses [#44](https://github.com/dymmond/esmerald/pull/44).
 
 ### Changed
@@ -1862,7 +1862,7 @@ If you already had template configurations, jwt, schedulers or all the features 
 ### Fixed
 
 - `include_in_schema` on a Gateway level for OpenAPI specification [#42](https://github.com/dymmond/esmerald/pull/42).
-- `redirect_slashes` when instantiating an RavynAPIException/ChildRavynAPIException application wasn't
+- `redirect_slashes` when instantiating an Esmerald/ChildEsmerald application wasn't
 validating the value properly.
 - TemplateNotFound raised when a template is not found [#42](https://github.com/dymmond/esmerald/pull/42).
 - jinja2 Environment to have autoescape by default [#43](https://github.com/dymmond/esmerald/pull/43)
@@ -1880,7 +1880,7 @@ January 22, 2023
 
 ### Added
 
-- New `File` and `Form` params to RavynAPIException.
+- New `File` and `Form` params to Esmerald.
 - Add new `Injects` as parameter function.
 - Add new `ArbitraryHashableBaseModel` to handle the `Inject` with arbitrary types.
 - Add new [settings_config](./application/settings.md#the-settings_module) parameter. [#40](https://github.com/dymmond/esmerald/pull/40).
@@ -1888,15 +1888,15 @@ January 22, 2023
 ### Changed
 
 - Removed unused internal parameters for old functions.
-- `scheduler_class` is now a property in the RavynAPIExceptionSettings. This allows to override fields
+- `scheduler_class` is now a property in the EsmeraldSettings. This allows to override fields
 without issues.
 - Deprecate `settings` parameter from `RequestSettingsMiddleware`.
 
 ### Fixed
 
 - Error messages being thrown.
-- Fix `enable_openapi` boolean for ChildRavynAPIException and submodules and `include_in_schema` for Include [#37](https://github.com/dymmond/esmerald/pull/37)
-- Fix types for OpenAPI for applications that are subclasses of RavynAPIException or ChildRavynAPIException [#38](https://github.com/dymmond/esmerald/pull/38)
+- Fix `enable_openapi` boolean for ChildEsmerald and submodules and `include_in_schema` for Include [#37](https://github.com/dymmond/esmerald/pull/37)
+- Fix types for OpenAPI for applications that are subclasses of Esmerald or ChildEsmerald [#38](https://github.com/dymmond/esmerald/pull/38)
 
 ## 0.7.0
 
@@ -1924,7 +1924,7 @@ of the [RequestSettingsMiddleware](./middleware/middleware.md#requestsettingsmid
 ### Fixed
 
 - Mypy references for the Gateway and WebsocketGateway being added to the handler.
-- References to the RavynAPIException types causing the IDE to misread them.
+- References to the Esmerald types causing the IDE to misread them.
 
 ## 0.6.1
 
@@ -1962,7 +1962,7 @@ on invalid token.
 ### Changed
 
 - Updated version of asyncz to support 0.1.4.
-- Fixed dependencies when installing RavynAPIException based on Asyncz requirements.
+- Fixed dependencies when installing Esmerald based on Asyncz requirements.
 - Minor fixes.
 
 ## 0.5.3
@@ -1993,7 +1993,7 @@ on invalid token.
 
 - **Deprecated** the integration with `APScheduler` in favour of [Asyncz](https://asyncz.tarsild.io).
 [#15](https://github.com/dymmond/esmerald/pull/15)
-- Upgraded the RavynAPIException official symbol.
+- Upgraded the Esmerald official symbol.
 
 !!! Warning
     If you are using the `@scheduler` with the `func` and `identifier` params, please check the
@@ -2047,14 +2047,14 @@ on invalid token.
 
 ### Changed
 
-- Deprecated kwargs and signature to give place to RavynAPIException transformers.
+- Deprecated kwargs and signature to give place to Esmerald transformers.
 - Code cleaning and improved performance by applying pure pydantic models internally.
 
 ## 0.2.11
 
 ### Fixed
 
-- When instantiating an `RavynAPIException` object, `app_name` should be passed instead of `name`.
+- When instantiating an `Esmerald` object, `app_name` should be passed instead of `name`.
 
 ## 0.2.10
 
@@ -2071,7 +2071,7 @@ and can be used for testing purposes or to clear a session.
 
 ### Fixed
 
-- `redirect_slashes` property added to the main RavynAPIException object and settings options.
+- `redirect_slashes` property added to the main Esmerald object and settings options.
 
 ## 0.2.8
 
@@ -2158,14 +2158,14 @@ and can be used for testing purposes or to clear a session.
 
 ## 0.1.0
 
-This release is the first release of RavynAPIException and it contain all the essentials to start a project from the simplest
+This release is the first release of Esmerald and it contain all the essentials to start a project from the simplest
 version to the most advanced.
 
 ### Added
 
 - **Fluid and Fast**: Thanks to Starlette and Pydantic.
 - **Fast to develop**: Thanks to the simplicity of design, the development times can be reduced exponentially.
-- **Intuitive**: If you are used to the other frameworks, RavynAPIException is a no brainer to develop.
+- **Intuitive**: If you are used to the other frameworks, Esmerald is a no brainer to develop.
 - **Easy**: Developed with design in mind and easy learning.
 - **Short**: With the OOP available natively there is no need for code duplication. SOLID.
 - **Ready**: Get your application up and running with production-ready code.

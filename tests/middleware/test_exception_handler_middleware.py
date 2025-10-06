@@ -5,7 +5,7 @@ from lilya.exceptions import HTTPException as LilyaException
 from lilya.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from ravyn.exceptions import HTTPException
-from ravyn.middleware.exceptions import RavynAPIExceptionAPIExceptionMiddleware
+from ravyn.middleware.exceptions import RavynAPIException
 from ravyn.requests import Request
 
 
@@ -13,7 +13,7 @@ async def dummy_app(scope: Any, receive: Any, send: Any) -> None:
     """ """
 
 
-middleware = RavynAPIExceptionAPIExceptionMiddleware(dummy_app, False, {})
+middleware = RavynAPIException(dummy_app, False, {})
 
 
 def test_default_handle_http_exception_handling_extra_object() -> None:
