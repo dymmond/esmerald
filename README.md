@@ -30,6 +30,8 @@
 
 **The official supported version is always the latest released**.
 
+**You came to look for Esmerald, you are in the right place. Esmerald was rabranded to Ravyn**.
+
 ---
 
 Ravyn is a modern, powerful, flexible, high performant, web framework designed to build not only APIs
