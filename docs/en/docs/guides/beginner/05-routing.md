@@ -200,7 +200,7 @@ different components, allowing for better code organization.
 ### Example: Complex Application Using All Features
 
 ```python
-from ravyn import Ravyn, Gateway, JSONResponse, Router, APIView, post, get, Controller
+from ravyn import Ravyn, Gateway, JSONResponse, Router, Controller, post, get, Controller
 from ravyn.datastructures import Webhook
 
 
@@ -215,7 +215,7 @@ async def include_status() -> JSONResponse:
 
 
 # Define an API view for users
-class UserController(APIView):
+class UserController(Controller):
     @get("/user/{user_id}")
     async def get_user(self, user_id: int) -> JSONResponse:
         return JSONResponse({"user_id": user_id, "message": "User found"})

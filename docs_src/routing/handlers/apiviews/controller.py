@@ -1,11 +1,11 @@
 from ravyn.permissions import DenyAll, IsAuthenticated
 from ravyn.requests import Request
 from ravyn.responses import JSONResponse
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers.views import Controller
 from ravyn.routing.handlers import delete, get, post
 
 
-class UserAPIView(APIView):
+class UserAPIView(Controller):
     path = "/users"
     permissions = [IsAuthenticated]
 

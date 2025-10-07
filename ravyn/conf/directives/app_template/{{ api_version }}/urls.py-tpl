@@ -8,10 +8,10 @@ from ravyn import Include, Gateway
 route_patterns = [
 ]
 {% else %}
-from .controllers import {{ name|capitalize }}APIView
+from .controllers import {{ name|capitalize }}Controller
 
 
 route_patterns = [
-    Gateway(handler={{ name|capitalize }}APIView)
+    Gateway(handler={{ name|capitalize }}Controller)
 ]
 {% endif %}

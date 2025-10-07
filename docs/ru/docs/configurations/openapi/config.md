@@ -47,7 +47,7 @@
 Давайте рассмотрим пример.
 
 ```python
-{!> ../../../docs_src/configurations/openapi/apiview.py !}
+{!> ../../../docs_src/configurations/openapi/controller.py !}
 ```
 
 Теперь URL для доступа к `swagger`, `redoc` и `stoplight` будет следующим:

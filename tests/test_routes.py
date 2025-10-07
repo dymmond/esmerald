@@ -2,7 +2,7 @@ import pytest
 from lilya import status
 
 from ravyn.exceptions import ImproperlyConfigured
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from ravyn.routing.handlers import delete, get, post, put, route, websocket
 from ravyn.routing.webhooks import whget
@@ -287,7 +287,7 @@ def test_add_apiview_multiple_from_application(
     Adds a route to the application router using @route
     """
 
-    class View(APIView):
+    class View(Controller):
         path = "/"
 
         @method(fn_path, status_code=status_code)

@@ -110,10 +110,10 @@ class ControllerOptions(TypedDict, total=False):
             **Example**
 
             ```python
-            from ravyn import APIView, JSONResponse
+            from ravyn import Controller, JSONResponse
 
 
-            class MyView(APIView):
+            class MyView(Controller):
                 response_class = JSONResponse
             ```
             """
@@ -130,7 +130,7 @@ class ControllerOptions(TypedDict, total=False):
             **Example**
 
             ```python
-            from ravyn import APIView
+            from ravyn import Controller
             from ravyn.datastructures import Cookie
 
             response_cookies=[
@@ -142,7 +142,7 @@ class ControllerOptions(TypedDict, total=False):
                 )
             ]
 
-            class MyView(APIView):
+            class MyView(Controller):
                 response_cookies = response_cookies
             ```
             """
@@ -159,14 +159,14 @@ class ControllerOptions(TypedDict, total=False):
         **Example**
 
         ```python
-        from ravyn import APIView
+        from ravyn import Controller
         from ravyn.datastructures import ResponseHeader
 
         response_headers={
             "authorize": ResponseHeader(value="granted")
         }
 
-        class MyView(APIView):
+        class MyView(Controller):
             response_headers = response_headers
         ```
         """

@@ -3,8 +3,9 @@ from typing import Dict, Union
 import pytest
 from pydantic import BaseModel
 
-from ravyn import JSON, APIView, Gateway, Include, SimpleAPIView, get
+from ravyn import JSON, Gateway, Include, SimpleAPIView, get
 from ravyn.openapi.datastructures import OpenAPIResponse
+from ravyn.routing.controllers import Controller
 from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
@@ -17,7 +18,7 @@ class Item(BaseModel):
 def read_people() -> Dict[str, str]: ...
 
 
-@pytest.mark.parametrize("value", [APIView, SimpleAPIView])
+@pytest.mark.parametrize("value", [Controller, SimpleAPIView])
 def test_add_include_to_openapi(test_client_factory, value):
     class MyAPI(value):
         if issubclass(value, SimpleAPIView):
@@ -105,7 +106,7 @@ def test_add_include_to_openapi(test_client_factory, value):
         }
 
 
-@pytest.mark.parametrize("value", [APIView, SimpleAPIView])
+@pytest.mark.parametrize("value", [Controller, SimpleAPIView])
 def test_include_no_include_in_schema(test_client_factory, value):
     class MyAPI(value):
         if issubclass(value, SimpleAPIView):

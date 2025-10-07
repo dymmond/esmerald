@@ -1,8 +1,8 @@
-from ravyn import APIView, Ravyn, Gateway, Request, get, post, status
+from ravyn import Controller, Ravyn, Gateway, Request, get, post, status
 from ravyn.core.datastructures.encoders import OrJSON
 
 
-class World(APIView):
+class World(Controller):
     @get(path="/{url}")
     async def home(self, request: Request, url: str) -> OrJSON:
         return OrJSON(content=f"URL: {url}")

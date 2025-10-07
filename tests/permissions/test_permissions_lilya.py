@@ -12,7 +12,7 @@ from ravyn.testclient import create_client
 
 
 class RavynPermission(BasePermission):
-    def has_permission(self, request, apiview):
+    def has_permission(self, request, controller):
         if not request.headers.get("allow_all"):
             return False
         return True

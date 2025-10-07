@@ -413,7 +413,7 @@ class View:
     def get_route_handlers(
         self,
     ) -> list[Union["HTTPHandler", "WebSocketHandler", "WebhookHandler"]]:
-        """A getter for the apiview's route handlers that sets their parent.
+        """A getter for the controller's route handlers that sets their parent.
 
         Returns:
             A list containing a copy of the route handlers defined inside the View.

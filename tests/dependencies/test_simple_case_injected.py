@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from ravyn import Ravyn, post
 from ravyn.conf import settings
 from ravyn.injector import Inject
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway
 
 models = edgy.Registry(settings.edgy_database)
@@ -36,7 +36,7 @@ class DocumentService:
         return await self.model.query.create(**dto.model_dump())
 
 
-class DocumentAPIView(APIView):
+class DocumentAPIView(Controller):
     tags: List[str] = ["Document"]
     dependencies = {
         "service": Inject(DocumentService),

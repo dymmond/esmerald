@@ -5,7 +5,7 @@ import pytest
 from lilya.websockets import WebSocketDisconnect
 
 from ravyn.injector import Inject
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import WebSocketGateway
 from ravyn.routing.handlers import websocket
 from ravyn.testclient import create_client
@@ -45,7 +45,7 @@ def local_method_second_dependency(path_param: str) -> str:
 test_path = "/test"
 
 
-class FirstController(APIView):
+class FirstController(Controller):
     path = test_path
     dependencies = {
         "first": Inject(controller_first_dependency),
@@ -111,7 +111,7 @@ def test_function_dependency_injection() -> None:
 
 
 def test_dependency_isolation() -> None:  # pragma: no cover
-    class SecondController(APIView):
+    class SecondController(Controller):
         path = "/second"
 
         @websocket(path="/")

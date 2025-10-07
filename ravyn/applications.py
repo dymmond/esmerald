@@ -575,7 +575,7 @@ class Application(BaseLilya):
                     '''
                     Permissions for admin
                     '''
-                    async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+                    async def has_permission(self, request: "Request", controller: "APIGateHandler"):
                         is_admin = request.headers.get("admin", False)
                         return bool(is_admin)
 
@@ -2045,22 +2045,22 @@ class Application(BaseLilya):
             Union["gateways.Gateway", "gateways.WebSocketGateway"],
             Doc(
                 """
-                The `APIView` or similar to be added.
+                The `Controllerler` or similar to be added.
                 """
             ),
         ],
     ) -> None:
         """
-        Adds an [APIView](https://ravyn.dev/routing/apiview/) or related
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
         to the application routing.
 
         **Example**
 
         ```python
-        from ravyn import Ravyn, APIView, Gateway, get
+        from ravyn import Ravyn, Controller, Gateway, get
 
 
-        class View(APIView):
+        class View(Controller):
             path = "/"
 
             @get(status_code=status_code)

@@ -3,7 +3,7 @@ from random import randint
 from lilya.status import HTTP_200_OK
 
 from ravyn.injector import Inject
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.testclient import create_client
@@ -20,7 +20,7 @@ def test_inter_dependencies() -> None:
     def local_dependency(path_param: int, mid_level: int, top_level: int) -> int:
         return path_param + mid_level + top_level
 
-    class MyController(APIView):
+    class MyController(Controller):
         path = "/test"
         dependencies = {"mid_level": Inject(mid_level_dependency)}
 

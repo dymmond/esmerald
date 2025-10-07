@@ -42,7 +42,7 @@ if TYPE_CHECKING:
     from .pluggables import Extension, Pluggable
     from .requests import Request
     from .responses import JSONResponse, Response, TemplateResponse
-    from .routing.controllers import APIView, Controller, SimpleAPIView, View
+    from .routing.controllers import APIView, BaseController, Controller, SimpleAPIView, View
     from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
     from .routing.handlers import (
         delete,
@@ -78,6 +78,7 @@ __all__ = [
     "BackgroundTask",
     "BackgroundTasks",
     "Body",
+    "BaseController",
     "BasePermission",
     "ChildRavyn",
     "Context",
@@ -219,10 +220,10 @@ _monkay: Monkay = Monkay(
         "JSONResponse": ".responses.JSONResponse",
         "Response": ".responses.Response",
         "TemplateResponse": ".responses.TemplateResponse",
-        "APIView": ".routing.apis.APIView",
-        "Controller": ".routing.apis.Controller",
-        "SimpleAPIView": ".routing.apis.SimpleAPIView",
-        "View": ".routing.apis.View",
+        "APIView": ".routing.controllers.APIView",
+        "Controller": ".routing.controllers.Controller",
+        "SimpleAPIView": ".routing.controllers.SimpleAPIView",
+        "View": ".routing.controllers.View",
         "Gateway": ".routing.gateways.Gateway",
         "WebhookGateway": ".routing.gateways.WebhookGateway",
         "WebSocketGateway": ".routing.gateways.WebSocketGateway",

@@ -1,6 +1,9 @@
+import warnings
+from typing import Any
+
 from ravyn.routing.controllers._metaclasses import ListAPIMeta, SimpleAPIMeta
 from ravyn.routing.controllers._mixins import MethodMixin
-from ravyn.routing.controllers.base import View
+from ravyn.routing.controllers.base import BaseController, View
 
 
 class SimpleAPIView(View, MethodMixin, metaclass=SimpleAPIMeta):
@@ -38,10 +41,72 @@ class SimpleAPIView(View, MethodMixin, metaclass=SimpleAPIMeta):
     ```
     """
 
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        warnings.warn(
+            "SimpleAPIView is deprecated and will be removed in the release 0.2.0. "
+            "Please use SimpleAPIController instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
+
+
+class SimpleAPIController(BaseController, MethodMixin, metaclass=SimpleAPIMeta):
+    """The Ravyn SimpleAPIController class.
+
+    This class has the same available parameters as the parent,
+    `View`.
+
+    **Example**
+
+    ```python
+    from ravyn import SimpleAPIController, delete, get, patch, post, put
+
+
+    class UserAPI(SimpleAPIController):
+        @get()
+        async def get(self) -> str:
+            ...
+
+        @post()
+        async def post(self) -> str:
+            ...
+
+        @put()
+        async def put(self) -> str:
+            ...
+
+        @patch()
+        async def patch(self) -> str:
+            ...
+
+        @delete()
+        async def delete(self) -> None:
+            ...
+    ```
+    """
+
+    ...
+
 
 class ListView(View, MethodMixin, metaclass=ListAPIMeta):
     """
     Base API for views returning lists.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        warnings.warn(
+            "ListView is deprecated and will be removed in the release 0.2.0. "
+            "Please use ListAPIController instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
+
+
+class ListController(BaseController, MethodMixin, metaclass=ListAPIMeta):
+    """
+    Base API for controllers returning lists.
     """
 
     ...
@@ -59,7 +124,7 @@ class APIView(View):
     from ravyn.permissions import DenyAll, IsAuthenticated
     from ravyn.requests import Request
     from ravyn.responses import JSONResponse
-    from ravyn.routing.apis.views import APIView
+    from ravyn.routing.controllers.views import APIView
     from ravyn.routing.handlers import delete, get, post
 
 
@@ -95,10 +160,17 @@ class APIView(View):
     ```
     """
 
-    ...
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        warnings.warn(
+            "APIView is deprecated and will be removed in the release 0.2.0. "
+            "Please use APIController instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
 
 
-class Controller(APIView):
+class Controller(BaseController):
     """The Ravyn Controller class.
 
     **This is a drop-in replacement for the `APIView` class.**
@@ -112,7 +184,7 @@ class Controller(APIView):
     from ravyn.permissions import DenyAll, IsAuthenticated
     from ravyn.requests import Request
     from ravyn.responses import JSONResponse
-    from ravyn.routing.apis.views import Controller
+    from ravyn.routing.controllers.views import Controller
     from ravyn.routing.handlers import delete, get, post
 
 

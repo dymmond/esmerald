@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 async def continue_or_raise_permission_exception(
     request: "Request",
-    apiview: "APIGateHandler",
+    controller: "APIGateHandler",
     permission: "BasePermission",
 ) -> None:
     """
@@ -24,13 +24,13 @@ async def continue_or_raise_permission_exception(
     has_permission: Callable = permission.has_permission
 
     if not is_async_callable(has_permission):
-        if not has_permission(request, apiview):
+        if not has_permission(request, controller):
             permission_denied(
                 request,
                 message=getattr(permission, "message", None),
             )
     else:
-        is_permission = await has_permission(request, apiview)
+        is_permission = await has_permission(request, controller)
         if not is_permission:
             permission_denied(
                 request,

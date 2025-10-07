@@ -22,14 +22,14 @@ if TYPE_CHECKING:
 
 
 class LocalPermission(BasePermission):
-    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    def has_permission(self, request: "Request", controller: "APIGateHandler"):
         if not request.headers.get("allow_all"):
             return False
         return True
 
 
 class ApplicationPermission(BasePermission):
-    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    def has_permission(self, request: "Request", controller: "APIGateHandler"):
         if not request.headers.get("Authorization"):
             return False
         return True
@@ -160,12 +160,12 @@ def test_permissions_with_child_ravyn_three() -> None:
 
 
 class TestPermission:
-    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    def has_permission(self, request: "Request", controller: "APIGateHandler"):
         return False
 
 
 class DummyPermission(PermissionProtocol):
-    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    def has_permission(self, request: "Request", controller: "APIGateHandler"):
         return False
 
 

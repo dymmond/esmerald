@@ -1,51 +1,51 @@
-# APIView
+# Controller
 
 This is a special object from **Ravyn** and aims to implement the so needed class based views for those who love
-object oriented programming. Inspired by such great frameworks (Python, Go, JS), APIView was created to simplify
+object oriented programming. Inspired by such great frameworks (Python, Go, JS), Controller was created to simplify
 the life of those who like OOP.
 
-## APIView class
+## Controller class
 
 ```python
-{!> ../../../docs_src/routing/handlers/apiviews/apiview.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/controller.py !}
 ```
 
-The APIView uses the Ravyn [handlers](./handlers.md) to create the "view" itself but also acts as the `parent`
+The Controller uses the Ravyn [handlers](./handlers.md) to create the "view" itself but also acts as the `parent`
 of those same routes and therefore all the available parameters such as [permissions](../permissions/index.md),
 [middlewares](../middleware/middleware.md), [exception handlers](../exception-handlers.md),
 [dependencies](../dependencies.md) and almost every other parameter available in the handlers are also available
-in the APIView.
+in the Controller.
 
 ### Parameters
 
 All the parameters and defaults are available in the [View Reference](../references/routing/view.md).
 
-## APIView routing
+## Controller routing
 
 The routing is the same as declaring the routing for the handler with a simple particularity that you don't
-need to declare handler by handler. Since everything is inside an [APIView](#apiview)
-objects the handlers will be automatically routed by **Ravyn** with the joint [path](#apiview-path) given to class.
+need to declare handler by handler. Since everything is inside an [Controller](#controller)
+objects the handlers will be automatically routed by **Ravyn** with the joint [path](#controller-path) given to class.
 
 ```python title='controllers.py'
-{!> ../../../docs_src/routing/handlers/apiviews/apiview.py !}
+{!> ../../../docs_src/routing/handlers/apiviews/controller.py !}
 ```
 
 ```python title='app.py' hl_lines="3 5"
 {!> ../../../docs_src/routing/handlers/apiviews/routing.py !}
 ```
 
-## APIView path
+## Controller path
 
-In the [APIView](#apiview) the `path` is a mandatory field, even if you pass only `/`. This helps maintaining the
+In the [Controller](#controller) the `path` is a mandatory field, even if you pass only `/`. This helps maintaining the
 structure of the routing cleaner and healthy.
 
 !!! Warning
-    Just because the `APIView` is a class it still follows the same rules of the
+    Just because the `Controller` is a class it still follows the same rules of the
     [routing priority](./routes.md#routes-priority) as well.
 
 ## Path parameters
 
-APIView is no different from the handlers, really. The same rules for the routing are applied for any route
+Controller is no different from the handlers, really. The same rules for the routing are applied for any route
 [path param](./routes.md#path-parameters).
 
 ```python title='app.py' hl_lines="5 15"
@@ -54,7 +54,7 @@ APIView is no different from the handlers, really. The same rules for the routin
 
 ## Websockets and handlers
 
-The APIView also allows the mix of both [HTTP handlers](./handlers.md#http-handlers) and
+The Controller also allows the mix of both [HTTP handlers](./handlers.md#http-handlers) and
 [WebSocket handlers](./handlers.md#websocket-handler)
 
 ```python title='app.py' hl_lines="15 19 26"
@@ -63,16 +63,16 @@ The APIView also allows the mix of both [HTTP handlers](./handlers.md#http-handl
 
 ## Constraints
 
-When declaring an APIView and registering the route, both [Gateway](./routes.md#gateway) and
+When declaring an Controller and registering the route, both [Gateway](./routes.md#gateway) and
 [WebSocketGateway](./routes.md#websocketgateway) allow to be used for this purpose but one has a limitation compared
 to the other.
 
-* **Gateway** - Allows the APIView to have all the available handlers (`get`, `put`, `post`...) including `websocket`.
+* **Gateway** - Allows the Controller to have all the available handlers (`get`, `put`, `post`...) including `websocket`.
 * **WebSocketGateway** - Allows **only** to have `websockets`.
 
 ## Generics
 
-Ravyn also offers some generics when it comes to build APIs. For example, the [APIView](#apiview)
+Ravyn also offers some generics when it comes to build APIs. For example, the [Controller](#controller)
 allows the creation of apis where the function name can be whatever you desire like `create_users`,
 `get_items`, `update_profile`, etc...
 
@@ -142,7 +142,7 @@ Allows the `GET` verb to be used.
 This is how you can import.
 
 ```python
-from ravyn.routing.apis.generics import ReadAPIView
+from ravyn.routing.controllers.generics import ReadAPIView
 ```
 
 #### Example
@@ -158,7 +158,7 @@ Allows the `POST`, `PUT`, `PATCH` verbs to be used.
 This is how you can import.
 
 ```python
-from ravyn.routing.apis.generics import CreateAPIView
+from ravyn.routing.controllers.generics import CreateAPIView
 ```
 
 #### Example
@@ -174,7 +174,7 @@ Allows the `DELETE` verb to be used.
 This is how you can import.
 
 ```python
-from ravyn.routing.apis.generics import DeleteAPIView
+from ravyn.routing.controllers.generics import DeleteAPIView
 ```
 
 #### Example
@@ -205,7 +205,7 @@ Allows all the verbs be used.
 This is how you can import.
 
 ```python
-from ravyn.routing.apis.generics import ListAPIView
+from ravyn.routing.controllers.generics import ListAPIView
 ```
 
 #### Example
@@ -241,12 +241,12 @@ As you can see, to make it happen you would need to declare the function name in
 
 ## What to choose
 
-All the available objects from the [APIView](#apiview) to the [SimpleAPIView](#simpleapiview) and
+All the available objects from the [Controller](#controller) to the [SimpleAPIView](#simpleapiview) and
 generics can do whatever you want and need so what and how to choose the right one for you?
 
 Well, like everything, it will depend of what you want to achieve. For example, if you do not care
 or do not want to be bothered with `http_allowed_methods` and want to go without restrictions,
-then the [APIView](#apiview) is the right choice for you.
+then the [Controller](#controller) is the right choice for you.
 
 On the other hand, if you feel like restricting youself or even during development you might want
 to restrict some actions on the fly, so maybe you can opt for choosing the [SimpleAPIView](#simpleapiview)

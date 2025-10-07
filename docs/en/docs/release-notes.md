@@ -1487,11 +1487,11 @@ the tags are appended to the final handler. This allows inheriting from existing
 -  Allow importing from from string into `Factory`. [#179](https://github.com/dymmond/esmerald/pull/179) by [@tarsil](https://github.com/tarsil).
 -  New security objects for OpenAPI documentation.
 -  New [OpenAPI](./openapi.md) documentation describing the ways of using it and what is available with examples.
--  New [SimpleAPIView](./routing/apiview.md#simpleapiview) supported.
--  New [CreateAPIView](./routing/apiview.md#createapiview) supported.
--  New [ReadAPIView](./routing/apiview.md#readapiview) supported.
--  New [DeleteAPIView](./routing/apiview.md#deleteapiview) supported.
--  New [ListAPIView](./routing/apiview.md#listapiview) supported.
+-  New [SimpleAPIView](./routing/controller.md#simpleapiview) supported.
+-  New [CreateAPIView](./routing/controller.md#createapiview) supported.
+-  New [ReadAPIView](./routing/controller.md#readapiview) supported.
+-  New [DeleteAPIView](./routing/controller.md#deleteapiview) supported.
+-  New [ListAPIView](./routing/controller.md#listapiview) supported.
 
 ### Fixed
 

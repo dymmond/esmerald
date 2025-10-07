@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from ravyn import APIView, Ravyn, Gateway, post
+from ravyn import Controller, Ravyn, Gateway, post
 from ravyn.routing.gateways import WebhookGateway
 from ravyn.routing.webhooks import whpost
 
@@ -13,7 +13,7 @@ class Payment(BaseModel):
     paid_at: datetime
 
 
-class PaymentWebhook(APIView):
+class PaymentWebhook(Controller):
     @whpost("new-event")
     async def new_event(self, data: Payment) -> None: ...
 

@@ -22,7 +22,7 @@ routes efficiently.
 
 This decorator enhances class-based views and provides a clean, structured way to define routes in Ravyn applications.
 
-This also provides an alternative to subclassing the [Controller](./routing/apiview.md#apiview) class directly.
+This also provides an alternative to subclassing the [Controller](./routing/controller.md#controller) class directly.
 
 ### Benefits of `@controller`
 

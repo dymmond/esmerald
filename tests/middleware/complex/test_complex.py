@@ -7,7 +7,7 @@ from ravyn.conf import settings
 from ravyn.contrib.auth.edgy.base_user import User as EdgyUser
 from ravyn.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from ravyn.core.config.jwt import JWTConfig
-from ravyn.routing.controllers import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.handlers import get, post, put
 from ravyn.testclient import create_client
 
@@ -42,7 +42,7 @@ class CustomJWTMidleware(JWTAuthMiddleware):
         super().__init__(app, config=jwt_config, user_model=User)
 
 
-class UserView(APIView):
+class UserView(Controller):
     """
     User management API View
     """
@@ -127,7 +127,7 @@ def test_can_access_endpoint_with_include_nested(test_app_client_factory):
         assert response.status_code == 401
 
 
-class AnotherUserView(APIView):
+class AnotherUserView(Controller):
     """
     User management API View
     """

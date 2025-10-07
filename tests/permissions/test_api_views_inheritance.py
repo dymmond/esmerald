@@ -1,9 +1,9 @@
-from ravyn import APIView, get
+from ravyn import Controller, get
 from ravyn.permissions import AllowAny, DenyAll, IsAuthenticated
 from ravyn.testclient import create_client
 
 
-class MyAPIView(APIView):
+class MyAPIView(Controller):
     permissions = [DenyAll]
 
     @get("/home")

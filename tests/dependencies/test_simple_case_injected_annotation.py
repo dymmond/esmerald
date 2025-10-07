@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List
 
 from ravyn import post
 from ravyn.injector import Inject
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway
 from ravyn.testclient import create_client
 from tests.dependencies.samples import DocumentService
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from tests.dependencies.samples import DocumentCreateDTO
 
 
-class DocumentAPIView(APIView):
+class DocumentAPIView(Controller):
     tags: List[str] = ["Document"]
     dependencies = {
         "service": Inject(DocumentService),

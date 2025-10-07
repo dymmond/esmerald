@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypeVar
 
-from ravyn import APIView, delete, get, post, put, status
+from ravyn import Controller, delete, get, post, put, status
 
 if TYPE_CHECKING:
     from ravyn.types import Dependencies
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 
-class {{ name|capitalize }}APIView(APIView):
+class {{ name|capitalize }}Controller(Controller):
     """
     A {{ name|lower }} controller that defines the basic
     operations of the CRUD.

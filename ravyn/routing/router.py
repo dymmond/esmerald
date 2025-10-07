@@ -1978,22 +1978,22 @@ class Router(RoutingMethodsMixin, BaseRouter):
             Union[Gateway, WebSocketGateway],
             Doc(
                 """
-                The `APIView` or similar to be added.
+                The `Controller` or similar to be added.
                 """
             ),
         ],
     ) -> None:
         """
-        Adds an [APIView](https://ravyn.dev/routing/apiview/) or related
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
         to the application routing.
 
         **Example**
 
         ```python
-        from ravyn import Router, APIView, Gateway, get
+        from ravyn import Router, Controller, Gateway, get
 
 
-        class View(APIView):
+        class View(Controller):
             path = "/"
 
             @get(status_code=status_code)
@@ -2592,7 +2592,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         operation_id: Optional[str] = None,
     ) -> None:
         """
-        Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
+        Handles the "handler" or "controller" of the platform. A handler can be any get, put, patch, post, delete or route.
         """
         if not path:
             path = "/"

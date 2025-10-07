@@ -97,7 +97,7 @@ thing you need to make sure is to **implement the `has_permission`** on any deri
 ## Permissions summary
 
 1. All permissions must inherit from `BasePermission`.
-2. `BasePermission` has the `has_permission(request Request, apiview: "APIGateHandler") and it can
+2. `BasePermission` has the `has_permission(request Request, controller: "APIGateHandler") and it can
 be `async` or not.
 3. The [handlers](../routing/handlers.md), [Gateway](../routing/routes.md#gateway),
 [WebSocketGateway](../routing/routes.md#websocketgateway), [Include](../routing/routes.md#include)

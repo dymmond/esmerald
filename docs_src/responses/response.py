@@ -1,5 +1,5 @@
 from ravyn import (
-    APIView,
+    Controller,
     Ravyn,
     Gateway,
     Request,
@@ -12,7 +12,7 @@ from ravyn import (
 )
 
 
-class World(APIView):
+class World(Controller):
     @get(path="/{url}")
     async def home(self, request: Request, url: str) -> Response:
         return Response(f"URL: {url}")

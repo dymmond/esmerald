@@ -59,10 +59,10 @@ class AND:
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
-        return self.op1.has_permission(request, apiview) and self.op2.has_permission(
-            request, apiview
+        return self.op1.has_permission(request, controller) and self.op2.has_permission(
+            request, controller
         )
 
 
@@ -74,10 +74,10 @@ class OR:
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
-        return self.op1.has_permission(request, apiview) or self.op2.has_permission(
-            request, apiview
+        return self.op1.has_permission(request, controller) or self.op2.has_permission(
+            request, controller
         )
 
 
@@ -88,9 +88,9 @@ class NOT:
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
-        return not self.op1.has_permission(request, apiview)
+        return not self.op1.has_permission(request, controller)
 
 
 class BasePermissionMetaclass(BaseOperationHolder, type):  # type: ignore[misc,unused-ignore]
@@ -117,7 +117,7 @@ class BasePermission(metaclass=BasePermissionMetaclass):
         Permission to validate if has access to a given project
         '''
 
-        async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+        async def has_permission(self, request: "Request", controller: "APIGateHandler"):
             allow_project = request.headers.get("allow_access")
             return bool(allow_project)
     ```
@@ -133,7 +133,7 @@ class BasePermission(metaclass=BasePermissionMetaclass):
                 """
             ),
         ],
-        apiview: Annotated[
+        controller: Annotated[
             "APIGateHandler",
             Doc(
                 """
@@ -166,7 +166,7 @@ class BasePermission(metaclass=BasePermissionMetaclass):
             Permission to validate if has access to a given project
             '''
 
-            async def has_permission(self, request: "Request", apiview: "APIGateHandler") -> bool:
+            async def has_permission(self, request: "Request", controller: "APIGateHandler") -> bool:
                 allow_project = request.headers.get("allow_access")
                 return bool(allow_project)
         ```
@@ -183,7 +183,7 @@ class BasePermission(metaclass=BasePermissionMetaclass):
             Permission to validate if has access to a given project
             '''
 
-            def has_permission(self, request: "Request", apiview: "APIGateHandler") -> bool:
+            def has_permission(self, request: "Request", controller: "APIGateHandler") -> bool:
                 allow_project = request.headers.get("allow_access")
                 return bool(allow_project)
         ```
@@ -199,7 +199,7 @@ class BaseAbstractUserPermission(BasePermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
         try:
             return hasattr(request, "user")
@@ -244,7 +244,7 @@ class AllowAny(BasePermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
         return True
 
@@ -260,7 +260,7 @@ class DenyAll(BasePermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
         return False
 
@@ -274,17 +274,17 @@ class IsAuthenticated(BaseAbstractUserPermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
         """
         Args:
             request: A Lilya 'Connection' instance.
-            apiview: A Ravyn 'APIController' instance or a `APIGateHandler` instance.
+            controller: A Ravyn 'APIController' instance or a `APIGateHandler` instance.
 
         Returns:
             bool: True or False
         """
-        super().has_permission(request, apiview)
+        super().has_permission(request, controller)
         return bool(request.user and self.is_user_authenticated(request))
 
 
@@ -296,17 +296,17 @@ class IsAdminUser(BaseAbstractUserPermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
         """
         Args:
             request: A Lilya 'Connection' instance.
-            apiview: A Ravyn 'APIController' instance or a `APIGateHandler` instance.
+            controller: A Ravyn 'APIController' instance or a `APIGateHandler` instance.
 
         Returns:
             bool: True or False
         """
-        super().has_permission(request, apiview)
+        super().has_permission(request, controller)
         return bool(request.user and self.is_user_staff(request))
 
 
@@ -318,17 +318,17 @@ class IsAuthenticatedOrReadOnly(BaseAbstractUserPermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIGateHandler",
+        controller: "APIGateHandler",
     ) -> bool:
         """
         Args:
             request: A Lilya 'Connection' instance.
-            apiview: A Ravyn 'APIController' instance or a `APIGateHandler` instance.
+            controller: A Ravyn 'APIController' instance or a `APIGateHandler` instance.
 
         Returns:
             bool: True or False
         """
-        super().has_permission(request, apiview)
+        super().has_permission(request, controller)
         return bool(
             request.method in SAFE_METHODS or request.user and self.is_user_authenticated(request)
         )

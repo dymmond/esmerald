@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 import ravyn
 from ravyn import (
-    APIView,
     Gateway,
     ImproperlyConfigured,
     SimpleAPIView,
@@ -15,6 +14,7 @@ from ravyn import (
     post,
     put,
 )
+from ravyn.routing.controllers import Controller
 from ravyn.routing.controllers.generics import (
     CreateAPIView,
     DeleteAPIView,
@@ -29,7 +29,7 @@ class TestModel(BaseModel):
     name: str
 
 
-class MyAPIView(APIView):
+class MyAPIView(Controller):
     @get()
     async def home(self) -> str:
         return "home"

@@ -143,7 +143,7 @@ Note how the `whpost` and `post` are declared inside the `webhooks` and `routes`
 
 The webhooks you define **will end up** in the **OpenAPI** schema automatically.
 
-### Using the APIView to generate webhooks
+### Using the Controller to generate webhooks
 
 Since Ravyn supports class based views, that also means you can also use them to generate
 webhooks.

@@ -44,7 +44,7 @@ default `/docs` path?
 Let's use an example for clarification.
 
 ```python
-{!> ../../../docs_src/configurations/openapi/apiview.py !}
+{!> ../../../docs_src/configurations/openapi/controller.py !}
 ```
 
 From now on the url to access `swagger`, `redoc` and `stoplight` will be:

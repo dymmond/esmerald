@@ -7,6 +7,6 @@ class IsProjectAllowed(BasePermission):
     Permission to validate if has access to a given project
     """
 
-    def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    def has_permission(self, request: "Request", controller: "APIGateHandler"):
         allow_project = request.headers.get("allow_access")
         return bool(allow_project)

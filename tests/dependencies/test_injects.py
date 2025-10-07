@@ -7,7 +7,7 @@ from ravyn.applications import Ravyn
 from ravyn.exceptions import ImproperlyConfigured
 from ravyn.injector import Factory, Inject
 from ravyn.params import Injects
-from ravyn.routing.controllers.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.routing.router import Include
@@ -160,7 +160,7 @@ def test_dependency_not_Injected_and_no_default() -> None:
 
 
 def test_dependency_Injected_on_APIView() -> None:
-    class C(APIView):
+    class C(Controller):
         path = ""
         dependencies = {"value": Inject(lambda: 13)}
 
@@ -174,7 +174,7 @@ def test_dependency_Injected_on_APIView() -> None:
 
 
 def test_dependency_Injected_on_APIView_with_Factory(get_fake_dao) -> None:
-    class C(APIView):
+    class C(Controller):
         path = ""
         dependencies = {"fake_dao": Inject(Factory(get_fake_dao))}
 
@@ -189,7 +189,7 @@ def test_dependency_Injected_on_APIView_with_Factory(get_fake_dao) -> None:
 
 
 def test_dependency_Injected_on_APIView_with_Factory_from_string() -> None:
-    class C(APIView):
+    class C(Controller):
         path = ""
         dependencies = {"fake_dao": Inject(Factory("tests.conftest.FakeDAO"))}
 

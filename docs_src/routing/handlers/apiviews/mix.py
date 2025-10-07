@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from ravyn import APIView, Ravyn, WebSocket, get, websocket
+from ravyn import Controller, Ravyn, WebSocket, get, websocket
 from ravyn.routing.gateways import Gateway
 
 
@@ -9,7 +9,7 @@ class Item(BaseModel):
     sku: str
 
 
-class MyAPIView(APIView):
+class MyAPIView(Controller):
     path = "/"
 
     @get(path="/")
