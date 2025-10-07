@@ -1,10 +1,10 @@
 from typing import List
 
 from ravyn import get, patch, post, put
-from ravyn.routing.controllers.generics import ListAPIView
+from ravyn.routing.controllers.generics import ListAPIController
 
 
-class UserAPI(ListAPIView):
+class UserAPI(ListAPIController):
     @get()
     async def get(self) -> List[str]: ...
 

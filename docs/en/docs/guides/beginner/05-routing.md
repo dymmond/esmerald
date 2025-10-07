@@ -103,7 +103,7 @@ the route to the handler.
 Controllers or Controllers are class-based views that allow you to group multiple routes under one class.
 This makes it easier to share logic and group related routes, improving the maintainability of your application.
 
-### Example: API View with Multiple Routes
+### Example: API Controller with Multiple Routes
 
 ```python
 from ravyn import Ravyn, Gateway, JSONResponse, post, get, Controller

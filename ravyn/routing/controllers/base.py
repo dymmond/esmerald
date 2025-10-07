@@ -25,21 +25,21 @@ if TYPE_CHECKING:  # pragma: no cover
     )
 
 
-class View:
+class BaseController:
     """
-    `View` class object acts as the base of all the object
+    `BaseController` class object acts as the base of all the object
     oriented views used by `Ravyn`.
 
-    The `View` contains all the available parameters that
+    The `BaseController` contains all the available parameters that
     can be applied on a global level when subclassing it.
 
     **Example**
 
     ```python
-    from ravyn.routing.views import View
+    from ravyn.routing.views import BaseController
 
 
-    class CustomView(View):
+    class CustomView(BaseController):
         ...
     ```
     """
@@ -416,7 +416,7 @@ class View:
         """A getter for the controller's route handlers that sets their parent.
 
         Returns:
-            A list containing a copy of the route handlers defined inside the View.
+            A list containing a copy of the route handlers defined inside the BaseController.
         """
         from ravyn.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
 
@@ -556,4 +556,4 @@ class View:
         return handlers
 
 
-BaseController = View
+class View(BaseController): ...

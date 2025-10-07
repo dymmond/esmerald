@@ -16,10 +16,10 @@ from ravyn import (
 )
 from ravyn.routing.controllers import Controller
 from ravyn.routing.controllers.generics import (
-    CreateAPIView,
-    DeleteAPIView,
-    ListAPIView,
-    ReadAPIView,
+    CreateAPIController,
+    DeleteAPIController,
+    ListAPIController,
+    ReadAPIController,
 )
 from ravyn.testclient import create_client
 
@@ -62,9 +62,9 @@ def test_raises_improperly_configured_on_wrong_method_in_simple_api(test_client_
                 return "home simple"
 
 
-@pytest.mark.parametrize("value", list(CreateAPIView.http_allowed_methods))
+@pytest.mark.parametrize("value", list(CreateAPIController.http_allowed_methods))
 def test_create_api_view(test_client_factory, value):
-    class MyCreateAPIView(CreateAPIView):
+    class MyCreateAPIView(CreateAPIController):
         @post()
         async def post(self) -> str:
             return f"home {value}"
@@ -82,11 +82,11 @@ def test_create_api_view(test_client_factory, value):
         assert response.json() == f"home {value}"
 
 
-@pytest.mark.parametrize("value", list(ReadAPIView.http_allowed_methods))
+@pytest.mark.parametrize("value", list(ReadAPIController.http_allowed_methods))
 def test_read_api_view(test_client_factory, value):
     getattr(ravyn, value)
 
-    class MyReadAPIView(ReadAPIView):
+    class MyReadAPIView(ReadAPIController):
         @get()
         async def get(self) -> str:
             return f"home {value}"
@@ -96,9 +96,9 @@ def test_read_api_view(test_client_factory, value):
         assert response.json() == f"home {value}"
 
 
-@pytest.mark.parametrize("value", list(DeleteAPIView.http_allowed_methods))
+@pytest.mark.parametrize("value", list(DeleteAPIController.http_allowed_methods))
 def test_delete_api_view(test_client_factory, value):
-    class MyDeleteAPIView(DeleteAPIView):
+    class MyDeleteAPIView(DeleteAPIController):
         @delete()
         async def delete(self) -> None: ...  # pragma: no cover
 
@@ -109,14 +109,14 @@ def test_delete_api_view(test_client_factory, value):
 
 # @pytest.mark.parametrize(
 #     "value",
-#     list(CreateAPIView.http_allowed_methods)
-#     + list(ReadAPIView.http_allowed_methods)
-#     + list(DeleteAPIView.http_allowed_methods),
+#     list(CreateAPIController.http_allowed_methods)
+#     + list(ReadAPIController.http_allowed_methods)
+#     + list(DeleteAPIController.http_allowed_methods),
 # )
 # def test_all_api_view(test_client_factory, value):
 #     handler = getattr(ravyn, value)
 
-#     class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+#     class GenericAPIView(CreateAPIController, ReadAPIController, DeleteAPIController):
 #         @post()
 #         async def post(self) -> str:
 #             return f"home {value}"
@@ -144,7 +144,7 @@ def test_delete_api_view(test_client_factory, value):
 
 @pytest.mark.parametrize("value,method", [("create_user", "post"), ("read_item", "get")])
 def test_all_api_view_custom(test_client_factory, value, method):
-    class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+    class GenericAPIView(CreateAPIController, ReadAPIController, DeleteAPIController):
         extra_allowed: List[str] = ["create_user", "read_item"]
 
         @post(status_code=200)
@@ -169,7 +169,7 @@ def test_all_api_view_custom(test_client_factory, value, method):
 def test_all_api_view_custom_error(test_client_factory, value):
     with pytest.raises(AssertionError):
 
-        class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+        class GenericAPIView(CreateAPIController, ReadAPIController, DeleteAPIController):
             extra_allowed: List[str] = ("create_user", "read_item")
 
 
@@ -181,7 +181,7 @@ def test_default_parameters_raise_error_on_wrong_handler(test_client_factory, va
 
     with pytest.raises(ImproperlyConfigured) as raised:
 
-        class GenericAPIView(CreateAPIView, ReadAPIView, DeleteAPIView):
+        class GenericAPIView(CreateAPIController, ReadAPIController, DeleteAPIController):
             extra_allowed: List[str] = ["create_user"]
 
             @handler("/")
@@ -197,7 +197,7 @@ def test_default_parameters_raise_error_on_wrong_handler(test_client_factory, va
 
 
 def test_list_api_view(test_client_factory):
-    class GenericAPIView(ListAPIView):
+    class GenericAPIView(ListAPIController):
         @get()
         def get(self) -> List[str]:
             return ["home", "list"]
@@ -228,7 +228,7 @@ def test_list_api_view(test_client_factory):
 def test_raises_improperly_configured_on_non_list_types(test_client_factory, return_type):
     with pytest.raises(ImproperlyConfigured):
 
-        class GenericAPIView(ListAPIView):
+        class GenericAPIView(ListAPIController):
             @get()
             def get(self) -> return_type: ...
 
@@ -249,7 +249,7 @@ def test_raises_improperly_configured_on_non_list_types(test_client_factory, ret
 def test_list_api_view_works_for_many(test_client_factory, return_type, method):
     handler = getattr(ravyn, method)
 
-    class GenericListAPIView(ListAPIView):
+    class GenericListAPIView(ListAPIController):
         extra_allowed = ["return_list"]
 
         @handler()

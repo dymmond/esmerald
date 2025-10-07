@@ -1799,8 +1799,8 @@ class Application(BaseLilya):
                     f"The webhooks should be an instances of 'WebhookGateway', got '{route.__class__.__name__}' instead."
                 )
 
-            if not is_class_and_subclass(route.handler, base.View) and not isinstance(
-                route.handler, base.View
+            if not is_class_and_subclass(route.handler, base.BaseController) and not isinstance(
+                route.handler, base.BaseController
             ):
                 if not route.handler.parent:
                     route.handler.parent = route
@@ -1809,7 +1809,7 @@ class Application(BaseLilya):
                 if not route.handler.parent:  # pragma: no cover
                     route(parent=self)  # type: ignore
 
-                handler: base.View = cast("base.View", route.handler)
+                handler: base.BaseController = cast("base.BaseController", route.handler)
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gate = gateways.WebhookGateway(

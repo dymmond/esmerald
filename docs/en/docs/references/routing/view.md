@@ -1,12 +1,12 @@
-# `View` class
+# `BaseController` class
 
-This is the reference for the `View` that contains all the parameters,
+This is the reference for the `BaseController` that contains all the parameters,
 attributes and functions.
 
-The `View` server as the base of alll object oriented views of [Ravyn](../ravyn.md) such as
+The `BaseController` server as the base of alll object oriented views of [Ravyn](../ravyn.md) such as
 [`Controller`](#ravyn.Controller), [`SimpleAPIView`](#ravyn.SimpleAPIView) and all the generics.
 
-::: ravyn.routing.controllers.View
+::: ravyn.routing.controllers.BaseController
     options:
         filters:
         - "!^__slots__"
@@ -33,7 +33,7 @@ The `View` server as the base of alll object oriented views of [Ravyn](../ravyn.
         - "!^handle"
         - "!^create_signature_model"
 
-::: ravyn.routing.controllers.generics.CreateAPIView
+::: ravyn.routing.controllers.generics.CreateAPIController
     options:
         filters:
         - "!^__slots__"
@@ -43,18 +43,7 @@ The `View` server as the base of alll object oriented views of [Ravyn](../ravyn.
         - "!^handle"
         - "!^create_signature_model"
 
-::: ravyn.routing.controllers.generics.ReadAPIView
-    options:
-        filters:
-        - "!^__slots__"
-        - "!^__is_generic__"
-        - "!^get_filtered_handler"
-        - "!^get_route_handlers"
-        - "!^handle"
-        - "!^create_signature_model"
-        - "!^is_signature_valid"
-
-::: ravyn.routing.controllers.generics.DeleteAPIView
+::: ravyn.routing.controllers.generics.ReadAPIController
     options:
         filters:
         - "!^__slots__"
@@ -65,7 +54,18 @@ The `View` server as the base of alll object oriented views of [Ravyn](../ravyn.
         - "!^create_signature_model"
         - "!^is_signature_valid"
 
-::: ravyn.routing.controllers.generics.ListAPIView
+::: ravyn.routing.controllers.generics.DeleteAPIController
+    options:
+        filters:
+        - "!^__slots__"
+        - "!^__is_generic__"
+        - "!^get_filtered_handler"
+        - "!^get_route_handlers"
+        - "!^handle"
+        - "!^create_signature_model"
+        - "!^is_signature_valid"
+
+::: ravyn.routing.controllers.generics.ListAPIController
     options:
         filters:
         - "!^__slots__"

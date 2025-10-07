@@ -1,12 +1,12 @@
 from typing import List
 
 from ravyn import get, patch, post, put
-from ravyn.routing.controllers.generics import CreateAPIView
+from ravyn.routing.controllers.generics import CreateAPIController
 
 
-class UserAPI(CreateAPIView):
+class UserAPI(CreateAPIController):
     """
-    CreateAPIView only allows the `post`, `put` and `patch`
+    CreateAPIController only allows the `post`, `put` and `patch`
     to be used by default.
     """
 

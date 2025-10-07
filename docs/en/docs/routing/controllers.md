@@ -18,7 +18,7 @@ in the Controller.
 
 ### Parameters
 
-All the parameters and defaults are available in the [View Reference](../references/routing/view.md).
+All the parameters and defaults are available in the [BaseController Reference](../references/routing/view.md).
 
 ## Controller routing
 
@@ -100,7 +100,7 @@ Basically the same availability as the [handlers](./handlers.md).
 ### Important
 
 The generics **enforce** the name matching of the functions with the handlers. That means, if
-you use a `ReadAPIView` that only allows the `get` and you use the wrong [handlers](./handlers.md)
+you use a `ReadAPIController` that only allows the `get` and you use the wrong [handlers](./handlers.md)
 on the top of it, for example a [post](./handlers.md#post), an `ImproperlyConfigured` exception
 will be raised.
 
@@ -135,14 +135,14 @@ from ravyn import SimpleAPIView
 {!> ../../../docs_src/routing/generics/simple_api_view.py !}
 ```
 
-### ReadAPIView
+### ReadAPIController
 
 Allows the `GET` verb to be used.
 
 This is how you can import.
 
 ```python
-from ravyn.routing.controllers.generics import ReadAPIView
+from ravyn.routing.controllers.generics import ReadAPIController
 ```
 
 #### Example
@@ -151,14 +151,14 @@ from ravyn.routing.controllers.generics import ReadAPIView
 {!> ../../../docs_src/routing/generics/read_api_view.py !}
 ```
 
-### CreateAPIView
+### CreateAPIController
 
 Allows the `POST`, `PUT`, `PATCH` verbs to be used.
 
 This is how you can import.
 
 ```python
-from ravyn.routing.controllers.generics import CreateAPIView
+from ravyn.routing.controllers.generics import CreateAPIController
 ```
 
 #### Example
@@ -167,14 +167,14 @@ from ravyn.routing.controllers.generics import CreateAPIView
 {!> ../../../docs_src/routing/generics/create_api_view.py !}
 ```
 
-### DeleteAPIView
+### DeleteAPIController
 
 Allows the `DELETE` verb to be used.
 
 This is how you can import.
 
 ```python
-from ravyn.routing.controllers.generics import DeleteAPIView
+from ravyn.routing.controllers.generics import DeleteAPIController
 ```
 
 #### Example
@@ -193,7 +193,7 @@ What if you want to combine them all? Of course you also can.
 
 **Combining them all is the same as using the [SimpleAPIView](#simpleapiview)**.
 
-### ListAPIView
+### ListAPIController
 
 This is a *nice to have* type of generic. In principle, **all the functions must return lists or None**
 of any kind.
@@ -205,7 +205,7 @@ Allows all the verbs be used.
 This is how you can import.
 
 ```python
-from ravyn.routing.controllers.generics import ListAPIView
+from ravyn.routing.controllers.generics import ListAPIController
 ```
 
 #### Example

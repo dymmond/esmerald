@@ -10,7 +10,7 @@ from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from ravyn.permissions.utils import is_lilya_permission, is_ravyn_permission, wrap_permission
-from ravyn.routing.controllers.base import View
+from ravyn.routing.controllers.base import BaseController
 from ravyn.routing.core.base import Dispatcher
 from ravyn.utils.helpers import clean_string
 
@@ -31,7 +31,9 @@ class BaseMiddleware:
         """
         _middleware: list["Middleware"] = []
 
-        if not is_class_and_subclass(handler, View) and not isinstance(handler, View):
+        if not is_class_and_subclass(handler, BaseController) and not isinstance(
+            handler, BaseController
+        ):
             base_middleware += handler.middleware or []
 
         for middleware in base_middleware or []:
@@ -46,13 +48,20 @@ class GatewayUtil:
     def is_class_based(
         self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]
     ) -> bool:
-        return bool(is_class_and_subclass(handler, View) or isinstance(handler, View))
+        return bool(
+            is_class_and_subclass(handler, BaseController) or isinstance(handler, BaseController)
+        )
 
-    def is_handler(self, handler: Union["HTTPHandler", "WebSocketHandler", "ParentType"]) -> bool:
-        return bool(not is_class_and_subclass(handler, View) and not isinstance(handler, View))
+    def is_handler(self, handler: Callable[..., Any]) -> bool:
+        return bool(
+            not is_class_and_subclass(handler, BaseController)
+            and not isinstance(handler, BaseController)
+        )
 
     def generate_operation_id(
-        self, name: Union[str, None], handler: Union["HTTPHandler", "WebSocketHandler", View]
+        self,
+        name: Union[str, None],
+        handler: Union["HTTPHandler", "WebSocketHandler", BaseController],
     ) -> str:
         """
         Generates an unique operation if for the handler.
@@ -140,7 +149,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         ] = None,
         *,
         handler: Annotated[
-            Union["HTTPHandler", View, Type[View], Type["HTTPHandler"]],
+            Union["HTTPHandler", BaseController, Type[BaseController], Type["HTTPHandler"]],
             Doc(
                 """
             An instance of [handler](https://ravyn.dev/routing/handlers/#http-handlers).
@@ -341,7 +350,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
     ) -> None:
         if not path:
             path = "/"
-        if is_class_and_subclass(handler, View):
+        if is_class_and_subclass(handler, BaseController):
             handler = handler(parent=self)
 
         if not is_from_router:
@@ -352,14 +361,14 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         self.methods = getattr(handler, "http_methods", None)
 
         if not name:
-            if not isinstance(handler, View):
+            if not isinstance(handler, BaseController):
                 name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
 
         else:
             route_name_list = [name]
-            if not isinstance(handler, View) and handler.name:
+            if not isinstance(handler, BaseController) and handler.name:
                 route_name_list.append(handler.name)
                 name = ":".join(route_name_list)
 
@@ -472,7 +481,7 @@ class Gateway(LilyaPath, Dispatcher, BaseMiddleware, GatewayUtil):
         )
         self.operation_id = operation_id
 
-        if self.is_handler(self.handler):  # type: ignore
+        if self.is_handler(self.handler):
             if self.operation_id or handler.operation_id is not None:
                 handler_id = self.generate_operation_id(
                     name=self.name or "",
@@ -563,7 +572,9 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
         ] = None,
         *,
         handler: Annotated[
-            Union["WebSocketHandler", View, Type[View], Type["WebSocketHandler"]],
+            Union[
+                "WebSocketHandler", BaseController, Type[BaseController], Type["WebSocketHandler"]
+            ],
             Doc(
                 """
             An instance of [handler](https://ravyn.dev/routing/handlers/#websocket-handler).
@@ -662,7 +673,7 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
     ) -> None:
         if not path:
             path = "/"
-        if is_class_and_subclass(handler, View):
+        if is_class_and_subclass(handler, BaseController):
             handler = handler(parent=self)
         if not is_from_router:
             self.path = clean_path(path + handler.path)
@@ -670,14 +681,14 @@ class WebSocketGateway(LilyaWebSocketPath, Dispatcher, BaseMiddleware):
             self.path = clean_path(path)
 
         if not name:
-            if not isinstance(handler, View):
+            if not isinstance(handler, BaseController):
                 name = handler.name or clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
 
         else:
             route_name_list = [name]
-            if not isinstance(handler, View) and handler.name:
+            if not isinstance(handler, BaseController) and handler.name:
                 route_name_list.append(handler.name)
                 name = ":".join(route_name_list)
 
@@ -827,7 +838,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
         self,
         *,
         handler: Annotated[
-            Union["WebhookHandler", View, Type[View], Type["WebhookHandler"]],
+            Union["WebhookHandler", BaseController, Type[BaseController], Type["WebhookHandler"]],
             Doc(
                 """
                 An instance of [handler](https://ravyn.dev/routing/webhooks/#handlers).
@@ -922,14 +933,14 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
             ),
         ] = None,
     ) -> None:
-        if is_class_and_subclass(handler, View):
+        if is_class_and_subclass(handler, BaseController):
             handler = handler(parent=self)  # type: ignore
 
         self.path = handler.path
         self.methods = getattr(handler, "http_methods", None)
 
         if not name:
-            if not isinstance(handler, View):
+            if not isinstance(handler, BaseController):
                 name = clean_string(handler.fn.__name__)
             else:
                 name = clean_string(handler.__class__.__name__)
@@ -956,7 +967,7 @@ class WebhookGateway(LilyaPath, Dispatcher, GatewayUtil):
             self.path
         )
 
-        if self.is_handler(self.handler):  # type: ignore
+        if self.is_handler(self.handler):
             self.handler.name = self.name
 
             if not handler.operation_id:

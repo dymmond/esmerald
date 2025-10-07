@@ -62,7 +62,7 @@ from ravyn.params import Form
 from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.requests import Request
 from ravyn.responses import Response
-from ravyn.routing.controllers.base import View
+from ravyn.routing.controllers.base import BaseController
 from ravyn.routing.core._internal import OpenAPIFieldInfoMixin
 from ravyn.routing.core.base import Dispatcher
 from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
@@ -573,9 +573,9 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 ...
             elif isinstance(route, HTTPHandler):
                 route = Gateway(handler=route)
-            elif is_class_and_subclass(route, View):
+            elif is_class_and_subclass(route, BaseController):
                 route = Gateway(
-                    handler=cast(View, route),
+                    handler=cast(BaseController, route),
                     permissions=(
                         route.permissions
                         if not self.is_member_descriptor(route.permissions)
@@ -864,8 +864,8 @@ class BaseRouter(Dispatcher, LilyaRouter):
             if not route.handler.parent:  # pragma: no cover
                 route.handler.parent = route
 
-            if not is_class_and_subclass(route.handler, View) and not isinstance(
-                route.handler, View
+            if not is_class_and_subclass(route.handler, BaseController) and not isinstance(
+                route.handler, BaseController
             ):
                 route.handler.create_signature_model()
 
@@ -889,8 +889,8 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
         if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
-            if not is_class_and_subclass(value.handler, View) and not isinstance(
-                value.handler, View
+            if not is_class_and_subclass(value.handler, BaseController) and not isinstance(
+                value.handler, BaseController
             ):
                 if not value.handler.parent:
                     value.handler.parent = value
@@ -898,7 +898,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 if not value.handler.parent:  # pragma: no cover
                     value(parent=self)  # type: ignore
 
-                handler: View = cast("View", value.handler)
+                handler: BaseController = cast("BaseController", value.handler)
                 route_handlers = handler.get_routes(
                     path=value.path,
                     middleware=value.middleware,
@@ -1994,7 +1994,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
         from ravyn import Router, Controller, Gateway, get
 
 
-        class View(Controller):
+        class BaseController(Controller):
             path = "/"
 
             @get(status_code=status_code)
@@ -3369,7 +3369,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         kwargs = await self.get_kwargs(websocket=websocket)
 
         fn = self.fn
-        if isinstance(self.parent, View):
+        if isinstance(self.parent, BaseController):
             await fn(self.parent, **kwargs)
         else:
             await fn(**kwargs)
@@ -3949,7 +3949,9 @@ class Include(Dispatcher, LilyaInclude):
                 routing.append(route)
                 continue
 
-            if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
+            if is_class_and_subclass(route.handler, BaseController) or isinstance(
+                route.handler, BaseController
+            ):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)  # type: ignore
 

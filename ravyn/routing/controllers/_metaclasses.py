@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Set, Tuple, Type, cast
 
 if TYPE_CHECKING:
     from ravyn import SimpleAPIView
-    from ravyn.routing.controllers.generics import ListAPIView
+    from ravyn.routing.controllers.generics import ListAPIController
 
 
 class SimpleAPIMeta(type):
@@ -71,7 +71,7 @@ class ListAPIMeta(SimpleAPIMeta):
     """
 
     def __new__(cls, name: str, bases: Tuple, attrs: Any) -> Any:
-        view: "ListAPIView" = super().__new__(cls, name, bases, attrs)
+        view: "ListAPIController" = super().__new__(cls, name, bases, attrs)
 
         if not hasattr(view, "__filtered_handlers__"):
             return view

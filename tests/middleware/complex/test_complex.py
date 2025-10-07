@@ -44,7 +44,7 @@ class CustomJWTMidleware(JWTAuthMiddleware):
 
 class UserView(Controller):
     """
-    User management API View
+    User management API BaseController
     """
 
     path = "/users"
@@ -129,7 +129,7 @@ def test_can_access_endpoint_with_include_nested(test_app_client_factory):
 
 class AnotherUserView(Controller):
     """
-    User management API View
+    User management API BaseController
     """
 
     path = "/users"
