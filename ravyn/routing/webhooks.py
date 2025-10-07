@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Optional, Sequence, Union, cast
+from functools import wraps
+from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, TypeVar, Union
 
 from lilya import status
 from typing_extensions import Annotated, Doc
@@ -22,6 +23,7 @@ from ravyn.utils.enums import HttpMethod, MediaType
 if TYPE_CHECKING:  # pragma: no cover
     from ravyn.openapi.schemas.v3_1_0 import SecurityScheme
 
+F = TypeVar("F", bound=Callable[..., Any])
 
 SUCCESSFUL_RESPONSE = "Successful response"
 
@@ -377,7 +379,7 @@ def whget(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `get` and
     all of its operatations.
@@ -394,7 +396,11 @@ def whget(
     ```
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.GET],
@@ -421,12 +427,12 @@ def whget(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.GET.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whhead(
@@ -657,13 +663,17 @@ def whhead(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `head` and
     all of its operatations.
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.HEAD],
@@ -690,12 +700,12 @@ def whhead(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.HEAD.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whpost(
@@ -1054,7 +1064,7 @@ def whpost(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `post` and
     all of its operatations.
@@ -1071,7 +1081,11 @@ def whpost(
     ```
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             status_code=status_code,
@@ -1098,12 +1112,12 @@ def whpost(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.POST.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whput(
@@ -1457,7 +1471,7 @@ def whput(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `put` and
     all of its operatations.
@@ -1474,7 +1488,11 @@ def whput(
     ```
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.PUT],
@@ -1501,12 +1519,12 @@ def whput(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.PUT.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whpatch(
@@ -1860,7 +1878,7 @@ def whpatch(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `path` and
     all of its operatations.
@@ -1877,7 +1895,11 @@ def whpatch(
     ```
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.PATCH],
@@ -1904,12 +1926,12 @@ def whpatch(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.PATCH.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whdelete(
@@ -2263,7 +2285,7 @@ def whdelete(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `delete` and
     all of its operatations.
@@ -2280,7 +2302,11 @@ def whdelete(
     ```
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.DELETE],
@@ -2307,12 +2333,12 @@ def whdelete(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.DELETE.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whoptions(
@@ -2543,13 +2569,17 @@ def whoptions(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `options` and
     all of its operatations.
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.OPTIONS],
@@ -2576,12 +2606,12 @@ def whoptions(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whtrace(
@@ -2812,14 +2842,18 @@ def whtrace(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `trace` and
     all of its operatations.
     ```
     """
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=[HttpMethod.TRACE],
@@ -2846,12 +2880,12 @@ def whtrace(
             responses=responses,
         )
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.TRACE.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
 
 
 def whroute(
@@ -3224,7 +3258,7 @@ def whroute(
             """
         ),
     ] = None,
-) -> WebhookHandler:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for allowing multiple HTTP verbs in one go
     all of its operatations.
@@ -3256,7 +3290,11 @@ def whroute(
     if not status_code:  # pragma: no cover
         status_code = status.HTTP_200_OK
 
-    def wrapper(func: Any) -> WebhookHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
+        @wraps(func)
+        def wrapped(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+
         handler = WebhookHandler(
             path=path,
             methods=methods,
@@ -3284,9 +3322,9 @@ def whroute(
         )
 
         handler.fn = func
-        handler.handler = func
+        handler.handler = wrapped
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
         return handler
 
-    return cast(WebhookHandler, wrapper)
+    return wrapper
