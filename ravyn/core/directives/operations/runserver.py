@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 import click
 from rich.tree import Tree
@@ -9,13 +9,7 @@ from sayer import Option, command, error
 
 from ravyn.core.directives.env import DirectiveEnv
 from ravyn.core.directives.exceptions import DirectiveError
-from ravyn.core.terminal import Terminal
 from ravyn.core.terminal.utils import get_log_config, get_ui_toolkit
-
-if TYPE_CHECKING:
-    pass
-
-terminal = Terminal()
 
 
 def get_app_tree(module_paths: list[Path], discovery_file: str) -> Tree:
@@ -102,7 +96,7 @@ def runserver(
 
     with get_ui_toolkit() as toolkit:
         toolkit.print(
-            "[gray50]Identifying package structures based on directories with [green]__init__.py[/green] files[/gray50]"
+            "[gray50]Identifying package structures based on directories with [pink]__init__.py[/pink] files[/gray50]"
         )
 
         if getattr(env, "app", None) is None:
@@ -131,8 +125,8 @@ def runserver(
         if not server_environment:
             server_environment = "development"
 
-        toolkit.print_title(f"[green]Starting {server_environment} server[/green]", tag="Ravyn")
-        toolkit.print(f"Importing from [green]{env.command_path}[/green]", tag="Ravyn")
+        toolkit.print_title(f"[pink]Starting {server_environment} server[/pink]", tag="Ravyn")
+        toolkit.print(f"Importing from [pink]{env.command_path}[/pink]", tag="Ravyn")
         toolkit.print(f"Importing module '{env.path}'", tag="Ravyn")
         toolkit.print_line()
 
@@ -145,7 +139,7 @@ def runserver(
             toolkit.print_line()
 
             toolkit.print(
-                "[green]The [bold]Ravyn[/bold] object is imported using the following code:[/green]",
+                "[pink]The [bold]Ravyn[/bold] object is imported using the following code:[/pink]",
                 tag="code",
             )
             toolkit.print(
@@ -172,14 +166,14 @@ def runserver(
         if os.environ.get("RAVYN_SETTINGS_MODULE"):
             custom_message = f"'{os.environ['RAVYN_SETTINGS_MODULE']}'"
             toolkit.print(
-                f"Using custom settings module: [bold][green]{custom_message}[/green][/bold]",
+                f"Using custom settings module: [bold][pink]{custom_message}[/pink][/bold]",
                 tag="settings",
             )
         else:
             from ravyn.conf import settings as ravyn_settings
 
             toolkit.print(
-                f"Using default settings module: [bold][green]{ravyn_settings.__class__.__module__}.Settings[/green][/bold]",
+                f"Using default settings module: [bold][pink]{ravyn_settings.__class__.__module__}.Settings[/pink][/bold]",
                 tag="settings",
             )
 
