@@ -12,7 +12,7 @@ from ravyn import Gateway, Router
 from ravyn.core.directives.constants import RAVYN_DISCOVER_APP
 from ravyn.core.directives.env import DirectiveEnv
 from ravyn.core.terminal import OutputColour
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers.base import BaseController
 from ravyn.utils.enums import HttpMethod
 
 if TYPE_CHECKING:
@@ -101,7 +101,7 @@ def get_routes_table(app: Optional[Union["Ravyn", "ChildRavyn"]], table: Table) 
                     continue
 
                 # Type
-                if not isinstance(route.handler, View):
+                if not isinstance(route.handler, BaseController):
                     if inspect.iscoroutinefunction(route.handler.fn):
                         fn_type = "async"
                     else:

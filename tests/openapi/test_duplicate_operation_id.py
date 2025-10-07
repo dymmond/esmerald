@@ -1,18 +1,19 @@
 from __future__ import annotations
 
-from ravyn import APIView, Gateway, Include, post
+from ravyn import Gateway, Include, post
+from ravyn.routing.controllers import Controller
 from ravyn.testclient import create_client
 from tests.settings import TestSettings
 
 
-class UserAPIView(APIView):
+class UserAPIView(Controller):
     tags: list[str] = ["User"]
 
     @post(path="/")
     async def create(self) -> str: ...
 
 
-class ProfileAPIView(APIView):
+class ProfileAPIView(Controller):
     tags: list[str] = ["Profile"]
 
     @post(path="/")

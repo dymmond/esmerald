@@ -404,10 +404,10 @@ app = Ravyn(routes=[
 
 Good design is always encouraged and Ravyn allows complex routing on any level.
 
-### The handlers (views)
+### The handlers (controllers)
 
 ```python title="myapp/accounts/controllers.py"
-from ravyn import get, post, put, status, websocket, APIView, Request, JSONResponse, Response, WebSocket
+from ravyn import get, post, put, status, websocket, Controller, Request, JSONResponse, Response, WebSocket
 from pydantic import BaseModel
 
 
@@ -445,7 +445,7 @@ async def world_socket(socket: Websocket) -> None:
     await socket.close()
 
 
-class World(APIView):
+class World(Controller):
 
     @get(path='/{url}')
     async def home(self, request: Request, url: str) -> Response:

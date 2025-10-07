@@ -14,7 +14,7 @@ from ravyn.exceptions import (
 )
 from ravyn.requests import Request
 from ravyn.responses import Response
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.routing.router import Include
@@ -27,7 +27,7 @@ from ravyn.utils.enums import MediaType
     ["exc_to_raise", "expected_layer"],
     [
         (ValidationErrorException, "router"),
-        (InternalServerError, "apiview"),
+        (InternalServerError, "controller"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
     ],
@@ -50,11 +50,11 @@ def test_exception_handling(exc_to_raise: Exception, expected_layer: str) -> Non
 
         return handler
 
-    class ControllerWithHandler(APIView):
+    class ControllerWithHandler(Controller):
         path = "/test"
         exception_handlers = {
-            InternalServerError: create_named_handler("apiview", InternalServerError),
-            ServiceUnavailable: create_named_handler("apiview", ServiceUnavailable),
+            InternalServerError: create_named_handler("controller", InternalServerError),
+            ServiceUnavailable: create_named_handler("controller", ServiceUnavailable),
         }
 
         @get(
@@ -82,7 +82,7 @@ def test_exception_handling(exc_to_raise: Exception, expected_layer: str) -> Non
     ["exc_to_raise", "expected_layer"],
     [
         (ValidationErrorException, "router"),
-        (InternalServerError, "apiview"),
+        (InternalServerError, "controller"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
     ],
@@ -105,11 +105,11 @@ def test_exception_handling_with_include(exc_to_raise: Exception, expected_layer
 
         return handler
 
-    class ControllerWithHandler(APIView):
+    class ControllerWithHandler(Controller):
         path = "/test"
         exception_handlers = {
-            InternalServerError: create_named_handler("apiview", InternalServerError),
-            ServiceUnavailable: create_named_handler("apiview", ServiceUnavailable),
+            InternalServerError: create_named_handler("controller", InternalServerError),
+            ServiceUnavailable: create_named_handler("controller", ServiceUnavailable),
         }
 
         @get(
@@ -137,7 +137,7 @@ def test_exception_handling_with_include(exc_to_raise: Exception, expected_layer
     ["exc_to_raise", "expected_layer"],
     [
         (ValidationErrorException, "router"),
-        (InternalServerError, "apiview"),
+        (InternalServerError, "controller"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
     ],
@@ -162,11 +162,11 @@ def test_exception_handling_with_nested_include(
 
         return handler
 
-    class ControllerWithHandler(APIView):
+    class ControllerWithHandler(Controller):
         path = "/test"
         exception_handlers = {
-            InternalServerError: create_named_handler("apiview", InternalServerError),
-            ServiceUnavailable: create_named_handler("apiview", ServiceUnavailable),
+            InternalServerError: create_named_handler("controller", InternalServerError),
+            ServiceUnavailable: create_named_handler("controller", ServiceUnavailable),
         }
 
         @get(
@@ -248,7 +248,7 @@ def test_exception_handling_with_nested_include(
     [
         (ValidationErrorException, "router"),
         (NotAuthorized, "include"),
-        (InternalServerError, "apiview"),
+        (InternalServerError, "controller"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
     ],
@@ -274,11 +274,11 @@ def test_exception_handling_with_include_exception_handler(
 
         return handler
 
-    class ControllerWithHandler(APIView):
+    class ControllerWithHandler(Controller):
         path = "/test"
         exception_handlers = {
-            InternalServerError: create_named_handler("apiview", InternalServerError),
-            ServiceUnavailable: create_named_handler("apiview", ServiceUnavailable),
+            InternalServerError: create_named_handler("controller", InternalServerError),
+            ServiceUnavailable: create_named_handler("controller", ServiceUnavailable),
         }
 
         @get(
@@ -313,7 +313,7 @@ def test_exception_handling_with_include_exception_handler(
         (ValidationErrorException, "router"),
         (NotAuthorized, "include"),
         (RavynAPIException, "gateway"),
-        (InternalServerError, "apiview"),
+        (InternalServerError, "controller"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
     ],
@@ -338,11 +338,11 @@ def test_exception_handling_with_gateway_exception_handler(
 
         return handler
 
-    class ControllerWithHandler(APIView):
+    class ControllerWithHandler(Controller):
         path = "/test"
         exception_handlers = {
-            InternalServerError: create_named_handler("apiview", InternalServerError),
-            ServiceUnavailable: create_named_handler("apiview", ServiceUnavailable),
+            InternalServerError: create_named_handler("controller", InternalServerError),
+            ServiceUnavailable: create_named_handler("controller", ServiceUnavailable),
         }
 
         @get(
@@ -382,7 +382,7 @@ def test_exception_handling_with_gateway_exception_handler(
 @pytest.mark.parametrize(
     ["exc_to_raise", "expected_layer"],
     [
-        (InternalServerError, "apiview"),
+        (InternalServerError, "controller"),
         (ServiceUnavailable, "handler"),
         (NotFound, "handler"),
     ],
@@ -405,11 +405,11 @@ def test_exception_handling_with_child_ravyn(exc_to_raise: Exception, expected_l
 
         return handler
 
-    class ControllerWithHandler(APIView):
+    class ControllerWithHandler(Controller):
         path = "/test"
         exception_handlers = {
-            InternalServerError: create_named_handler("apiview", InternalServerError),
-            ServiceUnavailable: create_named_handler("apiview", ServiceUnavailable),
+            InternalServerError: create_named_handler("controller", InternalServerError),
+            ServiceUnavailable: create_named_handler("controller", ServiceUnavailable),
         }
 
         @get(

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 from ravyn import (
-    APIView,
+    Controller,
     ChildRavyn,
     Ravyn,
     Gateway,
@@ -33,7 +33,7 @@ class User(BaseModel):
     password: str
 
 
-class UserApiView(APIView):
+class UserApiView(Controller):
     path = "/users"
 
     @post("/create")

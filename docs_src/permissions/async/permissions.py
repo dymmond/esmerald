@@ -22,6 +22,6 @@ class IsUserAdmin(BaseAbstractUserPermission):
         """
         ...
 
-    async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
-        super().has_permission(request, apiview)
+    async def has_permission(self, request: "Request", controller: "APIGateHandler"):
+        super().has_permission(request, controller)
         return bool(request.user and self.is_user_staff(request))

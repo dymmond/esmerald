@@ -29,7 +29,7 @@ Each scope is a string (without spaces) used to specify security permissions, su
 !!! Info
     In OAuth2, a "scope" is simply a string representing a specific permission. The format, such as including characters like `:` or even being a URL, is entirely implementation-specific. From the OAuth2 perspective, these are treated as plain strings without inherent meaning outside their defined context.
 
-## Global View
+## Global BaseController
 
 We’ll quickly review the updates in the main [OAuth2 with Password, Bearer with JWT tokens](../oauth-jwt.md){.internal-link target=_blank}, now enhanced with OAuth2 scopes:
 

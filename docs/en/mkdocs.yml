@@ -109,7 +109,7 @@ nav:
     - routing/router.md
     - routing/routes.md
     - routing/handlers.md
-    - routing/apiview.md
+    - routing/controllers.md
     - routing/webhooks.md
   - interceptors.md
   - Permissions:

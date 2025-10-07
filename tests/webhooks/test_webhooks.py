@@ -1,7 +1,6 @@
 import pytest
 
 from ravyn import (
-    APIView,
     Gateway,
     ImproperlyConfigured,
     WebhookGateway,
@@ -15,6 +14,7 @@ from ravyn import (
     whroute,
     whtrace,
 )
+from ravyn.routing.controllers import Controller
 from ravyn.testclient import create_client
 
 
@@ -28,7 +28,7 @@ async def event() -> None:
     """"""
 
 
-class MyView(APIView):
+class MyView(Controller):
     @whpost("new-event")
     async def new_event(self) -> None:
         """"""

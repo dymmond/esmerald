@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from ravyn import (
-    APIView,
+    Controller,
     JSONResponse,
     Request,
     Response,
@@ -44,7 +44,7 @@ async def world_socket(socket: WebSocket) -> None:
     await socket.close()
 
 
-class World(APIView):
+class World(Controller):
     @get(path="/{url}")
     async def home(self, request: Request, url: str) -> Response:
         return Response(f"URL: {url}")

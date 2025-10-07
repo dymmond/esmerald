@@ -6,7 +6,7 @@ async def home() -> str:
     return "home"
 
 
-child = ChildRavyn(routes=[Gateway(handler=home, name="my-apiview")])
+child = ChildRavyn(routes=[Gateway(handler=home, name="my-controller")])
 
 app = Ravyn()
 app.add_child_ravyn(

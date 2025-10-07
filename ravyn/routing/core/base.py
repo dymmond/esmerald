@@ -43,7 +43,7 @@ from ravyn.permissions import BasePermission
 from ravyn.permissions.utils import continue_or_raise_permission_exception
 from ravyn.requests import Request
 from ravyn.responses.base import JSONResponse, Response
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers.base import BaseController
 from ravyn.typing import AnyCallable, Void
 from ravyn.utils.constants import DATA, PAYLOAD
 from ravyn.utils.helpers import is_async_callable, is_class_and_subclass
@@ -236,7 +236,7 @@ class BaseResponseHandler:
         else:
             parsed_kwargs = {}
 
-        if isinstance(route.parent, View):
+        if isinstance(route.parent, BaseController):
             fn = partial(route.fn, route.parent, **parsed_kwargs)
         else:
             fn = partial(route.fn, **parsed_kwargs)

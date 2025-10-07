@@ -12,7 +12,7 @@ from accounts.models import User
 from accounts.v1.schemas import LoginIn, UserIn, UserOut
 from pydantic import BaseModel, EmailStr
 
-from ravyn import APIView, JSONResponse, get, post, status
+from ravyn import Controller, JSONResponse, get, post, status
 from ravyn.openapi.datastructures import OpenAPIResponse
 from ravyn.openapi.security.http import Bearer
 
@@ -63,7 +63,7 @@ class ErrorDetail(BaseModel):
     detail: str
 
 
-class UserAPIView(APIView):
+class UserAPIView(Controller):
     tags: List[str] = ["User and Access"]
     security: List[Any] = [Bearer]
 

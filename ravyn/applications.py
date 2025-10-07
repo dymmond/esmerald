@@ -64,7 +64,7 @@ from ravyn.permissions.types import Permission
 from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.pluggables import Extension, ExtensionDict, Pluggable
 from ravyn.routing import gateways
-from ravyn.routing.apis import base
+from ravyn.routing.controllers import base
 from ravyn.routing.router import (
     HTTPHandler,
     Include,
@@ -575,7 +575,7 @@ class Application(BaseLilya):
                     '''
                     Permissions for admin
                     '''
-                    async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+                    async def has_permission(self, request: "Request", controller: "APIGateHandler"):
                         is_admin = request.headers.get("admin", False)
                         return bool(is_admin)
 
@@ -1497,55 +1497,6 @@ class Application(BaseLilya):
                 """
             ),
         ] = None,
-        pluggables: Annotated[
-            Optional[dict[str, Union[Extension, Pluggable, type[Extension], str]]],
-            Doc(
-                """
-                THIS PARAMETER IS DEPRECATED USE extensions INSTEAD
-
-                A `list` of global extensions from objects inheriting from
-                `ravyn.interceptors.interceptor.RavynInterceptor`.
-
-                Read more about how to implement the [Plugables](https://ravyn.dev/pluggables/) in Ravyn and to leverage them.
-
-                **Example**
-
-                ```python
-                from typing import Optional
-
-                from loguru import logger
-                from pydantic import BaseModel
-
-                from ravyn import Ravyn, Extension, Pluggable
-                from ravyn.types import DictAny
-
-
-                class PluggableConfig(BaseModel):
-                    name: str
-
-
-                class MyExtension(Extension):
-                    def __init__(
-                        self, app: Optional["Ravyn"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
-                    ):
-                        super().__init__(app, **kwargs)
-                        self.app = app
-
-                    def extend(self, config: PluggableConfig) -> None:
-                        logger.success(f"Successfully passed a config {config.name}")
-
-
-                my_config = PluggableConfig(name="my extension")
-                pluggable = Pluggable(MyExtension, config=my_config)
-
-
-                app = Ravyn(
-                    routes=[], extensions={"my-extension": pluggable}
-                )
-                ```
-                """
-            ),
-        ] = None,
         parent: Annotated[
             Optional[Union["ParentType", "Ravyn", "ChildRavyn"]],
             Doc(
@@ -1774,27 +1725,9 @@ class Application(BaseLilya):
 
         # load extensions nearly last so everythings is initialized
         _extensions: Any = self.load_settings_value("extensions", extensions)
-        if not _extensions:
-            _extensions = self.load_settings_value("pluggables", pluggables)
-            if _extensions:
-                warnings.warn(
-                    "The `pluggables` parameter/setting is deprecated use `extensions` instead",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-
         self.extensions = ExtensionDict(_extensions, app=cast(Ravyn, self))
         self.extensions.extend()
         self._configure()
-
-    @property
-    def pluggables(self) -> ExtensionDict:
-        warnings.warn(
-            "The `pluggables` attribute is deprecated use `extensions` instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.extensions
 
     def _register_application_encoders(self) -> None:
         """
@@ -1866,8 +1799,8 @@ class Application(BaseLilya):
                     f"The webhooks should be an instances of 'WebhookGateway', got '{route.__class__.__name__}' instead."
                 )
 
-            if not is_class_and_subclass(route.handler, base.View) and not isinstance(
-                route.handler, base.View
+            if not is_class_and_subclass(route.handler, base.BaseController) and not isinstance(
+                route.handler, base.BaseController
             ):
                 if not route.handler.parent:
                     route.handler.parent = route
@@ -1876,7 +1809,7 @@ class Application(BaseLilya):
                 if not route.handler.parent:  # pragma: no cover
                     route(parent=self)  # type: ignore
 
-                handler: base.View = cast("base.View", route.handler)
+                handler: base.BaseController = cast("base.BaseController", route.handler)
                 route_handlers = handler.get_route_handlers()
                 for route_handler in route_handlers:
                     gate = gateways.WebhookGateway(
@@ -2045,22 +1978,22 @@ class Application(BaseLilya):
             Union["gateways.Gateway", "gateways.WebSocketGateway"],
             Doc(
                 """
-                The `APIView` or similar to be added.
+                The `Controller` or similar to be added.
                 """
             ),
         ],
     ) -> None:
         """
-        Adds an [APIView](https://ravyn.dev/routing/apiview/) or related
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
         to the application routing.
 
         **Example**
 
         ```python
-        from ravyn import Ravyn, APIView, Gateway, get
+        from ravyn import Ravyn, Controller, Gateway, get
 
 
-        class View(APIView):
+        class View(Controller):
             path = "/"
 
             @get(status_code=status_code)
@@ -2074,7 +2007,50 @@ class Application(BaseLilya):
         app.add_apiview(value=gateway)
         ```
         """
-        self.router.add_apiview(value=value)
+        warnings.warn(
+            "add_apiview is deprecated and will be removed in the release 0.4.0. "
+            "Please use add_controller instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.add_controller(value=value)
+
+    def add_controller(
+        self,
+        value: Annotated[
+            Union["gateways.Gateway", "gateways.WebSocketGateway"],
+            Doc(
+                """
+                The `Controller` or similar to be added.
+                """
+            ),
+        ],
+    ) -> None:
+        """
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
+        to the application routing.
+
+        **Example**
+
+        ```python
+        from ravyn import Ravyn, Controller, Gateway, get
+
+
+        class View(Controller):
+            path = "/"
+
+            @get(status_code=status_code)
+            async def hello(self) -> str:
+                return "Hello, World!"
+
+
+        gateway = Gateway(handler=View)
+
+        app = Ravyn()
+        app.add_controller(value=gateway)
+        ```
+        """
+        self.router.add_controller(value=value)
 
     def add_route(
         self,
@@ -2746,16 +2722,6 @@ class Application(BaseLilya):
         ```
         """
         self.extensions[name] = extension
-
-    def add_pluggable(
-        self, name: str, extension: Union[Extension, Pluggable, type[Extension]]
-    ) -> None:
-        warnings.warn(
-            "The `add_pluggable` method is deprecated use `add_extension` instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.add_extension(name, extension)
 
     @property
     def settings(self) -> "RavynSettings":

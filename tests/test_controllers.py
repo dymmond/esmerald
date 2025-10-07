@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from ravyn.encoders import MsgSpecEncoder, PydanticEncoder
 from ravyn.responses import Response
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway, WebSocketGateway
 from ravyn.routing.handlers import delete, get, patch, post, put, websocket
 from ravyn.routing.router import Include
@@ -18,7 +18,7 @@ from tests.models import Individual, IndividualFactory
 encoders = [MsgSpecEncoder, PydanticEncoder]
 
 
-class MyView(APIView):
+class MyView(Controller):
     @get("/event")
     async def event(self) -> None:
         """"""
@@ -64,7 +64,7 @@ def test_controller_http_method(
 ) -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @http_verb(path="/")
@@ -113,7 +113,7 @@ def test_controller_http_method_with_include(
 ) -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @http_verb(path="/")
@@ -164,7 +164,7 @@ def test_controller_http_method_with_nested_include(
 ) -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @http_verb(path="/")
@@ -220,7 +220,7 @@ def test_controller_http_method_with_super_nested_include(
 ) -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @http_verb(path="/")
@@ -303,7 +303,7 @@ def test_controller_http_method_with_super_nested_include(
 def test_controller_with_websocket_handler() -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @get(path="/")
@@ -327,7 +327,7 @@ def test_controller_with_websocket_handler() -> None:
 def test_controller_with_include_websocket_handler() -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @get(path="/")
@@ -353,7 +353,7 @@ def test_controller_with_include_websocket_handler() -> None:
 def test_controller_with_nested_include_websocket_handler() -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @get(path="/")
@@ -384,7 +384,7 @@ def test_controller_with_nested_include_websocket_handler() -> None:
 def test_controller_with_super_nested_include_websocket_handler() -> None:
     test_path = "/person"
 
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = test_path
 
         @get(path="/")
@@ -473,7 +473,7 @@ def test_controller_with_super_nested_include_websocket_handler() -> None:
 
 
 def test_api_view_path_parameter():
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = "/customer/{name}"
 
         @get(path="/")
@@ -503,7 +503,7 @@ def test_api_view_path_parameter():
 
 
 def test_controller_with_websocket_gateway() -> None:
-    class MyAPIView(APIView):
+    class MyAPIView(Controller):
         path = "/"
 
         @websocket(path="/socket")

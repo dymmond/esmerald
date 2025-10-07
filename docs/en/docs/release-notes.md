@@ -5,11 +5,49 @@ hide:
 
 # Release Notes
 
-## 0.1.1
+## 0.2.0
+
+### Added
+
+- `add_controller` alternative to `add_apiview`.
 
 ### Changed
 
 - Update `runserver` directive to reflect the new Ravyn colour palette.
+- Webhooks are now inside `routing.webhooks` and the handlers redundancy was removed.
+- Routing apis is now called `controllers`. For importing reasons, this is the update:
+
+    **Before
+
+    ```python
+    from ravyn.routing.apis
+    ```
+
+    **After**
+
+    ```python
+    from ravyn.routing.controllers
+    ```
+- `has_permission` has changed signature.
+
+    **Before
+
+    ```python
+    def has_permission(request, apiview)
+    ```
+
+    **After**
+
+    ```python
+    def has_permission(request, controller)
+    ```
+- The `routing/apiview` URL in the docs is now pointing to `routing/controllers`.
+
+### Removed
+
+- `Ravyn` when it was Esmerald, had the `plugglables` as parameter but since the version `3.5.0`
+of Esmerald, now Ravyn, that was considered deprecated and instead the `extensions` was added. This
+version now removes it for good from the internals.
 
 ---
 
@@ -1473,11 +1511,11 @@ the tags are appended to the final handler. This allows inheriting from existing
 -  Allow importing from from string into `Factory`. [#179](https://github.com/dymmond/esmerald/pull/179) by [@tarsil](https://github.com/tarsil).
 -  New security objects for OpenAPI documentation.
 -  New [OpenAPI](./openapi.md) documentation describing the ways of using it and what is available with examples.
--  New [SimpleAPIView](./routing/apiview.md#simpleapiview) supported.
--  New [CreateAPIView](./routing/apiview.md#createapiview) supported.
--  New [ReadAPIView](./routing/apiview.md#readapiview) supported.
--  New [DeleteAPIView](./routing/apiview.md#deleteapiview) supported.
--  New [ListAPIView](./routing/apiview.md#listapiview) supported.
+-  New [SimpleAPIView](./routing/controller.md#simpleapiview) supported.
+-  New [CreateAPIView](./routing/controller.md#createapiview) supported.
+-  New [ReadAPIView](./routing/controller.md#readapiview) supported.
+-  New [DeleteAPIView](./routing/controller.md#deleteapiview) supported.
+-  New [ListAPIView](./routing/controller.md#listapiview) supported.
 
 ### Fixed
 

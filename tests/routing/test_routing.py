@@ -15,7 +15,7 @@ from ravyn.permissions import AllowAny, DenyAll
 from ravyn.requests import Request
 from ravyn.responses import Response
 from ravyn.responses.encoders import UJSONResponse
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway, WebSocketGateway
 from ravyn.routing.handlers import get, post, put, route, websocket
 from ravyn.routing.router import Include, Router
@@ -140,7 +140,7 @@ async def websocket_endpoint_include(socket: WebSocket) -> None:
     await socket.close()
 
 
-class MyAPIView(APIView):
+class MyAPIView(Controller):
     path = "test"
 
     @get(path="/")
@@ -152,7 +152,7 @@ class MyAPIView(APIView):
         return UJSONResponse({"myapiview": name})
 
 
-class AnotherMyAPIView(APIView):
+class AnotherMyAPIView(Controller):
     path = "test"
 
     @get(path="/")
@@ -164,7 +164,7 @@ class AnotherMyAPIView(APIView):
         return UJSONResponse({"myapiview": name, "param": param})
 
 
-class TestMyAPIView(APIView):
+class TestMyAPIView(Controller):
     __test__ = False
     path = "fluid/{name}"
 
@@ -185,7 +185,7 @@ class TestMyAPIView(APIView):
 
 routes = [
     Gateway("/", handler=homepage, name="homepage"),
-    Gateway("/apiview", handler=MyAPIView, name="testapiview"),
+    Gateway("/controller", handler=MyAPIView, name="testapiview"),
     Include("/apinested", routes=[Gateway("/api", handler=MyAPIView)]),
     Include(
         "/apinest",
@@ -357,7 +357,7 @@ def test_router_permissions(test_client_factory):
 )
 def test_router_apiview(test_client_factory):
     with create_client(routes=routes) as client:
-        response = client.get("/apiview/test")
+        response = client.get("/controller/test")
         assert response.status_code == 200
         assert response.json() == {"myapiview": "fluid"}
 

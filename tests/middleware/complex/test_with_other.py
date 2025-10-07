@@ -6,11 +6,12 @@ from edgy.exceptions import ObjectNotFound
 from jwt.exceptions import PyJWTError
 from lilya.types import ASGIApp
 
-from ravyn import APIView, Gateway, HTTPException, Request, Response, get, settings, status
+from ravyn import Gateway, HTTPException, Request, Response, get, settings, status
 from ravyn.contrib.auth.edgy.base_user import AbstractUser
 from ravyn.exceptions import NotAuthorized
 from ravyn.middleware.authentication import AuthResult, BaseAuthMiddleware
 from ravyn.requests import Connection
+from ravyn.routing.controllers import Controller
 from ravyn.security.jwt.token import Token
 from ravyn.testclient import create_client
 
@@ -99,7 +100,7 @@ async def home() -> str:
 
 
 def test_middleware_can_be_added_on_top(test_client_factory):
-    class UserAPIView(APIView):
+    class UserAPIView(Controller):
         path = "/users"
         tags = ["User"]
         middleware = [JWTAuthMiddleware]
@@ -146,7 +147,7 @@ def test_middleware_can_be_added_on_top(test_client_factory):
 
 
 def test_middleware_can_be_added_on_handler(test_client_factory):
-    class AnotherUserAPIView(APIView):
+    class AnotherUserAPIView(Controller):
         path = "/users"
         tags = ["User"]
 
@@ -193,7 +194,7 @@ def test_middleware_can_be_added_on_handler(test_client_factory):
 
 
 def test_middleware_can_be_added_on_both(test_client_factory):
-    class UserView(APIView):
+    class UserView(Controller):
         path = "/users"
         tags = ["User"]
         middleware = [JWTAuthMiddleware]

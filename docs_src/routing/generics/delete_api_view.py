@@ -1,10 +1,10 @@
 from ravyn import delete
-from ravyn.routing.apis.generics import DeleteAPIView
+from ravyn.routing.controllers.generics import DeleteAPIController
 
 
-class UserAPI(DeleteAPIView):
+class UserAPI(DeleteAPIController):
     """
-    DeleteAPIView only allows the `delete` to be used by default.
+    DeleteAPIController only allows the `delete` to be used by default.
     """
 
     @delete()

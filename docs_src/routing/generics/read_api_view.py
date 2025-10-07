@@ -1,10 +1,10 @@
 from ravyn import get
-from ravyn.routing.apis.generics import ReadAPIView
+from ravyn.routing.controllers.generics import ReadAPIController
 
 
-class UserAPI(ReadAPIView):
+class UserAPI(ReadAPIController):
     """
-    ReadAPIView only allows the `get` to be used by default.
+    ReadAPIController only allows the `get` to be used by default.
     """
 
     @get()

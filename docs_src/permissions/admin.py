@@ -1,4 +1,4 @@
-from ravyn import APIView, Ravyn, Gateway, JSONResponse, Request, get
+from ravyn import Controller, Ravyn, Gateway, JSONResponse, Request, get
 from ravyn.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 
@@ -27,7 +27,7 @@ class IsAuthOrReadOnly(IsAuthenticatedOrReadOnly):
 async def home() -> None: ...
 
 
-class UserAPIView(APIView):
+class UserAPIView(Controller):
     path = "/users"
     permissions = [IsUserAuthenticated]
 

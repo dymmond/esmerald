@@ -1,7 +1,7 @@
-from ravyn import APIView, Ravyn, Gateway, get
+from ravyn import Controller, Ravyn, Gateway, get
 
 
-class MyAPIView(APIView):
+class MyAPIView(Controller):
     path = "/customer/{name}"
 
     @get(path="/")

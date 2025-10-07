@@ -1,13 +1,5 @@
 from functools import wraps
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Optional,
-    Sequence,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, TypeVar, Union
 
 from lilya import status
 from typing_extensions import Annotated, Doc
@@ -15,95 +7,86 @@ from typing_extensions import Annotated, Doc
 from ravyn.exceptions import ImproperlyConfigured
 from ravyn.openapi.datastructures import OpenAPIResponse
 from ravyn.permissions.types import Permission
-from ravyn.routing.router import HTTPHandler, WebSocketHandler
+from ravyn.routing.router import WebhookHandler
+from ravyn.types import (
+    BackgroundTaskType,
+    Dependencies,
+    ExceptionHandlerMap,
+    Middleware,
+    ResponseCookies,
+    ResponseHeaders,
+    ResponseType,
+)
 from ravyn.utils.constants import AVAILABLE_METHODS
 from ravyn.utils.enums import HttpMethod, MediaType
 
 if TYPE_CHECKING:  # pragma: no cover
     from ravyn.openapi.schemas.v3_1_0 import SecurityScheme
-    from ravyn.types import (
-        BackgroundTaskType,
-        Dependencies,
-        ExceptionHandlerMap,
-        Middleware,
-        ResponseCookies,
-        ResponseHeaders,
-        ResponseType,
-    )
-
-
-SUCCESSFUL_RESPONSE = "Successful response"
 
 F = TypeVar("F", bound=Callable[..., Any])
 
+SUCCESSFUL_RESPONSE = "Successful response"
 
-def get(
+
+def whget(
     path: Annotated[
         Optional[str],
         Doc(
             """
-            Relative path of the `handler`.
-            The path can contain parameters in a dictionary like format
-            and if the path is not provided, it will default to `/`.
+                Relative path of the `handler`.
+                The path can contain parameters in a dictionary like format
+                and if the path is not provided, it will default to `/`.
 
-            **Example**
+                **Example**
 
-            ```python
-            @get()
-            ```
+                ```python
+                @get()
+                ```
 
-            **Example with parameters**
+                **Example with parameters**
 
-            ```python
-            @get(path="/{age: int}")
-            ```
-            """
+                ```python
+                @get(path="/{age: int}")
+                ```
+                """
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
             """
-            The summary of the handler. This short summary is displayed when the [OpenAPI](https://ravyn.dev/openapi/) documentation is used.
+                The summary of the handler. This short summary is displayed when the [OpenAPI](https://ravyn.dev/openapi/) documentation is used.
 
-            **Example**
+                **Example**
 
-            ```python
-            from ravyn import get
+                ```python
+                from ravyn import get
 
 
-            @get(summary="Black Window joining Pretenders")
-            async def get_joiners() -> None:
-                ...
-            ```
-            """
+                @get(summary="Black Window joining Pretenders")
+                async def get_joiners() -> None:
+                    ...
+                ```
+                """
         ),
     ] = None,
     description: Annotated[
         Optional[str],
         Doc(
             """
-            The description of the Ravyn application/API. This description is displayed when the [OpenAPI](https://ravyn.dev/openapi/) documentation is used.
+                The description of the Ravyn application/API. This description is displayed when the [OpenAPI](https://ravyn.dev/openapi/) documentation is used.
 
-            **Example**
+                **Example**
 
-            ```python
-            from ravyn import get
+                ```python
+                from ravyn import get
 
 
-            @get(description=...)
-            async def get_joiners() -> None:
-                ...
-            """
+                @get(description=...)
+                async def get_joiners() -> None:
+                    ...
+                """
         ),
     ] = None,
     status_code: Annotated[
@@ -396,23 +379,7 @@ def get(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `get` and
     all of its operatations.
@@ -429,14 +396,13 @@ def get(
     ```
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.GET],
             summary=summary,
             description=description,
@@ -459,8 +425,6 @@ def get(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -471,7 +435,7 @@ def get(
     return wrapper
 
 
-def head(
+def whhead(
     path: Annotated[
         Optional[str],
         Doc(
@@ -483,14 +447,6 @@ def head(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -707,36 +663,19 @@ def head(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `head` and
     all of its operatations.
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.HEAD],
             summary=summary,
             description=description,
@@ -759,8 +698,6 @@ def head(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -771,7 +708,7 @@ def head(
     return wrapper
 
 
-def post(
+def whpost(
     path: Annotated[
         Optional[str],
         Doc(
@@ -795,14 +732,6 @@ def post(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -1135,23 +1064,7 @@ def post(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `post` and
     all of its operatations.
@@ -1168,14 +1081,13 @@ def post(
     ```
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             status_code=status_code,
             content_encoding=content_encoding,
             content_media_type=content_media_type,
@@ -1198,8 +1110,6 @@ def post(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -1210,7 +1120,7 @@ def post(
     return wrapper
 
 
-def put(
+def whput(
     path: Annotated[
         Optional[str],
         Doc(
@@ -1234,14 +1144,6 @@ def put(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -1569,23 +1471,7 @@ def put(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `put` and
     all of its operatations.
@@ -1602,14 +1488,13 @@ def put(
     ```
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.PUT],
             summary=summary,
             description=description,
@@ -1632,8 +1517,6 @@ def put(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -1644,7 +1527,7 @@ def put(
     return wrapper
 
 
-def patch(
+def whpatch(
     path: Annotated[
         Optional[str],
         Doc(
@@ -1668,14 +1551,6 @@ def patch(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -2003,23 +1878,7 @@ def patch(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `path` and
     all of its operatations.
@@ -2036,14 +1895,13 @@ def patch(
     ```
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.PATCH],
             summary=summary,
             description=description,
@@ -2066,8 +1924,6 @@ def patch(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -2078,7 +1934,7 @@ def patch(
     return wrapper
 
 
-def delete(
+def whdelete(
     path: Annotated[
         Optional[str],
         Doc(
@@ -2102,14 +1958,6 @@ def delete(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -2437,23 +2285,7 @@ def delete(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `delete` and
     all of its operatations.
@@ -2470,14 +2302,13 @@ def delete(
     ```
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.DELETE],
             summary=summary,
             description=description,
@@ -2500,8 +2331,6 @@ def delete(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -2512,7 +2341,7 @@ def delete(
     return wrapper
 
 
-def options(
+def whoptions(
     path: Annotated[
         Optional[str],
         Doc(
@@ -2524,14 +2353,6 @@ def options(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -2748,36 +2569,19 @@ def options(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `options` and
     all of its operatations.
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.OPTIONS],
             summary=summary,
             description=description,
@@ -2800,8 +2604,6 @@ def options(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -2812,7 +2614,7 @@ def options(
     return wrapper
 
 
-def trace(
+def whtrace(
     path: Annotated[
         Optional[str],
         Doc(
@@ -2824,14 +2626,6 @@ def trace(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     summary: Annotated[
         Optional[str],
         Doc(
@@ -3048,36 +2842,20 @@ def trace(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for the HTTP method `trace` and
     all of its operatations.
+    ```
     """
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=[HttpMethod.TRACE],
             summary=summary,
             description=description,
@@ -3100,8 +2878,6 @@ def trace(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
         handler.fn = func
         handler.handler = wrapped
@@ -3112,7 +2888,7 @@ def trace(
     return wrapper
 
 
-def route(
+def whroute(
     path: Annotated[
         Optional[str],
         Doc(
@@ -3136,14 +2912,6 @@ def route(
         ),
     ] = None,
     *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
     methods: Annotated[
         list[str],
         Doc(
@@ -3490,23 +3258,7 @@ def route(
             """
         ),
     ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], HTTPHandler]:
+) -> Callable[[F], WebhookHandler]:
     """
     Handler responsible for allowing multiple HTTP verbs in one go
     all of its operatations.
@@ -3524,7 +3276,8 @@ def route(
     """
     if not methods or not isinstance(methods, list):
         raise ImproperlyConfigured(
-            "http handler demands `methods` to be declared. An example would be: @route(methods=['GET', 'PUT'])."
+            "http handler demands `methods` to be declared. "
+            "An example would be: @route(methods=['GET', 'PUT'])."
         )
 
     for method in methods:
@@ -3537,14 +3290,13 @@ def route(
     if not status_code:  # pragma: no cover
         status_code = status.HTTP_200_OK
 
-    def wrapper(func: Callable[..., Any]) -> HTTPHandler:
+    def wrapper(func: Callable[..., Any]) -> WebhookHandler:
         @wraps(func)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
-        handler = HTTPHandler(
+        handler = WebhookHandler(
             path=path,
-            name=name,
             methods=methods,
             summary=summary,
             description=description,
@@ -3567,114 +3319,12 @@ def route(
             operation_id=operation_id,
             response_description=response_description,
             responses=responses,
-            before_request=before_request,
-            after_request=after_request,
         )
 
         handler.fn = func
         handler.handler = wrapped
         handler.__type__ = HttpMethod.OPTIONS.value
         handler.validate_handler()
-        return handler
-
-    return wrapper
-
-
-def websocket(
-    path: Annotated[
-        Optional[str],
-        Doc(
-            """
-            Relative path of the `handler`.
-            The path can contain parameters in a dictionary like format
-            and if the path is not provided, it will default to `/`.
-
-            **Example**
-
-            ```python
-            @websocket()
-            ```
-
-            **Example with parameters**
-
-            ```python
-            @websocket(path="/{age: int}")
-            ```
-            """
-        ),
-    ] = None,
-    *,
-    name: Annotated[
-        Optional[str],
-        Doc(
-            """
-            The name for the Gateway. The name can be reversed by `path_for()`.
-            """
-        ),
-    ] = None,
-    dependencies: Annotated[
-        Optional["Dependencies"],
-        Doc(
-            """
-            A dictionary of string and [Inject](https://ravyn.dev/dependencies/) instances enable application level dependency injection.
-            """
-        ),
-    ] = None,
-    exception_handlers: Annotated[
-        Optional["ExceptionHandlerMap"],
-        Doc(
-            """
-            A dictionary of [exception types](https://ravyn.dev/exceptions/) (or custom exceptions) and the handler functions on an application top level. Exception handler callables should be of the form of `handler(request, exc) -> response` and may be be either standard functions, or async functions.
-            """
-        ),
-    ] = None,
-    middleware: Annotated[
-        Optional[list["Middleware"]],
-        Doc(
-            """
-            A list of middleware to run for every request. The middlewares of an Include will be checked from top-down or [Lilya Middleware](https://www.lilya.dev/middleware/) as they are both converted internally. Read more about [Python Protocols](https://peps.python.org/pep-0544/).
-            """
-        ),
-    ] = None,
-    permissions: Annotated[
-        Optional[list["Permission"]],
-        Doc(
-            """
-            A list of [permissions](https://ravyn.dev/permissions/) to serve the application incoming requests (HTTP and Websockets).
-            """
-        ),
-    ] = None,
-    before_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered before the application processes the request.
-            """
-        ),
-    ] = None,
-    after_request: Annotated[
-        Union[Sequence[Callable[..., Any]], None],
-        Doc(
-            """
-            A list of events that are triggered after the application processes the request.
-            """
-        ),
-    ] = None,
-) -> Callable[[F], WebSocketHandler]:
-    def wrapper(func: Any) -> WebSocketHandler:
-        handler = WebSocketHandler(
-            path=path,
-            dependencies=dependencies,
-            exception_handlers=exception_handlers,
-            permissions=permissions,
-            middleware=middleware,
-            name=name,
-            before_request=before_request,
-            after_request=after_request,
-        )
-        handler.fn = func
-        handler.handler = func
-        handler.validate_websocket_handler_function()
         return handler
 
     return wrapper

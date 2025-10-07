@@ -1289,7 +1289,7 @@ class RavynSettings(CacheBackendSettings):
             '''
             Permissions for admin
             '''
-            async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+            async def has_permission(self, request: "Request", controller: "APIGateHandler"):
                 is_admin = request.headers.get("admin", False)
                 return bool(is_admin)
 

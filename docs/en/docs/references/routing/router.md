@@ -32,6 +32,6 @@ from ravyn import Router
             - deprecated
             - security
             - tags
-            - add_apiview
+            - add_controller
             - add_route
             - add_websocket_route

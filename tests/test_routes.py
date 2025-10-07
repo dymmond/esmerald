@@ -2,7 +2,7 @@ import pytest
 from lilya import status
 
 from ravyn.exceptions import ImproperlyConfigured
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from ravyn.routing.handlers import delete, get, post, put, route, websocket
 from ravyn.routing.webhooks import whget
@@ -280,14 +280,14 @@ def test_raise_exception_on_add_websocket_route(test_client_factory) -> None:
         (get, "/another-post", 201, "updated!"),
     ],
 )
-def test_add_apiview_multiple_from_application(
+def test_add_controller_multiple_from_application(
     method, fn_path, status_code, response_text, test_client_factory
 ) -> None:
     """
     Adds a route to the application router using @route
     """
 
-    class View(APIView):
+    class View(Controller):
         path = "/"
 
         @method(fn_path, status_code=status_code)
@@ -296,7 +296,7 @@ def test_add_apiview_multiple_from_application(
 
     with create_client(routes=[]) as client:
         gateway = Gateway(handler=View)
-        client.app.add_apiview(value=gateway)
+        client.app.add_controller(value=gateway)
 
         response = getattr(client, method.__name__)(fn_path)
 

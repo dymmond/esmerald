@@ -6,7 +6,7 @@ from lilya.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from ravyn.applications import ChildRavyn
 from ravyn.injector import Inject
 from ravyn.requests import Request
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers import Controller
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.routing.router import Include
@@ -46,7 +46,7 @@ def local_method_second_dependency(path_param: str) -> str:
 test_path = "/test"
 
 
-class FirstController(APIView):
+class FirstController(Controller):
     path = test_path
     dependencies = {
         "first": Inject(controller_first_dependency),
@@ -102,7 +102,7 @@ def test_function_dependency_injection() -> None:
 
 
 def test_dependency_isolation() -> None:
-    class SecondController(APIView):
+    class SecondController(Controller):
         path = "/second"
 
         @get(path="/")
@@ -120,7 +120,7 @@ def test_dependency_isolation() -> None:
 
 
 def test_dependency_isolation_with_include() -> None:
-    class SecondController(APIView):
+    class SecondController(Controller):
         path = "/second"
 
         @get(path="/")
@@ -142,7 +142,7 @@ def test_dependency_isolation_with_include() -> None:
 
 
 def test_dependency_isolation_with_nested_include() -> None:
-    class SecondController(APIView):
+    class SecondController(Controller):
         path = "/second"
 
         @get(path="/")
@@ -190,7 +190,7 @@ def test_dependency_isolation_with_nested_include() -> None:
 
 
 def test_dependency_isolation_with_child_ravyn() -> None:
-    class SecondController(APIView):
+    class SecondController(Controller):
         path = "/second"
 
         @get(path="/")

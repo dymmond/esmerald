@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import types
+import warnings
 from enum import IntEnum
 from inspect import Signature
 from typing import (
@@ -61,7 +62,7 @@ from ravyn.params import Form
 from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.requests import Request
 from ravyn.responses import Response
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers.base import BaseController
 from ravyn.routing.core._internal import OpenAPIFieldInfoMixin
 from ravyn.routing.core.base import Dispatcher
 from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
@@ -572,9 +573,9 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 ...
             elif isinstance(route, HTTPHandler):
                 route = Gateway(handler=route)
-            elif is_class_and_subclass(route, View):
+            elif is_class_and_subclass(route, BaseController):
                 route = Gateway(
-                    handler=cast(View, route),
+                    handler=cast(BaseController, route),
                     permissions=(
                         route.permissions
                         if not self.is_member_descriptor(route.permissions)
@@ -863,8 +864,8 @@ class BaseRouter(Dispatcher, LilyaRouter):
             if not route.handler.parent:  # pragma: no cover
                 route.handler.parent = route
 
-            if not is_class_and_subclass(route.handler, View) and not isinstance(
-                route.handler, View
+            if not is_class_and_subclass(route.handler, BaseController) and not isinstance(
+                route.handler, BaseController
             ):
                 route.handler.create_signature_model()
 
@@ -888,8 +889,8 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 value.parent = cast("Union[Router, Include, Gateway, WebSocketGateway]", self)
 
         if isinstance(value, (Gateway, WebSocketGateway, WebhookGateway)):
-            if not is_class_and_subclass(value.handler, View) and not isinstance(
-                value.handler, View
+            if not is_class_and_subclass(value.handler, BaseController) and not isinstance(
+                value.handler, BaseController
             ):
                 if not value.handler.parent:
                     value.handler.parent = value
@@ -897,7 +898,7 @@ class BaseRouter(Dispatcher, LilyaRouter):
                 if not value.handler.parent:  # pragma: no cover
                     value(parent=self)  # type: ignore
 
-                handler: View = cast("View", value.handler)
+                handler: BaseController = cast("BaseController", value.handler)
                 route_handlers = handler.get_routes(
                     path=value.path,
                     middleware=value.middleware,
@@ -1978,22 +1979,22 @@ class Router(RoutingMethodsMixin, BaseRouter):
             Union[Gateway, WebSocketGateway],
             Doc(
                 """
-                The `APIView` or similar to be added.
+                The `Controller` or similar to be added.
                 """
             ),
         ],
     ) -> None:
         """
-        Adds an [APIView](https://ravyn.dev/routing/apiview/) or related
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
         to the application routing.
 
         **Example**
 
         ```python
-        from ravyn import Router, APIView, Gateway, get
+        from ravyn import Router, Controller, Gateway, get
 
 
-        class View(APIView):
+        class BaseController(Controller):
             path = "/"
 
             @get(status_code=status_code)
@@ -2005,6 +2006,49 @@ class Router(RoutingMethodsMixin, BaseRouter):
 
         app = Router()
         app.add_apiview(value=gateway)
+        ```
+        """
+        warnings.warn(
+            "add_apiview is deprecated and will be removed in the release 0.4.0. "
+            "Please use add_controller instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.add_controller(value=value)
+
+    def add_controller(
+        self,
+        value: Annotated[
+            Union[Gateway, WebSocketGateway],
+            Doc(
+                """
+                The `Controller` or similar to be added.
+                """
+            ),
+        ],
+    ) -> None:
+        """
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
+        to the application routing.
+
+        **Example**
+
+        ```python
+        from ravyn import Router, Controller, Gateway, get
+
+
+        class View(Controller):
+            path = "/"
+
+            @get(status_code=status_code)
+            async def hello(self) -> str:
+                return "Hello, World!"
+
+
+        gateway = Gateway(handler=View)
+
+        app = Router()
+        app.add_controller(value=gateway)
         ```
         """
         routes = []
@@ -2592,7 +2636,7 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
         operation_id: Optional[str] = None,
     ) -> None:
         """
-        Handles the "handler" or "apiview" of the platform. A handler can be any get, put, patch, post, delete or route.
+        Handles the "handler" or "controller" of the platform. A handler can be any get, put, patch, post, delete or route.
         """
         if not path:
             path = "/"
@@ -3009,101 +3053,18 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
 
 class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
     """
-    Base for a webhook handler.
+    The Webhook handler object representation.
+
+    This class extends the `HTTPHandler` class and is used to represent a webhook handler in the application.
+
+    It inherits all the properties and methods of the `HTTPHandler` class, allowing it to handle HTTP requests specifically for webhooks.
+
+    Attributes:
+            path (str | None): The relative path of the webhook handler. It can contain parameters in a dictionary-like format.
     """
 
-    _slots__ = (
-        "path",
-        "_permissions",
-        "_dependencies",
-        "_response_handler",
-        "_middleware",
-        "methods",
-        "status_code",
-        "content_encoding",
-        "media_type",
-        "content_media_type",
-        "summary",
-        "description",
-        "include_in_schema",
-        "dependencies",
-        "exception_handlers",
-        "permissions",
-        "middleware",
-        "response_class",
-        "response_cookies",
-        "response_headers",
-        "parent",
-        "tags",
-        "deprecated",
-        "security",
-        "operation_id",
-        "before_request",
-        "after_request",
-    )
-
-    def __init__(
-        self,
-        path: Optional[str] = None,
-        handler: Callable[..., Any] = None,
-        *,
-        methods: Optional[Sequence[str]] = None,
-        status_code: Optional[int] = None,
-        content_encoding: Optional[str] = None,
-        content_media_type: Optional[str] = None,
-        summary: Optional[str] = None,
-        description: Optional[str] = None,
-        include_in_schema: bool = True,
-        background: Optional[BackgroundTaskType] = None,
-        dependencies: Optional[Dependencies] = None,
-        exception_handlers: Optional[ExceptionHandlerMap] = None,
-        permissions: Optional[list[Permission]] = None,
-        middleware: Optional[list[Middleware]] = None,
-        media_type: Union[MediaType, str] = MediaType.JSON,
-        response_class: Optional[ResponseType] = None,
-        response_cookies: Optional[ResponseCookies] = None,
-        response_headers: Optional[ResponseHeaders] = None,
-        before_request: Sequence[Callable[..., Any]] | None = None,
-        after_request: Sequence[Callable[..., Any]] | None = None,
-        tags: Optional[Sequence[str]] = None,
-        deprecated: Optional[bool] = None,
-        response_description: Optional[str] = "Successful Response",
-        responses: Optional[dict[int, OpenAPIResponse]] = None,
-        security: Optional[list[SecurityScheme]] = None,
-        operation_id: Optional[str] = None,
-    ) -> None:
-        _path: str = None
-        if not path:
-            _path = "/"  # pragma: no cover
-
-        super().__init__(
-            path=_path,
-            handler=handler,
-            methods=methods,
-            summary=summary,
-            description=description,
-            status_code=status_code,
-            content_encoding=content_encoding,
-            content_media_type=content_media_type,
-            include_in_schema=include_in_schema,
-            background=background,
-            dependencies=dependencies,
-            exception_handlers=exception_handlers,
-            permissions=permissions,
-            middleware=middleware,
-            media_type=media_type,
-            response_class=response_class,
-            response_cookies=response_cookies,
-            response_headers=response_headers,
-            tags=tags,
-            deprecated=deprecated,
-            security=security,
-            operation_id=operation_id,
-            response_description=response_description,
-            responses=responses,
-            before_request=before_request,
-            after_request=after_request,
-        )
+    def __init__(self, *args: Any, path: str | None = None, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
         self.path = path
 
 
@@ -3325,7 +3286,7 @@ class WebSocketHandler(Dispatcher, LilyaWebSocketPath):
         kwargs = await self.get_kwargs(websocket=websocket)
 
         fn = self.fn
-        if isinstance(self.parent, View):
+        if isinstance(self.parent, BaseController):
             await fn(self.parent, **kwargs)
         else:
             await fn(**kwargs)
@@ -3905,7 +3866,9 @@ class Include(Dispatcher, LilyaInclude):
                 routing.append(route)
                 continue
 
-            if is_class_and_subclass(route.handler, View) or isinstance(route.handler, View):
+            if is_class_and_subclass(route.handler, BaseController) or isinstance(
+                route.handler, BaseController
+            ):
                 if not route.handler.parent:
                     route.handler = route.handler(parent=self)  # type: ignore
 

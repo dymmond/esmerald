@@ -19,9 +19,8 @@ class PluggableNoPlug(Extension):  # pragma: no cover
 
 
 def test_raises_improperly_configured_for_subclass(test_client_factory):
-    with pytest.warns(DeprecationWarning):
-        with pytest.raises(ImproperlyConfigured) as raised:
-            Ravyn(routes=[], pluggables={"test": MyNewPluggable})
+    with pytest.raises(ImproperlyConfigured) as raised:
+        Ravyn(routes=[], extensions={"test": MyNewPluggable})
 
     assert raised.value.detail == (
         "An extension must subclass from Extension, implement the ExtensionProtocol "
@@ -30,20 +29,18 @@ def test_raises_improperly_configured_for_subclass(test_client_factory):
 
 
 def test_raises_improperly_configured_for_key_of_pluggables(test_client_factory):
-    with pytest.warns(DeprecationWarning):
-        with pytest.raises(ImproperlyConfigured) as raised:
-            Ravyn(routes=[], pluggables={1: MyNewPluggable})
+    with pytest.raises(ImproperlyConfigured) as raised:
+        Ravyn(routes=[], extensions={1: MyNewPluggable})
 
     assert raised.value.detail == "Extension names should be in string format."
 
 
 def test_raises_error_for_missing_extend(test_client_factory):
-    with pytest.warns(DeprecationWarning):
-        with pytest.raises(Exception):  # noqa
-            Ravyn(
-                routes=[],
-                pluggables={"test": Pluggable(PluggableNoPlug)},
-            )
+    with pytest.raises(Exception):  # noqa
+        Ravyn(
+            routes=[],
+            extensions={"test": Pluggable(PluggableNoPlug)},
+        )
 
 
 class Config(BaseModel):
@@ -60,14 +57,12 @@ class MyExtension(Extension):
 
 
 def test_generates_pluggable():
-    with pytest.warns(DeprecationWarning):
-        app = Ravyn(
-            routes=[],
-            pluggables={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))},
-        )
+    app = Ravyn(
+        routes=[],
+        extensions={"test": Pluggable(MyExtension, config=Config(name="my pluggable"))},
+    )
 
-    with pytest.warns(DeprecationWarning):
-        assert "test" in app.pluggables
+    assert "test" in app.extensions
 
 
 def test_generates_many_pluggables():
@@ -97,11 +92,10 @@ def test_generates_many_pluggables():
             "database": Pluggable(DatabaseExtension, database="my db"),
         },
     )
-    with pytest.warns(DeprecationWarning):
-        assert len(app.pluggables.keys()) == 3
+    assert len(app.extensions.keys()) == 3
 
 
-def test_add_pluggable(test_client_factory):
+def test_add_extension(test_client_factory):
     class CustomExtension(Extension):
         def __init__(self, app: Optional["Ravyn"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
@@ -141,7 +135,7 @@ def test_add_standalone_extension(test_client_factory):
     assert not isinstance(app.extensions["manual"], Extension)
 
 
-def test_add_pluggable_manual(test_client_factory):
+def test_add_extension_manual(test_client_factory):
     class CustomExtension(Extension):
         def __init__(self, app: Optional["Ravyn"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
@@ -152,8 +146,7 @@ def test_add_pluggable_manual(test_client_factory):
 
     app = Ravyn(routes=[])
     config = Config(name="manual")
-    with pytest.warns(DeprecationWarning):
-        app.add_pluggable("manual", Pluggable(CustomExtension, config=config))
+    app.add_extension("manual", Pluggable(CustomExtension, config=config))
 
     assert "manual" in app.extensions
     assert isinstance(app.extensions["manual"], Extension)

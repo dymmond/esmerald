@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from ravyn.injector import Inject
     from ravyn.requests import Request
     from ravyn.responses import Response
-    from ravyn.routing.apis.base import View
+    from ravyn.routing.controllers.base import BaseController  # noqa
     from ravyn.routing.gateways import Gateway, WebhookGateway  # noqa
     from ravyn.routing.router import (
         HTTPHandler as HTTPHandler,  # noqa
@@ -65,7 +65,7 @@ else:
     Cookie = Any
     Router = Any
     MiddlewareProtocol = Any
-    View = Any
+    BaseController = Any
     Gateway = Any
     WebhookGateway = Any
     Ravyn = Any
@@ -98,14 +98,14 @@ AsyncAnyCallable = Callable[..., Awaitable[Any]]
 
 DatetimeType = TypeVar("DatetimeType", bound=datetime)
 
-ParentType = Union[View, Router, Gateway, WebSocketGateway, Ravyn, Include, Application]
+ParentType = Union[BaseController, Router, Gateway, WebSocketGateway, Ravyn, Include, Application]
 APIGateHandler = Union[
     Gateway,
     WebSocketGateway,
 ]
 
 RouteParent = Union[
-    "Router", "Include", ASGIApp, "Gateway", "WebSocketGateway", "WebhookGateway", "View"
+    "Router", "Include", ASGIApp, "Gateway", "WebSocketGateway", "WebhookGateway", "BaseController"
 ]
 
 BackgroundTaskType = Union[BackgroundTask, BackgroundTasks]

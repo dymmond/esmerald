@@ -100,9 +100,6 @@ def create_client(
     backend: "Literal['asyncio', 'trio']" = "asyncio",
     backend_options: Optional[dict[str, Any]] = None,
     interceptors: Optional[list["Interceptor"]] = None,
-    pluggables: Optional[
-        dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
-    ] = None,
     extensions: Optional[
         dict[str, Union["Extension", "Pluggable", type["Extension"], str]]
     ] = None,
@@ -180,7 +177,6 @@ def create_client(
             include_in_schema=include_in_schema,
             tags=tags,
             webhooks=webhooks,
-            pluggables=pluggables,
             extensions=extensions,
             encoders=encoders,
             before_request=before_request,

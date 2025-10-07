@@ -1,8 +1,12 @@
 from ravyn import delete, get, patch, post, put
-from ravyn.routing.apis.generics import CreateAPIView, DeleteAPIView, ReadAPIView
+from ravyn.routing.controllers.generics import (
+    CreateAPIController,
+    DeleteAPIController,
+    ReadAPIController,
+)
 
 
-class UserAPI(CreateAPIView, DeleteAPIView, ReadAPIView):
+class UserAPI(CreateAPIController, DeleteAPIController, ReadAPIController):
     """
     Combining them all.
     """

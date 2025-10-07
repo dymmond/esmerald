@@ -1,4 +1,4 @@
-from ravyn import APIView, Ravyn, Gateway, Request, get
+from ravyn import Controller, Ravyn, Gateway, Request, get
 from ravyn.permissions import AllowAny, BasePermission, DenyAll
 
 
@@ -6,7 +6,7 @@ class IsAdmin(BasePermission):
     def has_permission(
         self,
         request: "Request",
-        apiview: "APIView",
+        controller: "Controller",
     ) -> bool:
         return bool(request.path_params["admin"] is True)
 

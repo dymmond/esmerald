@@ -18,14 +18,14 @@ if TYPE_CHECKING:
 
 
 class LocalPermission(BasePermission):
-    async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    async def has_permission(self, request: "Request", controller: "APIGateHandler"):
         if not request.headers.get("allow_all"):
             return False
         return True
 
 
 class ApplicationPermission(BasePermission):
-    async def has_permission(self, request: "Request", apiview: "APIGateHandler"):
+    async def has_permission(self, request: "Request", controller: "APIGateHandler"):
         if not request.headers.get("Authorization"):
             return False
         return True
