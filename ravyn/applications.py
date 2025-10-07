@@ -1497,55 +1497,6 @@ class Application(BaseLilya):
                 """
             ),
         ] = None,
-        pluggables: Annotated[
-            Optional[dict[str, Union[Extension, Pluggable, type[Extension], str]]],
-            Doc(
-                """
-                THIS PARAMETER IS DEPRECATED USE extensions INSTEAD
-
-                A `list` of global extensions from objects inheriting from
-                `ravyn.interceptors.interceptor.RavynInterceptor`.
-
-                Read more about how to implement the [Plugables](https://ravyn.dev/pluggables/) in Ravyn and to leverage them.
-
-                **Example**
-
-                ```python
-                from typing import Optional
-
-                from loguru import logger
-                from pydantic import BaseModel
-
-                from ravyn import Ravyn, Extension, Pluggable
-                from ravyn.types import DictAny
-
-
-                class PluggableConfig(BaseModel):
-                    name: str
-
-
-                class MyExtension(Extension):
-                    def __init__(
-                        self, app: Optional["Ravyn"] = None, config: PluggableConfig = None, **kwargs: "DictAny"
-                    ):
-                        super().__init__(app, **kwargs)
-                        self.app = app
-
-                    def extend(self, config: PluggableConfig) -> None:
-                        logger.success(f"Successfully passed a config {config.name}")
-
-
-                my_config = PluggableConfig(name="my extension")
-                pluggable = Pluggable(MyExtension, config=my_config)
-
-
-                app = Ravyn(
-                    routes=[], extensions={"my-extension": pluggable}
-                )
-                ```
-                """
-            ),
-        ] = None,
         parent: Annotated[
             Optional[Union["ParentType", "Ravyn", "ChildRavyn"]],
             Doc(
@@ -1774,27 +1725,9 @@ class Application(BaseLilya):
 
         # load extensions nearly last so everythings is initialized
         _extensions: Any = self.load_settings_value("extensions", extensions)
-        if not _extensions:
-            _extensions = self.load_settings_value("pluggables", pluggables)
-            if _extensions:
-                warnings.warn(
-                    "The `pluggables` parameter/setting is deprecated use `extensions` instead",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-
         self.extensions = ExtensionDict(_extensions, app=cast(Ravyn, self))
         self.extensions.extend()
         self._configure()
-
-    @property
-    def pluggables(self) -> ExtensionDict:
-        warnings.warn(
-            "The `pluggables` attribute is deprecated use `extensions` instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.extensions
 
     def _register_application_encoders(self) -> None:
         """
@@ -2075,7 +2008,7 @@ class Application(BaseLilya):
         ```
         """
         warnings.warn(
-            "add_apiview is deprecated and will be removed in the release 0.3.0. "
+            "add_apiview is deprecated and will be removed in the release 0.4.0. "
             "Please use add_controller instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -2789,16 +2722,6 @@ class Application(BaseLilya):
         ```
         """
         self.extensions[name] = extension
-
-    def add_pluggable(
-        self, name: str, extension: Union[Extension, Pluggable, type[Extension]]
-    ) -> None:
-        warnings.warn(
-            "The `add_pluggable` method is deprecated use `add_extension` instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.add_extension(name, extension)
 
     @property
     def settings(self) -> "RavynSettings":

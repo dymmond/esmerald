@@ -43,7 +43,7 @@ class SimpleAPIView(View, MethodMixin, metaclass=SimpleAPIMeta):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "SimpleAPIView is deprecated and will be removed in the release 0.3.0. "
+            "SimpleAPIView is deprecated and will be removed in the release 0.4.0. "
             "Please use SimpleAPIController instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -96,7 +96,7 @@ class ListView(View, MethodMixin, metaclass=ListAPIMeta):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "ListView is deprecated and will be removed in the release 0.3.0. "
+            "ListView is deprecated and will be removed in the release 0.4.0. "
             "Please use ListAPIController instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -162,7 +162,7 @@ class APIView(View):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "APIView is deprecated and will be removed in the release 0.3.0. "
+            "APIView is deprecated and will be removed in the release 0.4.0. "
             "Please use APIController instead.",
             DeprecationWarning,
             stacklevel=2,

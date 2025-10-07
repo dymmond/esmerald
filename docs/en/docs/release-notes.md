@@ -43,6 +43,12 @@ hide:
     ```
 - The `routing/apiview` URL in the docs is now pointing to `routing/controllers`.
 
+### Removed
+
+- `Ravyn` when it was Esmerald, had the `plugglables` as parameter but since the version `3.5.0`
+of Esmerald, now Ravyn, that was considered deprecated and instead the `extensions` was added. This
+version now removes it for good from the internals.
+
 ---
 
 Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**

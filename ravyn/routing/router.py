@@ -2009,7 +2009,7 @@ class Router(RoutingMethodsMixin, BaseRouter):
         ```
         """
         warnings.warn(
-            "add_apiview is deprecated and will be removed in the release 0.3.0. "
+            "add_apiview is deprecated and will be removed in the release 0.4.0. "
             "Please use add_controller instead.",
             DeprecationWarning,
             stacklevel=2,

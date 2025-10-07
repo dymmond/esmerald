@@ -186,7 +186,7 @@ def test_add_standalone_extension(test_client_factory):
     assert not isinstance(app.extensions["manual"], Extension)
 
 
-def test_add_pluggable(test_client_factory):
+def test_add_extension(test_client_factory):
     class CustomExtension(Extension):
         def __init__(self, app: Optional["Ravyn"] = None, **kwargs: DictAny):
             super().__init__(app, **kwargs)
