@@ -3053,101 +3053,18 @@ class HTTPHandler(Dispatcher, OpenAPIFieldInfoMixin, LilyaPath):
 
 class WebhookHandler(HTTPHandler, OpenAPIFieldInfoMixin):
     """
-    Base for a webhook handler.
+    The Webhook handler object representation.
+
+    This class extends the `HTTPHandler` class and is used to represent a webhook handler in the application.
+
+    It inherits all the properties and methods of the `HTTPHandler` class, allowing it to handle HTTP requests specifically for webhooks.
+
+    Attributes:
+            path (str | None): The relative path of the webhook handler. It can contain parameters in a dictionary-like format.
     """
 
-    _slots__ = (
-        "path",
-        "_permissions",
-        "_dependencies",
-        "_response_handler",
-        "_middleware",
-        "methods",
-        "status_code",
-        "content_encoding",
-        "media_type",
-        "content_media_type",
-        "summary",
-        "description",
-        "include_in_schema",
-        "dependencies",
-        "exception_handlers",
-        "permissions",
-        "middleware",
-        "response_class",
-        "response_cookies",
-        "response_headers",
-        "parent",
-        "tags",
-        "deprecated",
-        "security",
-        "operation_id",
-        "before_request",
-        "after_request",
-    )
-
-    def __init__(
-        self,
-        path: Optional[str] = None,
-        handler: Callable[..., Any] = None,
-        *,
-        methods: Optional[Sequence[str]] = None,
-        status_code: Optional[int] = None,
-        content_encoding: Optional[str] = None,
-        content_media_type: Optional[str] = None,
-        summary: Optional[str] = None,
-        description: Optional[str] = None,
-        include_in_schema: bool = True,
-        background: Optional[BackgroundTaskType] = None,
-        dependencies: Optional[Dependencies] = None,
-        exception_handlers: Optional[ExceptionHandlerMap] = None,
-        permissions: Optional[list[Permission]] = None,
-        middleware: Optional[list[Middleware]] = None,
-        media_type: Union[MediaType, str] = MediaType.JSON,
-        response_class: Optional[ResponseType] = None,
-        response_cookies: Optional[ResponseCookies] = None,
-        response_headers: Optional[ResponseHeaders] = None,
-        before_request: Sequence[Callable[..., Any]] | None = None,
-        after_request: Sequence[Callable[..., Any]] | None = None,
-        tags: Optional[Sequence[str]] = None,
-        deprecated: Optional[bool] = None,
-        response_description: Optional[str] = "Successful Response",
-        responses: Optional[dict[int, OpenAPIResponse]] = None,
-        security: Optional[list[SecurityScheme]] = None,
-        operation_id: Optional[str] = None,
-    ) -> None:
-        _path: str = None
-        if not path:
-            _path = "/"  # pragma: no cover
-
-        super().__init__(
-            path=_path,
-            handler=handler,
-            methods=methods,
-            summary=summary,
-            description=description,
-            status_code=status_code,
-            content_encoding=content_encoding,
-            content_media_type=content_media_type,
-            include_in_schema=include_in_schema,
-            background=background,
-            dependencies=dependencies,
-            exception_handlers=exception_handlers,
-            permissions=permissions,
-            middleware=middleware,
-            media_type=media_type,
-            response_class=response_class,
-            response_cookies=response_cookies,
-            response_headers=response_headers,
-            tags=tags,
-            deprecated=deprecated,
-            security=security,
-            operation_id=operation_id,
-            response_description=response_description,
-            responses=responses,
-            before_request=before_request,
-            after_request=after_request,
-        )
+    def __init__(self, *args: Any, path: str | None = None, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
         self.path = path
 
 
