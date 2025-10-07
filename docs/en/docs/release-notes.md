@@ -10,6 +10,7 @@ hide:
 ### Changed
 
 - Update `runserver` directive to reflect the new Ravyn colour palette.
+- Webhooks are now inside `routing.webhooks` and the handlers redundancy was removed.
 
 ---
 
