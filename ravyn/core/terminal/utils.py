@@ -75,13 +75,13 @@ def get_ui_toolkit() -> RichToolkit:
     theme = RichToolkitTheme(
         style=TaggedStyle(tag_width=11),
         theme={
-            "tag.title": "white on #0A970E",
-            "tag": "white on #086E0C",
+            "tag.title": "white on #f11e64",
+            "tag": "white on #af1b4c",
             "placeholder": "grey85",
             "text": "white",
-            "selected": "#078F0B",
+            "selected": "#e92063",
             "result": "grey85",
-            "progress": "on #086E0C",
+            "progress": "on #af1b4c",
             "error": "red",
             "log.info": "black on blue",
         },
