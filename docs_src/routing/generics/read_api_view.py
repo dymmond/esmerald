@@ -1,5 +1,5 @@
 from ravyn import get
-from ravyn.routing.apis.generics import ReadAPIView
+from ravyn.routing.controllers.generics import ReadAPIView
 
 
 class UserAPI(ReadAPIView):

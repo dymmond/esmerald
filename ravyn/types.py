@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from ravyn.injector import Inject
     from ravyn.requests import Request
     from ravyn.responses import Response
-    from ravyn.routing.apis.base import View
+    from ravyn.routing.controllers.base import View
     from ravyn.routing.gateways import Gateway, WebhookGateway  # noqa
     from ravyn.routing.router import (
         HTTPHandler as HTTPHandler,  # noqa

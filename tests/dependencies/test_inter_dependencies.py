@@ -3,7 +3,7 @@ from random import randint
 from lilya.status import HTTP_200_OK
 
 from ravyn.injector import Inject
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.testclient import create_client

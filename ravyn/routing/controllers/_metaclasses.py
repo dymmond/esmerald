@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Set, Tuple, Type, cast
 
 if TYPE_CHECKING:
     from ravyn import SimpleAPIView
-    from ravyn.routing.apis.generics import ListAPIView
+    from ravyn.routing.controllers.generics import ListAPIView
 
 
 class SimpleAPIMeta(type):

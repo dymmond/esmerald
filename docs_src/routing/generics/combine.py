@@ -1,5 +1,5 @@
 from ravyn import delete, get, patch, post, put
-from ravyn.routing.apis.generics import CreateAPIView, DeleteAPIView, ReadAPIView
+from ravyn.routing.controllers.generics import CreateAPIView, DeleteAPIView, ReadAPIView
 
 
 class UserAPI(CreateAPIView, DeleteAPIView, ReadAPIView):

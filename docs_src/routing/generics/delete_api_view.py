@@ -1,5 +1,5 @@
 from ravyn import delete
-from ravyn.routing.apis.generics import DeleteAPIView
+from ravyn.routing.controllers.generics import DeleteAPIView
 
 
 class UserAPI(DeleteAPIView):

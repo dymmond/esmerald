@@ -61,7 +61,7 @@ from ravyn.params import Form
 from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.requests import Request
 from ravyn.responses import Response
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers.base import View
 from ravyn.routing.core._internal import OpenAPIFieldInfoMixin
 from ravyn.routing.core.base import Dispatcher
 from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway

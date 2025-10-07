@@ -2,7 +2,7 @@ from typing import ClassVar
 
 from typing_extensions import Annotated, Doc
 
-from ravyn.routing.apis.views import ListView, SimpleAPIView
+from ravyn.routing.controllers.views import ListView, SimpleAPIView
 
 
 class GenericMixin:

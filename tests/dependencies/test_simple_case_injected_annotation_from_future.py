@@ -4,7 +4,7 @@ from typing import List
 
 from ravyn import post
 from ravyn.injector import Inject
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway
 from ravyn.testclient import create_client
 from tests.dependencies.samples import DocumentCreateDTO, DocumentService

@@ -15,7 +15,12 @@ from ravyn import (
     post,
     put,
 )
-from ravyn.routing.apis.generics import CreateAPIView, DeleteAPIView, ListAPIView, ReadAPIView
+from ravyn.routing.controllers.generics import (
+    CreateAPIView,
+    DeleteAPIView,
+    ListAPIView,
+    ReadAPIView,
+)
 from ravyn.testclient import create_client
 
 

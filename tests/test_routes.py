@@ -2,7 +2,7 @@ import pytest
 from lilya import status
 
 from ravyn.exceptions import ImproperlyConfigured
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway, WebhookGateway, WebSocketGateway
 from ravyn.routing.handlers import delete, get, post, put, route, websocket
 from ravyn.routing.webhooks import whget

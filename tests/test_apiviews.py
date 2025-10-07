@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from ravyn.encoders import MsgSpecEncoder, PydanticEncoder
 from ravyn.responses import Response
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway, WebSocketGateway
 from ravyn.routing.handlers import delete, get, patch, post, put, websocket
 from ravyn.routing.router import Include

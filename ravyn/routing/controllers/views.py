@@ -1,6 +1,6 @@
-from ravyn.routing.apis._metaclasses import ListAPIMeta, SimpleAPIMeta
-from ravyn.routing.apis._mixins import MethodMixin
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers._metaclasses import ListAPIMeta, SimpleAPIMeta
+from ravyn.routing.controllers._mixins import MethodMixin
+from ravyn.routing.controllers.base import View
 
 
 class SimpleAPIView(View, MethodMixin, metaclass=SimpleAPIMeta):

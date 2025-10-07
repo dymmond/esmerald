@@ -64,7 +64,7 @@ from ravyn.permissions.types import Permission
 from ravyn.permissions.utils import is_ravyn_permission, wrap_permission
 from ravyn.pluggables import Extension, ExtensionDict, Pluggable
 from ravyn.routing import gateways
-from ravyn.routing.apis import base
+from ravyn.routing.controllers import base
 from ravyn.routing.router import (
     HTTPHandler,
     Include,

@@ -14,7 +14,7 @@ from ravyn.exceptions import (
 )
 from ravyn.requests import Request
 from ravyn.responses import Response
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.routing.router import Include

@@ -15,7 +15,7 @@ from ravyn.permissions import AllowAny, DenyAll
 from ravyn.requests import Request
 from ravyn.responses import Response
 from ravyn.responses.encoders import UJSONResponse
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway, WebSocketGateway
 from ravyn.routing.handlers import get, post, put, route, websocket
 from ravyn.routing.router import Include, Router

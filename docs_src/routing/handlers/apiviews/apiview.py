@@ -1,7 +1,7 @@
 from ravyn.permissions import DenyAll, IsAuthenticated
 from ravyn.requests import Request
 from ravyn.responses import JSONResponse
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.handlers import delete, get, post
 
 

@@ -5,7 +5,7 @@ from lilya.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from ravyn.applications import ChildRavyn
 from ravyn.requests import Request
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.routing.router import Include

@@ -10,7 +10,7 @@ from lilya.types import Receive, Scope, Send
 from typing_extensions import Annotated, Doc
 
 from ravyn.permissions.utils import is_lilya_permission, is_ravyn_permission, wrap_permission
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers.base import View
 from ravyn.routing.core.base import Dispatcher
 from ravyn.utils.helpers import clean_string
 

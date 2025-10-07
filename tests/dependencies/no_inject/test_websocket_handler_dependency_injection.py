@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from lilya.websockets import WebSocketDisconnect
 
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import WebSocketGateway
 from ravyn.routing.handlers import websocket
 from ravyn.testclient import create_client

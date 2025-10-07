@@ -42,7 +42,7 @@ if TYPE_CHECKING:
     from .pluggables import Extension, Pluggable
     from .requests import Request
     from .responses import JSONResponse, Response, TemplateResponse
-    from .routing.apis import APIView, Controller, SimpleAPIView, View
+    from .routing.controllers import APIView, Controller, SimpleAPIView, View
     from .routing.gateways import Gateway, WebhookGateway, WebSocketGateway
     from .routing.handlers import (
         delete,

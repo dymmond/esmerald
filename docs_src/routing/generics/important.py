@@ -1,5 +1,5 @@
 from ravyn import post
-from ravyn.routing.apis.generics import CreateAPIView
+from ravyn.routing.controllers.generics import CreateAPIView
 
 
 class UserAPI(CreateAPIView):

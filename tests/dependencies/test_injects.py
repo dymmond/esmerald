@@ -7,7 +7,7 @@ from ravyn.applications import Ravyn
 from ravyn.exceptions import ImproperlyConfigured
 from ravyn.injector import Factory, Inject
 from ravyn.params import Injects
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway
 from ravyn.routing.handlers import get
 from ravyn.routing.router import Include

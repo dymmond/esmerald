@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from ravyn import Ravyn, post
 from ravyn.conf import settings
 from ravyn.injector import Inject
-from ravyn.routing.apis.views import APIView
+from ravyn.routing.controllers.views import APIView
 from ravyn.routing.gateways import Gateway
 
 models = edgy.Registry(settings.edgy_database)

@@ -12,7 +12,7 @@ from ravyn import Gateway, Router
 from ravyn.core.directives.constants import RAVYN_DISCOVER_APP
 from ravyn.core.directives.env import DirectiveEnv
 from ravyn.core.terminal import OutputColour
-from ravyn.routing.apis.base import View
+from ravyn.routing.controllers.base import View
 from ravyn.utils.enums import HttpMethod
 
 if TYPE_CHECKING:

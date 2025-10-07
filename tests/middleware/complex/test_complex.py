@@ -7,7 +7,7 @@ from ravyn.conf import settings
 from ravyn.contrib.auth.edgy.base_user import User as EdgyUser
 from ravyn.contrib.auth.edgy.middleware import JWTAuthMiddleware
 from ravyn.core.config.jwt import JWTConfig
-from ravyn.routing.apis import APIView
+from ravyn.routing.controllers import APIView
 from ravyn.routing.handlers import get, post, put
 from ravyn.testclient import create_client
 

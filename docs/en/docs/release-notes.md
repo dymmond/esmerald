@@ -11,6 +11,19 @@ hide:
 
 - Update `runserver` directive to reflect the new Ravyn colour palette.
 - Webhooks are now inside `routing.webhooks` and the handlers redundancy was removed.
+- Routing apis is now called `controllers`. For importing reasons, this is the update:
+
+**Before
+
+```python
+from ravyn.routing.apis
+```
+
+**After**
+
+```python
+from ravyn.routing.controllers
+```
 
 ---
 
