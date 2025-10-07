@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from ravyn import Ravyn, Gateway, post
 from ravyn.routing.gateways import WebhookGateway
-from ravyn.routing.webhooks.handlers import whpost
+from ravyn.routing.webhooks import whpost
 
 
 class Payment(BaseModel):
