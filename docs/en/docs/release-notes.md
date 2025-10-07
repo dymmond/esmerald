@@ -5,6 +5,14 @@ hide:
 
 # Release Notes
 
+## 0.1.1
+
+### Changed
+
+- Update `runserver` directive to reflect the new Ravyn colour palette.
+
+---
+
 Why is this happening? Is Esmerald going away? **No, absolutely not. Esmerald remains and will remain as is and will keep growing**
 as it has its own use cases **but under a new name, Ravyn**.
 
