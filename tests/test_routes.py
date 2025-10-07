@@ -280,7 +280,7 @@ def test_raise_exception_on_add_websocket_route(test_client_factory) -> None:
         (get, "/another-post", 201, "updated!"),
     ],
 )
-def test_add_apiview_multiple_from_application(
+def test_add_controller_multiple_from_application(
     method, fn_path, status_code, response_text, test_client_factory
 ) -> None:
     """
@@ -296,7 +296,7 @@ def test_add_apiview_multiple_from_application(
 
     with create_client(routes=[]) as client:
         gateway = Gateway(handler=View)
-        client.app.add_apiview(value=gateway)
+        client.app.add_controller(value=gateway)
 
         response = getattr(client, method.__name__)(fn_path)
 

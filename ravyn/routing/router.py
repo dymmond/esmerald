@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import types
+import warnings
 from enum import IntEnum
 from inspect import Signature
 from typing import (
@@ -2005,6 +2006,49 @@ class Router(RoutingMethodsMixin, BaseRouter):
 
         app = Router()
         app.add_apiview(value=gateway)
+        ```
+        """
+        warnings.warn(
+            "add_apiview is deprecated and will be removed in the release 0.3.0. "
+            "Please use add_controller instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.add_controller(value=value)
+
+    def add_controller(
+        self,
+        value: Annotated[
+            Union[Gateway, WebSocketGateway],
+            Doc(
+                """
+                The `Controller` or similar to be added.
+                """
+            ),
+        ],
+    ) -> None:
+        """
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
+        to the application routing.
+
+        **Example**
+
+        ```python
+        from ravyn import Router, Controller, Gateway, get
+
+
+        class View(Controller):
+            path = "/"
+
+            @get(status_code=status_code)
+            async def hello(self) -> str:
+                return "Hello, World!"
+
+
+        gateway = Gateway(handler=View)
+
+        app = Router()
+        app.add_controller(value=gateway)
         ```
         """
         routes = []

@@ -2045,7 +2045,7 @@ class Application(BaseLilya):
             Union["gateways.Gateway", "gateways.WebSocketGateway"],
             Doc(
                 """
-                The `Controllerler` or similar to be added.
+                The `Controller` or similar to be added.
                 """
             ),
         ],
@@ -2074,7 +2074,50 @@ class Application(BaseLilya):
         app.add_apiview(value=gateway)
         ```
         """
-        self.router.add_apiview(value=value)
+        warnings.warn(
+            "add_apiview is deprecated and will be removed in the release 0.3.0. "
+            "Please use add_controller instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.add_controller(value=value)
+
+    def add_controller(
+        self,
+        value: Annotated[
+            Union["gateways.Gateway", "gateways.WebSocketGateway"],
+            Doc(
+                """
+                The `Controller` or similar to be added.
+                """
+            ),
+        ],
+    ) -> None:
+        """
+        Adds an [Controller](https://ravyn.dev/routing/controllers/) or related
+        to the application routing.
+
+        **Example**
+
+        ```python
+        from ravyn import Ravyn, Controller, Gateway, get
+
+
+        class View(Controller):
+            path = "/"
+
+            @get(status_code=status_code)
+            async def hello(self) -> str:
+                return "Hello, World!"
+
+
+        gateway = Gateway(handler=View)
+
+        app = Ravyn()
+        app.add_controller(value=gateway)
+        ```
+        """
+        self.router.add_controller(value=value)
 
     def add_route(
         self,

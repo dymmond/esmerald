@@ -7,6 +7,10 @@ hide:
 
 ## 0.2.0
 
+### Added
+
+- `add_controller` alternative to `add_apiview`.
+
 ### Changed
 
 - Update `runserver` directive to reflect the new Ravyn colour palette.
@@ -37,7 +41,7 @@ hide:
     ```python
     def has_permission(request, controller)
     ```
-- The `routing/apiview` URL in the docs is now pointing to `routing/controllers`
+- The `routing/apiview` URL in the docs is now pointing to `routing/controllers`.
 
 ---
 

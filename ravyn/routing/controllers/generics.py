@@ -53,7 +53,7 @@ class CreateAPIView(GenericMixin, SimpleAPIView):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "CreateAPIView is deprecated and will be removed in the release 0.2.0. "
+            "CreateAPIView is deprecated and will be removed in the release 0.3.0. "
             "Please use CreateAPIController instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -154,7 +154,7 @@ class DeleteAPIView(GenericMixin, SimpleAPIView):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "DeleteAPIView is deprecated and will be removed in the release 0.2.0. "
+            "DeleteAPIView is deprecated and will be removed in the release 0.3.0. "
             "Please use DeleteAPIController instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -237,7 +237,7 @@ class ReadAPIView(GenericMixin, SimpleAPIView):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "ReadAPIView is deprecated and will be removed in the release 0.2.0. "
+            "ReadAPIView is deprecated and will be removed in the release 0.3.0. "
             "Please use ReadAPIController instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -289,7 +289,7 @@ class ListAPIView(GenericMixin, ListView):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         warnings.warn(
-            "ListAPIView is deprecated and will be removed in the release 0.2.0. "
+            "ListAPIView is deprecated and will be removed in the release 0.3.0. "
             "Please use ListAPIController instead.",
             DeprecationWarning,
             stacklevel=2,

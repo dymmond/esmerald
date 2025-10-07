@@ -15,7 +15,7 @@ from ravyn import Ravyn
             - state
             - settings
             - get_template_engine
-            - add_apiview
+            - add_controller
             - add_route
             - add_websocket_route
             - add_include
