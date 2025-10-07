@@ -5,7 +5,7 @@ hide:
 
 # Release Notes
 
-## 0.1.1
+## 0.2.0
 
 ### Changed
 
@@ -13,17 +13,31 @@ hide:
 - Webhooks are now inside `routing.webhooks` and the handlers redundancy was removed.
 - Routing apis is now called `controllers`. For importing reasons, this is the update:
 
-**Before
+    **Before
 
-```python
-from ravyn.routing.apis
-```
+    ```python
+    from ravyn.routing.apis
+    ```
 
-**After**
+    **After**
 
-```python
-from ravyn.routing.controllers
-```
+    ```python
+    from ravyn.routing.controllers
+    ```
+- `has_permission` has changed signature.
+
+    **Before
+
+    ```python
+    def has_permission(request, apiview)
+    ```
+
+    **After**
+
+    ```python
+    def has_permission(request, controller)
+    ```
+- The `routing/apiview` URL in the docs is now pointing to `routing/controllers`
 
 ---
 
