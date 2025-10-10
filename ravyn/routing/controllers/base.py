@@ -418,7 +418,7 @@ class BaseController:
         Returns:
             A list containing a copy of the route handlers defined inside the BaseController.
         """
-        from ravyn.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
+        from ravyn.routing.router import WebSocketHandler
 
         route_handlers: list[Union[HTTPHandler, WebSocketHandler, WebhookHandler]] = []
         filtered_handlers = self.get_filtered_handler()
@@ -504,7 +504,7 @@ class BaseController:
         Builds the routes and wraps them in a list containing the Gateway and WebSocketGateway.
         """
         from ravyn.routing.gateways import Gateway, WebSocketGateway
-        from ravyn.routing.router import HTTPHandler, WebhookHandler, WebSocketHandler
+        from ravyn.routing.router import HTTPHandler
 
         if path is None:
             path = "/"

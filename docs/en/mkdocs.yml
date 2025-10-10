@@ -195,6 +195,9 @@ nav:
     - contrib/mail.md
     - contrib/files/send-file.md
     - contrib/files/jsonify.md
+    - Shortcuts:
+      - contrib/shortcuts/abort.md
+      - contrib/shortcuts/responses.md
 - Learning and Examples:
   - guides/index.md
   - Getting Started:
@@ -278,7 +281,7 @@ nav:
   - ravyn-people.md
   - contributing.md
 - Migration:
-    - migration.md
+  - migration.md
 - release-notes.md
 extra_css:
 - statics/css/custom.css
