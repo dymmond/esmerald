@@ -9,9 +9,8 @@ hide:
 
 ### Added
 
-This was supposed to go on the version 0.2.0 but was missed.
-
 - Support for Python 3.14
+- Support for contrib shortcuts provided by Lilya.
 
 ## 0.2.0
 
