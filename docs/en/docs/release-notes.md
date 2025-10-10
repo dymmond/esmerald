@@ -5,6 +5,12 @@ hide:
 
 # Release Notes
 
+## 0.2.2
+
+### Added
+
+- Add response parameter to exception initialization.
+
 ## 0.2.1
 
 ### Added
