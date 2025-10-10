@@ -5,6 +5,13 @@ hide:
 
 # Release Notes
 
+## 0.2.1
+
+### Added
+
+- Support for Python 3.14
+- Support for contrib shortcuts provided by Lilya.
+
 ## 0.2.0
 
 ### Added

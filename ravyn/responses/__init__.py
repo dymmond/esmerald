@@ -4,6 +4,7 @@ from .base import (
     HTMLResponse,
     LilyaResponse,
     PlainText,
+    RedirectResponse,
     Response,
     StreamingResponse,
 )
@@ -21,4 +22,5 @@ __all__ = [
     "LilyaResponse",
     "StreamingResponse",
     "TemplateResponse",
+    "RedirectResponse",
 ]
